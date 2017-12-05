@@ -1,0 +1,7 @@
+{
+  "extends": ["tslint-react"],
+  "rules": {
+    "member-access": [true, "no-public"],
+    "interface-name": [true, "never-prefix"]
+  }
+}
