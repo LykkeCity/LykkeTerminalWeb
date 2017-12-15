@@ -2,7 +2,11 @@ import * as React from 'react';
 import {Icon} from '../Icon/index';
 import {Table} from '../Table/index';
 
-const Watchlist = () => (
+interface WatchlistProps {
+  instruments?: any[];
+}
+
+const Watchlist: React.SFC<WatchlistProps> = ({instruments = []}) => (
   <Table>
     <thead>
       <tr>
@@ -12,27 +16,21 @@ const Watchlist = () => (
       </tr>
     </thead>
     <tbody>
-      {new Array(7)
-        .fill({
-          a: 16100 * Math.random(),
-          b: 15600 * Math.random(),
-          s: 'BTCUSD'
-        })
-        .map((x: any, idx) => {
-          const dir = idx % 2 === 0;
-          const color = dir ? '#13b72a' : '#ff3e2e';
-          return (
-            <tr style={{color}} key={idx}>
-              <td>
-                <Icon color={color} name={`arrow-${dir ? 'up' : 'down'}`} />&nbsp;{
-                  x.s
-                }
-              </td>
-              <td>{x.b.toFixed(2)}</td>
-              <td>{x.a.toFixed(2)}</td>
-            </tr>
-          );
-        })}
+      {instruments.map(i => {
+        const dir = i.id % 2 === 0;
+        const color = dir ? '#13b72a' : '#ff3e2e';
+        return (
+          <tr style={{color}} key={i.id}>
+            <td>
+              <Icon color={color} name={`arrow-${dir ? 'up' : 'down'}`} />&nbsp;{
+                i.name
+              }
+            </td>
+            <td>{i.bid.toFixed(2)}</td>
+            <td>{i.ask.toFixed(2)}</td>
+          </tr>
+        );
+      })}
     </tbody>
   </Table>
 );
