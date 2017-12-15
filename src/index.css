@@ -1,5 +1,23 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+@import '~react-mosaic-component/react-mosaic-component.css';
+@import 'icons.css';
+
+.mosaic {
+  height: calc(100% - 40px);
+}
+
+.mosaic-root {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.mosaic.mosaic-blueprint-theme {
+  background: rgba(0, 0, 0, 0.8) !important;
+  font-size: 14px;
+}
+
+.mosaic-tile {
+  background: #333;
+  margin: 1px;
 }
