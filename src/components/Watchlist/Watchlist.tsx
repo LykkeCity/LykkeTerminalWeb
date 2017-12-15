@@ -1,12 +1,16 @@
 import * as React from 'react';
-import {Icon} from '../Icon/index';
+import Side from '../../stores/side';
 import {Table} from '../Table/index';
+import {WatchlistItem} from './index';
+
+const mapSideFromAsset = (asset: any) =>
+  asset.id % 2 === 0 ? Side.Up : Side.Down;
 
 interface WatchlistProps {
-  instruments?: any[];
+  assets: any[];
 }
 
-const Watchlist: React.SFC<WatchlistProps> = ({instruments = []}) => (
+const Watchlist: React.SFC<WatchlistProps> = ({assets = []}) => (
   <Table>
     <thead>
       <tr>
@@ -16,21 +20,13 @@ const Watchlist: React.SFC<WatchlistProps> = ({instruments = []}) => (
       </tr>
     </thead>
     <tbody>
-      {instruments.map(i => {
-        const dir = i.id % 2 === 0;
-        const color = dir ? '#13b72a' : '#ff3e2e';
-        return (
-          <tr style={{color}} key={i.id}>
-            <td>
-              <Icon color={color} name={`arrow-${dir ? 'up' : 'down'}`} />&nbsp;{
-                i.name
-              }
-            </td>
-            <td>{i.bid.toFixed(2)}</td>
-            <td>{i.ask.toFixed(2)}</td>
-          </tr>
-        );
-      })}
+      {assets.map(asset => (
+        <WatchlistItem
+          key={asset.id}
+          side={mapSideFromAsset(asset)}
+          {...asset}
+        />
+      ))}
     </tbody>
   </Table>
 );

@@ -19,11 +19,11 @@ class WatchlistStore extends BaseStore {
     super(store);
   }
 
-  createWatchlist = ({id, name, instruments}: any) => ({
+  createWatchlist = ({id, name, assets}: any) => ({
     id,
     name,
     // tslint:disable-next-line:object-literal-sort-keys
-    instruments
+    assets
   });
 
   fetchAll = async () => {

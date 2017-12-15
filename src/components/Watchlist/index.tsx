@@ -1,11 +1,12 @@
-import {inject, observer} from 'mobx-react';
-import {RootStore} from '../../stores/index';
+import {connect} from '../connect';
 import Watchlist from './Watchlist';
 
-const mapStoreToProps = ({watchlistStore: {activeWatchlists}}: RootStore) => ({
-  instruments: activeWatchlists[0] && activeWatchlists[0].instruments
-});
-
-const ConnectedWatchlist = inject(mapStoreToProps)(observer(Watchlist));
+const ConnectedWatchlist = connect(
+  ({watchlistStore: {activeWatchlists: {[0]: watchlist = {}}}}) => ({
+    assets: watchlist.assets
+  }),
+  Watchlist
+);
 
 export {ConnectedWatchlist as Watchlist};
+export {default as WatchlistItem} from './WatchlistItem';
