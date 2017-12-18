@@ -10,6 +10,7 @@ useStrict(true);
 
 const rootStore = new RootStore();
 rootStore.watchlistStore.fetchAll();
+rootStore.tradeListStore.fetchAll();
 
 ReactDOM.render(
   <Provider {...rootStore}>
