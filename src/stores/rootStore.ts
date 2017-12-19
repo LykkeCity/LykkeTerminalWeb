@@ -1,9 +1,15 @@
-import {TradeListApi, WatchlistApi} from '../api/index';
-import {BaseStore, TradeListStore, WatchlistStore} from './index';
+import {OrderBookApi, TradeListApi, WatchlistApi} from '../api/index';
+import {
+  BaseStore,
+  OrderBookStore,
+  TradeListStore,
+  WatchlistStore
+} from './index';
 
 class RootStore {
   readonly watchlistStore: WatchlistStore;
   readonly tradeListStore: TradeListStore;
+  readonly orderBookStore: OrderBookStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -11,6 +17,7 @@ class RootStore {
     if (shouldStartImmediately) {
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi());
       this.tradeListStore = new TradeListStore(this, new TradeListApi());
+      this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
     }
   }
 

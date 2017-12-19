@@ -11,6 +11,7 @@ useStrict(true);
 const rootStore = new RootStore();
 rootStore.watchlistStore.fetchAll();
 rootStore.tradeListStore.fetchAll();
+rootStore.orderBookStore.fetchAll();
 
 ReactDOM.render(
   <Provider {...rootStore}>
