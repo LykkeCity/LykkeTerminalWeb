@@ -8,8 +8,8 @@ import {OrderBook} from './components/OrderBook/index';
 import {OrderList} from './components/OrderList/index';
 import styled, {injectGlobal} from './components/styled';
 import {Tile} from './components/Tile/index';
-import {TradeList} from './components/TradeList/index';
-import {Watchlist} from './components/Watchlist/index';
+import {TradeList} from './components/TradeList';
+import {Watchlist} from './components/Watchlist';
 import './index.css';
 
 const addFont = (name: string) => (f: any) =>
