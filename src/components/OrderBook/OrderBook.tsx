@@ -2,17 +2,8 @@ import * as React from 'react';
 import styled from '../styled';
 import {Table} from '../Table/index';
 
-let quotes: any[] = [];
-
-for (let i = 0; i < 10; i++) {
-  quotes = [
-    ...quotes,
-    {
-      ask: i > 5 ? 0 : (Math.random() * 100).toFixed(),
-      bid: i < 6 ? 0 : (Math.random() * 100).toFixed(),
-      price: (Math.random() * 1000).toFixed(3)
-    }
-  ];
+interface OrdersProps {
+  orders?: any[];
 }
 
 const Volume = styled.div`
@@ -25,7 +16,7 @@ const Volume = styled.div`
   top: 0;
 ` as any;
 
-const OrderBook = ({items = quotes}) => (
+const OrderBook: React.SFC<OrdersProps> = ({orders = []}) => (
   <Table>
     <thead>
       <tr>
@@ -35,7 +26,7 @@ const OrderBook = ({items = quotes}) => (
       </tr>
     </thead>
     <tbody>
-      {items.map((x, idx) => (
+      {orders.map((x, idx) => (
         <tr key={idx}>
           <td
             style={{
