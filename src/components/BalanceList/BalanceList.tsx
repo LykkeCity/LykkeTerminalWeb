@@ -1,25 +1,9 @@
 import * as React from 'react';
-import styled from '../styled';
 import {Table} from '../Table/index';
+import BalanceListInterface from './BalanceListInterface';
+import {BalanceListItem} from './index';
 
-const StyledBalanceNumber = styled.div`
-  color: #8c94a0;
-  span {
-    color: #f5f6f7;
-  }
-`;
-
-const BalanceNumber = ({num}: {num: string}) => {
-  const sepIdx = num.indexOf('.') + 1;
-  return (
-    <StyledBalanceNumber>
-      <span>{num.substr(0, sepIdx)}</span>
-      {num.substr(sepIdx)}
-    </StyledBalanceNumber>
-  );
-};
-
-const BalanceList = () => (
+const BalanceList: React.SFC<BalanceListInterface> = ({balances = []}) => (
   <Table>
     <thead>
       <tr>
@@ -29,23 +13,15 @@ const BalanceList = () => (
       </tr>
     </thead>
     <tbody>
-      {new Array(3)
-        .fill({
-          b: 10000 * Math.random(),
-          pnl: 0 * Math.random(),
-          s: 'BTC'
-        })
-        .map((x: any, idx) => (
-          <tr key={idx}>
-            <td>{x.s}</td>
-            <td>
-              <BalanceNumber num={x.b.toFixed(2)} />
-            </td>
-            <td>
-              <BalanceNumber num={x.pnl.toFixed(2)} />
-            </td>
-          </tr>
-        ))}
+      {balances.map((balanceList: any) => (
+        <BalanceListItem
+          balance={balanceList.balance}
+          id={balanceList.id}
+          key={`balanceitem_${balanceList.id}`}
+          profitAndLoss={balanceList.profitAndLoss}
+          symbol={balanceList.symbol}
+        />
+      ))}
     </tbody>
   </Table>
 );

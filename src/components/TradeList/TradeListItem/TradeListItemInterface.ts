@@ -1,6 +1,6 @@
-import TradeListSide from '../../stores/enums/tradelistSide';
+import TradeListSide from '../../../stores/enums/tradelistSide';
 
-export default interface TradeListItemProps {
+export default interface TradeListItemInterface {
   id: number;
   quantity: number;
   side: TradeListSide;
