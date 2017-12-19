@@ -1,7 +1,13 @@
-import {BalanceListApi, TradeListApi, WatchlistApi} from '../api/index';
+import {
+  BalanceListApi,
+  OrderListApi,
+  TradeListApi,
+  WatchlistApi
+} from '../api/index';
 import {
   BalanceListStore,
   BaseStore,
+  OrderListStore,
   TradeListStore,
   WatchlistStore
 } from './index';
@@ -10,6 +16,7 @@ class RootStore {
   readonly watchlistStore: WatchlistStore;
   readonly tradeListStore: TradeListStore;
   readonly balanceListStore: BalanceListStore;
+  readonly orderListStore: OrderListStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -18,6 +25,7 @@ class RootStore {
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi());
       this.tradeListStore = new TradeListStore(this, new TradeListApi());
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
+      this.orderListStore = new OrderListStore(this, new OrderListApi());
     }
   }
 

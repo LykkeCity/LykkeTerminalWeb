@@ -14,7 +14,8 @@ export class MockBalanceListApi implements BalanceListApi {
         balance: 5000,
         id: 1,
         profitAndLoss: 3,
-        symbol: 'BTC'
+        symbol: 'BTC',
+        test: 123
       },
       {
         balance: 6500,

@@ -1,13 +1,14 @@
 import * as React from 'react';
-import {Icon} from '../Icon/index';
 import {Table} from '../Table/index';
+import {OrderListItem} from './';
+import OrderListInterface from './OrderListInterface';
 
-const OrderList = () => (
+const OrderList: React.SFC<OrderListInterface> = ({orders = []}) => (
   <Table>
     <thead>
       <tr>
         <th>Symbol</th>
-        <th>Cancel</th>
+        <th>Close</th>
         <th>OrderID</th>
         <th>Side</th>
         <th>Volume</th>
@@ -19,38 +20,21 @@ const OrderList = () => (
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>BTCUSD</td>
-        <td>
-          <Icon name="cross" />
-        </td>
-        <td>19554426815747399afcc</td>
-        <td style={{color: '#ffae2c'}}>Buy</td>
-        <td>1</td>
-        <td>7 465.800</td>
-        <td style={{color: '#13b72a'}}>6 565.250</td>
-        <td>23:45 15.01.2018</td>
-        <td>Good till cancel</td>
-        <td>
-          <Icon name="pencil" />
-        </td>
-      </tr>
-      <tr>
-        <td>EURUSD</td>
-        <td>
-          <Icon name="cross" />
-        </td>
-        <td>19554426sd5f4sd54fsd6</td>
-        <td style={{color: '#d070ff'}}>Sell</td>
-        <td>18</td>
-        <td>6 496.321</td>
-        <td style={{color: '#ff3e2e'}}>6 496.322</td>
-        <td>23:45 15.01.2018</td>
-        <td>-</td>
-        <td>
-          <Icon name="pencil" />
-        </td>
-      </tr>
+      {orders.map((order: any) => (
+        <OrderListItem
+          createdDate={order.createdDate}
+          currentPrice={order.currentPrice}
+          currentPriceSide={order.currentPriceSide}
+          expiryDate={order.expiryDate}
+          id={order.id}
+          key={`orderitem_${order.id}`}
+          orderID={order.orderID}
+          openPrice={order.openPrice}
+          side={order.side}
+          symbol={order.symbol}
+          volume={order.volume}
+        />
+      ))}
     </tbody>
   </Table>
 );

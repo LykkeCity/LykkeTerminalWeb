@@ -1,11 +1,11 @@
 import {fontFace, normalize, transitions} from 'polished';
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
-import {BalanceList} from './components/BalanceList/index';
+import {BalanceList} from './components/BalanceList';
 import {Chart} from './components/Chart/index';
 import {Header} from './components/Header/index';
 import {OrderBook} from './components/OrderBook/index';
-import {OrderList} from './components/OrderList/index';
+import {OrderList} from './components/OrderList';
 import styled, {injectGlobal} from './components/styled';
 import {Tile} from './components/Tile/index';
 import {TradeList} from './components/TradeList';

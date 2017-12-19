@@ -14,11 +14,12 @@ class BalanceListStore extends BaseStore {
     super(store);
   }
 
-  createBalanceList = ({balance, id, profitAndLoss, symbol}: any) => ({
+  createBalanceList = ({balance, id, profitAndLoss, symbol, test}: any) => ({
     balance,
     id,
     profitAndLoss,
-    symbol
+    symbol,
+    test
   });
 
   fetchAll = async () => {
