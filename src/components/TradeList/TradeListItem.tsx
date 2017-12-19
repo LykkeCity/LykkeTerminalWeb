@@ -1,14 +1,6 @@
 import * as React from 'react';
 import TradeListSide from '../../stores/enums/tradelistSide';
-
-interface TradeListItemProps {
-  id: number;
-  quantity: number;
-  side: TradeListSide;
-  symbol: string;
-  price: string;
-  timestamp: Date;
-}
+import TradeListItemProps from './TradeListPropsInterface';
 
 const TradelistItem: React.SFC<TradeListItemProps> = ({
   id,
