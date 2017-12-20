@@ -14,10 +14,15 @@
     "react-dom": "^16.2.0",
     "react-mosaic-component": "^1.0.3",
     "react-scripts-ts": "2.8.0",
-    "styled-components": "^2.2.4"
+    "styled-components": "^2.2.4",
+    "whatwg-fetch": "^2.0.3",
+    "wretch": "^1.1.0"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx,js,jsx,json,css,scss}": ["prettier --write", "git add"],
+    "src/**/*.{ts,tsx,js,jsx,json,css,scss}": [
+      "prettier --write",
+      "git add"
+    ],
     "src/**/*.{ts,tsx}": "tslint --fix"
   },
   "scripts": {
