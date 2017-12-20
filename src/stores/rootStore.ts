@@ -1,5 +1,6 @@
 import {
   BalanceListApi,
+  OrderBookApi,
   OrderListApi,
   TradeListApi,
   WatchlistApi
@@ -7,6 +8,7 @@ import {
 import {
   BalanceListStore,
   BaseStore,
+  OrderBookStore,
   OrderListStore,
   TradeListStore,
   WatchlistStore
@@ -15,6 +17,7 @@ import {
 class RootStore {
   readonly watchlistStore: WatchlistStore;
   readonly tradeListStore: TradeListStore;
+  readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
 
@@ -24,6 +27,7 @@ class RootStore {
     if (shouldStartImmediately) {
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi());
       this.tradeListStore = new TradeListStore(this, new TradeListApi());
+      this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderListApi());
     }
