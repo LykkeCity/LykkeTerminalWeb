@@ -1,11 +1,11 @@
 import {connect} from '../connect';
 import OrderList from './OrderList';
 
-export interface OrderListInterface {
+export interface OrderListProps {
   orders?: any[];
 }
 
-export interface OrderListItemInterface {
+export interface OrderListItemProps {
   createdDate: Date;
   currentPrice: number;
   currentPriceSide: number;

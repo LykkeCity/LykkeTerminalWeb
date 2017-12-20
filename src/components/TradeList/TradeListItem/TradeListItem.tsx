@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {TradeListItemInterface} from '../';
+import {TradeListItemProps} from '../';
 import Side from '../../../stores/side';
 
-const TradeListItem: React.SFC<TradeListItemInterface> = ({
+const TradeListItem: React.SFC<TradeListItemProps> = ({
   id,
   side,
   symbol,

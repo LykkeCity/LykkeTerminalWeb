@@ -1,13 +1,13 @@
 import * as React from 'react';
 import Dir from '../../stores/dir';
 import {Table} from '../Table/index';
-import {WatchlistInterface} from './';
+import {WatchlistProps} from './';
 import {WatchlistItem} from './index';
 
 const mapSideFromAsset = (asset: any) =>
   asset.id % 2 === 0 ? Dir.Up : Dir.Down;
 
-const Watchlist: React.SFC<WatchlistInterface> = ({assets = []}) => (
+const Watchlist: React.SFC<WatchlistProps> = ({assets = []}) => (
   <Table>
     <thead>
       <tr>

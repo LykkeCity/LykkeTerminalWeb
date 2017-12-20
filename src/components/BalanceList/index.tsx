@@ -1,11 +1,11 @@
 import {connect} from '../connect';
 import BalanceList from './BalanceList';
 
-export interface BalanceListInterface {
+export interface BalanceListProps {
   balances?: any[];
 }
 
-export interface BalanceListItemInterface {
+export interface BalanceListItemProps {
   balance: number;
   id: number;
   profitAndLoss: number;

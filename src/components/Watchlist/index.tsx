@@ -2,11 +2,11 @@ import Dir from '../../stores/dir';
 import {connect} from '../connect';
 import Watchlist from './Watchlist';
 
-export interface WatchlistInterface {
+export interface WatchlistProps {
   assets: any[];
 }
 
-export interface WatchlistItemInterface {
+export interface WatchlistItemProps {
   id: string;
   name: string;
   bid: number;

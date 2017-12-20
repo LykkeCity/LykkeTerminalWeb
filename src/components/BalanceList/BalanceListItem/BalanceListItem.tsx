@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {BalanceListItemInterface} from '../';
+import {BalanceListItemProps} from '../';
 import BalanceNumber from './BalanceNumber';
 
-const BalanceListItem: React.SFC<BalanceListItemInterface> = ({
+const BalanceListItem: React.SFC<BalanceListItemProps> = ({
   balance,
   id,
   profitAndLoss,

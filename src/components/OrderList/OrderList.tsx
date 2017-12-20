@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {OrderListItem} from './';
-import {OrderListInterface} from './';
+import {OrderListProps} from './';
 
-const OrderList: React.SFC<OrderListInterface> = ({orders = []}) => (
+const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
   <Table>
     <thead>
       <tr>

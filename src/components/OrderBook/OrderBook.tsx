@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
-import {OrderBookInterface} from './';
+import {OrderBookProps} from './';
 
-const OrderBook: React.SFC<OrderBookInterface> = ({orders = []}) => (
+const OrderBook: React.SFC<OrderBookProps> = ({orders = []}) => (
   <Table>
     <thead>
       <tr>

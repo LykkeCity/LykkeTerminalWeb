@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {BalanceListItem} from './';
-import {BalanceListInterface} from './';
+import {BalanceListProps} from './';
 
-const BalanceList: React.SFC<BalanceListInterface> = ({balances = []}) => (
+const BalanceList: React.SFC<BalanceListProps> = ({balances = []}) => (
   <Table>
     <thead>
       <tr>

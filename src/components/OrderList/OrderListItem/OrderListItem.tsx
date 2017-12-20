@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {OrderListItemInterface} from '../';
+import {OrderListItemProps} from '../';
 import Dir from '../../../stores/dir';
 import Side from '../../../stores/side';
 import {Icon} from '../../Icon/index';
 
-const OrderListItem: React.SFC<OrderListItemInterface> = ({
+const OrderListItem: React.SFC<OrderListItemProps> = ({
   createdDate,
   currentPrice,
   currentPriceSide,

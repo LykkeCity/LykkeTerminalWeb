@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {TradeListItem} from './';
-import {TradeListInterface} from './';
+import {TradeListProps} from './';
 
-const TradeList: React.SFC<TradeListInterface> = ({trades = []}) => (
+const TradeList: React.SFC<TradeListProps> = ({trades = []}) => (
   <Table>
     <thead>
       <tr>

@@ -1,11 +1,11 @@
 import {connect} from '../connect';
 import TradeList from './TradeList';
 
-export interface TradeListInterface {
+export interface TradeListProps {
   trades?: any[];
 }
 
-export interface TradeListItemInterface {
+export interface TradeListItemProps {
   id: number;
   side: string;
   symbol: string;

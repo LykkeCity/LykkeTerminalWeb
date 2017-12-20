@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {WatchlistItemInterface} from '../';
+import {WatchlistItemProps} from '../';
 import Dir from '../../../stores/dir';
 import {Icon} from '../../Icon/index';
 
-const WatchlistItem: React.SFC<WatchlistItemInterface> = ({
+const WatchlistItem: React.SFC<WatchlistItemProps> = ({
   id,
   name,
   bid,
