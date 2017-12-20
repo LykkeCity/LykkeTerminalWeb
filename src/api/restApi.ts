@@ -5,44 +5,28 @@ export class RestApi {
 
   protected readonly apiWretch = wretch(this.baseApiUrl);
 
-  protected get = this._get();
-  protected post = this._post();
-  protected put = this._put();
-  protected deleteRequest = this._delete();
-
-  private _get() {
-    return (url: string) =>
-      this.apiWretch
-        .url(url)
-        .get()
-        .text();
-  }
-
-  private _post() {
-    return (url: string, body: any) =>
-      this.apiWretch
-        .url(url)
-        .json(body)
-        .post()
-        .json();
-  }
-
-  private _put() {
-    return (url: string, body: any) =>
-      this.apiWretch
-        .url(url)
-        .json(body)
-        .put()
-        .json();
-  }
-
-  private _delete() {
-    return (url: string) =>
-      this.apiWretch
-        .url(url)
-        .delete()
-        .res();
-  }
+  protected get = (url: string) =>
+    this.apiWretch
+      .url(url)
+      .get()
+      .json();
+  protected post = (url: string, body: any) =>
+    this.apiWretch
+      .url(url)
+      .json(body)
+      .post()
+      .json();
+  protected put = (url: string, body: any) =>
+    this.apiWretch
+      .url(url)
+      .json(body)
+      .put()
+      .json();
+  protected delete = (url: string) =>
+    this.apiWretch
+      .url(url)
+      .delete()
+      .res();
 }
 
 export default RestApi;
