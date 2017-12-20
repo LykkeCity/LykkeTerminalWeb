@@ -27,8 +27,8 @@ const OrderListItem: React.SFC<OrderListInterface> = ({
       <td>{orderID}</td>
       <td style={{color: colorSide}}>{side}</td>
       <td>{volume}</td>
-      <td>{openPrice}</td>
-      <td style={{color: colorOpenPrice}}>{currentPrice}</td>
+      <td>{openPrice.toFixed(3)}</td>
+      <td style={{color: colorOpenPrice}}>{currentPrice.toFixed(3)}</td>
       <td>{createdDate}</td>
       <td>{expiryDate}</td>
       <td>

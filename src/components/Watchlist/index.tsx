@@ -9,4 +9,4 @@ const ConnectedWatchlist = connect(
 );
 
 export {ConnectedWatchlist as Watchlist};
-export {default as WatchlistItem} from './WatchlistItem';
+export {default as WatchlistItem} from './WatchlistItem/WatchlistItem';

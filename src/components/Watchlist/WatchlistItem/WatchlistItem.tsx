@@ -1,16 +1,9 @@
 import * as React from 'react';
-import Side from '../../stores/enums/side';
-import {Icon} from '../Icon/index';
+import Side from '../../../stores/enums/side';
+import {Icon} from '../../Icon/index';
+import WatchlistItemInterface from './WatchlistItemInterface';
 
-interface WatchlistItemProps {
-  id: string;
-  name: string;
-  bid: number;
-  ask: number;
-  side: Side;
-}
-
-const WatchlistItem: React.SFC<WatchlistItemProps> = ({
+const WatchlistItem: React.SFC<WatchlistItemInterface> = ({
   id,
   name,
   bid,

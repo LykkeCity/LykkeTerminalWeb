@@ -20,8 +20,8 @@ class OrderListStore extends BaseStore {
     currentPriceSide,
     expiryDate,
     id,
-    orderID,
     openPrice,
+    orderID,
     side,
     symbol,
     volume
@@ -31,8 +31,8 @@ class OrderListStore extends BaseStore {
     currentPriceSide,
     expiryDate,
     id,
-    orderID,
     openPrice,
+    orderID,
     side,
     symbol,
     volume
