@@ -1,8 +1,8 @@
 import * as React from 'react';
-import TradeListSide from '../../stores/enums/tradelistSide';
-import TradeListItemProps from './TradeListPropsInterface';
+import Side from '../../../stores/enums/side';
+import TradeListItemInterface from './TradeListItemInterface';
 
-const TradelistItem: React.SFC<TradeListItemProps> = ({
+const TradeListItem: React.SFC<TradeListItemInterface> = ({
   id,
   side,
   symbol,
@@ -10,7 +10,7 @@ const TradelistItem: React.SFC<TradeListItemProps> = ({
   timestamp,
   price
 }) => {
-  const color = side === TradeListSide.Buy ? '#fb8f01' : '#d070ff';
+  const color = side === Side.Buy ? '#fb8f01' : '#d070ff';
 
   return (
     <tr key={id}>
@@ -23,4 +23,4 @@ const TradelistItem: React.SFC<TradeListItemProps> = ({
   );
 };
 
-export default TradelistItem;
+export default TradeListItem;

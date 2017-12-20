@@ -1,6 +1,8 @@
 enum Side {
   Up,
-  Down
+  Down,
+  Buy = 'Buy',
+  Sell = 'Sell'
 }
 
 export default Side;

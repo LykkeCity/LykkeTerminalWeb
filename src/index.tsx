@@ -12,6 +12,8 @@ const rootStore = new RootStore();
 rootStore.watchlistStore.fetchAll();
 rootStore.tradeListStore.fetchAll();
 rootStore.orderBookStore.fetchAll();
+rootStore.balanceListStore.fetchAll();
+rootStore.orderListStore.fetchAll();
 
 ReactDOM.render(
   <Provider {...rootStore}>

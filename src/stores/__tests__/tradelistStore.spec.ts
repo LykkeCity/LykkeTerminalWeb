@@ -44,12 +44,13 @@ describe('tradeList store', () => {
   describe('trade item', () => {
     it('should contain the following fields', async () => {
       await tradeListStore.fetchAll();
-      expect(tradeListStore.allTradeLists[0].id).toBeDefined();
-      expect(tradeListStore.allTradeLists[0].side).toBeDefined();
-      expect(tradeListStore.allTradeLists[0].symbol).toBeDefined();
-      expect(tradeListStore.allTradeLists[0].quantity).toBeDefined();
-      expect(tradeListStore.allTradeLists[0].timestamp).toBeDefined();
-      expect(tradeListStore.allTradeLists[0].price).toBeDefined();
+      const trade = tradeListStore.allTradeLists[0];
+      expect(trade.id).toBeDefined();
+      expect(trade.side).toBeDefined();
+      expect(trade.symbol).toBeDefined();
+      expect(trade.quantity).toBeDefined();
+      expect(trade.timestamp).toBeDefined();
+      expect(trade.price).toBeDefined();
     });
   });
 });

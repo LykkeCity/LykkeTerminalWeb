@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Side from '../../stores/side';
+import Side from '../../stores/enums/side';
 import {Icon} from '../Icon/index';
 
 interface WatchlistItemProps {

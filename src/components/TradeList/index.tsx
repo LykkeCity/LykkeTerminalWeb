@@ -9,4 +9,4 @@ const ConnectedTradeList = connect(
 );
 
 export {ConnectedTradeList as TradeList};
-export {default as TradeListItem} from './TradeListItem';
+export {default as TradeListItem} from './TradeListItem/TradeListItem';
