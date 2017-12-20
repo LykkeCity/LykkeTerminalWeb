@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Side from '../../../stores/enums/side';
-import TradeListItemInterface from './TradeListItemInterface';
+import {TradeListItemInterface} from '../';
+import Side from '../../../stores/side';
 
 const TradeListItem: React.SFC<TradeListItemInterface> = ({
   id,

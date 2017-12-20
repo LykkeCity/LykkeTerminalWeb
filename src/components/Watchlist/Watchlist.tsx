@@ -1,11 +1,11 @@
 import * as React from 'react';
-import Side from '../../stores/enums/side';
+import Dir from '../../stores/dir';
 import {Table} from '../Table/index';
+import {WatchlistInterface} from './';
 import {WatchlistItem} from './index';
-import WatchlistInterface from './WathclistInterface';
 
 const mapSideFromAsset = (asset: any) =>
-  asset.id % 2 === 0 ? Side.Up : Side.Down;
+  asset.id % 2 === 0 ? Dir.Up : Dir.Down;
 
 const Watchlist: React.SFC<WatchlistInterface> = ({assets = []}) => (
   <Table>

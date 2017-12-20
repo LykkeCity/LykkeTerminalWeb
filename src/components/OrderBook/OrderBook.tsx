@@ -14,13 +14,7 @@ const OrderBook: React.SFC<OrderBookInterface> = ({orders = []}) => (
     </thead>
     <tbody>
       {orders.map((order: any) => (
-        <OrderBookItem
-          ask={order.ask}
-          bid={order.bid}
-          id={order.id}
-          key={`orderitem_${order.id}`}
-          price={order.price}
-        />
+        <OrderBookItem key={`orderitem_${order.id}`} {...order} />
       ))}
     </tbody>
   </Table>

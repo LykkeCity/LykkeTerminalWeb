@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {BalanceListItem} from './';
-import BalanceListInterface from './BalanceListInterface';
+import {BalanceListInterface} from './';
 
 const BalanceList: React.SFC<BalanceListInterface> = ({balances = []}) => (
   <Table>
@@ -15,11 +15,8 @@ const BalanceList: React.SFC<BalanceListInterface> = ({balances = []}) => (
     <tbody>
       {balances.map((balanceList: any) => (
         <BalanceListItem
-          balance={balanceList.balance}
-          id={balanceList.id}
           key={`balanceitem_${balanceList.id}`}
-          profitAndLoss={balanceList.profitAndLoss}
-          symbol={balanceList.symbol}
+          {...balanceList}
         />
       ))}
     </tbody>

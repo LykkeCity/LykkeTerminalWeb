@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {TradeListItem} from './';
-import TradeListInterface from './TradeListInterface';
+import {TradeListInterface} from './';
 
 const TradeList: React.SFC<TradeListInterface> = ({trades = []}) => (
   <Table>
@@ -16,15 +16,7 @@ const TradeList: React.SFC<TradeListInterface> = ({trades = []}) => (
     </thead>
     <tbody>
       {trades.map((trade: any) => (
-        <TradeListItem
-          key={`tradeitem_${trade.id}`}
-          id={trade.id}
-          side={trade.side}
-          symbol={trade.symbol}
-          quantity={trade.quantity}
-          timestamp={trade.timestamp}
-          price={trade.price}
-        />
+        <TradeListItem key={`tradeitem_${trade.id}`} {...trade} />
       ))}
     </tbody>
   </Table>
