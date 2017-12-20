@@ -1,5 +1,3 @@
-export default interface OrderBookItemProps {
-  ask: number;
-  bid: number;
-  price: number;
+export default interface OrderBookInterface {
+  orders?: any[];
 };

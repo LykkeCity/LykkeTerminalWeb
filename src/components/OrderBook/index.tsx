@@ -9,3 +9,4 @@ const ConnectedOrderBook = connect(
 );
 
 export {ConnectedOrderBook as OrderBook};
+export {default as OrderBookItem} from './OrderBookItem/OrderBookItem';
