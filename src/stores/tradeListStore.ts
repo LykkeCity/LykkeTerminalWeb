@@ -14,7 +14,7 @@ class TradeListStore extends BaseStore {
     super(store);
   }
 
-  createTradelist = ({id, price, side, symbol, timestamp, quantity}: any) => ({
+  createTradeList = ({id, price, side, symbol, timestamp, quantity}: any) => ({
     id,
     price,
     quantity,
@@ -26,7 +26,7 @@ class TradeListStore extends BaseStore {
   fetchAll = async () => {
     const tradeListDto = await this.api.fetchAll();
     runInAction(() => {
-      this.tradeLists = tradeListDto.map(this.createTradelist);
+      this.tradeLists = tradeListDto.map(this.createTradeList);
     });
   };
 
