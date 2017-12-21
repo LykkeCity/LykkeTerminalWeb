@@ -11,7 +11,6 @@ export interface BalanceListItemProps {
   profitAndLoss: number;
   symbol: string;
 }
-
 const ConnectedBalanceList = connect(
   ({balanceListStore: {allBalanceLists: balances}}) => ({
     balances
