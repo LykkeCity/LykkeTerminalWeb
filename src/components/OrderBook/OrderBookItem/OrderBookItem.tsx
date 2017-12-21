@@ -1,6 +1,6 @@
 import * as React from 'react';
+import {OrderBookItemInterface} from '../';
 import styled from '../../styled';
-import OrderBookItemInterface from './OrderBookItemInterface';
 
 const Volume = styled.div`
   position: absolute;

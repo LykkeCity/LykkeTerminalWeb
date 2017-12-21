@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
-import OrderBookInterface from './OrderBookPropsInterface';
+import {OrderBookInterface} from './';
 
 const OrderBook: React.SFC<OrderBookInterface> = ({orders = []}) => (
   <Table>

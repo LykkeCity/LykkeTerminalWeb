@@ -13,7 +13,7 @@ export class MockOrderBookApi implements OrderBookApi {
 
 export default OrderBookApi;
 
-function generateOrders(): any[] {
+const generateOrders = (): any[] => {
   let quotes: any[] = [];
 
   for (let i = 0; i < 10; i++) {
@@ -30,4 +30,4 @@ function generateOrders(): any[] {
   }
 
   return quotes;
-}
+};
