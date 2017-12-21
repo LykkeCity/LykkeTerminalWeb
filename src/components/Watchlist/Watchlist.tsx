@@ -1,8 +1,13 @@
 import * as React from 'react';
-import {Icon} from '../Icon/index';
+import Dir from '../../stores/dir';
 import {Table} from '../Table/index';
+import {WatchlistProps} from './';
+import {WatchlistItem} from './index';
 
-const Watchlist = () => (
+const mapSideFromAsset = (asset: any) =>
+  asset.id % 2 === 0 ? Dir.Up : Dir.Down;
+
+const Watchlist: React.SFC<WatchlistProps> = ({assets = []}) => (
   <Table>
     <thead>
       <tr>
@@ -12,27 +17,13 @@ const Watchlist = () => (
       </tr>
     </thead>
     <tbody>
-      {new Array(7)
-        .fill({
-          a: 16100 * Math.random(),
-          b: 15600 * Math.random(),
-          s: 'BTCUSD'
-        })
-        .map((x: any, idx) => {
-          const dir = idx % 2 === 0;
-          const color = dir ? '#13b72a' : '#ff3e2e';
-          return (
-            <tr style={{color}} key={idx}>
-              <td>
-                <Icon color={color} name={`arrow-${dir ? 'up' : 'down'}`} />&nbsp;{
-                  x.s
-                }
-              </td>
-              <td>{x.b.toFixed(2)}</td>
-              <td>{x.a.toFixed(2)}</td>
-            </tr>
-          );
-        })}
+      {assets.map(asset => (
+        <WatchlistItem
+          key={asset.id}
+          side={mapSideFromAsset(asset)}
+          {...asset}
+        />
+      ))}
     </tbody>
   </Table>
 );
