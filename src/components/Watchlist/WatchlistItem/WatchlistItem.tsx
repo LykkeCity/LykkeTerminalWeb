@@ -1,16 +1,16 @@
 import * as React from 'react';
-import Side from '../../../stores/enums/side';
+import {WatchlistItemProps} from '../';
+import Dir from '../../../stores/dir';
 import {Icon} from '../../Icon/index';
-import WatchlistItemInterface from './WatchlistItemInterface';
 
-const WatchlistItem: React.SFC<WatchlistItemInterface> = ({
+const WatchlistItem: React.SFC<WatchlistItemProps> = ({
   id,
   name,
   bid,
   ask,
   side
 }) => {
-  const color = side === Side.Up ? '#13b72a' : '#ff3e2e';
+  const color = side === Dir.Up ? '#13b72a' : '#ff3e2e';
   return (
     <tr style={{color}} key={id}>
       <td>

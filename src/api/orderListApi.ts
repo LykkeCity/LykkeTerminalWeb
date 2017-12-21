@@ -17,7 +17,7 @@ export class MockOrderListApi implements OrderListApi {
         expiryDate: 'till end',
         id: 1,
         openPrice: 4850.0,
-        orderID: 12389418351364984,
+        orderId: 12389418351364984,
         side: 'Buy',
         symbol: 'BTCUSD',
         volume: 1
@@ -29,7 +29,7 @@ export class MockOrderListApi implements OrderListApi {
         expiryDate: 'till end',
         id: 2,
         openPrice: 4850.0,
-        orderID: 123894183511258965,
+        orderId: 123894183511258965,
         side: 'Sell',
         symbol: 'EURUSD',
         volume: 1

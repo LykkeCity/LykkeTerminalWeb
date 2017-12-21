@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
-import OrderBookInterface from './OrderBookPropsInterface';
+import {OrderBookProps} from './';
 
-const OrderBook: React.SFC<OrderBookInterface> = ({orders = []}) => (
+const OrderBook: React.SFC<OrderBookProps> = ({orders = []}) => (
   <Table>
     <thead>
       <tr>
@@ -14,13 +14,7 @@ const OrderBook: React.SFC<OrderBookInterface> = ({orders = []}) => (
     </thead>
     <tbody>
       {orders.map((order: any) => (
-        <OrderBookItem
-          ask={order.ask}
-          bid={order.bid}
-          id={order.id}
-          key={`orderitem_${order.id}`}
-          price={order.price}
-        />
+        <OrderBookItem key={`orderitem_${order.id}`} {...order} />
       ))}
     </tbody>
   </Table>

@@ -1,22 +1,23 @@
 import * as React from 'react';
-import Side from '../../../stores/enums/side';
+import {OrderListItemProps} from '../';
+import Dir from '../../../stores/dir';
+import Side from '../../../stores/side';
 import {Icon} from '../../Icon/index';
-import OrderListInterface from './OrderListItemInterface';
 
-const OrderListItem: React.SFC<OrderListInterface> = ({
+const OrderListItem: React.SFC<OrderListItemProps> = ({
   createdDate,
   currentPrice,
   currentPriceSide,
   expiryDate,
   id,
-  orderID,
+  orderId,
   openPrice,
   side,
   symbol,
   volume
 }) => {
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
-  const colorOpenPrice = currentPriceSide === Side.Up ? '#13b72a' : '#ff3e2e';
+  const colorOpenPrice = currentPriceSide === Dir.Up ? '#13b72a' : '#ff3e2e';
 
   return (
     <tr key={id}>
@@ -24,7 +25,7 @@ const OrderListItem: React.SFC<OrderListInterface> = ({
       <td>
         <Icon name="cross" />
       </td>
-      <td>{orderID}</td>
+      <td>{orderId}</td>
       <td style={{color: colorSide}}>{side}</td>
       <td>{volume}</td>
       <td>{openPrice.toFixed(3)}</td>
