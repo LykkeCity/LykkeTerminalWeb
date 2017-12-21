@@ -17,7 +17,7 @@ rootStore.balanceListStore.fetchAll();
 rootStore.orderListStore.fetchAll();
 
 const restAuthApi = new RestAuthApi();
-restAuthApi.fetchBearerToken('/Auth').then(res => {
+restAuthApi.fetchBearerToken('/client/auth').then(res => {
   localStorage.setItem('token', res.Result.Token);
 });
 

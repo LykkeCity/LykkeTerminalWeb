@@ -1,9 +1,11 @@
+import RestApi from './restApi';
+
 export interface BalanceListApi {
-  fetchAll: () => Promise<any[]>;
+  fetchAll: () => Promise<{[key: string]: any}>;
 }
 
-export class RestBalanceListApi implements BalanceListApi {
-  fetchAll = () => Promise.resolve([]);
+export class RestBalanceListApi extends RestApi implements BalanceListApi {
+  fetchAll = () => this.get('/wallets/balances');
 }
 
 // tslint:disable-next-line:max-classes-per-file

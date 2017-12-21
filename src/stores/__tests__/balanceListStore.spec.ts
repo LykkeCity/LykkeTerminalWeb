@@ -1,4 +1,4 @@
-import {MockBalanceListApi} from '../../api/balanceListApi';
+import {RestBalanceListApi} from '../../api/balanceListApi';
 import {BalanceListStore, RootStore} from '../index';
 
 describe('balanceList store', () => {
@@ -7,7 +7,7 @@ describe('balanceList store', () => {
   beforeEach(() => {
     balanceListStore = new BalanceListStore(
       new RootStore(false),
-      new MockBalanceListApi()
+      new RestBalanceListApi()
     );
   });
 

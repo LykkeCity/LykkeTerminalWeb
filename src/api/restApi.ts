@@ -1,10 +1,16 @@
 import wretch from 'wretch';
+import {config} from '../config';
 
 export class RestApi {
-  protected readonly baseApiUrl = 'google.com';
+  protected readonly baseApiUrl = config.auth.apiUrls.app;
 
-  protected readonly apiWretch = wretch(this.baseApiUrl);
-  protected readonly authWretch = wretch('https://api-dev.lykkex.net/api');
+  protected readonly apiWretch = wretch()
+    .url(this.baseApiUrl)
+    .auth(`Bearer ${localStorage.getItem('token')}`);
+
+  protected readonly authWretch = wretch()
+    .url(this.baseApiUrl)
+    .auth(`Bearer ${localStorage.getItem('token')}`);
 
   protected get = (url: string) =>
     this.apiWretch
