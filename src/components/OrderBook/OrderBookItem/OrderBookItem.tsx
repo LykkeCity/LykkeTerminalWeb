@@ -1,6 +1,6 @@
 import * as React from 'react';
+import {OrderBookItemProps} from '../';
 import styled from '../../styled';
-import OrderBookItemInterface from './OrderBookItemInterface';
 
 const Volume = styled.div`
   position: absolute;
@@ -12,7 +12,7 @@ const Volume = styled.div`
   top: 0;
 ` as any;
 
-const OrderBookItem: React.SFC<OrderBookItemInterface> = ({
+const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   ask,
   bid,
   id,
