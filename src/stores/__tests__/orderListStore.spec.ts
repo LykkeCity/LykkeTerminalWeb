@@ -50,7 +50,7 @@ describe('orderList store', () => {
       expect(order.currentPriceSide).toBeDefined();
       expect(order.expiryDate).toBeDefined();
       expect(order.id).toBeDefined();
-      expect(order.orderID).toBeDefined();
+      expect(order.orderId).toBeDefined();
       expect(order.openPrice).toBeDefined();
       expect(order.side).toBeDefined();
       expect(order.symbol).toBeDefined();
