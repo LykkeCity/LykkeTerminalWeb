@@ -1,60 +1,39 @@
-import autobahn = require('autobahn');
+import autobahn from 'autobahn';
 
 export class WampApi {
   session: any;
 
-  constructor(url: string, realm: string) {
-    this.connect(url, realm);
-  }
+  connect = (url: any, realm: any) => {
+    return new Promise((resolve: any) => {
+      if (this.session) {
+        resolve(this.session);
+      }
+
+      const connection = new autobahn.Connection({url, realm});
+
+      connection.onopen = (session: any) => {
+        this.session = session;
+        resolve(session);
+      };
+
+      connection.open();
+    });
+  };
 
   subscribe = (topic: string, cb: any) => {
-    if (!this.session) {
-      setTimeout(() => {
-        this.subscribe(topic, cb);
-      }, 100);
-    } else {
-      this.session.subscribe(topic, cb);
-    }
+    this.session.subscribe(topic, cb);
   };
 
   publish = (topic: string, event: [any]) => {
-    if (!this.session) {
-      setTimeout(() => {
-        this.publish(topic, event);
-      }, 100);
-    } else {
-      this.session.publish(topic, event);
-    }
+    this.session.publish(topic, event);
   };
 
   register = (topic: string, procedure: any) => {
-    if (!this.session) {
-      setTimeout(() => {
-        this.register(topic, procedure);
-      }, 100);
-    } else {
-      this.session.register(topic, procedure);
-    }
+    this.session.register(topic, procedure);
   };
 
   call = (topic: string, procedure: any) => {
-    if (!this.session) {
-      setTimeout(() => {
-        this.call(topic, procedure);
-      }, 100);
-    } else {
-      this.session.call(topic, procedure);
-    }
-  };
-
-  private connect = (url: string, realm: string) => {
-    const connection = new autobahn.Connection({url, realm});
-
-    connection.onopen = (session: any) => {
-      this.session = session;
-    };
-
-    connection.open();
+    this.session.call(topic, procedure);
   };
 }
 
