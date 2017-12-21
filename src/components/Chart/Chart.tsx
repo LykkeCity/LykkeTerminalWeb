@@ -5,7 +5,7 @@ import * as React from 'react';
 class Chart extends React.Component {
   componentDidMount() {
     const tv = (window as any).TradingView;
-    tv &&
+    if (tv && tv.onready) {
       tv.onready(() => {
         // tslint:disable-next-line:no-unused-expression
         new tv.widget({
@@ -24,6 +24,7 @@ class Chart extends React.Component {
             'http://localhost:5000/charting_library/static/style.css'
         });
       });
+    }
   }
 
   render() {
