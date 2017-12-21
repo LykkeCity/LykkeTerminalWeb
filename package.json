@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "autobahn": "^17.5.2",
+    "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
     "grid-styled": "^2.0.0-11",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
@@ -32,6 +32,7 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/autobahn": "^0.9.38",
     "@types/jest": "^21.1.8",
     "@types/node": "^8.0.54",
     "@types/prop-types": "^15.5.2",
