@@ -4,3 +4,4 @@ export {MockOrderBookApi as OrderBookApi} from './orderBookApi';
 export {MockBalanceListApi as BalanceListApi} from './balanceListApi';
 export {MockOrderListApi as OrderListApi} from './orderListApi';
 export {default as RestApi} from './restApi';
+export {default as RestAuthApi} from './authApi';

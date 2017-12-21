@@ -4,6 +4,7 @@ export class RestApi {
   protected readonly baseApiUrl = 'google.com';
 
   protected readonly apiWretch = wretch(this.baseApiUrl);
+  protected readonly authWretch = wretch('https://api-dev.lykkex.net/api');
 
   protected get = (url: string) =>
     this.apiWretch
