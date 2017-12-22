@@ -9,7 +9,7 @@ export class RestBalanceListApi extends RestApi implements BalanceListApi {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export class MockBalanceListApi implements BalanceListApi {
+export class MockBalanceListApi extends RestApi implements BalanceListApi {
   fetchAll = () =>
     Promise.resolve<any[]>([
       {

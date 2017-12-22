@@ -5,3 +5,5 @@ export {default as TradeListStore} from './tradeListStore';
 export {default as BalanceListStore} from './balanceListStore';
 export {default as OrderListStore} from './orderListStore';
 export {default as OrderBookStore} from './orderBookStore';
+export {default as AssetStore} from './assetStore';
+export {default as UiStore} from './uiStore';

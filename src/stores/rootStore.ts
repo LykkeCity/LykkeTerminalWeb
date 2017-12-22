@@ -1,4 +1,5 @@
 import {
+  AssetsApi,
   BalanceListApi,
   OrderBookApi,
   OrderListApi,
@@ -6,6 +7,7 @@ import {
   WatchlistApi
 } from '../api/index';
 import {
+  AssetStore,
   BalanceListStore,
   BaseStore,
   OrderBookStore,
@@ -13,6 +15,7 @@ import {
   TradeListStore,
   WatchlistStore
 } from './index';
+import UiStore from './uiStore';
 
 class RootStore {
   readonly watchlistStore: WatchlistStore;
@@ -20,6 +23,8 @@ class RootStore {
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
+  readonly assetStore: AssetStore;
+  readonly uiStore: UiStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -30,6 +35,8 @@ class RootStore {
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderListApi());
+      this.assetStore = new AssetStore(this, new AssetsApi());
+      this.uiStore = new UiStore();
     }
   }
 

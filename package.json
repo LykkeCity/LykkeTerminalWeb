@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-select": "^1.0.60",
     "grid-styled": "^2.0.0-11",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
@@ -14,6 +15,7 @@
     "react-dom": "^16.2.0",
     "react-mosaic-component": "^1.0.3",
     "react-scripts-ts": "2.8.0",
+    "react-select": "^1.1.0",
     "styled-components": "^2.2.4",
     "whatwg-fetch": "^2.0.3",
     "wretch": "^1.1.0"
@@ -33,11 +35,11 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/prop-types": "^15.5.2",
-    "@types/react-dnd": "^2.0.34",
     "@types/jest": "^21.1.8",
     "@types/node": "^8.0.54",
+    "@types/prop-types": "^15.5.2",
     "@types/react": "^16.0.27",
+    "@types/react-dnd": "^2.0.34",
     "@types/react-dom": "^16.0.3",
     "tslint-config-prettier": "^1.6.0",
     "typescript-styled-plugin": "^0.2.2"
