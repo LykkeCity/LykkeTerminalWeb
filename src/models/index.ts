@@ -1,2 +1,3 @@
 export {default as AssetModel} from './assetModel';
-export {default as AssetCategory} from './assetCategory';
+export {default as AssetCategoryModel} from './assetCategoryModel';
+export {default as InstrumentModel} from './instrumentModel';

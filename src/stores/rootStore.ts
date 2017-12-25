@@ -7,11 +7,11 @@ import {
   WatchlistApi
 } from '../api/index';
 import {
-  AssetStore,
   BalanceListStore,
   BaseStore,
   OrderBookStore,
   OrderListStore,
+  ReferenceStore,
   TradeListStore,
   WatchlistStore
 } from './index';
@@ -22,7 +22,7 @@ class RootStore {
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
-  readonly assetStore: AssetStore;
+  readonly assetStore: ReferenceStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -33,7 +33,7 @@ class RootStore {
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderListApi());
-      this.assetStore = new AssetStore(this, new RestApi());
+      this.assetStore = new ReferenceStore(this, new RestApi());
     }
   }
 

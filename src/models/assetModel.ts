@@ -1,10 +1,10 @@
 import {extendObservable} from 'mobx';
-import {AssetCategory} from './index';
+import {AssetCategoryModel} from './index';
 
 class AssetModel {
   id: string;
   name: string;
-  category: AssetCategory;
+  category: AssetCategoryModel;
   accuracy: number;
 
   isBase?: boolean = false;
