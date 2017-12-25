@@ -8,16 +8,14 @@ import {RootStore} from './stores/index';
 
 useStrict(true);
 
-const rootStore = new RootStore();
-rootStore.watchlistStore.fetchAll();
-rootStore.tradeListStore.fetchAll();
-rootStore.orderBookStore.fetchAll();
-rootStore.balanceListStore.fetchAll();
-rootStore.orderListStore.fetchAll();
+const render = (AppComponent: any) => {
+  ReactDOM.render(
+    <Provider {...rootStore}>
+      <AppComponent />
+    </Provider>,
+    document.getElementById('root') as HTMLElement
+  );
+};
 
-ReactDOM.render(
-  <Provider {...rootStore}>
-    <App />
-  </Provider>,
-  document.getElementById('root') as HTMLElement
-);
+const rootStore = new RootStore();
+rootStore.start().then(() => render(App));
