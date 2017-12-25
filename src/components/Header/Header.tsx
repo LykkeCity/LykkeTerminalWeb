@@ -1,6 +1,10 @@
 import {rem} from 'polished';
 import * as React from 'react';
+<<<<<<< HEAD
 import {BalanceInfo} from '../BalanceInfo';
+=======
+import {InstrumentPicker} from '../InstrumentPicker/index';
+>>>>>>> cb8cde3... Basic implementation for the instrument picker
 import {Link} from '../Link/index';
 import styled from '../styled';
 import {Heading} from '../Typography/index';
@@ -8,10 +12,10 @@ import {Heading} from '../Typography/index';
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
 
-const HeaderItem = styled.div`
+const HeaderItem = styled(Box)`
   border-right: solid 1px rgba(0, 0, 0, 0.2);
   font-size: ${rem(14)};
-  padding: ${rem('5px')};
+  padding: ${rem(20)} ${rem(10)};
 `;
 
 const HeaderFlex = styled(Flex)`
@@ -20,19 +24,17 @@ const HeaderFlex = styled(Flex)`
   height: 40px;
 `;
 
-const LogoBox = styled(Box)`
-  padding: 0 ${rem(15)};
-  border-right: solid 1px rgba(0, 0, 0, 0.2);
-`;
-
 const Header = () => (
-  <HeaderFlex justify="space-between" align="center" is="header">
-    <LogoBox>
-      <Flex align="center" is="a">
+  <HeaderFlex justify="stretch" align="center" is="header">
+    <HeaderItem is="a">
+      <Flex align="center">
         <img src={`${process.env.PUBLIC_URL}/logo.svg`} width="32" alt="logo" />
         <Heading>Lykke</Heading>
       </Flex>
-    </LogoBox>
+    </HeaderItem>
+    <HeaderItem>
+      <InstrumentPicker value="BTCUSD" />
+    </HeaderItem>
 
     <Box is="menu">
       <Flex align="center">
