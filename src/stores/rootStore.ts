@@ -2,10 +2,12 @@ import {
   BalanceListApi,
   OrderBookApi,
   OrderListApi,
+  RestApi,
   TradeListApi,
   WatchlistApi
 } from '../api/index';
 import {
+  AssetStore,
   BalanceListStore,
   BaseStore,
   OrderBookStore,
@@ -20,6 +22,7 @@ class RootStore {
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
+  readonly assetStore: AssetStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -30,6 +33,7 @@ class RootStore {
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderListApi());
+      this.assetStore = new AssetStore(this, new RestApi());
     }
   }
 

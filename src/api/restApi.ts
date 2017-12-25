@@ -1,29 +1,30 @@
 import wretch from 'wretch';
 
 export class RestApi {
-  protected readonly baseApiUrl = 'google.com';
+  protected readonly wretcher = wretch(process.env.REACT_APP_API_URL);
 
-  protected readonly apiWretch = wretch(this.baseApiUrl);
-
-  protected get = (url: string) =>
-    this.apiWretch
+  get = (url: string) =>
+    this.wretcher
       .url(url)
       .get()
       .json();
-  protected post = (url: string, body: any) =>
-    this.apiWretch
+
+  post = (url: string, body: any) =>
+    this.wretcher
       .url(url)
       .json(body)
       .post()
       .json();
-  protected put = (url: string, body: any) =>
-    this.apiWretch
+
+  put = (url: string, body: any) =>
+    this.wretcher
       .url(url)
       .json(body)
       .put()
       .json();
-  protected delete = (url: string) =>
-    this.apiWretch
+
+  delete = (url: string) =>
+    this.wretcher
       .url(url)
       .delete()
       .res();
