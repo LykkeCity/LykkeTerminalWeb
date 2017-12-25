@@ -231,4 +231,36 @@ describe('referenceStore', () => {
       );
     });
   });
+
+  describe('map instrument from dto', () => {
+    it('should not mess up base and quoting asset', async () => {
+      jest.resetAllMocks();
+      api.get = jest.fn(() => ({
+        AssetPairs: [
+          {
+            Id: 'BTCCHF',
+            Accuracy: 3,
+            BaseAssetId: 'BTC',
+            IsDisabled: false,
+            InvertedAccuracy: 8,
+            Name: 'BTC/CHF',
+            QuotingAssetId: 'CHF',
+            Source: 'BTCUSD',
+            Source2: 'USDCHF'
+          }
+        ]
+      }));
+      assetStore.fetchAssets = jest.fn(() => {
+        assetStore.addAsset(new AssetModel({id: 'BTC'}));
+        assetStore.addAsset(new AssetModel({id: 'CHF'}));
+      });
+
+      await assetStore.fetchReferenceData();
+
+      expect(assetStore.getInstruments()[0].baseAsset.id).toBe('BTC');
+      expect(assetStore.getInstruments()[0].baseAsset.id).not.toBe('CHF');
+      expect(assetStore.getInstruments()[0].quotingAsset.id).toBe('CHF');
+      expect(assetStore.getInstruments()[0].quotingAsset.id).not.toBe('BTC');
+    });
+  });
 });

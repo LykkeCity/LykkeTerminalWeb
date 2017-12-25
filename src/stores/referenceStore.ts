@@ -28,6 +28,12 @@ class ReferenceStore extends BaseStore {
 
   getInstruments = () => this.instruments;
 
+  fetchReferenceData = async () => {
+    await this.fetchCategories();
+    await this.fetchAssets();
+    await this.fetchInstruments();
+  };
+
   fetchAssets = async () => {
     const resp = await this.api.get('/assets');
     if (resp && resp.Assets) {
