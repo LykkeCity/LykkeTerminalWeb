@@ -8,3 +8,4 @@ export {RestMarketsApi as MarketsApi} from './marketsApi';
 export {MockOrderListApi as OrderListApi} from './orderListApi';
 export {default as RestApi} from './restApi';
 export {default as AuthApi} from './authApi';
+export {WampApi} from './wampApi';
