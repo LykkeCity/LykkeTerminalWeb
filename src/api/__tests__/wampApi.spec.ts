@@ -1,23 +1,21 @@
 import {WampApi} from '../wampApi';
 
 const wamp = new WampApi();
-let response: [any];
 
-describe('long asynchronous specs', function() {
-  beforeEach(() => {
-    wamp.connect('wss://wamp.lykke.com/ws/', 'prices').then(() => {
-      wamp.subscribe('quote.spot.eurusd.bid', (args: [any]) => {
-        response = args;
-      });
-    });
+describe('wamp service', () => {
+  beforeEach(function() {});
+
+  it('testing connect 2', () => {
+    expect.assertions(1);
+    return wamp.connect2().then(session => expect(session).toBeDefined());
   });
 
-  it(
-    'wamp session should be defined after connection established',
-    () => {
-      expect(response).toBeDefined();
-      expect(response instanceof Array).toBeTruthy();
-    },
-    5000
-  );
+  it('wamp session should be defined after connection established', () => {
+    expect.assertions(1);
+    return wamp
+      .connect('wss://wamp.lykke.com/ws/', 'prices')
+      .then(session => expect(session).toBeDefined());
+  });
+
+  afterEach(function() {});
 });

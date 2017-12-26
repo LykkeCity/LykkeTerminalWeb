@@ -3,8 +3,8 @@ import autobahn from 'autobahn';
 export class WampApi {
   session: any;
 
-  connect = (url: string | undefined, realm: string | undefined) => {
-    return new Promise((resolve: any) => {
+  connect = (url: string | undefined, realm: string | undefined) =>
+    new Promise((resolve: any) => {
       if (this.session) {
         resolve(this.session);
       }
@@ -18,7 +18,12 @@ export class WampApi {
 
       connection.open();
     });
-  };
+
+  // Just sample
+  connect2 = () =>
+    new Promise((resolve: any) => {
+      setTimeout(() => resolve(500), 2000);
+    });
 
   subscribe = (topic: string | undefined, cb: any) => {
     this.session.subscribe(topic, cb);
