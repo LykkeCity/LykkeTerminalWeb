@@ -1,10 +1,12 @@
-import {observable, runInAction} from 'mobx';
 import {lighten, rem} from 'polished';
 import * as React from 'react';
+// import {InstrumentModel} from '../../models/index';
 import styled from '../styled';
 import {
   InstrumentPickerActions,
+  InstrumentPickerProps,
   InstrumentPopover,
+  InstrumentSearch,
   InstrumentSelect
 } from './index';
 
@@ -13,8 +15,8 @@ const {Flex} = require('grid-styled');
 
 interface InstrumentListItemProps extends InstrumentPickerActions {
   name: string;
-  price: number;
-  change: number;
+  price?: number;
+  change?: number;
 }
 
 const InstrumentItem = styled(Flex)`
@@ -30,7 +32,7 @@ const InstrumentField = styled.div`
 `;
 
 const InstrumentName = InstrumentField.extend`
-  min-width: ${rem(80)};
+  min-width: ${rem(150)};
 `;
 
 const InstrumentPrice = InstrumentField.extend`
@@ -47,11 +49,11 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
   name = '',
   price = 0,
   change = 0,
-  onPickInstrument
+  onPick
 }) => (
   <InstrumentItem
     // tslint:disable-next-line:jsx-no-lambda
-    onClick={() => onPickInstrument && onPickInstrument({name, price, change})}
+    onClick={() => onPick && onPick({name, price, change})}
   >
     <InstrumentName>{name}</InstrumentName>
     <InstrumentPrice>${price.toFixed(2)}</InstrumentPrice>
@@ -59,40 +61,18 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
   </InstrumentItem>
 );
 
-const instruments = [
-  {name: 'BTCUSD', price: 9, change: 10},
-  {name: 'BTCETH', price: 9, change: 10},
-  {name: 'BTCLKK', price: 9, change: 10}
-];
-
-class InstrumentPicker extends React.Component<any> {
-  @observable showInstruments = false;
-
-  handleShowInstrumentPicker = () =>
-    runInAction(() => (this.showInstruments = !this.showInstruments));
-
-  handlePickInstrument = (instrument: any) => {
-    return instrument;
-  };
-
+class InstrumentPicker extends React.Component<InstrumentPickerProps> {
   render() {
     return (
-      <InstrumentSelect
-        {...this.props}
-        onShowInstrumentPicker={this.handleShowInstrumentPicker}
-      >
-        <InstrumentPopover show={this.showInstruments}>
-          {[...instruments, ...instruments, ...instruments]
-            .map((x, idx) => ({id: idx, ...x}))
-            .map(x => (
-              <InstrumentListItem
-                key={x.id}
-                {...x}
-                onPickInstrument={this.handlePickInstrument}
-              />
-            ))}
+      <div>
+        <InstrumentSelect {...this.props} onToggle={this.props.onToggle} />
+        <InstrumentPopover show={this.props.show}>
+          <InstrumentSearch onSearch={this.props.onSearch} />
+          {this.props.instruments.map(x => (
+            <InstrumentListItem key={x.id} {...x} onPick={this.props.onPick} />
+          ))}
         </InstrumentPopover>
-      </InstrumentSelect>
+      </div>
     );
   }
 }

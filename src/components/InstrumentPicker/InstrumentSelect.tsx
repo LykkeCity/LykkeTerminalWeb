@@ -1,22 +1,26 @@
 import * as React from 'react';
 import {FAIcon} from '../Icon/Icon';
 import styled from '../styled';
-import {InstrumentPickerProps} from './index';
+import {InstrumentPickerActions} from './index';
 
-const InstrumentSelectContainer = styled.div`
+interface InstrumentPickerProps extends InstrumentPickerActions {
+  value: string;
+  className?: string;
+}
+
+const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
+  value = 'Choose instrument',
+  onToggle,
+  className
+}) => (
+  <div className={className} onClick={onToggle}>
+    <span>{value}</span>&nbsp;
+    <FAIcon name="angle-down" />
+  </div>
+);
+
+const StyledInstrumentSelect = styled(InstrumentSelect)`
   cursor: pointer;
 `;
 
-const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
-  value = '',
-  onShowInstrumentPicker = null,
-  children
-}) => (
-  <InstrumentSelectContainer onClick={onShowInstrumentPicker}>
-    <span>{value}</span>&nbsp;
-    <FAIcon name="angle-down" />
-    {children}
-  </InstrumentSelectContainer>
-);
-
-export default InstrumentSelect;
+export default StyledInstrumentSelect;

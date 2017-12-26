@@ -45,6 +45,11 @@ class ReferenceStore extends BaseStore {
 
   getInstruments = () => this.instruments;
 
+  findInstruments = (term: string) =>
+    this.instruments.filter(x =>
+      x.name.toLowerCase().includes(term.toLowerCase())
+    );
+
   fetchReferenceData = async () => {
     await this.fetchBaseAsset();
     await this.fetchCategories();

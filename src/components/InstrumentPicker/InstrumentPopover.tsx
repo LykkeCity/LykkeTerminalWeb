@@ -21,7 +21,9 @@ const StyledInstrumentPopover = styled(InstrumentPopover)`
   padding: ${rem(20)} ${rem(5)};
   z-index: 999;
   transition: all 0.3s ease;
-  min-width: 200px;
+  min-width: 270px;
+  max-height: 600px;
+  overflow: auto;
   top: 40px;
   left: 10px;
   visibility: ${p => (p.show ? 'visible' : 'hidden')};

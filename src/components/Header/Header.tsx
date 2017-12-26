@@ -33,7 +33,7 @@ const Header = () => (
       </Flex>
     </HeaderItem>
     <HeaderItem>
-      <InstrumentPicker value="BTCUSD" />
+      <InstrumentPicker value="BTCUSD" instruments={[]} />
     </HeaderItem>
 
     <Box is="menu">
