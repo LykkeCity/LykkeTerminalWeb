@@ -1,6 +1,4 @@
 enum Side {
-  Up,
-  Down,
   Buy = 'Buy',
   Sell = 'Sell'
 }

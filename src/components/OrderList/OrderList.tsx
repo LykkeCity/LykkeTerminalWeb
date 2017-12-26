@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {OrderListItem} from './';
-import OrderListInterface from './OrderListInterface';
+import {OrderListProps} from './';
 
-const OrderList: React.SFC<OrderListInterface> = ({orders = []}) => (
+const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
   <Table>
     <thead>
       <tr>
@@ -21,19 +21,7 @@ const OrderList: React.SFC<OrderListInterface> = ({orders = []}) => (
     </thead>
     <tbody>
       {orders.map((order: any) => (
-        <OrderListItem
-          createdDate={order.createdDate}
-          currentPrice={order.currentPrice}
-          currentPriceSide={order.currentPriceSide}
-          expiryDate={order.expiryDate}
-          id={order.id}
-          key={`orderitem_${order.id}`}
-          orderID={order.orderID}
-          openPrice={order.openPrice}
-          side={order.side}
-          symbol={order.symbol}
-          volume={order.volume}
-        />
+        <OrderListItem key={`orderitem_${order.id}`} {...order} />
       ))}
     </tbody>
   </Table>

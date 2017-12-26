@@ -1,11 +1,11 @@
 import {connect} from '../connect';
 import OrderBook from './OrderBook';
 
-interface OrderBookInterface {
+export interface OrderBookProps {
   orders?: any[];
 }
 
-interface OrderBookItemInterface {
+export interface OrderBookItemProps {
   ask: number;
   bid: number;
   id: number;
@@ -19,7 +19,5 @@ const ConnectedOrderBook = connect(
   OrderBook
 );
 
-export {OrderBookInterface};
-export {OrderBookItemInterface};
 export {ConnectedOrderBook as OrderBook};
 export {default as OrderBookItem} from './OrderBookItem/OrderBookItem';
