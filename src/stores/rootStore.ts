@@ -5,6 +5,7 @@ import {
   OrderBookApi,
   OrderListApi,
   TradeListApi,
+  WampApi,
   WatchlistApi
 } from '../api/index';
 import {
@@ -52,12 +53,30 @@ class RootStore {
     await this.orderBookStore.fetchAll();
     await this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
+    const ws = new WampApi();
+    ws
+      .connect(process.env.REACT_APP_WAMP_URL, process.env.REACT_APP_WAMP_REALM)
+      .then(() => {
+        this.referenceStore
+          .getInstruments()
+          .forEach(x =>
+            ws.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
+          );
+      });
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset());
+  };
+
+  private onQuote = (args: any) => {
+    const {a: id, p: price} = args[0];
+    const instrument = this.referenceStore.findInstrumentById(id);
+    if (instrument && instrument.id) {
+      instrument.updatePrice(price);
+    }
   };
 }
 

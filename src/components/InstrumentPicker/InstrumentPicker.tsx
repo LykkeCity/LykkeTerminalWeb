@@ -1,6 +1,7 @@
 import {lighten, rem} from 'polished';
 import * as React from 'react';
-// import {InstrumentModel} from '../../models/index';
+import {InstrumentModel} from '../../models/index';
+import Dir from '../../stores/dir';
 import styled from '../styled';
 import {
   InstrumentPickerActions,
@@ -13,11 +14,12 @@ import {
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
-interface InstrumentListItemProps extends InstrumentPickerActions {
-  name: string;
-  price?: number;
-  change?: number;
-}
+const asSignNum = (num: number) =>
+  Number.isNaN(num) ? '' : `${num > 0 ? '+' : ''}${num.toFixed(3)}%`;
+
+interface InstrumentListItemProps
+  extends InstrumentModel,
+    InstrumentPickerActions {}
 
 const InstrumentItem = styled(Flex)`
   cursor: pointer;
@@ -26,29 +28,38 @@ const InstrumentItem = styled(Flex)`
   }
 `;
 
-const InstrumentField = styled.div`
+const InstrumentField: React.SFC<{dir?: Dir; className?: string}> = ({
+  children,
+  className
+}) => <div className={className}>{children}</div>;
+
+const StyledInstrumentField = styled(InstrumentField)`
   padding: ${rem(10)};
   text-align: left;
 `;
 
-const InstrumentName = InstrumentField.extend`
+const InstrumentName = StyledInstrumentField.extend`
   min-width: ${rem(150)};
 `;
 
-const InstrumentPrice = InstrumentField.extend`
+const InstrumentPrice = StyledInstrumentField.extend`
+  color: ${p => (p.dir === Dir.Up ? '#13b72a' : '#ff3e2e')};
   text-align: right;
-  color: #13b72a;
+  min-width: ${rem(100)};
 `;
 
-const InstrumentChange = InstrumentField.extend`
+const InstrumentChange = StyledInstrumentField.extend`
   text-align: right;
-  color: #ff3e2e;
+  min-width: ${rem(100)};
+  color: ${p => (p.dir === Dir.Up ? '#13b72a' : '#ff3e2e')};
 `;
 
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
   name = '',
   price = 0,
+  accuracy,
   change = 0,
+  dir = Dir.Up,
   onPick
 }) => (
   <InstrumentItem
@@ -56,8 +67,8 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
     onClick={() => onPick && onPick({name, price, change})}
   >
     <InstrumentName>{name}</InstrumentName>
-    <InstrumentPrice>${price.toFixed(2)}</InstrumentPrice>
-    <InstrumentChange>{change.toFixed(2)}%</InstrumentChange>
+    <InstrumentPrice dir={dir}>{price.toFixed(accuracy)}</InstrumentPrice>
+    <InstrumentChange dir={dir}>{asSignNum(change)}</InstrumentChange>
   </InstrumentItem>
 );
 
