@@ -19,12 +19,6 @@ export class WampApi {
       connection.open();
     });
 
-  // Just sample
-  connect2 = () =>
-    new Promise((resolve: any) => {
-      setTimeout(() => resolve(500), 2000);
-    });
-
   subscribe = (topic: string | undefined, cb: any) => {
     this.session.subscribe(topic, cb);
   };

@@ -52,7 +52,6 @@ const TileMenu = styled(Box)`
 `;
 
 const TileContent = styled.div`
-  
   font-size: ${rem(14)};
   padding: ${rem(10)} ${rem(15)};
 `;
