@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@types/autobahn@^0.9.38":
+  version "0.9.38"
+  resolved "https://registry.yarnpkg.com/@types/autobahn/-/autobahn-0.9.38.tgz#ec160b4f0a8748a5442e0343523c98068cfb233b"
+  dependencies:
+    "@types/when" "*"
+
 "@types/events@*":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-1.1.0.tgz#93b1be91f63c184450385272c47b6496fd028e02"
@@ -36,6 +42,10 @@
 "@types/react@*", "@types/react@^16.0.27":
   version "16.0.27"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.27.tgz#341899469ea2e98b48b11c18afb4d8361d03b013"
+
+"@types/when@*":
+  version "2.4.29"
+  resolved "https://registry.yarnpkg.com/@types/when/-/when-2.4.29.tgz#78a17184c48dee89b41901ae15b1a44b771b6e79"
 
 abab@^1.0.3:
   version "1.0.4"
@@ -289,6 +299,10 @@ async@^2.1.2, async@^2.1.4, async@^2.4.1, async@^2.5.0:
 asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
+
+"autobahn@git://github.com/crossbario/autobahn-js-built.git#v0.11.2":
+  version "0.11.0"
+  resolved "git://github.com/crossbario/autobahn-js-built.git#59513ed5adebc74a94e09e4a87d87e19fc8ca14d"
 
 autoprefixer@7.1.2:
   version "7.1.2"
