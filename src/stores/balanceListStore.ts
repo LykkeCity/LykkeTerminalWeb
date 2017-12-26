@@ -11,12 +11,13 @@ class BalanceListStore extends BaseStore {
 
   @computed
   get totalBalance() {
-    return this.balanceLists.reduce(
+    const totalBalance = this.balanceLists.reduce(
       (sum: number, balanceList: BalanceModel) => {
         return sum + balanceList.balance;
       },
       0
     );
+    return totalBalance.toFixed(2);
   }
 
   @observable private balanceLists: any[] = [];
