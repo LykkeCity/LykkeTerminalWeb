@@ -1,37 +1,35 @@
 import wretch from 'wretch';
-import {config} from '../config';
 
 export class RestApi {
-  protected readonly baseApiUrl = config.auth.apiUrls.app;
+  protected readonly wretcher = wretch(process.env.REACT_APP_API_URL);
 
-  protected readonly apiWretch = wretch()
-    .url(this.baseApiUrl)
-    .auth(`Bearer ${localStorage.getItem('token')}`);
-
-  protected readonly authWretch = wretch()
-    .url(this.baseApiUrl)
-    .auth(`Bearer ${localStorage.getItem('token')}`);
-
-  protected get = (url: string) =>
-    this.apiWretch
+  get = (url: string) =>
+    this.wretcher
       .url(url)
+      .auth(`Bearer ${localStorage.getItem('token')}`)
       .get()
       .json();
-  protected post = (url: string, body: any) =>
-    this.apiWretch
+
+  post = (url: string, body: any) =>
+    this.wretcher
       .url(url)
+      .auth(`Bearer ${localStorage.getItem('token')}`)
       .json(body)
       .post()
       .json();
-  protected put = (url: string, body: any) =>
-    this.apiWretch
+
+  put = (url: string, body: any) =>
+    this.wretcher
       .url(url)
+      .auth(`Bearer ${localStorage.getItem('token')}`)
       .json(body)
       .put()
       .json();
-  protected delete = (url: string) =>
-    this.apiWretch
+
+  delete = (url: string) =>
+    this.wretcher
       .url(url)
+      .auth(`Bearer ${localStorage.getItem('token')}`)
       .delete()
       .res();
 }
