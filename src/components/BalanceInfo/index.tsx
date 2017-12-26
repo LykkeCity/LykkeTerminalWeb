@@ -1,17 +1,20 @@
-import AssetStore from '../../stores/assetStore';
-import UiStore from '../../stores/uiStore';
+import {ReferenceStore, UiStore} from '../../stores';
 import {connect} from '../connect';
 import BalanceInfo from './BalanceInfo';
 
 export interface BalanceInfoProps {
   totalBalance?: number;
-  assetStore: AssetStore;
+  referenceStore: ReferenceStore;
   uiStore: UiStore;
 }
 
 const ConnectedBalanceInfo = connect(
-  ({assetStore, balanceListStore: {totalBalance: totalBalance}, uiStore}) => ({
-    assetStore,
+  ({
+    referenceStore,
+    balanceListStore: {totalBalance: totalBalance},
+    uiStore
+  }) => ({
+    referenceStore,
     totalBalance,
     uiStore
   }),

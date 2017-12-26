@@ -1,9 +1,9 @@
 import * as React from 'react';
-import AssetStore from '../../stores/assetStore';
-import Select from '../Select/select';
-import {BalanceInfoProps} from './index';
-import './balance-info.css';
 import styled from 'styled-components';
+import ReferenceStore from '../../stores/referenceStore';
+import Select from '../Select/select';
+import './balance-info.css';
+import {BalanceInfoProps} from './index';
 
 const StyledSelect = styled(Select)`
   .Select-control {
@@ -52,20 +52,20 @@ const StyledButton = styled.button`
 `;
 
 class BalanceInfo extends React.Component<BalanceInfoProps> {
-  private readonly assetStore: AssetStore = this.props.assetStore;
+  private readonly referenceStore: ReferenceStore = this.props.referenceStore;
   private readonly uiStore = this.props.uiStore;
 
   documentClickHandler = (e: any) => {
     const target: any = e.target;
-    if (target.closest('.Select') || target.id === 'baseAssetBtn') return;
+    if (target.closest('.Select') || target.id === 'baseAssetBtn') {
+      return;
+    }
     this.uiStore.toggleAssetsSelect();
-
     document.body.removeEventListener('click', this.documentClickHandler);
   };
 
   onClickHandler = () => {
     this.uiStore.toggleAssetsSelect();
-
     document.body.addEventListener('click', this.documentClickHandler);
   };
 
@@ -74,13 +74,14 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
       return;
     }
     this.uiStore.toggleAssetsSelect();
-    this.assetStore.setBaseAssetId(e.value);
+    this.referenceStore.setBaseAssetId(e.value);
+    document.body.removeEventListener('click', this.documentClickHandler);
   };
 
   getOptions = () => {
-    return this.assetStore.allAssets.map(asset => {
+    return this.referenceStore.allAssets.map(asset => {
       return {
-        label: asset.displayId,
+        label: asset.name,
         value: asset.id
       };
     });
@@ -91,13 +92,13 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
       <div className={'balance-info'}>
         <span>{this.props.totalBalance}</span>
         <StyledButton onClick={this.onClickHandler} id="baseAssetBtn">
-          {this.assetStore.baseAssetId}
+          {this.referenceStore.baseAssetId}
         </StyledButton>
         {this.uiStore.showAssetsSelect ? (
           <StyledSelect
             className={'balance-info-select'}
             options={this.getOptions()}
-            value={this.assetStore.baseAssetId}
+            value={this.referenceStore.baseAssetId}
             onChange={this.onChangeHandler}
           />
         ) : null}

@@ -42,7 +42,7 @@ class BalanceListStore extends BaseStore {
     tempBalanceLists: BalanceModel[] = this.balanceLists
   ) => {
     const promises = tempBalanceLists.map((balanceList: BalanceModel) => {
-      return balanceList.updateBalance(this.parentStore.assetStore);
+      return balanceList.updateBalance(this.parentStore.referenceStore);
     });
     await Promise.all(promises);
     this.balanceLists = [...tempBalanceLists];

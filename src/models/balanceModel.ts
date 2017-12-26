@@ -1,9 +1,5 @@
-// import {RestMarketsApi} from '../api/marketsApi';
-// import Side from '../stores/side';
-//
-// const marketsApi = new RestMarketsApi();
 import MarketService from '../services/marketService';
-import AssetStore from '../stores/assetStore';
+import ReferenceStore from '../stores/referenceStore';
 
 export class BalanceModel {
   symbol: string;
@@ -18,9 +14,9 @@ export class BalanceModel {
     this.balances = wallet.Balances;
   }
 
-  updateBalance = async (assetStore: AssetStore) => {
+  updateBalance = async (referenceStore: ReferenceStore) => {
     let balances: any[] = [];
-    const baseAsset = assetStore.baseAssetId;
+    const baseAsset = referenceStore.baseAssetId;
     const notBasedAssets = this.balances.filter(
       balance => balance.AssetId !== baseAsset
     );
