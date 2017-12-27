@@ -39,7 +39,7 @@ class RootStore {
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderListApi());
-      this.uiStore = new UiStore();
+      this.uiStore = new UiStore(this);
       this.referenceStore = new ReferenceStore(this, new AssetApi());
       this.authStore = new AuthStore(this, new AuthApi());
     }

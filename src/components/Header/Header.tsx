@@ -1,10 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
-<<<<<<< HEAD
 import {BalanceInfo} from '../BalanceInfo';
-=======
 import {InstrumentPicker} from '../InstrumentPicker/index';
->>>>>>> cb8cde3... Basic implementation for the instrument picker
 import {Link} from '../Link/index';
 import styled from '../styled';
 import {Heading} from '../Typography/index';
@@ -36,7 +33,7 @@ const Header = () => (
       <InstrumentPicker value="BTCUSD" instruments={[]} />
     </HeaderItem>
 
-    <Box is="menu">
+    <Box ml="auto" is="menu">
       <Flex align="center">
         <HeaderItem>
           <BalanceInfo />
