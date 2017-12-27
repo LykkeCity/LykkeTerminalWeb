@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-interface BoxTitleItemInterface {
+interface TileTabItemProps {
   tabName: string;
   key?: string;
   isClickable: boolean;
@@ -13,17 +13,19 @@ interface BoxTitleItemInterface {
 const StyledSpan = styled.span`
   margin-right: 5px;
   &.clickable {
-    color: red;
+    color: #ccc;
     &:hover {
       cursor: pointer;
+      text-decoration: underline;
     }
   }
   &.active {
     color: #fff;
+    text-decoration: underline;
   }
 `;
 
-const BoxTitleItem: React.SFC<BoxTitleItemInterface> = ({
+const TileTabItemItem: React.SFC<TileTabItemProps> = ({
   tabName,
   isClickable,
   click,
@@ -44,4 +46,4 @@ const BoxTitleItem: React.SFC<BoxTitleItemInterface> = ({
   );
 };
 
-export default BoxTitleItem;
+export default TileTabItemItem;
