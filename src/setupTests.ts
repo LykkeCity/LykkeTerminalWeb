@@ -6,7 +6,9 @@ const tradingView = {
 
 const localStorage = {
   getItem: jest.fn(),
-  setItem: jest.fn()
+  setItem: jest.fn(),
+  // tslint:disable-next-line:object-literal-sort-keys
+  removeItem: jest.fn()
 };
 
 (window as any).TradingView = tradingView;
