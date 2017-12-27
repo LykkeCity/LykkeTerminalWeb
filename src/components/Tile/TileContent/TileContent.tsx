@@ -2,7 +2,7 @@ import {lighten, rem} from 'polished';
 import * as React from 'react';
 import Icon from '../../Icon/Icon';
 import styled, {css} from '../../styled';
-import BoxTitleItem from './TileTabItem/TileTabItem';
+import TileTabItem from './TileTabItem/TileTabItem';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
@@ -65,9 +65,9 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
             <Box>
               {this.props.tabs.names.map((tab: string, index: number) => {
                 return (
-                  <BoxTitleItem
+                  <TileTabItem
                     isClickable={this.props.tabs.isTab}
-                    key={`boxtitle_${index}`}
+                    key={`tiletabitem_${index}`}
                     tabName={tab}
                     index={index}
                     activeIndex={this.state.activeTabIndex}
