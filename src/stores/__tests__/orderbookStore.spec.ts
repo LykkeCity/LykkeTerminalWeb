@@ -1,14 +1,25 @@
-import {MockOrderBookApi} from '../../api/orderBookApi';
+import {RestOrderBookApi} from '../../api/orderBookApi';
+import {OrderBookModel} from '../../models/index';
 import {OrderBookStore, RootStore} from '../index';
 
 describe('orderBook store', () => {
   let orderBookStore: OrderBookStore;
 
+  const newOrder = new OrderBookModel({
+    ask: 100,
+    bid: 0,
+    id: 7,
+    price: 15010,
+    timestamp: new Date()
+  });
+
   beforeEach(() => {
     orderBookStore = new OrderBookStore(
       new RootStore(false),
-      new MockOrderBookApi()
+      new RestOrderBookApi()
     );
+
+    orderBookStore.fetchAll = jest.fn(() => orderBookStore.addOrder(newOrder));
   });
 
   describe('state', () => {
@@ -23,21 +34,20 @@ describe('orderBook store', () => {
     });
   });
 
-  describe('reset', () => {
-    it('should clear orders', async () => {
-      await orderBookStore.fetchAll();
+  describe('fetch OrderBook', () => {
+    it('should populate orders collection', () => {
+      orderBookStore.fetchAll();
       expect(orderBookStore.allOrders.length).toBeGreaterThan(0);
-
-      orderBookStore.reset();
-
-      expect(orderBookStore.allOrders.length).toBe(0);
     });
   });
 
-  describe('fetch tradeLists', () => {
-    it('should populate orders collection', async () => {
-      await orderBookStore.fetchAll();
+  describe('reset', () => {
+    it('should clear orders', () => {
+      orderBookStore.fetchAll();
       expect(orderBookStore.allOrders.length).toBeGreaterThan(0);
+
+      orderBookStore.reset();
+      expect(orderBookStore.allOrders.length).toBe(0);
     });
   });
 
