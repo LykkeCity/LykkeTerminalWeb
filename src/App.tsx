@@ -4,12 +4,13 @@ import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import {BalanceList} from './components/BalanceList';
 import {Chart} from './components/Chart/index';
 import {Header} from './components/Header/index';
-import {OrderBook} from './components/OrderBook/index';
+import {OrderBook} from './components/OrderBook';
 import {OrderList} from './components/OrderList';
 import styled, {injectGlobal} from './components/styled';
 import {Tile} from './components/Tile/index';
 import {TradeList} from './components/TradeList';
 import {Watchlist} from './components/Watchlist';
+import tabs from './constants/tabs';
 import './index.css';
 
 const addFont = (name: string) => (f: any) =>
@@ -72,32 +73,32 @@ const Shell = styled.div`
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
-    <Tile title="Account">
+    <Tile title="Account" tabs={tabs.account}>
       <BalanceList />
     </Tile>
   ),
   c: (
-    <Tile title="Chart">
+    <Tile title="Chart" tabs={tabs.chart}>
       <Chart />
     </Tile>
   ),
   e: (
-    <Tile title="Executions">
+    <Tile title="Executions" tabs={tabs.executions}>
       <TradeList />
     </Tile>
   ),
   ob: (
-    <Tile title="Order book">
+    <Tile title="Order book" tabs={tabs.orderBook}>
       <OrderBook />
     </Tile>
   ),
   ord: (
-    <Tile title="Orders">
+    <Tile title="Orders" tabs={tabs.orders}>
       <OrderList />
     </Tile>
   ),
   wl: (
-    <Tile title="Watchlist">
+    <Tile title="Watchlist" tabs={tabs.watchlist}>
       <Watchlist />
     </Tile>
   )

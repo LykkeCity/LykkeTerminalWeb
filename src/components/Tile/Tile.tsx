@@ -1,5 +1,6 @@
 import {lighten, rem} from 'polished';
 import * as React from 'react';
+import BoxTitle from '../BoxTitle/BoxTitle';
 import {Icon} from '../Icon/index';
 import styled, {css} from '../styled';
 
@@ -8,6 +9,7 @@ const {Flex, Box} = require('grid-styled');
 
 interface TileProps {
   title?: string;
+  tabs: any;
 }
 
 const iconCss = css`
@@ -62,7 +64,7 @@ const TileToolbar = styled.div`
   ${iconCss};
 `;
 
-const Tile: React.SFC<TileProps> = ({title = '', children}) => (
+const Tile: React.SFC<TileProps> = ({title = '', children, tabs}) => (
   <TileWrapper>
     <Flex justify="space-between">
       <TileTitle>{title} </TileTitle>
@@ -73,7 +75,7 @@ const Tile: React.SFC<TileProps> = ({title = '', children}) => (
     <TileContent>
       <TileToolbar>
         <Flex align="center" justify="space-between">
-          <Box>Manage</Box>
+          <BoxTitle tabs={tabs} />
           <Box>
             <Icon name="cog" />
           </Box>
