@@ -1,0 +1,10 @@
+.balance-info {
+  position: relative;
+}
+
+.balance-info-select {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  min-width: 150px;
+}

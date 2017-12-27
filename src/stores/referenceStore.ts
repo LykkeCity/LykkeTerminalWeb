@@ -1,19 +1,36 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {RestApi} from '../api/index';
-import {AssetCategoryModel, AssetModel, InstrumentModel} from '../models/index';
+import {AssetApi} from '../api/index';
+import {AssetCategoryModel, AssetModel, InstrumentModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
   @observable private categories: AssetCategoryModel[] = [];
   @observable private instruments: InstrumentModel[] = [];
+  @observable private baseAsset: string = '';
 
   @computed
   get baseAssets() {
     return this.assets.filter(x => x.isBase);
   }
 
-  constructor(readonly store: RootStore, private api: RestApi) {
+  @computed
+  get allAssets() {
+    return this.assets;
+  }
+
+  @computed
+  get baseAssetId() {
+    return this.baseAsset;
+  }
+
+  @computed
+  get getBaseAssetAccuracy() {
+    const asset = this.getAssetById(this.baseAsset);
+    return asset ? asset.accuracy : 2;
+  }
+
+  constructor(readonly store: RootStore, private api: AssetApi) {
     super(store);
   }
 
@@ -29,13 +46,14 @@ class ReferenceStore extends BaseStore {
   getInstruments = () => this.instruments;
 
   fetchReferenceData = async () => {
+    await this.fetchBaseAsset();
     await this.fetchCategories();
     await this.fetchAssets();
     await this.fetchInstruments();
   };
 
   fetchAssets = async () => {
-    const resp = await this.api.get('/assets');
+    const resp = await this.api.fetchAll();
     if (resp && resp.Assets) {
       runInAction(() => {
         this.assets = resp.Assets.map(this.mapAssetFromDto);
@@ -44,7 +62,7 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchCategories = async () => {
-    const resp = await this.api.get('/assets/categories');
+    const resp = await this.api.fetchAssetCategories();
     if (resp && resp.AssetCategories) {
       runInAction(() => {
         this.categories = resp.AssetCategories.map(this.mapCategoryFromDto);
@@ -53,7 +71,7 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchInstruments = async () => {
-    const resp = await this.api.get('/assetpairs');
+    const resp = await this.api.fetchAssetInstruments();
     if (resp && resp.AssetPairs) {
       runInAction(() => {
         this.instruments = resp.AssetPairs.filter(
@@ -61,6 +79,21 @@ class ReferenceStore extends BaseStore {
         ).map(this.mapInstrumentFromDto);
       });
     }
+  };
+
+  fetchBaseAsset = async () => {
+    const res = await this.api.fetchBaseAsset();
+
+    if (res && res.BaseAssetId) {
+      this.baseAsset = res.BaseAssetId;
+    }
+  };
+
+  setBaseAssetId = async (assetId: string) => {
+    localStorage.setItem('baseAsset', assetId);
+    this.baseAsset = assetId;
+    this.api.setBaseAsset({BaseAsssetId: assetId});
+    this.rootStore.balanceListStore.updateBalance();
   };
 
   reset = () => (this.assets = []);
