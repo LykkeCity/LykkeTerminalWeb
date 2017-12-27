@@ -1,18 +1,21 @@
 import {
+  AssetApi,
+  AuthApi,
   BalanceListApi,
   OrderBookApi,
   OrderListApi,
-  RestApi,
   TradeListApi,
   WatchlistApi
 } from '../api/index';
 import {
+  AuthStore,
   BalanceListStore,
   BaseStore,
   OrderBookStore,
   OrderListStore,
   ReferenceStore,
   TradeListStore,
+  UiStore,
   WatchlistStore
 } from './index';
 
@@ -22,7 +25,9 @@ class RootStore {
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
+  readonly uiStore: UiStore;
   readonly referenceStore: ReferenceStore;
+  readonly authStore: AuthStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -33,11 +38,14 @@ class RootStore {
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderListApi());
-      this.referenceStore = new ReferenceStore(this, new RestApi());
+      this.uiStore = new UiStore();
+      this.referenceStore = new ReferenceStore(this, new AssetApi());
+      this.authStore = new AuthStore(this, new AuthApi());
     }
   }
 
   start = async () => {
+    await this.authStore.fetchBearerToken();
     await this.referenceStore.fetchReferenceData();
     await this.watchlistStore.fetchAll();
     await this.tradeListStore.fetchAll();

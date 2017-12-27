@@ -1,8 +1,11 @@
 export {MockWatchlistApi as WatchlistApi} from './watchlistApi';
 export {MockTradeListApi as TradeListApi} from './tradeListApi';
-export {MockBalanceListApi as BalanceListApi} from './balanceListApi';
+export {RestBalanceListApi as BalanceListApi} from './balanceListApi';
+export {MockBalanceListApi} from './balanceListApi';
+export {RestAssetApi as AssetApi} from './assetApi';
+export {RestMarketsApi as MarketsApi} from './marketsApi';
 export {MockOrderListApi as OrderListApi} from './orderListApi';
 export {RestOrderBookApi as OrderBookApi} from './orderBookApi';
 export {default as RestApi} from './restApi';
-export {default as RestAuthApi} from './authApi';
+export {default as AuthApi} from './authApi';
 export {WampApi} from './wampApi';

@@ -7,16 +7,12 @@ export interface AuthApi {
 
 export class RestAuthApi extends RestApi implements AuthApi {
   fetchBearerToken = (path: string) =>
-    this.authWretch
-      .url(path)
-      .json({
-        ClientInfo: '',
-        Email: 'bcc@t.com',
-        PartnerId: '',
-        Password: '111111'
-      })
-      .post()
-      .json();
+    this.post(path, {
+      ClientInfo: '',
+      Email: 'bcc@t.com',
+      PartnerId: '',
+      Password: '111111'
+    });
 }
 
 export default RestAuthApi;
