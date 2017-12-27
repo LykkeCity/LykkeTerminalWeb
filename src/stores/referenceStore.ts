@@ -1,6 +1,6 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {AssetsApi} from '../api/index';
-import {AssetCategoryModel, AssetModel, InstrumentModel} from '../models/index';
+import {AssetApi} from '../api/index';
+import {AssetCategoryModel, AssetModel, InstrumentModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class ReferenceStore extends BaseStore {
@@ -8,7 +8,6 @@ class ReferenceStore extends BaseStore {
   @observable private categories: AssetCategoryModel[] = [];
   @observable private instruments: InstrumentModel[] = [];
   @observable private baseAsset: string = '';
-  private parentStore: RootStore;
 
   @computed
   get baseAssets() {
@@ -31,9 +30,8 @@ class ReferenceStore extends BaseStore {
     return asset ? asset.accuracy : 2;
   }
 
-  constructor(readonly store: RootStore, private api: AssetsApi) {
+  constructor(readonly store: RootStore, private api: AssetApi) {
     super(store);
-    this.parentStore = store;
   }
 
   getAssets = () => this.assets;
@@ -95,7 +93,7 @@ class ReferenceStore extends BaseStore {
     localStorage.setItem('baseAsset', assetId);
     this.baseAsset = assetId;
     this.api.setBaseAsset({BaseAsssetId: assetId});
-    this.parentStore.balanceListStore.updateBalance();
+    this.rootStore.balanceListStore.updateBalance();
   };
 
   reset = () => (this.assets = []);

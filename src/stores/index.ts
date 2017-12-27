@@ -7,4 +7,4 @@ export {default as OrderListStore} from './orderListStore';
 export {default as OrderBookStore} from './orderBookStore';
 export {default as UiStore} from './uiStore';
 export {default as ReferenceStore} from './referenceStore';
-export {default as AuthenticationStore} from './authenticationStore';
+export {default as AuthStore} from './authStore';

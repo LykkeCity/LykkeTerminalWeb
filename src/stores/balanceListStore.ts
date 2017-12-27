@@ -1,6 +1,6 @@
 import {computed, observable, runInAction} from 'mobx';
 import {BalanceListApi} from '../api/index';
-import {BalanceModel} from '../models/balanceModel';
+import {BalanceModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class BalanceListStore extends BaseStore {
@@ -20,11 +20,9 @@ class BalanceListStore extends BaseStore {
   }
 
   @observable private balanceLists: any[] = [];
-  private parentStore: RootStore;
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
-    this.parentStore = store;
   }
 
   fetchAll = async () => {
@@ -41,7 +39,7 @@ class BalanceListStore extends BaseStore {
     tempBalanceLists: BalanceModel[] = this.balanceLists
   ) => {
     const promises = tempBalanceLists.map((balanceList: BalanceModel) => {
-      return balanceList.updateBalance(this.parentStore.referenceStore);
+      return balanceList.updateBalance(this.rootStore.referenceStore);
     });
     await Promise.all(promises);
     this.balanceLists = [...tempBalanceLists];

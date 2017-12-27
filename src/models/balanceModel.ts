@@ -1,7 +1,7 @@
 import MarketService from '../services/marketService';
 import ReferenceStore from '../stores/referenceStore';
 
-export class BalanceModel {
+export default class BalanceModel {
   symbol: string;
   balances: any[];
   id: string;

@@ -1,7 +1,7 @@
 import {AuthApi} from '../api/index';
 import {BaseStore, RootStore} from './index';
 
-class AuthenticationStore extends BaseStore {
+class AuthStore extends BaseStore {
   private token: string = '';
 
   constructor(store: RootStore, private readonly api: AuthApi) {
@@ -20,4 +20,4 @@ class AuthenticationStore extends BaseStore {
   };
 }
 
-export default AuthenticationStore;
+export default AuthStore;

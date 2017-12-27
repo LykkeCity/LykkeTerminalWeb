@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import ReferenceStore from '../../stores/referenceStore';
-import Select from '../Select/select';
+import {ReferenceStore, UiStore} from '../../stores';
+import Select from '../Select/Select';
 import './balance-info.css';
 import {BalanceInfoProps} from './index';
 
@@ -53,29 +53,18 @@ const StyledButton = styled.button`
 
 class BalanceInfo extends React.Component<BalanceInfoProps> {
   private readonly referenceStore: ReferenceStore = this.props.referenceStore;
-  private readonly uiStore = this.props.uiStore;
-
-  documentClickHandler = (e: any) => {
-    const target: any = e.target;
-    if (target.closest('.Select') || target.id === 'baseAssetBtn') {
-      return;
-    }
-    this.uiStore.toggleAssetsSelect();
-    document.body.removeEventListener('click', this.documentClickHandler);
-  };
+  private readonly uiStore: UiStore = this.props.uiStore;
 
   onClickHandler = () => {
     this.uiStore.toggleAssetsSelect();
-    document.body.addEventListener('click', this.documentClickHandler);
   };
 
   onChangeHandler = (e: any) => {
     if (!e) {
       return;
     }
-    this.uiStore.toggleAssetsSelect();
     this.referenceStore.setBaseAssetId(e.value);
-    document.body.removeEventListener('click', this.documentClickHandler);
+    this.uiStore.toggleAssetsSelect();
   };
 
   getOptions = () => {
@@ -100,6 +89,8 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
         </StyledButton>
         {this.uiStore.showAssetsSelect ? (
           <StyledSelect
+            btnId={'baseAssetBtn'}
+            toggleSelect={this.uiStore.toggleAssetsSelect}
             className={'balance-info-select'}
             options={this.getOptions()}
             value={this.referenceStore.baseAssetId}

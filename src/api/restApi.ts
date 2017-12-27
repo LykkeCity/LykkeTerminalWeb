@@ -1,35 +1,35 @@
 import wretch from 'wretch';
 
 export class RestApi {
-  protected readonly wretcher = wretch(process.env.REACT_APP_API_URL);
+  protected readonly wretcher = () => {
+    return wretch(process.env.REACT_APP_API_URL).auth(
+      `Bearer ${localStorage.getItem('token')}`
+    );
+  };
 
-  get = (url: string) =>
-    this.wretcher
+  protected get = (url: string) =>
+    this.wretcher()
       .url(url)
-      .auth(`Bearer ${localStorage.getItem('token')}`)
       .get()
       .json();
 
-  post = (url: string, body: any) =>
-    this.wretcher
+  protected post = (url: string, body: any) =>
+    this.wretcher()
       .url(url)
-      .auth(`Bearer ${localStorage.getItem('token')}`)
       .json(body)
       .post()
       .json();
 
-  put = (url: string, body: any) =>
-    this.wretcher
+  protected put = (url: string, body: any) =>
+    this.wretcher()
       .url(url)
-      .auth(`Bearer ${localStorage.getItem('token')}`)
       .json(body)
       .put()
       .json();
 
-  delete = (url: string) =>
-    this.wretcher
+  protected delete = (url: string) =>
+    this.wretcher()
       .url(url)
-      .auth(`Bearer ${localStorage.getItem('token')}`)
       .delete()
       .res();
 }
