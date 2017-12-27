@@ -1,9 +1,11 @@
+import {RestApi} from './restApi';
+
 export interface WatchlistApi {
-  fetchAll: () => Promise<any[]>;
+  fetchAll: () => Promise<{[key: string]: any}>;
 }
 
-export class RestWatchlistApi implements WatchlistApi {
-  fetchAll = () => Promise.resolve([]);
+export class RestWatchlistApi extends RestApi implements WatchlistApi {
+  fetchAll = () => this.get('/WatchLists');
 }
 
 // tslint:disable-next-line:max-classes-per-file
