@@ -21,9 +21,11 @@ class InstrumentModel {
 
   @action
   updatePrice = (nextPrice: number) => {
-    this.change = (this.price - nextPrice) / this.price * 100;
-    this.dir = this.change > 0 ? Dir.Up : Dir.Down;
-    this.price = nextPrice;
+    if (this.price !== nextPrice) {
+      this.change = (nextPrice - this.price) / this.price * 100;
+      this.dir = this.change > 0 ? Dir.Up : Dir.Down;
+      this.price = nextPrice;
+    }
   };
 }
 
