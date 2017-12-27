@@ -3,7 +3,7 @@ import {connect} from '../connect';
 import BalanceInfo from './BalanceInfo';
 
 export interface BalanceInfoProps {
-  totalBalance?: number;
+  totalBalance: number;
   referenceStore: ReferenceStore;
   uiStore: UiStore;
 }

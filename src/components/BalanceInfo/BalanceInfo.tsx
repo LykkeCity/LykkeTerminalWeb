@@ -90,7 +90,11 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
   render() {
     return (
       <div className={'balance-info'}>
-        <span>{this.props.totalBalance}</span>
+        <span>
+          {this.props.totalBalance.toFixed(
+            this.referenceStore.getBaseAssetAccuracy
+          )}
+        </span>
         <StyledButton onClick={this.onClickHandler} id="baseAssetBtn">
           {this.referenceStore.baseAssetId}
         </StyledButton>

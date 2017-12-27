@@ -17,7 +17,7 @@ class BalanceListStore extends BaseStore {
       },
       0
     );
-    return totalBalance.toFixed(2);
+    return totalBalance;
   }
 
   @observable private balanceLists: any[] = [];

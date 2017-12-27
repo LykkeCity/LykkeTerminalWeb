@@ -20,8 +20,15 @@ class ReferenceStore extends BaseStore {
     return this.assets;
   }
 
+  @computed
   get baseAssetId() {
     return this.baseAsset;
+  }
+
+  @computed
+  get getBaseAssetAccuracy() {
+    const asset = this.getAssetById(this.baseAsset);
+    return asset ? asset.accuracy : 2;
   }
 
   constructor(readonly store: RootStore, private api: AssetsApi) {
@@ -84,7 +91,7 @@ class ReferenceStore extends BaseStore {
     }
   };
 
-  setBaseAssetId = (assetId: string) => {
+  setBaseAssetId = async (assetId: string) => {
     localStorage.setItem('baseAsset', assetId);
     this.baseAsset = assetId;
     this.api.setBaseAsset({BaseAsssetId: assetId});
