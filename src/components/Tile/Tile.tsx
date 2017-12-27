@@ -9,7 +9,7 @@ const {Flex, Box} = require('grid-styled');
 
 interface TileProps {
   title?: string;
-  tabs: any;
+  tabs: string[];
 }
 
 const iconCss = css`
