@@ -1,5 +1,6 @@
 import {rem} from 'polished';
 import * as React from 'react';
+import {BalanceInfo} from '../BalanceInfo';
 import {Link} from '../Link/index';
 import styled from '../styled';
 import {Heading} from '../Typography/index';
@@ -35,7 +36,9 @@ const Header = () => (
 
     <Box is="menu">
       <Flex align="center">
-        <HeaderItem>100000 BTC</HeaderItem>
+        <HeaderItem>
+          <BalanceInfo />
+        </HeaderItem>
         <HeaderItem>
           <Link href="/signin">
             <span className="hidden-xs">Sign In</span>
