@@ -10,6 +10,7 @@ describe('root store', () => {
   describe('reset stores', () => {
     it('should call reset on watchlist store', () => {
       rootStore.watchlistStore.reset = jest.fn();
+      rootStore.authStore.reset = jest.fn();
 
       rootStore.reset();
 
