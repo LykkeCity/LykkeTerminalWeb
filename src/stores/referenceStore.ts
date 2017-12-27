@@ -3,6 +3,7 @@ import {AssetApi} from '../api/index';
 import {AssetCategoryModel, AssetModel, InstrumentModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
+// TODO: replace with api call `/watchlists` when it will be implemented
 const allowedInstruments = [
   'AUDCHF',
   'AUDEUR',

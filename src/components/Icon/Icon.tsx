@@ -19,6 +19,7 @@ const Icon = ({name, color}: IconProps) => (
   <StyledIcon color={color} className={`icon icon-${name}`} />
 );
 
+// TODO: temporary solution with font-awesome icons
 export const FAIcon = ({name, color}: IconProps) => (
   <StyledIcon color={color} className={`fa fa-${name}`} aria-hidden="true" />
 );
