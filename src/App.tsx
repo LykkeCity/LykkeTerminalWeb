@@ -85,6 +85,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   e: (
     <Tile title="Executions" tabs={tabs.executions}>
       <TradeList />
+      <div>Second tab</div>
     </Tile>
   ),
   ob: (
@@ -95,6 +96,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ord: (
     <Tile title="Orders" tabs={tabs.orders}>
       <OrderList />
+      <div>Second tab</div>
     </Tile>
   ),
   wl: (

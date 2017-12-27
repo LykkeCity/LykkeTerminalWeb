@@ -46,7 +46,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
   }
 
   clickHandler = (index: number) => {
-    if (!this.props.tabs.isTab) {
+    if (!this.props.children.length) {
       return;
     }
     this.setState({
@@ -63,10 +63,10 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
         <TileToolbar>
           <Flex align="center" justify="space-between">
             <Box>
-              {this.props.tabs.names.map((tab: string, index: number) => {
+              {this.props.tabs.map((tab: string, index: number) => {
                 return (
                   <TileTabItem
-                    isClickable={this.props.tabs.isTab}
+                    isClickable={!!this.props.children.length}
                     key={`tiletabitem_${index}`}
                     tabName={tab}
                     index={index}
