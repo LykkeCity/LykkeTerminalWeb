@@ -8,7 +8,10 @@ import {ReferenceStore, RootStore} from '../index';
 // tslint:disable:object-literal-sort-keys
 describe('referenceStore', () => {
   const api: any = {
-    get: jest.fn()
+    fetchAll: jest.fn(),
+    fetchAssetCategories: jest.fn(),
+    fetchAssetInstruments: jest.fn(),
+    fetchBaseAsset: jest.fn()
   };
   let assetStore: ReferenceStore;
 
@@ -65,14 +68,13 @@ describe('referenceStore', () => {
 
       assetStore.fetchAssets();
 
-      expect(api.get).toHaveBeenCalled();
-      expect(api.get).toHaveBeenCalledTimes(1);
-      expect(api.get).toHaveBeenCalledWith('/assets');
+      expect(api.fetchAll).toHaveBeenCalled();
+      expect(api.fetchAll).toHaveBeenCalledTimes(1);
     });
 
     it('should map empty but valid response to assets', () => {
       jest.resetAllMocks();
-      api.get = jest.fn(() => ({Assets: []}));
+      api.fetchAll = jest.fn(() => ({Assets: []}));
 
       assetStore.fetchAssets();
 
@@ -82,7 +84,7 @@ describe('referenceStore', () => {
 
     it('should map valid response to assets', async () => {
       jest.resetAllMocks();
-      api.get = jest.fn(() => ({
+      api.fetchAll = jest.fn(() => ({
         Assets: [
           {
             Id: '1',
@@ -112,14 +114,13 @@ describe('referenceStore', () => {
 
       assetStore.fetchCategories();
 
-      expect(api.get).toHaveBeenCalled();
-      expect(api.get).toHaveBeenCalledTimes(1);
-      expect(api.get).toHaveBeenCalledWith('/assets/categories');
+      expect(api.fetchAssetCategories).toHaveBeenCalled();
+      expect(api.fetchAssetCategories).toHaveBeenCalledTimes(1);
     });
 
     it('should map valid response to categories', async () => {
       jest.resetAllMocks();
-      api.get = jest.fn(() => ({
+      api.fetchAssetCategories = jest.fn(() => ({
         AssetCategories: [{Id: '1', Name: 'Lykke'}]
       }));
 
@@ -143,7 +144,7 @@ describe('referenceStore', () => {
         category: ctg
       });
       jest.resetAllMocks();
-      api.get = jest.fn(() => ({
+      api.fetchAll = jest.fn(() => ({
         Assets: [
           {
             Id: '1',
@@ -153,7 +154,9 @@ describe('referenceStore', () => {
             IsBase: false,
             IconUrl: ''
           }
-        ],
+        ]
+      }));
+      api.fetchAssetCategories = jest.fn(() => ({
         AssetCategories: [{Id: '1', Name: 'Lykke'}]
       }));
 
@@ -166,7 +169,7 @@ describe('referenceStore', () => {
     it('should use Name if DisplayId is not provided', async () => {
       const name = 'LKK';
       jest.resetAllMocks();
-      api.get = jest.fn(() => ({
+      api.fetchAll = jest.fn(() => ({
         Assets: [
           {
             Id: '1',
@@ -187,14 +190,13 @@ describe('referenceStore', () => {
 
       assetStore.fetchInstruments();
 
-      expect(api.get).toHaveBeenCalled();
-      expect(api.get).toHaveBeenCalledTimes(1);
-      expect(api.get).toHaveBeenCalledWith('/assetpairs');
+      expect(api.fetchAssetInstruments).toHaveBeenCalled();
+      expect(api.fetchAssetInstruments).toHaveBeenCalledTimes(1);
     });
 
     it('should map valid response to instruments', async () => {
       jest.resetAllMocks();
-      api.get = jest.fn(() => ({
+      api.fetchAssetInstruments = jest.fn(() => ({
         AssetPairs: [
           {
             Id: 'BTCCHF',
@@ -235,7 +237,7 @@ describe('referenceStore', () => {
   describe('map instrument from dto', () => {
     it('should not mess up base and quoting asset', async () => {
       jest.resetAllMocks();
-      api.get = jest.fn(() => ({
+      api.fetchAssetInstruments = jest.fn(() => ({
         AssetPairs: [
           {
             Id: 'BTCCHF',
