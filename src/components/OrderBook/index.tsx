@@ -7,6 +7,7 @@ export interface OrderBookProps {
 
 export interface OrderBookItemProps {
   ask: number;
+  bestBid: boolean;
   bid: number;
   id: number;
   price: number;
