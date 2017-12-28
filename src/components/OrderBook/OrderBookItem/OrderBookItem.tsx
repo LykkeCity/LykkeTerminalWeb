@@ -14,12 +14,13 @@ const Volume = styled.div`
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   ask,
+  bestBid,
   bid,
   id,
   price
 }) => {
   return (
-    <tr key={id}>
+    <tr key={id} style={bestBid ? {background: 'rgba(0, 0, 0, 0.2)'} : {}}>
       <td
         style={{
           color: '#d070ff',

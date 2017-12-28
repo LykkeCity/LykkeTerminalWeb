@@ -42,10 +42,21 @@ class OrderBookStore extends BaseStore {
 
   private sortOrders = (orders: any) => {
     const arr: any[] = orders.reduce((prev: any, current: any) => {
-      const sliced: any[] = current.Levels.sort(
+      let maxPrice: any;
+
+      current.Levels.sort(
         (a: any, b: any) =>
           current.IsBuy ? a.Price - b.Price : b.Price - a.Price
-      ).slice(0, 5);
+      );
+
+      const sliced: any[] = current.Levels.slice(0, 10);
+
+      if (current.IsBuy) {
+        maxPrice = current.Levels[current.Levels.length - 1];
+        maxPrice.bestBid = true;
+
+        sliced.unshift(maxPrice);
+      }
 
       sliced.forEach((item: any) => {
         item.timestamp = current.Timestamp;
@@ -58,8 +69,9 @@ class OrderBookStore extends BaseStore {
     return arr.map(
       (item: any, index: number) =>
         new OrderBookModel({
-          ask: item.isBuy ? item.Volume : 0,
-          bid: item.isBuy ? 0 : item.Volume,
+          ask: item.bestBid ? '' : item.isBuy ? item.Volume : 0,
+          bestBid: item.bestBid || false,
+          bid: item.bestBid ? '' : item.isBuy ? 0 : item.Volume,
           id: index,
           price: item.Price,
           timestamp: new Date(item.timestamp).toLocaleTimeString()

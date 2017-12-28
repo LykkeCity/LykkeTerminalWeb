@@ -7,6 +7,7 @@ describe('orderBook store', () => {
 
   const newOrder = new OrderBookModel({
     ask: 100,
+    bestBid: false,
     bid: 0,
     id: 7,
     price: 15010,
@@ -55,6 +56,7 @@ describe('orderBook store', () => {
     it('should contain the following fields', async () => {
       await orderBookStore.fetchAll();
       expect(orderBookStore.allOrders[0].ask).toBeDefined();
+      expect(orderBookStore.allOrders[0].bestBid).toBeDefined();
       expect(orderBookStore.allOrders[0].bid).toBeDefined();
       expect(orderBookStore.allOrders[0].id).toBeDefined();
       expect(orderBookStore.allOrders[0].price).toBeDefined();
