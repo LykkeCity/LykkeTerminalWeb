@@ -14,12 +14,12 @@ export interface WatchlistItemProps {
   side: Dir;
 }
 
-const ConnectedWatchlist = connect(
+const connectedWatchlist = connect(
   ({watchlistStore: {activeWatchlists: {[0]: watchlist = {}}}}) => ({
     assets: watchlist.assets
   }),
   Watchlist
 );
 
-export {ConnectedWatchlist as Watchlist};
+export {connectedWatchlist as Watchlist};
 export {default as WatchlistItem} from './WatchlistItem/WatchlistItem';
