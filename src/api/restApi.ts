@@ -13,6 +13,13 @@ export class RestApi {
       .get()
       .json();
 
+  protected getWithQuery = (url: string, query: {[key: string]: any}) =>
+    this.wretcher()
+      .url(url)
+      .query(query)
+      .get()
+      .json();
+
   protected post = (url: string, body: any) =>
     this.wretcher()
       .url(url)

@@ -5,6 +5,7 @@ describe('root store', () => {
 
   beforeEach(() => {
     rootStore = new RootStore();
+    rootStore.authStore.reset = jest.fn();
   });
 
   describe('reset stores', () => {
