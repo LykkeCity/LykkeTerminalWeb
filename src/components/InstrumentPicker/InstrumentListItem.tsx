@@ -4,7 +4,7 @@ import {InstrumentModel} from '../../models/index';
 import Dir from '../../stores/dir';
 import {asChange} from '../../utils';
 import styled from '../styled';
-import {InstrumentPickerActions} from './index';
+import {InstrumentField, InstrumentPickerActions} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
@@ -19,11 +19,6 @@ const StyledInstrumentItem = styled(Flex)`
     background: ${lighten(0.05, '#3c3c3c')};
   }
 `;
-
-const InstrumentField: React.SFC<{dir?: Dir; className?: string}> = ({
-  children,
-  className
-}) => <div className={className}>{children}</div>;
 
 const StyledInstrumentField = styled(InstrumentField)`
   padding: ${rem(10)};

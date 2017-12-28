@@ -35,4 +35,5 @@ export {connectedInstrumentPicker as InstrumentPicker};
 export {default as InstrumentSelect} from './InstrumentSelect';
 export {default as InstrumentPopover} from './InstrumentPopover';
 export {default as InstrumentSearch} from './InstrumentSearch';
+export {default as InstrumentField} from './InstrumentField';
 export {default as InstrumentListItem} from './InstrumentListItem';
