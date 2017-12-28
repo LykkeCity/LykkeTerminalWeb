@@ -17,8 +17,11 @@ class UiStore extends BaseStore {
     (this.showAssetsSelect = !this.showAssetsSelect);
 
   @action
-  selectInstrument = (instrument: InstrumentModel) =>
-    (this.selectedInstrument = instrument);
+  selectInstrument = (instrument: InstrumentModel | any) => {
+    this.selectedInstrument = instrument;
+
+    this.rootStore.orderBookStore.fetchAll();
+  };
 
   @action search = (term: string) => (this.searchTerm = term);
 

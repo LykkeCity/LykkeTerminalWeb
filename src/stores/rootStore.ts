@@ -50,7 +50,10 @@ class RootStore {
     await this.referenceStore.fetchReferenceData();
     await this.watchlistStore.fetchAll();
     await this.tradeListStore.fetchAll();
-    await this.orderBookStore.fetchAll();
+
+    // ToDo: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
+    await this.uiStore.selectInstrument({id: 'btcusd'});
+
     await this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
     const ws = new WampApi();
