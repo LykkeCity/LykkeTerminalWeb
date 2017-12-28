@@ -10,6 +10,7 @@ class OrderBookStore extends BaseStore {
   }
 
   @observable private orders: any[] = [];
+  private pollingInterval: any;
 
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
@@ -19,20 +20,26 @@ class OrderBookStore extends BaseStore {
   addOrder = (order: OrderBookModel) => (this.orders = [...this.orders, order]);
 
   fetchAll = () => {
+    this.pollingInterval = null;
+
     const getOrders = async () => {
       let resp: any[];
 
-      await this.api.fetchAll('btcusd').then(res => {
-        resp = this.sortOrders(res);
-      });
+      if (this.instrument) {
+        await this.api
+          .fetchAll(this.instrument!.id)
+          .then(res => (resp = this.sortOrders(res)));
 
-      runInAction(() => {
-        this.orders = resp;
-      });
+        runInAction(() => (this.orders = resp));
+      }
     };
 
-    return getOrders().then(() =>
-      setInterval(getOrders, process.env.REACT_APP_REQ_INTERVAL)
+    return getOrders().then(
+      () =>
+        (this.pollingInterval = setInterval(
+          getOrders,
+          process.env.REACT_APP_REQ_INTERVAL
+        ))
     );
   };
 
@@ -78,6 +85,10 @@ class OrderBookStore extends BaseStore {
         })
     );
   };
+
+  private get instrument() {
+    return this.rootStore.uiStore.selectedInstrument;
+  }
 }
 
 export default OrderBookStore;
