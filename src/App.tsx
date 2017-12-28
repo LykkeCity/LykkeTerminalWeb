@@ -3,7 +3,6 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import {BalanceList} from './components/BalanceList';
 import {Chart} from './components/Chart/index';
-// import {Chart} from './components/Chart/index';
 import {Header} from './components/Header/index';
 import {OrderBook} from './components/OrderBook';
 import {OrderList} from './components/OrderList';
