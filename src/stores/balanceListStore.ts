@@ -6,7 +6,9 @@ import {BaseStore, RootStore} from './index';
 class BalanceListStore extends BaseStore {
   @computed
   get allBalanceLists() {
-    return this.balanceLists;
+    return this.balanceLists.sort(
+      (a: BalanceModel, b: BalanceModel) => b.balance - a.balance
+    );
   }
 
   @computed
