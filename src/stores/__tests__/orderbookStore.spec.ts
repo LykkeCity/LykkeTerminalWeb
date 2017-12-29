@@ -63,4 +63,39 @@ describe('orderBook store', () => {
       expect(orderBookStore.allOrders[0].timestamp).toBeDefined();
     });
   });
+
+  describe('place mid price in order book', () => {
+    const rootStore = new RootStore(false);
+    const {placeInMiddle, calcMidPrice} = new OrderBookStore(
+      rootStore,
+      null as any
+    );
+    const orders: any = [1, 2, 3, 4];
+
+    it('should add one more element to an array', () => {
+      expect(placeInMiddle(orders).length).toBe(orders.length + 1);
+    });
+
+    it('should place mid price in the middle of the array', () => {
+      const midArray = orders.length / 2;
+      const midEl = orders[midArray];
+      const newOrders = placeInMiddle(orders);
+      expect(newOrders[midArray]).not.toBe(midEl);
+      expect(placeInMiddle([1, 2])[0]).toBe(1);
+      expect(placeInMiddle([1, 2])[1]).not.toBe(2);
+      expect(placeInMiddle([1, 2])[2]).toBe(2);
+    });
+
+    it('should not work with not-symmetric arrays', () => {
+      const invalidArray = [1, 2, 3];
+      expect(placeInMiddle(invalidArray)).toBe(invalidArray);
+    });
+    it('should calc mid price as an avg of the neighbours', () => {
+      const objs = [
+        {price: 1} as OrderBookModel,
+        {price: 11} as OrderBookModel
+      ];
+      expect(calcMidPrice(objs)).toBe(6);
+    });
+  });
 });

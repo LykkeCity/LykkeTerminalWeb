@@ -47,12 +47,28 @@ class OrderBookStore extends BaseStore {
     this.orders = [];
   };
 
+  calcMidPrice = (orders: OrderBookModel[]) => {
+    const midIdx = orders.length / 2;
+    const prevIdx = midIdx - 1 < 0 ? 0 : midIdx - 1;
+    const prevEl = orders[prevIdx];
+    const nextEl = orders[midIdx];
+    return (prevEl.price + nextEl.price) / 2;
+  };
+
+  placeInMiddle = (orders: any[], val: any = {}) => {
+    if (orders.length % 2 > 0) {
+      return orders;
+    }
+    const mid = orders.length / 2;
+    return [...orders.slice(0, mid), val, ...orders.slice(mid)];
+  };
+
   private sortOrders = (orders: any) => {
+    const depth: number = 10;
     const arr: any[] = orders.reduce((prev: any, current: any) => {
       let maxPrice: any;
       let sliced: any[];
 
-      const depth: number = 10;
       const desc = (a: any, b: any) => b.Price - a.Price;
 
       current.Levels.sort(desc);
@@ -67,9 +83,9 @@ class OrderBookStore extends BaseStore {
         ? current.Levels.slice(0, depth)
         : current.Levels.slice(-depth);
 
-      if (maxPrice) {
-        sliced.unshift(maxPrice);
-      }
+      // if (maxPrice) {
+      //   sliced.unshift(maxPrice);
+      // }
 
       sliced.forEach((item: any) => {
         item.timestamp = current.Timestamp;
@@ -79,7 +95,7 @@ class OrderBookStore extends BaseStore {
       return prev.concat(sliced);
     }, []);
 
-    return arr.map(
+    const mappedOrders = arr.map(
       (item: any, index: number) =>
         new OrderBookModel({
           ask: item.bestBid ? '' : item.isBuy ? '' : Math.abs(item.Volume),
@@ -90,6 +106,14 @@ class OrderBookStore extends BaseStore {
           timestamp: new Date(item.timestamp).toLocaleTimeString()
         })
     );
+    return this.placeInMiddle(mappedOrders, {
+      ask: '',
+      bestBid: true,
+      bid: '',
+      id: -1,
+      price: this.calcMidPrice(mappedOrders).toFixed(this.instrument!.accuracy),
+      timestamp: Date.now()
+    });
   };
 
   private get instrument() {
