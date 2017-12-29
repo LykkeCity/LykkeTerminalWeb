@@ -1,9 +1,11 @@
+import RestApi from './restApi';
+
 export interface OrderBookApi {
-  fetchAll: () => Promise<any[]>;
+  fetchAll: (id: string) => Promise<{[key: string]: any}>;
 }
 
-export class RestOrderBookApi implements OrderBookApi {
-  fetchAll = () => Promise.resolve([]);
+export class RestOrderBookApi extends RestApi implements OrderBookApi {
+  fetchAll = (id: string) => this.getWithQuery('/Orderbook', {assetPairId: id});
 }
 
 // tslint:disable-next-line:max-classes-per-file
