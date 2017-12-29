@@ -2,7 +2,7 @@ import {lighten, rem} from 'polished';
 import * as React from 'react';
 import {Icon} from '../Icon/index';
 import styled, {css} from '../styled';
-import {default as TileContent} from './TileContent/TileContent';
+import {TileContent} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');

@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -13,15 +14,16 @@ interface TileTabItemProps {
 const StyledSpan = styled.span`
   margin-right: 5px;
   &.clickable {
+    border-radius: 4px;
+    border: solid 1px rgba(140, 148, 160, 0.4);
     color: #ccc;
+    padding: ${rem(8)} ${rem(18)};
     &:hover {
       cursor: pointer;
-      text-decoration: underline;
     }
   }
   &.active {
     color: #fff;
-    text-decoration: underline;
   }
 `;
 
