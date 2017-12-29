@@ -4,12 +4,13 @@ import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import {BalanceList} from './components/BalanceList';
 import {Chart} from './components/Chart/index';
 import {Header} from './components/Header/index';
+import {Order} from './components/Order';
 import {OrderBook} from './components/OrderBook';
 import {OrderList} from './components/OrderList';
 import styled, {injectGlobal} from './components/styled';
 import {Tile} from './components/Tile/index';
 import {TradeList} from './components/TradeList';
-import {Watchlist} from './components/Watchlist';
+// import {Watchlist} from './components/Watchlist';
 import tabs from './constants/tabs';
 import './index.css';
 
@@ -101,7 +102,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ),
   wl: (
     <Tile title="Watchlist" tabs={tabs.watchlist}>
-      <Watchlist />
+      <Order />
     </Tile>
   )
 };
