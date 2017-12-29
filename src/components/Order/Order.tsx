@@ -50,8 +50,8 @@ const StyledOrderOptions = styled.div`
 `;
 
 class Order extends React.Component<OrderProps, OrderState> {
-  constructor(props: any) {
-    super({...props});
+  constructor(props: OrderProps) {
+    super(props);
     this.state = {
       isMarketActive: true,
       isSellActive: true,
