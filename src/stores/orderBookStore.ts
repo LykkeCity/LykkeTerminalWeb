@@ -9,7 +9,19 @@ class OrderBookStore extends BaseStore {
     return this.orders;
   }
 
+  @computed
+  get maxAskValue() {
+    return +this.maxAsk.toFixed(2);
+  }
+
+  @computed
+  get maxBidValue() {
+    return +this.maxBid.toFixed(2);
+  }
+
   @observable private orders: any[] = [];
+  @observable private maxAsk: number = 0;
+  @observable private maxBid: number = 0;
 
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
@@ -48,6 +60,13 @@ class OrderBookStore extends BaseStore {
         (a: any, b: any) =>
           current.IsBuy ? a.Price - b.Price : b.Price - a.Price
       );
+
+      if (current.IsBuy) {
+        const bidLength = current.Levels.length;
+        this.maxBid = current.Levels[bidLength - 1].Price;
+      } else {
+        this.maxAsk = current.Levels[0].Price;
+      }
 
       const sliced: any[] = current.Levels.slice(0, 10);
 
