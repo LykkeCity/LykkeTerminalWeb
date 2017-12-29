@@ -47,12 +47,12 @@ class RootStore {
 
   start = async () => {
     await this.authStore.fetchBearerToken();
-    await this.referenceStore.fetchReferenceData();
     await this.watchlistStore.fetchAll();
+    await this.referenceStore.fetchReferenceData();
     await this.tradeListStore.fetchAll();
 
     // TODO: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
-    const defaultInstrument = this.referenceStore.findInstrumentById(
+    const defaultInstrument = this.referenceStore.getInstrumentById(
       this.uiStore.DEFAULT_INSTRUMENT
     );
     await this.uiStore.selectInstrument(defaultInstrument);
@@ -79,7 +79,7 @@ class RootStore {
 
   private onQuote = (args: any) => {
     const {a: id, p: price} = args[0];
-    const instrument = this.referenceStore.findInstrumentById(id);
+    const instrument = this.referenceStore.getInstrumentById(id);
     if (instrument && instrument.id) {
       instrument.updatePrice(price);
     }

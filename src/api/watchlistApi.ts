@@ -9,7 +9,7 @@ export class RestWatchlistApi extends RestApi implements WatchlistApi {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export class MockWatchlistApi implements WatchlistApi {
+export class MockWatchlistApi extends RestApi implements WatchlistApi {
   fetchAll = () =>
     Promise.resolve<any[]>([
       {

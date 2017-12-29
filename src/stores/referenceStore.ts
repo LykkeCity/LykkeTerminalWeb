@@ -3,71 +3,6 @@ import {AssetApi} from '../api/index';
 import {AssetCategoryModel, AssetModel, InstrumentModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
-// TODO: replace with api call `/watchlists` when it will be implemented
-const allowedInstruments = [
-  'AUDCHF',
-  'AUDEUR',
-  'AUDGBP',
-  'AUDJPY',
-  'AUDUSD',
-  'BTCAUD',
-  'BTCCHF',
-  'BTCEUR',
-  'BTCGBP',
-  'BTCJPY',
-  'BTCLKK',
-  'BTCLKK1Y',
-  'BTCUSD',
-  'ETHBTC',
-  'ETHCHF',
-  'ETHLKK',
-  'ETHUSD',
-  'EURCHF',
-  'EURGBP',
-  'EURJPY',
-  'EURUSD',
-  'GBPCHF',
-  'GBPJPY',
-  'GBPUSD',
-  'LKK1YAUD',
-  'LKK1YCHF',
-  'LKK1YEUR',
-  'LKK1YGBP',
-  'LKK1YJPY',
-  'LKK1YLKK',
-  'LKK1YUSD',
-  'LKKAUD',
-  'LKKCHF',
-  'LKKEUR',
-  'LKKGBP',
-  'LKKJPY',
-  'LKKUSD',
-  'PKTBTC',
-  'PKTETH',
-  'PKTGBP',
-  'PKTUSD',
-  'QNTCHF',
-  'QNTEUR',
-  'QNTGBP',
-  'QNTJPY',
-  'QNTUSD',
-  'SLRBTC',
-  'SLRCHF',
-  'SLREUR',
-  'SLRGBP',
-  'SLRJPY',
-  'SLRUSD',
-  'TIMEBTC',
-  'TIMECHF',
-  'TIMEEUR',
-  'TIMEGBP',
-  'TIMEJPY',
-  'TIMELKK',
-  'TIMEUSD',
-  'USDCHF',
-  'USDJPY'
-];
-
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
   @observable private categories: AssetCategoryModel[] = [];
@@ -108,9 +43,19 @@ class ReferenceStore extends BaseStore {
 
   getCategories = () => this.categories;
 
-  getInstruments = () => this.instruments;
+  getInstruments = () => {
+    // TODO: should be implemented properly
+    if (this.rootStore.watchlistStore) {
+      const allowedInstruments = this.rootStore.watchlistStore.defaultWatchlist
+        .assetIds;
+      return this.instruments.filter(
+        (x: InstrumentModel) => allowedInstruments.indexOf(x.id) > -1
+      );
+    }
+    return this.instruments;
+  };
 
-  findInstrumentById = (id: string) =>
+  getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
   findInstruments = (term: string) =>
@@ -147,9 +92,7 @@ class ReferenceStore extends BaseStore {
     const resp = await this.api.fetchAssetInstruments();
     if (resp && resp.AssetPairs) {
       runInAction(() => {
-        this.instruments = resp.AssetPairs.filter((x: any) => !x.IsDisabled)
-          .map(this.mapInstrumentFromDto)
-          .filter((x: any) => allowedInstruments.indexOf(x.id) > -1);
+        this.instruments = resp.AssetPairs.map(this.mapInstrumentFromDto);
       });
     }
   };
