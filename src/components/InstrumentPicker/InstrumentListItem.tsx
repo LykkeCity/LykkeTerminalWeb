@@ -42,6 +42,7 @@ const StyledInstrumentChange = StyledInstrumentField.extend`
 `;
 
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
+  id,
   name = '',
   price = 0,
   accuracy,
@@ -51,7 +52,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
 }) => (
   <StyledInstrumentItem
     // tslint:disable-next-line:jsx-no-lambda
-    onClick={() => onPick && onPick({name, price, change})}
+    onClick={() => onPick && onPick({id, name, price, change})}
   >
     <StyledInstrumentName>{name}</StyledInstrumentName>
     <StyledInstrumentPrice dir={dir}>

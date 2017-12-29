@@ -76,9 +76,9 @@ class OrderBookStore extends BaseStore {
     return arr.map(
       (item: any, index: number) =>
         new OrderBookModel({
-          ask: item.bestBid ? '' : item.isBuy ? item.Volume : 0,
+          ask: item.bestBid ? '' : item.isBuy ? Math.abs(item.Volume) : '',
           bestBid: item.bestBid || false,
-          bid: item.bestBid ? '' : item.isBuy ? 0 : item.Volume,
+          bid: item.bestBid ? '' : item.isBuy ? '' : Math.abs(item.Volume),
           id: index,
           price: item.Price,
           timestamp: new Date(item.timestamp).toLocaleTimeString()

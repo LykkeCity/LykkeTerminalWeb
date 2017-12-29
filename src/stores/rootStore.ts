@@ -51,8 +51,11 @@ class RootStore {
     await this.watchlistStore.fetchAll();
     await this.tradeListStore.fetchAll();
 
-    // ToDo: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
-    await this.uiStore.selectInstrument({id: 'btcusd'});
+    // TODO: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
+    const defaultInstrument = this.referenceStore.findInstrumentById(
+      this.uiStore.DEFAULT_INSTRUMENT
+    );
+    await this.uiStore.selectInstrument(defaultInstrument);
 
     await this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
