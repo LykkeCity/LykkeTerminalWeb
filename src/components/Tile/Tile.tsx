@@ -2,12 +2,14 @@ import {lighten, rem} from 'polished';
 import * as React from 'react';
 import {Icon} from '../Icon/index';
 import styled, {css} from '../styled';
+import {TileContent} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
 
 interface TileProps {
   title?: string;
+  tabs: string[];
 }
 
 const iconCss = css`
@@ -51,18 +53,7 @@ const TileMenu = styled(Box)`
   ${iconCss};
 `;
 
-const TileContent = styled.div`
-  font-size: ${rem(14)};
-  padding: ${rem(10)} ${rem(15)};
-`;
-
-const TileToolbar = styled.div`
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-  padding: ${rem(10)} 0;
-  ${iconCss};
-`;
-
-const Tile: React.SFC<TileProps> = ({title = '', children}) => (
+const Tile: React.SFC<TileProps> = ({title = '', children, tabs}) => (
   <TileWrapper>
     <Flex justify="space-between">
       <TileTitle>{title} </TileTitle>
@@ -70,17 +61,7 @@ const Tile: React.SFC<TileProps> = ({title = '', children}) => (
         <Icon name="menu" />
       </TileMenu>
     </Flex>
-    <TileContent>
-      <TileToolbar>
-        <Flex align="center" justify="space-between">
-          <Box>Manage</Box>
-          <Box>
-            <Icon name="cog" />
-          </Box>
-        </Flex>
-      </TileToolbar>
-      {children}
-    </TileContent>
+    <TileContent tabs={tabs}>{children}</TileContent>
   </TileWrapper>
 );
 

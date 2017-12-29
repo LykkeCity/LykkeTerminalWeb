@@ -21,11 +21,10 @@ export class RestApi {
       .json();
 
   protected post = (url: string, body: any) =>
-    this.wretcher()
-      .url(url)
-      .json(body)
-      .post()
-      .json();
+    this.postWrapper(url, body).json();
+
+  protected postAndForget = (url: string, body: any) =>
+    this.postWrapper(url, body).res();
 
   protected put = (url: string, body: any) =>
     this.wretcher()
@@ -39,6 +38,13 @@ export class RestApi {
       .url(url)
       .delete()
       .res();
+
+  private readonly postWrapper = (url: string, body: any) => {
+    return this.wretcher()
+      .url(url)
+      .json(body)
+      .post();
+  };
 }
 
 export default RestApi;
