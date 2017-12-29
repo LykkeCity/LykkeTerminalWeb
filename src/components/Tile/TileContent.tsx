@@ -35,6 +35,8 @@ const TileToolbar = styled.div`
 const StyledTileContent = styled.div`
   font-size: ${rem(14)};
   padding: ${rem(10)} ${rem(15)};
+  height: 85%;
+  min-height: 85%;
 `;
 
 class TileContent extends React.Component<TileContentProps, TileContentState> {

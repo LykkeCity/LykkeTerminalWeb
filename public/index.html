@@ -27,6 +27,26 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
   <title>Lykke Web Terminal</title>
+  <!-- TradingView Widget BEGIN -->
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="charting_library/charting_library.min.js"></script>
+  <script src="charting_library/datafeed/udf/datafeed.js"></script>
+  <script type="text/javascript">
+
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    document.addEventListener('DOMContentLoaded', e => {
+      // setTimeout(() => {
+      // }, 10000)
+    })
+
+  </script>
+  <!-- TradingView Widget END -->
 </head>
 
 <body>
@@ -44,11 +64,7 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-
-  <!-- TradingView Widget BEGIN -->
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
-  <!-- TradingView Widget END -->
 
 </body>
 
