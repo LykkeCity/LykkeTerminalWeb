@@ -3,7 +3,7 @@ import {
   AssetModel,
   InstrumentModel
 } from '../../models/index';
-import {ReferenceStore, RootStore} from '../index';
+import {ReferenceStore, RootStore, WatchlistStore} from '../index';
 
 // tslint:disable:object-literal-sort-keys
 describe('referenceStore', () => {
