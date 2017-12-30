@@ -83,10 +83,6 @@ class OrderBookStore extends BaseStore {
         ? current.Levels.slice(0, depth)
         : current.Levels.slice(-depth);
 
-      // if (maxPrice) {
-      //   sliced.unshift(maxPrice);
-      // }
-
       sliced.forEach((item: any) => {
         item.timestamp = current.Timestamp;
         item.isBuy = current.IsBuy;

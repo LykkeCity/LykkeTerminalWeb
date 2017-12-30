@@ -1,7 +1,7 @@
 import {lighten, rem} from 'polished';
 import * as React from 'react';
+import {Dir} from '../../models';
 import {InstrumentModel} from '../../models/index';
-import Dir from '../../stores/dir';
 import {asChange} from '../../utils';
 import styled from '../styled';
 import {InstrumentField, InstrumentPickerActions} from './index';

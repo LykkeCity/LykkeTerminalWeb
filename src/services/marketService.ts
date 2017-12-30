@@ -1,5 +1,5 @@
 import {RestMarketsApi} from '../api/marketsApi';
-import Side from '../stores/enums/side';
+import {Side} from '../models';
 
 const marketsApi = new RestMarketsApi();
 

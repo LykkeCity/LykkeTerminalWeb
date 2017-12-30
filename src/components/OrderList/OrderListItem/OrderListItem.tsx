@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {OrderListItemProps} from '../';
-import Dir from '../../../stores/dir';
-import Side from '../../../stores/side';
+import {Dir, Side} from '../../../models';
 import {Icon} from '../../Icon/index';
 
 const OrderListItem: React.SFC<OrderListItemProps> = ({
