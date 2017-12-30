@@ -1,5 +1,5 @@
 import {action, extendObservable, observable} from 'mobx';
-import Dir from '../stores/dir';
+import {Dir} from '../models';
 import {AssetModel} from './index';
 
 class InstrumentModel {

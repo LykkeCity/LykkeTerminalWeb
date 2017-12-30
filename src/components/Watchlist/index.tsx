@@ -1,4 +1,4 @@
-import Dir from '../../stores/dir';
+import {Dir} from '../../models';
 import {connect} from '../connect';
 import Watchlist from './Watchlist';
 

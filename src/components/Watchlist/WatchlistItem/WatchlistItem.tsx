@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {WatchlistItemProps} from '../';
-import Dir from '../../../stores/dir';
+import {Dir} from '../../../models';
 import {Icon} from '../../Icon/index';
 
 const WatchlistItem: React.SFC<WatchlistItemProps> = ({
