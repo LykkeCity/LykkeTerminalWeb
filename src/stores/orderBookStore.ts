@@ -11,12 +11,12 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get maxAskValue() {
-    return +this.maxAsk.toFixed(2);
+    return +this.maxAsk.toFixed(this.instrument!.accuracy);
   }
 
   @computed
   get maxBidValue() {
-    return +this.maxBid.toFixed(2);
+    return +this.maxBid.toFixed(this.instrument!.accuracy);
   }
 
   @observable private orders: any[] = [];

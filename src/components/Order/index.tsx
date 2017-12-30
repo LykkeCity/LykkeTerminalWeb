@@ -13,6 +13,8 @@ export interface OrderState {
 export interface OrderProps {
   ask: number;
   bid: number;
+  accuracy: number;
+  currency: string;
 }
 
 export interface OrderOptionProps {
@@ -53,9 +55,11 @@ export interface OrderActionProps {
 }
 
 const connectedOrder = connect(
-  ({orderBookStore: {maxAskValue, maxBidValue}}) => ({
+  ({orderBookStore: {maxAskValue, maxBidValue, instrument}}) => ({
     ask: maxAskValue,
-    bid: maxBidValue
+    bid: maxBidValue,
+    accuracy: instrument!.accuracy,
+    currency: instrument!.id
   }),
   Order
 );

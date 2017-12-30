@@ -97,10 +97,15 @@ class Order extends React.Component<OrderProps, OrderState> {
       : orderOptions;
     return (
       <div>
-        <OrderHeader orderCurrency={'BTCUSD'} click={this.closeOrderHandler} />
+        <OrderHeader
+          orderCurrency={this.props.currency}
+          click={this.closeOrderHandler}
+        />
 
         <StyledActionBlock>
-          <StyledSplitBlock>{this.props.bid + this.props.ask}</StyledSplitBlock>
+          <StyledSplitBlock>
+            {(this.props.bid + this.props.ask).toFixed(this.props.accuracy)}
+          </StyledSplitBlock>
           <OrderAction
             click={this.actionClickHandler.bind(this, orderAction.sell.action)}
             isActive={this.state.isSellActive}
@@ -147,8 +152,8 @@ class Order extends React.Component<OrderProps, OrderState> {
               action={currentAction.action}
               price={
                 currentAction.action === orderAction.buy.action
-                  ? this.props.bid
-                  : this.props.ask
+                  ? this.props.ask
+                  : this.props.bid
               }
               click={this.buttonClickHandler.bind(this, currentAction.action)}
             />
