@@ -38,7 +38,7 @@ class OrderBookStore extends BaseStore {
       () =>
         (this.pollingInterval = setInterval(
           getOrders,
-          process.env.REACT_APP_REQ_INTERVAL
+          process.env.REACT_APP_REQ_INTERVAL || 10000
         ))
     );
   };
