@@ -10,8 +10,8 @@ export class RestAuthApi extends RestApi implements AuthApi {
     this.post(path, {
       ClientInfo: '',
       Email: email, // bcc@t.com
-      PartnerId: '', // 111111
-      Password: password
+      PartnerId: '',
+      Password: password // 111111
     });
 }
 

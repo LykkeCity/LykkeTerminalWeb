@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import AuthStore from '../../stores/authStore';
 import ErrorMessage from './Error/ErrorMessage';
+import {SignInPageProps, SignInPageState} from './index';
 import InputField from './Input/InputField';
 
 const StyledSignInForm = styled.div`
@@ -25,19 +25,6 @@ const StyledButtonWrap = styled.div`
   flex-direction: row;
   justify-content: center;
 `;
-
-interface SignInPageState {
-  email: string;
-  password: string;
-  emailError: string;
-  passwordError: string;
-  commonError: string;
-}
-
-interface SignInPageProps {
-  authStore: AuthStore;
-  history: any;
-}
 
 class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   constructor(props: SignInPageProps) {

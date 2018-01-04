@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import ErrorMessage from '../Error/ErrorMessage';
+import {InputFieldProps} from '../index';
 
 const StyledLabel = styled.label`
   float: left;
@@ -16,13 +17,6 @@ const StyledInputBlock = styled.div`
   margin-top: 10px;
   width: 100%;
 `;
-
-interface InputFieldProps {
-  id: string;
-  inputValue: string;
-  change: any;
-  errorMessage: string;
-}
 
 const InputField: React.SFC<InputFieldProps> = ({
   id,

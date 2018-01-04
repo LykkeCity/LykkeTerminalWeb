@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import startChart from '../../chart';
 import tabs from '../../constants/tabs';
-import RootStore from '../../stores/rootStore';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
@@ -12,6 +11,7 @@ import styled from '../styled';
 import {Tile} from '../Tile/index';
 import {TradeList} from '../TradeList';
 import {Watchlist} from '../Watchlist';
+import {TerminalProps} from './index';
 
 const Shell = styled.div`
   background: rgba(0, 0, 0, 0.2);
@@ -55,11 +55,6 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   )
 };
-
-interface TerminalProps {
-  rootStore: RootStore;
-  history: any;
-}
 
 class Terminal extends React.Component<TerminalProps, {}> {
   constructor(props: TerminalProps) {

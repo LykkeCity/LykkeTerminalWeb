@@ -1,11 +1,11 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import AuthStore from '../../stores/authStore';
 import {BalanceInfo} from '../BalanceInfo';
-import {InstrumentPicker} from '../InstrumentPicker/index';
+import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import styled from '../styled';
 import {Heading} from '../Typography/index';
+import {HeaderProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
@@ -21,11 +21,6 @@ const HeaderFlex = styled(Flex)`
   border-bottom: solid 1px rgba(0, 0, 0, 0.2);
   height: 40px;
 `;
-
-interface HeaderProps {
-  authStore: AuthStore;
-  history: any;
-}
 
 const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
   const signOut = () => {
