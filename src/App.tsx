@@ -1,16 +1,9 @@
 import {fontFace, normalize, transitions} from 'polished';
 import * as React from 'react';
-import {Mosaic, MosaicDirection} from 'react-mosaic-component';
-import {BalanceList} from './components/BalanceList';
-import {Chart} from './components/Chart/index';
-import {Header} from './components/Header/index';
-import {OrderBook} from './components/OrderBook';
-import {OrderList} from './components/OrderList';
-import styled, {injectGlobal} from './components/styled';
-import {Tile} from './components/Tile/index';
-import {TradeList} from './components/TradeList';
-import {Watchlist} from './components/Watchlist';
-import tabs from './constants/tabs';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {SignInPage} from './components/SignInPage';
+import {injectGlobal} from './components/styled';
+import {Terminal} from './components/Terminal';
 import './index.css';
 
 const addFont = (name: string) => (f: any) =>
@@ -63,84 +56,15 @@ injectGlobal`
   }
 `;
 
-const Shell = styled.div`
-  background: rgba(0, 0, 0, 0.2);
-  height: 100vh;
-  width: 100vw;
-  padding: 0;
-  margin: 0;
-`;
-
-const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
-  acc: (
-    <Tile title="Account" tabs={tabs.account}>
-      <BalanceList />
-    </Tile>
-  ),
-  c: (
-    <Tile title="Chart" tabs={tabs.chart}>
-      <Chart />
-    </Tile>
-  ),
-  e: (
-    <Tile title="Executions" tabs={tabs.executions}>
-      <TradeList />
-      <div>Second tab</div>
-    </Tile>
-  ),
-  ob: (
-    <Tile title="Order book" tabs={tabs.orderBook}>
-      <OrderBook />
-    </Tile>
-  ),
-  ord: (
-    <Tile title="Orders" tabs={tabs.orders}>
-      <OrderList />
-      <div>Second tab</div>
-    </Tile>
-  ),
-  wl: (
-    <Tile title="Watchlist" tabs={tabs.watchlist}>
-      <Watchlist />
-    </Tile>
-  )
-};
-
 class App extends React.Component {
   render() {
     return (
-      <Shell>
-        <Header />
-        <Mosaic
-          // tslint:disable-next-line:jsx-no-lambda
-          renderTile={(id, path) => ELEMENT_MAP[id]}
-          resize={{minimumPaneSizePercentage: 10}}
-          initialValue={{
-            direction: 'row' as MosaicDirection,
-            first: {
-              direction: 'column' as MosaicDirection,
-              first: 'wl',
-              second: 'acc'
-            },
-            second: {
-              direction: 'row' as MosaicDirection,
-              first: {
-                direction: 'column' as MosaicDirection,
-                first: 'c',
-                second: 'ord',
-                splitPercentage: 70
-              },
-              second: {
-                direction: 'column' as MosaicDirection,
-                first: 'ob',
-                second: 'e'
-              },
-              splitPercentage: 80
-            },
-            splitPercentage: 20
-          }}
-        />
-      </Shell>
+      <Router>
+        <Switch>
+          <Route exact={true} path="/signin" component={SignInPage} />
+          <Route exact={true} path="/" component={Terminal} />
+        </Switch>
+      </Router>
     );
   }
 }

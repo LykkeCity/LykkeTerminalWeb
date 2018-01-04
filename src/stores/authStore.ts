@@ -8,10 +8,23 @@ class AuthStore extends BaseStore {
     super(store);
   }
 
-  fetchBearerToken = async () => {
-    const res = await this.api.fetchBearerToken('/client/auth');
-    this.token = res.AccessToken;
-    localStorage.setItem('token', this.token);
+  isAuth = () => {
+    return localStorage.getItem('token');
+  };
+
+  fetchBearerToken = async (email: string, password: string) => {
+    return this.api
+      .fetchBearerToken('/client/auth', email, password)
+      .then(res => {
+        this.token = res.AccessToken;
+        localStorage.setItem('token', this.token);
+        return Promise.resolve();
+      })
+      .catch(err => Promise.reject(JSON.parse(err.message)));
+  };
+
+  signOut = () => {
+    this.reset();
   };
 
   reset = () => {
