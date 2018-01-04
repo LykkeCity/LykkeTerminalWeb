@@ -8,7 +8,6 @@
 
 # production
 /build
-/public/charting_library/static
 
 # misc
 .DS_Store
