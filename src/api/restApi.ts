@@ -1,9 +1,13 @@
 import wretch from 'wretch';
+import keys from '../constants/storageKeys';
+import {StorageUtils} from '../utils/index';
+
+const tokenStorage = StorageUtils(keys.token);
 
 export class RestApi {
   protected readonly wretcher = () => {
     return wretch(process.env.REACT_APP_API_URL).auth(
-      `Bearer ${localStorage.getItem('token')}`
+      `Bearer ${tokenStorage.get()}`
     );
   };
 

@@ -1,16 +1,29 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import AuthStore from '../../stores/authStore';
+import ErrorMessage from './Error/ErrorMessage';
+import InputField from './Input/InputField';
 
 const StyledSignInForm = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  color: #000;
+  transition: none;
 `;
 
-const StyledErrors = styled.span`
-  color: red;
+const StyledForm = styled.div`
+  width: 300px;
+  border: 1px solid #ccc;
+  padding: 40px;
+`;
+
+const StyledButtonWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 `;
 
 interface SignInPageState {
@@ -38,6 +51,20 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
     };
   }
 
+  componentDidMount() {
+    document.body.addEventListener('keyup', this.keyupHandler);
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keyup', this.keyupHandler);
+  }
+
+  keyupHandler = (e: any) => {
+    if (e.keyCode === 13) {
+      this.signIn();
+    }
+  };
+
   emailChangeHandler = (e: any) => {
     this.setState({
       email: e.target.value
@@ -50,14 +77,14 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
     });
   };
 
-  SignIn = () => {
+  signIn = () => {
     if (!this.state.password.length || !this.state.email.length) {
       return;
     }
 
     this.props.authStore
       .fetchBearerToken(this.state.email, this.state.password)
-      .then(res => {
+      .then(() => {
         this.props.history.push('/');
       })
       .catch(error => {
@@ -73,26 +100,34 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   render() {
     return (
       <StyledSignInForm>
-        <input
-          type="email"
-          value={this.state.email}
-          onChange={this.emailChangeHandler}
-        />
-        <StyledErrors>{this.state.emailError}</StyledErrors>
-        <input
-          type="password"
-          value={this.state.password}
-          onChange={this.passwordChangeHandler}
-        />
-        <StyledErrors>{this.state.passwordError}</StyledErrors>
-        <StyledErrors>{this.state.commonError}</StyledErrors>
-        <button
-          type="button"
-          disabled={!(this.state.email.length && this.state.password.length)}
-          onClick={this.SignIn}
-        >
-          Log in
-        </button>
+        <StyledForm>
+          <InputField
+            id={'email'}
+            inputValue={this.state.email}
+            change={this.emailChangeHandler}
+            errorMessage={this.state.emailError}
+          />
+
+          <InputField
+            id={'password'}
+            inputValue={this.state.password}
+            change={this.passwordChangeHandler}
+            errorMessage={this.state.passwordError}
+          />
+          <ErrorMessage errorMessage={this.state.commonError} />
+
+          <StyledButtonWrap>
+            <button
+              type="button"
+              disabled={
+                !(this.state.email.length && this.state.password.length)
+              }
+              onClick={this.signIn}
+            >
+              Sign in
+            </button>
+          </StyledButtonWrap>
+        </StyledForm>
       </StyledSignInForm>
     );
   }

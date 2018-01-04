@@ -1,23 +1,30 @@
+import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
+import keys from '../constants/storageKeys';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
+const tokenStorage = StorageUtils(keys.token);
+
 class AuthStore extends BaseStore {
-  private token: string = '';
+  @computed
+  get isAuth() {
+    return !!this.token;
+  }
+
+  @observable private token: any = null;
 
   constructor(store: RootStore, private readonly api: AuthApi) {
     super(store);
+    this.token = tokenStorage.get();
   }
-
-  isAuth = () => {
-    return localStorage.getItem('token');
-  };
 
   fetchBearerToken = async (email: string, password: string) => {
     return this.api
       .fetchBearerToken('/client/auth', email, password)
       .then(res => {
         this.token = res.AccessToken;
-        localStorage.setItem('token', this.token);
+        tokenStorage.set(this.token);
         return Promise.resolve();
       })
       .catch(err => Promise.reject(JSON.parse(err.message)));
@@ -28,8 +35,8 @@ class AuthStore extends BaseStore {
   };
 
   reset = () => {
-    this.token = '';
-    localStorage.removeItem('token');
+    this.token = null;
+    tokenStorage.clear();
   };
 }
 

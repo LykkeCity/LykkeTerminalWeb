@@ -28,8 +28,6 @@ interface HeaderProps {
 }
 
 const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
-  const isAuth = authStore.isAuth();
-
   const signOut = () => {
     authStore.signOut();
   };
@@ -61,7 +59,7 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
           </HeaderItem>
           <HeaderItem>
             <Link>
-              {isAuth ? (
+              {authStore.isAuth ? (
                 <span className="hidden-xs" onClick={signOut}>
                   Sign Out
                 </span>
