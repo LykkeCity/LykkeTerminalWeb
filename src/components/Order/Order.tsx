@@ -40,7 +40,7 @@ const StyledSplitBlock = styled.div`
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  font-size: 24px;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.33;
   color: #13b72a;

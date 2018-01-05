@@ -101,7 +101,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   wl: (
-    <Tile title="Watchlist" tabs={tabs.watchlist}>
+    <Tile title="Order" tabs={tabs.watchlist}>
       <Order />
     </Tile>
   )
@@ -121,7 +121,8 @@ class App extends React.Component {
             first: {
               direction: 'column' as MosaicDirection,
               first: 'wl',
-              second: 'acc'
+              second: 'acc',
+              splitPercentage: 65
             },
             second: {
               direction: 'row' as MosaicDirection,

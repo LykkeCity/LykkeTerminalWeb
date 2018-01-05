@@ -11,7 +11,7 @@ const StyledButton = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+  font-size: 1rem;
   color: #ffffff;
 
   &.sell {
