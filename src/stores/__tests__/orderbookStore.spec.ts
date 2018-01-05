@@ -71,26 +71,29 @@ describe('orderBook store', () => {
       rootStore,
       null as any
     );
-    const orders: any = [1, 2, 3, 4];
+    const orders: any = [{bid: 1}, {bid: 2}, {ask: 3}, {ask: 4}];
 
     it('should add one more element to an array', () => {
       expect(placeInMiddle(orders).length).toBe(orders.length + 1);
     });
 
-    it('should place mid price in the middle of the array', () => {
-      const midArray = orders.length / 2;
-      const midEl = orders[midArray];
-      const newOrders = placeInMiddle(orders);
-      expect(newOrders[midArray]).not.toBe(midEl);
-      expect(placeInMiddle([1, 2])[0]).toBe(1);
-      expect(placeInMiddle([1, 2])[1]).not.toBe(2);
-      expect(placeInMiddle([1, 2])[2]).toBe(2);
+    it('should place mid price in the middle of orders', () => {
+      const midPrice = {val: 2.5};
+      const newOrders = placeInMiddle(orders, midPrice);
+      expect(newOrders[orders.length / 2]).toBe(midPrice);
+      expect(newOrders[2]).not.toBe({ask: 3});
+      expect(newOrders[2]).not.toBe({bid: 2});
     });
 
-    it('should not work with not-symmetric arrays', () => {
-      const invalidArray = [1, 2, 3];
-      expect(placeInMiddle(invalidArray)).toBe(invalidArray);
+    it('should work correctly with assymetric arrays', () => {
+      const prevOrders: any = [{bid: 1}, {ask: 3}, {ask: 4}, {ask: 5}];
+      const midPrice = {val: 2};
+      const nextOrders = placeInMiddle(prevOrders, midPrice);
+      expect(nextOrders[3]).toBe(midPrice);
+      expect(nextOrders[1]).not.toBe({bid: 1});
+      expect(nextOrders[1]).not.toBe({ask: 3});
     });
+
     it('should calc mid price as an avg of the neighbours', () => {
       const objs = [
         {price: 1, isBuy: true} as OrderBookModel,

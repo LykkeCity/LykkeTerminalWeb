@@ -5,12 +5,12 @@ import tabs from '../../constants/tabs';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
+import {Order} from '../Order';
 import {OrderBook} from '../OrderBook';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {Tile} from '../Tile/index';
 import {TradeList} from '../TradeList';
-import {Watchlist} from '../Watchlist';
 import {TerminalProps} from './index';
 
 const Shell = styled.div`
@@ -23,12 +23,12 @@ const Shell = styled.div`
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
-    <Tile title="Account" tabs={tabs.account}>
+    <Tile title="Account">
       <BalanceList />
     </Tile>
   ),
   c: (
-    <Tile title="Chart" tabs={tabs.chart}>
+    <Tile title="Chart">
       <Chart />
     </Tile>
   ),
@@ -39,7 +39,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   ob: (
-    <Tile title="Order book" tabs={tabs.orderBook}>
+    <Tile title="Order book">
       <OrderBook />
     </Tile>
   ),
@@ -50,8 +50,8 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   wl: (
-    <Tile title="Watchlist" tabs={tabs.watchlist}>
-      <Watchlist />
+    <Tile title="Order">
+      <Order />
     </Tile>
   )
 };
@@ -95,9 +95,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
                 first: 'ob',
                 second: 'e'
               },
-              splitPercentage: 80
+              splitPercentage: 78
             },
-            splitPercentage: 20
+            splitPercentage: 22
           }}
         />
       </Shell>

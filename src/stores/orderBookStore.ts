@@ -11,12 +11,20 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get maxAskValue() {
-    return +this.maxAsk.toFixed(this.instrument!.accuracy);
+    if (this.instrument) {
+      return +this.maxAsk.toFixed(this.instrument!.accuracy);
+    } else {
+      return +this.maxAsk.toFixed(2);
+    }
   }
 
   @computed
   get maxBidValue() {
-    return +this.maxBid.toFixed(this.instrument!.accuracy);
+    if (this.instrument) {
+      return +this.maxBid.toFixed(this.instrument!.accuracy);
+    } else {
+      return +this.maxBid.toFixed(2);
+    }
   }
 
   @observable private orders: any[] = [];
@@ -70,11 +78,7 @@ class OrderBookStore extends BaseStore {
   };
 
   placeInMiddle = (orders: any[], val: any = {}) => {
-    if (orders.length % 2 > 0) {
-      return orders;
-    }
-    const mid = orders.length / 2;
-    return [...orders.slice(0, mid), val, ...orders.slice(mid)];
+    return [...orders.filter(o => o.ask), val, ...orders.filter(o => o.bid)];
   };
 
   sortOrders = (orders: any) => {

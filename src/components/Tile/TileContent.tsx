@@ -62,27 +62,29 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
       : this.props.children;
     return (
       <StyledTileContent>
-        <TileToolbar>
-          <Flex align="center" justify="space-between">
-            <Flex align="center">
-              {this.props.tabs.map((tab: string, index: number) => {
-                return (
-                  <TileTabItem
-                    isClickable={!!this.props.children.length}
-                    key={`tiletabitem_${index}`}
-                    tabName={tab}
-                    index={index}
-                    activeIndex={this.state.activeTabIndex}
-                    click={this.handleClick(index)}
-                  />
-                );
-              })}
+        {this.props.tabs && (
+          <TileToolbar>
+            <Flex align="center" justify="space-between">
+              <Flex align="center">
+                {this.props.tabs.map((tab: string, index: number) => {
+                  return (
+                    <TileTabItem
+                      isClickable={!!this.props.children.length}
+                      key={`tiletabitem_${index}`}
+                      tabName={tab}
+                      index={index}
+                      activeIndex={this.state.activeTabIndex}
+                      click={this.handleClick(index)}
+                    />
+                  );
+                })}
+              </Flex>
+              <Box>
+                <Icon name="cog" />
+              </Box>
             </Flex>
-            <Box>
-              <Icon name="cog" />
-            </Box>
-          </Flex>
-        </TileToolbar>
+          </TileToolbar>
+        )}
         {child}
       </StyledTileContent>
     );
