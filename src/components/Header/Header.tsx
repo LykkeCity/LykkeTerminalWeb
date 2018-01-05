@@ -27,7 +27,7 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
     authStore.signOut();
   };
 
-  const singIn = () => {
+  const signIn = () => {
     history.push('signin');
   };
 
@@ -59,7 +59,7 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
                   Sign Out
                 </span>
               ) : (
-                <span className="hidden-xs" onClick={singIn}>
+                <span className="hidden-xs" onClick={signIn}>
                   Sign In
                 </span>
               )}

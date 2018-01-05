@@ -14,7 +14,7 @@ const StyledSignInForm = styled.div`
   transition: none;
 `;
 
-const StyledForm = styled.div`
+const StyledForm = styled.form`
   width: 300px;
   border: 1px solid #ccc;
   padding: 40px;
@@ -38,18 +38,8 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
     };
   }
 
-  componentDidMount() {
-    document.body.addEventListener('keyup', this.keyupHandler);
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('keyup', this.keyupHandler);
-  }
-
-  keyupHandler = (e: any) => {
-    if (e.keyCode === 13) {
-      this.signIn();
-    }
+  submitHandler = (e: any) => {
+    e.preventDefault();
   };
 
   emailChangeHandler = (e: any) => {
@@ -78,16 +68,14 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
         const emailError = error.Email ? error.Email : '';
         const passwordError = error.Password ? error.Password : '';
         const commonError = error.message ? error.message : '';
-        this.setState({emailError});
-        this.setState({passwordError});
-        this.setState({commonError});
+        this.setState({emailError, passwordError, commonError});
       });
   };
 
   render() {
     return (
       <StyledSignInForm>
-        <StyledForm>
+        <StyledForm onSubmit={this.submitHandler}>
           <InputField
             id={'email'}
             inputValue={this.state.email}
@@ -105,7 +93,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
 
           <StyledButtonWrap>
             <button
-              type="button"
+              type="submit"
               disabled={
                 !(this.state.email.length && this.state.password.length)
               }
