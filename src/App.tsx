@@ -113,8 +113,6 @@ class App extends React.Component {
       <Shell>
         <Header />
         <Mosaic
-          // <MosaicWindow title={id} path={path}>
-          // </MosaicWindow>
           // tslint:disable-next-line:jsx-no-lambda
           renderTile={(id, path) => ELEMENT_MAP[id]}
           resize={{minimumPaneSizePercentage: 10}}

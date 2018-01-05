@@ -92,8 +92,8 @@ describe('orderBook store', () => {
     });
     it('should calc mid price as an avg of the neighbours', () => {
       const objs = [
-        {price: 1} as OrderBookModel,
-        {price: 11} as OrderBookModel
+        {price: 1, isBuy: true} as OrderBookModel,
+        {price: 11, isBuy: false} as OrderBookModel
       ];
       expect(calcMidPrice(objs)).toBe(6);
     });

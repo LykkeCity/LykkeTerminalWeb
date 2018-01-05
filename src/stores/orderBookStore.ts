@@ -50,7 +50,7 @@ class OrderBookStore extends BaseStore {
       () =>
         (this.pollingInterval = setInterval(
           getOrders,
-          process.env.REACT_APP_REQ_INTERVAL
+          process.env.REACT_APP_REQ_INTERVAL || 10000
         ))
     );
   };
@@ -60,11 +60,13 @@ class OrderBookStore extends BaseStore {
   };
 
   calcMidPrice = (orders: OrderBookModel[]) => {
-    const midIdx = orders.length / 2;
-    const prevIdx = midIdx - 1 < 0 ? 0 : midIdx - 1;
-    const prevEl = orders[prevIdx];
-    const nextEl = orders[midIdx];
-    return (prevEl.price + nextEl.price) / 2;
+    const minAsk = orders
+      .filter(order => !order.isBuy)
+      .sort((a, b) => a.price - b.price)[0].price;
+    const maxBid = orders
+      .filter(order => order.isBuy)
+      .sort((a, b) => b.price - a.price)[0].price;
+    return (minAsk + maxBid) / 2;
   };
 
   placeInMiddle = (orders: any[], val: any = {}) => {
@@ -98,10 +100,6 @@ class OrderBookStore extends BaseStore {
         ? current.Levels.slice(0, depth)
         : current.Levels.slice(-depth);
 
-      // if (maxPrice) {
-      //   sliced.unshift(maxPrice);
-      // }
-
       sliced.forEach((item: any) => {
         item.timestamp = current.Timestamp;
         item.isBuy = current.IsBuy;
@@ -117,6 +115,7 @@ class OrderBookStore extends BaseStore {
           bestBid: item.bestBid || false,
           bid: item.bestBid ? '' : item.isBuy ? Math.abs(item.Volume) : '',
           id: index,
+          isBuy: item.isBuy,
           price: item.Price,
           timestamp: new Date(item.timestamp).toLocaleTimeString()
         })

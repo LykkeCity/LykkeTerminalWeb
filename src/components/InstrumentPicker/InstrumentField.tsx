@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Dir from '../../stores/dir';
+import {Dir} from '../../models';
 
 interface InstrumentFieldProps {
   dir?: Dir;
