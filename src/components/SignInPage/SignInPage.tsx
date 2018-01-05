@@ -38,17 +38,17 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
     };
   }
 
-  submitHandler = (e: any) => {
+  handleSubmit = (e: any) => {
     e.preventDefault();
   };
 
-  emailChangeHandler = (e: any) => {
+  handleEmailChange = (e: any) => {
     this.setState({
       email: e.target.value
     });
   };
 
-  passwordChangeHandler = (e: any) => {
+  handlePasswordChange = (e: any) => {
     this.setState({
       password: e.target.value
     });
@@ -75,18 +75,18 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   render() {
     return (
       <StyledSignInForm>
-        <StyledForm onSubmit={this.submitHandler}>
+        <StyledForm onSubmit={this.handleSubmit}>
           <InputField
             id={'email'}
             inputValue={this.state.email}
-            change={this.emailChangeHandler}
+            change={this.handleEmailChange}
             errorMessage={this.state.emailError}
           />
 
           <InputField
             id={'password'}
             inputValue={this.state.password}
-            change={this.passwordChangeHandler}
+            change={this.handlePasswordChange}
             errorMessage={this.state.passwordError}
           />
           <ErrorMessage errorMessage={this.state.commonError} />
