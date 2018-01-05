@@ -63,29 +63,29 @@ class Order extends React.Component<OrderProps, OrderState> {
     };
   }
 
-  actionClickHandler = (action: string) => () => {
+  handleActionClick = (action: string) => () => {
     this.setState({
       isSellActive: action === orderAction.sell.action
     });
   };
 
-  actionChoiceClickHandler = (choice: string) => () => {
+  handleActionChoiceClick = (choice: string) => () => {
     this.setState({
       isMarketActive: choice === MARKET
     });
   };
 
-  buttonClickHandler = (action: string) => () => {
+  handleButtonClick = (action: string) => () => {
     alert(action);
   };
 
-  onChangeHandler = (value: string) => (e: any) => {
+  handleOnChange = (value: string) => (e: any) => {
     const tempObj = {};
     tempObj[value] = +e.target.value;
     this.setState(tempObj);
   };
 
-  closeOrderHandler = () => {
+  handleCloseOrder = () => {
     alert('close order');
   };
 
@@ -101,7 +101,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       <div>
         <OrderHeader
           orderCurrency={this.props.currency}
-          click={this.closeOrderHandler}
+          click={this.handleCloseOrder}
         />
 
         <StyledActionBlock>
@@ -109,13 +109,13 @@ class Order extends React.Component<OrderProps, OrderState> {
             {(this.props.bid + this.props.ask).toFixed(this.props.accuracy)}
           </StyledSplitBlock>
           <OrderAction
-            click={this.actionClickHandler(orderAction.sell.action)}
+            click={this.handleActionClick(orderAction.sell.action)}
             isActive={this.state.isSellActive}
             price={this.props.bid}
             {...orderAction.sell}
           />
           <OrderAction
-            click={this.actionClickHandler(orderAction.buy.action)}
+            click={this.handleActionClick(orderAction.buy.action)}
             isActive={!this.state.isSellActive}
             price={this.props.ask}
             {...orderAction.buy}
@@ -127,12 +127,12 @@ class Order extends React.Component<OrderProps, OrderState> {
             <OrderChoiceButton
               title={MARKET}
               isActive={this.state.isMarketActive}
-              click={this.actionChoiceClickHandler(MARKET)}
+              click={this.handleActionChoiceClick(MARKET)}
             />
             <OrderChoiceButton
               title={PENDING}
               isActive={!this.state.isMarketActive}
-              click={this.actionChoiceClickHandler(PENDING)}
+              click={this.handleActionChoiceClick(PENDING)}
             />
           </StyledActionChoice>
 
@@ -142,7 +142,7 @@ class Order extends React.Component<OrderProps, OrderState> {
                 <OrderOption
                   key={index}
                   inputValue={this.state[opt.value]}
-                  change={this.onChangeHandler(opt.value)}
+                  change={this.handleOnChange(opt.value)}
                   {...opt}
                 />
               );
@@ -155,7 +155,7 @@ class Order extends React.Component<OrderProps, OrderState> {
               price={
                 currentAction.action === orderAction.buy.action ? ask : bid
               }
-              click={this.buttonClickHandler(currentAction.action)}
+              click={this.handleButtonClick(currentAction.action)}
             />
           </StyledOrderButton>
         </StyledContentWrap>

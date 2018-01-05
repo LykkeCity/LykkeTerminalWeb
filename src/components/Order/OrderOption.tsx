@@ -1,7 +1,25 @@
 import * as React from 'react';
+import styled from 'styled-components';
+import NumberInput from '../NumberInput/NumberInput';
 import {OrderOptionProps} from './index';
-import './orderOption.css';
 import OrderTumbler from './OrderTumbler';
+
+const StyledOrderOptions = styled.div`
+  margin: 10px 0 0 0;
+`;
+
+const StyledTitle = styled.span`
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #f5f6f7;
+`;
+
+const StyledOptions = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0 0 0;
+`;
 
 const OrderOption: React.SFC<OrderOptionProps> = ({
   title,
@@ -11,20 +29,18 @@ const OrderOption: React.SFC<OrderOptionProps> = ({
   inputValue
 }) => {
   return (
-    <div className={'title-wrap'}>
+    <StyledOrderOptions>
       <div>
         {isOptional ? (
           <input type="checkbox" /> // todo have to be styled
         ) : null}
-        <span className={'title'}>{title}</span>
+        <StyledTitle>{title}</StyledTitle>
       </div>
-      <div className={'options'}>
+      <StyledOptions>
         <OrderTumbler tumblers={tumblerValues} />
-        <div className={'input-wrap'}>
-          <input type="number" min="0" onChange={change} value={inputValue} />
-        </div>
-      </div>
-    </div>
+        <NumberInput inputValue={inputValue} change={change} />
+      </StyledOptions>
+    </StyledOrderOptions>
   );
 };
 

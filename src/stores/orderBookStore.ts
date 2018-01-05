@@ -77,7 +77,7 @@ class OrderBookStore extends BaseStore {
     return [...orders.slice(0, mid), val, ...orders.slice(mid)];
   };
 
-  private sortOrders = (orders: any) => {
+  sortOrders = (orders: any) => {
     const depth: number = 10;
     const arr: any[] = orders.reduce((prev: any, current: any) => {
       let maxPrice: any;
