@@ -1,4 +1,5 @@
 import {RestOrderBookApi} from '../../api/orderBookApi';
+import {AssetModel, InstrumentModel} from '../../models';
 import {OrderBookModel} from '../../models/index';
 import {OrderBookStore, RootStore} from '../index';
 
@@ -96,6 +97,54 @@ describe('orderBook store', () => {
         {price: 11, isBuy: false} as OrderBookModel
       ];
       expect(calcMidPrice(objs)).toBe(6);
+    });
+  });
+
+  describe('max ask and max bid values', () => {
+    const rootStore = new RootStore(true);
+    const store = new OrderBookStore(rootStore, null as any);
+    store.fetchAll = jest.fn(() => orderBookStore.addOrder(newOrder));
+    rootStore.uiStore.selectedInstrument = new InstrumentModel({
+      accuracy: 3,
+      baseAsset: expect.any(AssetModel),
+      id: 'BTCCHF',
+      invertedAccuracy: 8,
+      name: 'BTC/CHF',
+      quotingAsset: expect.any(AssetModel)
+    });
+
+    const maxValue = 16000;
+    const minValue = 15000;
+
+    const orders: any = [
+      {
+        IsBuy: false,
+        Levels: [
+          {
+            Price: maxValue
+          },
+          {
+            Price: minValue
+          }
+        ]
+      },
+      {
+        IsBuy: true,
+        Levels: [
+          {
+            Price: maxValue
+          },
+          {
+            Price: minValue
+          }
+        ]
+      }
+    ];
+
+    it('should be returned', () => {
+      store.sortOrders(orders);
+      expect(store.maxAskValue).toBe(maxValue);
+      expect(store.maxBidValue).toBe(maxValue);
     });
   });
 });
