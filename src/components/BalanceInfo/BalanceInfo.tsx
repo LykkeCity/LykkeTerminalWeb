@@ -55,11 +55,11 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
   private readonly referenceStore: ReferenceStore = this.props.referenceStore;
   private readonly uiStore: UiStore = this.props.uiStore;
 
-  onClickHandler = () => {
+  handleClick = () => {
     this.uiStore.toggleAssetsSelect();
   };
 
-  onChangeHandler = (e: any) => {
+  handleChange = (e: any) => {
     if (!e) {
       return;
     }
@@ -84,7 +84,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
             this.referenceStore.getBaseAssetAccuracy
           )}
         </span>
-        <StyledButton onClick={this.onClickHandler} id="baseAssetBtn">
+        <StyledButton onClick={this.handleClick} id="baseAssetBtn">
           {this.referenceStore.baseAssetId}
         </StyledButton>
         {this.uiStore.showAssetsSelect ? (
@@ -94,7 +94,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
             className={'balance-info-select'}
             options={this.getOptions()}
             value={this.referenceStore.baseAssetId}
-            onChange={this.onChangeHandler}
+            onChange={this.handleChange}
           />
         ) : null}
       </div>

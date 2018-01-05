@@ -1,10 +1,11 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {BalanceInfo} from '../BalanceInfo';
-import {InstrumentPicker} from '../InstrumentPicker/index';
+import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import styled from '../styled';
 import {Heading} from '../Typography/index';
+import {HeaderProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
@@ -21,32 +22,54 @@ const HeaderFlex = styled(Flex)`
   height: 40px;
 `;
 
-const Header = () => (
-  <HeaderFlex justify="stretch" align="center" is="header">
-    <HeaderItem is="a">
-      <Flex align="center">
-        <img src={`${process.env.PUBLIC_URL}/logo.svg`} width="32" alt="logo" />
-        <Heading>Lykke</Heading>
-      </Flex>
-    </HeaderItem>
-    <HeaderItem>
-      <InstrumentPicker value="BTCUSD" instruments={[]} />
-    </HeaderItem>
+const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
+  const signOut = () => {
+    authStore.signOut();
+  };
 
-    <Box ml="auto" is="menu">
-      <Flex align="center">
-        <HeaderItem>
-          <BalanceInfo />
-        </HeaderItem>
-        <HeaderItem>
-          <Link href="/signin">
-            <span className="hidden-xs">Sign In</span>
-            <i className="icon icon--participate visible-xs" />
-          </Link>
-        </HeaderItem>
-      </Flex>
-    </Box>
-  </HeaderFlex>
-);
+  const signIn = () => {
+    history.push('signin');
+  };
+
+  return (
+    <HeaderFlex justify="stretch" align="center" is="header">
+      <HeaderItem is="a">
+        <Flex align="center">
+          <img
+            src={`${process.env.PUBLIC_URL}/logo.svg`}
+            width="32"
+            alt="logo"
+          />
+          <Heading>Lykke</Heading>
+        </Flex>
+      </HeaderItem>
+      <HeaderItem>
+        <InstrumentPicker value="BTCUSD" instruments={[]} />
+      </HeaderItem>
+
+      <Box ml="auto" is="menu">
+        <Flex align="center">
+          <HeaderItem>
+            <BalanceInfo />
+          </HeaderItem>
+          <HeaderItem>
+            <Link>
+              {authStore.isAuth ? (
+                <span className="hidden-xs" onClick={signOut}>
+                  Sign Out
+                </span>
+              ) : (
+                <span className="hidden-xs" onClick={signIn}>
+                  Sign In
+                </span>
+              )}
+              <i className="icon icon--participate visible-xs" />
+            </Link>
+          </HeaderItem>
+        </Flex>
+      </Box>
+    </HeaderFlex>
+  );
+};
 
 export default Header;
