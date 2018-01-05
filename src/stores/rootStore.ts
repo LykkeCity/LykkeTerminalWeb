@@ -46,7 +46,10 @@ class RootStore {
   }
 
   start = async () => {
-    await this.authStore.fetchBearerToken();
+    if (!this.authStore.isAuth) {
+      return Promise.resolve();
+    }
+
     await this.watchlistStore.fetchAll();
     await this.referenceStore.fetchReferenceData();
     await this.tradeListStore.fetchAll();
