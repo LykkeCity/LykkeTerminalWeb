@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {OrderButtonProps} from '../index';
+import {OrderButtonProps} from './index';
 
 const StyledButton = styled.div`
   width: 100%;

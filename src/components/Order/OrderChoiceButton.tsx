@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {OrderChoiceButtonProps} from '../index';
+import {OrderChoiceButtonProps} from './index';
 
 const StyledActionChoice = styled.div`
   width: 106px;

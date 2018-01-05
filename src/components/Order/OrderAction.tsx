@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {OrderActionProps} from '../index';
+import {OrderActionProps} from './index';
 import './orderAction.css';
 
 const OrderAction: React.SFC<OrderActionProps> = ({

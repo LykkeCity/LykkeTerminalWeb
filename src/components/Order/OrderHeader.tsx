@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {OrderHeaderProps} from '../index';
+import {OrderHeaderProps} from './index';
 
 const StyledHeader = styled.div`
   border-bottom: solid 1px rgba(0, 0, 0, 0.2);

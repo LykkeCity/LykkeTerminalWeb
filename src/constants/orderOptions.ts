@@ -24,7 +24,7 @@ const orderOptions = [
     isMarketField: true,
     isOptional: false,
     title: 'Quantity',
-    tumblerValues: ['Manual', '%Risk'],
+    tumblerValues: ['Manual', 'Risk'],
     value: 'quantityValue'
   }
 ];

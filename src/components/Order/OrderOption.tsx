@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {OrderOptionProps} from '../index';
+import {OrderOptionProps} from './index';
 import './orderOption.css';
-import OrderTumbler from './OrderTumbler/OrderTumbler';
+import OrderTumbler from './OrderTumbler';
 
 const OrderOption: React.SFC<OrderOptionProps> = ({
   title,

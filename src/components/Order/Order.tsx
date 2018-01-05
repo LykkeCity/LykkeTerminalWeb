@@ -2,15 +2,16 @@ import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import orderOptions from '../../constants/orderOptions';
+import OrderType from '../../models/orderType';
 import {OrderProps, OrderState} from './index';
-import OrderAction from './OrderAction/OrderAction';
-import OrderButton from './OrderButton/OrderButton';
-import OrderChoiceButton from './OrderChoiceButton/OrderChoiceButton';
-import OrderHeader from './OrderHeader/OrderHeader';
-import OrderOption from './OrderOption/OrderOption';
+import OrderAction from './OrderAction';
+import OrderButton from './OrderButton';
+import OrderChoiceButton from './OrderChoiceButton';
+import OrderHeader from './OrderHeader';
+import OrderOption from './OrderOption';
 
-const MARKET = 'Market';
-const PENDING = 'Pending';
+const MARKET = OrderType.Market;
+const PENDING = OrderType.Pending;
 
 const StyledActionBlock = styled.div`
   display: flex;
@@ -62,23 +63,23 @@ class Order extends React.Component<OrderProps, OrderState> {
     };
   }
 
-  actionClickHandler = (action: string) => {
+  actionClickHandler = (action: string) => () => {
     this.setState({
       isSellActive: action === orderAction.sell.action
     });
   };
 
-  actionChoiceClickHandler = (choice: string) => {
+  actionChoiceClickHandler = (choice: string) => () => {
     this.setState({
       isMarketActive: choice === MARKET
     });
   };
 
-  buttonClickHandler = (action: string) => {
+  buttonClickHandler = (action: string) => () => {
     alert(action);
   };
 
-  onChangeHandler = (value: string, e: any) => {
+  onChangeHandler = (value: string) => (e: any) => {
     const tempObj = {};
     tempObj[value] = +e.target.value;
     this.setState(tempObj);
@@ -95,6 +96,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     const options = this.state.isMarketActive
       ? orderOptions.filter(opt => opt.isMarketField)
       : orderOptions;
+    const {bid, ask} = this.props;
     return (
       <div>
         <OrderHeader
@@ -107,13 +109,13 @@ class Order extends React.Component<OrderProps, OrderState> {
             {(this.props.bid + this.props.ask).toFixed(this.props.accuracy)}
           </StyledSplitBlock>
           <OrderAction
-            click={this.actionClickHandler.bind(this, orderAction.sell.action)}
+            click={this.actionClickHandler(orderAction.sell.action)}
             isActive={this.state.isSellActive}
             price={this.props.bid}
             {...orderAction.sell}
           />
           <OrderAction
-            click={this.actionClickHandler.bind(this, orderAction.buy.action)}
+            click={this.actionClickHandler(orderAction.buy.action)}
             isActive={!this.state.isSellActive}
             price={this.props.ask}
             {...orderAction.buy}
@@ -125,12 +127,12 @@ class Order extends React.Component<OrderProps, OrderState> {
             <OrderChoiceButton
               title={MARKET}
               isActive={this.state.isMarketActive}
-              click={this.actionChoiceClickHandler.bind(this, MARKET)}
+              click={this.actionChoiceClickHandler(MARKET)}
             />
             <OrderChoiceButton
               title={PENDING}
               isActive={!this.state.isMarketActive}
-              click={this.actionChoiceClickHandler.bind(this, PENDING)}
+              click={this.actionChoiceClickHandler(PENDING)}
             />
           </StyledActionChoice>
 
@@ -140,7 +142,7 @@ class Order extends React.Component<OrderProps, OrderState> {
                 <OrderOption
                   key={index}
                   inputValue={this.state[opt.value]}
-                  change={this.onChangeHandler.bind(this, opt.value)}
+                  change={this.onChangeHandler(opt.value)}
                   {...opt}
                 />
               );
@@ -151,11 +153,9 @@ class Order extends React.Component<OrderProps, OrderState> {
             <OrderButton
               action={currentAction.action}
               price={
-                currentAction.action === orderAction.buy.action
-                  ? this.props.ask
-                  : this.props.bid
+                currentAction.action === orderAction.buy.action ? ask : bid
               }
-              click={this.buttonClickHandler.bind(this, currentAction.action)}
+              click={this.buttonClickHandler(currentAction.action)}
             />
           </StyledOrderButton>
         </StyledContentWrap>

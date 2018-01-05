@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {OrderTumbler} from '../../index';
+import {OrderTumbler} from './index';
 
 const StyledTumblerWrap = styled.div`
   display: flex;
