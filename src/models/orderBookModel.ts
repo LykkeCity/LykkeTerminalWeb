@@ -5,6 +5,7 @@ class OrderBookModel {
   bestBid: boolean;
   bid: number | string;
   id: number;
+  isBuy: boolean;
   price: number;
   timestamp: any;
 

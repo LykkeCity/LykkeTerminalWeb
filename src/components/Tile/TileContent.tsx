@@ -47,7 +47,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
     };
   }
 
-  handleClick = (index: number) => {
+  handleClick = (index: number) => () => {
     if (!this.props.children.length) {
       return;
     }
@@ -73,7 +73,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
                     tabName={tab}
                     index={index}
                     activeIndex={this.state.activeTabIndex}
-                    click={this.handleClick.bind(this, index)}
+                    click={this.handleClick(index)}
                   />
                 );
               })}

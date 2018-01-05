@@ -9,8 +9,20 @@ class OrderBookStore extends BaseStore {
     return this.orders;
   }
 
+  @computed
+  get maxAskValue() {
+    return +this.maxAsk.toFixed(this.instrument!.accuracy);
+  }
+
+  @computed
+  get maxBidValue() {
+    return +this.maxBid.toFixed(this.instrument!.accuracy);
+  }
+
   @observable private orders: any[] = [];
   private pollingInterval: any;
+  @observable private maxAsk: number = 0;
+  @observable private maxBid: number = 0;
 
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
@@ -48,11 +60,13 @@ class OrderBookStore extends BaseStore {
   };
 
   calcMidPrice = (orders: OrderBookModel[]) => {
-    const midIdx = orders.length / 2;
-    const prevIdx = midIdx - 1 < 0 ? 0 : midIdx - 1;
-    const prevEl = orders[prevIdx];
-    const nextEl = orders[midIdx];
-    return (prevEl.price + nextEl.price) / 2;
+    const minAsk = orders
+      .filter(order => !order.isBuy)
+      .sort((a, b) => a.price - b.price)[0].price;
+    const maxBid = orders
+      .filter(order => order.isBuy)
+      .sort((a, b) => b.price - a.price)[0].price;
+    return (minAsk + maxBid) / 2;
   };
 
   placeInMiddle = (orders: any[], val: any = {}) => {
@@ -63,7 +77,7 @@ class OrderBookStore extends BaseStore {
     return [...orders.slice(0, mid), val, ...orders.slice(mid)];
   };
 
-  private sortOrders = (orders: any) => {
+  sortOrders = (orders: any) => {
     const depth: number = 10;
     const arr: any[] = orders.reduce((prev: any, current: any) => {
       let maxPrice: any;
@@ -76,6 +90,9 @@ class OrderBookStore extends BaseStore {
       if (current.IsBuy) {
         maxPrice = current.Levels.splice(0, 1)[0];
         maxPrice.bestBid = true;
+        this.maxBid = maxPrice.Price;
+      } else {
+        this.maxAsk = current.Levels[0].Price;
       }
 
       // IsBuy: true - bid; IsBuy: false - ask
@@ -98,6 +115,7 @@ class OrderBookStore extends BaseStore {
           bestBid: item.bestBid || false,
           bid: item.bestBid ? '' : item.isBuy ? Math.abs(item.Volume) : '',
           id: index,
+          isBuy: item.isBuy,
           price: item.Price,
           timestamp: new Date(item.timestamp).toLocaleTimeString()
         })
