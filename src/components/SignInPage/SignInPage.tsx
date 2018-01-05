@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import ErrorMessage from './Error/ErrorMessage';
+import ErrorMessage from './ErrorMessage';
 import {SignInPageProps, SignInPageState} from './index';
-import InputField from './Input/InputField';
+import InputField from './InputField';
 
 const StyledSignInForm = styled.div`
   display: flex;
