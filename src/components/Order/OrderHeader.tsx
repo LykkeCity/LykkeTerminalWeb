@@ -4,7 +4,7 @@ import {OrderHeaderProps} from './index';
 
 const StyledHeader = styled.div`
   border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-  font-size: 20px;
+  font-size: 1rem;
   font-weight: bold;
   line-height: 0.8;
   color: #f5f6f7;

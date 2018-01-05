@@ -29,7 +29,7 @@ const StyledOrderAction = styled.div`
 `;
 
 const StyledTitle = styled.div`
-  font-size: 14px;
+  font-size: 1rem;
   line-height: 1.14;
   color: #ccc;
   text-transform: capitalize;
@@ -40,7 +40,7 @@ const StyledTitle = styled.div`
 `;
 
 const StyledPrice = styled.div`
-  font-size: 32px;
+  font-size: 1rem;
   font-weight: bold;
   color: #ccc;
   margin-top: 8px;
@@ -56,7 +56,7 @@ const StyledPrice = styled.div`
 
 const StyledAction = styled.div`
   margin-top: 8px;
-  font-size: 14px;
+  font-size: 1rem;
   line-height: 1.71;
   color: #ccc;
   text-align: center;
