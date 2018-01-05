@@ -7,7 +7,7 @@ import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
-import OrderHeader from './OrderHeader';
+// import OrderHeader from './OrderHeader';
 import OrderOption from './OrderOption';
 
 const MARKET = OrderType.Market;
@@ -99,14 +99,14 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {bid, ask} = this.props;
     return (
       <div>
-        <OrderHeader
+        {/* <OrderHeader
           orderCurrency={this.props.currency}
           click={this.handleCloseOrder}
-        />
+        /> */}
 
         <StyledActionBlock>
           <StyledSplitBlock>
-            {(this.props.bid + this.props.ask).toFixed(this.props.accuracy)}
+            {(this.props.ask - this.props.bid).toFixed(this.props.accuracy)}
           </StyledSplitBlock>
           <OrderAction
             click={this.handleActionClick(orderAction.sell.action)}

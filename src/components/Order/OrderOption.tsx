@@ -9,7 +9,7 @@ const StyledOrderOptions = styled.div`
 `;
 
 const StyledTitle = styled.span`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.5;
   color: #f5f6f7;
