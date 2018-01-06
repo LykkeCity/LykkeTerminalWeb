@@ -12,30 +12,31 @@ class AuthStore extends BaseStore {
     return !!this.token;
   }
 
-  @observable private token: any = null;
+  @observable token: string = tokenStorage.get() || '';
+  @observable notificationId: string = '';
 
   constructor(store: RootStore, private readonly api: AuthApi) {
     super(store);
-    this.token = tokenStorage.get();
   }
 
-  fetchBearerToken = async (email: string, password: string) => {
-    return this.api
+  fetchBearerToken = (email: string, password: string) =>
+    this.api
       .fetchBearerToken('/client/auth', email, password)
-      .then(res => {
-        this.token = res.AccessToken;
+      .then((resp: any) => {
+        this.token = resp.AccessToken;
+        this.notificationId = resp.NotificationsId;
         tokenStorage.set(this.token);
         return Promise.resolve();
       })
-      .catch(err => Promise.reject(JSON.parse(err.message)));
-  };
+      .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
   signOut = () => {
-    this.reset();
+    this.rootStore.reset();
   };
 
   reset = () => {
-    this.token = null;
+    this.token = '';
+    this.notificationId = '';
     tokenStorage.clear();
   };
 }

@@ -1,16 +1,31 @@
-import autobahn from 'autobahn';
+import autobahn, {OnChallengeHandler} from 'autobahn';
 
 export class WampApi {
   private static instance: WampApi;
   session: any;
 
-  connect = (url: string | undefined, realm: string | undefined) =>
-    new Promise((resolve: any) => {
+  private key: string;
+
+  connect = (
+    url: string | undefined,
+    realm: string | undefined,
+    authId: string,
+    key: string
+  ) => {
+    this.key = key;
+    return new Promise((resolve: any) => {
       if (this.session) {
         resolve(this.session);
       }
 
-      const connection = new autobahn.Connection({url, realm});
+      const connection = new autobahn.Connection({
+        url,
+        // tslint:disable-next-line:object-literal-sort-keys
+        realm,
+        authmethods: ['wampcra'],
+        authid: authId,
+        onchallenge: this.handleChallenge
+      });
 
       connection.onopen = (session: any) => {
         this.session = session;
@@ -19,6 +34,7 @@ export class WampApi {
 
       connection.open();
     });
+  };
 
   subscribe = (topic: string | undefined, cb: any) => {
     return this.session.subscribe(topic, cb);
@@ -43,6 +59,13 @@ export class WampApi {
   static get Instance() {
     return this.instance || (this.instance = new this());
   }
+
+  private handleChallenge: OnChallengeHandler = (session, method, extra) => {
+    if (method === 'wampcra') {
+      return autobahn.auth_cra.sign(this.key, extra.challenge);
+    }
+    return '';
+  };
 }
 
 const WampInstance = WampApi.Instance;

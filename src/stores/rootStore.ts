@@ -65,9 +65,12 @@ class RootStore {
 
     this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
+    const {token, notificationId} = this.authStore;
     WampApi.connect(
       process.env.REACT_APP_WAMP_URL,
-      process.env.REACT_APP_WAMP_REALM
+      process.env.REACT_APP_WAMP_REALM,
+      token,
+      notificationId
     ).then(() => {
       this.referenceStore
         .getInstruments()
