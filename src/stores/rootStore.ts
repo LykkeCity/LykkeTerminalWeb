@@ -8,6 +8,7 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
+import startChart from '../chart';
 import {
   AuthStore,
   BalanceListStore,
@@ -21,6 +22,8 @@ import {
 } from './index';
 
 class RootStore {
+  session: any;
+
   readonly watchlistStore: WatchlistStore;
   readonly tradeListStore: TradeListStore;
   readonly orderBookStore: OrderBookStore;
@@ -71,6 +74,7 @@ class RootStore {
           .forEach(x =>
             ws.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
           );
+        startChart(ws.currentSession);
       });
   };
 

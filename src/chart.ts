@@ -1,17 +1,33 @@
+import {ChartApi} from './api/index';
+
 // tslint:disable:object-literal-sort-keys
-// tslint:disable:no-console
-export default () => {
+
+const config = {
+  exchanges: [],
+  supported_resolutions: [
+    '1',
+    '5',
+    '15',
+    '30',
+    '60',
+    '240',
+    '360',
+    '720',
+    '1D',
+    '1W',
+    '1M'
+  ]
+};
+
+export default (session: any) => {
   const w = window as any;
   const widget = new w.TradingView.widget({
     // fullscreen: true,
     autosize: true,
-    symbol: 'AAPL',
-    interval: 'D',
+    symbol: 'BTCUSD',
+    interval: '1',
     container_id: 'tv_chart_container',
-    // 	BEWARE: no trailing slash is expected in feed URL
-    datafeed: new w.Datafeeds.UDFCompatibleDatafeed(
-      'https://demo_feed.tradingview.com'
-    ),
+    datafeed: new ChartApi(session, config),
     library_path: 'charting_library/',
     locale: w.getParameterByName('lang') || 'en',
     // 	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
@@ -24,8 +40,10 @@ export default () => {
       'paneProperties.vertGridProperties.color': 'rgba(140, 148, 160, 0.6)',
       'paneProperties.horzGridProperties.color': 'rgba(140, 148, 160, 0.6)',
       'symbolWatermarkProperties.color': 'rgba(0, 0, 0, 0)',
-      'scalesProperties.textColor': '#AAA'
-    }
+      'scalesProperties.textColor': '#AAA',
+      'mainSeriesProperties.candleStyle.drawBorder': true
+    },
+    custom_css_url: process.env.PUBLIC_URL + '/chart.css'
   });
-  console.info(widget);
+  return widget;
 };
