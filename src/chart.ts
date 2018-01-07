@@ -25,7 +25,7 @@ export default (session: any) => {
     // fullscreen: true,
     autosize: true,
     symbol: 'BTCUSD',
-    interval: '1',
+    interval: '5',
     container_id: 'tv_chart_container',
     datafeed: new ChartApi(session, config),
     library_path: 'charting_library/',
