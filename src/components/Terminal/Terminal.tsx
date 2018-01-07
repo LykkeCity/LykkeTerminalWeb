@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
-import startChart from '../../chart';
 import tabs from '../../constants/tabs';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
@@ -63,7 +62,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   componentDidMount() {
     this.props.rootStore.start().then(() => {
-      startChart();
+      // startChart(this.props.rootStore.session);
     });
   }
 
