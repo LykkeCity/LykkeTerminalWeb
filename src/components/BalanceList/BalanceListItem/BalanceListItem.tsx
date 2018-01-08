@@ -13,9 +13,6 @@ const BalanceListItem: React.SFC<BalanceListItemProps> = ({
     <td>
       <BalanceNumber num={balance.toFixed(2)} />
     </td>
-    <td>
-      <BalanceNumber num={profitAndLoss.toFixed(2)} />
-    </td>
   </tr>
 );
 
