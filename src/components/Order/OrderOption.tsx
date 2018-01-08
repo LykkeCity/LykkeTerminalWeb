@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import NumberInput from '../NumberInput/NumberInput';
@@ -9,9 +10,8 @@ const StyledOrderOptions = styled.div`
 `;
 
 const StyledTitle = styled.span`
-  font-size: 1rem;
+  font-size: ${rem(14)};
   font-weight: 600;
-  line-height: 1.5;
   color: #f5f6f7;
 `;
 

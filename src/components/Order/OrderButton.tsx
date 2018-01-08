@@ -1,18 +1,18 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {capitalize} from '../../utils';
 import {OrderButtonProps} from './index';
 
 const StyledButton = styled.div`
   width: 100%;
-  height: 49px;
+  min-height: 49px;
   border-radius: 4px;
-  text-transform: capitalize;
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 1rem;
-  color: #ffffff;
+  font-size: ${rem(16)};
+  cursor: pointer;
 
   &.sell {
     background-color: #ab00ff;
@@ -23,16 +23,12 @@ const StyledButton = styled.div`
     background-color: #ffae2c;
     border: solid 1px #ffae2c;
   }
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const OrderButton: React.SFC<OrderButtonProps> = ({action, price, click}) => {
   return (
     <StyledButton className={action} onClick={click}>
-      {action} at {price}
+      {capitalize(action)} at {price}
     </StyledButton>
   );
 };

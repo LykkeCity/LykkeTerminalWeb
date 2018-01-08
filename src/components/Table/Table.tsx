@@ -2,6 +2,9 @@ import styled from '../styled';
 
 const Table = styled.table`
   width: 100%;
+  thead {
+    border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+  }
   th {
     text-align: right;
     padding: 10px 5px;
