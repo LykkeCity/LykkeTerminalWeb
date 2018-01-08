@@ -17,7 +17,8 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   bestBid,
   bid,
   id,
-  price
+  price,
+  maxVolume
 }) => {
   return (
     <tr key={id} style={bestBid ? {background: 'rgba(0, 0, 0, 0.2)'} : {}}>
@@ -29,7 +30,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
           width: '50%'
         }}
       >
-        <Volume bg="#d070ff" val={bid} align="right" />
+        <Volume bg="#d070ff" val={bid / maxVolume * 100} align="right" />
         {bid}
       </td>
       <td style={{width: '100px'}}>{price}</td>
@@ -41,7 +42,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
           width: '50%'
         }}
       >
-        <Volume bg="#ffae2c" val={ask} align="left" />
+        <Volume bg="#ffae2c" val={ask / maxVolume * 100} align="left" />
         {ask}
       </td>
     </tr>

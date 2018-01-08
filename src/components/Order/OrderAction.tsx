@@ -13,6 +13,7 @@ const StyledOrderAction = styled.div`
   &.ask {
     padding-right: 15px;
     align-items: flex-end;
+    border-left: none;
   }
 
   &.bid {

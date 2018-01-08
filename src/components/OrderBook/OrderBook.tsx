@@ -14,7 +14,13 @@ const OrderBook: React.SFC<OrderBookProps> = ({orders = []}) => (
     </thead>
     <tbody>
       {orders.map((order: any) => (
-        <OrderBookItem key={`orderitem_${order.id}`} {...order} />
+        <OrderBookItem
+          key={`orderitem_${order.id}`}
+          maxVolume={Math.max(
+            ...orders.map(x => x.ask).concat(orders.map(x => x.ask))
+          )}
+          {...order}
+        />
       ))}
     </tbody>
   </Table>
