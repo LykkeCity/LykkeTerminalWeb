@@ -15,11 +15,15 @@ interface TileProps {
 const TileWrapper = styled.div`
   /* TODO: find a better way for overflowing content */
   overflow: auto;
-  > div:first-child {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-left: none;
-  }
+`;
+
+const TileHeader = styled(Flex)`
+  position: absolute;
+  width: 100%;
+  background: #292929;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-left: none;
+  z-index: 9;
 `;
 
 const TileTitle = styled(Box)`
@@ -35,12 +39,12 @@ const TileTitle = styled(Box)`
 
 const Tile: React.SFC<TileProps> = ({title = '', children, tabs}) => (
   <TileWrapper>
-    <Flex justify="space-between">
+    <TileHeader justify="space-between">
       <TileTitle>{title} </TileTitle>
       <TileMenu>
         <Icon name="menu" />
       </TileMenu>
-    </Flex>
+    </TileHeader>
     <TileContent tabs={tabs}>{children}</TileContent>
   </TileWrapper>
 );
