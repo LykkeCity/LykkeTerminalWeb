@@ -19,14 +19,12 @@ const BalanceList: React.SFC<BalanceListProps> = ({balances = []}) => (
       <tr>
         <th>Symbol</th>
         <th>Balance</th>
-        <th>PnL</th>
       </tr>
     </thead>
     <tbody>
       <Total>
         <td>Total</td>
         <td>{balances.map(b => b.balance).reduce(sum, [])}</td>
-        <td>{''}</td>
       </Total>
       {balances.map((balanceList: any) => (
         <BalanceListItem
