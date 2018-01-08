@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
@@ -24,15 +25,15 @@ const StyledActionChoice = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: ${rem(5)};
 `;
 
 const StyledContentWrap = styled.div`
-  padding: 15px 24px;
+  padding: 15px 15px;
 `;
 
 const StyledOrderButton = styled.div`
-  margin: 24px 0 0 0;
+  margin-top: ${rem(24)};
 `;
 
 const StyledSplitBlock = styled.div`
@@ -40,14 +41,12 @@ const StyledSplitBlock = styled.div`
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.33;
+  font-size: ${rem(14)};
   color: #13b72a;
 `;
 
 const StyledOrderOptions = styled.div`
-  margin: 14px 0 0 0;
+  margin-top: ${rem(24)};
 `;
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -103,7 +102,6 @@ class Order extends React.Component<OrderProps, OrderState> {
           orderCurrency={this.props.currency}
           click={this.handleCloseOrder}
         /> */}
-
         <StyledActionBlock>
           <StyledSplitBlock>
             {(this.props.ask - this.props.bid).toFixed(this.props.accuracy)}

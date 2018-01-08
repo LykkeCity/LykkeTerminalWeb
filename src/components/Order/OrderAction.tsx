@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrderActionProps} from './index';
@@ -10,12 +11,12 @@ const StyledOrderAction = styled.div`
   padding: 8px 0;
 
   &.ask {
-    padding-right: 24px;
+    padding-right: 15px;
     align-items: flex-end;
   }
 
   &.bid {
-    padding-left: 24px;
+    padding-left: 15px;
     align-items: flex-start;
   }
 
@@ -29,8 +30,7 @@ const StyledOrderAction = styled.div`
 `;
 
 const StyledTitle = styled.div`
-  font-size: 1rem;
-  line-height: 1.14;
+  font-size: ${rem(14)};
   color: #ccc;
   text-transform: capitalize;
 
@@ -40,7 +40,7 @@ const StyledTitle = styled.div`
 `;
 
 const StyledPrice = styled.div`
-  font-size: 1rem;
+  font-size: ${rem(20)};
   font-weight: bold;
   color: #ccc;
   margin-top: 8px;
@@ -56,15 +56,14 @@ const StyledPrice = styled.div`
 
 const StyledAction = styled.div`
   margin-top: 8px;
-  font-size: 1rem;
-  line-height: 1.71;
+  font-size: ${rem(14)};
   color: #ccc;
   text-align: center;
   width: 40px;
-  height: 24px;
   border-radius: 4px;
   text-transform: capitalize;
   border: solid 1px #ccc;
+  padding: ${rem(5)};
 
   &.bid.active {
     background-color: #ab00ff;
