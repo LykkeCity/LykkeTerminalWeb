@@ -5,8 +5,8 @@ export default class BalanceModel {
   symbol: string;
   balances: any[];
   id: string;
-  profitAndLoss: number = 1;
-  balance: number = 1;
+  profitAndLoss: number = 0;
+  balance: number = 0;
 
   constructor(wallet: any) {
     this.symbol = wallet.Name;

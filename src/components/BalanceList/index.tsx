@@ -3,9 +3,12 @@ import BalanceList from './BalanceList';
 
 export interface BalanceListProps {
   balances?: any[];
+  total: number;
+  accuracy: number;
 }
 
 export interface BalanceListItemProps {
+  accuracy: number;
   balance: number;
   id: number;
   profitAndLoss: number;
@@ -13,8 +16,15 @@ export interface BalanceListItemProps {
 }
 
 const ConnectedBalanceList = connect(
-  ({balanceListStore: {allBalanceLists: balances}}) => ({
-    balances
+  ({
+    balanceListStore: {getBalances: balances, totalBalance: total},
+    referenceStore
+  }) => ({
+    accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {
+      accuracy: 2
+    })!.accuracy,
+    balances,
+    total
   }),
   BalanceList
 );

@@ -4,8 +4,6 @@ import {Table} from '../Table/index';
 import {BalanceListItem} from './';
 import {BalanceListProps} from './';
 
-const sum = (a: any, b: any) => Number(a) + Number(b);
-
 const Total = styled.tr`
   background: rgba(0, 0, 0, 0.2);
   td {
@@ -13,7 +11,11 @@ const Total = styled.tr`
   }
 `;
 
-const BalanceList: React.SFC<BalanceListProps> = ({balances = []}) => (
+const BalanceList: React.SFC<BalanceListProps> = ({
+  balances = [],
+  total,
+  accuracy
+}) => (
   <Table>
     <thead>
       <tr>
@@ -24,11 +26,12 @@ const BalanceList: React.SFC<BalanceListProps> = ({balances = []}) => (
     <tbody>
       <Total>
         <td>Total</td>
-        <td>{balances.map(b => b.balance).reduce(sum, [])}</td>
+        <td>{total.toFixed(accuracy)}</td>
       </Total>
       {balances.map((balanceList: any) => (
         <BalanceListItem
           key={`balanceitem_${balanceList.id}`}
+          accuracy={accuracy}
           {...balanceList}
         />
       ))}
