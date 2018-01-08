@@ -1,11 +1,12 @@
 import {computed, observable, runInAction} from 'mobx';
+import {add} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import {BalanceModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class BalanceListStore extends BaseStore {
   @computed
-  get allBalanceLists() {
+  get getBalances() {
     return this.balanceLists.sort(
       (a: BalanceModel, b: BalanceModel) => b.balance - a.balance
     );
@@ -13,12 +14,7 @@ class BalanceListStore extends BaseStore {
 
   @computed
   get totalBalance() {
-    return this.balanceLists.reduce(
-      (sum: number, balanceList: BalanceModel) => {
-        return sum + balanceList.balance;
-      },
-      0
-    );
+    return this.balanceLists.map(b => b.balance).reduce(add, 0);
   }
 
   @observable private balanceLists: any[] = [];
