@@ -63,7 +63,7 @@ class RootStore {
     );
     await this.uiStore.selectInstrument(defaultInstrument);
 
-    await this.balanceListStore.fetchAll();
+    this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
     const ws = new WampApi();
     ws
