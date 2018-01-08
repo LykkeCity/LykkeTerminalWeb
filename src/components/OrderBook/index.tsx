@@ -11,6 +11,7 @@ export interface OrderBookItemProps {
   bid: number;
   id: number;
   price: number;
+  maxVolume: number;
 }
 
 const ConnectedOrderBook = connect(
