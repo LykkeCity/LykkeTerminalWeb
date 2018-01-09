@@ -2,7 +2,6 @@ import {
   AssetApi,
   AuthApi,
   BalanceListApi,
-  OrderBookApi,
   OrderListApi,
   TradeListApi,
   WampApi,
@@ -40,7 +39,7 @@ class RootStore {
     if (shouldStartImmediately) {
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi());
       this.tradeListStore = new TradeListStore(this, new TradeListApi());
-      this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
+      this.orderBookStore = new OrderBookStore(this);
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderListApi());
       this.uiStore = new UiStore(this);

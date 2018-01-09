@@ -1,4 +1,3 @@
-import {RestOrderBookApi} from '../../api/orderBookApi';
 import {AssetModel, InstrumentModel} from '../../models';
 import {OrderBookModel} from '../../models/index';
 import {OrderBookStore, RootStore} from '../index';
@@ -16,10 +15,7 @@ describe('orderBook store', () => {
   });
 
   beforeEach(() => {
-    orderBookStore = new OrderBookStore(
-      new RootStore(false),
-      new RestOrderBookApi()
-    );
+    orderBookStore = new OrderBookStore(new RootStore(false));
 
     orderBookStore.fetchAll = jest.fn(() => orderBookStore.addOrder(newOrder));
   });
@@ -67,10 +63,7 @@ describe('orderBook store', () => {
 
   describe('place mid price in order book', () => {
     const rootStore = new RootStore(false);
-    const {placeInMiddle, calcMidPrice} = new OrderBookStore(
-      rootStore,
-      null as any
-    );
+    const {placeInMiddle, calcMidPrice} = new OrderBookStore(rootStore);
     const orders: any = [{bid: 1}, {bid: 2}, {ask: 3}, {ask: 4}];
 
     it('should add one more element to an array', () => {
@@ -103,9 +96,9 @@ describe('orderBook store', () => {
     });
   });
 
-  describe('max ask and max bid values', () => {
+  describe('store values', () => {
     const rootStore = new RootStore(true);
-    const store = new OrderBookStore(rootStore, null as any);
+    const store = new OrderBookStore(rootStore);
     store.fetchAll = jest.fn(() => orderBookStore.addOrder(newOrder));
     rootStore.uiStore.selectedInstrument = new InstrumentModel({
       accuracy: 3,
@@ -119,34 +112,34 @@ describe('orderBook store', () => {
     const maxValue = 16000;
     const minValue = 15000;
 
-    const orders: any = [
-      {
-        IsBuy: false,
-        Levels: [
-          {
-            Price: maxValue
-          },
-          {
-            Price: minValue
-          }
-        ]
-      },
-      {
-        IsBuy: true,
-        Levels: [
-          {
-            Price: maxValue
-          },
-          {
-            Price: minValue
-          }
-        ]
-      }
-    ];
+    const buyOrder: any = {
+      IsBuy: true,
+      Prices: [
+        {
+          Price: maxValue
+        },
+        {
+          Price: minValue
+        }
+      ]
+    };
 
-    it('should be returned', () => {
-      store.sortOrders(orders);
+    const sellOrder: any = {
+      IsBuy: false,
+      Prices: [
+        {
+          Price: maxValue
+        },
+        {
+          Price: minValue
+        }
+      ]
+    };
+
+    it('max Ask and max Bid should be set', () => {
+      store.sortOrders(sellOrder);
       expect(store.maxAskValue).toBe(maxValue);
+      store.sortOrders(buyOrder);
       expect(store.maxBidValue).toBe(maxValue);
     });
   });

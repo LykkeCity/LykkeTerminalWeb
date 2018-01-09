@@ -21,7 +21,7 @@ export class WampApi {
     });
 
   subscribe = (topic: string | undefined, cb: any) => {
-    this.session.subscribe(topic, cb);
+    return this.session.subscribe(topic, cb);
   };
 
   publish = (topic: string | undefined, event: [any]) => {
