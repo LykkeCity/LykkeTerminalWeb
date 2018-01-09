@@ -23,7 +23,8 @@ const TileHeader = styled(Flex)`
   background: #292929;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-left: none;
-  z-index: 9;
+  border-top: none;
+  z-index: 1;
 `;
 
 const TileTitle = styled(Box)`
