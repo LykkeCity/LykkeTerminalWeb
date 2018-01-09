@@ -15,7 +15,6 @@ const iconCss = css`
 `;
 
 const TileMenu = styled(Box)`
-  background: transparent;
   border-right: none;
   border-left: solid 1px rgba(0, 0, 0, 0.2);
   cursor: pointer;

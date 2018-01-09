@@ -71,15 +71,11 @@ class OrderBookStore extends BaseStore {
   };
 
   calcMidPrice = (orders: OrderBookModel[]) => {
-    const minAsk = orders
-      .filter(order => !order.isBuy)
-      .sort((a, b) => a.price - b.price)[0];
-    const maxBid = orders
-      .filter(order => order.isBuy)
-      .sort((a, b) => b.price - a.price)[0];
-    const askPrice = minAsk ? minAsk.price : 0;
-    const bidPrice = maxBid ? maxBid.price : 0;
-    return (askPrice + bidPrice) / 2;
+    const asks = orders.filter(order => order.ask).map(o => o.price);
+    const bids = orders.filter(order => order.bid).map(o => o.price);
+    const minAsk = asks.length ? Math.min(...asks) : 0;
+    const maxBid = bids.length ? Math.max(...bids) : 0;
+    return (minAsk + maxBid) / 2;
   };
 
   placeInMiddle = (orders: any[], val: any = {}) => {
