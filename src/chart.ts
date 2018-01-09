@@ -32,7 +32,11 @@ export default (session: any, id: string = '') => {
     container_id: 'tv_chart_container',
     datafeed: new ChartApi(session, config, id),
     library_path: 'charting_library/',
-    disabled_features: ['use_localstorage_for_settings'],
+    disabled_features: [
+      'use_localstorage_for_settings',
+      'widget_logo',
+      'link_to_tradingview'
+    ],
     preset: 'mobile',
     overrides: {
       volumePaneSize: 'tiny',
