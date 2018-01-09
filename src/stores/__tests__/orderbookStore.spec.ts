@@ -97,7 +97,7 @@ describe('orderBook store', () => {
   });
 
   describe('calc mid price', () => {
-    const {calcMidPrice} = new OrderBookStore(new RootStore(), null as any);
+    const {calcMidPrice} = new OrderBookStore(new RootStore());
     it('should give min ask when empty bids', () => {
       const orders = [
         {ask: 2, price: 2},
