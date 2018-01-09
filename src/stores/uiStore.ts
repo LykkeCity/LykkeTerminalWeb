@@ -22,6 +22,7 @@ class UiStore extends BaseStore {
   selectInstrument = (instrument: InstrumentModel | any) => {
     this.selectedInstrument = instrument;
 
+    this.rootStore.chartStore.updateChart(this.selectedInstrument!.id);
     this.rootStore.orderBookStore.fetchAll();
   };
 

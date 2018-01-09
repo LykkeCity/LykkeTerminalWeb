@@ -5,7 +5,7 @@ import wretch from 'wretch';
 // tslint:disable:object-literal-sort-keys
 
 const symbol = (name = '') => ({
-  name: 'BTCUSD',
+  name,
   minmov: 1,
   pricescale: 1,
   minmove2: 2,
@@ -30,7 +30,15 @@ const symbol = (name = '') => ({
 });
 
 class ChartApi {
-  constructor(private readonly session: Session, private readonly cfg: any) {}
+  private instrumentId: string = 'BTCUSD';
+
+  constructor(
+    private readonly session: Session,
+    private readonly cfg: any,
+    instrumentId: string
+  ) {
+    this.instrumentId = instrumentId;
+  }
 
   onReady = (cb: (configurationData: any) => void) => {
     setTimeout(() => cb(this.cfg), 0);
@@ -42,7 +50,7 @@ class ChartApi {
     symbolType = '',
     onResultReadyCallback: (result: any[]) => void
   ) => {
-    onResultReadyCallback([symbol('BTCUSD')]);
+    onResultReadyCallback([symbol(this.instrumentId)]);
   };
 
   resolveSymbol = (
@@ -50,7 +58,7 @@ class ChartApi {
     onSymbolResolvedCallback: any,
     onResolveErrorCallback: any
   ) => {
-    setTimeout(() => onSymbolResolvedCallback(symbol(symbolName)), 0);
+    setTimeout(() => onSymbolResolvedCallback(symbol(this.instrumentId)), 0);
   };
 
   getBars = (
@@ -63,7 +71,11 @@ class ChartApi {
     firstDataRequest: any
   ) => {
     if (firstDataRequest) {
-      wretch('https://public-api.lykke.com/api/Candles/history/btcusd/spot')
+      wretch(
+        `https://public-api.lykke.com/api/Candles/history/${
+          this.instrumentId
+        }/spot`
+      )
         .json({
           period: 'minute',
           type: 'Bid',
@@ -94,11 +106,14 @@ class ChartApi {
     subscriberUID: any,
     onResetCacheNeededCallback: any
   ) => {
-    this.session.subscribe('candle.spot.btcusd.bid.5min', (args: any[]) => {
-      if (args) {
-        onRealtimeCallback(mapAsBar(args[0]));
+    this.session.subscribe(
+      `candle.spot.${this.instrumentId.toLowerCase()}.bid.5min`,
+      (args: any[]) => {
+        if (args) {
+          onRealtimeCallback(mapAsBar(args[0]));
+        }
       }
-    });
+    );
   };
 
   unsubscribeBars = (subscriberUID: string) => {

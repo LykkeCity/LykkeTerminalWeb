@@ -24,13 +24,13 @@ const config = {
   ]
 };
 
-export default (session: any) => {
+export default (session: any, id: string = '') => {
   return new (window as any).TradingView.widget({
     autosize: true,
-    symbol: 'BTCUSD',
+    symbol: id,
     interval: '5',
     container_id: 'tv_chart_container',
-    datafeed: new ChartApi(session, config),
+    datafeed: new ChartApi(session, config, id),
     library_path: 'charting_library/',
     disabled_features: ['use_localstorage_for_settings'],
     preset: 'mobile',

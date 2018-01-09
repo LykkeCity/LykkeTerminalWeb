@@ -7,11 +7,11 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
-import startChart from '../chart';
 import {
   AuthStore,
   BalanceListStore,
   BaseStore,
+  ChartStore,
   OrderBookStore,
   OrderListStore,
   ReferenceStore,
@@ -31,6 +31,7 @@ class RootStore {
   readonly uiStore: UiStore;
   readonly referenceStore: ReferenceStore;
   readonly authStore: AuthStore;
+  readonly chartStore: ChartStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -44,6 +45,7 @@ class RootStore {
       this.uiStore = new UiStore(this);
       this.referenceStore = new ReferenceStore(this, new AssetApi());
       this.authStore = new AuthStore(this, new AuthApi());
+      this.chartStore = new ChartStore();
     }
   }
 
@@ -76,14 +78,13 @@ class RootStore {
           )
         );
       this.uiStore.selectInstrument(defaultInstrument);
-      startChart(WampApi.currentSession);
     });
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
 
   reset = () => {
-    Array.from(this.stores).forEach(s => s.reset());
+    Array.from(this.stores).forEach(s => s.reset && s.reset());
   };
 
   private onQuote = (args: any) => {
