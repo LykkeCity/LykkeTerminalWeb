@@ -1,6 +1,7 @@
 import autobahn from 'autobahn';
 
 export class WampApi {
+  private static instance: WampApi;
   session: any;
 
   connect = (url: string | undefined, realm: string | undefined) =>
@@ -38,6 +39,12 @@ export class WampApi {
   get currentSession() {
     return this.session;
   }
+
+  static get Instance() {
+    return this.instance || (this.instance = new this());
+  }
 }
 
-export default WampApi;
+const WampInstance = WampApi.Instance;
+
+export default WampInstance;

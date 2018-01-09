@@ -8,11 +8,11 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
-import startChart from '../chart';
 import {
   AuthStore,
   BalanceListStore,
   BaseStore,
+  ChartStore,
   OrderBookStore,
   OrderListStore,
   ReferenceStore,
@@ -32,6 +32,7 @@ class RootStore {
   readonly uiStore: UiStore;
   readonly referenceStore: ReferenceStore;
   readonly authStore: AuthStore;
+  readonly chartStore: ChartStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -45,6 +46,7 @@ class RootStore {
       this.uiStore = new UiStore(this);
       this.referenceStore = new ReferenceStore(this, new AssetApi());
       this.authStore = new AuthStore(this, new AuthApi());
+      this.chartStore = new ChartStore();
     }
   }
 
@@ -61,21 +63,23 @@ class RootStore {
     const defaultInstrument = this.referenceStore.getInstrumentById(
       this.uiStore.DEFAULT_INSTRUMENT
     );
-    await this.uiStore.selectInstrument(defaultInstrument);
 
     this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
-    const ws = new WampApi();
-    ws
-      .connect(process.env.REACT_APP_WAMP_URL, process.env.REACT_APP_WAMP_REALM)
-      .then(() => {
-        this.referenceStore
-          .getInstruments()
-          .forEach(x =>
-            ws.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
-          );
-        startChart(ws.currentSession);
-      });
+    WampApi.connect(
+      process.env.REACT_APP_WAMP_URL,
+      process.env.REACT_APP_WAMP_REALM
+    ).then(() => {
+      this.referenceStore
+        .getInstruments()
+        .forEach(x =>
+          WampApi.subscribe(
+            `quote.spot.${x.id.toLowerCase()}.bid`,
+            this.onQuote
+          )
+        );
+      this.uiStore.selectInstrument(defaultInstrument);
+    });
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
