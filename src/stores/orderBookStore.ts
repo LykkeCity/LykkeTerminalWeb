@@ -1,5 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {OrderBookApi} from '../api/index';
+import {WampApi} from '../api';
 import {OrderBookModel} from '../models/index';
 import {BaseStore, RootStore} from './index';
 
@@ -29,38 +29,41 @@ class OrderBookStore extends BaseStore {
 
   @observable private orders: any[] = [];
   private pollingInterval: any;
+  private buySubscription: any;
+  private sellSubscription: any;
+  private buyOrders: any[] = [];
+  private sellOrders: any[] = [];
   @observable private maxAsk: number = 0;
   @observable private maxBid: number = 0;
 
-  constructor(store: RootStore, private readonly api: OrderBookApi) {
+  constructor(store: RootStore) {
     super(store);
   }
 
   @action
   addOrder = (order: OrderBookModel) => (this.orders = [...this.orders, order]);
 
-  fetchAll = () => {
+  fetchAll = async () => {
     this.pollingInterval = null;
 
-    const getOrders = async () => {
-      let resp: any[];
+    if (this.buySubscription) {
+      this.buySubscription.unsubscribe();
+    }
 
-      if (this.instrument) {
-        await this.api
-          .fetchAll(this.instrument!.id)
-          .then(res => (resp = this.sortOrders(res)));
+    if (this.sellSubscription) {
+      this.sellSubscription.unsubscribe();
+    }
 
-        runInAction(() => (this.orders = resp));
-      }
-    };
-
-    return getOrders().then(
-      () =>
-        (this.pollingInterval = setInterval(
-          getOrders,
-          process.env.REACT_APP_REQ_INTERVAL || 10000
-        ))
+    this.buySubscription = await WampApi.subscribe(
+      `orderbook.${this.instrumentId.toLowerCase()}.buy`,
+      this.updateBuy
     );
+    this.sellSubscription = await WampApi.subscribe(
+      `orderbook.${this.instrumentId.toLowerCase()}.sell`,
+      this.updateSell
+    );
+
+    runInAction(() => (this.orders = []));
   };
 
   reset = () => {
@@ -70,49 +73,69 @@ class OrderBookStore extends BaseStore {
   calcMidPrice = (orders: OrderBookModel[]) => {
     const minAsk = orders
       .filter(order => !order.isBuy)
-      .sort((a, b) => a.price - b.price)[0].price;
+      .sort((a, b) => a.price - b.price)[0];
     const maxBid = orders
       .filter(order => order.isBuy)
-      .sort((a, b) => b.price - a.price)[0].price;
-    return (minAsk + maxBid) / 2;
+      .sort((a, b) => b.price - a.price)[0];
+    const askPrice = minAsk ? minAsk.price : 0;
+    const bidPrice = maxBid ? maxBid.price : 0;
+    return (askPrice + bidPrice) / 2;
   };
 
   placeInMiddle = (orders: any[], val: any = {}) => {
     return [...orders.filter(o => o.ask), val, ...orders.filter(o => o.bid)];
   };
 
-  sortOrders = (orders: any) => {
+  updateBuy = (e: any) => {
+    this.buyOrders = this.sortOrders(e[0]);
+    this.updateOrders(this.buyOrders, undefined);
+  };
+
+  updateSell = (e: any) => {
+    this.sellOrders = this.sortOrders(e[0]);
+    this.updateOrders(undefined, this.sellOrders);
+  };
+
+  updateOrders = (
+    buyOrders: any[] = this.buyOrders,
+    sellOrders: any[] = this.sellOrders
+  ) => {
+    const orders = [...buyOrders, ...sellOrders];
+    this.orders = this.placeInMiddle(orders, {
+      ask: '',
+      bestBid: true,
+      bid: '',
+      id: -1,
+      price: this.calcMidPrice(orders).toFixed(this.instrument!.accuracy),
+      timestamp: Date.now()
+    });
+  };
+
+  sortOrders = (order: any) => {
     const depth: number = 10;
-    const arr: any[] = orders.reduce((prev: any, current: any) => {
-      let maxPrice: any;
-      let sliced: any[];
+    let sliced: any[];
 
-      const desc = (a: any, b: any) => b.Price - a.Price;
+    const desc = (a: any, b: any) => b.Price - a.Price;
 
-      current.Levels.sort(desc);
+    order.Prices.sort(desc);
 
-      if (current.IsBuy) {
-        maxPrice = current.Levels.splice(0, 1)[0];
-        maxPrice.bestBid = true;
-        this.maxBid = maxPrice.Price;
-      } else {
-        this.maxAsk = current.Levels[0].Price;
-      }
+    if (order.IsBuy) {
+      this.maxBid = order.Prices[0].Price;
+    } else {
+      this.maxAsk = order.Prices[0].Price;
+    }
 
-      // IsBuy: true - bid; IsBuy: false - ask
-      sliced = current.IsBuy
-        ? current.Levels.slice(0, depth)
-        : current.Levels.slice(-depth);
+    // IsBuy: true - bid; IsBuy: false - ask
+    sliced = order.IsBuy
+      ? order.Prices.slice(0, depth)
+      : order.Prices.slice(-depth);
 
-      sliced.forEach((item: any) => {
-        item.timestamp = current.Timestamp;
-        item.isBuy = current.IsBuy;
-      });
+    sliced.forEach((item: any) => {
+      item.timestamp = order.Timestamp;
+      item.isBuy = order.IsBuy;
+    });
 
-      return prev.concat(sliced);
-    }, []);
-
-    const mappedOrders = arr.map(
+    return sliced.map(
       (item: any, index: number) =>
         new OrderBookModel({
           ask: item.bestBid ? '' : item.isBuy ? '' : Math.abs(item.Volume),
@@ -124,18 +147,14 @@ class OrderBookStore extends BaseStore {
           timestamp: new Date(item.timestamp).toLocaleTimeString()
         })
     );
-    return this.placeInMiddle(mappedOrders, {
-      ask: '',
-      bestBid: true,
-      bid: '',
-      id: -1,
-      price: this.calcMidPrice(mappedOrders).toFixed(this.instrument!.accuracy),
-      timestamp: Date.now()
-    });
   };
 
-  private get instrument() {
+  get instrument() {
     return this.rootStore.uiStore.selectedInstrument;
+  }
+
+  private get instrumentId() {
+    return this.instrument!.id;
   }
 }
 
