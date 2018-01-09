@@ -19,13 +19,14 @@ const StyledActionBlock = styled.div`
   flex-direction: row;
   justify-content: space-between;
   position: relative;
+  margin-top: ${rem(10)};
 `;
 
 const StyledActionChoice = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: ${rem(5)};
+  margin-top: ${rem(10)};
 `;
 
 const StyledContentWrap = styled.div`
