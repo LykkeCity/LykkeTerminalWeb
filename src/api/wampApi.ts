@@ -1,6 +1,7 @@
 import autobahn from 'autobahn';
 
 export class WampApi {
+  private static instance: WampApi;
   session: any;
 
   connect = (url: string | undefined, realm: string | undefined) =>
@@ -20,7 +21,7 @@ export class WampApi {
     });
 
   subscribe = (topic: string | undefined, cb: any) => {
-    this.session.subscribe(topic, cb);
+    return this.session.subscribe(topic, cb);
   };
 
   publish = (topic: string | undefined, event: [any]) => {
@@ -38,6 +39,12 @@ export class WampApi {
   get currentSession() {
     return this.session;
   }
+
+  static get Instance() {
+    return this.instance || (this.instance = new this());
+  }
 }
 
-export default WampApi;
+const WampInstance = WampApi.Instance;
+
+export default WampInstance;
