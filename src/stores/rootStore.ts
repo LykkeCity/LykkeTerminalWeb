@@ -85,7 +85,7 @@ class RootStore {
   registerStore = (store: BaseStore) => this.stores.add(store);
 
   reset = () => {
-    Array.from(this.stores).forEach(s => s.reset());
+    Array.from(this.stores).forEach(s => s.reset && s.reset());
   };
 
   private onQuote = (args: any) => {
