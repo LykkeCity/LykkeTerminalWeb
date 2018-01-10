@@ -106,7 +106,6 @@ describe('orderBook store', () => {
     });
   });
 
-
   describe('calc mid price', () => {
     const {calcMidPrice} = new OrderBookStore(new RootStore());
     it('should give min ask when empty bids', () => {
@@ -117,7 +116,7 @@ describe('orderBook store', () => {
       expect(calcMidPrice(orders)).toBe(0.5);
     });
   });
-  
+
   describe('store values', () => {
     let rootStore: any;
     let store: any;
@@ -134,6 +133,7 @@ describe('orderBook store', () => {
         name: 'BTC/CHF',
         quotingAsset: expect.any(AssetModel)
       });
+    });
 
     const maxValue = 16000;
     const minValue = 15000;
@@ -179,12 +179,6 @@ describe('orderBook store', () => {
       expect(store.allBuyOrders.length).toBe(0);
       store.updateBuy([buyOrder]);
       expect(store.allBuyOrders.length).not.toBe(0);
-    });
-
-    it('of mid price should be updated', () => {
-      expect(store.midPriceValue).toBe(0);
-      store.updateBuy([buyOrder]);
-      expect(store.midPriceValue).not.toBe(0);
     });
   });
 });
