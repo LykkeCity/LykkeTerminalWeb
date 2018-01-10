@@ -61,9 +61,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   componentDidMount() {
-    this.props.rootStore.start().then(() => {
-      // startChart(this.props.rootStore.session);
-    });
+    this.props.rootStore.start();
   }
 
   render() {
