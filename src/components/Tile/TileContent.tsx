@@ -37,6 +37,7 @@ const StyledTileContent = styled.div`
   padding: ${rem(10)} ${rem(15)};
   height: calc(100% - 30px);
   min-height: calc(100% - 30px);
+  margin-top: 30px;
 `;
 
 class TileContent extends React.Component<TileContentProps, TileContentState> {

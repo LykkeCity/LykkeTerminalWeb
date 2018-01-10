@@ -99,13 +99,25 @@ describe('orderBook store', () => {
 
     it('should calc mid price as an avg of the neighbours', () => {
       const objs = [
-        {price: 1, isBuy: true} as OrderBookModel,
-        {price: 11, isBuy: false} as OrderBookModel
+        {price: 1, bid: 1} as OrderBookModel,
+        {price: 11, ask: 11} as OrderBookModel
       ];
       expect(calcMidPrice(objs)).toBe(6);
     });
   });
 
+
+  describe('calc mid price', () => {
+    const {calcMidPrice} = new OrderBookStore(new RootStore());
+    it('should give min ask when empty bids', () => {
+      const orders = [
+        {ask: 2, price: 2},
+        {ask: 1, price: 1}
+      ] as OrderBookModel[];
+      expect(calcMidPrice(orders)).toBe(0.5);
+    });
+  });
+  
   describe('store values', () => {
     let rootStore: any;
     let store: any;
@@ -122,7 +134,6 @@ describe('orderBook store', () => {
         name: 'BTC/CHF',
         quotingAsset: expect.any(AssetModel)
       });
-    });
 
     const maxValue = 16000;
     const minValue = 15000;
