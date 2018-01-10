@@ -10,6 +10,21 @@ class OrderBookStore extends BaseStore {
   }
 
   @computed
+  get allBuyOrders() {
+    return this.buyOrders;
+  }
+
+  @computed
+  get allSellOrders() {
+    return this.sellOrders;
+  }
+
+  @computed
+  get midPriceValue() {
+    return this.midPrice;
+  }
+
+  @computed
   get maxAskValue() {
     if (this.instrument) {
       return +this.maxAsk.toFixed(this.instrument!.accuracy);
@@ -31,8 +46,9 @@ class OrderBookStore extends BaseStore {
   private pollingInterval: any;
   private buySubscription: any;
   private sellSubscription: any;
-  private buyOrders: any[] = [];
-  private sellOrders: any[] = [];
+  @observable private buyOrders: any[] = [];
+  @observable private sellOrders: any[] = [];
+  @observable private midPrice: number = 0;
   @observable private maxAsk: number = 0;
   @observable private maxBid: number = 0;
 
@@ -63,7 +79,11 @@ class OrderBookStore extends BaseStore {
       this.updateSell
     );
 
-    runInAction(() => (this.orders = []));
+    runInAction(() => {
+      this.orders = [];
+      this.sellOrders = [];
+      this.buyOrders = [];
+    });
   };
 
   reset = () => {
@@ -84,27 +104,22 @@ class OrderBookStore extends BaseStore {
 
   updateBuy = (e: any) => {
     this.buyOrders = this.sortOrders(e[0]);
-    this.updateOrders(this.buyOrders, undefined);
+    this.updateMidPrice(this.buyOrders, undefined);
   };
 
   updateSell = (e: any) => {
     this.sellOrders = this.sortOrders(e[0]);
-    this.updateOrders(undefined, this.sellOrders);
+    this.updateMidPrice(undefined, this.sellOrders);
   };
 
-  updateOrders = (
+  updateMidPrice = (
     buyOrders: any[] = this.buyOrders,
     sellOrders: any[] = this.sellOrders
   ) => {
     const orders = [...buyOrders, ...sellOrders];
-    this.orders = this.placeInMiddle(orders, {
-      ask: '',
-      bestBid: true,
-      bid: '',
-      id: -1,
-      price: this.calcMidPrice(orders).toFixed(this.instrument!.accuracy),
-      timestamp: Date.now()
-    });
+    this.midPrice = +this.calcMidPrice(orders).toFixed(
+      this.instrument!.accuracy
+    );
   };
 
   sortOrders = (order: any) => {

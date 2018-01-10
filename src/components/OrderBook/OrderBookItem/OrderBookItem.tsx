@@ -12,6 +12,10 @@ const Volume = styled.div`
   top: 0;
 ` as any;
 
+const StyledRow = styled.tr`
+  display: flex;
+`;
+
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   ask,
   bestBid,
@@ -21,7 +25,10 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   maxVolume
 }) => {
   return (
-    <tr key={id} style={bestBid ? {background: 'rgba(0, 0, 0, 0.2)'} : {}}>
+    <StyledRow
+      key={id}
+      style={bestBid ? {background: 'rgba(0, 0, 0, 0.2)'} : {}}
+    >
       <td
         style={{
           color: '#d070ff',
@@ -45,7 +52,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
         <Volume bg="#ffae2c" val={ask / maxVolume * 100} align="left" />
         {ask}
       </td>
-    </tr>
+    </StyledRow>
   );
 };
 
