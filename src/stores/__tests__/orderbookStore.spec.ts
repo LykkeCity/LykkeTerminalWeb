@@ -30,6 +30,16 @@ describe('orderBook store', () => {
       expect(orderBookStore.allOrders instanceof Array).toBeTruthy();
       expect(orderBookStore.allOrders.length).toBe(0);
     });
+
+    it('buy orders should be an empty array by default', () => {
+      expect(orderBookStore.allBuyOrders instanceof Array).toBeTruthy();
+      expect(orderBookStore.allBuyOrders.length).toBe(0);
+    });
+
+    it('sell orders should be an empty array by default', () => {
+      expect(orderBookStore.allSellOrders instanceof Array).toBeTruthy();
+      expect(orderBookStore.allSellOrders.length).toBe(0);
+    });
   });
 
   describe('fetch OrderBook', () => {
@@ -107,17 +117,22 @@ describe('orderBook store', () => {
     });
   });
 
-  describe('max ask and max bid values', () => {
-    const rootStore = new RootStore(true);
-    const store = new OrderBookStore(rootStore);
-    store.fetchAll = jest.fn(() => orderBookStore.addOrder(newOrder));
-    rootStore.uiStore.selectedInstrument = new InstrumentModel({
-      accuracy: 3,
-      baseAsset: expect.any(AssetModel),
-      id: 'BTCCHF',
-      invertedAccuracy: 8,
-      name: 'BTC/CHF',
-      quotingAsset: expect.any(AssetModel)
+  describe('store values', () => {
+    let rootStore: any;
+    let store: any;
+
+    beforeEach(() => {
+      rootStore = new RootStore(true);
+      store = new OrderBookStore(rootStore);
+      store.fetchAll = jest.fn(() => orderBookStore.addOrder(newOrder));
+      rootStore.uiStore.selectedInstrument = new InstrumentModel({
+        accuracy: 3,
+        baseAsset: expect.any(AssetModel),
+        id: 'BTCCHF',
+        invertedAccuracy: 8,
+        name: 'BTC/CHF',
+        quotingAsset: expect.any(AssetModel)
+      });
     });
 
     const maxValue = 16000;
@@ -152,6 +167,18 @@ describe('orderBook store', () => {
       expect(store.maxAskValue).toBe(maxValue);
       store.sortOrders(buyOrder);
       expect(store.maxBidValue).toBe(maxValue);
+    });
+
+    it('of sell orders should be updated', () => {
+      expect(store.allSellOrders.length).toBe(0);
+      store.updateSell([sellOrder]);
+      expect(store.allSellOrders.length).not.toBe(0);
+    });
+
+    it('of buy orders should be updated', () => {
+      expect(store.allBuyOrders.length).toBe(0);
+      store.updateBuy([buyOrder]);
+      expect(store.allBuyOrders.length).not.toBe(0);
     });
   });
 });

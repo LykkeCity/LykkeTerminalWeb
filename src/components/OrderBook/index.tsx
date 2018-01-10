@@ -3,6 +3,9 @@ import OrderBook from './OrderBook';
 
 export interface OrderBookProps {
   orders?: any[];
+  buyOrders?: any[];
+  sellOrders?: any[];
+  midPrice?: number;
 }
 
 export interface OrderBookItemProps {
@@ -15,8 +18,16 @@ export interface OrderBookItemProps {
 }
 
 const ConnectedOrderBook = connect(
-  ({orderBookStore: {allOrders: orders}}) => ({
-    orders
+  ({
+    orderBookStore: {
+      allBuyOrders: buyOrders,
+      allSellOrders: sellOrders,
+      midPriceValue: midPrice
+    }
+  }) => ({
+    buyOrders,
+    midPrice,
+    sellOrders
   }),
   OrderBook
 );
