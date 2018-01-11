@@ -3,48 +3,55 @@ import {Order, Side} from '../../../models/index';
 import styled from '../../styled';
 
 // tslint:disable-next-line:no-var-requires
-const {Box} = require('grid-styled');
+// const {Flex} = require('grid-styled');
 
-const Volume = styled.div`
+const colorBySide = (side: Side) =>
+  side === Side.Sell ? '#d070ff' : '#ffae2c';
+
+const alignBySide = (side: Side) => (side === Side.Sell ? 'right' : 'left');
+
+const VolumeCell = styled.td`
+  color: ${(p: any) => colorBySide(p.side)} !important;
+  text-align: ${(p: any) => alignBySide(p.side)} !important;
+  position: relative;
+  min-width: 80px !important;
+` as any;
+
+const MidCell = styled.td`
+  width: 80px;
+  text-align: center !important;
+`;
+
+const VolumeOverlay = styled.div`
   position: absolute;
-  background: ${(props: any) => props.bg};
-  height: 100%;
-  width: ${(props: any) => `${props.val}%`};
-  opacity: 0.1;
-  ${(props: any) => `${props.align}: 0%`};
   top: 0;
+  height: 100%;
+  opacity: 0.1;
+  background: ${(p: any) => colorBySide(p.side)};
+  width: ${(p: any) => `${p.volume}%`};
+  ${(p: any) => `${alignBySide(p.side)}: 0%`};
 ` as any;
 
 const OrderBookItem: React.SFC<Order> = ({id, price, volume, side}) => (
-  <Box key={id}>
-    <td
-      style={{
-        color: '#d070ff',
-        position: 'relative',
-        textAlign: 'right',
-        width: '50%'
-      }}
-    >
+  <tr>
+    <VolumeCell side={side}>
       {side === Side.Sell && (
-        <Volume bg="#d070ff" val={Math.log(volume)} align="right" />
+        <div>
+          <VolumeOverlay side={side} volume={Math.log(volume) * 10} />
+          {volume}
+        </div>
       )}
-      {side === Side.Sell && volume}
-    </td>
-    <td style={{width: '100px'}}>{price}</td>
-    <td
-      style={{
-        color: '#ffae2c',
-        position: 'relative',
-        textAlign: 'left',
-        width: '50%'
-      }}
-    >
+    </VolumeCell>
+    <MidCell>{price}</MidCell>
+    <VolumeCell side={side}>
       {side === Side.Buy && (
-        <Volume bg="#ffae2c" val={Math.log(volume)} align="left" />
+        <div>
+          <VolumeOverlay side={side} volume={Math.log(volume) * 10} />
+          {volume}
+        </div>
       )}
-      {side === Side.Buy && volume}
-    </td>
-  </Box>
+    </VolumeCell>
+  </tr>
 );
 
 export default OrderBookItem;
