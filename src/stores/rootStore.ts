@@ -2,11 +2,14 @@ import {
   AssetApi,
   AuthApi,
   BalanceListApi,
+  OrderApi,
   OrderListApi,
   TradeListApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
+import keys from '../constants/storageKeys';
+import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
   BalanceListStore,
@@ -14,11 +17,15 @@ import {
   ChartStore,
   OrderBookStore,
   OrderListStore,
+  OrderStore,
   ReferenceStore,
   TradeListStore,
   UiStore,
   WatchlistStore
 } from './index';
+
+const tokenStorage = StorageUtils(keys.token);
+const notificationStorage = StorageUtils(keys.notificationId);
 
 class RootStore {
   session: any;
@@ -32,6 +39,7 @@ class RootStore {
   readonly referenceStore: ReferenceStore;
   readonly authStore: AuthStore;
   readonly chartStore: ChartStore;
+  readonly orderStore: OrderStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -46,6 +54,7 @@ class RootStore {
       this.referenceStore = new ReferenceStore(this, new AssetApi());
       this.authStore = new AuthStore(this, new AuthApi());
       this.chartStore = new ChartStore();
+      this.orderStore = new OrderStore(this, new OrderApi());
     }
   }
 
@@ -65,12 +74,11 @@ class RootStore {
 
     this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
-    const {token, notificationId} = this.authStore;
     WampApi.connect(
       process.env.REACT_APP_WAMP_URL,
       process.env.REACT_APP_WAMP_REALM,
-      token,
-      notificationId
+      tokenStorage.get() as string,
+      notificationStorage.get() as string
     ).then(() => {
       this.referenceStore
         .getInstruments()
@@ -80,6 +88,10 @@ class RootStore {
             this.onQuote
           )
         );
+      WampApi.subscribe(
+        `trades.${notificationStorage.get()}`,
+        this.tradeListStore.onTrades
+      );
       this.uiStore.selectInstrument(defaultInstrument);
     });
   };

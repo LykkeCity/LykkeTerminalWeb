@@ -11,28 +11,20 @@ export class MockOrderListApi implements OrderListApi {
   fetchAll = () =>
     Promise.resolve<any[]>([
       {
-        createdDate: new Date(),
-        currentPrice: 5900.65,
-        currentPriceSide: 1,
-        expiryDate: 'till end',
-        id: 1,
-        openPrice: 4850.0,
-        orderId: 12389418351364984,
-        side: 'Buy',
-        symbol: 'BTCUSD',
-        volume: 1
+        AssetPair: 'BTCUSD',
+        DateTime: new Date(),
+        Id: 12389418351364984,
+        OrderType: 'Buy',
+        Price: 5900.65,
+        Volume: 1
       },
       {
-        createdDate: new Date(),
-        currentPrice: 6580.0,
-        currentPriceSide: 2,
-        expiryDate: 'till end',
-        id: 2,
-        openPrice: 4850.0,
-        orderId: 123894183511258965,
-        side: 'Sell',
-        symbol: 'EURUSD',
-        volume: 1
+        AssetPair: 'EURUSD',
+        DateTime: new Date(),
+        Id: 123894183511258965,
+        OrderType: 'Sell',
+        Price: 6580.0,
+        Volume: 1
       }
     ]);
 }

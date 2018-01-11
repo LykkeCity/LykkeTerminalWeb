@@ -1,4 +1,6 @@
 const keys = {
+  baseAsset: 'baseAsset',
+  notificationId: 'notificationId',
   token: 'token'
 };
 

@@ -43,7 +43,6 @@ class OrderBookStore extends BaseStore {
   }
 
   @observable private orders: any[] = [];
-  private pollingInterval: any;
   private buySubscription: any;
   private sellSubscription: any;
   @observable private buyOrders: any[] = [];
@@ -60,8 +59,6 @@ class OrderBookStore extends BaseStore {
   addOrder = (order: OrderBookModel) => (this.orders = [...this.orders, order]);
 
   fetchAll = async () => {
-    this.pollingInterval = null;
-
     if (this.buySubscription) {
       this.buySubscription.unsubscribe();
     }

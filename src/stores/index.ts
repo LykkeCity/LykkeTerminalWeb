@@ -9,3 +9,4 @@ export {default as UiStore} from './uiStore';
 export {default as ChartStore} from './chartStore';
 export {default as ReferenceStore} from './referenceStore';
 export {default as AuthStore} from './authStore';
+export {default as OrderStore} from './orderStore';

@@ -4,6 +4,7 @@ export {RestBalanceListApi as BalanceListApi} from './balanceListApi';
 export {MockBalanceListApi} from './balanceListApi';
 export {RestAssetApi as AssetApi} from './assetApi';
 export {RestMarketsApi as MarketsApi} from './marketsApi';
+export {MockOrderApi as OrderApi} from './orderApi';
 export {MockOrderListApi as OrderListApi} from './orderListApi';
 export {RestOrderBookApi as OrderBookApi} from './orderBookApi';
 export {default as RestApi} from './restApi';

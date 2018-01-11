@@ -5,10 +5,11 @@ import {StorageUtils} from '../utils/index';
 const tokenStorage = StorageUtils(keys.token);
 
 export class RestApi {
-  protected readonly wretcher = () => {
-    return wretch(process.env.REACT_APP_API_URL).auth(
-      `Bearer ${tokenStorage.get()}`
-    );
+  protected readonly wretcher = (isNew: boolean = true) => {
+    const api = isNew
+      ? process.env.REACT_APP_API_URL
+      : process.env.REACT_APP_API_URL_OLD;
+    return wretch(api).auth(`Bearer ${tokenStorage.get()}`);
   };
 
   protected get = (url: string) =>
@@ -30,6 +31,9 @@ export class RestApi {
   protected postAndForget = (url: string, body: any) =>
     this.postWrapper(url, body).res();
 
+  protected postOldApi = (url: string, body: any) =>
+    this.postWrapper(url, body, false).res();
+
   protected put = (url: string, body: any) =>
     this.wretcher()
       .url(url)
@@ -43,8 +47,12 @@ export class RestApi {
       .delete()
       .res();
 
-  private readonly postWrapper = (url: string, body: any) => {
-    return this.wretcher()
+  private readonly postWrapper = (
+    url: string,
+    body: any,
+    isNew: boolean = true
+  ) => {
+    return this.wretcher(isNew)
       .url(url)
       .json(body)
       .post();

@@ -10,7 +10,7 @@ export interface OrderListItemProps {
   currentPrice: number;
   currentPriceSide: number;
   expiryDate: string;
-  id: number;
+  index: number;
   orderId: number;
   openPrice: number;
   side: string;

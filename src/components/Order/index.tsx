@@ -1,3 +1,4 @@
+import InstrumentModel from '../../models/instrumentModel';
 import {connect} from '../connect';
 import Order from './Order';
 
@@ -13,8 +14,8 @@ export interface OrderState {
 export interface OrderProps {
   ask: number;
   bid: number;
-  accuracy: number;
-  currency: string;
+  executeOperation: any;
+  selectedInstrument: InstrumentModel | any;
 }
 
 export interface OrderOptionProps {
@@ -55,11 +56,15 @@ export interface OrderActionProps {
 }
 
 const connectedOrder = connect(
-  ({orderBookStore: {maxAskValue, maxBidValue, instrument}}) => ({
-    accuracy: (instrument && instrument!.accuracy) || 2,
+  ({
+    orderBookStore: {maxAskValue, maxBidValue, instrument},
+    orderStore: {executeOperation},
+    uiStore: {selectedInstrument}
+  }) => ({
     ask: maxAskValue,
     bid: maxBidValue,
-    currency: (instrument && instrument!.id) || ''
+    executeOperation,
+    selectedInstrument
   }),
   Order
 );

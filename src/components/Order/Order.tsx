@@ -4,12 +4,15 @@ import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import orderOptions from '../../constants/orderOptions';
 import OrderType from '../../models/orderType';
+import {StorageUtils} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
 // import OrderHeader from './OrderHeader';
 import OrderOption from './OrderOption';
+
+const baseAssetStorage = StorageUtils('baseAsset');
 
 const MARKET = OrderType.Market;
 const PENDING = OrderType.Pending;
@@ -57,7 +60,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       isMarketActive: true,
       isSellActive: true,
       priceValue: 0,
-      quantityValue: 0,
+      quantityValue: 1,
       stopLoss: 0,
       takeProfit: 0
     };
@@ -76,7 +79,19 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   handleButtonClick = (action: string) => () => {
-    alert(action);
+    const platform = this.state.isMarketActive ? MARKET : PENDING;
+    const coef = action === orderAction.sell.action ? -1 : 1;
+    const body: any = {
+      AssetId: baseAssetStorage.get(),
+      AssetPair: this.props.selectedInstrument!.id,
+      Volume: coef * this.state.quantityValue
+    };
+
+    if (!this.state.isMarketActive) {
+      body.Price = this.state.priceValue;
+    }
+
+    this.props.executeOperation(platform, body);
   };
 
   handleOnChange = (value: string) => (e: any) => {
@@ -100,12 +115,16 @@ class Order extends React.Component<OrderProps, OrderState> {
     return (
       <div>
         {/* <OrderHeader
-          orderCurrency={this.props.currency}
+          orderCurrency={this.props.selectedInstrument!.id}
           click={this.handleCloseOrder}
         /> */}
         <StyledActionBlock>
           <StyledSplitBlock>
-            {(this.props.ask - this.props.bid).toFixed(this.props.accuracy)}
+            {(this.props.ask - this.props.bid).toFixed(
+              this.props.selectedInstrument
+                ? this.props.selectedInstrument!.accuracy
+                : 2
+            )}
           </StyledSplitBlock>
           <OrderAction
             click={this.handleActionClick(orderAction.sell.action)}

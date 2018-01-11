@@ -1,5 +1,6 @@
 import {computed, observable, runInAction} from 'mobx';
 import {OrderListApi} from '../api/index';
+import OrderListModel from '../models/orderListModel';
 import {BaseStore, RootStore} from './index';
 
 class OrderListStore extends BaseStore {
@@ -15,34 +16,33 @@ class OrderListStore extends BaseStore {
   }
 
   createOrderList = ({
-    createdDate,
-    currentPrice,
-    currentPriceSide,
-    expiryDate,
-    id,
-    openPrice,
-    orderId,
-    side,
-    symbol,
-    volume
-  }: any) => ({
-    createdDate: createdDate.toLocaleTimeString(),
-    currentPrice,
-    currentPriceSide,
-    expiryDate,
-    id,
-    openPrice,
-    orderId,
-    side,
-    symbol,
-    volume
-  });
+    Id,
+    DateTime,
+    OrderType,
+    Volume,
+    Price,
+    AssetPair
+  }: any) => {
+    return new OrderListModel({
+      createdDate: DateTime,
+      currentPrice: Price,
+      expiryDate: '',
+      orderId: Id,
+      side: OrderType,
+      symbol: AssetPair,
+      volume: Volume
+    });
+  };
 
   fetchAll = async () => {
     const orderListDto = await this.api.fetchAll();
     runInAction(() => {
       this.orders = orderListDto.map(this.createOrderList);
     });
+  };
+
+  updateOrders = (orders: any) => {
+    this.orders = [...this.orders, ...orders.map(this.createOrderList)];
   };
 
   reset = () => {

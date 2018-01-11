@@ -30,6 +30,10 @@ class TradeListStore extends BaseStore {
     });
   };
 
+  onTrades = (args: any) => {
+    alert(args[0]);
+  };
+
   reset = () => {
     this.tradeLists = [];
   };
