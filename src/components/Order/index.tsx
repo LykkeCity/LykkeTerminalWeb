@@ -58,6 +58,7 @@ export interface OrderActionProps {
 
 const connectedOrder = connect(
   ({
+<<<<<<< HEAD
     orderBookStore: {bestAsk, bestBid},
     orderStore: {placeOrder},
     uiStore: {selectedInstrument: instrument}
@@ -67,6 +68,16 @@ const connectedOrder = connect(
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
     placeOrder
+=======
+    orderBookStore: {maxAskValue, maxBidValue, instrument},
+    orderStore: {executeOperation},
+    uiStore: {selectedInstrument}
+  }) => ({
+    ask: maxAskValue,
+    bid: maxBidValue,
+    executeOperation,
+    selectedInstrument
+>>>>>>> 7fa5301... implement mocks for orders
   }),
   Order
 );
