@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {Side} from '../../../models/index';
-import {Order} from '../../../stores/orderBookStore';
+import {Order, Side} from '../../../models/index';
 import styled from '../../styled';
 
 // tslint:disable-next-line:no-var-requires

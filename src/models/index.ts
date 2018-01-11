@@ -5,3 +5,4 @@ export {default as BalanceModel} from './balanceModel';
 export {default as OrderBookModel} from './orderBookModel';
 export {default as Dir} from './dir';
 export {default as Side} from './side';
+export {default as Order} from './order';

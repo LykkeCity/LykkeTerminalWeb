@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {Order} from '../../stores/orderBookStore';
+import {Order} from '../../models';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
 

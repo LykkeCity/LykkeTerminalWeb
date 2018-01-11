@@ -1,26 +1,24 @@
 import {observable} from 'mobx';
-import {curry, head, last, reverse, sortBy, take, takeLast} from 'rambda';
+import {
+  compose,
+  curry,
+  head,
+  last,
+  map,
+  reverse,
+  sortBy,
+  take,
+  takeLast
+} from 'rambda';
 import {WampApi} from '../api';
-import {Side} from '../models/index';
+import {Order, Side} from '../models/index';
+import * as mappers from '../models/mappers';
 import {BaseStore, RootStore} from './index';
-
-export interface Order {
-  id: string;
-  volume: number;
-  price: number;
-  timestamp: any;
-  side: Side;
-}
 
 const topicByAssetAndSide = (asset: string, side: Side) =>
   `orderbook.${asset.toLowerCase()}.${side.toLowerCase()}`;
 
-const mapFromDto = (x: any) => ({
-  id: x.Id,
-  price: x.Price,
-  timestamp: x.DateTime,
-  volume: x.Volume
-});
+const byPrice = (o: Order) => o.price;
 
 class OrderBookStore extends BaseStore {
   @observable private bids: Order[] = [];
@@ -50,14 +48,11 @@ class OrderBookStore extends BaseStore {
 
   onOrder = (args: any) => {
     const {IsBuy, Prices} = args[0];
-    const orders = reverse(
-      sortBy((o: Order) => o.price, Prices.map(mapFromDto))
-    );
-    if (IsBuy) {
-      this.bids = orders.map(o => ({...o, side: Side.Sell}));
-    } else {
-      this.asks = orders.map(o => ({...o, side: Side.Buy}));
-    }
+    this[IsBuy ? 'bids' : 'asks'] = compose<any[], Order[], Order[], Order[]>(
+      reverse,
+      sortBy(byPrice),
+      map(x => mappers.mapDtoToOrder({...x, IsBuy}))
+    )(Prices);
   };
 
   reset = () => {
