@@ -55,10 +55,13 @@ export interface OrderActionProps {
 }
 
 const connectedOrder = connect(
-  ({orderBookStore: {maxAskValue, maxBidValue, instrument}}) => ({
+  ({
+    orderBookStore: {bestAsk, bestBid},
+    uiStore: {selectedInstrument: instrument}
+  }) => ({
     accuracy: (instrument && instrument!.accuracy) || 2,
-    ask: maxAskValue,
-    bid: maxBidValue,
+    ask: bestAsk(),
+    bid: bestBid(),
     currency: (instrument && instrument!.id) || ''
   }),
   Order

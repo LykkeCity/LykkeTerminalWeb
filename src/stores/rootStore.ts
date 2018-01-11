@@ -81,6 +81,7 @@ class RootStore {
           )
         );
       this.uiStore.selectInstrument(defaultInstrument);
+      this.orderBookStore.subscribe();
     });
   };
 

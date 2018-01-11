@@ -23,7 +23,6 @@ class UiStore extends BaseStore {
     this.selectedInstrument = instrument;
 
     this.rootStore.chartStore.updateChart(this.selectedInstrument!.id);
-    this.rootStore.orderBookStore.fetchAll();
   };
 
   @action search = (term: string) => (this.searchTerm = term);

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import {Order} from '../../stores/orderBookStore';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
-import {OrderBookProps} from './';
 
 const StyledTable = styled(Table)`
   height: inherit;
@@ -41,50 +41,39 @@ const StyledMidPrice = styled.tbody`
 
 const StyledHeader = styled.th`
   flex-grow: 1;
-`;
+  text-align: ${(p: any) => p.align};
+` as any;
+
+interface OrderBookProps {
+  asks?: Order[];
+  bids?: Order[];
+  mid?: number;
+}
 
 const OrderBook: React.SFC<OrderBookProps> = ({
-  buyOrders = [],
-  midPrice = 0,
-  sellOrders = []
+  asks = [],
+  mid = 0,
+  bids = []
 }) => {
   return (
     <StyledTable>
       <StyledHead>
         <StyledRow>
-          <StyledHeader style={{textAlign: 'right'}}>Sell</StyledHeader>
-          <StyledHeader style={{textAlign: 'center'}}>Price</StyledHeader>
-          <StyledHeader style={{textAlign: 'left'}}>Buy</StyledHeader>
+          <StyledHeader align="right">Sell</StyledHeader>
+          <StyledHeader align="center">Price</StyledHeader>
+          <StyledHeader align="left">Buy</StyledHeader>
         </StyledRow>
       </StyledHead>
       <StyledSellOrders>
-        {sellOrders.map((order: any, index: number) => (
-          <OrderBookItem
-            key={`orderitem_${index}`}
-            maxVolume={Math.max(
-              ...sellOrders.map(x => x.ask).concat(sellOrders.map(x => x.ask))
-            )}
-            {...order}
-          />
-        ))}
+        {asks.map(order => <OrderBookItem key={order.id} {...order} />)}
       </StyledSellOrders>
-      {midPrice ? (
-        <StyledMidPrice>
-          <tr>
-            <td>{midPrice}</td>
-          </tr>
-        </StyledMidPrice>
-      ) : null}
+      <StyledMidPrice>
+        <tr>
+          <td>{mid}</td>
+        </tr>
+      </StyledMidPrice>
       <StyledBuyOrders>
-        {buyOrders.map((order: any, index: number) => (
-          <OrderBookItem
-            key={`orderitem_${index}`}
-            maxVolume={Math.max(
-              ...buyOrders.map(x => x.bid).concat(buyOrders.map(x => x.bid))
-            )}
-            {...order}
-          />
-        ))}
+        {bids.map(order => <OrderBookItem key={order.id} {...order} />)}
       </StyledBuyOrders>
     </StyledTable>
   );
