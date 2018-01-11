@@ -8,7 +8,6 @@ import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
-// import OrderHeader from './OrderHeader';
 import OrderOption from './OrderOption';
 
 const MARKET = OrderType.Market;
@@ -97,15 +96,12 @@ class Order extends React.Component<OrderProps, OrderState> {
       ? orderOptions.filter(opt => opt.isMarketField)
       : orderOptions;
     const {bid, ask} = this.props;
+    const spread = ask - bid;
     return (
       <div>
-        {/* <OrderHeader
-          orderCurrency={this.props.currency}
-          click={this.handleCloseOrder}
-        /> */}
         <StyledActionBlock>
           <StyledSplitBlock>
-            {(this.props.ask - this.props.bid).toFixed(this.props.accuracy)}
+            {!Number.isNaN(spread) && spread.toFixed(this.props.accuracy)}
           </StyledSplitBlock>
           <OrderAction
             click={this.handleActionClick(orderAction.sell.action)}

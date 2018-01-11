@@ -1,3 +1,4 @@
+import {defaultTo} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
 import {Order} from '../../models';
@@ -45,9 +46,9 @@ const StyledHeader = styled.th`
 ` as any;
 
 interface OrderBookProps {
-  asks?: Order[];
-  bids?: Order[];
-  mid?: number;
+  asks: Order[];
+  bids: Order[];
+  mid: number;
 }
 
 const OrderBook: React.SFC<OrderBookProps> = ({
@@ -69,7 +70,7 @@ const OrderBook: React.SFC<OrderBookProps> = ({
       </StyledSellOrders>
       <StyledMidPrice>
         <tr>
-          <td>{mid}</td>
+          <td>{defaultTo('', Number(mid))}</td>
         </tr>
       </StyledMidPrice>
       <StyledBuyOrders>
