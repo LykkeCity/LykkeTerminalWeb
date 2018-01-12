@@ -9,8 +9,8 @@ class OrderListModel {
   orderId: string;
   expiryDate: string;
 
-  constructor(order: Partial<OrderListModel>) {
-    extendObservable(this, order);
+  constructor(orderList: Partial<OrderListModel>) {
+    extendObservable(this, orderList);
   }
 }
 

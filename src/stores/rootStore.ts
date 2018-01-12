@@ -87,10 +87,6 @@ class RootStore {
             this.onQuote
           )
         );
-      WampApi.subscribe(
-        `trades.${notificationStorage.get()}`,
-        this.tradeListStore.onTrades
-      );
       this.uiStore.selectInstrument(defaultInstrument);
       this.tradeStore.subscribe();
     });
