@@ -1,3 +1,4 @@
+import {ISubscription} from 'autobahn';
 import {observable} from 'mobx';
 import {
   compose,
@@ -11,29 +12,37 @@ import {
   takeLast
 } from 'rambda';
 import {WampApi} from '../api';
+import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
 import {BaseStore, RootStore} from './index';
-
-const topicByAssetAndSide = (asset: string, side: Side) =>
-  `orderbook.${asset.toLowerCase()}.${side.toLowerCase()}`;
 
 const byPrice = (o: Order) => o.price;
 
 class OrderBookStore extends BaseStore {
   @observable private bids: Order[] = [];
   @observable private asks: Order[] = [];
+  private subscriptions: Set<ISubscription> = new Set();
 
   constructor(store: RootStore) {
     super(store);
   }
 
-  subscribe = () => {
-    const topicBySide = curry(topicByAssetAndSide)(
+  subscribe = async () => {
+    const topic = curry(topics.orderBook)(
       this.rootStore.uiStore.selectedInstrument!.id
     );
-    WampApi.subscribe(topicBySide(Side.Buy), this.onUpdate);
-    WampApi.subscribe(topicBySide(Side.Sell), this.onUpdate);
+    this.subscriptions.add(
+      await WampApi.subscribe(topic(Side.Buy), this.onUpdate)
+    );
+    this.subscriptions.add(
+      await WampApi.subscribe(topic(Side.Sell), this.onUpdate)
+    );
+  };
+
+  unsubscribe = () => {
+    this.subscriptions.forEach(s => s.unsubscribe());
+    this.subscriptions.clear();
   };
 
   bestBid = () => head(this.bids.map(x => x.price));

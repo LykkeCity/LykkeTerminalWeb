@@ -1,8 +1,9 @@
-import autobahn, {OnChallengeHandler} from 'autobahn';
+import autobahn, {OnChallengeHandler, Session} from 'autobahn';
 
+// tslint:disable:object-literal-sort-keys
 export class WampApi {
   private static instance: WampApi;
-  session: any;
+  session: Session;
 
   private key: string;
 
@@ -13,21 +14,20 @@ export class WampApi {
     key: string
   ) => {
     this.key = key;
-    return new Promise((resolve: any) => {
+    return new Promise(resolve => {
       if (this.session) {
         resolve(this.session);
       }
 
       const connection = new autobahn.Connection({
         url,
-        // tslint:disable-next-line:object-literal-sort-keys
         realm,
         authmethods: ['wampcra'],
         authid: authId,
         onchallenge: this.handleChallenge
       });
 
-      connection.onopen = (session: any) => {
+      connection.onopen = (session: Session) => {
         this.session = session;
         resolve(session);
       };
@@ -36,21 +36,14 @@ export class WampApi {
     });
   };
 
-  subscribe = (topic: string | undefined, cb: any) => {
-    return this.session.subscribe(topic, cb);
-  };
+  subscribe = (topic: string, cb: any) => this.session.subscribe(topic, cb);
 
-  publish = (topic: string | undefined, event: [any]) => {
-    this.session.publish(topic, event);
-  };
+  publish = (topic: string, event: [any]) => this.session.publish(topic, event);
 
-  register = (topic: string | undefined, procedure: any) => {
+  register = (topic: string, procedure: any) =>
     this.session.register(topic, procedure);
-  };
 
-  call = (topic: string | undefined, procedure: any) => {
-    this.session.call(topic, procedure);
-  };
+  call = (topic: string, procedure: any) => this.session.call(topic, procedure);
 
   get currentSession() {
     return this.session;
