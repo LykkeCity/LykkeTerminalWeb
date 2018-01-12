@@ -6,6 +6,7 @@ import {
   InstrumentSearch,
   InstrumentSelect
 } from './index';
+import InstrumentShortcuts from './InstrumentShortcuts';
 
 class InstrumentPicker extends React.Component<InstrumentPickerProps> {
   render() {
@@ -14,6 +15,7 @@ class InstrumentPicker extends React.Component<InstrumentPickerProps> {
         <InstrumentSelect {...this.props} onToggle={this.props.onToggle} />
         <InstrumentPopover show={this.props.show}>
           <InstrumentSearch onSearch={this.props.onSearch} />
+          <InstrumentShortcuts onSearch={this.props.onSearch} />
           {this.props.instruments.map(x => (
             <InstrumentListItem key={x.id} {...x} onPick={this.props.onPick} />
           ))}

@@ -60,7 +60,10 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string) =>
     this.instruments.filter(x =>
-      x.name.toLowerCase().includes(term.toLowerCase())
+      x.name
+        .toLowerCase()
+        .replace('/', '')
+        .includes(term.toLowerCase().replace('/', ''))
     );
 
   fetchReferenceData = async () => {
