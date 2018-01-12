@@ -26,9 +26,6 @@ export class RestApi {
   protected fireAndForget = (url: string, body: any, headers: any = {}) =>
     this._post(url, body, headers).res();
 
-  protected postOldApi = (url: string, body: any) =>
-    this.postWrapper(url, body, false).res();
-
   protected put = (url: string, body: any) =>
     this.wretcher()
       .url(url)

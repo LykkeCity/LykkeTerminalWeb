@@ -59,7 +59,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       isMarketActive: true,
       isSellActive: true,
       priceValue: 0,
-      quantityValue: 1,
+      quantityValue: 0,
       stopLoss: 0,
       takeProfit: 0
     };
