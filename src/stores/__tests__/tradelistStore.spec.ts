@@ -45,7 +45,6 @@ describe('tradeList store', () => {
     it('should contain the following fields', async () => {
       await tradeListStore.fetchAll();
       const trade = tradeListStore.allTradeLists[0];
-      expect(trade.id).toBeDefined();
       expect(trade.side).toBeDefined();
       expect(trade.symbol).toBeDefined();
       expect(trade.quantity).toBeDefined();

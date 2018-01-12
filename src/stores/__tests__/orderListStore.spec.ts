@@ -1,4 +1,6 @@
+import {instanceOf} from 'prop-types';
 import {MockOrderListApi} from '../../api/orderListApi';
+import OrderListModel from '../../models/orderListModel';
 import {OrderListStore, RootStore} from '../index';
 
 describe('orderList store', () => {
@@ -41,20 +43,40 @@ describe('orderList store', () => {
     });
   });
 
+  describe('update orderLists', () => {
+    it('should update orderLists', async () => {
+      expect(orderListStore.allOrderLists.length).toBe(0);
+      orderListStore.updateOrders([
+        {
+          AssetPair: 'BTCUSD',
+          DateTime: new Date(),
+          Id: 12389418351364984,
+          OrderType: 'Buy',
+          Price: 5900.65,
+          Volume: 1
+        }
+      ]);
+      expect(orderListStore.allOrderLists.length).toBe(1);
+    });
+  });
+
   describe('order item', () => {
     it('should contain the following fields', async () => {
       await orderListStore.fetchAll();
       const order = orderListStore.allOrderLists[0];
       expect(order.createdDate).toBeDefined();
       expect(order.currentPrice).toBeDefined();
-      expect(order.currentPriceSide).toBeDefined();
       expect(order.expiryDate).toBeDefined();
-      expect(order.id).toBeDefined();
       expect(order.orderId).toBeDefined();
-      expect(order.openPrice).toBeDefined();
       expect(order.side).toBeDefined();
       expect(order.symbol).toBeDefined();
       expect(order.volume).toBeDefined();
+    });
+
+    it('should be an instance of OrderListModel', async () => {
+      await orderListStore.fetchAll();
+      const order = orderListStore.allOrderLists[0];
+      expect(order instanceof OrderListModel).toBeTruthy();
     });
   });
 });

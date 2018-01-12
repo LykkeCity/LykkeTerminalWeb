@@ -59,7 +59,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       isMarketActive: true,
       isSellActive: true,
       priceValue: 0,
-      quantityValue: 1,
+      quantityValue: 0,
       stopLoss: 0,
       takeProfit: 0
     };
@@ -79,11 +79,11 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   handleButtonClick = (action: string) => () => {
     const platform = this.state.isMarketActive ? MARKET : PENDING;
-    const coef = action === orderAction.sell.action ? -1 : 1;
     const body: any = {
       AssetId: baseAssetStorage.get(),
-      AssetPair: this.props.selectedInstrument!.id,
-      Volume: coef * this.state.quantityValue
+      AssetPairId: this.props.currency,
+      OrderAction: action,
+      Volume: this.state.quantityValue
     };
 
     if (!this.state.isMarketActive) {

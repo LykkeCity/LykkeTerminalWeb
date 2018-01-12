@@ -10,12 +10,10 @@ class OrderStore extends BaseStore {
   executeOperation = async (platform: string, body: any) => {
     switch (platform) {
       case OrderType.Market:
-        const resp = await this.api.orderByMarket(body);
-        this.rootStore.orderListStore.updateOrders(resp);
+        await this.api.orderByMarket(body);
         break;
       case OrderType.Pending:
-        const resp2 = await this.api.orderByPending(body);
-        this.rootStore.orderListStore.updateOrders(resp2);
+        await this.api.orderByPending(body);
         break;
     }
   };
