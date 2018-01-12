@@ -7,3 +7,4 @@ export {default as OrderListModel} from './orderListModel';
 export {default as TradeListModel} from './tradeListModel';
 export {default as Dir} from './dir';
 export {default as Side} from './side';
+export {default as Order} from './order';

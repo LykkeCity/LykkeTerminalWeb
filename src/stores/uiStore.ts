@@ -1,5 +1,6 @@
-import {action, observable} from 'mobx';
+import {action, observable, reaction} from 'mobx';
 import {InstrumentModel} from '../models/index';
+import {fns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 class UiStore extends BaseStore {
@@ -12,6 +13,15 @@ class UiStore extends BaseStore {
 
   constructor(store: RootStore) {
     super(store);
+    reaction(
+      () => this.selectedInstrument,
+      instrument => {
+        if (instrument) {
+          const {reset, unsubscribe, subscribe} = this.rootStore.orderBookStore;
+          fns.seq(reset, unsubscribe, subscribe)();
+        }
+      }
+    );
   }
 
   @action
@@ -23,7 +33,6 @@ class UiStore extends BaseStore {
     this.selectedInstrument = instrument;
 
     this.rootStore.chartStore.updateChart(this.selectedInstrument!.id);
-    this.rootStore.orderBookStore.fetchAll();
   };
 
   @action search = (term: string) => (this.searchTerm = term);

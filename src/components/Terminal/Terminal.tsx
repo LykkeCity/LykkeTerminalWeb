@@ -5,7 +5,7 @@ import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import {Order} from '../Order';
-import {OrderBook} from '../OrderBook';
+import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {Tile} from '../Tile/index';
