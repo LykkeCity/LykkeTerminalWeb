@@ -32,8 +32,8 @@ class OrderBookStore extends BaseStore {
     const topicBySide = curry(topicByAssetAndSide)(
       this.rootStore.uiStore.selectedInstrument!.id
     );
-    WampApi.subscribe(topicBySide(Side.Buy), this.onOrder);
-    WampApi.subscribe(topicBySide(Side.Sell), this.onOrder);
+    WampApi.subscribe(topicBySide(Side.Buy), this.onUpdate);
+    WampApi.subscribe(topicBySide(Side.Sell), this.onUpdate);
   };
 
   bestBid = () => head(this.bids.map(x => x.price));
@@ -46,13 +46,18 @@ class OrderBookStore extends BaseStore {
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
-  onOrder = (args: any) => {
+  onUpdate = (args: any) => {
     const {IsBuy, Prices} = args[0];
-    this[IsBuy ? 'bids' : 'asks'] = compose<any[], Order[], Order[], Order[]>(
+    const mapToOrders = compose<any[], Order[], Order[], Order[]>(
       reverse,
       sortBy(byPrice),
       map(x => mappers.mapDtoToOrder({...x, IsBuy}))
-    )(Prices);
+    );
+    if (IsBuy) {
+      this.bids = mapToOrders(Prices);
+    } else {
+      this.asks = mapToOrders(Prices);
+    }
   };
 
   reset = () => {
