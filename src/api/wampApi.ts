@@ -2,7 +2,6 @@ import autobahn, {OnChallengeHandler, Session} from 'autobahn';
 
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
-  private static instance: WampApi;
   session: Session;
 
   private key: string;
@@ -49,10 +48,6 @@ export class WampApi {
     return this.session;
   }
 
-  static get Instance() {
-    return this.instance || (this.instance = new this());
-  }
-
   private handleChallenge: OnChallengeHandler = (session, method, extra) => {
     if (method === 'wampcra') {
       return autobahn.auth_cra.sign(this.key, extra.challenge);
@@ -61,6 +56,5 @@ export class WampApi {
   };
 }
 
-const WampInstance = WampApi.Instance;
-
-export default WampInstance;
+const instance = new WampApi();
+export default instance;
