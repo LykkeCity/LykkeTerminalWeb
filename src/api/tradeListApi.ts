@@ -11,20 +11,20 @@ export class MockTradeListApi implements TradeListApi {
   fetchAll = () =>
     Promise.resolve<any[]>([
       {
-        id: 1,
-        price: 5000,
-        quantity: 10,
-        side: 'Buy',
-        symbol: 'BTCUSD',
-        timestamp: new Date()
+        Asset: 'BTC',
+        DateTime: new Date(),
+        Direction: 'Buy',
+        OppositeAsset: 'USD',
+        Price: 6500,
+        Volume: 10
       },
       {
-        id: 2,
-        price: 6500,
-        quantity: 10,
-        side: 'Sell',
-        symbol: 'EURUSD',
-        timestamp: new Date()
+        Asset: 'BTC',
+        DateTime: new Date(),
+        Direction: 'Sell',
+        OppositeAsset: 'EUR',
+        Price: 6500,
+        Volume: 10
       }
     ]);
 }

@@ -3,7 +3,7 @@ import {TradeListItemProps} from '../';
 import {Side} from '../../../models';
 
 const TradeListItem: React.SFC<TradeListItemProps> = ({
-  id,
+  index,
   side,
   symbol,
   quantity,
@@ -13,7 +13,7 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   const color = side === Side.Buy ? '#fb8f01' : '#d070ff';
 
   return (
-    <tr key={id}>
+    <tr key={index}>
       <td>{symbol}</td>
       <td style={{color}}>{side}</td>
       <td>{quantity}</td>

@@ -24,7 +24,7 @@ class OrderListStore extends BaseStore {
     AssetPair
   }: any) => {
     return new OrderListModel({
-      createdDate: DateTime,
+      createdDate: DateTime.toISOString(),
       currentPrice: Price,
       expiryDate: '',
       orderId: Id,

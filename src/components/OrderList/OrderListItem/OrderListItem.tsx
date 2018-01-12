@@ -25,7 +25,7 @@ const OrderListItem: React.SFC<OrderListItemProps> = ({
       <td style={{color: colorSide}}>{side}</td>
       <td>{volume}</td>
       <td>{currentPrice.toFixed(3)}</td>
-      <td>{createdDate.toISOString()}</td>
+      <td>{createdDate}</td>
       <td>{expiryDate}</td>
       <td>
         <Icon name="pencil" />

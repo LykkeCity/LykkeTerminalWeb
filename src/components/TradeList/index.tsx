@@ -1,12 +1,13 @@
+import TradeListModel from '../../models/tradeListModel';
 import {connect} from '../connect';
 import TradeList from './TradeList';
 
 export interface TradeListProps {
-  trades?: any[];
+  trades?: TradeListModel[];
 }
 
 export interface TradeListItemProps {
-  id: number;
+  index: number;
   side: string;
   symbol: string;
   quantity: number;

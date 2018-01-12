@@ -1,6 +1,12 @@
 import {computed, observable, runInAction} from 'mobx';
+import {WampApi} from '../api';
 import {TradeListApi} from '../api/index';
+import keys from '../constants/storageKeys';
+import TradeListModel from '../models/tradeListModel';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
+
+const notificationStorage = StorageUtils(keys.notificationId);
 
 class TradeListStore extends BaseStore {
   @computed
@@ -14,14 +20,22 @@ class TradeListStore extends BaseStore {
     super(store);
   }
 
-  createTradeList = ({id, price, side, symbol, timestamp, quantity}: any) => ({
-    id,
-    price,
-    quantity,
-    side,
-    symbol,
-    timestamp: timestamp.toLocaleTimeString()
-  });
+  createTradeList = ({
+    Asset,
+    OppositeAsset,
+    Volume,
+    Direction,
+    Price,
+    DateTime
+  }: any) => {
+    return new TradeListModel({
+      price: Price,
+      quantity: Volume,
+      side: Direction,
+      symbol: `${Asset}${OppositeAsset}`,
+      timestamp: DateTime.toISOString()
+    });
+  };
 
   fetchAll = async () => {
     const tradeListDto = await this.api.fetchAll();
@@ -30,8 +44,15 @@ class TradeListStore extends BaseStore {
     });
   };
 
-  onTrades = (args: any) => {
-    alert(args[0]);
+  subscribe = () => {
+    WampApi.subscribe(`trades.${notificationStorage.get()}`, this.onTrades);
+  };
+
+  onTrades = (trades: any) => {
+    this.tradeLists = [
+      ...this.tradeLists,
+      ...trades[0].map(this.createTradeList)
+    ];
   };
 
   reset = () => {
