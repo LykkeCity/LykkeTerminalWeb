@@ -1,54 +1,55 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import shortcuts from '../../constants/shortcuts';
-import {InstrumentShortcutsProps, InstrumentShortcutsStates} from './index';
+import {InstrumentShortcutsProps} from './index';
 
-const StyledShortcut = styled.span`
-  margin-left: 10px;
-  padding: 3px 5px;
-  border-radius: 5px;
+// tslint:disable-next-line:no-var-requires
+const {Flex} = require('grid-styled');
+
+const StyledShortcut = styled.div`
+  padding: 3px 7px;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+
+  &:first-child {
+    margin-left: 0px;
+    border-left: none;
+  }
 
   &.active {
-    background-color: #494949;
+    color: #0388ef;
   }
+
   &:hover {
     cursor: pointer;
   }
 `;
 
-class InstrumentShortcuts extends React.Component<
-  InstrumentShortcutsProps,
-  InstrumentShortcutsStates
-> {
+class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
   constructor(props: InstrumentShortcutsProps) {
     super(props);
-    this.state = {
-      activeIndex: null
-    };
   }
 
-  setActive = (index: number, value: string) => () => {
-    this.setState({
-      activeIndex: index
-    });
-    this.props.changeValue(value);
+  handleClick = (value: string, index: number) => () => {
+    this.props.changeValue(value, index);
   };
 
   render() {
     return (
-      <div>
+      <Flex>
         {shortcuts.map((shortcut: any, index: number) => {
           return (
             <StyledShortcut
-              className={this.state.activeIndex === index ? 'active' : ''}
+              className={
+                this.props.shortcutActiveIndex === index ? 'active' : ''
+              }
               key={`shortcutid_${index}`}
-              onClick={this.setActive(index, shortcut.value)}
+              onClick={this.handleClick(shortcut.value, index)}
             >
               {shortcut.key}
             </StyledShortcut>
           );
         })}
-      </div>
+      </Flex>
     );
   }
 }

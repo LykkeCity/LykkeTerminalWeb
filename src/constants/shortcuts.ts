@@ -1,19 +1,19 @@
 const shortcuts = [
   {
-    key: 'All',
-    value: '*'
+    key: 'BTC',
+    value: 'BTC'
   },
   {
-    key: '*/EUR',
-    value: '*/EUR'
+    key: 'ETH',
+    value: 'ETH'
   },
   {
-    key: '*/USD',
-    value: '*/USD'
+    key: 'USD',
+    value: 'USD'
   },
   {
-    key: '*/ETH',
-    value: '*/ETH'
+    key: 'LKK',
+    value: 'LKK'
   }
 ];
 

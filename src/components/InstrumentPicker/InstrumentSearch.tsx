@@ -3,6 +3,9 @@ import * as React from 'react';
 import styled from '../styled';
 import {InstrumentPickerActions} from './index';
 
+// tslint:disable-next-line:no-var-requires
+const {Box} = require('grid-styled');
+
 interface InstrumentSearchProps extends InstrumentPickerActions {
   className?: string;
   inputValue: string;
@@ -14,7 +17,7 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
   inputValue = '',
   change
 }) => (
-  <div className={className}>
+  <Box className={className}>
     <input
       value={inputValue}
       type="search"
@@ -22,11 +25,10 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
       // tslint:disable-next-line:jsx-no-lambda
       onChange={e => change(e.currentTarget.value)}
     />
-  </div>
+  </Box>
 );
 
 const StyledInstrumentSearch = styled(InstrumentSearch)`
-  padding: 0 ${rem(10)} ${rem(10)};
   & > input {
     background-color: rgb(51, 51, 51);
     border-radius: 4px;

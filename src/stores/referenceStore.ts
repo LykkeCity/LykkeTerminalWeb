@@ -63,22 +63,13 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
-  searchStringSplit = (term: string) =>
-    term === SearchString.All
-      ? SearchString.Empty
-      : term.includes(SearchString.All)
-        ? term.replace(SearchString.All, SearchString.Empty)
-        : term;
-
   findInstruments = (term: string) =>
     this.instruments.filter(x =>
       x.name
         .toLowerCase()
         .replace(SearchString.Delimiter, SearchString.Empty)
         .includes(
-          this.searchStringSplit(term)
-            .toLowerCase()
-            .replace(SearchString.Delimiter, SearchString.Empty)
+          term.toLowerCase().replace(SearchString.Delimiter, SearchString.Empty)
         )
     );
 
