@@ -1,7 +1,10 @@
 import {Session} from 'autobahn';
+import * as topics from '../api/topics';
+import {MarketType, PriceType} from '../models/index';
+import * as mappers from '../models/mappers/index';
+import {UiStore} from '../stores/index';
 import {PriceApi} from './index';
 
-// tslint:disable:no-console
 // tslint:disable:object-literal-sort-keys
 
 const symbol = (name = '') => ({
@@ -29,7 +32,7 @@ const symbol = (name = '') => ({
 });
 
 class ChartApi {
-  private instrumentId: string = 'BTCUSD';
+  private instrumentId: string = UiStore.DEFAULT_INSTRUMENT;
 
   constructor(
     private readonly session: Session,
@@ -77,8 +80,7 @@ class ChartApi {
         'Minute'
       )
       .then(resp => {
-        const bars = resp.History.map(mapAsBarFromRest);
-        console.log(bars);
+        const bars = resp.History.map(mappers.mapAsBarFromRest);
         if (bars) {
           onHistoryCallback(bars);
         } else {
@@ -95,11 +97,15 @@ class ChartApi {
     onResetCacheNeededCallback: any
   ) => {
     this.session.subscribe(
-      `candle.spot.${this.instrumentId.toLowerCase()}.bid.minute`,
+      topics.candle(
+        MarketType.Spot,
+        this.instrumentId,
+        PriceType.Bid,
+        'minute'
+      ),
       (args: any[]) => {
         if (args) {
-          console.log(args[0]);
-          onRealtimeCallback(mapAsBarFromWamp(args[0]));
+          onRealtimeCallback(mappers.mapAsBarFromWamp(args[0]));
         }
       }
     );
@@ -113,30 +119,5 @@ class ChartApi {
     cb(Math.round(Date.now() / 1000));
   };
 }
-
-const mapAsBarFromRest = ({
-  DateTime,
-  Close,
-  Open,
-  High,
-  Low,
-  Volume = 0
-}: any) => ({
-  time: new Date(DateTime).getTime(),
-  close: Close,
-  open: Open,
-  high: High,
-  low: Low,
-  volume: Volume
-});
-
-const mapAsBarFromWamp = ({t, c, o, h, l, v = 0}: any) => ({
-  time: new Date(t).getTime(),
-  close: c,
-  open: o,
-  high: h,
-  low: l,
-  volume: v
-});
 
 export default ChartApi;
