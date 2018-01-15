@@ -1,49 +1,17 @@
-import {Session} from 'autobahn';
 import * as topics from '../api/topics';
-import {MarketType, PriceType} from '../models/index';
+import {InstrumentModel, MarketType, PriceType} from '../models/index';
 import * as mappers from '../models/mappers/index';
-import {UiStore} from '../stores/index';
-import {PriceApi} from './index';
+import {PriceApi, WampApi} from './index';
 
-// tslint:disable:object-literal-sort-keys
-
-const symbol = (name = '') => ({
-  name,
-  minmov: 1,
-  pricescale: 1,
-  session: '24x7',
-  timezone: 'Europe/Istanbul',
-  supported_resolutions: [
-    '1',
-    '5',
-    '15',
-    '30',
-    '60',
-    '240',
-    '360',
-    '720',
-    '1D',
-    '1W',
-    '1M'
-  ],
-  has_intraday: true,
-  intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
-  has_empty_bars: true
-});
-
-class ChartApi {
-  private instrumentId: string = UiStore.DEFAULT_INSTRUMENT;
-
+class ChartDataFeed {
   constructor(
-    private readonly session: Session,
-    private readonly cfg: any,
-    instrumentId: string
-  ) {
-    this.instrumentId = instrumentId;
-  }
+    private readonly priceApi: PriceApi,
+    private readonly config: any,
+    private readonly instrument: InstrumentModel
+  ) {}
 
   onReady = (cb: (configurationData: any) => void) => {
-    setTimeout(() => cb(this.cfg), 0);
+    setTimeout(() => cb(this.config), 0);
   };
 
   searchSymbols = (
@@ -52,7 +20,7 @@ class ChartApi {
     symbolType = '',
     onResultReadyCallback: (result: any[]) => void
   ) => {
-    onResultReadyCallback([symbol(this.instrumentId)]);
+    onResultReadyCallback([mappers.mapToChartSymbol(this.instrument)]);
   };
 
   resolveSymbol = (
@@ -60,7 +28,10 @@ class ChartApi {
     onSymbolResolvedCallback: any,
     onResolveErrorCallback: any
   ) => {
-    setTimeout(() => onSymbolResolvedCallback(symbol(this.instrumentId)), 0);
+    setTimeout(
+      () => onSymbolResolvedCallback(mappers.mapToChartSymbol(this.instrument)),
+      0
+    );
   };
 
   getBars = (
@@ -72,15 +43,15 @@ class ChartApi {
     onErrorCallback: any,
     firstDataRequest: any
   ) => {
-    new PriceApi()
+    this.priceApi
       .fetchHistory(
-        this.instrumentId,
+        this.instrument.id,
         new Date(from * 1000),
         firstDataRequest ? new Date() : new Date(to * 1000),
         'Minute'
       )
       .then(resp => {
-        const bars = resp.History.map(mappers.mapAsBarFromRest);
+        const bars = resp.History.map(mappers.mapToBarFromRest);
         if (bars) {
           onHistoryCallback(bars);
         } else {
@@ -90,29 +61,29 @@ class ChartApi {
   };
 
   subscribeBars = (
-    symbolInfo: typeof symbol,
+    symbolInfo: typeof mappers.mapToChartSymbol,
     resolution: string,
     onRealtimeCallback: any,
     subscriberUID: any,
     onResetCacheNeededCallback: any
   ) => {
-    this.session.subscribe(
+    WampApi.subscribe(
       topics.candle(
         MarketType.Spot,
-        this.instrumentId,
+        this.instrument.id,
         PriceType.Bid,
         'minute'
       ),
       (args: any[]) => {
         if (args) {
-          onRealtimeCallback(mappers.mapAsBarFromWamp(args[0]));
+          onRealtimeCallback(mappers.mapToBarFromWamp(args[0]));
         }
       }
     );
   };
 
   unsubscribeBars = (subscriberUID: string) => {
-    return undefined;
+    return undefined; // TODO: implement unsubscription
   };
 
   getServerTime = (cb: any) => {
@@ -120,4 +91,4 @@ class ChartApi {
   };
 }
 
-export default ChartApi;
+export default ChartDataFeed;

@@ -31,8 +31,7 @@ class UiStore extends BaseStore {
   @action
   selectInstrument = (instrument: InstrumentModel | any) => {
     this.selectedInstrument = instrument;
-
-    this.rootStore.chartStore.updateChart(this.selectedInstrument!.id);
+    this.rootStore.chartStore.renderChart(this.selectedInstrument!);
   };
 
   @action search = (term: string) => (this.searchTerm = term);
