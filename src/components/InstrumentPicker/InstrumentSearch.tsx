@@ -5,18 +5,22 @@ import {InstrumentPickerActions} from './index';
 
 interface InstrumentSearchProps extends InstrumentPickerActions {
   className?: string;
+  inputValue: string;
+  change: any;
 }
 
 const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
   className,
-  onSearch
+  inputValue = '',
+  change
 }) => (
   <div className={className}>
     <input
+      value={inputValue}
       type="search"
       placeholder="Search instrument..."
       // tslint:disable-next-line:jsx-no-lambda
-      onChange={e => onSearch && onSearch(e.currentTarget.value)}
+      onChange={e => change(e.currentTarget.value)}
     />
   </div>
 );

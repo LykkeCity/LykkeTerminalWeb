@@ -1,6 +1,11 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {AssetApi} from '../api/index';
-import {AssetCategoryModel, AssetModel, InstrumentModel} from '../models';
+import {
+  AssetCategoryModel,
+  AssetModel,
+  InstrumentModel,
+  SearchString
+} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class ReferenceStore extends BaseStore {
@@ -58,12 +63,23 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
+  searchStringSplit = (term: string) =>
+    term === SearchString.All
+      ? SearchString.Empty
+      : term.includes(SearchString.All)
+        ? term.replace(SearchString.All, SearchString.Empty)
+        : term;
+
   findInstruments = (term: string) =>
     this.instruments.filter(x =>
       x.name
         .toLowerCase()
-        .replace('/', '')
-        .includes(term.toLowerCase().replace('/', ''))
+        .replace(SearchString.Delimiter, SearchString.Empty)
+        .includes(
+          this.searchStringSplit(term)
+            .toLowerCase()
+            .replace(SearchString.Delimiter, SearchString.Empty)
+        )
     );
 
   fetchReferenceData = async () => {

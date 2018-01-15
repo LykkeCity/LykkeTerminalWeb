@@ -1,45 +1,26 @@
 import * as React from 'react';
 import styled from 'styled-components';
-
-const shortcuts = [
-  {
-    key: 'All',
-    value: '*'
-  },
-  {
-    key: '*/EUR',
-    value: '*/EUR'
-  },
-  {
-    key: '*/USD',
-    value: '*/USD'
-  },
-  {
-    key: '*/ETH',
-    value: '*/ETH'
-  }
-];
+import shortcuts from '../../constants/shortcuts';
+import {InstrumentShortcutsProps, InstrumentShortcutsStates} from './index';
 
 const StyledShortcut = styled.span`
   margin-left: 10px;
+  padding: 3px 5px;
+  border-radius: 5px;
 
   &.active {
-    background-color: #ccc;
+    background-color: #494949;
   }
   &:hover {
     cursor: pointer;
   }
 `;
 
-interface InstrumentShortcutsStates {
-  activeIndex: any;
-}
-
 class InstrumentShortcuts extends React.Component<
-  {onSearch: any},
+  InstrumentShortcutsProps,
   InstrumentShortcutsStates
 > {
-  constructor(props: {onSearch: any}) {
+  constructor(props: InstrumentShortcutsProps) {
     super(props);
     this.state = {
       activeIndex: null
@@ -50,7 +31,7 @@ class InstrumentShortcuts extends React.Component<
     this.setState({
       activeIndex: index
     });
-    this.props.onSearch(value);
+    this.props.changeValue(value);
   };
 
   render() {
