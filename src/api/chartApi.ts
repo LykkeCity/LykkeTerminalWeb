@@ -1,5 +1,5 @@
 import {Session} from 'autobahn';
-import wretch from 'wretch';
+import {PriceApi} from './index';
 
 // tslint:disable:no-console
 // tslint:disable:object-literal-sort-keys
@@ -8,7 +8,6 @@ const symbol = (name = '') => ({
   name,
   minmov: 1,
   pricescale: 1,
-  minmove2: 2,
   session: '24x7',
   timezone: 'Europe/Istanbul',
   supported_resolutions: [
@@ -70,33 +69,22 @@ class ChartApi {
     onErrorCallback: any,
     firstDataRequest: any
   ) => {
-    if (firstDataRequest) {
-      wretch(
-        `https://public-api.lykke.com/api/Candles/history/${
-          this.instrumentId
-        }/spot`
+    new PriceApi()
+      .fetchHistory(
+        this.instrumentId,
+        new Date(from * 1000),
+        firstDataRequest ? new Date() : new Date(to * 1000),
+        'Minute'
       )
-        .json({
-          period: 'minute',
-          type: 'Bid',
-          // dateFrom: new Date(2018, 1, 1).toISOString(),
-          // dateTo: new Date(2018, 1, 7).toISOString()
-          dateFrom: new Date(new Date(Date.now()).setHours(-12)).toISOString(),
-          dateTo: new Date(Date.now()).toISOString()
-        })
-        .post()
-        .json()
-        .then(resp => {
-          const bars = resp.data
-            .map(mapAsBar)
-            .sort((a: any, b: any) => b.time - a.time)
-            .reverse();
-          onHistoryCallback(bars, {
-            noData: bars.length === 0,
-            nextTime: Math.max(bars.map((x: any) => x.time))
-          });
-        });
-    }
+      .then(resp => {
+        const bars = resp.History.map(mapAsBarFromRest);
+        console.log(bars);
+        if (bars) {
+          onHistoryCallback(bars);
+        } else {
+          onHistoryCallback([], {noData: true});
+        }
+      });
   };
 
   subscribeBars = (
@@ -107,10 +95,11 @@ class ChartApi {
     onResetCacheNeededCallback: any
   ) => {
     this.session.subscribe(
-      `candle.spot.${this.instrumentId.toLowerCase()}.bid.5min`,
+      `candle.spot.${this.instrumentId.toLowerCase()}.bid.minute`,
       (args: any[]) => {
         if (args) {
-          onRealtimeCallback(mapAsBar(args[0]));
+          console.log(args[0]);
+          onRealtimeCallback(mapAsBarFromWamp(args[0]));
         }
       }
     );
@@ -120,28 +109,28 @@ class ChartApi {
     return undefined;
   };
 
-  calculateHistoryDepth = (
-    resolution: string,
-    resolutionBack: string,
-    intervalBack: string
-  ) => {
-    return undefined;
-  };
-
-  getMarks = () => {
-    return undefined;
-  };
-
-  getTimescaleMarks = () => {
-    return undefined;
-  };
-
   getServerTime = (cb: any) => {
-    cb(Date.now());
+    cb(Math.round(Date.now() / 1000));
   };
 }
 
-const mapAsBar = ({t, c, o, h, l, v}: any) => ({
+const mapAsBarFromRest = ({
+  DateTime,
+  Close,
+  Open,
+  High,
+  Low,
+  Volume = 0
+}: any) => ({
+  time: new Date(DateTime).getTime(),
+  close: Close,
+  open: Open,
+  high: High,
+  low: Low,
+  volume: Volume
+});
+
+const mapAsBarFromWamp = ({t, c, o, h, l, v = 0}: any) => ({
   time: new Date(t).getTime(),
   close: c,
   open: o,

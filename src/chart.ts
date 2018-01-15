@@ -21,14 +21,15 @@ const config = {
     '1D',
     '1W',
     '1M'
-  ]
+  ],
+  supports_time: true
 };
 
 export default (session: any, id: string = '') => {
   return new (window as any).TradingView.widget({
     autosize: true,
     symbol: id,
-    interval: '5',
+    interval: '1',
     container_id: 'tv_chart_container',
     datafeed: new ChartApi(session, config, id),
     library_path: 'charting_library/',
@@ -53,7 +54,7 @@ export default (session: any, id: string = '') => {
       'mainSeriesProperties.candleStyle.upColor': 'rgb(19, 183, 42)',
       'mainSeriesProperties.candleStyle.downColor': 'rgb(255, 62, 46)',
       'mainSeriesProperties.candleStyle.drawWick': true,
-      'mainSeriesProperties.candleStyle.drawBorder': false,
+      'mainSeriesProperties.candleStyle.drawBorder': true,
       'mainSeriesProperties.candleStyle.wickUpColor':
         'rgba(140, 148, 160, 0.4)',
       'mainSeriesProperties.candleStyle.wickDownColor':
