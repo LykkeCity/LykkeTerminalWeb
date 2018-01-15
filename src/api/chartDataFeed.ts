@@ -5,26 +5,26 @@ import {PriceApi, WampApi} from './index';
 
 class ChartDataFeed {
   constructor(
-    private readonly priceApi: PriceApi,
     private readonly config: any,
-    private readonly instrument: InstrumentModel
+    private readonly instrument: InstrumentModel,
+    private readonly priceApi: PriceApi
   ) {}
 
-  onReady = (cb: (configurationData: any) => void) => {
+  onReady = (cb: any) => {
     setTimeout(() => cb(this.config), 0);
   };
 
   searchSymbols = (
-    userInput: any,
-    exchange = '',
-    symbolType = '',
-    onResultReadyCallback: (result: any[]) => void
+    userInput: string,
+    exchange: string,
+    symbolType: string,
+    onResultReadyCallback: any
   ) => {
     onResultReadyCallback([mappers.mapToChartSymbol(this.instrument)]);
   };
 
   resolveSymbol = (
-    symbolName: any,
+    symbolName: string,
     onSymbolResolvedCallback: any,
     onResolveErrorCallback: any
   ) => {
@@ -48,7 +48,7 @@ class ChartDataFeed {
         this.instrument.id,
         new Date(from * 1000),
         firstDataRequest ? new Date() : new Date(to * 1000),
-        'Minute'
+        mappers.mapChartResolutionToWampInterval(resolution)
       )
       .then(resp => {
         const bars = resp.History.map(mappers.mapToBarFromRest);
@@ -72,7 +72,7 @@ class ChartDataFeed {
         MarketType.Spot,
         this.instrument.id,
         PriceType.Bid,
-        'minute'
+        mappers.mapChartResolutionToWampInterval(resolution)
       ),
       (args: any[]) => {
         if (args) {

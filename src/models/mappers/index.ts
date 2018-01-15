@@ -1,5 +1,5 @@
 import {ChartStore} from '../../stores/index';
-import {InstrumentModel, Side} from '../index';
+import {InstrumentModel, Interval, Side} from '../index';
 
 // tslint:disable:object-literal-sort-keys
 
@@ -51,3 +51,34 @@ export const mapToChartSymbol = ({
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
   has_empty_bars: true
 });
+
+type ResolutionMapper = (resolution: string) => Interval;
+export const mapChartResolutionToWampInterval: ResolutionMapper = resolution => {
+  switch (resolution) {
+    case '1':
+      return 'minute';
+    case '5':
+      return 'min5';
+    case '15':
+      return 'min15';
+    case '30':
+      return 'min30';
+    case '60':
+      return 'hour';
+    case '240':
+      return 'hour4';
+    case '360':
+      return 'hour6';
+    case '720':
+      return 'hour12';
+    case '1D':
+      return 'day';
+    case '1W':
+      return 'week';
+    case '1M':
+      return 'month';
+
+    default:
+      return 'day';
+  }
+};

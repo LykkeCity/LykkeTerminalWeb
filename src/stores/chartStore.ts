@@ -10,6 +10,7 @@ export const LINESTYLE_LARGE_DASHED = 3;
 
 class ChartStore {
   static readonly config = {
+    supports_search: false,
     exchanges: [],
     supported_resolutions: [
       '1',
@@ -31,20 +32,24 @@ class ChartStore {
     return new (window as any).TradingView.widget({
       autosize: true,
       symbol: instrument.name,
-      interval: '1',
+      interval: '60',
       container_id: 'tv_chart_container',
       datafeed: new ChartDataFeed(
-        new PriceApi(),
         ChartStore.config,
-        instrument
+        instrument,
+        new PriceApi()
       ),
+      toolbar_bg: '#333',
       library_path: 'charting_library/',
       disabled_features: [
         'use_localstorage_for_settings',
         'widget_logo',
-        'link_to_tradingview'
+        'link_to_tradingview',
+        'left_toolbar',
+        'header_symbol_search',
+        'header_screenshot',
+        'compare_symbol'
       ],
-      preset: 'mobile',
       overrides: {
         volumePaneSize: 'tiny',
 
