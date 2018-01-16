@@ -1,3 +1,80 @@
 .chart-container {
   border: solid 1px #333 !important;
 }
+
+.header-chart-panel .button,
+.header-chart-panel .button.disabled,
+.favored-list-container span {
+  background: #333 !important;
+  border: none;
+  border-right: rgba(0, 0, 0, 0.2) solid 1px;
+  color: #f5f6f7 !important;
+}
+
+.apply-common-tooltip:hover {
+  border: none;
+  border-right: rgba(0, 0, 0, 0.2) solid 1px !important;
+}
+
+.tv-close-panel {
+  display: none;
+}
+
+.feature-no-touch
+  ._tv-dialog
+  .button:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  ._tv-dialog
+  .custom-select
+  .switcher:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  ._tv-dialog
+  .favored-list-container
+  span:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  ._tv-dialog
+  .submenu:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .bottom-widgetbar-content.backtesting
+  .button:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .bottom-widgetbar-content.backtesting
+  .custom-select
+  .switcher:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .bottom-widgetbar-content.backtesting
+  .favored-list-container
+  span:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .bottom-widgetbar-content.backtesting
+  .submenu:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .header-chart-panel
+  .button:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .header-chart-panel
+  .custom-select
+  .switcher:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .header-chart-panel
+  .favored-list-container
+  span:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .header-chart-panel
+  .submenu:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .properties-toolbar
+  .button:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .properties-toolbar
+  .custom-select
+  .switcher:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .properties-toolbar
+  .favored-list-container
+  span:not(.disabled):not(.selected):hover:before,
+.feature-no-touch
+  .properties-toolbar
+  .submenu:not(.disabled):not(.selected):hover:before {
+  border: 1px solid #333333;
+}
