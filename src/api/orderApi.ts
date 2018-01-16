@@ -6,8 +6,8 @@ export interface OrderApi {
 }
 
 export class RestOrderApi extends RestApi implements OrderApi {
-  orderByMarket = (body: any) => this.postAndForget('/Orders/market', body);
-  orderByPending = (body: any) => this.postAndForget('/Orders/limit', body);
+  orderByMarket = (body: any) => this.fireAndForget('/Orders/market', body);
+  orderByPending = (body: any) => this.fireAndForget('/Orders/limit', body);
 }
 
 // tslint:disable-next-line:max-classes-per-file
