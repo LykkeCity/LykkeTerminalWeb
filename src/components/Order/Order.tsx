@@ -78,7 +78,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   handleButtonClick = (action: string) => () => {
-    const platform = this.state.isMarketActive ? MARKET : PENDING;
+    const orderType = this.state.isMarketActive ? MARKET : PENDING;
     const body: any = {
       AssetId: baseAssetStorage.get(),
       AssetPairId: this.props.currency,
@@ -90,7 +90,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       body.Price = this.state.priceValue;
     }
 
-    this.props.executeOperation(platform, body);
+    this.props.placeOrder(orderType, body);
   };
 
   handleOnChange = (value: string) => (e: any) => {

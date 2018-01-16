@@ -4,7 +4,6 @@ import {Side} from '../../../models';
 import {Icon} from '../../Icon/index';
 
 const OrderListItem: React.SFC<OrderListItemProps> = ({
-  index,
   createdDate,
   currentPrice,
   expiryDate,
@@ -16,7 +15,7 @@ const OrderListItem: React.SFC<OrderListItemProps> = ({
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
 
   return (
-    <tr key={index}>
+    <tr key={orderId}>
       <td>{symbol}</td>
       <td>
         <Icon name="cross" />

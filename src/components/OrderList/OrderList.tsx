@@ -19,8 +19,8 @@ const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
       </tr>
     </thead>
     <tbody>
-      {orders.map((order: any, index: number) => (
-        <OrderListItem key={`orderitem_${index}`} index={index} {...order} />
+      {orders.map((order: any) => (
+        <OrderListItem key={`orderitem_${order.orderId}`} {...order} />
       ))}
     </tbody>
   </Table>

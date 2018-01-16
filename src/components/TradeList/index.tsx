@@ -1,9 +1,9 @@
-import TradeListModel from '../../models/tradeListModel';
+import TradeModel from '../../models/tradeModel';
 import {connect} from '../connect';
 import TradeList from './TradeList';
 
 export interface TradeListProps {
-  trades?: TradeListModel[];
+  trades?: TradeModel[];
 }
 
 export interface TradeListItemProps {
@@ -12,6 +12,7 @@ export interface TradeListItemProps {
   symbol: string;
   quantity: number;
   timestamp: Date;
+  tradeId: number;
   price: number;
 }
 

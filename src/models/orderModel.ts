@@ -1,6 +1,6 @@
 import {extendObservable} from 'mobx';
 
-class OrderListModel {
+class OrderModel {
   symbol: string;
   side: string;
   volume: number;
@@ -9,9 +9,9 @@ class OrderListModel {
   orderId: string;
   expiryDate: string;
 
-  constructor(orderList: Partial<OrderListModel>) {
+  constructor(orderList: Partial<OrderModel>) {
     extendObservable(this, orderList);
   }
 }
 
-export default OrderListModel;
+export default OrderModel;

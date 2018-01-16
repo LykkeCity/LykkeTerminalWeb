@@ -1,5 +1,5 @@
-import {MockOrderListApi} from '../../api/orderListApi';
-import OrderListModel from '../../models/orderListModel';
+import {MockOrderApi} from '../../api/orderApi';
+import OrderListModel from '../../models/orderModel';
 import {OrderListStore, RootStore} from '../index';
 
 describe('orderList store', () => {
@@ -8,7 +8,7 @@ describe('orderList store', () => {
   beforeEach(() => {
     orderListStore = new OrderListStore(
       new RootStore(false),
-      new MockOrderListApi()
+      new MockOrderApi()
     );
   });
 
@@ -72,7 +72,7 @@ describe('orderList store', () => {
       expect(order.volume).toBeDefined();
     });
 
-    it('should be an instance of OrderListModel', async () => {
+    it('should be an instance of OrderModel', async () => {
       await orderListStore.fetchAll();
       const order = orderListStore.allOrderLists[0];
       expect(order instanceof OrderListModel).toBeTruthy();

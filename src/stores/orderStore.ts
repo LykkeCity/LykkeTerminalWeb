@@ -7,8 +7,8 @@ class OrderStore extends BaseStore {
     super(store);
   }
 
-  executeOperation = async (platform: string, body: any) => {
-    switch (platform) {
+  placeOrder = async (orderType: string, body: any) => {
+    switch (orderType) {
       case OrderType.Market:
         this.api
           .orderByMarket(body)

@@ -23,8 +23,8 @@ export class RestApi {
 
   protected post = (url: string, body: any) => this._post(url, body).json();
 
-  protected fireAndForget = (url: string, body: any) =>
-    this._post(url, body).res();
+  protected fireAndForget = (url: string, body: any, headers: any = {}) =>
+    this._post(url, body, headers).res();
 
   protected put = (url: string, body: any) =>
     this.wretcher()
@@ -40,10 +40,10 @@ export class RestApi {
       .res();
 
   // tslint:disable-next-line:variable-name
-  private readonly _post = (url: string, body: any) =>
+  private readonly _post = (url: string, body: any, headers: any = {}) =>
     this.wretcher()
       .url(url)
-      .headers({SignatureVerificationToken: 'asdasdasd'})
+      .headers(headers)
       .json(body)
       .post();
 }

@@ -1,7 +1,7 @@
 const keys = {
-  baseAsset: 'baseAsset',
-  notificationId: 'notificationId',
-  token: 'token'
+  baseAsset: 'lwt-baseAsset',
+  notificationId: 'lwt-notificationId',
+  token: 'lwt-token'
 };
 
 export default keys;

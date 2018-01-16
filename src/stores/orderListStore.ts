@@ -1,6 +1,7 @@
 import {computed, observable, runInAction} from 'mobx';
-import {OrderListApi} from '../api/index';
-import OrderListModel from '../models/orderListModel';
+import {OrderApi} from '../api/index';
+import {MockOrderApi} from '../api/orderApi';
+import OrderListModel from '../models/orderModel';
 import {BaseStore, RootStore} from './index';
 
 class OrderListStore extends BaseStore {
@@ -11,7 +12,7 @@ class OrderListStore extends BaseStore {
 
   @observable private orders: any[] = [];
 
-  constructor(store: RootStore, private readonly api: OrderListApi) {
+  constructor(store: RootStore, private readonly api: OrderApi | MockOrderApi) {
     super(store);
   }
 
