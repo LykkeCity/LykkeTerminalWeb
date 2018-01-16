@@ -5,11 +5,8 @@ import {StorageUtils} from '../utils/index';
 const tokenStorage = StorageUtils(keys.token);
 
 export class RestApi {
-  protected readonly wretcher = () => {
-    return wretch(process.env.REACT_APP_API_URL).auth(
-      `Bearer ${tokenStorage.get()}`
-    );
-  };
+  protected readonly wretcher = () =>
+    wretch(process.env.REACT_APP_API_URL).auth(`Bearer ${tokenStorage.get()}`);
 
   protected get = (url: string) =>
     this.wretcher()
@@ -24,11 +21,10 @@ export class RestApi {
       .get()
       .json();
 
-  protected post = (url: string, body: any) =>
-    this.postWrapper(url, body).json();
+  protected post = (url: string, body: any) => this._post(url, body).json();
 
-  protected postAndForget = (url: string, body: any) =>
-    this.postWrapper(url, body).res();
+  protected fireAndForget = (url: string, body: any) =>
+    this._post(url, body).res();
 
   protected put = (url: string, body: any) =>
     this.wretcher()
@@ -43,13 +39,13 @@ export class RestApi {
       .delete()
       .res();
 
-  private readonly postWrapper = (url: string, body: any) => {
-    return this.wretcher()
+  // tslint:disable-next-line:variable-name
+  private readonly _post = (url: string, body: any) =>
+    this.wretcher()
       .url(url)
       .headers({SignatureVerificationToken: 'asdasdasd'})
       .json(body)
       .post();
-  };
 }
 
 export default RestApi;

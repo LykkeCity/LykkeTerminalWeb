@@ -69,7 +69,7 @@ class RootStore {
 
     // TODO: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
     const defaultInstrument = this.referenceStore.getInstrumentById(
-      this.uiStore.DEFAULT_INSTRUMENT
+      UiStore.DEFAULT_INSTRUMENT
     );
 
     this.balanceListStore.fetchAll();
@@ -82,7 +82,6 @@ class RootStore {
     ).then(() => {
       this.referenceStore
         .getInstruments()
-        .filter(i => i.name.includes('btc'))
         .forEach(x =>
           WampApi.subscribe(
             `quote.spot.${x.id.toLowerCase()}.bid`,

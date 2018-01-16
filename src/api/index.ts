@@ -10,4 +10,5 @@ export {RestOrderBookApi as OrderBookApi} from './orderBookApi';
 export {default as RestApi} from './restApi';
 export {default as AuthApi} from './authApi';
 export {default as WampApi} from './wampApi';
-export {default as ChartApi} from './chartApi';
+export {default as ChartDataFeed} from './chartDataFeed';
+export {default as PriceApi} from './priceApi';

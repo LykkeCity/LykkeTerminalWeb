@@ -60,7 +60,7 @@ class OrderBookStore extends BaseStore {
     const mapToOrders = compose<any[], Order[], Order[], Order[]>(
       reverse,
       sortBy(byPrice),
-      map(x => mappers.mapDtoToOrder({...x, IsBuy}))
+      map(x => mappers.mapToOrder({...x, IsBuy}))
     );
     if (IsBuy) {
       this.bids = mapToOrders(Prices);

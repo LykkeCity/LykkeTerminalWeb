@@ -4,7 +4,7 @@ import {fns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 class UiStore extends BaseStore {
-  readonly DEFAULT_INSTRUMENT = 'BTCUSD';
+  static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
 
   @observable showAssetsSelect: boolean = false;
   @observable searchTerm: string = '';
@@ -31,8 +31,7 @@ class UiStore extends BaseStore {
   @action
   selectInstrument = (instrument: InstrumentModel | any) => {
     this.selectedInstrument = instrument;
-
-    this.rootStore.chartStore.updateChart(this.selectedInstrument!.id);
+    this.rootStore.chartStore.renderChart(this.selectedInstrument!);
   };
 
   @action search = (term: string) => (this.searchTerm = term);
