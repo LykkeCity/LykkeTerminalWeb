@@ -4,6 +4,7 @@ const tabs = {
   executions: ['View all', 'Only my'],
   orderBook: ['Manage'],
   orders: ['View all', 'Only my'],
+  walletBalance: ['Trading wallet', 'All wallets'],
   watchlist: ['Manage']
 };
 
