@@ -12,7 +12,7 @@ class OrderListStore extends BaseStore {
 
   @observable private orders: any[] = [];
 
-  constructor(store: RootStore, private readonly api: OrderApi | MockOrderApi) {
+  constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
   }
 

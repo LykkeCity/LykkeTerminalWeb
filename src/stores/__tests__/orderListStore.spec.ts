@@ -1,15 +1,29 @@
-import {MockOrderApi} from '../../api/orderApi';
 import OrderListModel from '../../models/orderModel';
 import {OrderListStore, RootStore} from '../index';
 
 describe('orderList store', () => {
   let orderListStore: OrderListStore;
+  const api: any = {
+    fetchAll: jest.fn(),
+    orderByMarket: jest.fn(),
+    orderByPending: jest.fn()
+  };
 
   beforeEach(() => {
-    orderListStore = new OrderListStore(
-      new RootStore(false),
-      new MockOrderApi()
-    );
+    orderListStore = new OrderListStore(new RootStore(false), api);
+
+    api.fetchAll = jest.fn(() => [
+      {
+        Asset: 'BTC',
+        AssetPair: 'BTCUSD',
+        DateTime: new Date(),
+        Id: 1549153684,
+        OrderType: 'Buy',
+        Price: 1246498,
+        TotalCost: 0,
+        Volume: 2
+      }
+    ]);
   });
 
   describe('state', () => {
