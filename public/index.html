@@ -16,6 +16,7 @@
   <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-32x32.png" sizes="32x32">
   <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-16x16.png" sizes="16x16">
   <link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="stylesheet" href="%PUBLIC_URL%/chart.css">
   <meta name="theme-color" content="#ffffff">
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
@@ -28,24 +29,7 @@
     -->
   <title>Lykke Web Terminal</title>
   <!-- TradingView Widget BEGIN -->
-  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script src="charting_library/charting_library.min.js"></script>
-  <script src="charting_library/datafeed/udf/datafeed.js"></script>
-  <script type="text/javascript">
-
-    function getParameterByName(name) {
-      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
-      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
-
-    document.addEventListener('DOMContentLoaded', e => {
-      // setTimeout(() => {
-      // }, 10000)
-    })
-
-  </script>
+  <script src="%PUBLIC_URL%/charting_library/charting_library.min.js"></script>
   <!-- TradingView Widget END -->
 </head>
 
