@@ -7,7 +7,8 @@ import {OrderBookItem} from './';
 
 const StyledTable = styled(Table)`
   height: inherit;
-  position: relative;
+  position: absolute;
+  left: 0;
 `;
 
 const StyledHead = styled.thead`
@@ -28,6 +29,10 @@ const StyledSellOrders = styled.tbody`
   margin-top: 34px;
   overflow: auto;
   height: 50%;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const StyledBuyOrders = styled(StyledSellOrders)`
@@ -42,7 +47,7 @@ const StyledMidPrice = styled.tbody`
 
 const StyledHeader = styled.th`
   flex-grow: 1;
-  text-align: ${(p: any) => p.align};
+  text-align: ${(p: any) => p.align} !important;
 ` as any;
 
 interface OrderBookProps {
