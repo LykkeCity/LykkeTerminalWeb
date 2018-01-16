@@ -15,6 +15,20 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   className?: string;
 }
 
+export interface InstrumentPopoverProps extends InstrumentPickerActions {
+  className?: string;
+}
+
+export interface InstrumentPickerStats {
+  searchValue: string;
+  activeShortcut: null | number;
+}
+
+export interface InstrumentShortcutsProps {
+  changeValue: any;
+  shortcutActiveIndex: null | number;
+}
+
 const connectedInstrumentPicker = connect(
   ({referenceStore, uiStore}) => ({
     instruments: referenceStore.findInstruments(uiStore.searchTerm),

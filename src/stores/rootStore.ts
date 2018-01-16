@@ -74,7 +74,6 @@ class RootStore {
     ).then(() => {
       this.referenceStore
         .getInstruments()
-        .filter(i => i.name.includes('btc'))
         .forEach(x =>
           WampApi.subscribe(
             `quote.spot.${x.id.toLowerCase()}.bid`,
