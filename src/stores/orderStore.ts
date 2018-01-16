@@ -12,13 +12,19 @@ class OrderStore extends BaseStore {
       case OrderType.Market:
         this.api
           .placeMarket(body)
-          .then(() => alert('success'))
+          .then(() => {
+            this.rootStore.balanceListStore.fetchAll();
+            alert('success');
+          })
           .catch((err: any) => alert(err));
         break;
       case OrderType.Pending:
         this.api
           .placePending(body)
-          .then(() => alert('success'))
+          .then(() => {
+            this.rootStore.balanceListStore.fetchAll();
+            alert('success');
+          })
           .catch((err: any) => alert(err));
         break;
     }
