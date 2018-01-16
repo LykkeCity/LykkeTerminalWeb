@@ -2,7 +2,7 @@ import autobahn, {OnChallengeHandler, Session} from 'autobahn';
 
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
-  session: Session;
+  private session: Session;
 
   private key: string;
 
