@@ -4,7 +4,6 @@ import {Side} from '../../../models';
 import {Icon} from '../../Icon/index';
 
 const OrderListItem: React.SFC<OrderListItemProps> = ({
-  index,
   createdDate,
   currentPrice,
   expiryDate,

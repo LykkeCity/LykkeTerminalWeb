@@ -16,6 +16,7 @@ export class MockTradeListApi implements TradeListApi {
         Direction: 'Buy',
         OppositeAsset: 'USD',
         Price: 6500,
+        TradeId: 1,
         Volume: 10
       },
       {
@@ -24,6 +25,7 @@ export class MockTradeListApi implements TradeListApi {
         Direction: 'Sell',
         OppositeAsset: 'EUR',
         Price: 6500,
+        TradeId: 2,
         Volume: 10
       }
     ]);

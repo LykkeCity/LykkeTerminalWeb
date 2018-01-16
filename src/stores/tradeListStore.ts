@@ -2,7 +2,7 @@ import {computed, observable, runInAction} from 'mobx';
 import {WampApi} from '../api';
 import {TradeListApi} from '../api/index';
 import keys from '../constants/storageKeys';
-import TradeListModel from '../models/tradeListModel';
+import TradeListModel from '../models/tradeModel';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -26,14 +26,16 @@ class TradeListStore extends BaseStore {
     Volume,
     Direction,
     Price,
-    DateTime
+    DateTime,
+    TradeId
   }: any) => {
     return new TradeListModel({
       price: Price,
       quantity: Volume,
       side: Direction,
       symbol: `${Asset}${OppositeAsset}`,
-      timestamp: DateTime.toISOString()
+      timestamp: DateTime.toISOString(),
+      tradeId: TradeId
     });
   };
 
