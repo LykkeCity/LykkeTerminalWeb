@@ -52,9 +52,11 @@ class BalanceListStore extends BaseStore {
   };
 
   setTradingAssets = (balanceList: BalanceModel[]) => {
-    this.tradingAssets = balanceList
-      .filter(b => b.type === keys.trading)[0].balances
-      .map((assetsBalance: any) => new AssetBalanceModel(assetsBalance));
+    this.tradingAssets = balanceList.find(
+      b => b.type === keys.trading
+    )!.balances.map(
+      (assetsBalance: any) => new AssetBalanceModel(assetsBalance)
+    );
   };
 
   reset = () => {

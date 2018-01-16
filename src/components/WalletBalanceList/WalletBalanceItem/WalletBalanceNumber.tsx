@@ -8,7 +8,7 @@ const StyledNumber = styled.div`
   }
 `;
 
-const TradingWalletNumber = ({num}: {num: string}) => {
+const WalletBalanceNumber = ({num}: {num: string}) => {
   const sepIdx = num.indexOf('.') + 1;
   return (
     <StyledNumber>
@@ -18,4 +18,4 @@ const TradingWalletNumber = ({num}: {num: string}) => {
   );
 };
 
-export default TradingWalletNumber;
+export default WalletBalanceNumber;

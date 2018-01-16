@@ -1,29 +1,29 @@
 import {connect} from '../connect';
-import TradingWallet from './TradingWallet';
+import WalletBalanceList from './WalletBalanceList';
 
-export interface TradingWalletProps {
+export interface WalletBalanceListProps {
   assets?: any;
   accuracy: number;
 }
 
-export interface TradingWalletItemProps {
+export interface WalletBalanceItemProps {
   accuracy: number;
   balance: number;
   id: string;
   reserved: number;
 }
 
-const ConnectedTradingWallet = connect(
+const ConnectedWalletBalanceList = connect(
   ({balanceListStore: {tradingWalletAssets: assets}, referenceStore}) => ({
     accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {
       accuracy: 2
     })!.accuracy,
     assets
   }),
-  TradingWallet
+  WalletBalanceList
 );
 
-export {ConnectedTradingWallet as TradingWallet};
+export {ConnectedWalletBalanceList as WalletBalanceList};
 export {
   default as TradingWalletItem
-} from './TradingWalletItem/TradingWalletItem';
+} from './WalletBalanceItem/WalletBalanceItem';

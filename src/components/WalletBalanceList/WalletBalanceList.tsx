@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Table} from '../Table/index';
 import {TradingWalletItem} from './';
-import {TradingWalletProps} from './';
+import {WalletBalanceListProps} from './';
 
-const TradingWallet: React.SFC<TradingWalletProps> = ({
+const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   assets = [],
   accuracy
 }) => (
@@ -17,7 +17,7 @@ const TradingWallet: React.SFC<TradingWalletProps> = ({
     <tbody>
       {assets.map((assetsItem: any, index: number) => (
         <TradingWalletItem
-          key={`assetsitem_${index}`}
+          key={assetsItem.id}
           accuracy={accuracy}
           {...assetsItem}
         />
@@ -26,4 +26,4 @@ const TradingWallet: React.SFC<TradingWalletProps> = ({
   </Table>
 );
 
-export default TradingWallet;
+export default WalletBalanceList;
