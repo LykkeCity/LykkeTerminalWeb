@@ -31,7 +31,7 @@ export class ClickOutside extends React.Component<IClickOutsideProps, {}> {
 
   render() {
     const {children} = this.props;
-    return <span>{children}</span>;
+    return <div>{children}</div>;
   }
 }
 
