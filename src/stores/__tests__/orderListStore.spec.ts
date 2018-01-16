@@ -1,4 +1,3 @@
-import {instanceOf} from 'prop-types';
 import {MockOrderListApi} from '../../api/orderListApi';
 import OrderListModel from '../../models/orderListModel';
 import {OrderListStore, RootStore} from '../index';

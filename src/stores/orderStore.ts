@@ -10,10 +10,16 @@ class OrderStore extends BaseStore {
   executeOperation = async (platform: string, body: any) => {
     switch (platform) {
       case OrderType.Market:
-        await this.api.orderByMarket(body);
+        this.api
+          .orderByMarket(body)
+          .then(() => alert('success'))
+          .catch((err: any) => alert(err));
         break;
       case OrderType.Pending:
-        await this.api.orderByPending(body);
+        this.api
+          .orderByPending(body)
+          .then(() => alert('success'))
+          .catch((err: any) => alert(err));
         break;
     }
   };
