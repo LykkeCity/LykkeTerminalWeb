@@ -10,6 +10,7 @@ import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {Tile} from '../Tile/index';
 import {TradeList} from '../TradeList';
+import {TradingWallet} from '../TradingWallet';
 import {TerminalProps} from './index';
 
 const Shell = styled.div`
@@ -22,7 +23,8 @@ const Shell = styled.div`
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
-    <Tile title="Account">
+    <Tile title="Wallet Balance List" tabs={tabs.walletBalance}>
+      <TradingWallet />
       <BalanceList />
     </Tile>
   ),

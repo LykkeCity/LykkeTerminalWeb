@@ -1,7 +1,8 @@
 import {computed, observable, runInAction} from 'mobx';
 import {add} from 'rambda';
 import {BalanceListApi} from '../api/index';
-import {BalanceModel} from '../models';
+import keys from '../constants/tradingWalletKeys';
+import {AssetBalanceModel, BalanceModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class BalanceListStore extends BaseStore {
@@ -17,7 +18,13 @@ class BalanceListStore extends BaseStore {
     return this.balanceLists.map(b => b.balance).reduce(add, 0);
   }
 
+  @computed
+  get tradingWalletAssets() {
+    return this.tradingAssets;
+  }
+
   @observable private balanceLists: any[] = [];
+  @observable private tradingAssets: any[] = [];
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -30,6 +37,7 @@ class BalanceListStore extends BaseStore {
         (wallet: any) => new BalanceModel(wallet)
       );
       this.updateBalance(tempBalanceLists);
+      this.setTradingAssets(tempBalanceLists);
     });
   };
 
@@ -41,6 +49,12 @@ class BalanceListStore extends BaseStore {
     });
     await Promise.all(promises);
     this.balanceLists = [...tempBalanceLists];
+  };
+
+  setTradingAssets = (balanceList: BalanceModel[]) => {
+    this.tradingAssets = balanceList
+      .filter(b => b.type === keys.trading)[0].balances
+      .map((assetsBalance: any) => new AssetBalanceModel(assetsBalance));
   };
 
   reset = () => {

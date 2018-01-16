@@ -7,11 +7,13 @@ export default class BalanceModel {
   id: string;
   profitAndLoss: number = 0;
   balance: number = 0;
+  type: string;
 
   constructor(wallet: any) {
     this.symbol = wallet.Name;
     this.id = wallet.Id;
     this.balances = wallet.Balances;
+    this.type = wallet.Type;
   }
 
   updateBalance = async (referenceStore: ReferenceStore) => {
