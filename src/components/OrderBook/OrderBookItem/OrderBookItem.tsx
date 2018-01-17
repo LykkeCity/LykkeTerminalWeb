@@ -10,14 +10,18 @@ const colorBySide = (side: Side) =>
 
 const alignBySide = (side: Side) => (side === Side.Sell ? 'right' : 'left');
 
-const VolumeCell = styled.td`
+const CommonCell = styled.td`
+  flex-grow: 1;
+`;
+
+const VolumeCell = styled(CommonCell)`
   color: ${(p: any) => colorBySide(p.side)} !important;
   text-align: ${(p: any) => alignBySide(p.side)} !important;
   position: relative;
   min-width: 80px !important;
 ` as any;
 
-const MidCell = styled.td`
+const MidCell = styled(CommonCell)`
   width: 80px;
   text-align: center !important;
 `;
@@ -32,8 +36,12 @@ const VolumeOverlay = styled.div`
   ${(p: any) => `${alignBySide(p.side)}: 0%`};
 ` as any;
 
+const OrderRow = styled.tr`
+  display: flex;
+`;
+
 const OrderBookItem: React.SFC<Order> = ({id, price, volume, side}) => (
-  <tr>
+  <OrderRow>
     <VolumeCell side={side}>
       {side === Side.Sell && (
         <div>
@@ -51,7 +59,7 @@ const OrderBookItem: React.SFC<Order> = ({id, price, volume, side}) => (
         </div>
       )}
     </VolumeCell>
-  </tr>
+  </OrderRow>
 );
 
 export default OrderBookItem;
