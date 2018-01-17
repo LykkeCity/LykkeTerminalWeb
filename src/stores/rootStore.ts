@@ -7,7 +7,9 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
+import shortcuts from '../constants/shortcuts';
 import keys from '../constants/storageKeys';
+import InstrumentModel from '../models/instrumentModel';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
@@ -57,8 +59,35 @@ class RootStore {
     }
   }
 
+  startWamp = (instruments: InstrumentModel[]) => {
+    // TODO: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
+    const defaultInstrument = this.referenceStore.getInstrumentById(
+      UiStore.DEFAULT_INSTRUMENT
+    );
+
+    WampApi.connect(
+      process.env.REACT_APP_WAMP_URL,
+      process.env.REACT_APP_WAMP_REALM,
+      tokenStorage.get() as string,
+      notificationStorage.get() as string
+    ).then(() => {
+      instruments.forEach(x =>
+        WampApi.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
+      );
+      this.uiStore.selectInstrument(defaultInstrument);
+      this.tradeStore.subscribe();
+    });
+  };
+
   start = async () => {
+    let instruments: any = [];
+    await this.referenceStore.fetchInstruments();
+
     if (!this.authStore.isAuth) {
+      instruments = shortcuts.reduce((i: any, item) => {
+        return [...i, ...this.referenceStore.findInstruments(item.value)];
+      }, []);
+      this.startWamp(instruments);
       return Promise.resolve();
     }
 
@@ -66,30 +95,11 @@ class RootStore {
     await this.referenceStore.fetchReferenceData();
     await this.tradeStore.fetchAll();
 
-    // TODO: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
-    const defaultInstrument = this.referenceStore.getInstrumentById(
-      UiStore.DEFAULT_INSTRUMENT
-    );
-
-    this.balanceListStore.fetchAll();
+    await this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
-    WampApi.connect(
-      process.env.REACT_APP_WAMP_URL,
-      process.env.REACT_APP_WAMP_REALM,
-      tokenStorage.get() as string,
-      notificationStorage.get() as string
-    ).then(() => {
-      this.referenceStore
-        .getInstruments()
-        .forEach(x =>
-          WampApi.subscribe(
-            `quote.spot.${x.id.toLowerCase()}.bid`,
-            this.onQuote
-          )
-        );
-      this.uiStore.selectInstrument(defaultInstrument);
-      this.tradeStore.subscribe();
-    });
+
+    instruments = this.referenceStore.getInstruments();
+    this.startWamp(instruments);
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);

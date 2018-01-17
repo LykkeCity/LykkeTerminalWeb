@@ -9,8 +9,8 @@ export class WampApi {
   connect = (
     url: string | undefined,
     realm: string | undefined,
-    authId: string,
-    key: string
+    authId: string = '',
+    key: string = ''
   ) => {
     this.key = key;
     return new Promise(resolve => {
