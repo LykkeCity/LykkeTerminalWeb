@@ -5,7 +5,7 @@ export interface TileProps {
   isAuth: boolean;
   title?: string;
   tabs?: string[];
-  hasAuthorizing?: boolean;
+  authorize?: boolean;
 }
 
 const connectedTile = connect(
