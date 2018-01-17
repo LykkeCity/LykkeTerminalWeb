@@ -22,7 +22,6 @@ const StyledInputNumber = styled.input`
 
 const StyledInputNumberComponent = styled.div`
   position: sticky;
-  margin-left: 10px;
 
   &::before,
   &::after {

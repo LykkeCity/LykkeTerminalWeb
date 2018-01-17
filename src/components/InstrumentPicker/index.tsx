@@ -1,3 +1,4 @@
+import {pathOr} from 'rambda';
 import {InstrumentModel} from '../../models/index';
 import {connect} from '../connect';
 import InstrumentPicker from './InstrumentPicker';
@@ -21,7 +22,7 @@ export interface InstrumentPopoverProps extends InstrumentPickerActions {
 
 export interface InstrumentPickerStats {
   searchValue: string;
-  activeShortcut: null | number;
+  activeShortcut: number;
 }
 
 export interface InstrumentShortcutsProps {
@@ -32,7 +33,7 @@ export interface InstrumentShortcutsProps {
 const connectedInstrumentPicker = connect(
   ({referenceStore, uiStore}) => ({
     instruments: referenceStore.findInstruments(uiStore.searchTerm),
-    value: uiStore.selectedInstrument && uiStore.selectedInstrument.name,
+    value: pathOr(undefined, ['selectedInstrument', 'name'], uiStore),
     // tslint:disable-next-line:object-literal-sort-keys
     show: uiStore.showInstrumentPicker,
     onPick: (instrument: InstrumentModel) => {

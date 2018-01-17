@@ -1,8 +1,9 @@
+import {OrderModel} from '../../models';
 import {connect} from '../connect';
 import OrderList from './OrderList';
 
 export interface OrderListProps {
-  orders?: any[];
+  orders?: OrderModel[];
 }
 
 export interface OrderListItemProps {
@@ -10,7 +11,6 @@ export interface OrderListItemProps {
   currentPrice: number;
   currentPriceSide: number;
   expiryDate: string;
-  id: number;
   orderId: number;
   openPrice: number;
   side: string;

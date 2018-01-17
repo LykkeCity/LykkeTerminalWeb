@@ -1,16 +1,11 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import {Icon} from '../Icon/index';
 import styled from '../styled';
-import {TileContent, TileMenu} from './index';
+import Unauthorized from '../Unauthorized/Unauthorized';
+import {TileContent, TileProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
-
-interface TileProps {
-  title?: string;
-  tabs?: string[];
-}
 
 const TileWrapper = styled.div`
   /* TODO: find a better way for overflowing content */
@@ -38,15 +33,20 @@ const TileTitle = styled(Box)`
   margin-bottom: -1px;
 `;
 
-const Tile: React.SFC<TileProps> = ({title = '', children, tabs}) => (
+const Tile: React.SFC<TileProps> = ({
+  title = '',
+  children,
+  tabs,
+  hasAuthorizing = false,
+  isAuth
+}) => (
   <TileWrapper>
     <TileHeader justify="space-between">
       <TileTitle>{title} </TileTitle>
-      <TileMenu>
-        <Icon name="menu" />
-      </TileMenu>
     </TileHeader>
-    <TileContent tabs={tabs}>{children}</TileContent>
+    <TileContent tabs={tabs}>
+      {!hasAuthorizing ? children : isAuth ? children : <Unauthorized />}
+    </TileContent>
   </TileWrapper>
 );
 

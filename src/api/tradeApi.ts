@@ -1,13 +1,13 @@
-export interface TradeListApi {
+export interface TradeApi {
   fetchAll: () => Promise<any[]>;
 }
 
-export class RestTradeListApi implements TradeListApi {
+export class RestTradeApi implements TradeApi {
   fetchAll = () => Promise.resolve([]);
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export class MockTradeListApi implements TradeListApi {
+export class MockTradeApi implements TradeApi {
   fetchAll = () =>
     Promise.resolve<any[]>([
       {
@@ -31,4 +31,4 @@ export class MockTradeListApi implements TradeListApi {
     ]);
 }
 
-export default TradeListApi;
+export default TradeApi;

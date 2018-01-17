@@ -1,11 +1,10 @@
 import {lighten, rem} from 'polished';
 import * as React from 'react';
-import Icon from '../Icon/Icon';
 import styled, {css} from '../styled';
 import {TileTabItem} from './';
 
 // tslint:disable-next-line:no-var-requires
-const {Flex, Box} = require('grid-styled');
+const {Flex} = require('grid-styled');
 
 interface TileContentProps {
   tabs: any;
@@ -75,7 +74,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
                 {this.props.tabs.map((tab: string, index: number) => {
                   return (
                     <TileTabItem
-                      isClickable={!!this.props.children.length}
+                      isClickable={!!child}
                       key={`tiletabitem_${index}`}
                       tabName={tab}
                       index={index}
@@ -85,9 +84,6 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
                   );
                 })}
               </Flex>
-              <Box>
-                <Icon name="cog" />
-              </Box>
             </Flex>
           </TileToolbar>
         )}

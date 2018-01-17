@@ -42,7 +42,6 @@ class UiStore extends BaseStore {
 
   reset = () => {
     this.searchTerm = '';
-    this.selectedInstrument = null;
   };
 }
 

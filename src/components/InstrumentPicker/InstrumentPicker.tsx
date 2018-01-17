@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import Search from '../../models/search';
 import {
   InstrumentListItem,
   InstrumentPickerProps,
@@ -31,12 +32,18 @@ class InstrumentPicker extends React.Component<
   constructor(props: InstrumentPickerProps) {
     super(props);
     this.state = {
-      activeShortcut: null,
-      searchValue: ''
+      activeShortcut: 0,
+      searchValue: Search.Default
     };
   }
 
-  changeValue = (value: string = '', index: null | number = null) => {
+  componentDidMount() {
+    if (this.props.onSearch) {
+      this.props.onSearch(this.state.searchValue);
+    }
+  }
+
+  changeValue = (value: string = '', index: number = 0) => {
     this.setState({
       activeShortcut: index,
       searchValue: value

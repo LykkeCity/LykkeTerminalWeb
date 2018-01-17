@@ -6,7 +6,10 @@ import {
   InstrumentModel,
   SearchString
 } from '../models';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
+
+const baseAssetStorage = StorageUtils('baseAsset');
 
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
@@ -77,7 +80,6 @@ class ReferenceStore extends BaseStore {
     await this.fetchBaseAsset();
     await this.fetchCategories();
     await this.fetchAssets();
-    await this.fetchInstruments();
   };
 
   fetchAssets = async () => {
@@ -116,7 +118,7 @@ class ReferenceStore extends BaseStore {
   };
 
   setBaseAssetId = async (assetId: string) => {
-    localStorage.setItem('baseAsset', assetId);
+    baseAssetStorage.set(assetId);
     this.baseAsset = assetId;
     this.api.setBaseAsset({BaseAsssetId: assetId});
     this.rootStore.balanceListStore.updateBalance();
