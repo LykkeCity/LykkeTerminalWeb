@@ -70,7 +70,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
                 {this.props.tabs.map((tab: string, index: number) => {
                   return (
                     <TileTabItem
-                      isClickable={!!this.props.children.length}
+                      isClickable={!!child}
                       key={`tiletabitem_${index}`}
                       tabName={tab}
                       index={index}

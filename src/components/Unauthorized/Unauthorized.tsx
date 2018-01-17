@@ -16,7 +16,8 @@ const StyledUnauthorized = styled.div`
 const Unauthorized: React.SFC<{}> = () => {
   return (
     <StyledUnauthorized>
-      Please <StyledRouterLink to="/signin">Sign in</StyledRouterLink> first
+      Please <StyledRouterLink to="/signin">Sign in</StyledRouterLink> or{' '}
+      <StyledRouterLink to="/signin">Sign up</StyledRouterLink> to start trade
     </StyledUnauthorized>
   );
 };
