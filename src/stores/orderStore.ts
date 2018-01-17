@@ -16,6 +16,7 @@ class OrderStore extends BaseStore {
           .placeMarket(body)
           .then(() => {
             this.rootStore.balanceListStore.fetchAll();
+            this.rootStore.orderListStore.fetchAll();
             console.log('Order was placed succesfully');
           })
           .catch((err: any) => {
@@ -27,6 +28,7 @@ class OrderStore extends BaseStore {
           .placeLimit(body)
           .then(() => {
             this.rootStore.balanceListStore.fetchAll();
+            this.rootStore.orderListStore.fetchAll();
             console.log('Order was placed succesfully');
           })
           .catch((err: any) => {
