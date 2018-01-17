@@ -1,5 +1,6 @@
 import {defaultTo} from 'rambda';
 import * as React from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
 import {Order} from '../../models';
 import {Table} from '../Table/index';
@@ -16,6 +17,8 @@ const StyledHead = styled.thead`
   position: absolute;
   width: 100%;
   left: 0;
+  background: #333;
+  z-index: 1;
 `;
 
 const StyledRow = styled.tr`
@@ -27,12 +30,6 @@ const StyledRow = styled.tr`
 const StyledSellOrders = styled.tbody`
   display: block;
   margin-top: 34px;
-  overflow: auto;
-  height: 50%;
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const StyledBuyOrders = styled(StyledSellOrders)`
@@ -70,17 +67,21 @@ const OrderBook: React.SFC<OrderBookProps> = ({
           <StyledHeader align="left">Buy</StyledHeader>
         </StyledRow>
       </StyledHead>
-      <StyledSellOrders>
-        {asks.map(order => <OrderBookItem key={order.id} {...order} />)}
-      </StyledSellOrders>
+      <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={250}>
+        <StyledSellOrders>
+          {asks.map(order => <OrderBookItem key={order.id} {...order} />)}
+        </StyledSellOrders>
+      </Scrollbars>
       <StyledMidPrice>
         <tr>
           <td>{defaultTo('', Number(mid))}</td>
         </tr>
       </StyledMidPrice>
-      <StyledBuyOrders>
-        {bids.map(order => <OrderBookItem key={order.id} {...order} />)}
-      </StyledBuyOrders>
+      <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={250}>
+        <StyledBuyOrders>
+          {bids.map(order => <OrderBookItem key={order.id} {...order} />)}
+        </StyledBuyOrders>
+      </Scrollbars>
     </StyledTable>
   );
 };
