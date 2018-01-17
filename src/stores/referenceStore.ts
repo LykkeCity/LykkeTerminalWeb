@@ -1,6 +1,11 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {AssetApi} from '../api/index';
-import {AssetCategoryModel, AssetModel, InstrumentModel, SearchString} from '../models';
+import {
+  AssetCategoryModel,
+  AssetModel,
+  InstrumentModel,
+  SearchString
+} from '../models';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
