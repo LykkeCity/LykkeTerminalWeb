@@ -41,10 +41,11 @@ const StyledSelect = styled(Select)`
 `;
 
 const StyledButton = styled.button`
+  padding-right: 0;
   background: none;
   outline: none;
   border: none;
-  color: #fff;
+  color: #0388ef;
 
   &:hover {
     cursor: pointer;
@@ -97,6 +98,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
             onChange={this.handleChange}
           />
         ) : null}
+        <div className={'balance-total'}>Total Balance</div>
       </div>
     );
   }
