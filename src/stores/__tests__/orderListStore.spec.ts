@@ -1,14 +1,29 @@
-import {MockOrderListApi} from '../../api/orderListApi';
+import {OrderModel} from '../../models';
 import {OrderListStore, RootStore} from '../index';
 
 describe('orderList store', () => {
   let orderListStore: OrderListStore;
+  const api: any = {
+    fetchAll: jest.fn(),
+    placeMarket: jest.fn(),
+    placePending: jest.fn()
+  };
 
   beforeEach(() => {
-    orderListStore = new OrderListStore(
-      new RootStore(false),
-      new MockOrderListApi()
-    );
+    orderListStore = new OrderListStore(new RootStore(false), api);
+
+    api.fetchAll = jest.fn(() => [
+      {
+        Asset: 'BTC',
+        AssetPair: 'BTCUSD',
+        DateTime: new Date(),
+        Id: 1549153684,
+        OrderType: 'Buy',
+        Price: 1246498,
+        TotalCost: 0,
+        Volume: 2
+      }
+    ]);
   });
 
   describe('state', () => {
@@ -41,20 +56,40 @@ describe('orderList store', () => {
     });
   });
 
+  describe('update orderLists', () => {
+    it('should update orderLists', async () => {
+      expect(orderListStore.allOrderLists.length).toBe(0);
+      orderListStore.updateOrders([
+        {
+          AssetPair: 'BTCUSD',
+          DateTime: new Date(),
+          Id: 12389418351364984,
+          OrderType: 'Buy',
+          Price: 5900.65,
+          Volume: 1
+        }
+      ]);
+      expect(orderListStore.allOrderLists.length).toBe(1);
+    });
+  });
+
   describe('order item', () => {
     it('should contain the following fields', async () => {
       await orderListStore.fetchAll();
       const order = orderListStore.allOrderLists[0];
       expect(order.createdDate).toBeDefined();
       expect(order.currentPrice).toBeDefined();
-      expect(order.currentPriceSide).toBeDefined();
       expect(order.expiryDate).toBeDefined();
-      expect(order.id).toBeDefined();
       expect(order.orderId).toBeDefined();
-      expect(order.openPrice).toBeDefined();
       expect(order.side).toBeDefined();
       expect(order.symbol).toBeDefined();
       expect(order.volume).toBeDefined();
+    });
+
+    it('should be an instance of OrderModel', async () => {
+      await orderListStore.fetchAll();
+      const order = orderListStore.allOrderLists[0];
+      expect(order instanceof OrderModel).toBeTruthy();
     });
   });
 });

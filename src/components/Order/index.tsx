@@ -1,3 +1,4 @@
+import {pathOr} from 'rambda';
 import {connect} from '../connect';
 import Order from './Order';
 
@@ -15,6 +16,7 @@ export interface OrderProps {
   bid: number;
   accuracy: number;
   currency: string;
+  placeOrder: any;
 }
 
 export interface OrderOptionProps {
@@ -57,12 +59,14 @@ export interface OrderActionProps {
 const connectedOrder = connect(
   ({
     orderBookStore: {bestAsk, bestBid},
+    orderStore: {placeOrder},
     uiStore: {selectedInstrument: instrument}
   }) => ({
-    accuracy: (instrument && instrument!.accuracy) || 2,
+    accuracy: pathOr(2, ['accuracy'], instrument),
     ask: bestAsk(),
     bid: bestBid(),
-    currency: (instrument && instrument!.id) || ''
+    currency: pathOr('', ['id'], instrument),
+    placeOrder
   }),
   Order
 );
