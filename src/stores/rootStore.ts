@@ -7,10 +7,10 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
-import shortcuts from '../constants/shortcuts';
 import keys from '../constants/storageKeys';
-import InstrumentModel from '../models/instrumentModel';
 import {StorageUtils} from '../utils/index';
+import shortcuts from '../constants/shortcuts';
+import InstrumentModel from '../models/instrumentModel';
 import {
   AuthStore,
   BalanceListStore,
@@ -98,7 +98,7 @@ class RootStore {
     await this.referenceStore.fetchReferenceData();
     await this.tradeStore.fetchAll();
 
-    await this.balanceListStore.fetchAll();
+    this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
 
     instruments = this.referenceStore.getInstruments();
