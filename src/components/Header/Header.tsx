@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {BalanceInfo} from '../BalanceInfo';
+import {Icon} from '../Icon/index';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import styled from '../styled';
@@ -31,6 +32,10 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
     history.push('signin');
   };
 
+  const settings = () => {
+    return 0;
+  };
+
   return (
     <HeaderFlex justify="stretch" align="center" is="header">
       <HeaderItem is="a">
@@ -53,14 +58,19 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
             <BalanceInfo />
           </HeaderItem>
           <HeaderItem>
+            <span className="hidden-xs" onClick={settings}>
+              <Icon color={`#8c94a0`} name={`cog`} />
+            </span>
+          </HeaderItem>
+          <HeaderItem>
             <Link>
               {authStore.isAuth ? (
                 <span className="hidden-xs" onClick={signOut}>
-                  Sign Out
+                  <Icon color={'#8c94a0'} name={'exit'} />
                 </span>
               ) : (
                 <span className="hidden-xs" onClick={signIn}>
-                  Sign In
+                  <Icon color={'#8c94a0'} name={'enter'} />
                 </span>
               )}
               <i className="icon icon--participate visible-xs" />

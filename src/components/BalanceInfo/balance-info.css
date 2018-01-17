@@ -1,5 +1,6 @@
 .balance-info {
   position: relative;
+  text-align: right;
 }
 
 .balance-info-select {
@@ -7,4 +8,9 @@
   z-index: 2;
   right: 0;
   min-width: 150px;
+}
+
+.balance-total {
+  color: #8c94a0;
+  font-size: 0.7rem;
 }
