@@ -1,8 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import {Icon} from '../Icon/index';
 import styled from '../styled';
-import {TileContent, TileMenu} from './index';
+import {TileContent} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
@@ -42,9 +41,6 @@ const Tile: React.SFC<TileProps> = ({title = '', children, tabs}) => (
   <TileWrapper>
     <TileHeader justify="space-between">
       <TileTitle>{title} </TileTitle>
-      <TileMenu>
-        <Icon name="menu" />
-      </TileMenu>
     </TileHeader>
     <TileContent tabs={tabs}>{children}</TileContent>
   </TileWrapper>

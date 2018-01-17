@@ -14,7 +14,7 @@ import OrderOption from './OrderOption';
 const baseAssetStorage = StorageUtils('baseAsset');
 
 const MARKET = OrderType.Market;
-const PENDING = OrderType.Pending;
+const LIMIT = OrderType.Limit;
 
 const StyledActionBlock = styled.div`
   display: flex;
@@ -78,7 +78,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   handleButtonClick = (action: string) => () => {
-    const orderType = this.state.isMarketActive ? MARKET : PENDING;
+    const orderType = this.state.isMarketActive ? MARKET : LIMIT;
     const body: any = {
       AssetId: baseAssetStorage.get(),
       AssetPairId: this.props.currency,
@@ -140,9 +140,9 @@ class Order extends React.Component<OrderProps, OrderState> {
               click={this.handleActionChoiceClick(MARKET)}
             />
             <OrderChoiceButton
-              title={PENDING}
+              title={LIMIT}
               isActive={!this.state.isMarketActive}
-              click={this.handleActionChoiceClick(PENDING)}
+              click={this.handleActionChoiceClick(LIMIT)}
             />
           </StyledActionChoice>
 
