@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderOptionProps} from './index';
-import OrderTumbler from './OrderTumbler';
+// import OrderTumbler from './OrderTumbler';
 
 const StyledOrderOptions = styled.div`
   margin: 10px 0 0 0;
@@ -19,6 +19,7 @@ const StyledOptions = styled.div`
   display: flex;
   flex-direction: row;
   margin: 10px 0 0 0;
+  height: 32px;
 `;
 
 const OrderOption: React.SFC<OrderOptionProps> = ({
@@ -37,7 +38,6 @@ const OrderOption: React.SFC<OrderOptionProps> = ({
         <StyledTitle>{title}</StyledTitle>
       </div>
       <StyledOptions>
-        <OrderTumbler tumblers={tumblerValues} />
         <NumberInput inputValue={inputValue} change={change} />
       </StyledOptions>
     </StyledOrderOptions>

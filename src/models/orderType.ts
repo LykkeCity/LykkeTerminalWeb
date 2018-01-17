@@ -1,6 +1,6 @@
 enum OrderType {
   Market = 'Market',
-  Pending = 'Pending'
+  Limit = 'Limit'
 }
 
 export default OrderType;

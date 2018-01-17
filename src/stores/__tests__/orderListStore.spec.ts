@@ -5,8 +5,8 @@ describe('orderList store', () => {
   let orderListStore: OrderListStore;
   const api: any = {
     fetchAll: jest.fn(),
-    placeMarket: jest.fn(),
-    placePending: jest.fn()
+    placeLimit: jest.fn(),
+    placeMarket: jest.fn()
   };
 
   beforeEach(() => {

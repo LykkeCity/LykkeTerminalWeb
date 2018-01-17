@@ -22,9 +22,9 @@ class OrderStore extends BaseStore {
             console.log('There is an error placing your order');
           });
         break;
-      case OrderType.Pending:
+      case OrderType.Limit:
         this.api
-          .placePending(body)
+          .placeLimit(body)
           .then(() => {
             this.rootStore.balanceListStore.fetchAll();
             console.log('Order was placed succesfully');

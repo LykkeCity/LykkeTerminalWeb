@@ -22,7 +22,7 @@ export interface InstrumentPopoverProps extends InstrumentPickerActions {
 
 export interface InstrumentPickerStats {
   searchValue: string;
-  activeShortcut: null | number;
+  activeShortcut: number;
 }
 
 export interface InstrumentShortcutsProps {
