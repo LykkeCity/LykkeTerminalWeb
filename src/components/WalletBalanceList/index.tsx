@@ -4,6 +4,7 @@ import WalletBalanceList from './WalletBalanceList';
 export interface WalletBalanceListProps {
   assets?: any;
   accuracy: number;
+  total: number;
 }
 
 export interface WalletBalanceItemProps {
@@ -14,11 +15,18 @@ export interface WalletBalanceItemProps {
 }
 
 const ConnectedWalletBalanceList = connect(
-  ({balanceListStore: {tradingWalletAssets: assets}, referenceStore}) => ({
+  ({
+    balanceListStore: {
+      tradingWalletAssets: assets,
+      totalWalletAssetsBalance: total
+    },
+    referenceStore
+  }) => ({
     accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {
       accuracy: 2
     })!.accuracy,
-    assets
+    assets,
+    total
   }),
   WalletBalanceList
 );

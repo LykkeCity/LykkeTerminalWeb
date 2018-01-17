@@ -23,6 +23,13 @@ class BalanceListStore extends BaseStore {
     return this.tradingAssets;
   }
 
+  @computed
+  get totalWalletAssetsBalance() {
+    return this.balanceLists.length
+      ? this.getTradingWallet(this.balanceLists).balance
+      : 0;
+  }
+
   @observable private balanceLists: any[] = [];
   @observable private tradingAssets: any[] = [];
 
@@ -52,15 +59,17 @@ class BalanceListStore extends BaseStore {
   };
 
   setTradingAssets = (balanceList: BalanceModel[]) => {
-    this.tradingAssets = balanceList.find(
-      b => b.type === keys.trading
-    )!.balances.map(
+    this.tradingAssets = this.getTradingWallet(balanceList).balances.map(
       (assetsBalance: any) => new AssetBalanceModel(assetsBalance)
     );
   };
 
   reset = () => {
     this.balanceLists = [];
+  };
+
+  private getTradingWallet = (balanceList: BalanceModel[]) => {
+    return balanceList.find(b => b.type === keys.trading)!;
   };
 }
 
