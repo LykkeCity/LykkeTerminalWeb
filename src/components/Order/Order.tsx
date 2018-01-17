@@ -4,11 +4,14 @@ import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import orderOptions from '../../constants/orderOptions';
 import OrderType from '../../models/orderType';
+import {StorageUtils} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
 import OrderOption from './OrderOption';
+
+const baseAssetStorage = StorageUtils('baseAsset');
 
 const MARKET = OrderType.Market;
 const PENDING = OrderType.Pending;
@@ -75,7 +78,19 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   handleButtonClick = (action: string) => () => {
-    alert(action);
+    const orderType = this.state.isMarketActive ? MARKET : PENDING;
+    const body: any = {
+      AssetId: baseAssetStorage.get(),
+      AssetPairId: this.props.currency,
+      OrderAction: action,
+      Volume: this.state.quantityValue
+    };
+
+    if (!this.state.isMarketActive) {
+      body.Price = this.state.priceValue;
+    }
+
+    this.props.placeOrder(orderType, body);
   };
 
   handleOnChange = (value: string) => (e: any) => {

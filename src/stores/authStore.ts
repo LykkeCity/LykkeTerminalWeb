@@ -5,6 +5,7 @@ import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const tokenStorage = StorageUtils(keys.token);
+const notificationStorage = StorageUtils(keys.notificationId);
 
 class AuthStore extends BaseStore {
   @computed
@@ -12,8 +13,8 @@ class AuthStore extends BaseStore {
     return !!this.token;
   }
 
-  @observable token: string = tokenStorage.get() || '';
-  @observable notificationId: string = '';
+  @observable private token: string = tokenStorage.get() || '';
+  @observable private notificationId: string = notificationStorage.get() || '';
 
   constructor(store: RootStore, private readonly api: AuthApi) {
     super(store);
@@ -26,6 +27,7 @@ class AuthStore extends BaseStore {
         this.token = resp.AccessToken;
         this.notificationId = resp.NotificationsId;
         tokenStorage.set(this.token);
+        notificationStorage.set(this.notificationId);
         return Promise.resolve();
       })
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));

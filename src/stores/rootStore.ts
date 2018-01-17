@@ -2,13 +2,15 @@ import {
   AssetApi,
   AuthApi,
   BalanceListApi,
-  OrderListApi,
-  TradeListApi,
+  OrderApi,
+  TradeApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
 import shortcuts from '../constants/shortcuts';
+import keys from '../constants/storageKeys';
 import InstrumentModel from '../models/instrumentModel';
+import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
   BalanceListStore,
@@ -16,17 +18,21 @@ import {
   ChartStore,
   OrderBookStore,
   OrderListStore,
+  OrderStore,
   ReferenceStore,
-  TradeListStore,
+  TradeStore,
   UiStore,
   WatchlistStore
 } from './index';
+
+const tokenStorage = StorageUtils(keys.token);
+const notificationStorage = StorageUtils(keys.notificationId);
 
 class RootStore {
   session: any;
 
   readonly watchlistStore: WatchlistStore;
-  readonly tradeListStore: TradeListStore;
+  readonly tradeStore: TradeStore;
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
@@ -34,20 +40,22 @@ class RootStore {
   readonly referenceStore: ReferenceStore;
   readonly authStore: AuthStore;
   readonly chartStore: ChartStore;
+  readonly orderStore: OrderStore;
 
   private readonly stores = new Set<BaseStore>();
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi());
-      this.tradeListStore = new TradeListStore(this, new TradeListApi());
+      this.tradeStore = new TradeStore(this, new TradeApi());
       this.orderBookStore = new OrderBookStore(this);
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
-      this.orderListStore = new OrderListStore(this, new OrderListApi());
+      this.orderListStore = new OrderListStore(this, new OrderApi());
       this.uiStore = new UiStore(this);
       this.referenceStore = new ReferenceStore(this, new AssetApi());
       this.authStore = new AuthStore(this, new AuthApi());
       this.chartStore = new ChartStore();
+      this.orderStore = new OrderStore(this, new OrderApi());
     }
   }
 
@@ -57,23 +65,20 @@ class RootStore {
       UiStore.DEFAULT_INSTRUMENT
     );
 
-    const {token, notificationId} = this.authStore;
-
     WampApi.connect(
       process.env.REACT_APP_WAMP_URL,
       process.env.REACT_APP_WAMP_REALM,
-      token,
-      notificationId
+      tokenStorage.get() as string,
+      notificationStorage.get() as string
     ).then(() => {
-      shortcuts.forEach(shortcut =>
-        instruments.forEach(x =>
-          WampApi.subscribe(
-            `quote.spot.${x.id.toLowerCase()}.bid`,
-            this.onQuote
-          )
+      instruments.forEach(x =>
+        WampApi.subscribe(
+          `quote.spot.${x.id.toLowerCase()}.bid`,
+          this.onQuote
         )
       );
       this.uiStore.selectInstrument(defaultInstrument);
+      this.tradeStore.subscribe();
     });
   };
 
@@ -91,9 +96,9 @@ class RootStore {
 
     await this.watchlistStore.fetchAll();
     await this.referenceStore.fetchReferenceData();
-    await this.tradeListStore.fetchAll();
+    await this.tradeStore.fetchAll();
 
-    this.balanceListStore.fetchAll();
+    await this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
 
     instruments = this.referenceStore.getInstruments();
