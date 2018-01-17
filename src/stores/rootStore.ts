@@ -7,10 +7,10 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
-import keys from '../constants/storageKeys';
-import {StorageUtils} from '../utils/index';
 import shortcuts from '../constants/shortcuts';
+import keys from '../constants/storageKeys';
 import InstrumentModel from '../models/instrumentModel';
+import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
   BalanceListStore,
@@ -72,10 +72,7 @@ class RootStore {
       notificationStorage.get() as string
     ).then(() => {
       instruments.forEach(x =>
-        WampApi.subscribe(
-          `quote.spot.${x.id.toLowerCase()}.bid`,
-          this.onQuote
-        )
+        WampApi.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
       );
       this.uiStore.selectInstrument(defaultInstrument);
       this.tradeStore.subscribe();
@@ -98,7 +95,7 @@ class RootStore {
     await this.referenceStore.fetchReferenceData();
     await this.tradeStore.fetchAll();
 
-    this.balanceListStore.fetchAll();
+    await this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
 
     instruments = this.referenceStore.getInstruments();
