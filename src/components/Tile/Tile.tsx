@@ -37,7 +37,7 @@ const Tile: React.SFC<TileProps> = ({
   title = '',
   children,
   tabs,
-  hasAuthorizing = false,
+  authorize = false,
   isAuth
 }) => (
   <TileWrapper>
@@ -45,7 +45,7 @@ const Tile: React.SFC<TileProps> = ({
       <TileTitle>{title} </TileTitle>
     </TileHeader>
     <TileContent tabs={tabs}>
-      {!hasAuthorizing ? children : isAuth ? children : <Unauthorized />}
+      {authorize ? isAuth ? children : <Unauthorized /> : children}
     </TileContent>
   </TileWrapper>
 );
