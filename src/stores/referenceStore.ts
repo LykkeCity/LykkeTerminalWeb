@@ -80,7 +80,6 @@ class ReferenceStore extends BaseStore {
     await this.fetchBaseAsset();
     await this.fetchCategories();
     await this.fetchAssets();
-    await this.fetchInstruments();
   };
 
   fetchAssets = async () => {

@@ -257,7 +257,8 @@ describe('referenceStore', () => {
         assetStore.addAsset(new AssetModel({id: 'CHF'}));
       });
 
-      await assetStore.fetchReferenceData();
+      await assetStore.fetchAssets();
+      await assetStore.fetchInstruments();
 
       expect(assetStore.getInstruments()[0].baseAsset.id).toBe('BTC');
       expect(assetStore.getInstruments()[0].baseAsset.id).not.toBe('CHF');

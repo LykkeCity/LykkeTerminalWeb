@@ -23,7 +23,7 @@ const Shell = styled.div`
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
-    <Tile title="Account" tabs={tabs.walletBalance}>
+    <Tile title="Account" tabs={tabs.walletBalance} hasAuthorizing={true}>
       <WalletBalanceList />
       <BalanceList />
     </Tile>
@@ -34,7 +34,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   e: (
-    <Tile title="Executions" tabs={tabs.executions}>
+    <Tile title="Executions" tabs={tabs.executions} hasAuthorizing={true}>
       <TradeList />
       <div>Second tab</div>
     </Tile>
@@ -45,13 +45,13 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   ord: (
-    <Tile title="Orders" tabs={tabs.orders}>
+    <Tile title="Orders" tabs={tabs.orders} hasAuthorizing={true}>
       <OrderList />
       <div>Second tab</div>
     </Tile>
   ),
   wl: (
-    <Tile title="Order">
+    <Tile title="Order" hasAuthorizing={true}>
       <Order />
     </Tile>
   )
