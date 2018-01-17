@@ -2,7 +2,7 @@ import {rem} from 'polished';
 import * as React from 'react';
 import styled from '../styled';
 import Unauthorized from '../Unauthorized/Unauthorized';
-import {TileContent, TileMenu, TileProps} from './index';
+import {TileContent, TileProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
