@@ -27,9 +27,14 @@ const iconCss = css`
 `;
 
 const TileToolbar = styled.div`
+  position: absolute;
+  left: 0;
+  top: 30px;
+  width: 100%;
   border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-  padding: ${rem(10)} 0;
+  padding: ${rem(15)} 0.9375rem ${rem(10)};
   ${iconCss};
+  background-color: #333;
 `;
 
 const StyledTileContent = styled.div`
@@ -86,7 +91,9 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
             </Flex>
           </TileToolbar>
         )}
-        {child}
+        <div style={this.props.tabs ? {marginTop: rem(50)} : {height: '100%'}}>
+          {child}
+        </div>
       </StyledTileContent>
     );
   }
