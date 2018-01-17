@@ -1,21 +1,23 @@
+import {TradeModel} from '../../models';
 import {connect} from '../connect';
 import TradeList from './TradeList';
 
 export interface TradeListProps {
-  trades?: any[];
+  trades?: TradeModel[];
 }
 
 export interface TradeListItemProps {
-  id: number;
+  index: number;
   side: string;
   symbol: string;
   quantity: number;
   timestamp: Date;
+  tradeId: number;
   price: number;
 }
 
 const ConnectedTradeList = connect(
-  ({tradeListStore: {allTradeLists: trades}}) => ({
+  ({tradeStore: {allTradeLists: trades}}) => ({
     trades
   }),
   TradeList

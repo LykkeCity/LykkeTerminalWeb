@@ -1,5 +1,6 @@
 import {computed, observable, runInAction} from 'mobx';
-import {OrderListApi} from '../api/index';
+import {OrderApi} from '../api/index';
+import {OrderModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class OrderListStore extends BaseStore {
@@ -10,39 +11,38 @@ class OrderListStore extends BaseStore {
 
   @observable private orders: any[] = [];
 
-  constructor(store: RootStore, private readonly api: OrderListApi) {
+  constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
   }
 
   createOrderList = ({
-    createdDate,
-    currentPrice,
-    currentPriceSide,
-    expiryDate,
-    id,
-    openPrice,
-    orderId,
-    side,
-    symbol,
-    volume
-  }: any) => ({
-    createdDate: createdDate.toLocaleTimeString(),
-    currentPrice,
-    currentPriceSide,
-    expiryDate,
-    id,
-    openPrice,
-    orderId,
-    side,
-    symbol,
-    volume
-  });
+    Id,
+    DateTime,
+    OrderType,
+    Volume,
+    Price,
+    AssetPair
+  }: any) => {
+    return new OrderModel({
+      createdDate: DateTime.toISOString(),
+      currentPrice: Price,
+      expiryDate: '',
+      orderId: Id,
+      side: OrderType,
+      symbol: AssetPair,
+      volume: Volume
+    });
+  };
 
   fetchAll = async () => {
-    const orderListDto = await this.api.fetchAll();
+    const ordersDto = await this.api.fetchAll();
     runInAction(() => {
-      this.orders = orderListDto.map(this.createOrderList);
+      this.orders = ordersDto.map(this.createOrderList);
     });
+  };
+
+  updateOrders = (orders: any) => {
+    this.orders = [...this.orders, ...orders.map(this.createOrderList)];
   };
 
   reset = () => {
