@@ -1,4 +1,4 @@
-import {fontFace, normalize, transitions} from 'polished';
+import {fontFace, normalize} from 'polished';
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {SignInPage} from './components/SignInPage';
@@ -49,7 +49,6 @@ injectGlobal`
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -webkit-text-size-adjust: none;
-    ${transitions('all 0.8s ease') as any};
   }
   li {
     list-style: none;
