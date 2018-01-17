@@ -2,6 +2,8 @@ import OrderApi from '../api/orderApi';
 import OrderType from '../models/orderType';
 import {BaseStore, RootStore} from './index';
 
+// tslint:disable:no-console
+
 class OrderStore extends BaseStore {
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
@@ -12,20 +14,30 @@ class OrderStore extends BaseStore {
       case OrderType.Market:
         this.api
           .placeMarket(body)
-          .then(() => alert('success'))
-          .catch((err: any) => alert(err));
+          .then(() => {
+            this.rootStore.balanceListStore.fetchAll();
+            console.log('Order was placed succesfully');
+          })
+          .catch((err: any) => {
+            console.log('There is an error placing your order');
+          });
         break;
       case OrderType.Pending:
         this.api
           .placePending(body)
-          .then(() => alert('success'))
-          .catch((err: any) => alert(err));
+          .then(() => {
+            this.rootStore.balanceListStore.fetchAll();
+            console.log('Order was placed succesfully');
+          })
+          .catch((err: any) => {
+            console.log('There is an error placing your order');
+          });
         break;
     }
   };
 
   reset = () => {
-    alert('reset');
+    return;
   };
 }
 
