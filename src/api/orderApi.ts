@@ -2,17 +2,17 @@ import RestApi from './restApi';
 import {ApiResponse} from './types';
 
 export interface OrderApi {
-  orderByMarket: (body: any) => ApiResponse;
-  orderByPending: (body: any) => ApiResponse;
+  placeMarket: (body: any) => ApiResponse;
+  placePending: (body: any) => ApiResponse;
   fetchAll: () => Promise<any[]>;
 }
 
 export class RestOrderApi extends RestApi implements OrderApi {
-  orderByMarket = (body: any) =>
+  placeMarket = (body: any) =>
     this.fireAndForget('/Orders/market', body, {
       SignatureVerificationToken: 'asdasdasd'
     });
-  orderByPending = (body: any) =>
+  placePending = (body: any) =>
     this.fireAndForget('/Orders/limit', body, {
       SignatureVerificationToken: 'asdasdasd'
     });

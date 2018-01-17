@@ -1,9 +1,9 @@
-import OrderListModel from '../../models/orderModel';
+import {OrderModel} from '../../models';
 import {connect} from '../connect';
 import OrderList from './OrderList';
 
 export interface OrderListProps {
-  orders?: OrderListModel[];
+  orders?: OrderModel[];
 }
 
 export interface OrderListItemProps {

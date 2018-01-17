@@ -16,7 +16,7 @@ const TradeList: React.SFC<TradeListProps> = ({trades = []}) => (
     </thead>
     <tbody>
       {trades.map((trade: any) => (
-        <TradeListItem key={`tradeitem_${trade.tradeId}`} {...trade} />
+        <TradeListItem key={trade.tradeId} {...trade} />
       ))}
     </tbody>
   </Table>

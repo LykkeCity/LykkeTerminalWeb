@@ -1,4 +1,4 @@
-import TradeModel from '../../models/tradeModel';
+import {TradeModel} from '../../models';
 import {connect} from '../connect';
 import TradeList from './TradeList';
 
@@ -17,7 +17,7 @@ export interface TradeListItemProps {
 }
 
 const ConnectedTradeList = connect(
-  ({tradeListStore: {allTradeLists: trades}}) => ({
+  ({tradeStore: {allTradeLists: trades}}) => ({
     trades
   }),
   TradeList

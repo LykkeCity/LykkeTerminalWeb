@@ -3,7 +3,7 @@ import {
   AuthApi,
   BalanceListApi,
   OrderApi,
-  TradeListApi,
+  TradeApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
@@ -18,7 +18,7 @@ import {
   OrderListStore,
   OrderStore,
   ReferenceStore,
-  TradeListStore,
+  TradeStore,
   UiStore,
   WatchlistStore
 } from './index';
@@ -30,7 +30,7 @@ class RootStore {
   session: any;
 
   readonly watchlistStore: WatchlistStore;
-  readonly tradeListStore: TradeListStore;
+  readonly tradeStore: TradeStore;
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
@@ -45,7 +45,7 @@ class RootStore {
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi());
-      this.tradeListStore = new TradeListStore(this, new TradeListApi());
+      this.tradeStore = new TradeStore(this, new TradeApi());
       this.orderBookStore = new OrderBookStore(this);
       this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
       this.orderListStore = new OrderListStore(this, new OrderApi());
@@ -64,7 +64,7 @@ class RootStore {
 
     await this.watchlistStore.fetchAll();
     await this.referenceStore.fetchReferenceData();
-    await this.tradeListStore.fetchAll();
+    await this.tradeStore.fetchAll();
 
     // TODO: remove this temporary default instrument selector and remove any from uiStore.ts -> selectInstrument
     const defaultInstrument = this.referenceStore.getInstrumentById(
@@ -88,7 +88,7 @@ class RootStore {
           )
         );
       this.uiStore.selectInstrument(defaultInstrument);
-      this.tradeListStore.subscribe();
+      this.tradeStore.subscribe();
     });
   };
 

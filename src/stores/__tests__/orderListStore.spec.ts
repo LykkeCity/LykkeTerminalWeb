@@ -1,12 +1,12 @@
-import OrderListModel from '../../models/orderModel';
+import {OrderModel} from '../../models';
 import {OrderListStore, RootStore} from '../index';
 
 describe('orderList store', () => {
   let orderListStore: OrderListStore;
   const api: any = {
     fetchAll: jest.fn(),
-    orderByMarket: jest.fn(),
-    orderByPending: jest.fn()
+    placeMarket: jest.fn(),
+    placePending: jest.fn()
   };
 
   beforeEach(() => {
@@ -89,7 +89,7 @@ describe('orderList store', () => {
     it('should be an instance of OrderModel', async () => {
       await orderListStore.fetchAll();
       const order = orderListStore.allOrderLists[0];
-      expect(order instanceof OrderListModel).toBeTruthy();
+      expect(order instanceof OrderModel).toBeTruthy();
     });
   });
 });

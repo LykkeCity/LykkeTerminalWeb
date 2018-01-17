@@ -1,5 +1,5 @@
 export {RestWatchlistApi as WatchlistApi} from './watchlistApi';
-export {MockTradeListApi as TradeListApi} from './tradeListApi';
+export {MockTradeApi as TradeApi} from './tradeApi';
 export {RestBalanceListApi as BalanceListApi} from './balanceListApi';
 export {MockBalanceListApi} from './balanceListApi';
 export {RestAssetApi as AssetApi} from './assetApi';

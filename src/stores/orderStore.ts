@@ -11,13 +11,13 @@ class OrderStore extends BaseStore {
     switch (orderType) {
       case OrderType.Market:
         this.api
-          .orderByMarket(body)
+          .placeMarket(body)
           .then(() => alert('success'))
           .catch((err: any) => alert(err));
         break;
       case OrderType.Pending:
         this.api
-          .orderByPending(body)
+          .placePending(body)
           .then(() => alert('success'))
           .catch((err: any) => alert(err));
         break;

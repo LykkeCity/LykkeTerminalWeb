@@ -1,22 +1,22 @@
 import {computed, observable, runInAction} from 'mobx';
 import {WampApi} from '../api';
-import {TradeListApi} from '../api/index';
+import {TradeApi} from '../api/index';
 import keys from '../constants/storageKeys';
-import TradeListModel from '../models/tradeModel';
+import {TradeModel} from '../models';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const notificationStorage = StorageUtils(keys.notificationId);
 
-class TradeListStore extends BaseStore {
+class TradeStore extends BaseStore {
   @computed
   get allTradeLists() {
-    return this.tradeLists;
+    return this.trades;
   }
 
-  @observable private tradeLists: any[] = [];
+  @observable private trades: any[] = [];
 
-  constructor(store: RootStore, private readonly api: TradeListApi) {
+  constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
   }
 
@@ -29,7 +29,7 @@ class TradeListStore extends BaseStore {
     DateTime,
     TradeId
   }: any) => {
-    return new TradeListModel({
+    return new TradeModel({
       price: Price,
       quantity: Volume,
       side: Direction,
@@ -40,9 +40,9 @@ class TradeListStore extends BaseStore {
   };
 
   fetchAll = async () => {
-    const tradeListDto = await this.api.fetchAll();
+    const tradesDto = await this.api.fetchAll();
     runInAction(() => {
-      this.tradeLists = tradeListDto.map(this.createTradeList);
+      this.trades = tradesDto.map(this.createTradeList);
     });
   };
 
@@ -51,15 +51,12 @@ class TradeListStore extends BaseStore {
   };
 
   onTrades = (trades: any) => {
-    this.tradeLists = [
-      ...this.tradeLists,
-      ...trades[0].map(this.createTradeList)
-    ];
+    this.trades = [...this.trades, ...trades[0].map(this.createTradeList)];
   };
 
   reset = () => {
-    this.tradeLists = [];
+    this.trades = [];
   };
 }
 
-export default TradeListStore;
+export default TradeStore;

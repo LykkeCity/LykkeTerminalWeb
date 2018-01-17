@@ -63,11 +63,9 @@ const connectedOrder = connect(
     uiStore: {selectedInstrument: instrument}
   }) => ({
     accuracy: pathOr(2, ['accuracy'], instrument),
-    // accuracy: (instrument && instrument!.accuracy) || 2,
     ask: bestAsk(),
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
-    // currency: (instrument && instrument!.id) || '',
     placeOrder
   }),
   Order

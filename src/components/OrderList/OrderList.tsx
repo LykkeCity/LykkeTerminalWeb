@@ -20,7 +20,7 @@ const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
     </thead>
     <tbody>
       {orders.map((order: any) => (
-        <OrderListItem key={`orderitem_${order.orderId}`} {...order} />
+        <OrderListItem key={order.orderId} {...order} />
       ))}
     </tbody>
   </Table>

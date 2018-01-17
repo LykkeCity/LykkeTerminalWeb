@@ -1,7 +1,6 @@
 import {computed, observable, runInAction} from 'mobx';
 import {OrderApi} from '../api/index';
-import {MockOrderApi} from '../api/orderApi';
-import OrderListModel from '../models/orderModel';
+import {OrderModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class OrderListStore extends BaseStore {
@@ -24,7 +23,7 @@ class OrderListStore extends BaseStore {
     Price,
     AssetPair
   }: any) => {
-    return new OrderListModel({
+    return new OrderModel({
       createdDate: DateTime.toISOString(),
       currentPrice: Price,
       expiryDate: '',
@@ -36,9 +35,9 @@ class OrderListStore extends BaseStore {
   };
 
   fetchAll = async () => {
-    const orderListDto = await this.api.fetchAll();
+    const ordersDto = await this.api.fetchAll();
     runInAction(() => {
-      this.orders = orderListDto.map(this.createOrderList);
+      this.orders = ordersDto.map(this.createOrderList);
     });
   };
 
