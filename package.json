@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-custom-scrollbars": "^4.0.1",
     "@types/react-router-dom": "^4.2.3",
     "@types/react-select": "^1.1.0",
     "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
@@ -12,17 +13,18 @@
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
     "polished": "^1.9.0",
-    "prettier": "^1.9.2",
+    "prettier": "^1.10.2",
     "rambda": "0.9.8",
     "react": "^16.2.0",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.2.0",
     "react-mosaic-component": "^1.0.3",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.8.0",
-    "react-select": "^1.1.0",
+    "react-select": "^1.2.1",
     "styled-components": "^2.4.0",
     "whatwg-fetch": "^2.0.3",
-    "wretch": "^1.1.0"
+    "wretch": "^1.1.1"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,json,css,scss}": [
@@ -41,7 +43,7 @@
   "devDependencies": {
     "@types/autobahn": "^0.9.38",
     "@types/jest": "^21.1.10",
-    "@types/node": "^8.5.5",
+    "@types/node": "^8.5.8",
     "@types/prop-types": "^15.5.2",
     "@types/react": "^16.0.34",
     "@types/react-dnd": "^2.0.34",
