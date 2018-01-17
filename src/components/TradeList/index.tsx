@@ -1,5 +1,6 @@
 import {TradeModel} from '../../models';
 import {connect} from '../connect';
+import {withScroll} from '../CustomScrollbar/index';
 import TradeList from './TradeList';
 
 export interface TradeListProps {
@@ -16,11 +17,13 @@ export interface TradeListItemProps {
   price: number;
 }
 
-const ConnectedTradeList = connect(
-  ({tradeStore: {allTradeLists: trades}}) => ({
-    trades
-  }),
-  TradeList
+const ConnectedTradeList = withScroll(
+  connect(
+    ({tradeStore: {allTradeLists: trades}}) => ({
+      trades
+    }),
+    TradeList
+  )
 );
 
 export {ConnectedTradeList as TradeList};

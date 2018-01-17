@@ -34,6 +34,7 @@ const TileToolbar = styled.div`
   padding: ${rem(15)} 0.9375rem ${rem(10)};
   ${iconCss};
   background-color: #333;
+  z-index: 1;
 `;
 
 const StyledTileContent = styled.div`

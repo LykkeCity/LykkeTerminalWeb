@@ -1,5 +1,6 @@
 import {pathOr} from 'rambda';
 import {connect} from '../connect';
+import {withScroll} from '../CustomScrollbar/';
 import Order from './Order';
 
 export interface OrderState {
@@ -56,19 +57,21 @@ export interface OrderActionProps {
   isActive: boolean;
 }
 
-const connectedOrder = connect(
-  ({
-    orderBookStore: {bestAsk, bestBid},
-    orderStore: {placeOrder},
-    uiStore: {selectedInstrument: instrument}
-  }) => ({
-    accuracy: pathOr(2, ['accuracy'], instrument),
-    ask: bestAsk(),
-    bid: bestBid(),
-    currency: pathOr('', ['id'], instrument),
-    placeOrder
-  }),
-  Order
+const ConnectedOrder = withScroll(
+  connect(
+    ({
+      orderBookStore: {bestAsk, bestBid},
+      orderStore: {placeOrder},
+      uiStore: {selectedInstrument: instrument}
+    }) => ({
+      accuracy: pathOr(2, ['accuracy'], instrument),
+      ask: bestAsk(),
+      bid: bestBid(),
+      currency: pathOr('', ['id'], instrument),
+      placeOrder
+    }),
+    Order
+  )
 );
 
-export {connectedOrder as Order};
+export {ConnectedOrder as Order};

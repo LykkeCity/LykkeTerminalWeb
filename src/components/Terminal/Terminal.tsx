@@ -3,7 +3,6 @@ import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import tabs from '../../constants/tabs';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
-import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
 import {Header} from '../Header';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
@@ -24,12 +23,10 @@ const Shell = styled.div`
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
-    <CustomScrollbar>
-      <Tile title="Account" tabs={tabs.walletBalance} hasAuthorizing={true}>
-        <WalletBalanceList />
-        <BalanceList />
-      </Tile>
-    </CustomScrollbar>
+    <Tile title="Account" tabs={tabs.walletBalance} hasAuthorizing={true}>
+      <WalletBalanceList />
+      <BalanceList />
+    </Tile>
   ),
   c: (
     <Tile title="Chart">
@@ -37,34 +34,26 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   e: (
-    <CustomScrollbar>
-      <Tile title="Executions" tabs={tabs.executions} hasAuthorizing={true}>
-        <TradeList />
-        <div>Second tab</div>
-      </Tile>
-    </CustomScrollbar>
+    <Tile title="Executions" tabs={tabs.executions} hasAuthorizing={true}>
+      <TradeList />
+      <div>Second tab</div>
+    </Tile>
   ),
   ob: (
-    <CustomScrollbar>
-      <Tile title="Order book">
-        <OrderBook />
-      </Tile>
-    </CustomScrollbar>
+    <Tile title="Order book">
+      <OrderBook />
+    </Tile>
   ),
   ord: (
-    <CustomScrollbar>
-      <Tile title="Orders" tabs={tabs.orders} hasAuthorizing={true}>
-        <OrderList />
-        <div>Second tab</div>
-      </Tile>
-    </CustomScrollbar>
+    <Tile title="Orders" tabs={tabs.orders} hasAuthorizing={true}>
+      <OrderList />
+      <div>Second tab</div>
+    </Tile>
   ),
   wl: (
-    <CustomScrollbar>
-      <Tile title="Order" hasAuthorizing={true}>
-        <Order />
-      </Tile>
-    </CustomScrollbar>
+    <Tile title="Order" hasAuthorizing={true}>
+      <Order />
+    </Tile>
   )
 };
 
@@ -103,7 +92,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
               second: {
                 direction: 'column' as MosaicDirection,
                 first: 'ob',
-                second: 'e'
+                second: 'e',
+                splitPercentage: 70
               },
               splitPercentage: 78
             },
