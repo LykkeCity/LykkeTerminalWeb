@@ -21,6 +21,10 @@ const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
 
 const StyledInstrumentSelect = styled(InstrumentSelect)`
   cursor: pointer;
+
+  & > span {
+    font-size: 1rem;
+  }
 `;
 
 export default StyledInstrumentSelect;

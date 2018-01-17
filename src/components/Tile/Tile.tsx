@@ -1,9 +1,8 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import {Icon} from '../Icon/index';
 import styled from '../styled';
 import Unauthorized from '../Unauthorized/Unauthorized';
-import {TileContent, TileMenu, TileProps} from './index';
+import {TileContent, TileProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
@@ -44,9 +43,6 @@ const Tile: React.SFC<TileProps> = ({
   <TileWrapper>
     <TileHeader justify="space-between">
       <TileTitle>{title} </TileTitle>
-      <TileMenu>
-        <Icon name="menu" />
-      </TileMenu>
     </TileHeader>
     <TileContent tabs={tabs}>
       {!hasAuthorizing ? children : isAuth ? children : <Unauthorized />}
