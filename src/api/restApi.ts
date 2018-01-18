@@ -8,8 +8,9 @@ export class RestApi {
   protected readonly wretcher = () =>
     wretch(process.env.REACT_APP_API_URL).auth(`Bearer ${tokenStorage.get()}`);
 
-  protected get = (url: string) =>
+  protected get = (url: string, headers: any = {}) =>
     this.wretcher()
+      .headers(headers) // TODO: hack to make it working, remove after actual implementation
       .url(url)
       .get()
       .json();

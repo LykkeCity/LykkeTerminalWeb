@@ -1,48 +1,35 @@
-import {computed, observable, runInAction} from 'mobx';
+import {action, computed, observable} from 'mobx';
+import {compose, reverse, sortBy} from 'rambda';
 import {OrderApi} from '../api/index';
 import {OrderModel} from '../models';
+import * as mappers from '../models/mappers';
 import {BaseStore, RootStore} from './index';
 
 class OrderListStore extends BaseStore {
   @computed
-  get allOrderLists() {
-    return this.orders;
+  get limitOrders() {
+    const sort = compose<OrderModel[], OrderModel[], OrderModel[]>(
+      reverse,
+      sortBy((o: OrderModel) => o.createdAt.getTime())
+    );
+    return sort(this.orders);
   }
 
-  @observable private orders: any[] = [];
+  @observable private orders: OrderModel[] = [];
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
   }
 
-  createOrderList = ({
-    Id,
-    DateTime,
-    OrderType,
-    Volume,
-    Price,
-    AssetPair
-  }: any) => {
-    return new OrderModel({
-      createdDate: DateTime.toISOString(),
-      currentPrice: Price,
-      expiryDate: '',
-      orderId: Id,
-      side: OrderType,
-      symbol: AssetPair,
-      volume: Volume
-    });
-  };
-
   fetchAll = async () => {
-    const ordersDto = await this.api.fetchAll();
-    runInAction(() => {
-      this.orders = ordersDto.map(this.createOrderList);
-    });
+    const dto = await this.api.fetchAll();
+
+    this.updateOrders(dto.map(mappers.mapToLimitOrder));
   };
 
-  updateOrders = (orders: any) => {
-    this.orders = [...this.orders, ...orders.map(this.createOrderList)];
+  @action
+  updateOrders = (orders: OrderModel[]) => {
+    this.orders = orders;
   };
 
   reset = () => {
