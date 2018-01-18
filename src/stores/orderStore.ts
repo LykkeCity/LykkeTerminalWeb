@@ -12,28 +12,30 @@ class OrderStore extends BaseStore {
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        this.api
-          .placeMarket(body)
-          .then(() => {
+        this.api.placeMarket(body).then(
+          (resp: any) => {
             this.rootStore.balanceListStore.fetchAll();
             this.rootStore.orderListStore.fetchAll();
-            console.log('Order was placed succesfully');
-          })
-          .catch((err: any) => {
-            console.log('There is an error placing your order');
-          });
+            alert('Order was placed succesfully');
+          },
+          (error: any) => {
+            console.error(error);
+            alert(`There is an error placing your order: ${error}`);
+          }
+        );
         break;
       case OrderType.Limit:
-        this.api
-          .placeLimit(body)
-          .then(() => {
+        this.api.placeLimit(body).then(
+          (resp: any) => {
             this.rootStore.balanceListStore.fetchAll();
             this.rootStore.orderListStore.fetchAll();
-            console.log('Order was placed succesfully');
-          })
-          .catch((err: any) => {
-            console.log('There is an error placing your order');
-          });
+            alert('Order was placed succesfully');
+          },
+          (error: any) => {
+            console.error(error);
+            alert(`There is an error placing your order: ${error}`);
+          }
+        );
         break;
     }
   };
