@@ -12,10 +12,8 @@ const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
         <th>OrderID</th>
         <th>Side</th>
         <th>Volume</th>
-        <th>Current Price</th>
+        <th>Price</th>
         <th>Created Date</th>
-        <th>Expiry Date</th>
-        <th>&nbsp;</th>
       </tr>
     </thead>
     <tbody>

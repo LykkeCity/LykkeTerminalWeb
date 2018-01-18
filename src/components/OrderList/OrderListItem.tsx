@@ -1,34 +1,29 @@
 import * as React from 'react';
-import {OrderListItemProps} from '../';
-import {Side} from '../../../models';
-import {Icon} from '../../Icon/index';
+import {Side} from '../../models';
+import {Icon} from '../Icon/index';
+import {OrderListItemProps} from './';
 
 const OrderListItem: React.SFC<OrderListItemProps> = ({
-  createdDate,
-  currentPrice,
-  expiryDate,
-  orderId,
+  createdAt,
+  price,
+  expiredAt,
+  id,
   side,
   symbol,
   volume
 }) => {
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
-
   return (
-    <tr key={orderId}>
+    <tr>
       <td>{symbol}</td>
       <td>
         <Icon name="cross" />
       </td>
-      <td>{orderId}</td>
+      <td>{id}</td>
       <td style={{color: colorSide}}>{side}</td>
       <td>{volume}</td>
-      <td>{currentPrice.toFixed(3)}</td>
-      <td>{createdDate}</td>
-      <td>{expiryDate}</td>
-      <td>
-        <Icon name="pencil" />
-      </td>
+      <td>{price}</td>
+      <td>{createdAt.toLocaleString()}</td>
     </tr>
   );
 };

@@ -1,5 +1,5 @@
 import {ChartStore} from '../../stores/index';
-import {InstrumentModel, Interval, Side} from '../index';
+import {InstrumentModel, Interval, OrderModel, Side} from '../index';
 
 // tslint:disable:object-literal-sort-keys
 
@@ -82,3 +82,20 @@ export const mapChartResolutionToWampInterval: ResolutionMapper = resolution => 
       return 'day';
   }
 };
+
+export const mapToLimitOrder = ({
+  Id,
+  CreateDateTime,
+  OrderAction,
+  Voume,
+  Price,
+  AssetPairId
+}: any) =>
+  new OrderModel({
+    createdAt: new Date(CreateDateTime),
+    id: Id,
+    price: Number(Price),
+    side: OrderAction,
+    symbol: AssetPairId,
+    volume: Voume
+  });

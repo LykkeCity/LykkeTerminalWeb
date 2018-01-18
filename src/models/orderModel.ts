@@ -1,16 +1,17 @@
 import {extendObservable} from 'mobx';
+import {Side} from './index';
 
 class OrderModel {
   symbol: string;
-  side: string;
+  side: Side;
   volume: number;
-  currentPrice: number;
-  createdDate: string;
-  orderId: string;
-  expiryDate: string;
+  price: number;
+  createdAt: Date;
+  id: string;
+  expiredAt: string;
 
-  constructor(orderList: Partial<OrderModel>) {
-    extendObservable(this, orderList);
+  constructor(order: Partial<OrderModel>) {
+    extendObservable(this, order);
   }
 }
 
