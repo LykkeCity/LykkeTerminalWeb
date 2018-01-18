@@ -8,7 +8,7 @@ describe('orderBook store', () => {
     mid,
     bestBids,
     bestAsks
-  } = new OrderBookStore(new RootStore(false));
+  } = new OrderBookStore(new RootStore(false), {} as any);
 
   beforeEach(() => {
     // bids
