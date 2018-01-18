@@ -1,5 +1,11 @@
 import {ChartStore} from '../../stores/index';
-import {InstrumentModel, Interval, OrderModel, Side} from '../index';
+import {
+  InstrumentModel,
+  Interval,
+  OrderModel,
+  Side,
+  TradeModel
+} from '../index';
 
 // tslint:disable:object-literal-sort-keys
 
@@ -98,4 +104,22 @@ export const mapToLimitOrder = ({
     side: OrderAction,
     symbol: AssetPairId,
     volume: Voume
+  });
+
+export const mapToTrade = ({
+  Asset,
+  OppositeAsset,
+  Volume,
+  Direction,
+  Price,
+  DateTime,
+  TradeId
+}: any) =>
+  new TradeModel({
+    price: Price,
+    quantity: Volume,
+    side: Direction,
+    symbol: `${Asset}${OppositeAsset}`,
+    timestamp: DateTime.toISOString(),
+    tradeId: TradeId
   });

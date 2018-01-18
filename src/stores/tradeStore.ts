@@ -1,8 +1,10 @@
-import {computed, observable, runInAction} from 'mobx';
+import {action, computed, observable, runInAction} from 'mobx';
+import {compose, reverse, sortBy} from 'rambda';
 import {WampApi} from '../api';
 import {TradeApi} from '../api/index';
 import keys from '../constants/storageKeys';
-import {TradeModel} from '../models';
+import {TradeModel} from '../models/index';
+import * as mappers from '../models/mappers';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -11,38 +13,25 @@ const notificationStorage = StorageUtils(keys.notificationId);
 class TradeStore extends BaseStore {
   @computed
   get allTrades() {
-    return this.trades;
+    const sort = compose<TradeModel[], TradeModel[], TradeModel[]>(
+      reverse,
+      sortBy((o: TradeModel) => new Date(o.timestamp).getTime())
+    );
+    return sort(this.trades);
   }
 
-  @observable private trades: any[] = [];
+  @observable private trades: TradeModel[] = [];
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
   }
 
-  createTradeList = ({
-    Asset,
-    OppositeAsset,
-    Volume,
-    Direction,
-    Price,
-    DateTime,
-    TradeId
-  }: any) => {
-    return new TradeModel({
-      price: Price,
-      quantity: Volume,
-      side: Direction,
-      symbol: `${Asset}${OppositeAsset}`,
-      timestamp: DateTime.toISOString(),
-      tradeId: TradeId
-    });
-  };
+  @action addTrade = (trade: TradeModel) => this.trades.push(trade);
 
   fetchAll = async () => {
     const tradesDto = await this.api.fetchAll();
     runInAction(() => {
-      this.trades = tradesDto.map(this.createTradeList);
+      this.trades = tradesDto.map(mappers.mapToTrade);
     });
   };
 
@@ -50,10 +39,12 @@ class TradeStore extends BaseStore {
     WampApi.subscribe(`trades.${notificationStorage.get()}`, this.onTrades);
   };
 
-  onTrades = (trades: any) => {
-    this.trades = [...this.trades, ...trades[0].map(this.createTradeList)];
+  onTrades = (args: any) => {
+    const trade = args[0].map(mappers.mapToTrade);
+    this.addTrade(trade);
   };
 
+  @action
   reset = () => {
     this.trades = [];
   };
