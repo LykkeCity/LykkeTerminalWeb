@@ -10,7 +10,7 @@ const notificationStorage = StorageUtils(keys.notificationId);
 
 class TradeStore extends BaseStore {
   @computed
-  get allTradeLists() {
+  get allTrades() {
     return this.trades;
   }
 
