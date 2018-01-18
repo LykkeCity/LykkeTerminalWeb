@@ -1,4 +1,5 @@
 import {action, computed, observable} from 'mobx';
+import {compose, reverse, sortBy} from 'rambda';
 import {OrderApi} from '../api/index';
 import {OrderModel} from '../models';
 import * as mappers from '../models/mappers';
@@ -7,7 +8,11 @@ import {BaseStore, RootStore} from './index';
 class OrderListStore extends BaseStore {
   @computed
   get limitOrders() {
-    return this.orders;
+    const sort = compose<OrderModel[], OrderModel[], OrderModel[]>(
+      reverse,
+      sortBy((o: OrderModel) => o.createdAt.getTime())
+    );
+    return sort(this.orders);
   }
 
   @observable private orders: OrderModel[] = [];
