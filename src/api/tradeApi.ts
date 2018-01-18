@@ -1,9 +1,11 @@
+import {ApiResponse} from './types';
+
 export interface TradeApi {
-  fetchAll: () => Promise<any[]>;
+  fetchAll: () => ApiResponse;
 }
 
 export class RestTradeApi implements TradeApi {
-  fetchAll = () => Promise.resolve([]);
+  fetchAll = () => Promise.resolve([] as any[]);
 }
 
 // tslint:disable-next-line:max-classes-per-file
