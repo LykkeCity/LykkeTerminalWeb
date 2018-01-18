@@ -10,38 +10,38 @@ describe('trade store', () => {
 
   describe('state', () => {
     it('trades should be defined after instantiation', () => {
-      expect(tradeStore.allTradeLists).toBeDefined();
-      expect(tradeStore.allTradeLists).not.toBeNull();
+      expect(tradeStore.allTrades).toBeDefined();
+      expect(tradeStore.allTrades).not.toBeNull();
     });
 
     it('trades should be an empty array by default', () => {
-      expect(tradeStore.allTradeLists instanceof Array).toBeTruthy();
-      expect(tradeStore.allTradeLists.length).toBe(0);
+      expect(tradeStore.allTrades instanceof Array).toBeTruthy();
+      expect(tradeStore.allTrades.length).toBe(0);
     });
   });
 
   describe('reset', () => {
     it('should clear trades', async () => {
       await tradeStore.fetchAll();
-      expect(tradeStore.allTradeLists.length).toBeGreaterThan(0);
+      expect(tradeStore.allTrades.length).toBeGreaterThan(0);
 
       tradeStore.reset();
 
-      expect(tradeStore.allTradeLists.length).toBe(0);
+      expect(tradeStore.allTrades.length).toBe(0);
     });
   });
 
   describe('fetch trades', () => {
     it('should populate tradeList collection', async () => {
       await tradeStore.fetchAll();
-      expect(tradeStore.allTradeLists.length).toBeGreaterThan(0);
+      expect(tradeStore.allTrades.length).toBeGreaterThan(0);
     });
   });
 
   describe('trade item', () => {
     it('should contain the following fields', async () => {
       await tradeStore.fetchAll();
-      const trade = tradeStore.allTradeLists[0];
+      const trade = tradeStore.allTrades[0];
       expect(trade.side).toBeDefined();
       expect(trade.symbol).toBeDefined();
       expect(trade.quantity).toBeDefined();

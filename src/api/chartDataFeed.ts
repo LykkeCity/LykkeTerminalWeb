@@ -44,7 +44,7 @@ class ChartDataFeed {
     firstDataRequest: any
   ) => {
     this.priceApi
-      .fetchHistory(
+      .fetchCandles(
         this.instrument.id,
         new Date(from * 1000),
         firstDataRequest ? new Date() : new Date(to * 1000),
