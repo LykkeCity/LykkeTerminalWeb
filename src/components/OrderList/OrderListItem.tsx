@@ -1,7 +1,9 @@
 import * as React from 'react';
-import {Side} from '../../models';
+import {OrderModel, Side} from '../../models';
 import {Icon} from '../Icon/index';
-import {OrderListItemProps} from './';
+import {OrderActions} from './index';
+
+interface OrderListItemProps extends OrderModel, OrderActions {}
 
 const OrderListItem: React.SFC<OrderListItemProps> = ({
   createdAt,
