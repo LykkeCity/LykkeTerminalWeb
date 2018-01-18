@@ -1,5 +1,6 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {AssetApi} from '../api/index';
+import keys from '../constants/storageKeys';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -9,7 +10,7 @@ import {
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
-const baseAssetStorage = StorageUtils('baseAsset');
+const baseAssetStorage = StorageUtils(keys.baseAsset);
 
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
@@ -114,6 +115,7 @@ class ReferenceStore extends BaseStore {
 
     if (res && res.BaseAssetId) {
       this.baseAsset = res.BaseAssetId;
+      baseAssetStorage.set(this.baseAsset);
     }
   };
 
