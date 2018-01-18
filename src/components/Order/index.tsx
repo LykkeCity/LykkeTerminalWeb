@@ -18,6 +18,7 @@ export interface OrderProps {
   accuracy: number;
   currency: string;
   placeOrder: any;
+  name: string;
 }
 
 export interface OrderOptionProps {
@@ -68,6 +69,7 @@ const ConnectedOrder = withScroll(
       ask: bestAsk(),
       bid: bestBid(),
       currency: pathOr('', ['id'], instrument),
+      name: pathOr(2, ['name'], instrument),
       placeOrder
     }),
     Order
