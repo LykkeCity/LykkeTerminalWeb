@@ -2,6 +2,10 @@ import * as React from 'react';
 import {OrderListItemProps} from '../';
 import {Side} from '../../../models';
 import {Icon} from '../../Icon/index';
+import {Cell} from '../../Table/index';
+
+const cellNumber = 9;
+const DataCell = Cell(cellNumber);
 
 const OrderListItem: React.SFC<OrderListItemProps> = ({
   createdDate,
@@ -15,21 +19,23 @@ const OrderListItem: React.SFC<OrderListItemProps> = ({
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
 
   return (
-    <tr key={orderId}>
-      <td>{symbol}</td>
-      <td>
+    <div className="tr" key={orderId}>
+      <DataCell className="td">{symbol}</DataCell>
+      <DataCell className="td">
         <Icon name="cross" />
-      </td>
-      <td>{orderId}</td>
-      <td style={{color: colorSide}}>{side}</td>
-      <td>{volume}</td>
-      <td>{currentPrice.toFixed(3)}</td>
-      <td>{createdDate}</td>
-      <td>{expiryDate}</td>
-      <td>
+      </DataCell>
+      <DataCell className="td">{orderId}</DataCell>
+      <DataCell className="td" style={{color: colorSide}}>
+        {side}
+      </DataCell>
+      <DataCell className="td">{volume}</DataCell>
+      <DataCell className="td">{currentPrice.toFixed(3)}</DataCell>
+      <DataCell className="td">{createdDate}</DataCell>
+      <DataCell className="td">{expiryDate}</DataCell>
+      <DataCell className="td">
         <Icon name="pencil" />
-      </td>
-    </tr>
+      </DataCell>
+    </div>
   );
 };
 

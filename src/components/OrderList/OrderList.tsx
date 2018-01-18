@@ -1,28 +1,31 @@
 import * as React from 'react';
-import {Table} from '../Table/index';
+import {Cell, Table} from '../Table/index';
 import {OrderListItem} from './';
 import {OrderListProps} from './';
 
+const cellNumber = 9;
+const DataCell = Cell(cellNumber);
+
 const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
   <Table>
-    <thead>
-      <tr>
-        <th>Symbol</th>
-        <th>Close</th>
-        <th>OrderID</th>
-        <th>Side</th>
-        <th>Volume</th>
-        <th>Current Price</th>
-        <th>Created Date</th>
-        <th>Expiry Date</th>
-        <th>&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
+    <div className="thead">
+      <div className="tr">
+        <DataCell className="th">Symbol</DataCell>
+        <DataCell className="th">Close</DataCell>
+        <DataCell className="th">OrderID</DataCell>
+        <DataCell className="th">Side</DataCell>
+        <DataCell className="th">Volume</DataCell>
+        <DataCell className="th">Current Price</DataCell>
+        <DataCell className="th">Created Date</DataCell>
+        <DataCell className="th">Expiry Date</DataCell>
+        <DataCell className="th">&nbsp;</DataCell>
+      </div>
+    </div>
+    <div className="tbody">
       {orders.map((order: any) => (
         <OrderListItem key={order.orderId} {...order} />
       ))}
-    </tbody>
+    </div>
   </Table>
 );
 

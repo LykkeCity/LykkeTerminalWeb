@@ -1,10 +1,13 @@
 import * as React from 'react';
 import styled from '../styled';
-import {Table} from '../Table/index';
+import {Cell, Table} from '../Table/index';
 import {BalanceListItem} from './';
 import {BalanceListProps} from './';
 
-const Total = styled.tr`
+const cellNumber = 2;
+const DataCell = Cell(cellNumber);
+
+const Total = styled.div`
   background: rgba(0, 0, 0, 0.2);
   td {
     font-weight: bold;
@@ -17,16 +20,16 @@ const BalanceList: React.SFC<BalanceListProps> = ({
   accuracy
 }) => (
   <Table>
-    <thead>
-      <tr>
-        <th>Symbol</th>
-        <th>Balance</th>
-      </tr>
-    </thead>
-    <tbody>
-      <Total>
-        <td>Total</td>
-        <td>{total.toFixed(accuracy)}</td>
+    <div className="thead">
+      <div className="tr">
+        <DataCell className="th">Symbol</DataCell>
+        <DataCell className="th">Balance</DataCell>
+      </div>
+    </div>
+    <div className="tbody">
+      <Total className="tr">
+        <DataCell className="td">Total</DataCell>
+        <DataCell className="td">{total.toFixed(accuracy)}</DataCell>
       </Total>
       {balances.map((balanceList: any) => (
         <BalanceListItem
@@ -35,7 +38,7 @@ const BalanceList: React.SFC<BalanceListProps> = ({
           {...balanceList}
         />
       ))}
-    </tbody>
+    </div>
   </Table>
 );
 

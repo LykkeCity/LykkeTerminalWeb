@@ -1,6 +1,10 @@
 import * as React from 'react';
 import {TradeListItemProps} from '../';
 import {Side} from '../../../models';
+import {Cell} from '../../Table/index';
+
+const cellNumber = 5;
+const DataCell = Cell(cellNumber);
 
 const TradeListItem: React.SFC<TradeListItemProps> = ({
   side,
@@ -13,13 +17,15 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   const color = side === Side.Buy ? '#fb8f01' : '#d070ff';
 
   return (
-    <tr key={tradeId}>
-      <td>{symbol}</td>
-      <td style={{color}}>{side}</td>
-      <td>{quantity}</td>
-      <td>{price}</td>
-      <td>{timestamp}</td>
-    </tr>
+    <div className="tr" key={tradeId}>
+      <DataCell className="td">{symbol}</DataCell>
+      <DataCell className="td" style={{color}}>
+        {side}
+      </DataCell>
+      <DataCell className="td">{quantity}</DataCell>
+      <DataCell className="td">{price}</DataCell>
+      <DataCell className="td">{timestamp}</DataCell>
+    </div>
   );
 };
 

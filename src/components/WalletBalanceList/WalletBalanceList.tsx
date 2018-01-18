@@ -1,15 +1,18 @@
 import * as React from 'react';
 import styled from '../styled';
-import {Table} from '../Table/index';
+import {Cell, Table} from '../Table/index';
 import {TradingWalletItem} from './';
 import {WalletBalanceListProps} from './';
 
-const Total = styled.tr`
+const Total = styled.div`
   background: rgba(0, 0, 0, 0.2);
-  td {
+  .td {
     font-weight: bold;
   }
 `;
+
+const cellNumber = 2;
+const DataCell = Cell(cellNumber);
 
 const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   assets = [],
@@ -17,16 +20,16 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   total
 }) => (
   <Table>
-    <thead>
-      <tr>
-        <th>Assets</th>
-        <th>Balance</th>
-      </tr>
-    </thead>
-    <tbody>
-      <Total>
-        <td>Total</td>
-        <td>{total.toFixed(accuracy)}</td>
+    <div className="thead">
+      <div className="tr">
+        <DataCell className="th">Assets</DataCell>
+        <DataCell className="th">Balance</DataCell>
+      </div>
+    </div>
+    <div className="tbody">
+      <Total className="tr">
+        <DataCell className="td">Total</DataCell>
+        <DataCell className="td">{total.toFixed(accuracy)}</DataCell>
       </Total>
       {assets.map((assetsItem: any, index: number) => (
         <TradingWalletItem
@@ -35,7 +38,7 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
           {...assetsItem}
         />
       ))}
-    </tbody>
+    </div>
   </Table>
 );
 
