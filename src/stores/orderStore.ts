@@ -42,8 +42,8 @@ class OrderStore extends BaseStore {
   };
 
   cancelOrder = async (id: string) => {
-    await this.api.cancelOrder(id)
-      .then(() => alert(`Order ${id} canceled successfully.`));
+    await this.api.cancelOrder(id);
+    alert(`Order ${id} has cancelled`);
     this.updateOrders();
   };
 
@@ -52,8 +52,7 @@ class OrderStore extends BaseStore {
     const promises = orders.map((order: OrderModel) => {
       return this.api.cancelOrder(order.id);
     });
-    await Promise.all(promises)
-      .then(() => alert(`All you orders canceled successfully.`));
+    await Promise.all(promises).then(() => alert(`All orders have cancelled`));
     this.updateOrders();
   };
 

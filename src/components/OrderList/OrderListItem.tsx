@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {OrderModel, Side} from '../../models';
 import {Icon} from '../Icon/index';
+import {OrderActions} from './index';
 
-const OrderListItem: React.SFC<OrderModel> = ({
+const OrderListItem: React.SFC<OrderModel & OrderActions> = ({
   createdAt,
   cancelOrder,
   price,
@@ -12,12 +13,12 @@ const OrderListItem: React.SFC<OrderModel> = ({
   volume
 }) => {
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
-  const closeOrder = () => cancelOrder!(id);
   return (
     <tr>
       <td>{symbol}</td>
       <td>
-        <span onClick={closeOrder}>
+        {/* tslint:disable-next-line:jsx-no-lambda */}
+        <span onClick={() => cancelOrder!(id)}>
           <Icon name="cross" />
         </span>
       </td>

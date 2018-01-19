@@ -1,14 +1,12 @@
-import * as React from 'react';
-import styled from '../styled';
-import {OrderModel} from '../../models/index';
 import {rem} from 'polished';
+import * as React from 'react';
+import {OrderModel} from '../../models/index';
+import styled from '../styled';
 import {Table} from '../Table/index';
-import {OrderListItem} from './';
+import {OrderActions, OrderListItem} from './';
 
-interface OrderListProps {
+interface OrderListProps extends OrderActions {
   orders?: OrderModel[];
-  cancelOrder?: (id: string) => any;
-  cancelAll: () => any;
 }
 
 const StyledSpan = styled.div`
@@ -46,10 +44,9 @@ const OrderList: React.SFC<OrderListProps> = ({
       </tr>
     </thead>
     <tbody>
-      {orders.map(order => {
-        order.cancelOrder = cancelOrder;
-        return <OrderListItem key={order.id} {...order} />;
-      })}
+      {orders.map(order => (
+        <OrderListItem key={order.id} cancelOrder={cancelOrder} {...order} />
+      ))}
     </tbody>
   </Table>
 );
