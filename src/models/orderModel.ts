@@ -8,7 +8,7 @@ class OrderModel {
   price: number;
   createdAt: Date;
   id: string;
-  expiredAt: string;
+  cancelOrder?: (id: string) => void;
 
   constructor(order: Partial<OrderModel>) {
     extendObservable(this, order);
