@@ -23,10 +23,13 @@ export interface OrderProps {
 
 export interface OrderOptionProps {
   title: string;
+  amount: string;
+  isAmountable: boolean;
   isOptional: boolean;
   tumblerValues: string[];
   change: any;
   inputValue: number;
+  quoteName: string;
 }
 
 export interface OrderTumbler {
@@ -46,8 +49,11 @@ export interface OrderChoiceButtonProps {
 
 export interface OrderButtonProps {
   action: string;
-  price: number;
+  price: string;
   click: any;
+  baseName: string;
+  quoteName: string;
+  quantity: number;
 }
 
 export interface OrderActionProps {
@@ -69,7 +75,7 @@ const ConnectedOrder = withScroll(
       ask: bestAsk(),
       bid: bestBid(),
       currency: pathOr('', ['id'], instrument),
-      name: pathOr(2, ['name'], instrument),
+      name: pathOr('', ['name'], instrument),
       placeOrder
     }),
     Order
