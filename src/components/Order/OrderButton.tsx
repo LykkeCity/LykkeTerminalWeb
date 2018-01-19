@@ -35,7 +35,7 @@ const OrderButton: React.SFC<OrderButtonProps> = ({
 }) => {
   return (
     <StyledButton className={action} onClick={click}>
-      {capitalize(action)} {quantity} {baseName} at {price} {quoteName}
+      {capitalize(action)} {quantity} {baseName} at {price}
     </StyledButton>
   );
 };

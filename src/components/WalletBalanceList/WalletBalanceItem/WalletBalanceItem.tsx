@@ -5,10 +5,11 @@ import WalletBalanceNumber from './WalletBalanceNumber';
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   accuracy,
   balance,
-  id
+  id,
+  name
 }) => (
   <tr key={id}>
-    <td>{id}</td>
+    <td>{name}</td>
     <td>
       <WalletBalanceNumber num={balance.toFixed(accuracy)} />
     </td>
