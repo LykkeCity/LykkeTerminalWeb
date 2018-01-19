@@ -2,11 +2,17 @@ import {connect} from '../connect';
 import OrderList from './OrderList';
 
 export interface OrderActions {
-  onCancel?: (id: string) => void;
+  cancelOrder?: (id: string) => void;
+  cancelAll?: () => void;
 }
 
 const ConnectedOrderList = connect(
-  ({orderListStore: {limitOrders: orders}}) => ({
+  ({
+    orderListStore: {limitOrders: orders},
+    orderStore: {cancelAll, cancelOrder}
+  }) => ({
+    cancelAll,
+    cancelOrder,
     orders
   }),
   OrderList

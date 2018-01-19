@@ -4,6 +4,7 @@ import {ApiResponse} from './types';
 export interface OrderApi {
   placeMarket: (body: any) => ApiResponse;
   placeLimit: (body: any) => ApiResponse;
+  cancelOrder: (id: string) => ApiResponse;
   fetchAll: () => ApiResponse;
 }
 
@@ -18,6 +19,9 @@ export class RestOrderApi extends RestApi implements OrderApi {
 
   placeLimit = (body: any) =>
     this.fireAndForget('/Orders/limit', body, signature);
+
+  cancelOrder = (id: string) =>
+    this.fireAndForget(`/orders/limit/${id}/cancel`, {}, signature);
 
   // TODO: no need for verification token here
   fetchAll = () => this.get('/orders', signature);

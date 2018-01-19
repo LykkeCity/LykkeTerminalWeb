@@ -3,12 +3,10 @@ import {OrderModel, Side} from '../../models';
 import {Icon} from '../Icon/index';
 import {OrderActions} from './index';
 
-interface OrderListItemProps extends OrderModel, OrderActions {}
-
-const OrderListItem: React.SFC<OrderListItemProps> = ({
+const OrderListItem: React.SFC<OrderModel & OrderActions> = ({
   createdAt,
+  cancelOrder,
   price,
-  expiredAt,
   id,
   side,
   symbol,
@@ -19,7 +17,10 @@ const OrderListItem: React.SFC<OrderListItemProps> = ({
     <tr>
       <td>{symbol}</td>
       <td>
-        <Icon name="cross" />
+        {/* tslint:disable-next-line:jsx-no-lambda */}
+        <span onClick={() => cancelOrder!(id)}>
+          <Icon name="cross" />
+        </span>
       </td>
       <td>{id}</td>
       <td style={{color: colorSide}}>{side}</td>
