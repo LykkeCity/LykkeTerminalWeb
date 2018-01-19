@@ -32,8 +32,14 @@ class AuthStore extends BaseStore {
       })
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
+  catchUnauthorized = () => {
+    alert('Your session has expired');
+    this.signOut();
+  };
+
   signOut = () => {
     this.rootStore.reset();
+    location.href = '/signin';
   };
 
   reset = () => {

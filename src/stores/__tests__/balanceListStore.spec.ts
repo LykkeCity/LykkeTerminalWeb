@@ -7,7 +7,7 @@ describe('balanceList store', () => {
   beforeEach(() => {
     balanceListStore = new BalanceListStore(
       new RootStore(false),
-      new MockBalanceListApi()
+      new MockBalanceListApi({})
     );
   });
 

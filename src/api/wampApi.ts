@@ -57,4 +57,5 @@ export class WampApi {
 }
 
 const instance = new WampApi();
+(window as any).wamp = instance;
 export default instance;

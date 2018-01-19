@@ -8,7 +8,7 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
-import shortcuts from '../constants/shortcuts';
+// import shortcuts from '../constants/shortcuts';
 import keys from '../constants/storageKeys';
 import InstrumentModel from '../models/instrumentModel';
 import {StorageUtils} from '../utils/index';
@@ -47,16 +47,19 @@ class RootStore {
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
-      this.watchlistStore = new WatchlistStore(this, new WatchlistApi());
-      this.tradeStore = new TradeStore(this, new TradeApi());
-      this.orderBookStore = new OrderBookStore(this, new OrderBookApi());
-      this.balanceListStore = new BalanceListStore(this, new BalanceListApi());
-      this.orderListStore = new OrderListStore(this, new OrderApi());
+      this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
+      this.tradeStore = new TradeStore(this, new TradeApi(this));
+      this.orderBookStore = new OrderBookStore(this, new OrderBookApi(this));
+      this.balanceListStore = new BalanceListStore(
+        this,
+        new BalanceListApi(this)
+      );
+      this.orderListStore = new OrderListStore(this, new OrderApi(this));
       this.uiStore = new UiStore(this);
-      this.referenceStore = new ReferenceStore(this, new AssetApi());
-      this.authStore = new AuthStore(this, new AuthApi());
-      this.chartStore = new ChartStore();
-      this.orderStore = new OrderStore(this, new OrderApi());
+      this.referenceStore = new ReferenceStore(this, new AssetApi(this));
+      this.authStore = new AuthStore(this, new AuthApi(this));
+      this.chartStore = new ChartStore(this);
+      this.orderStore = new OrderStore(this, new OrderApi(this));
     }
   }
 
@@ -81,15 +84,15 @@ class RootStore {
   };
 
   start = async () => {
-    let instruments: any = [];
     await this.referenceStore.fetchInstruments();
 
     if (!this.authStore.isAuth) {
-      instruments = shortcuts.reduce((i: any, item) => {
-        return [...i, ...this.referenceStore.findInstruments(item.value)];
-      }, []);
-      this.startWamp(instruments);
-      return Promise.resolve();
+      this.authStore.catchUnauthorized();
+      // instruments = shortcuts.reduce((i: any, item) => {
+      //   return [...i, ...this.referenceStore.findInstruments(item.value)];
+      // }, []);
+      // this.startWamp(instruments);
+      // return Promise.resolve();
     }
 
     await this.watchlistStore.fetchAll();
@@ -99,7 +102,7 @@ class RootStore {
     await this.balanceListStore.fetchAll();
     await this.orderListStore.fetchAll();
 
-    instruments = this.referenceStore.getInstruments();
+    const instruments = this.referenceStore.getInstruments();
     this.startWamp(instruments);
   };
 

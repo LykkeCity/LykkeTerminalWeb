@@ -1,5 +1,6 @@
 import {ChartDataFeed, PriceApi} from '../api';
 import {InstrumentModel} from '../models/index';
+import {BaseStore, RootStore} from './index';
 
 // tslint:disable:object-literal-sort-keys
 
@@ -8,7 +9,7 @@ export const LINESTYLE_DASHED = 2;
 export const LINESTYLE_SOLID = 0;
 export const LINESTYLE_LARGE_DASHED = 3;
 
-class ChartStore {
+class ChartStore extends BaseStore {
   static readonly config = {
     supports_search: false,
     exchanges: [],
@@ -28,6 +29,10 @@ class ChartStore {
     supports_time: true
   };
 
+  constructor(store: RootStore) {
+    super(store);
+  }
+
   renderChart = (instrument: InstrumentModel) => {
     return new (window as any).TradingView.widget({
       autosize: true,
@@ -37,7 +42,7 @@ class ChartStore {
       datafeed: new ChartDataFeed(
         ChartStore.config,
         instrument,
-        new PriceApi()
+        new PriceApi(this)
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
@@ -74,6 +79,10 @@ class ChartStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
+  };
+
+  reset = () => {
+    return;
   };
 }
 
