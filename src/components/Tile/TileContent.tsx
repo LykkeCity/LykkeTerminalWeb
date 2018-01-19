@@ -46,9 +46,14 @@ const StyledTileContent = styled.div`
   margin-top: 30px;
 `;
 
-const Child = styled.div`
+const calcHeight = (hasTabs: boolean) =>
+  hasTabs ? `calc(100% - ${rem(50)})` : '100%';
+
+const StyledChild = styled.div`
+  height: ${(p: any) => calcHeight(p)};
+  margin-top: ${(p: any) => (p.hasTabs ? rem(50) : '')};
   margin-right: 0.5rem;
-`;
+` as any;
 
 class TileContent extends React.Component<TileContentProps, TileContentState> {
   constructor(props: TileContentProps) {
@@ -94,11 +99,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
           </TileToolbar>
         )}
         <Scrollbars autoHide={true}>
-          <Child
-            style={this.props.tabs ? {marginTop: rem(50)} : {height: '100%'}}
-          >
-            {child}
-          </Child>
+          <StyledChild hasTabs={this.props.tabs}>{child}</StyledChild>
         </Scrollbars>
       </StyledTileContent>
     );
