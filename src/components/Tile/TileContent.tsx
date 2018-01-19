@@ -49,7 +49,7 @@ const calcHeight = (hasTabs: boolean) =>
   hasTabs ? `calc(100% - ${rem(50)})` : '100%';
 
 const StyledChild = styled.div`
-  height: ${(p: any) => calcHeight(p)};
+  height: ${(p: any) => calcHeight(p.hasTabs)};
   margin-top: ${(p: any) => (p.hasTabs ? rem(50) : '')};
 ` as any;
 

@@ -21,7 +21,7 @@ export class WampApi {
       const connection = new autobahn.Connection({
         url,
         realm,
-        authmethods: ['wampcra'],
+        authmethods: ['token'],
         authid: authId,
         onchallenge: this.handleChallenge
       });

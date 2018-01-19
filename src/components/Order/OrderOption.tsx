@@ -26,7 +26,8 @@ const StyledAmount = styled.div`
   display: flex;
   align-items: center;
   margin-left: 10px;
-  font-size: 1rem;
+  font-size: ${rem(14)};
+  color: #8c94a0;
 `;
 
 const OrderOption: React.SFC<OrderOptionProps> = ({
