@@ -32,6 +32,10 @@ class OrderListStore extends BaseStore {
     this.orders = orders;
   };
 
+  cancelOrder = async (id: string) => {
+    await this.api.cancelOrder(id);
+  };
+
   reset = () => {
     this.orders = [];
   };

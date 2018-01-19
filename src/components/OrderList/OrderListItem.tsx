@@ -7,19 +7,24 @@ interface OrderListItemProps extends OrderModel, OrderActions {}
 
 const OrderListItem: React.SFC<OrderListItemProps> = ({
   createdAt,
+  onCancel,
   price,
-  expiredAt,
   id,
   side,
   symbol,
   volume
 }) => {
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
+  const cancel = () => {
+    onCancel!(id);
+  };
   return (
     <tr>
       <td>{symbol}</td>
       <td>
-        <Icon name="cross" />
+        <span onClick={cancel}>
+          <Icon name="cross" />
+        </span>
       </td>
       <td>{id}</td>
       <td style={{color: colorSide}}>{side}</td>

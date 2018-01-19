@@ -6,7 +6,8 @@ export interface OrderActions {
 }
 
 const ConnectedOrderList = connect(
-  ({orderListStore: {limitOrders: orders}}) => ({
+  ({orderListStore: {limitOrders: orders, cancelOrder: onCancel}}) => ({
+    onCancel,
     orders
   }),
   OrderList
