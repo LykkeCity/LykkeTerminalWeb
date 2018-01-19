@@ -11,6 +11,7 @@ import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const baseAssetStorage = StorageUtils(keys.baseAsset);
+const withIdAndName = (x: InstrumentModel) => !!x.id && !!x.name;
 
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
@@ -67,8 +68,8 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
-  findInstruments = (term: string) =>
-    this.instruments.filter(x =>
+  findInstruments = (term: string) => {
+    return this.instruments.filter(withIdAndName).filter(x =>
       x.name
         .toLowerCase()
         .replace(SearchString.Delimiter, SearchString.Empty)
@@ -76,6 +77,7 @@ class ReferenceStore extends BaseStore {
           term.toLowerCase().replace(SearchString.Delimiter, SearchString.Empty)
         )
     );
+  };
 
   fetchReferenceData = async () => {
     await this.fetchBaseAsset();

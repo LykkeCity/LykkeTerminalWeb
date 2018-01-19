@@ -45,6 +45,14 @@ const StyledTileContent = styled.div`
   margin-top: 30px;
 `;
 
+const calcHeight = (hasTabs: boolean) =>
+  hasTabs ? `calc(100% - ${rem(50)})` : '100%';
+
+const StyledChild = styled.div`
+  height: ${(p: any) => calcHeight(p)};
+  margin-top: ${(p: any) => (p.hasTabs ? rem(50) : '')};
+` as any;
+
 class TileContent extends React.Component<TileContentProps, TileContentState> {
   constructor(props: TileContentProps) {
     super(props);
@@ -88,9 +96,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
             </Flex>
           </TileToolbar>
         )}
-        <div style={this.props.tabs ? {marginTop: rem(50)} : {height: '100%'}}>
-          {child}
-        </div>
+        <StyledChild hasTabs={this.props.tabs}>{child}</StyledChild>
       </StyledTileContent>
     );
   }

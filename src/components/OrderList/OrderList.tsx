@@ -4,10 +4,11 @@ import {Table} from '../Table/index';
 import {OrderListItem} from './';
 
 interface OrderListProps {
+  onCancel: (id: string) => void;
   orders?: OrderModel[];
 }
 
-const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
+const OrderList: React.SFC<OrderListProps> = ({orders = [], onCancel}) => (
   <Table>
     <thead>
       <tr>
@@ -21,7 +22,10 @@ const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
       </tr>
     </thead>
     <tbody>
-      {orders.map(order => <OrderListItem key={order.id} {...order} />)}
+      {orders.map(order => {
+        // order.onCancel = onCancel;
+        return <OrderListItem key={order.id} {...order} />;
+      })}
     </tbody>
   </Table>
 );
