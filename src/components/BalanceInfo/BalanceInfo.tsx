@@ -1,44 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {ReferenceStore, UiStore} from '../../stores';
-import Select from '../Select/Select';
+import ClickOutside from '../ClickOutside/ClickOutside';
+import CustomSelect from '../Select/CustomSelect';
 import './balance-info.css';
 import {BalanceInfoProps} from './index';
-
-const StyledSelect = styled(Select)`
-  .Select-control {
-    background-color: #333333 !important;
-
-    .Select-value {
-      .Select-value-label {
-        color: #fff !important;
-      }
-    }
-
-    .Select-input {
-      input {
-        color: #fff;
-      }
-      div {
-        background-color: #333333 !important;
-        color: #fff !important;
-      }
-    }
-  }
-
-  .Select-menu-outer {
-    .Select-option,
-    .Select-noresults {
-      background-color: #333333 !important;
-      color: #fff !important;
-
-      &.is-focused,
-      &.is-selected {
-        background-color: #666666 !important;
-      }
-    }
-  }
-`;
 
 const StyledButton = styled.button`
   padding-right: 0;
@@ -60,11 +26,8 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
     this.uiStore.toggleAssetsSelect();
   };
 
-  handleChange = (e: any) => {
-    if (!e) {
-      return;
-    }
-    this.referenceStore.setBaseAssetId(e.value);
+  handleChange = () => (value: string) => () => {
+    this.referenceStore.setBaseAssetId(value);
     this.uiStore.toggleAssetsSelect();
   };
 
@@ -89,14 +52,18 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
           {this.referenceStore.baseAssetId}
         </StyledButton>
         {this.uiStore.showAssetsSelect ? (
-          <StyledSelect
-            btnId={'baseAssetBtn'}
-            toggleSelect={this.uiStore.toggleAssetsSelect}
-            className={'balance-info-select'}
-            options={this.getOptions()}
-            value={this.referenceStore.baseAssetId}
-            onChange={this.handleChange}
-          />
+          <ClickOutside onClickOutside={this.uiStore.toggleAssetsSelect}>
+            <CustomSelect
+              styles={{
+                height: '300px',
+                minWidth: '150px',
+                right: '40px',
+                top: '40px'
+              }}
+              items={this.getOptions()}
+              click={this.handleChange()}
+            />
+          </ClickOutside>
         ) : null}
         <div className={'balance-total'}>Total Balance</div>
       </div>
