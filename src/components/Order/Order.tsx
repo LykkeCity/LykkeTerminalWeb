@@ -88,6 +88,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     }
 
     this.props.placeOrder(orderType, body);
+    this.setState({
+      priceValue: 0,
+      quantityValue: 0
+    });
   };
 
   handleOnChange = (value: string) => (e: any) => {
