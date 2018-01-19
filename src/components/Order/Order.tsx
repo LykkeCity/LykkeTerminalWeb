@@ -110,8 +110,14 @@ class Order extends React.Component<OrderProps, OrderState> {
     const options = this.state.isMarketActive
       ? orderOptions.filter(opt => opt.isMarketField)
       : orderOptions;
+    const currentPrice =
+      (this.state.isMarketActive
+        ? this.state.isSellActive ? this.props.bid : this.props.ask
+        : this.state.priceValue) || 0;
     const {bid, ask} = this.props;
     const spread = ask - bid;
+    const baseName = this.props.name.split('/')[0];
+    const quoteName = this.props.name.split('/')[1];
     return (
       <div>
         <StyledActionBlock>
@@ -153,6 +159,10 @@ class Order extends React.Component<OrderProps, OrderState> {
                   key={index}
                   inputValue={this.state[opt.value]}
                   change={this.handleOnChange(opt.value)}
+                  amount={(this.state.quantityValue * currentPrice).toFixed(
+                    this.props.accuracy
+                  )}
+                  quoteName={quoteName}
                   {...opt}
                 />
               );
@@ -162,10 +172,13 @@ class Order extends React.Component<OrderProps, OrderState> {
           <StyledOrderButton>
             <OrderButton
               action={currentAction.action}
-              price={
-                currentAction.action === orderAction.buy.action ? ask : bid
-              }
+              price={(this.state.quantityValue * currentPrice).toFixed(
+                this.props.accuracy
+              )}
               click={this.handleButtonClick(currentAction.action)}
+              quoteName={quoteName}
+              baseName={baseName}
+              quantity={this.state.quantityValue}
             />
           </StyledOrderButton>
         </StyledContentWrap>
