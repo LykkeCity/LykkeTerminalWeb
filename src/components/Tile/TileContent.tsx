@@ -1,5 +1,6 @@
 import {lighten, rem} from 'polished';
 import * as React from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import styled, {css} from '../styled';
 import {TileTabItem} from './';
 
@@ -51,6 +52,7 @@ const calcHeight = (hasTabs: boolean) =>
 const StyledChild = styled.div`
   height: ${(p: any) => calcHeight(p)};
   margin-top: ${(p: any) => (p.hasTabs ? rem(50) : '')};
+  margin-right: 0.5rem;
 ` as any;
 
 class TileContent extends React.Component<TileContentProps, TileContentState> {
@@ -96,7 +98,9 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
             </Flex>
           </TileToolbar>
         )}
-        <StyledChild hasTabs={this.props.tabs}>{child}</StyledChild>
+        <Scrollbars autoHide={true}>
+          <StyledChild hasTabs={this.props.tabs}>{child}</StyledChild>
+        </Scrollbars>
       </StyledTileContent>
     );
   }

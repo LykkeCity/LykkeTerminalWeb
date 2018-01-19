@@ -1,10 +1,14 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
 import styled, {colorFromSide} from '../styled';
+import {Cell} from '../Table/index';
 
 interface TradeListItemProps extends TradeModel {
   className?: string;
 }
+
+const cellNumber = 4;
+const DataCell = Cell(cellNumber);
 
 const TradeListItem: React.SFC<TradeListItemProps> = ({
   side,
@@ -15,12 +19,12 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   price,
   className
 }) => (
-  <tr className={className}>
-    <td>{symbol}</td>
-    <td>{quantity}</td>
-    <td>{price}</td>
-    <td>{new Date(timestamp).toLocaleString()}</td>
-  </tr>
+  <div className={`tr ${className}`}>
+    <DataCell className="td">{symbol}</DataCell>
+    <DataCell className="td">{quantity}</DataCell>
+    <DataCell className="td">{price}</DataCell>
+    <DataCell className="td">{new Date(timestamp).toLocaleString()}</DataCell>
+  </div>
 );
 
 const StyledTradeListItem = styled(TradeListItem)`
