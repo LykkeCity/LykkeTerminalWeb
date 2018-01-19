@@ -1,5 +1,6 @@
 const orderOptions = [
   {
+    isAmountable: false,
     isMarketField: false,
     isOptional: false,
     title: 'Price',
@@ -7,6 +8,7 @@ const orderOptions = [
     value: 'priceValue'
   },
   {
+    isAmountable: true,
     isMarketField: true,
     isOptional: false,
     title: 'Quantity',

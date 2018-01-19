@@ -22,12 +22,22 @@ const StyledOptions = styled.div`
   height: 32px;
 `;
 
+const StyledAmount = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  font-size: 1rem;
+`;
+
 const OrderOption: React.SFC<OrderOptionProps> = ({
   title,
   isOptional,
+  isAmountable,
   tumblerValues,
   change,
-  inputValue
+  inputValue,
+  amount,
+  quoteName
 }) => {
   return (
     <StyledOrderOptions>
@@ -39,6 +49,11 @@ const OrderOption: React.SFC<OrderOptionProps> = ({
       </div>
       <StyledOptions>
         <NumberInput inputValue={inputValue} change={change} />
+        {isAmountable ? (
+          <StyledAmount>
+            Total: {amount} {quoteName}
+          </StyledAmount>
+        ) : null}
       </StyledOptions>
     </StyledOrderOptions>
   );

@@ -25,10 +25,17 @@ const StyledButton = styled.div`
   }
 `;
 
-const OrderButton: React.SFC<OrderButtonProps> = ({action, price, click}) => {
+const OrderButton: React.SFC<OrderButtonProps> = ({
+  action,
+  price,
+  click,
+  quoteName,
+  baseName,
+  quantity
+}) => {
   return (
     <StyledButton className={action} onClick={click}>
-      {capitalize(action)} at {price}
+      {capitalize(action)} {quantity} {baseName} at {price} {quoteName}
     </StyledButton>
   );
 };
