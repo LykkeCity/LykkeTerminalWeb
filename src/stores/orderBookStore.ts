@@ -1,5 +1,5 @@
 import {ISubscription} from 'autobahn';
-import {observable} from 'mobx';
+import {observable, runInAction} from 'mobx';
 import {
   compose,
   curry,
@@ -9,9 +9,10 @@ import {
   reverse,
   sortBy,
   take,
-  takeLast
+  takeLast,
+  toLower
 } from 'rambda';
-import {WampApi} from '../api';
+import {OrderBookApi, WampApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
@@ -24,7 +25,7 @@ class OrderBookStore extends BaseStore {
   @observable private asks: Order[] = [];
   private subscriptions: Set<ISubscription> = new Set();
 
-  constructor(store: RootStore) {
+  constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
   }
 
@@ -56,17 +57,25 @@ class OrderBookStore extends BaseStore {
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
   onUpdate = (args: any) => {
-    const {IsBuy, Prices} = args[0];
+    const {IsBuy, Prices, Levels} = args[0];
     const mapToOrders = compose<any[], Order[], Order[], Order[]>(
       reverse,
       sortBy(byPrice),
       map(x => mappers.mapToOrder({...x, IsBuy}))
     );
     if (IsBuy) {
-      this.bids = mapToOrders(Prices);
+      this.bids = mapToOrders(Prices || Levels);
     } else {
-      this.asks = mapToOrders(Prices);
+      this.asks = mapToOrders(Prices || Levels);
     }
+  };
+
+  fetchAll = async () => {
+    const {selectedInstrument} = this.rootStore.uiStore;
+    const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
+    runInAction(() => {
+      orders.forEach((levels: any) => this.onUpdate([levels]));
+    });
   };
 
   reset = () => {

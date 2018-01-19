@@ -1,9 +1,13 @@
 import * as React from 'react';
+import {OrderModel} from '../../models/index';
 import {Cell, Table} from '../Table/index';
 import {OrderListItem} from './';
-import {OrderListProps} from './';
 
-const cellNumber = 9;
+interface OrderListProps {
+  orders?: OrderModel[];
+}
+
+const cellNumber = 7;
 const DataCell = Cell(cellNumber);
 
 const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
@@ -15,16 +19,12 @@ const OrderList: React.SFC<OrderListProps> = ({orders = []}) => (
         <DataCell className="th">OrderID</DataCell>
         <DataCell className="th">Side</DataCell>
         <DataCell className="th">Volume</DataCell>
-        <DataCell className="th">Current Price</DataCell>
+        <DataCell className="th">Price</DataCell>
         <DataCell className="th">Created Date</DataCell>
-        <DataCell className="th">Expiry Date</DataCell>
-        <DataCell className="th">&nbsp;</DataCell>
       </div>
     </div>
     <div className="tbody">
-      {orders.map((order: any) => (
-        <OrderListItem key={order.orderId} {...order} />
-      ))}
+      {orders.map(order => <OrderListItem key={order.id} {...order} />)}
     </div>
   </Table>
 );

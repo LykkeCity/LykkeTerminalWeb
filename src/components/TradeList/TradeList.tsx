@@ -1,9 +1,13 @@
 import * as React from 'react';
+import {TradeModel} from '../../models/index';
 import {Cell, Table} from '../Table/index';
 import {TradeListItem} from './';
-import {TradeListProps} from './';
 
-const cellNumber = 5;
+interface TradeListProps {
+  trades?: TradeModel[];
+}
+
+const cellNumber = 4;
 const DataCell = Cell(cellNumber);
 
 const TradeList: React.SFC<TradeListProps> = ({trades = []}) => (
@@ -11,16 +15,13 @@ const TradeList: React.SFC<TradeListProps> = ({trades = []}) => (
     <div className="thead">
       <div className="tr">
         <DataCell className="th">Symbol</DataCell>
-        <DataCell className="th">Side</DataCell>
         <DataCell className="th">Qnt</DataCell>
         <DataCell className="th">Price</DataCell>
         <DataCell className="th">Timestamp</DataCell>
       </div>
     </div>
     <div className="tbody">
-      {trades.map((trade: any) => (
-        <TradeListItem key={trade.tradeId} {...trade} />
-      ))}
+      {trades.map(trade => <TradeListItem key={trade.tradeId} {...trade} />)}
     </div>
   </Table>
 );

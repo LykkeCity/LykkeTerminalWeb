@@ -4,14 +4,11 @@ import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import orderOptions from '../../constants/orderOptions';
 import OrderType from '../../models/orderType';
-import {StorageUtils} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
 import OrderOption from './OrderOption';
-
-const baseAssetStorage = StorageUtils('baseAsset');
 
 const MARKET = OrderType.Market;
 const LIMIT = OrderType.Limit;
@@ -80,7 +77,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   handleButtonClick = (action: string) => () => {
     const orderType = this.state.isMarketActive ? MARKET : LIMIT;
     const body: any = {
-      AssetId: baseAssetStorage.get(),
+      AssetId: this.props.name.split('/')[0],
       AssetPairId: this.props.currency,
       OrderAction: action,
       Volume: this.state.quantityValue
