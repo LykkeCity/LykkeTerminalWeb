@@ -1,5 +1,6 @@
 class AssetBalanceModel {
   id: string;
+  name: string;
   balance: number;
   reserved: number;
 

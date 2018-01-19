@@ -13,6 +13,7 @@ export interface WalletBalanceItemProps {
   balance: number;
   id: string;
   reserved: number;
+  name: string;
 }
 
 const ConnectedWalletBalanceList = withScroll(
