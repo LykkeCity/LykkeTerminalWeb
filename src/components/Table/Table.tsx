@@ -11,11 +11,14 @@ const Table = styled.div`
   }
   .th {
     flex-grow: 1;
-    text-align: right;
+    text-align: center;
     padding: 10px 5px;
     color: #8c94a0;
     &:first-child {
       text-align: left;
+    }
+    &:last-child {
+      text-align: right;
     }
   }
   .td {
