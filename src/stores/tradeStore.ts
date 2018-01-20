@@ -40,7 +40,12 @@ class TradeStore extends BaseStore {
   };
 
   onTrades = (args: any) => {
-    const trade = args[0].map(mappers.mapToTrade);
+    if (
+      this.trades.some((item: TradeModel) => item.tradeId === args[0].TradeId)
+    ) {
+      return;
+    }
+    const trade = mappers.mapToTrade(args[0]);
     this.addTrade(trade);
   };
 
