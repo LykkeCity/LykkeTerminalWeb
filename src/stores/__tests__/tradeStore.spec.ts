@@ -43,7 +43,7 @@ describe('trade store', () => {
       await tradeStore.fetchAll();
       const trade = tradeStore.allTrades[0];
       expect(trade.side).toBeDefined();
-      expect(trade.symbol).toBeDefined();
+      expect(trade.asset).toBeDefined();
       expect(trade.quantity).toBeDefined();
       expect(trade.timestamp).toBeDefined();
       expect(trade.price).toBeDefined();

@@ -6,6 +6,7 @@ import {
   Side,
   TradeModel
 } from '../index';
+import SideDirection from '../sideDirection';
 
 // tslint:disable:object-literal-sort-keys
 
@@ -93,7 +94,7 @@ export const mapToLimitOrder = ({
   Id,
   CreateDateTime,
   OrderAction,
-  Voume,
+  Volume,
   Price,
   AssetPairId
 }: any) =>
@@ -103,7 +104,7 @@ export const mapToLimitOrder = ({
     price: Number(Price),
     side: OrderAction,
     symbol: AssetPairId,
-    volume: Voume
+    volume: Volume
   });
 
 export const mapToTrade = ({
@@ -118,8 +119,8 @@ export const mapToTrade = ({
   new TradeModel({
     price: Price,
     quantity: Volume,
-    side: Direction,
-    symbol: `${Asset}${OppositeAsset}`,
+    side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
+    asset: `${Asset}`,
     timestamp: DateTime,
-    tradeId: TradeId
+    tradeId: `${TradeId}${Asset}`
   });

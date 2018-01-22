@@ -26,7 +26,8 @@ class TradeStore extends BaseStore {
     super(store);
   }
 
-  @action addTrade = (trade: TradeModel) => this.trades.push(trade);
+  @action
+  addTrade = (trade: TradeModel[]) => (this.trades = this.trades.concat(trade));
 
   fetchAll = async () => {
     const tradesDto = await this.api.fetchAll();
@@ -40,13 +41,8 @@ class TradeStore extends BaseStore {
   };
 
   onTrades = (args: any) => {
-    if (
-      this.trades.some((item: TradeModel) => item.tradeId === args[0].TradeId)
-    ) {
-      return;
-    }
-    const trade = mappers.mapToTrade(args[0]);
-    this.addTrade(trade);
+    const mappedTrades = args[0].map(mappers.mapToTrade);
+    this.addTrade(mappedTrades);
   };
 
   @action
