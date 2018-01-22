@@ -35,8 +35,8 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ),
   e: (
     <Tile title="Executions" tabs={tabs.executions} authorize={true}>
+      <div>Market trades</div>
       <TradeList />
-      <div>Second tab</div>
     </Tile>
   ),
   ob: (
@@ -47,7 +47,6 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ord: (
     <Tile title="Orders" authorize={true}>
       <OrderList />
-      <div>Second tab</div>
     </Tile>
   ),
   wl: (
