@@ -1,6 +1,5 @@
 import {defaultTo} from 'rambda';
 import * as React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
 import {Order} from '../../models';
 import {Table} from '../Table/index';
@@ -62,21 +61,19 @@ const OrderBook: React.SFC<OrderBookProps> = ({
           </StyledRow>
         </StyledHead>
       </Table>
-      <Scrollbars autoHide={true}>
-        <Table>
-          <StyledSellOrders>
-            {asks.map(order => <OrderBookItem key={order.id} {...order} />)}
-          </StyledSellOrders>
-          <StyledMidPrice>
-            <tr>
-              <td>{defaultTo('', Number(mid))}</td>
-            </tr>
-          </StyledMidPrice>
-          <StyledBuyOrders>
-            {bids.map(order => <OrderBookItem key={order.id} {...order} />)}
-          </StyledBuyOrders>
-        </Table>
-      </Scrollbars>
+      <Table>
+        <StyledSellOrders>
+          {asks.map(order => <OrderBookItem key={order.id} {...order} />)}
+        </StyledSellOrders>
+        <StyledMidPrice>
+          <tr>
+            <td>{defaultTo('', Number(mid))}</td>
+          </tr>
+        </StyledMidPrice>
+        <StyledBuyOrders>
+          {bids.map(order => <OrderBookItem key={order.id} {...order} />)}
+        </StyledBuyOrders>
+      </Table>
     </div>
   );
 };

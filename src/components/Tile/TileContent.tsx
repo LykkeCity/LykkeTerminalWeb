@@ -40,7 +40,6 @@ const TileToolbar = styled.div`
 
 const StyledTileContent = styled.div`
   font-size: ${rem(14)};
-  padding: ${rem(10)} ${rem(15)};
   height: calc(100% - 30px);
   min-height: calc(100% - 30px);
   margin-top: 30px;
@@ -52,6 +51,7 @@ const calcHeight = (hasTabs: boolean) =>
 const StyledChild = styled.div`
   height: ${(p: any) => calcHeight(p.hasTabs)};
   margin-top: ${(p: any) => (p.hasTabs ? rem(50) : '')};
+  padding: ${rem(10)} ${rem(15)};
 ` as any;
 
 class TileContent extends React.Component<TileContentProps, TileContentState> {
