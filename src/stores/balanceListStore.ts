@@ -76,6 +76,7 @@ class BalanceListStore extends BaseStore {
 
   reset = () => {
     this.balanceLists = [];
+    this.tradingAssets = [];
   };
 
   private getTradingWallet = (balanceList: BalanceModel[]) => {
