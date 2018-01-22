@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {TradeModel} from '../../models/index';
+import {Side, TradeModel} from '../../models/index';
 import styled, {colorFromSide} from '../styled';
 
 interface TradeListItemProps extends TradeModel {
@@ -17,8 +17,7 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
 }) => (
   <tr className={className}>
     <td>{asset}</td>
-    <td>{quantity}</td>
-    <td>{price}</td>
+    <td>{side === Side.Buy ? quantity : `-${quantity}`}</td>
     <td>{new Date(timestamp).toLocaleString()}</td>
   </tr>
 );

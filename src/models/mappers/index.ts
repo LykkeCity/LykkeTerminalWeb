@@ -120,7 +120,7 @@ export const mapToTrade = ({
     price: Price,
     quantity: Volume,
     side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
-    asset: `${Asset}${OppositeAsset}`,
+    asset: `${Asset}`,
     timestamp: DateTime,
     tradeId: `${TradeId}${Asset}`
   });

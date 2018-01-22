@@ -12,8 +12,7 @@ const TradeList: React.SFC<TradeListProps> = ({trades = []}) => (
     <thead>
       <tr>
         <th>Asset</th>
-        <th>Qnt</th>
-        <th>Price</th>
+        <th>Volume</th>
         <th>Timestamp</th>
       </tr>
     </thead>
