@@ -4,7 +4,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
 import Search from '../../models/search';
 import {
-  InstrumentListItem,
+  InstrumentList,
   InstrumentPickerProps,
   InstrumentPickerStats,
   InstrumentPopover,
@@ -21,11 +21,6 @@ const StyledSearchWrap = styled(Flex)`
   border-bottom: solid 1px rgba(0, 0, 0, 0.2);
 `;
 
-const StyledInstruments = styled.div`
-  overflow: auto;
-  max-height: 560px;
-`;
-
 class InstrumentPicker extends React.Component<
   InstrumentPickerProps,
   InstrumentPickerStats
@@ -38,13 +33,7 @@ class InstrumentPicker extends React.Component<
     };
   }
 
-  componentDidMount() {
-    if (this.props.onSearch) {
-      this.props.onSearch(this.state.searchValue);
-    }
-  }
-
-  changeValue = (value: string = '', index: number = 0) => {
+  changeValue = (value: string = Search.Default, index: number = 0) => {
     this.setState({
       activeShortcut: index,
       searchValue: value
@@ -71,17 +60,13 @@ class InstrumentPicker extends React.Component<
                 change={this.changeValue}
               />
             </StyledSearchWrap>
-            <StyledInstruments>
-              <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={560}>
-                {this.props.instruments.map(x => (
-                  <InstrumentListItem
-                    key={x.id}
-                    {...x}
-                    onPick={this.props.onPick}
-                  />
-                ))}
-              </Scrollbars>
-            </StyledInstruments>
+            <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={560}>
+              <InstrumentList
+                instruments={this.props.instruments}
+                onPick={this.props.onPick}
+                change={this.changeValue}
+              />
+            </Scrollbars>
           </InstrumentPopover>
         ) : null}
       </div>

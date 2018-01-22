@@ -80,6 +80,7 @@ class OrderBookStore extends BaseStore {
 
   reset = () => {
     this.bids = this.asks = [];
+    this.unsubscribe();
   };
 }
 

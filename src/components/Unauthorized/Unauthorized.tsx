@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Link as RouterLink} from 'react-router-dom';
 import styled from 'styled-components';
+import paths from '../../constants/paths';
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
@@ -15,8 +16,8 @@ const StyledUnauthorized = styled(Flex)`
 const Unauthorized = () => {
   return (
     <StyledUnauthorized align="center" justify="center">
-      <StyledRouterLink to="/signin">Connect</StyledRouterLink>&nbsp;to start
-      trading
+      <StyledRouterLink to={paths.singin}>Connect</StyledRouterLink>&nbsp;to
+      start trading
     </StyledUnauthorized>
   );
 };

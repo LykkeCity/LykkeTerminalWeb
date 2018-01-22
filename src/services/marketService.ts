@@ -1,7 +1,7 @@
 import {RestMarketsApi} from '../api/marketsApi';
 import {Side} from '../models';
 
-const marketsApi = new RestMarketsApi();
+const marketsApi = new RestMarketsApi({});
 
 export default class MarketService {
   static updateQuotes = async (assets: any, assetId: string | null) => {

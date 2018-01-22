@@ -1,15 +1,16 @@
+import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
 export interface TradeApi {
   fetchAll: () => ApiResponse;
 }
 
-export class RestTradeApi implements TradeApi {
+export class RestTradeApi extends RestApi implements TradeApi {
   fetchAll = () => Promise.resolve([] as any[]);
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export class MockTradeApi implements TradeApi {
+export class MockTradeApi extends RestApi implements TradeApi {
   fetchAll = () =>
     Promise.resolve<any[]>([
       {
