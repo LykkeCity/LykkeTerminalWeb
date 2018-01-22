@@ -7,7 +7,7 @@ describe('watchlist store', () => {
   beforeEach(() => {
     watchlistStore = new WatchlistStore(
       new RootStore(false),
-      new MockWatchlistApi()
+      new MockWatchlistApi({})
     );
   });
 

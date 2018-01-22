@@ -5,7 +5,7 @@ describe('trade store', () => {
   let tradeStore: TradeStore;
 
   beforeEach(() => {
-    tradeStore = new TradeStore(new RootStore(false), new MockTradeApi());
+    tradeStore = new TradeStore(new RootStore(false), new MockTradeApi({}));
   });
 
   describe('state', () => {

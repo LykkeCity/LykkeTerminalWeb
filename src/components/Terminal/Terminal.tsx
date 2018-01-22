@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
+import paths from '../../constants/paths';
 import tabs from '../../constants/tabs';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
@@ -8,7 +9,7 @@ import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
-import {Tile} from '../Tile/index';
+import {Tile} from '../Tile';
 import {TradeList} from '../TradeList';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
@@ -57,12 +58,23 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 };
 
 class Terminal extends React.Component<TerminalProps, {}> {
+  private unlisten: any;
+
   constructor(props: TerminalProps) {
     super(props);
   }
 
   componentDidMount() {
     this.props.rootStore.start();
+    this.unlisten = this.props.history.listen((location: any) => {
+      if (location.pathname === paths.singin) {
+        this.props.rootStore.reset();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
   }
 
   render() {

@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {SignInPage} from './components/SignInPage';
 import {injectGlobal} from './components/styled';
 import {Terminal} from './components/Terminal';
+import paths from './constants/paths';
 import './index.css';
 
 const addFont = (name: string) => (f: any) =>
@@ -60,7 +61,7 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <Route exact={true} path="/signin" component={SignInPage} />
+          <Route exact={true} path={paths.singin} component={SignInPage} />
           <Route exact={true} path="/" component={Terminal} />
         </Switch>
       </Router>

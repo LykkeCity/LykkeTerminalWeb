@@ -65,6 +65,7 @@ describe('referenceStore', () => {
   describe('fetch assets', () => {
     it('should call api get assets', () => {
       jest.resetAllMocks();
+      api.fetchAll = jest.fn(() => Promise.resolve());
 
       assetStore.fetchAssets();
 
@@ -74,7 +75,7 @@ describe('referenceStore', () => {
 
     it('should map empty but valid response to assets', () => {
       jest.resetAllMocks();
-      api.fetchAll = jest.fn(() => ({Assets: []}));
+      api.fetchAll = jest.fn(() => Promise.resolve({Assets: []}));
 
       assetStore.fetchAssets();
 
@@ -84,22 +85,24 @@ describe('referenceStore', () => {
 
     it('should map valid response to assets', async () => {
       jest.resetAllMocks();
-      api.fetchAll = jest.fn(() => ({
-        Assets: [
-          {
-            Id: '1',
-            DisplayId: 'LKK',
-            Accuracy: 4,
-            CategoryId: 'ctg1'
-          },
-          {
-            Id: '2',
-            DisplayId: 'LKK2',
-            Accuracy: 0,
-            CategoryId: null
-          }
-        ]
-      }));
+      api.fetchAll = jest.fn(() =>
+        Promise.resolve({
+          Assets: [
+            {
+              Id: '1',
+              DisplayId: 'LKK',
+              Accuracy: 4,
+              CategoryId: 'ctg1'
+            },
+            {
+              Id: '2',
+              DisplayId: 'LKK2',
+              Accuracy: 0,
+              CategoryId: null
+            }
+          ]
+        })
+      );
 
       await assetStore.fetchAssets();
 
@@ -111,6 +114,7 @@ describe('referenceStore', () => {
   describe('fetch categories', () => {
     it('should call api get categories', () => {
       jest.resetAllMocks();
+      api.fetchAssetCategories = jest.fn(() => Promise.resolve());
 
       assetStore.fetchCategories();
 
@@ -120,9 +124,11 @@ describe('referenceStore', () => {
 
     it('should map valid response to categories', async () => {
       jest.resetAllMocks();
-      api.fetchAssetCategories = jest.fn(() => ({
-        AssetCategories: [{Id: '1', Name: 'Lykke'}]
-      }));
+      api.fetchAssetCategories = jest.fn(() =>
+        Promise.resolve({
+          AssetCategories: [{Id: '1', Name: 'Lykke'}]
+        })
+      );
 
       await assetStore.fetchCategories();
 
@@ -144,21 +150,25 @@ describe('referenceStore', () => {
         category: ctg
       });
       jest.resetAllMocks();
-      api.fetchAll = jest.fn(() => ({
-        Assets: [
-          {
-            Id: '1',
-            DisplayId: 'LKK',
-            Accuracy: 2,
-            CategoryId: '1',
-            IsBase: false,
-            IconUrl: ''
-          }
-        ]
-      }));
-      api.fetchAssetCategories = jest.fn(() => ({
-        AssetCategories: [{Id: '1', Name: 'Lykke'}]
-      }));
+      api.fetchAll = jest.fn(() =>
+        Promise.resolve({
+          Assets: [
+            {
+              Id: '1',
+              DisplayId: 'LKK',
+              Accuracy: 2,
+              CategoryId: '1',
+              IsBase: false,
+              IconUrl: ''
+            }
+          ]
+        })
+      );
+      api.fetchAssetCategories = jest.fn(() =>
+        Promise.resolve({
+          AssetCategories: [{Id: '1', Name: 'Lykke'}]
+        })
+      );
 
       await assetStore.fetchCategories();
       await assetStore.fetchAssets();
@@ -169,14 +179,16 @@ describe('referenceStore', () => {
     it('should use Name if DisplayId is not provided', async () => {
       const name = 'LKK';
       jest.resetAllMocks();
-      api.fetchAll = jest.fn(() => ({
-        Assets: [
-          {
-            Id: '1',
-            Name: name
-          }
-        ]
-      }));
+      api.fetchAll = jest.fn(() =>
+        Promise.resolve({
+          Assets: [
+            {
+              Id: '1',
+              Name: name
+            }
+          ]
+        })
+      );
 
       await assetStore.fetchAssets();
 
