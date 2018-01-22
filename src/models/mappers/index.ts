@@ -120,6 +120,6 @@ export const mapToTrade = ({
     quantity: Volume,
     side: Direction,
     symbol: `${Asset}${OppositeAsset}`,
-    timestamp: DateTime.toISOString(),
+    timestamp: DateTime,
     tradeId: TradeId
   });
