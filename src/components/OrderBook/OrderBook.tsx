@@ -6,12 +6,6 @@ import {Order} from '../../models';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
 
-const StyledTable = styled(Table)`
-  height: inherit;
-  position: absolute;
-  left: 0;
-`;
-
 const StyledHead = styled.thead`
   display: block;
   position: absolute;
@@ -24,7 +18,6 @@ const StyledHead = styled.thead`
 const StyledRow = styled.tr`
   display: flex;
   justify-content: space-evenly;
-  padding-right: 30px;
 `;
 
 const StyledSellOrders = styled.tbody`
@@ -59,30 +52,32 @@ const OrderBook: React.SFC<OrderBookProps> = ({
   bids = []
 }) => {
   return (
-    <StyledTable>
-      <StyledHead>
-        <StyledRow>
-          <StyledHeader align="right">Sell</StyledHeader>
-          <StyledHeader align="center">Price</StyledHeader>
-          <StyledHeader align="left">Buy</StyledHeader>
-        </StyledRow>
-      </StyledHead>
-      <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={250}>
-        <StyledSellOrders>
-          {asks.map(order => <OrderBookItem key={order.id} {...order} />)}
-        </StyledSellOrders>
+    <div style={{height: '100%'}}>
+      <Table>
+        <StyledHead>
+          <StyledRow>
+            <StyledHeader align="right">Sell</StyledHeader>
+            <StyledHeader align="center">Price</StyledHeader>
+            <StyledHeader align="left">Buy</StyledHeader>
+          </StyledRow>
+        </StyledHead>
+      </Table>
+      <Scrollbars autoHide={true}>
+        <Table>
+          <StyledSellOrders>
+            {asks.map(order => <OrderBookItem key={order.id} {...order} />)}
+          </StyledSellOrders>
+          <StyledMidPrice>
+            <tr>
+              <td>{defaultTo('', Number(mid))}</td>
+            </tr>
+          </StyledMidPrice>
+          <StyledBuyOrders>
+            {bids.map(order => <OrderBookItem key={order.id} {...order} />)}
+          </StyledBuyOrders>
+        </Table>
       </Scrollbars>
-      <StyledMidPrice>
-        <tr>
-          <td>{defaultTo('', Number(mid))}</td>
-        </tr>
-      </StyledMidPrice>
-      <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={250}>
-        <StyledBuyOrders>
-          {bids.map(order => <OrderBookItem key={order.id} {...order} />)}
-        </StyledBuyOrders>
-      </Scrollbars>
-    </StyledTable>
+    </div>
   );
 };
 

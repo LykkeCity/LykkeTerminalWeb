@@ -1,5 +1,6 @@
 import {lighten, rem} from 'polished';
 import * as React from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import styled, {css} from '../styled';
 import {TileTabItem} from './';
 
@@ -96,7 +97,9 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
             </Flex>
           </TileToolbar>
         )}
-        <StyledChild hasTabs={this.props.tabs}>{child}</StyledChild>
+        <Scrollbars autoHide={true}>
+          <StyledChild hasTabs={this.props.tabs}>{child}</StyledChild>
+        </Scrollbars>
       </StyledTileContent>
     );
   }
