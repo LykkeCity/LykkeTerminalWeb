@@ -85,22 +85,32 @@ class ReferenceStore extends BaseStore {
     await this.fetchAssets();
   };
 
-  fetchAssets = async () => {
-    const resp = await this.api.fetchAll();
-    if (resp && resp.Assets) {
-      runInAction(() => {
-        this.assets = resp.Assets.map(this.mapAssetFromDto);
-      });
-    }
+  fetchAssets = () => {
+    return this.api
+      .fetchAll()
+      .then((resp: any) => {
+        if (resp && resp.Assets) {
+          runInAction(() => {
+            this.assets = resp.Assets.map(this.mapAssetFromDto);
+          });
+        }
+        return Promise.resolve();
+      })
+      .catch(Promise.reject);
   };
 
-  fetchCategories = async () => {
-    const resp = await this.api.fetchAssetCategories();
-    if (resp && resp.AssetCategories) {
-      runInAction(() => {
-        this.categories = resp.AssetCategories.map(this.mapCategoryFromDto);
-      });
-    }
+  fetchCategories = () => {
+    return this.api
+      .fetchAssetCategories()
+      .then((resp: any) => {
+        if (resp && resp.AssetCategories) {
+          runInAction(() => {
+            this.categories = resp.AssetCategories.map(this.mapCategoryFromDto);
+          });
+        }
+        return Promise.resolve();
+      })
+      .catch(Promise.reject);
   };
 
   fetchInstruments = async () => {
@@ -112,13 +122,17 @@ class ReferenceStore extends BaseStore {
     }
   };
 
-  fetchBaseAsset = async () => {
-    const res = await this.api.fetchBaseAsset();
-
-    if (res && res.BaseAssetId) {
-      this.baseAsset = res.BaseAssetId;
-      baseAssetStorage.set(this.baseAsset);
-    }
+  fetchBaseAsset = () => {
+    return this.api
+      .fetchBaseAsset()
+      .then((res: any) => {
+        if (res && res.BaseAssetId) {
+          this.baseAsset = res.BaseAssetId;
+          baseAssetStorage.set(this.baseAsset);
+        }
+        return Promise.resolve();
+      })
+      .catch(Promise.reject);
   };
 
   setBaseAssetId = async (assetId: string) => {

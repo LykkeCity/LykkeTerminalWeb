@@ -30,6 +30,12 @@ export interface InstrumentShortcutsProps {
   shortcutActiveIndex: null | number;
 }
 
+export interface InstrumentListProps {
+  change: any;
+  instruments: InstrumentModel[];
+  onPick: any;
+}
+
 const connectedInstrumentPicker = connect(
   ({referenceStore, uiStore}) => ({
     instruments: referenceStore.findInstruments(uiStore.searchTerm),
@@ -52,3 +58,4 @@ export {default as InstrumentPopover} from './InstrumentPopover';
 export {default as InstrumentSearch} from './InstrumentSearch';
 export {default as InstrumentField} from './InstrumentField';
 export {default as InstrumentListItem} from './InstrumentListItem';
+export {default as InstrumentList} from './InstrumentList';

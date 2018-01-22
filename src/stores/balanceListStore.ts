@@ -37,15 +37,20 @@ class BalanceListStore extends BaseStore {
     super(store);
   }
 
-  fetchAll = async () => {
-    const balanceListDto = await this.api.fetchAll();
-    runInAction(async () => {
-      const tempBalanceLists = balanceListDto.map(
-        (wallet: any) => new BalanceModel(wallet)
-      );
-      this.updateBalance(tempBalanceLists);
-      this.setTradingAssets(tempBalanceLists);
-    });
+  fetchAll = () => {
+    return this.api
+      .fetchAll()
+      .then((balanceListDto: any) => {
+        runInAction(async () => {
+          const tempBalanceLists = balanceListDto.map(
+            (wallet: any) => new BalanceModel(wallet)
+          );
+          this.updateBalance(tempBalanceLists);
+          this.setTradingAssets(tempBalanceLists);
+        });
+        return Promise.resolve();
+      })
+      .catch(Promise.reject);
   };
 
   updateBalance = async (

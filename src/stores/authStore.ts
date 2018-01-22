@@ -39,7 +39,7 @@ class AuthStore extends BaseStore {
 
   signOut = () => {
     this.rootStore.reset();
-    location.href = '/signin';
+    this.rootStore.start();
   };
 
   reset = () => {

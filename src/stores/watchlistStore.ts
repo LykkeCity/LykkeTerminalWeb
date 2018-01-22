@@ -26,11 +26,16 @@ class WatchlistStore extends BaseStore {
 
   getWatchlistById = (id: string) => this.watchlists.find(x => x.id === id);
 
-  fetchAll = async () => {
-    const resp = await this.api.fetchAll();
-    runInAction(() => {
-      this.watchlists = resp.map(this.mapFromDto);
-    });
+  fetchAll = () => {
+    return this.api
+      .fetchAll()
+      .then((resp: any) => {
+        runInAction(() => {
+          this.watchlists = resp.map(this.mapFromDto);
+        });
+        return Promise.resolve();
+      })
+      .catch(Promise.reject);
   };
 
   reset = () => {
