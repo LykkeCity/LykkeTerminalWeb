@@ -1,4 +1,3 @@
-import {without} from 'rambda';
 import OrderApi from '../api/orderApi';
 import {OrderModel} from '../models';
 import OrderType from '../models/orderType';
@@ -7,14 +6,11 @@ import {BaseStore, RootStore} from './index';
 // tslint:disable:no-console
 
 class OrderStore extends BaseStore {
-  orders: any[] = [];
-
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
   }
 
   placeOrder = async (orderType: string, body: any) => {
-    this.orders.push(body);
     switch (orderType) {
       case OrderType.Market:
         this.api.placeMarket(body).then(
@@ -24,7 +20,6 @@ class OrderStore extends BaseStore {
             alert('Order was placed succesfully');
           },
           (error: any) => {
-            this.orders = without([body], this.orders);
             console.error(error);
             alert(`There is an error placing your order: ${error}`);
           }
@@ -38,7 +33,6 @@ class OrderStore extends BaseStore {
             alert('Order was placed succesfully');
           },
           (error: any) => {
-            this.orders = without([body], this.orders);
             console.error(error);
             alert(`There is an error placing your order: ${error}`);
           }

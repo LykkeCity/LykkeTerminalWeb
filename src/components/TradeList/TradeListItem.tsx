@@ -8,7 +8,7 @@ interface TradeListItemProps extends TradeModel {
 
 const TradeListItem: React.SFC<TradeListItemProps> = ({
   side,
-  symbol,
+  asset,
   quantity,
   timestamp,
   tradeId,
@@ -16,7 +16,7 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   className
 }) => (
   <tr className={className}>
-    <td>{symbol}</td>
+    <td>{asset}</td>
     <td>{quantity}</td>
     <td>{price}</td>
     <td>{new Date(timestamp).toLocaleString()}</td>

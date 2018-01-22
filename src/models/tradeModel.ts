@@ -1,12 +1,12 @@
 import {extendObservable} from 'mobx';
 
 class TradeModel {
-  symbol: string;
+  asset: string;
   side: string;
   quantity: number;
   price: number;
   timestamp: string;
-  tradeId: number;
+  tradeId: string;
 
   constructor(trade: Partial<TradeModel>) {
     extendObservable(this, trade);
