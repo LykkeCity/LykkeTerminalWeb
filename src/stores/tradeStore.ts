@@ -1,5 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {compose, reverse, sortBy} from 'rambda';
+import {compose, reverse, sortBy, without} from 'rambda';
 import {WampApi} from '../api';
 import {TradeApi} from '../api/index';
 import keys from '../constants/storageKeys';
@@ -40,18 +40,43 @@ class TradeStore extends BaseStore {
   };
 
   onTrades = (args: any) => {
-    if (
-      this.trades.some((item: TradeModel) => item.tradeId === args[0].TradeId)
-    ) {
+    let trade: any;
+    let order: any;
+    args[0].forEach((item: any) => {
+      order = this.rootStore.orderStore.orders.find((o: any) =>
+        this.findOrder(o, item)
+      );
+      if (order) {
+        this.rootStore.orderStore.orders = without(
+          [order],
+          this.rootStore.orderStore.orders
+        );
+        trade = item;
+      }
+    });
+
+    if (!trade) {
       return;
     }
-    const trade = mappers.mapToTrade(args[0]);
-    this.addTrade(trade);
+
+    const mappedTrade = mappers.mapToTrade(trade);
+    this.addTrade(mappedTrade);
   };
 
   @action
   reset = () => {
     this.trades = [];
+  };
+
+  private findOrder = (order: any, item: any) => {
+    if (
+      order.AssetId === item.Asset &&
+      order.AssetPairId === `${item.Asset}${item.OppositeAsset}` &&
+      order.Volume === item.Volume
+    ) {
+      return order.Price ? order.Price === item.Price : true;
+    }
+    return false;
   };
 }
 
