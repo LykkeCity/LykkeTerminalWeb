@@ -4,6 +4,10 @@ import {InstrumentModel} from '../models/index';
 import {fns} from '../utils/index';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
+import keys from '../constants/storageKeys';
+import {StorageUtils} from '../utils/index';
+
+const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
