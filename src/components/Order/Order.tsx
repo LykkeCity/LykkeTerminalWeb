@@ -92,7 +92,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   handleOnChange = (value: string) => (e: any) => {
     const tempObj = {};
-    tempObj[value] = +e.target.value;
+    tempObj[value] = Math.abs(e.target.value);
     this.setState(tempObj);
   };
 
