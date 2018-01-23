@@ -1,6 +1,5 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
 import Search from '../../models/search';
 import {
@@ -60,13 +59,11 @@ class InstrumentPicker extends React.Component<
                 change={this.changeValue}
               />
             </StyledSearchWrap>
-            <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={560}>
-              <InstrumentList
-                instruments={this.props.instruments}
-                onPick={this.props.onPick}
-                change={this.changeValue}
-              />
-            </Scrollbars>
+            <InstrumentList
+              instruments={this.props.instruments}
+              onPick={this.props.onPick}
+              change={this.changeValue}
+            />
           </InstrumentPopover>
         ) : null}
       </div>

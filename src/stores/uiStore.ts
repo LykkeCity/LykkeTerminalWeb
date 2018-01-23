@@ -2,6 +2,10 @@ import {action, observable, reaction} from 'mobx';
 import {InstrumentModel} from '../models/index';
 import {fns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
+import keys from '../constants/storageKeys';
+import {StorageUtils} from '../utils/index';
+
+const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class UiStore extends BaseStore {
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
@@ -30,6 +34,7 @@ class UiStore extends BaseStore {
 
   @action
   selectInstrument = (instrument: InstrumentModel | any) => {
+    instrumentStorage.set(JSON.stringify(instrument));
     this.selectedInstrument = instrument;
     this.rootStore.chartStore.renderChart(this.selectedInstrument!);
   };
