@@ -6,7 +6,7 @@ const asDate = (d: any = Date.now()) => new Date(d).toISOString();
 class PriceApi extends RestApi {
   fetchCandles = (instrument: string, from: Date, to: Date, interval: string) =>
     this.get(
-      `/candlesHistory/${instrument.toLowerCase()}/bid/${interval}/${asDate(
+      `/candlesHistory/spot/${instrument.toLowerCase()}/bid/${interval}/${asDate(
         from
       )}/${asDate(to)}`
     );
