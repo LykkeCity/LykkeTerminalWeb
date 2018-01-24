@@ -24,6 +24,7 @@ import {
   UiStore,
   WatchlistStore
 } from './index';
+import ModalStore from './modalStore';
 
 const tokenStorage = StorageUtils(keys.token);
 const notificationStorage = StorageUtils(keys.notificationId);
@@ -41,11 +42,13 @@ class RootStore {
   readonly authStore: AuthStore;
   readonly chartStore: ChartStore;
   readonly orderStore: OrderStore;
+  readonly modalStore: ModalStore;
 
   private readonly stores = new Set<BaseStore>();
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
+      this.modalStore = new ModalStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
       this.tradeStore = new TradeStore(this, new TradeApi(this));
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi(this));
