@@ -67,8 +67,11 @@ class BalanceListStore extends BaseStore {
     this.tradingAssets = this.getTradingWallet(balanceList).balances.map(
       (assetsBalance: any) => {
         const assetBalance = new AssetBalanceModel(assetsBalance);
-        const {getAssetById} = this.rootStore.referenceStore;
-        assetBalance.name = pathOr('', ['name'], getAssetById(assetBalance.id));
+        const assetById = this.rootStore.referenceStore.getAssetById(
+          assetBalance.id
+        );
+        assetBalance.name = pathOr('', ['name'], assetById);
+        assetBalance.accuracy = pathOr('', ['accuracy'], assetById);
         return assetBalance;
       }
     );
