@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
 import {InstrumentListItem, InstrumentListProps} from './index';
 
@@ -15,9 +16,11 @@ class InstrumentList extends React.Component<InstrumentListProps> {
   render() {
     return (
       <StyledInstruments>
-        {this.props.instruments.map(x => (
-          <InstrumentListItem key={x.id} {...x} onPick={this.props.onPick} />
-        ))}
+        <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={560}>
+          {this.props.instruments.map(x => (
+            <InstrumentListItem key={x.id} {...x} onPick={this.props.onPick} />
+          ))}
+        </Scrollbars>
       </StyledInstruments>
     );
   }
