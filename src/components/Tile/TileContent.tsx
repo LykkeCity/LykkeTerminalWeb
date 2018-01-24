@@ -2,6 +2,7 @@ import {lighten, rem} from 'polished';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled, {css} from '../styled';
+import {TileAdditionalControlItem} from './';
 import {TileTabItem} from './';
 
 // tslint:disable-next-line:no-var-requires
@@ -10,6 +11,7 @@ const {Flex} = require('grid-styled');
 interface TileContentProps {
   tabs: any;
   children: any;
+  additionalControls: any;
 }
 
 interface TileContentState {
@@ -45,12 +47,29 @@ const StyledTileContent = styled.div`
   margin-top: 30px;
 `;
 
-const calcHeight = (hasTabs: boolean) =>
-  hasTabs ? `calc(100% - ${rem(50)})` : '100%';
+const margin = 50;
+const calcHeight = (hasTabs: boolean, hasAdditionalControls: boolean) => {
+  if (hasTabs && hasAdditionalControls) {
+    return `calc(100% - ${rem(margin * 2)})`;
+  } else if (hasTabs || hasAdditionalControls) {
+    return `calc(100% - ${rem(margin)})`;
+  } else {
+    return '100%';
+  }
+};
+const calcMarginTop = (hasTabs: boolean, hasAdditionalControls: boolean) => {
+  if (hasTabs && hasAdditionalControls) {
+    return rem(margin * 2);
+  } else if (hasTabs || hasAdditionalControls) {
+    return rem(margin);
+  } else {
+    return '';
+  }
+};
 
 const StyledChild = styled.div`
-  height: ${(p: any) => calcHeight(p.hasTabs)};
-  margin-top: ${(p: any) => (p.hasTabs ? rem(50) : '')};
+  height: ${(p: any) => calcHeight(p.hasTabs, p.hasAdditionalControls)};
+  margin-top: ${(p: any) => calcMarginTop(p.hasTabs, p.hasAdditionalControls)};
   padding: ${rem(10)} ${rem(15)};
 ` as any;
 
@@ -97,8 +116,33 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
             </Flex>
           </TileToolbar>
         )}
+        {this.props.additionalControls && (
+          <TileToolbar>
+            <Flex align="center" justify="flex-end">
+              <Flex align="center">
+                {this.props.additionalControls.map(
+                  (addAction: any, index: number) => {
+                    return (
+                      <TileAdditionalControlItem
+                        key={`tiletabitem_${index}`}
+                        actionName={addAction.title}
+                        index={index}
+                        action={addAction.action}
+                      />
+                    );
+                  }
+                )}
+              </Flex>
+            </Flex>
+          </TileToolbar>
+        )}
         <Scrollbars autoHide={true}>
-          <StyledChild hasTabs={this.props.tabs}>{child}</StyledChild>
+          <StyledChild
+            hasTabs={this.props.tabs}
+            hasAdditionalControls={this.props.additionalControls}
+          >
+            {child}
+          </StyledChild>
         </Scrollbars>
       </StyledTileContent>
     );

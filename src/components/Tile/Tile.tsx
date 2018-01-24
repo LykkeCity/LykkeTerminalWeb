@@ -38,13 +38,14 @@ const Tile: React.SFC<TileProps> = ({
   children,
   tabs,
   authorize = false,
-  isAuth
+  isAuth,
+  additionalControls
 }) => (
   <TileWrapper>
     <TileHeader justify="space-between">
       <TileTitle>{title} </TileTitle>
     </TileHeader>
-    <TileContent tabs={tabs}>
+    <TileContent tabs={tabs} additionalControls={additionalControls}>
       {authorize ? isAuth ? children : <Unauthorized /> : children}
     </TileContent>
   </TileWrapper>

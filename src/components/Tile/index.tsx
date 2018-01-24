@@ -6,6 +6,7 @@ export interface TileProps {
   title?: string;
   tabs?: string[];
   authorize?: boolean;
+  additionalControls?: any[];
 }
 
 const connectedTile = connect(
@@ -18,4 +19,7 @@ const connectedTile = connect(
 export {connectedTile as Tile};
 export {default as TileContent} from './TileContent';
 export {default as TileTabItem} from './TileTabItem';
+export {
+  default as TileAdditionalControlItem
+} from './TileAdditionalControlItem';
 export {default as TileMenu} from './TileMenu';
