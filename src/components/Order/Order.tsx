@@ -123,7 +123,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     const message = `${action} ${
       this.state.quantityValue
     } ${baseName} at ${currentPrice} ${quoteName}`;
-    this.props.addConfirmModal(
+    this.props.addModal(
       message,
       () => this.applyOrder(action),
       this.cancelOrder

@@ -14,7 +14,7 @@ export interface OrderState {
 }
 
 export interface OrderProps {
-  addConfirmModal: any;
+  addModal: any;
   ask: number;
   bid: number;
   accuracy: number;
@@ -70,13 +70,13 @@ export interface OrderActionProps {
 const ConnectedOrder = withScroll(
   connect(
     ({
-      modalStore: {addConfirmModal},
+      modalStore: {addModal},
       orderBookStore: {bestAsk, bestBid},
       orderStore: {placeOrder},
       uiStore: {selectedInstrument: instrument}
     }) => ({
       accuracy: pathOr(2, ['accuracy'], instrument),
-      addConfirmModal,
+      addModal,
       ask: bestAsk(),
       bid: bestBid(),
       currency: pathOr('', ['id'], instrument),

@@ -1,25 +1,32 @@
-import {observable} from 'mobx';
+import {computed, observable} from 'mobx';
+import ModalModel from '../models/modalModel';
 import {BaseStore, RootStore} from './index';
 
 class ModalStore extends BaseStore {
-  @observable showConfirmModal: boolean = false;
-  message: string = '';
-  applyAction: any;
-  cancelAction: any;
+  @computed
+  get isModals() {
+    return !!this.modals.length;
+  }
+
+  @observable modals: ModalModel[] = [];
 
   constructor(store: RootStore) {
     super(store);
   }
 
-  addConfirmModal = (message: string, applyAction: any, cancelAction: any) => {
-    this.showConfirmModal = true;
-    this.applyAction = applyAction;
-    this.cancelAction = cancelAction;
-    this.message = message;
+  addModal = (message: string, applyAction: any, cancelAction: any) => {
+    const modal = new ModalModel(
+      message,
+      applyAction,
+      cancelAction,
+      (m: ModalModel) => this.closeModal(m)
+    );
+    this.modals = [...this.modals, ...[modal]];
   };
 
-  closeConfirmModal = () => {
-    this.showConfirmModal = false;
+  closeModal = (modal: ModalModel) => {
+    const index = this.modals.indexOf(modal);
+    this.modals.splice(index, 1);
   };
 
   reset = () => {

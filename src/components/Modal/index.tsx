@@ -1,21 +1,5 @@
-import {connect} from '../connect';
-import ConfirmModal from './ConfirmModal';
+import ModalModel from '../../models/modalModel';
 
 export interface ConfirmModalProps {
-  applyAction: any;
-  cancelAction: any;
-  closeConfirmModal: any;
-  message: string;
+  modal: ModalModel;
 }
-
-const connectedConfirmModal = connect(
-  ({modalStore: {applyAction, cancelAction, message, closeConfirmModal}}) => ({
-    applyAction,
-    cancelAction,
-    closeConfirmModal,
-    message
-  }),
-  ConfirmModal
-);
-
-export {connectedConfirmModal as ConfirmModal};

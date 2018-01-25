@@ -2,11 +2,12 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import paths from '../../constants/paths';
 import tabs from '../../constants/tabs';
+import ModalModel from '../../models/modalModel';
 import Backdrop from '../Backdrop/Backdrop';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
-import {ConfirmModal} from '../Modal';
+import ConfirmModal from '../Modal/ConfirmModal';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
@@ -82,10 +83,14 @@ class Terminal extends React.Component<TerminalProps, {}> {
   render() {
     return (
       <Shell>
-        {this.props.rootStore.modalStore.showConfirmModal ? (
+        {this.props.rootStore.modalStore.isModals ? (
           <div>
             <Backdrop />
-            <ConfirmModal />
+            {this.props.rootStore.modalStore.modals.map(
+              (modal: ModalModel, index: number) => {
+                return <ConfirmModal key={index} modal={modal} />;
+              }
+            )}
           </div>
         ) : null}
         <Header history={this.props.history} />

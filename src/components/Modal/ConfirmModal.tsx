@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import keys from '../../constants/storageKeys';
+import ModalModel from '../../models/modalModel';
 import {StorageUtils} from '../../utils/index';
 import CustomCheckbox from '../CustomCheckbox/CustomCheckbox';
 import {ConfirmModalProps} from './index';
@@ -89,29 +90,28 @@ class ConfirmModal extends React.Component<ConfirmModalProps> {
     confirmStorage.set(e.target.checked);
   };
 
-  handleApply = () => {
-    this.props.applyAction();
-    this.props.closeConfirmModal();
+  handleApply = (modal: ModalModel) => () => {
+    modal.applyAction();
+    modal.close();
   };
 
-  handleCancel = () => {
-    this.props.cancelAction();
-    this.props.closeConfirmModal();
+  handleCancel = (modal: ModalModel) => () => {
+    modal.cancelAction();
+    modal.close();
   };
 
   render() {
+    const {modal} = this.props;
     return (
       <div>
         <StyledModal>
           <Flex justify={'space-between'}>
             <StyledTitle>Confirm</StyledTitle>
-            <StyledCloseBtn href="#" onClick={this.handleCancel}>
+            <StyledCloseBtn href="#" onClick={this.handleCancel(modal)}>
               <span>&times;</span>
             </StyledCloseBtn>
           </Flex>
-          <StyledContent>
-            Are you really want to {this.props.message}?
-          </StyledContent>
+          <StyledContent>Are you really want to {modal.message}?</StyledContent>
           <StyledReminder>
             <CustomCheckbox
               change={this.handleChange()}
@@ -119,10 +119,10 @@ class ConfirmModal extends React.Component<ConfirmModalProps> {
             />
           </StyledReminder>
           <Flex justify={'space-between'} style={{marginTop: '24px'}}>
-            <ApplyButton type="button" onClick={this.handleApply}>
+            <ApplyButton type="button" onClick={this.handleApply(modal)}>
               Yes
             </ApplyButton>
-            <CancelButton type="button" onClick={this.handleCancel}>
+            <CancelButton type="button" onClick={this.handleCancel(modal)}>
               Cancel
             </CancelButton>
           </Flex>
