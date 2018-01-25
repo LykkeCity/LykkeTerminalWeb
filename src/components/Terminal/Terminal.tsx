@@ -8,6 +8,7 @@ import {StorageUtils} from '../../utils/index';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
+import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
@@ -130,6 +131,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   render() {
     return (
       <Shell>
+        <NotificationList />
         <Header history={this.props.history} />
         <Mosaic
           // tslint:disable-next-line:jsx-no-lambda
