@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import orderOptions from '../../constants/orderOptions';
 import OrderType from '../../models/orderType';
+import StringHelpers from '../../utils/string';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
@@ -90,7 +91,13 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.props.placeOrder(orderType, body);
   };
 
-  handleOnChange = (value: string) => (e: any) => {
+  handleOnChange = (value: string, accuracy: number) => (e: any) => {
+    e.target.value = StringHelpers.substringZero(e.target.value);
+
+    if (StringHelpers.getPostDecimalsLength(e.target.value) > accuracy) {
+      e.target.value = StringHelpers.substringLast(e.target.value);
+    }
+
     const tempObj = {};
     tempObj[value] = Math.abs(e.target.value);
     this.setState(tempObj);
@@ -119,7 +126,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       <div>
         <StyledActionBlock>
           <StyledSplitBlock>
-            {!Number.isNaN(spread) && spread.toFixed(this.props.accuracy)}
+            {!Number.isNaN(spread) &&
+              spread.toFixed(this.props.accuracy.priceValue)}
           </StyledSplitBlock>
           <OrderAction
             click={this.handleActionClick(orderAction.sell.action)}
@@ -155,9 +163,12 @@ class Order extends React.Component<OrderProps, OrderState> {
                 <OrderOption
                   key={index}
                   inputValue={this.state[opt.value]}
-                  change={this.handleOnChange(opt.value)}
+                  change={this.handleOnChange(
+                    opt.value,
+                    this.props.accuracy[opt.value]
+                  )}
                   amount={(this.state.quantityValue * currentPrice).toFixed(
-                    this.props.accuracy
+                    this.props.accuracy.priceValue
                   )}
                   quoteName={quoteName}
                   {...opt}
@@ -170,7 +181,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             <OrderButton
               action={currentAction.action}
               price={(this.state.quantityValue * currentPrice).toFixed(
-                this.props.accuracy
+                this.props.accuracy.priceValue
               )}
               click={this.handleButtonClick(currentAction.action)}
               quoteName={quoteName}

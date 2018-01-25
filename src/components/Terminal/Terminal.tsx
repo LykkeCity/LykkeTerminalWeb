@@ -90,7 +90,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
             first: {
               direction: 'column' as MosaicDirection,
               first: 'wl',
-              second: 'acc'
+              second: 'acc',
+              splitPercentage: 60
             },
             second: {
               direction: 'row' as MosaicDirection,

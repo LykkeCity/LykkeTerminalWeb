@@ -15,7 +15,7 @@ export interface OrderState {
 export interface OrderProps {
   ask: number;
   bid: number;
-  accuracy: number;
+  accuracy: any;
   currency: string;
   placeOrder: any;
   name: string;
@@ -69,9 +69,13 @@ const ConnectedOrder = withScroll(
     ({
       orderBookStore: {bestAsk, bestBid},
       orderStore: {placeOrder},
-      uiStore: {selectedInstrument: instrument}
+      uiStore: {selectedInstrument: instrument},
+      referenceStore
     }) => ({
-      accuracy: pathOr(2, ['accuracy'], instrument),
+      accuracy: {
+        priceValue: pathOr(2, ['accuracy'], instrument),
+        quantityValue: referenceStore.getBaseAssetAccuracy
+      },
       ask: bestAsk(),
       bid: bestBid(),
       currency: pathOr('', ['id'], instrument),
