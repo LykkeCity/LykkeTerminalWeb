@@ -1,23 +1,25 @@
+import NotificationModel from '../../models/notificationModel';
 import {connect} from '../connect';
-import Notification from './Notification';
+import NotificationList from './NotificationList';
 
-export interface NotificationProps {
-  showNotification: boolean;
+export interface NotificationListProps {
+  notificationLists: NotificationModel[];
   closeNotification: any;
-  level: string;
-  message: string;
 }
 
-const connectedNotification = connect(
-  ({
-    notificationStore: {showNotification, closeNotification, level, message}
-  }) => ({
+export interface NotificationProps {
+  index: number;
+  level: string;
+  message: string;
+  closeNotification: any;
+}
+
+const connectedNotificationList = connect(
+  ({notificationStore: {notificationLists, closeNotification}}) => ({
     closeNotification,
-    level,
-    message,
-    showNotification
+    notificationLists
   }),
-  Notification
+  NotificationList
 );
 
-export {connectedNotification as Notification};
+export {connectedNotificationList as NotificationList};

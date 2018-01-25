@@ -1,29 +1,27 @@
 import {observable} from 'mobx';
-import timeouts from '../constants/timeouts';
+// import timeouts from '../constants/timeouts';
+import NotificationModel from '../models/notificationModel';
 import {BaseStore, RootStore} from './index';
 
 class NotificationStore extends BaseStore {
-  @observable showNotification: boolean = false;
-  level: string = '';
-  message: string = '';
+  @observable notificationLists: NotificationModel[] = [];
 
   constructor(store: RootStore) {
     super(store);
   }
 
   addNotification = (level: string, message: string) => {
-    this.level = level;
-    this.message = message;
-    this.showNotification = true;
-    setTimeout(() => {
-      if (this.showNotification) {
-        this.closeNotification();
-      }
-    }, timeouts.notificationClose);
+    const notification = new NotificationModel(
+      level,
+      message,
+      (self: NotificationModel) => this.closeNotification(self)
+    );
+    this.notificationLists = [...this.notificationLists, ...[notification]];
   };
 
-  closeNotification = () => {
-    this.showNotification = false;
+  closeNotification = (notification: NotificationModel) => {
+    const index = this.notificationLists.indexOf(notification);
+    this.notificationLists.splice(index, 1);
   };
 
   reset = () => {

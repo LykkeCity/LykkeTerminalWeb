@@ -1,5 +1,6 @@
 import levels from '../../constants/notificationLevels';
 import messages from '../../constants/notificationMessages';
+import NotificationModel from '../../models/notificationModel';
 import {NotificationStore, RootStore} from '../index';
 
 describe('notification store', () => {
@@ -9,33 +10,29 @@ describe('notification store', () => {
     notificationStore = new NotificationStore(new RootStore(false));
   });
 
-  it('should contain showNotification field with false as default value', () => {
-    expect(notificationStore.showNotification).toBeDefined();
-    expect(notificationStore.showNotification).toBeFalsy();
+  it('should contain notificationLists as an empty array', () => {
+    expect(notificationStore.notificationLists).toBeDefined();
+    expect(notificationStore.notificationLists.length).toBe(0);
   });
 
-  it('has closeNotification set showNotification value to false', () => {
-    notificationStore.showNotification = true;
-    expect(notificationStore.showNotification).toBeTruthy();
-    notificationStore.closeNotification();
-    expect(notificationStore.showNotification).toBeFalsy();
-  });
-
-  it('should contain fields level and message with empty string as default values', () => {
-    expect(notificationStore.level).toBe('');
-    expect(notificationStore.message).toBe('');
-  });
-
-  it('has addNotification that updated level, message and showNotification', () => {
-    expect(notificationStore.level).toBe('');
-    expect(notificationStore.message).toBe('');
-    expect(notificationStore.showNotification).toBeFalsy();
+  it('should add notification to the list', () => {
     notificationStore.addNotification(
       levels.information,
-      messages.orderCanceled
+      messages.orderSuccess
     );
-    expect(notificationStore.level).toBe(levels.information);
-    expect(notificationStore.message).toBe(messages.orderCanceled);
-    expect(notificationStore.showNotification).toBeTruthy();
+    expect(notificationStore.notificationLists.length).toBe(1);
+    expect(
+      notificationStore.notificationLists[0] instanceof NotificationModel
+    ).toBeTruthy();
+  });
+
+  it('should remove notification from list', () => {
+    notificationStore.addNotification(
+      levels.information,
+      messages.orderSuccess
+    );
+    expect(notificationStore.notificationLists.length).toBe(1);
+    notificationStore.closeNotification(notificationStore.notificationLists[0]);
+    expect(notificationStore.notificationLists.length).toBe(0);
   });
 });

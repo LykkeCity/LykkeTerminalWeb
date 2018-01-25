@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import ClickOutside from '../ClickOutside/ClickOutside';
 import {NotificationProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -17,14 +16,12 @@ const getBackground = (level: string) => {
 };
 
 const StyledNotification = styled.div`
+  position: relative;
+  margin-top: 10px;
   width: 312px;
   border-radius: 6px;
-  padding: 16px;
+  padding: 12px 16px;
   background-color: ${(p: any) => getBackground(p.level)};
-  position: absolute;
-  right: 15px;
-  top: 30px;
-  z-index: 999;
   box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 ` as any;
@@ -33,53 +30,46 @@ const StyledCloseBtn = styled.a`
   color: #f5f6f7;
   text-decoration: none;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
+  > span {
+    position: absolute;
+    top: 2px;
+    right: 9px;
+  }
 `;
 
 const StyledTitle = styled.div`
   width: 39px;
   height: 16px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   line-height: 0.8;
 `;
 
 const StyledMessage = styled.div`
   font-family: Proxima Nova;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.14;
   margin-top: 5px;
 `;
 
-class Notification extends React.Component<NotificationProps> {
-  constructor(props: NotificationProps) {
-    super(props);
-  }
-
-  closeHandler = () => {
-    this.props.closeNotification();
-  };
-
-  render() {
-    const {showNotification, level} = this.props;
-    return (
-      <ClickOutside onClickOutside={this.props.closeNotification}>
-        <div>
-          {showNotification ? (
-            <StyledNotification level={level}>
-              <Flex justify={'space-between'}>
-                <StyledTitle>{this.props.level}</StyledTitle>
-                <StyledCloseBtn href="#" onClick={this.closeHandler}>
-                  &times;
-                </StyledCloseBtn>
-              </Flex>
-              <StyledMessage>{this.props.message}</StyledMessage>
-            </StyledNotification>
-          ) : null}
-        </div>
-      </ClickOutside>
-    );
-  }
-}
+const Notification: React.SFC<NotificationProps> = ({
+  index,
+  level,
+  message,
+  closeNotification
+}) => {
+  return (
+    <StyledNotification level={level} key={index}>
+      <Flex justify={'space-between'}>
+        <StyledTitle>{level}</StyledTitle>
+        <StyledCloseBtn href="#" onClick={closeNotification}>
+          <span>&times;</span>
+        </StyledCloseBtn>
+      </Flex>
+      <StyledMessage>{message}</StyledMessage>
+    </StyledNotification>
+  );
+};
 
 export default Notification;
