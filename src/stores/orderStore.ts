@@ -19,15 +19,15 @@ class OrderStore extends BaseStore {
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        this.api
+        return this.api
           .placeMarket(body)
-          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully);
-        break;
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
+          .then(() => Promise.resolve());
       case OrderType.Limit:
-        this.api
+        return this.api
           .placeLimit(body)
-          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully);
-        break;
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
+          .then(() => Promise.resolve());
     }
   };
 

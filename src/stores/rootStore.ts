@@ -16,6 +16,8 @@ import {
   BalanceListStore,
   BaseStore,
   ChartStore,
+  ModalStore,
+  NotificationStore,
   OrderBookStore,
   OrderListStore,
   OrderStore,
@@ -24,7 +26,6 @@ import {
   UiStore,
   WatchlistStore
 } from './index';
-import NotificationStore from './notificationStore';
 
 const tokenStorage = StorageUtils(keys.token);
 const notificationStorage = StorageUtils(keys.notificationId);
@@ -44,11 +45,13 @@ class RootStore {
   readonly chartStore: ChartStore;
   readonly orderStore: OrderStore;
   readonly notificationStore: NotificationStore;
+  readonly modalStore: ModalStore;
 
   private readonly stores = new Set<BaseStore>();
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
+      this.modalStore = new ModalStore(this);
       this.notificationStore = new NotificationStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
       this.tradeStore = new TradeStore(this, new TradeApi(this));
