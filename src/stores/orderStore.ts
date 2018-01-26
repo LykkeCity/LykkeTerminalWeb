@@ -59,12 +59,12 @@ class OrderStore extends BaseStore {
   };
 
   private updateOrders = () => {
+    this.rootStore.balanceListStore.fetchAll();
     this.rootStore.orderListStore.fetchAll();
   };
 
   private orderPlacedSuccessfully = () => {
-    this.rootStore.balanceListStore.fetchAll();
-    this.rootStore.orderListStore.fetchAll();
+    this.updateOrders();
     this.notificationStore.addNotification(
       levels.success,
       messages.orderSuccess
