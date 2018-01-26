@@ -6,14 +6,17 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   accuracy,
   balance,
   id,
-  name
+  name,
+  reserved
 }) => {
-  const calcBalance = balance.toFixed(accuracy).replace(/\.?0+$/, '');
+  const calculatedBalance: string = (balance - (reserved || 0))
+    .toFixed(accuracy)
+    .replace(/[.,]?0+$/, '');
   return (
     <tr key={id}>
       <td>{name}</td>
       <td>
-        <WalletBalanceNumber num={calcBalance} />
+        <WalletBalanceNumber num={calculatedBalance} />
       </td>
     </tr>
   );
