@@ -2,13 +2,9 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {WampApi} from '../api';
 import {TradeApi} from '../api/index';
-import keys from '../constants/storageKeys';
 import {TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
-import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
-
-const notificationStorage = StorageUtils(keys.notificationId);
 
 class TradeStore extends BaseStore {
   @computed
@@ -42,7 +38,7 @@ class TradeStore extends BaseStore {
   };
 
   subscribe = () => {
-    WampApi.subscribe(`trades.${notificationStorage.get()}`, this.onTrades);
+    WampApi.subscribe(`trades`, this.onTrades);
   };
 
   onTrades = (args: any) => {
