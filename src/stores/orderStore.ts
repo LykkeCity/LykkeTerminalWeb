@@ -73,7 +73,12 @@ class OrderStore extends BaseStore {
 
   private orderPlacedUnsuccessfully = (error: any) => {
     console.error(error);
-    const {message} = JSON.parse(error.message);
+    let message;
+    try {
+      message = JSON.parse(error.message).message;
+    } catch (e) {
+      message = !!error.message.length ? error.message : messages.defaultError;
+    }
     this.notificationStore.addNotification(
       levels.error,
       `${messages.orderError} ${message}`
