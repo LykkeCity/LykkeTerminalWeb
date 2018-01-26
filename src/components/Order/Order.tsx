@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import orderOptions from '../../constants/orderOptions';
 import keys from '../../constants/storageKeys';
+import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
 import {StorageUtils} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
@@ -126,7 +127,8 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.props.addModal(
       message,
       () => this.applyOrder(action),
-      this.cancelOrder
+      this.cancelOrder,
+      Types.Confirm
     );
   };
 

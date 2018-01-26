@@ -4,13 +4,12 @@ import additionalActions from '../../constants/additionalActions';
 import paths from '../../constants/paths';
 import keys from '../../constants/storageKeys';
 import tabs from '../../constants/tabs';
-import ModalModel from '../../models/modalModel';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
-import ConfirmModal from '../Modal/ConfirmModal';
+import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
@@ -138,11 +137,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         {this.props.rootStore.modalStore.isModals ? (
           <div>
             <Backdrop />
-            {this.props.rootStore.modalStore.modals.map(
-              (modal: ModalModel, index: number) => {
-                return <ConfirmModal key={index} modal={modal} />;
-              }
-            )}
+            <Modal modals={this.props.rootStore.modalStore.modals} />
           </div>
         ) : null}
         <Header history={this.props.history} />

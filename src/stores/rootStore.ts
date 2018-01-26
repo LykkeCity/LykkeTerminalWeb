@@ -16,6 +16,8 @@ import {
   BalanceListStore,
   BaseStore,
   ChartStore,
+  ModalStore,
+  NotificationStore,
   OrderBookStore,
   OrderListStore,
   OrderStore,
@@ -24,8 +26,6 @@ import {
   UiStore,
   WatchlistStore
 } from './index';
-import ModalStore from './modalStore';
-import NotificationStore from './notificationStore';
 
 const tokenStorage = StorageUtils(keys.token);
 const notificationStorage = StorageUtils(keys.notificationId);
