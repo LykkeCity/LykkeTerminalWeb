@@ -114,6 +114,9 @@ class Order extends React.Component<OrderProps, OrderState> {
     baseName: string,
     quoteName: string
   ) => () => {
+    if (this.state.pendingOrder) {
+      return;
+    }
     this.disableButton(true);
 
     const isConfirm = confirmStorage.get() as string;
