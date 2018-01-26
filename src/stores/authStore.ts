@@ -1,5 +1,7 @@
 import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
+import levels from '../constants/notificationLevels';
+import messages from '../constants/notificationMessages';
 import keys from '../constants/storageKeys';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -33,7 +35,10 @@ class AuthStore extends BaseStore {
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
   catchUnauthorized = () => {
-    alert('Your session has expired');
+    this.rootStore.notificationStore.addNotification(
+      levels.information,
+      messages.expired
+    );
     this.signOut();
   };
 
