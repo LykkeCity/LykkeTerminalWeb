@@ -1,49 +1,42 @@
 import OrderApi from '../api/orderApi';
+import levels from '../constants/notificationLevels';
+import messages from '../constants/notificationMessages';
 import {OrderModel} from '../models';
 import OrderType from '../models/orderType';
 import {BaseStore, RootStore} from './index';
+import NotificationStore from './notificationStore';
 
 // tslint:disable:no-console
 
 class OrderStore extends BaseStore {
+  private readonly notificationStore: NotificationStore;
+
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
+    this.notificationStore = this.rootStore.notificationStore;
   }
 
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        this.api.placeMarket(body).then(
-          (resp: any) => {
-            this.rootStore.balanceListStore.fetchAll();
-            this.rootStore.orderListStore.fetchAll();
-            alert('Order was placed succesfully');
-          },
-          (error: any) => {
-            console.error(error);
-            alert(`There is an error placing your order: ${error}`);
-          }
-        );
-        break;
+        return this.api
+          .placeMarket(body)
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
+          .then(() => Promise.resolve());
       case OrderType.Limit:
-        this.api.placeLimit(body).then(
-          (resp: any) => {
-            this.rootStore.balanceListStore.fetchAll();
-            this.rootStore.orderListStore.fetchAll();
-            alert('Order was placed succesfully');
-          },
-          (error: any) => {
-            console.error(error);
-            alert(`There is an error placing your order: ${error}`);
-          }
-        );
-        break;
+        return this.api
+          .placeLimit(body)
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
+          .then(() => Promise.resolve());
     }
   };
 
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
-    alert(`Order ${id} has cancelled`);
+    this.notificationStore.addNotification(
+      levels.information,
+      `${messages.orderCanceled} ${id}`
+    );
     this.updateOrders();
   };
 
@@ -52,7 +45,12 @@ class OrderStore extends BaseStore {
     const promises = orders.map((order: OrderModel) => {
       return this.api.cancelOrder(order.id);
     });
-    await Promise.all(promises).then(() => alert(`All orders have cancelled`));
+    await Promise.all(promises).then(() =>
+      this.notificationStore.addNotification(
+        levels.information,
+        messages.allOrdersCanceled
+      )
+    );
     this.updateOrders();
   };
 
@@ -62,6 +60,24 @@ class OrderStore extends BaseStore {
 
   private updateOrders = () => {
     this.rootStore.orderListStore.fetchAll();
+  };
+
+  private orderPlacedSuccessfully = () => {
+    this.rootStore.balanceListStore.fetchAll();
+    this.rootStore.orderListStore.fetchAll();
+    this.notificationStore.addNotification(
+      levels.success,
+      messages.orderSuccess
+    );
+  };
+
+  private orderPlacedUnsuccessfully = (error: any) => {
+    console.error(error);
+    const {message} = JSON.parse(error.message);
+    this.notificationStore.addNotification(
+      levels.error,
+      `${messages.orderError} ${message}`
+    );
   };
 }
 

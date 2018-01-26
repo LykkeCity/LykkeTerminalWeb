@@ -16,6 +16,8 @@ import {
   BalanceListStore,
   BaseStore,
   ChartStore,
+  ModalStore,
+  NotificationStore,
   OrderBookStore,
   OrderListStore,
   OrderStore,
@@ -42,11 +44,15 @@ class RootStore {
   readonly authStore: AuthStore;
   readonly chartStore: ChartStore;
   readonly orderStore: OrderStore;
+  readonly notificationStore: NotificationStore;
+  readonly modalStore: ModalStore;
 
   private readonly stores = new Set<BaseStore>();
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
+      this.modalStore = new ModalStore(this);
+      this.notificationStore = new NotificationStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
       this.tradeStore = new TradeStore(this, new TradeApi(this));
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi(this));

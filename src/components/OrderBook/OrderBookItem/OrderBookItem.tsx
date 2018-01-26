@@ -14,9 +14,12 @@ const CommonCell = styled.td`
   flex-grow: 1;
 `;
 
-const VolumeCell = styled(CommonCell)`
-  color: ${(p: any) => colorBySide(p.side)} !important;
-  text-align: ${(p: any) => alignBySide(p.side)} !important;
+const VolumeCell = CommonCell.extend.attrs({
+  style: (props: any) => ({
+    color: colorBySide(props.side),
+    textAlign: alignBySide(props.side)
+  })
+})`
   position: relative;
   min-width: 80px !important;
 ` as any;
@@ -26,14 +29,17 @@ const MidCell = styled(CommonCell)`
   text-align: center !important;
 `;
 
-const VolumeOverlay = styled.div`
+const VolumeOverlay = styled.div.attrs({
+  style: (props: any) => ({
+    background: colorBySide(props.side),
+    width: `${props.volume}%`,
+    [alignBySide(props.side)]: '0%'
+  })
+})`
   position: absolute;
   top: 0;
   height: 100%;
   opacity: 0.1;
-  background: ${(p: any) => colorBySide(p.side)};
-  width: ${(p: any) => `${p.volume}%`};
-  ${(p: any) => `${alignBySide(p.side)}: 0%`};
 ` as any;
 
 const OrderRow = styled.tr`
