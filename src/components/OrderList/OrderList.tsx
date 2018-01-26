@@ -1,7 +1,5 @@
-import {rem} from 'polished';
 import * as React from 'react';
 import {OrderModel} from '../../models/index';
-import styled from '../styled';
 import {Table} from '../Table/index';
 import {OrderActions, OrderListItem} from './';
 
@@ -9,30 +7,9 @@ interface OrderListProps extends OrderActions {
   orders?: OrderModel[];
 }
 
-const StyledSpan = styled.div`
-  float: right;
-  padding: ${rem(8)} ${rem(18)};
-  border-radius: 4px;
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  color: #ccc;
-  &:hover {
-    color: #fff;
-    cursor: pointer;
-  }
-`;
-
-const OrderList: React.SFC<OrderListProps> = ({
-  orders = [],
-  cancelAll,
-  cancelOrder
-}) => (
+const OrderList: React.SFC<OrderListProps> = ({orders = [], cancelOrder}) => (
   <Table>
     <thead>
-      <tr>
-        <th colSpan={7}>
-          <StyledSpan onClick={cancelAll}>Cancel all orders</StyledSpan>
-        </th>
-      </tr>
       <tr>
         <th>Symbol</th>
         <th>Close</th>

@@ -1,4 +1,5 @@
 class AssetBalanceModel {
+  accuracy: number;
   id: string;
   name: string;
   balance: number;

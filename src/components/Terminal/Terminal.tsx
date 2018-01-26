@@ -1,10 +1,14 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
+import additionalActions from '../../constants/additionalActions';
 import paths from '../../constants/paths';
+import keys from '../../constants/storageKeys';
 import tabs from '../../constants/tabs';
+import {StorageUtils} from '../../utils/index';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
+import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
@@ -22,7 +26,8 @@ const Shell = styled.div`
   margin: 0;
 `;
 
-const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
+const layoutStorage = StorageUtils(keys.layout);
+const ELEMENT_MAP = (rootStore: any): {[viewId: string]: JSX.Element} => ({
   acc: (
     <Tile title="Account" tabs={tabs.walletBalance} authorize={true}>
       <WalletBalanceList />
@@ -46,7 +51,17 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   ord: (
-    <Tile title="Orders" authorize={true}>
+    <Tile
+      title="Orders"
+      authorize={true}
+      additionalControls={additionalActions.orders.map(addAction => {
+        addAction.action =
+          rootStore[addAction.actionParams.store][
+            addAction.actionParams.method
+          ];
+        return addAction;
+      })}
+    >
       <OrderList />
     </Tile>
   ),
@@ -55,13 +70,46 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
       <Order />
     </Tile>
   )
-};
+});
 
 class Terminal extends React.Component<TerminalProps, {}> {
   private unlisten: any;
+  private initialValue: any = {
+    direction: 'row' as MosaicDirection,
+    first: {
+      direction: 'column' as MosaicDirection,
+      first: 'wl',
+      second: 'acc',
+      splitPercentage: 60
+    },
+    second: {
+      direction: 'row' as MosaicDirection,
+      first: {
+        direction: 'column' as MosaicDirection,
+        first: 'c',
+        second: 'ord',
+        splitPercentage: 70
+      },
+      second: {
+        direction: 'column' as MosaicDirection,
+        first: 'ob',
+        second: 'e',
+        splitPercentage: 70
+      },
+      splitPercentage: 78
+    },
+    splitPercentage: 22
+  };
 
   constructor(props: TerminalProps) {
     super(props);
+  }
+
+  componentWillMount() {
+    const layout = layoutStorage.get();
+    if (layout) {
+      this.initialValue = JSON.parse(layout);
+    }
   }
 
   componentDidMount() {
@@ -77,40 +125,21 @@ class Terminal extends React.Component<TerminalProps, {}> {
     this.unlisten();
   }
 
+  handleChange = (args: any) => {
+    layoutStorage.set(JSON.stringify(args));
+  };
+
   render() {
     return (
       <Shell>
+        <NotificationList />
         <Header history={this.props.history} />
         <Mosaic
           // tslint:disable-next-line:jsx-no-lambda
-          renderTile={(id, path) => ELEMENT_MAP[id]}
+          renderTile={(id, path) => ELEMENT_MAP(this.props.rootStore)[id]}
+          onChange={this.handleChange}
           resize={{minimumPaneSizePercentage: 10}}
-          initialValue={{
-            direction: 'row' as MosaicDirection,
-            first: {
-              direction: 'column' as MosaicDirection,
-              first: 'wl',
-              second: 'acc',
-              splitPercentage: 60
-            },
-            second: {
-              direction: 'row' as MosaicDirection,
-              first: {
-                direction: 'column' as MosaicDirection,
-                first: 'c',
-                second: 'ord',
-                splitPercentage: 70
-              },
-              second: {
-                direction: 'column' as MosaicDirection,
-                first: 'ob',
-                second: 'e',
-                splitPercentage: 70
-              },
-              splitPercentage: 78
-            },
-            splitPercentage: 22
-          }}
+          initialValue={this.initialValue}
         />
       </Shell>
     );

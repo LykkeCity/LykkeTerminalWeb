@@ -24,9 +24,11 @@ import {
   UiStore,
   WatchlistStore
 } from './index';
+import NotificationStore from './notificationStore';
 
 const tokenStorage = StorageUtils(keys.token);
 const notificationStorage = StorageUtils(keys.notificationId);
+const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class RootStore {
   session: any;
@@ -41,11 +43,13 @@ class RootStore {
   readonly authStore: AuthStore;
   readonly chartStore: ChartStore;
   readonly orderStore: OrderStore;
+  readonly notificationStore: NotificationStore;
 
   private readonly stores = new Set<BaseStore>();
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
+      this.notificationStore = new NotificationStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
       this.tradeStore = new TradeStore(this, new TradeApi(this));
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi(this));
@@ -74,7 +78,9 @@ class RootStore {
       instruments.forEach((x: any) =>
         WampApi.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
       );
-      this.uiStore.selectInstrument(defaultInstrument);
+      this.uiStore.selectInstrument(
+        this.checkDefaultInstrument(defaultInstrument)
+      );
     });
 
     return Promise.resolve();
@@ -111,7 +117,9 @@ class RootStore {
               this.onQuote
             )
           );
-          this.uiStore.selectInstrument(defaultInstrument);
+          this.uiStore.selectInstrument(
+            this.checkDefaultInstrument(defaultInstrument)
+          );
           this.tradeStore.subscribe();
         });
       })
@@ -132,6 +140,11 @@ class RootStore {
       instrument.updatePrice(price);
     }
   };
+
+  private checkDefaultInstrument = (defaultInstrument: any) =>
+    instrumentStorage.get()
+      ? JSON.parse(instrumentStorage.get()!)
+      : defaultInstrument;
 }
 
 export default RootStore;
