@@ -41,9 +41,12 @@ const StyledMidPrice = styled.tbody`
   background: rgba(0, 0, 0, 0.2);
 `;
 
-const StyledHeader = styled.th`
+const StyledHeader = styled.th.attrs({
+  style: (props: any) => ({
+    textAlign: props.align
+  })
+})`
   flex-grow: 1;
-  text-align: ${(p: any) => p.align} !important;
 ` as any;
 
 interface OrderBookProps {
