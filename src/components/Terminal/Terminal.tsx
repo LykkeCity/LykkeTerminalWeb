@@ -5,9 +5,11 @@ import paths from '../../constants/paths';
 import keys from '../../constants/storageKeys';
 import tabs from '../../constants/tabs';
 import {StorageUtils} from '../../utils/index';
+import Backdrop from '../Backdrop/Backdrop';
 import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
+import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
@@ -132,6 +134,12 @@ class Terminal extends React.Component<TerminalProps, {}> {
     return (
       <Shell>
         <NotificationList />
+        {this.props.rootStore.modalStore.isModals ? (
+          <div>
+            <Backdrop />
+            <Modal modals={this.props.rootStore.modalStore.modals} />
+          </div>
+        ) : null}
         <Header history={this.props.history} />
         <Mosaic
           // tslint:disable-next-line:jsx-no-lambda

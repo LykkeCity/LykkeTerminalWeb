@@ -23,6 +23,13 @@ const StyledButton = styled.div`
     background-color: #ffae2c;
     border: solid 1px #ffae2c;
   }
+
+  &.disable {
+    cursor: not-allowed;
+    background: #ebedef !important;
+    color: rgba(63, 77, 96, 0.3) !important;
+    opacity: 1;
+  }
 `;
 
 const OrderButton: React.SFC<OrderButtonProps> = ({
@@ -31,10 +38,12 @@ const OrderButton: React.SFC<OrderButtonProps> = ({
   click,
   quoteName,
   baseName,
-  quantity
+  quantity,
+  isDisable
 }) => {
+  const btnClass = isDisable ? 'disable' : action;
   return (
-    <StyledButton className={action} onClick={click}>
+    <StyledButton className={btnClass} onClick={click}>
       {capitalize(action)} {quantity} {baseName} at {price}
     </StyledButton>
   );
