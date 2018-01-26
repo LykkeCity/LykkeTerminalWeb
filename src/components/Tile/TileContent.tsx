@@ -67,9 +67,12 @@ const calcMarginTop = (hasTabs: boolean, hasAdditionalControls: boolean) => {
   }
 };
 
-const StyledChild = styled.div`
-  height: ${(p: any) => calcHeight(p.hasTabs, p.hasAdditionalControls)};
-  margin-top: ${(p: any) => calcMarginTop(p.hasTabs, p.hasAdditionalControls)};
+const StyledChild = styled.div.attrs({
+  style: (props: any) => ({
+    height: calcHeight(props.hasTabs, props.hasAdditionalControls),
+    marginTop: calcMarginTop(props.hasTabs, props.hasAdditionalControls)
+  })
+})`
   padding: ${rem(10)} ${rem(15)};
 ` as any;
 
