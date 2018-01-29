@@ -7,6 +7,7 @@ export interface InstrumentPickerActions {
   onToggle?: any;
   onPick?: (instrument: any) => void;
   onSearch?: (term: string) => void;
+  onSearchAssetName?: (name: string) => void;
 }
 
 export interface InstrumentPickerProps extends InstrumentPickerActions {
@@ -14,6 +15,7 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   value: string;
   show: boolean;
   className?: string;
+  watchlistNames: string[];
 }
 
 export interface InstrumentPopoverProps extends InstrumentPickerActions {
@@ -21,6 +23,7 @@ export interface InstrumentPopoverProps extends InstrumentPickerActions {
 }
 
 export interface InstrumentPickerStats {
+  searchAsset: string;
   searchValue: string;
   activeShortcut: number;
 }
@@ -28,6 +31,7 @@ export interface InstrumentPickerStats {
 export interface InstrumentShortcutsProps {
   changeValue: any;
   shortcutActiveIndex: null | number;
+  shortcuts: string[];
 }
 
 export interface InstrumentListProps {
@@ -37,8 +41,11 @@ export interface InstrumentListProps {
 }
 
 const connectedInstrumentPicker = connect(
-  ({referenceStore, uiStore}) => ({
-    instruments: referenceStore.findInstruments(uiStore.searchTerm),
+  ({referenceStore, uiStore, watchlistStore}) => ({
+    instruments: referenceStore.findInstruments(
+      uiStore.searchTerm,
+      uiStore.searchAssetName
+    ),
     value: pathOr(undefined, ['selectedInstrument', 'name'], uiStore),
     // tslint:disable-next-line:object-literal-sort-keys
     show: uiStore.showInstrumentPicker,
@@ -47,7 +54,9 @@ const connectedInstrumentPicker = connect(
       uiStore.toggleInstrumentPicker();
     },
     onToggle: uiStore.toggleInstrumentPicker,
-    onSearch: uiStore.search
+    onSearch: uiStore.search,
+    onSearchAssetName: uiStore.searchAsset,
+    watchlistNames: watchlistStore.watchlistNames
   }),
   InstrumentPicker
 );

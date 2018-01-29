@@ -1,4 +1,5 @@
 import {MockWatchlistApi} from '../../api/watchlistApi';
+import Watchlists from '../../models/watchlists';
 import {RootStore, WatchlistStore} from '../index';
 
 describe('watchlist store', () => {
@@ -17,25 +18,31 @@ describe('watchlist store', () => {
       expect(watchlistStore.activeWatchlists).not.toBeNull();
     });
 
-    it('active watchlist should be an empty array by default', () => {
+    it('active watchlist should contain default watch list with name All Asset', () => {
       expect(watchlistStore.activeWatchlists instanceof Array).toBeTruthy();
-      expect(watchlistStore.activeWatchlists.length).toBe(0);
+      expect(watchlistStore.activeWatchlists.length).toBe(1);
+      expect(watchlistStore.activeWatchlists[0].name).toBe(Watchlists.All);
+    });
+
+    it('should return name of watchlist', () => {
+      expect(watchlistStore.activeWatchlists[0].name).toBe(
+        watchlistStore.watchlistNames[0]
+      );
+    });
+
+    it('should return watch list by its name', () => {
+      const watchlist = watchlistStore.watchlistsByName(Watchlists.All);
+      expect(watchlist.name).toBe(Watchlists.All);
     });
   });
 
   describe('reset', () => {
-    it('should clear watchlists', () => {
+    it('should reset watchlists to default state', async () => {
+      await watchlistStore.fetchAll();
+      expect(watchlistStore.activeWatchlists[0].name).not.toBe(Watchlists.All);
       watchlistStore.reset();
 
-      expect(watchlistStore.activeWatchlists.length).toBe(0);
-      expect(watchlistStore.allWatchlists.length).toBe(0);
-    });
-  });
-
-  describe('fetch watchlists', () => {
-    it('should populate watchlist collection', async () => {
-      await watchlistStore.fetchAll();
-      expect(watchlistStore.allWatchlists.length).toBeGreaterThan(0);
+      expect(watchlistStore.activeWatchlists[0].name).toBe(Watchlists.All);
     });
   });
 });
