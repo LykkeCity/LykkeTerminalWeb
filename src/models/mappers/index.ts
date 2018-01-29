@@ -122,11 +122,11 @@ export const mapToTrade = ({
     tradeId: `${TradeId}${Asset}`
   });
 
-export const mapToTradeInit = ({Asset, Volume, DateTime, Id}: any) =>
+export const mapToTradeFromWamp = ({Asset, Amount, DateTime, Id}: any) =>
   new TradeModel({
-    quantity: Volume,
+    quantity: Amount,
     asset: Asset,
     timestamp: DateTime,
     tradeId: Id,
-    side: Volume >= 0 ? Side.Buy : Side.Sell
+    side: Amount >= 0 ? Side.Buy : Side.Sell
   });
