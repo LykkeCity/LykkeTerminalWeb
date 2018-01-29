@@ -5,6 +5,7 @@ export {RestAssetApi as AssetApi} from './assetApi';
 export {RestMarketsApi as MarketsApi} from './marketsApi';
 export {RestOrderApi as OrderApi} from './orderApi';
 export {RestOrderBookApi as OrderBookApi} from './orderBookApi';
+export {default as HistoryApi} from './historyApi';
 export {default as RestApi} from './restApi';
 export {default as AuthApi} from './authApi';
 export {default as WampApi} from './wampApi';

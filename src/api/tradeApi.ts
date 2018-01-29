@@ -1,3 +1,5 @@
+import Operations from '../models/operationTypes';
+import {HistoryApi} from './index';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
@@ -6,32 +8,12 @@ export interface TradeApi {
 }
 
 export class RestTradeApi extends RestApi implements TradeApi {
-  fetchAll = () => Promise.resolve([] as any[]);
-}
-
-// tslint:disable-next-line:max-classes-per-file
-export class MockTradeApi extends RestApi implements TradeApi {
   fetchAll = () =>
-    Promise.resolve<any[]>([
-      {
-        Asset: 'BTC',
-        DateTime: new Date(),
-        Direction: 'Buy',
-        OppositeAsset: 'USD',
-        Price: 6500,
-        TradeId: 1,
-        Volume: 10
-      },
-      {
-        Asset: 'BTC',
-        DateTime: new Date(),
-        Direction: 'Sell',
-        OppositeAsset: 'EUR',
-        Price: 6500,
-        TradeId: 2,
-        Volume: 10
-      }
-    ]);
+    HistoryApi.fetchHistory({
+      operationType: Operations.Trade,
+      take: 100,
+      skip: 0
+    });
 }
 
 export default TradeApi;

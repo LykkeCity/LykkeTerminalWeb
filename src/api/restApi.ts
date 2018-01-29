@@ -7,7 +7,7 @@ import {StorageUtils} from '../utils/index';
 const tokenStorage = StorageUtils(keys.token);
 
 export class RestApi {
-  constructor(protected rootStore: RootStore | any) {}
+  constructor(protected rootStore?: RootStore | any) {}
 
   protected readonly wretcher = () =>
     wretch(process.env.REACT_APP_API_URL).auth(`Bearer ${tokenStorage.get()}`);
