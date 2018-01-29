@@ -164,7 +164,7 @@ class Order extends React.Component<OrderProps, OrderState> {
         ? this.state.isSellActive ? this.props.bid : this.props.ask
         : this.state.priceValue) || 0;
     const price = (this.state.quantityValue * currentPrice).toFixed(
-      this.props.accuracy
+      this.props.accuracy.priceValue
     );
     const {bid, ask} = this.props;
     const spread = ask - bid;
@@ -180,13 +180,13 @@ class Order extends React.Component<OrderProps, OrderState> {
           <OrderAction
             click={this.handleActionClick(orderAction.sell.action)}
             isActive={this.state.isSellActive}
-            price={this.props.bid}
+            price={bid}
             {...orderAction.sell}
           />
           <OrderAction
             click={this.handleActionClick(orderAction.buy.action)}
             isActive={!this.state.isSellActive}
-            price={this.props.ask}
+            price={ask}
             {...orderAction.buy}
           />
         </StyledActionBlock>
@@ -215,9 +215,7 @@ class Order extends React.Component<OrderProps, OrderState> {
                     opt.value,
                     this.props.accuracy[opt.value]
                   )}
-                  amount={(this.state.quantityValue * currentPrice).toFixed(
-                    this.props.accuracy.priceValue
-                  )}
+                  amount={price}
                   quoteName={quoteName}
                   {...opt}
                 />
@@ -228,9 +226,7 @@ class Order extends React.Component<OrderProps, OrderState> {
           <StyledOrderButton>
             <OrderButton
               action={currentAction.action}
-              price={(this.state.quantityValue * currentPrice).toFixed(
-                this.props.accuracy.priceValue
-              )}
+              price={price}
               click={this.handleButtonClick(
                 currentAction.action,
                 price,
