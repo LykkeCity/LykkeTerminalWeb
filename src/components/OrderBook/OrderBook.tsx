@@ -82,6 +82,9 @@ class OrderBook extends React.Component<OrderBookProps> {
   }
 
   render() {
+    const {bids, asks, mid} = this.props;
+    const bidMaxVolume = Math.max(...bids.map(b => b.volume));
+    const askMaxVolume = Math.max(...asks.map(a => a.volume));
     return (
       <Wrapper innerRef={this.refHandlers.wrapper}>
         <Table>
@@ -96,18 +99,26 @@ class OrderBook extends React.Component<OrderBookProps> {
         <Scrollbars autoHide={true} ref={this.refHandlers.scrollComponent}>
           <Table innerRef={this.refHandlers.content}>
             <StyledSellOrders>
-              {this.props.asks.map(order => (
-                <OrderBookItem key={order.id} {...order} />
+              {asks.map(order => (
+                <OrderBookItem
+                  maxVolume={askMaxVolume}
+                  key={order.id}
+                  {...order}
+                />
               ))}
             </StyledSellOrders>
             <StyledMidPrice>
               <tr>
-                <td>{defaultTo('', Number(this.props.mid))}</td>
+                <td>{defaultTo('', Number(mid))}</td>
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
-              {this.props.bids.map(order => (
-                <OrderBookItem key={order.id} {...order} />
+              {bids.map(order => (
+                <OrderBookItem
+                  maxVolume={bidMaxVolume}
+                  key={order.id}
+                  {...order}
+                />
               ))}
             </StyledBuyOrders>
           </Table>
