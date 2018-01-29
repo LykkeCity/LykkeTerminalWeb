@@ -1,5 +1,8 @@
 import {computed, observable, runInAction} from 'mobx';
 import {WatchlistApi} from '../api/index';
+import defaultWatchLists from '../constants/watchlists';
+import * as mappers from '../models/mappers';
+import WatchlistModel from '../models/watchlistModel';
 import {BaseStore, RootStore} from './index';
 
 class WatchlistStore extends BaseStore {
@@ -14,11 +17,14 @@ class WatchlistStore extends BaseStore {
   }
 
   @computed
-  get allWatchlists() {
-    return this.watchlists;
+  get watchlistNames() {
+    return this.watchlists
+      .filter((watchlist: WatchlistModel) => watchlist.readOnly)
+      .map((wl: WatchlistModel) => wl.name);
   }
 
-  @observable private watchlists: any[] = [];
+  @observable
+  private watchlists: any[] = defaultWatchLists.map(mappers.mapToWatchList);
 
   constructor(store: RootStore, private readonly api: WatchlistApi) {
     super(store);
@@ -31,23 +37,20 @@ class WatchlistStore extends BaseStore {
       .fetchAll()
       .then((resp: any) => {
         runInAction(() => {
-          this.watchlists = resp.map(this.mapFromDto);
+          this.watchlists = resp.map(mappers.mapToWatchList);
         });
         return Promise.resolve();
       })
       .catch(Promise.reject);
   };
 
-  reset = () => {
-    this.watchlists = [];
+  watchlistsByName = (name: string) => {
+    return this.watchlists.filter((wl: WatchlistModel) => wl.name === name)[0];
   };
 
-  private mapFromDto = ({Id, Name, AssetIds}: any) => ({
-    id: Id,
-    name: Name,
-    // tslint:disable-next-line:object-literal-sort-keys
-    assetIds: AssetIds
-  });
+  reset = () => {
+    this.watchlists = defaultWatchLists.map(mappers.mapToWatchList);
+  };
 }
 
 export default WatchlistStore;

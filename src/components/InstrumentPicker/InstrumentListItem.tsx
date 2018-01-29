@@ -16,6 +16,7 @@ interface InstrumentListItemProps
 const StyledInstrumentItem = styled(Flex)`
   margin-top: 10px;
   cursor: pointer;
+  justify-content: space-between;
   :hover {
     background: ${lighten(0.05, '#3c3c3c')};
   }

@@ -10,6 +10,7 @@ import {
 } from '../api/index';
 import shortcuts from '../constants/shortcuts';
 import keys from '../constants/storageKeys';
+import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
@@ -71,7 +72,10 @@ class RootStore {
 
   loadForUnauthUser = (defaultInstrument: any) => {
     const instruments = shortcuts.reduce((i: any, item) => {
-      return [...i, ...this.referenceStore.findInstruments(item.value)];
+      return [
+        ...i,
+        ...this.referenceStore.findInstruments(item.value, Watchlists.All)
+      ];
     }, []);
 
     WampApi.unauthConnect(

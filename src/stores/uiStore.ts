@@ -1,6 +1,7 @@
 import {action, observable, reaction} from 'mobx';
 import keys from '../constants/storageKeys';
 import {InstrumentModel} from '../models/index';
+import Watchlists from '../models/watchlists';
 import {fns} from '../utils/index';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -12,6 +13,7 @@ class UiStore extends BaseStore {
 
   @observable showAssetsSelect: boolean = false;
   @observable searchTerm: string = '';
+  @observable searchAssetName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
 
@@ -40,6 +42,7 @@ class UiStore extends BaseStore {
   };
 
   @action search = (term: string) => (this.searchTerm = term);
+  @action searchAsset = (name: string) => (this.searchAssetName = name);
 
   @action
   toggleInstrumentPicker = () =>

@@ -19,7 +19,7 @@ describe('watchlist store', () => {
 
     it('active watchlist should be an empty array by default', () => {
       expect(watchlistStore.activeWatchlists instanceof Array).toBeTruthy();
-      expect(watchlistStore.activeWatchlists.length).toBe(0);
+      expect(watchlistStore.activeWatchlists.length).toBe(1);
     });
   });
 
@@ -27,15 +27,7 @@ describe('watchlist store', () => {
     it('should clear watchlists', () => {
       watchlistStore.reset();
 
-      expect(watchlistStore.activeWatchlists.length).toBe(0);
-      expect(watchlistStore.allWatchlists.length).toBe(0);
-    });
-  });
-
-  describe('fetch watchlists', () => {
-    it('should populate watchlist collection', async () => {
-      await watchlistStore.fetchAll();
-      expect(watchlistStore.allWatchlists.length).toBeGreaterThan(0);
+      expect(watchlistStore.activeWatchlists.length).toBe(1);
     });
   });
 });
