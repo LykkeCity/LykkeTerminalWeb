@@ -53,7 +53,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
 }) => (
   <StyledInstrumentItem
     // tslint:disable-next-line:jsx-no-lambda
-    onClick={() => onPick && onPick({id, name, price, change})}
+    onClick={() => onPick && onPick({id, name, price, change, accuracy})}
   >
     <StyledInstrumentName>{name}</StyledInstrumentName>
     <StyledInstrumentPrice dir={dir}>
