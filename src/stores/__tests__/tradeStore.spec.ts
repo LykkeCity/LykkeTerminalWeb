@@ -10,15 +10,10 @@ describe('trade store', () => {
     api.fetchAll = jest.fn(() =>
       Promise.resolve([
         {
-          Trade: {
-            Asset: 'BTC',
-            DateTime: new Date(),
-            Direction: 'Buy',
-            OppositeAsset: 'USD',
-            Price: 6500,
-            TradeId: 1,
-            Volume: 10
-          }
+          Amount: 6500,
+          Asset: 'BTC',
+          DateTime: new Date(),
+          Id: 1
         }
       ])
     );
