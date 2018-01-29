@@ -4,7 +4,6 @@ class TradeModel {
   asset: string;
   side: string;
   quantity: number;
-  price: number;
   timestamp: string;
   tradeId: string;
 

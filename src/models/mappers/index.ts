@@ -109,18 +109,24 @@ export const mapToLimitOrder = ({
 
 export const mapToTrade = ({
   Asset,
-  OppositeAsset,
   Volume,
   Direction,
-  Price,
   DateTime,
   TradeId
 }: any) =>
   new TradeModel({
-    price: Price,
-    quantity: Volume,
+    quantity: Direction === SideDirection.Buy ? Volume : Volume * -1,
     side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
-    asset: `${Asset}`,
+    asset: Asset,
     timestamp: DateTime,
     tradeId: `${TradeId}${Asset}`
+  });
+
+export const mapToTradeInit = ({Asset, Volume, DateTime, Id}: any) =>
+  new TradeModel({
+    quantity: Volume,
+    asset: Asset,
+    timestamp: DateTime,
+    tradeId: Id,
+    side: Volume >= 0 ? Side.Buy : Side.Sell
   });
