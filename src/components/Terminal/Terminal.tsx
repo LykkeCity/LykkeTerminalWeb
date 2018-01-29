@@ -130,9 +130,16 @@ class Terminal extends React.Component<TerminalProps, {}> {
     layoutStorage.set(JSON.stringify(args));
   };
 
+  handleOuterClick = () => {
+    if (this.props.rootStore.settingsStore.settings) {
+      document.querySelector('.settings')!.classList.toggle('active');
+      this.props.rootStore.settingsStore.toggleSettings();
+    }
+  };
+
   render() {
     return (
-      <Shell>
+      <Shell onClick={this.handleOuterClick}>
         <NotificationList />
         {this.props.rootStore.modalStore.isModals ? (
           <div>
