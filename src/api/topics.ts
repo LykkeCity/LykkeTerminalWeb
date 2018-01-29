@@ -1,7 +1,7 @@
 import {Interval, PriceType} from '../models/index';
 
 export const orderBook = (asset: string, side: string) =>
-  `orderbook.${asset.toLowerCase()}.${side.toLowerCase()}`;
+  `orderbook.spot.${asset.toLowerCase()}.${side.toLowerCase()}`;
 
 export const candle = (
   market: 'spot' | 'mt',
