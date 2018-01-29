@@ -4,6 +4,7 @@ import {BalanceInfo} from '../BalanceInfo';
 import {Icon} from '../Icon/index';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
+import {SettingsModal} from '../Settings';
 import styled from '../styled';
 import {Heading} from '../Typography/index';
 import {HeaderProps} from './index';
@@ -12,6 +13,7 @@ import {HeaderProps} from './index';
 const {Flex, Box} = require('grid-styled');
 
 const HeaderItem = styled(Box)`
+  position: relative;
   border-right: solid 1px rgba(0, 0, 0, 0.2);
   font-size: ${rem(14)};
   padding: ${rem(20)} ${rem(10)};
@@ -23,7 +25,11 @@ const HeaderFlex = styled(Flex)`
   height: 40px;
 `;
 
-const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
+const Header: React.SFC<HeaderProps> = ({
+  authStore,
+  history,
+  settingsStore
+}) => {
   const signOut = () => {
     authStore.signOut();
   };
@@ -33,7 +39,7 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
   };
 
   const settings = () => {
-    return 0;
+    settingsStore.toggleSettings();
   };
 
   return (
@@ -61,6 +67,11 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
             <span className="hidden-xs" onClick={settings}>
               <Icon color={`#8c94a0`} name={`cog`} />
             </span>
+            {settingsStore.settings ? (
+              <div>
+                <SettingsModal />
+              </div>
+            ) : null}
           </HeaderItem>
           <HeaderItem>
             <Link>
