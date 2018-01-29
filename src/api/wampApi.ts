@@ -34,7 +34,7 @@ export class WampApi {
     this.connect(key, {
       url,
       realm,
-      authmethods: ['token'],
+      authmethods: ['ticket'],
       authid: authId,
       onchallenge: this.handleChallenge
     });

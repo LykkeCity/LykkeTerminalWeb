@@ -3,13 +3,18 @@ import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import orderOptions from '../../constants/orderOptions';
+import keys from '../../constants/storageKeys';
+import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
+import {StorageUtils} from '../../utils/index';
 import StringHelpers from '../../utils/string';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
 import OrderOption from './OrderOption';
+
+const confirmStorage = StorageUtils(keys.confirmReminder);
 
 const MARKET = OrderType.Market;
 const LIMIT = OrderType.Limit;
@@ -56,6 +61,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.state = {
       isMarketActive: true,
       isSellActive: true,
+      pendingOrder: false,
       priceValue: 0,
       quantityValue: 0,
       stopLoss: 0,
@@ -75,7 +81,13 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
-  handleButtonClick = (action: string) => () => {
+  disableButton = (value: boolean) => {
+    this.setState({
+      pendingOrder: value
+    });
+  };
+
+  applyOrder = (action: string) => {
     const orderType = this.state.isMarketActive ? MARKET : LIMIT;
     const body: any = {
       AssetId: this.props.name.split('/')[0],
@@ -88,7 +100,40 @@ class Order extends React.Component<OrderProps, OrderState> {
       body.Price = this.state.priceValue;
     }
 
-    this.props.placeOrder(orderType, body);
+    this.props
+      .placeOrder(orderType, body)
+      .then(() => this.disableButton(false));
+  };
+
+  cancelOrder = () => {
+    this.disableButton(false);
+  };
+
+  handleButtonClick = (
+    action: string,
+    currentPrice: string,
+    baseName: string,
+    quoteName: string
+  ) => () => {
+    if (this.state.pendingOrder) {
+      return;
+    }
+    this.disableButton(true);
+
+    const isConfirm = confirmStorage.get() as string;
+    if (JSON.parse(isConfirm)) {
+      this.applyOrder(action);
+      return;
+    }
+    const message = `${action} ${
+      this.state.quantityValue
+    } ${baseName} at ${currentPrice} ${quoteName}`;
+    this.props.addModal(
+      message,
+      () => this.applyOrder(action),
+      this.cancelOrder,
+      Types.Confirm
+    );
   };
 
   handleOnChange = (value: string, accuracy: number) => (e: any) => {
@@ -118,6 +163,9 @@ class Order extends React.Component<OrderProps, OrderState> {
       (this.state.isMarketActive
         ? this.state.isSellActive ? this.props.bid : this.props.ask
         : this.state.priceValue) || 0;
+    const price = (this.state.quantityValue * currentPrice).toFixed(
+      this.props.accuracy
+    );
     const {bid, ask} = this.props;
     const spread = ask - bid;
     const baseName = this.props.name.split('/')[0];
@@ -183,10 +231,16 @@ class Order extends React.Component<OrderProps, OrderState> {
               price={(this.state.quantityValue * currentPrice).toFixed(
                 this.props.accuracy.priceValue
               )}
-              click={this.handleButtonClick(currentAction.action)}
+              click={this.handleButtonClick(
+                currentAction.action,
+                price,
+                baseName,
+                quoteName
+              )}
               quoteName={quoteName}
               baseName={baseName}
               quantity={this.state.quantityValue}
+              isDisable={this.state.pendingOrder}
             />
           </StyledOrderButton>
         </StyledContentWrap>

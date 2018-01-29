@@ -7,12 +7,14 @@ export interface OrderState {
   isMarketActive: boolean;
   isSellActive: boolean;
   quantityValue: number;
+  pendingOrder: boolean;
   priceValue: number;
   stopLoss: number;
   takeProfit: number;
 }
 
 export interface OrderProps {
+  addModal: any;
   ask: number;
   bid: number;
   accuracy: any;
@@ -51,6 +53,7 @@ export interface OrderButtonProps {
   action: string;
   price: string;
   click: any;
+  isDisable: boolean;
   baseName: string;
   quoteName: string;
   quantity: number;
@@ -67,6 +70,7 @@ export interface OrderActionProps {
 const ConnectedOrder = withScroll(
   connect(
     ({
+      modalStore: {addModal},
       orderBookStore: {bestAsk, bestBid},
       orderStore: {placeOrder},
       uiStore: {selectedInstrument: instrument},
@@ -76,6 +80,7 @@ const ConnectedOrder = withScroll(
         priceValue: pathOr(2, ['accuracy'], instrument),
         quantityValue: referenceStore.getBaseAssetAccuracy
       },
+      addModal,
       ask: bestAsk(),
       bid: bestBid(),
       currency: pathOr('', ['id'], instrument),
