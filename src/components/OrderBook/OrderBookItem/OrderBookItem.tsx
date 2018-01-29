@@ -10,6 +10,9 @@ const colorBySide = (side: Side) =>
 
 const alignBySide = (side: Side) => (side === Side.Sell ? 'right' : 'left');
 
+const normalizeVolume = (volume: number, maxVolume: number) =>
+  volume / maxVolume * 100;
+
 const CommonCell = styled.td`
   flex-grow: 1;
 `;
@@ -46,12 +49,21 @@ const OrderRow = styled.tr`
   display: flex;
 `;
 
-const OrderBookItem: React.SFC<Order> = ({id, price, volume, side}) => (
+const OrderBookItem: React.SFC<Order & {maxVolume?: number}> = ({
+  id,
+  price,
+  volume,
+  side,
+  maxVolume = 100
+}) => (
   <OrderRow>
     <VolumeCell side={side}>
       {side === Side.Sell && (
         <div>
-          <VolumeOverlay side={side} volume={Math.log(volume) * 10} />
+          <VolumeOverlay
+            side={side}
+            volume={normalizeVolume(volume, maxVolume)}
+          />
           {volume}
         </div>
       )}
@@ -60,7 +72,10 @@ const OrderBookItem: React.SFC<Order> = ({id, price, volume, side}) => (
     <VolumeCell side={side}>
       {side === Side.Buy && (
         <div>
-          <VolumeOverlay side={side} volume={Math.log(volume) * 10} />
+          <VolumeOverlay
+            side={side}
+            volume={normalizeVolume(volume, maxVolume)}
+          />
           {volume}
         </div>
       )}

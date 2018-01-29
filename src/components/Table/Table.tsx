@@ -2,7 +2,9 @@ import styled from '../styled';
 
 const Table = styled.table`
   width: 100%;
-  line-height: 0.72;
+  tr {
+    line-height: 0.4;
+  }
   thead {
     border-bottom: solid 1px rgba(0, 0, 0, 0.2);
   }
