@@ -28,26 +28,26 @@ class InstrumentPicker extends React.Component<
     super(props);
     this.state = {
       activeShortcut: 0,
-      searchAsset: Watchlists.All,
+      searchWallet: Watchlists.All,
       searchValue: ''
     };
   }
 
-  changeAsset = (value: string = Watchlists.All, index: number = 0) => {
+  changeWallet = (value: string = Watchlists.All, index: number = 0) => {
     this.setState({
       activeShortcut: index,
-      searchAsset: value
+      searchWallet: value
     });
 
-    if (this.props.onSearchAssetName) {
-      this.props.onSearchAssetName(value);
+    if (this.props.onSearchWalletName) {
+      this.props.onSearchWalletName(value);
     }
   };
 
   changeValue = (value: string = '') => {
     this.setState({
       activeShortcut: 0,
-      searchAsset: Watchlists.All,
+      searchWallet: Watchlists.All,
       searchValue: value
     });
 
@@ -55,8 +55,8 @@ class InstrumentPicker extends React.Component<
       this.props.onSearch(value);
     }
 
-    if (this.props.onSearchAssetName) {
-      this.props.onSearchAssetName(Watchlists.All);
+    if (this.props.onSearchWalletName) {
+      this.props.onSearchWalletName(Watchlists.All);
     }
   };
 
@@ -68,7 +68,7 @@ class InstrumentPicker extends React.Component<
           <InstrumentPopover onToggle={this.props.onToggle}>
             <StyledSearchWrap align={'center'} justify={'space-between'}>
               <InstrumentShortcuts
-                changeValue={this.changeAsset}
+                changeValue={this.changeWallet}
                 shortcutActiveIndex={this.state.activeShortcut}
                 shortcuts={this.props.watchlistNames}
               />
