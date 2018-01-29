@@ -7,7 +7,7 @@ export interface InstrumentPickerActions {
   onToggle?: any;
   onPick?: (instrument: any) => void;
   onSearch?: (term: string) => void;
-  onSearchAssetName?: (name: string) => void;
+  onSearchWalletName?: (name: string) => void;
 }
 
 export interface InstrumentPickerProps extends InstrumentPickerActions {
@@ -23,7 +23,7 @@ export interface InstrumentPopoverProps extends InstrumentPickerActions {
 }
 
 export interface InstrumentPickerStats {
-  searchAsset: string;
+  searchWallet: string;
   searchValue: string;
   activeShortcut: number;
 }
@@ -44,7 +44,7 @@ const connectedInstrumentPicker = connect(
   ({referenceStore, uiStore, watchlistStore}) => ({
     instruments: referenceStore.findInstruments(
       uiStore.searchTerm,
-      uiStore.searchAssetName
+      uiStore.searchWalletName
     ),
     value: pathOr(undefined, ['selectedInstrument', 'name'], uiStore),
     // tslint:disable-next-line:object-literal-sort-keys
@@ -55,7 +55,7 @@ const connectedInstrumentPicker = connect(
     },
     onToggle: uiStore.toggleInstrumentPicker,
     onSearch: uiStore.search,
-    onSearchAssetName: uiStore.searchAsset,
+    onSearchWalletName: uiStore.searchWallet,
     watchlistNames: watchlistStore.watchlistNames
   }),
   InstrumentPicker
