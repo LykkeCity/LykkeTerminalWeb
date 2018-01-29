@@ -11,8 +11,8 @@ export class RestTradeApi extends RestApi implements TradeApi {
   fetchAll = () =>
     HistoryApi.fetchHistory({
       operationType: Operations.Trade,
-      take: 100,
-      skip: 0
+      skip: 0,
+      take: 100
     });
 }
 
