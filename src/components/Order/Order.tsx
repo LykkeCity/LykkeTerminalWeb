@@ -7,6 +7,7 @@ import keys from '../../constants/storageKeys';
 import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
 import {StorageUtils} from '../../utils/index';
+import StringHelpers from '../../utils/string';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
@@ -135,9 +136,15 @@ class Order extends React.Component<OrderProps, OrderState> {
     );
   };
 
-  handleOnChange = (value: string) => (e: any) => {
+  handleOnChange = (value: string, accuracy: number) => (e: any) => {
+    e.target.value = StringHelpers.substringZero(e.target.value);
+
+    if (StringHelpers.getPostDecimalsLength(e.target.value) > accuracy) {
+      e.target.value = StringHelpers.substringLast(e.target.value);
+    }
+
     const tempObj = {};
-    tempObj[value] = +e.target.value;
+    tempObj[value] = Math.abs(e.target.value);
     this.setState(tempObj);
   };
 
@@ -157,7 +164,7 @@ class Order extends React.Component<OrderProps, OrderState> {
         ? this.state.isSellActive ? this.props.bid : this.props.ask
         : this.state.priceValue) || 0;
     const price = (this.state.quantityValue * currentPrice).toFixed(
-      this.props.accuracy
+      this.props.accuracy.priceValue
     );
     const {bid, ask} = this.props;
     const spread = ask - bid;
@@ -167,18 +174,19 @@ class Order extends React.Component<OrderProps, OrderState> {
       <div>
         <StyledActionBlock>
           <StyledSplitBlock>
-            {!Number.isNaN(spread) && spread.toFixed(this.props.accuracy)}
+            {!Number.isNaN(spread) &&
+              spread.toFixed(this.props.accuracy.priceValue)}
           </StyledSplitBlock>
           <OrderAction
             click={this.handleActionClick(orderAction.sell.action)}
             isActive={this.state.isSellActive}
-            price={this.props.bid}
+            price={bid}
             {...orderAction.sell}
           />
           <OrderAction
             click={this.handleActionClick(orderAction.buy.action)}
             isActive={!this.state.isSellActive}
-            price={this.props.ask}
+            price={ask}
             {...orderAction.buy}
           />
         </StyledActionBlock>
@@ -203,7 +211,10 @@ class Order extends React.Component<OrderProps, OrderState> {
                 <OrderOption
                   key={index}
                   inputValue={this.state[opt.value]}
-                  change={this.handleOnChange(opt.value)}
+                  change={this.handleOnChange(
+                    opt.value,
+                    this.props.accuracy[opt.value]
+                  )}
                   amount={price}
                   quoteName={quoteName}
                   {...opt}
