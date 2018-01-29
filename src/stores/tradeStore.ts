@@ -26,11 +26,9 @@ class TradeStore extends BaseStore {
   addTrade = (trade: TradeModel[]) => (this.trades = this.trades.concat(trade));
 
   fetchAll = () => {
-    return this.api.fetchAll().then((tradesDto: any) => {
+    return this.api.fetchAll().then((dto: any) => {
       runInAction(() => {
-        this.trades = tradesDto.map((dto: any) =>
-          mappers.mapToTradeInit(dto.Trade)
-        );
+        this.trades = dto.map(mappers.mapToTradeFromWamp);
       });
       return Promise.resolve();
     }, Promise.reject);
