@@ -94,7 +94,7 @@ export const mapToLimitOrder = ({
   Id,
   CreateDateTime,
   OrderAction,
-  Volume,
+  Voume,
   Price,
   AssetPairId
 }: any) =>
@@ -104,7 +104,7 @@ export const mapToLimitOrder = ({
     price: Number(Price),
     side: OrderAction,
     symbol: AssetPairId,
-    volume: Volume
+    volume: Voume
   });
 
 export const mapToTrade = ({
