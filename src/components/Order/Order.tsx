@@ -12,6 +12,7 @@ import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
+import {default as OrderForm} from './OrderForm';
 import OrderOption from './OrderOption';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
@@ -204,6 +205,15 @@ class Order extends React.Component<OrderProps, OrderState> {
               click={this.handleActionChoiceClick(LIMIT)}
             />
           </StyledActionChoice>
+
+          <OrderForm
+            amount={price}
+            quoteName={quoteName}
+            isMarket={this.state.isMarketActive}
+            quantityInputValue={0}
+            priceInputValue={0}
+            onChange={this.handleOnChange}
+          />
 
           <StyledOrderOptions>
             {options.map((opt, index) => {

@@ -17,6 +17,10 @@ class StringHelpers {
       ? subStr.substring(0, subStr.length - 1)
       : subStr;
   }
+
+  static isOnlyNumbers(str: string) {
+    return /^(?:[1-9]\d*|0)?(?:\.\d+)?$/g.test(str);
+  }
 }
 
 export default StringHelpers;
