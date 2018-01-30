@@ -1,4 +1,8 @@
 import autobahn, {Connection, OnChallengeHandler, Session} from 'autobahn';
+import keys from '../constants/storageKeys';
+import {StorageUtils} from '../utils/index';
+
+const tokenStorage = StorageUtils(keys.token);
 
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
@@ -60,9 +64,9 @@ export class WampApi {
     return this.session;
   }
 
-  private handleChallenge: OnChallengeHandler = (session, method, extra) => {
-    if (method === 'wampcra') {
-      return autobahn.auth_cra.sign(this.key, extra.challenge);
+  private handleChallenge: OnChallengeHandler = (session, method) => {
+    if (method === 'ticket') {
+      return tokenStorage.get() as string;
     }
     return '';
   };
