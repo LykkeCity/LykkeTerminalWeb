@@ -103,6 +103,8 @@ class RootStore {
       return this.loadForUnauthUser(defaultInstrument);
     }
 
+    this.settingsStore.init();
+
     await this.watchlistStore
       .fetchAll()
       .then(this.referenceStore.fetchReferenceData)

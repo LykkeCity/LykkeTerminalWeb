@@ -84,7 +84,7 @@ const Header: React.SFC<HeaderProps> = ({
           <HeaderItem>
             <Link>
               {authStore.isAuth ? (
-                <span className="hidden-xs settings" onClick={signOut}>
+                <span className="hidden-xs" onClick={signOut}>
                   <Icon color={'#8c94a0'} name={'exit'} />
                 </span>
               ) : (
