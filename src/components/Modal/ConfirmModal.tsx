@@ -87,7 +87,7 @@ class ConfirmModal extends React.Component<ConfirmModalProps> {
   }
 
   handleChange = () => (e: any) => {
-    confirmStorage.set(e.target.checked);
+    confirmStorage.set(!e.target.checked);
   };
 
   handleApply = (modal: ModalModel) => () => {
