@@ -1,5 +1,4 @@
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar/index';
 import WalletBalanceList from './WalletBalanceList';
 
 export interface WalletBalanceListProps {
@@ -16,23 +15,21 @@ export interface WalletBalanceItemProps {
   name: string;
 }
 
-const ConnectedWalletBalanceList = withScroll(
-  connect(
-    ({
-      balanceListStore: {
-        tradingWalletAssets: assets,
-        totalWalletAssetsBalance: total
-      },
-      referenceStore
-    }) => ({
-      accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {
-        accuracy: 2
-      })!.accuracy,
-      assets,
-      total
-    }),
-    WalletBalanceList
-  )
+const ConnectedWalletBalanceList = connect(
+  ({
+    balanceListStore: {
+      tradingWalletAssets: assets,
+      totalWalletAssetsBalance: total
+    },
+    referenceStore
+  }) => ({
+    accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {
+      accuracy: 2
+    })!.accuracy,
+    assets,
+    total
+  }),
+  WalletBalanceList
 );
 
 export {ConnectedWalletBalanceList as WalletBalanceList};
