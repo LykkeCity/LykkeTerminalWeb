@@ -43,6 +43,15 @@ class SettingsStore extends BaseStore {
     themeStorage.set(!this.theme);
   };
 
+  init = () => {
+    if (this.confirmations === null) {
+      confirmStorage.set(true);
+    }
+    if (this.theme === null) {
+      themeStorage.set(true);
+    }
+  };
+
   reset = () => {
     confirmStorage.set(true);
     themeStorage.set(true);

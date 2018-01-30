@@ -132,7 +132,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   handleOuterClick = () => {
     if (this.props.rootStore.settingsStore.settings) {
-      document.querySelector('.settings')!.classList.toggle('active');
+      document.querySelector('.settings')!.classList.remove('active');
       this.props.rootStore.settingsStore.toggleSettings();
     }
   };
