@@ -17,6 +17,11 @@ class StringHelpers {
       ? subStr.substring(0, subStr.length - 1)
       : subStr;
   }
+
+  static isOnlyNumbers(str: any) {
+    str = str === '' ? 0 : str;
+    return !isNaN(str - parseFloat(str));
+  }
 }
 
 export default StringHelpers;

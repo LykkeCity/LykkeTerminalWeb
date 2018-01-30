@@ -2,7 +2,6 @@ import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
-import orderOptions from '../../constants/orderOptions';
 import keys from '../../constants/storageKeys';
 import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
@@ -12,7 +11,7 @@ import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
-import OrderOption from './OrderOption';
+import {default as OrderForm} from './OrderForm';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
@@ -49,10 +48,6 @@ const StyledSplitBlock = styled.div`
   transform: translateX(-50%) translateY(-50%);
   font-size: ${rem(14)};
   color: #13b72a;
-`;
-
-const StyledOrderOptions = styled.div`
-  margin-top: ${rem(24)};
 `;
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -110,7 +105,6 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   handleButtonClick = (
-    action: string,
     currentPrice: string,
     baseName: string,
     quoteName: string
@@ -119,6 +113,9 @@ class Order extends React.Component<OrderProps, OrderState> {
       return;
     }
     this.disableButton(true);
+    const action = this.state.isSellActive
+      ? orderAction.sell.action
+      : orderAction.buy.action;
 
     const isConfirm = confirmStorage.get() as string;
     if (JSON.parse(isConfirm)) {
@@ -156,9 +153,6 @@ class Order extends React.Component<OrderProps, OrderState> {
     const currentAction = this.state.isSellActive
       ? orderAction.sell
       : orderAction.buy;
-    const options = this.state.isMarketActive
-      ? orderOptions.filter(opt => opt.isMarketField)
-      : orderOptions;
     const currentPrice =
       (this.state.isMarketActive
         ? this.state.isSellActive ? this.props.bid : this.props.ask
@@ -205,34 +199,22 @@ class Order extends React.Component<OrderProps, OrderState> {
             />
           </StyledActionChoice>
 
-          <StyledOrderOptions>
-            {options.map((opt, index) => {
-              return (
-                <OrderOption
-                  key={index}
-                  inputValue={this.state[opt.value]}
-                  change={this.handleOnChange(
-                    opt.value,
-                    this.props.accuracy[opt.value]
-                  )}
-                  amount={price}
-                  quoteName={quoteName}
-                  {...opt}
-                />
-              );
-            })}
-          </StyledOrderOptions>
+          <OrderForm
+            amount={price}
+            quoteName={quoteName}
+            isMarket={this.state.isMarketActive}
+            quantityInputValue={0}
+            priceInputValue={0}
+            onChange={this.handleOnChange}
+            onSubmit={this.handleButtonClick}
+            price={currentPrice}
+          />
 
           <StyledOrderButton>
             <OrderButton
               action={currentAction.action}
               price={price}
-              click={this.handleButtonClick(
-                currentAction.action,
-                price,
-                baseName,
-                quoteName
-              )}
+              click={this.handleButtonClick(price, baseName, quoteName)}
               quoteName={quoteName}
               baseName={baseName}
               quantity={this.state.quantityValue}
