@@ -53,15 +53,20 @@ const StyledCustomCheckbox = styled.span`
   }
 `;
 
-const CustomCheckbox: React.SFC<{label: string; change: any}> = ({
-  label,
-  change
-}) => {
+const CustomCheckbox: React.SFC<{
+  label: string;
+  change?: any;
+  checked?: boolean;
+}> = ({label, change, checked}) => {
   return (
     <div>
       <StyledLabel>
         {label}
-        <StyledCheckbox type="checkbox" onChange={change} />
+        <StyledCheckbox
+          type="checkbox"
+          defaultChecked={checked}
+          onChange={change}
+        />
         <StyledCustomCheckbox />
       </StyledLabel>
     </div>

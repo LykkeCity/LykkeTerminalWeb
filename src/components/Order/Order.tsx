@@ -121,7 +121,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.disableButton(true);
 
     const isConfirm = confirmStorage.get() as string;
-    if (JSON.parse(isConfirm)) {
+    if (!JSON.parse(isConfirm)) {
       this.applyOrder(action);
       return;
     }
