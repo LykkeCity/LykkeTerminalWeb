@@ -43,8 +43,8 @@ const ELEMENT_MAP = (rootStore: any): {[viewId: string]: JSX.Element} => ({
   ),
   e: (
     <Tile title="Executions" tabs={tabs.executions} authorize={true}>
-      <div>Market trades</div>
       <TradeList />
+      <div>Market trades</div>
     </Tile>
   ),
   ob: (
@@ -81,7 +81,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
     first: {
       direction: 'column' as MosaicDirection,
       first: 'wl',
-      second: 'acc'
+      second: 'acc',
+      splitPercentage: 60
     },
     second: {
       direction: 'row' as MosaicDirection,

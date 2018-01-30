@@ -1,11 +1,24 @@
-import {MockTradeApi} from '../../api/tradeApi';
 import {RootStore, TradeStore} from '../index';
 
 describe('trade store', () => {
   let tradeStore: TradeStore;
+  const api: any = {
+    fetchAll: jest.fn()
+  };
 
   beforeEach(() => {
-    tradeStore = new TradeStore(new RootStore(false), new MockTradeApi({}));
+    api.fetchAll = jest.fn(() =>
+      Promise.resolve([
+        {
+          Amount: 6500,
+          Asset: 'BTC',
+          DateTime: new Date(),
+          Id: 1
+        }
+      ])
+    );
+
+    tradeStore = new TradeStore(new RootStore(false), api);
   });
 
   describe('state', () => {
@@ -46,7 +59,6 @@ describe('trade store', () => {
       expect(trade.asset).toBeDefined();
       expect(trade.quantity).toBeDefined();
       expect(trade.timestamp).toBeDefined();
-      expect(trade.price).toBeDefined();
     });
   });
 });

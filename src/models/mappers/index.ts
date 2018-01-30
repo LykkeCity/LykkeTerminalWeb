@@ -94,7 +94,7 @@ export const mapToLimitOrder = ({
   Id,
   CreateDateTime,
   OrderAction,
-  Volume,
+  Voume,
   Price,
   AssetPairId
 }: any) =>
@@ -104,23 +104,29 @@ export const mapToLimitOrder = ({
     price: Number(Price),
     side: OrderAction,
     symbol: AssetPairId,
-    volume: Volume
+    volume: Voume
   });
 
 export const mapToTrade = ({
   Asset,
-  OppositeAsset,
   Volume,
   Direction,
-  Price,
   DateTime,
   TradeId
 }: any) =>
   new TradeModel({
-    price: Price,
-    quantity: Volume,
+    quantity: Direction === SideDirection.Buy ? Volume : Volume * -1,
     side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
-    asset: `${Asset}`,
+    asset: Asset,
     timestamp: DateTime,
     tradeId: `${TradeId}${Asset}`
+  });
+
+export const mapToTradeFromWamp = ({Asset, Amount, DateTime, Id}: any) =>
+  new TradeModel({
+    quantity: Amount,
+    asset: Asset,
+    timestamp: DateTime,
+    tradeId: Id,
+    side: Amount >= 0 ? Side.Buy : Side.Sell
   });

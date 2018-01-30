@@ -21,7 +21,7 @@ describe('orderList store', () => {
         OrderAction: 'Buy',
         Price: 1,
         Status: 'InOrderBook',
-        Volume: 0.0001
+        Voume: 0.0001
       }
     ]);
   });

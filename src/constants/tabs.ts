@@ -1,7 +1,7 @@
 const tabs = {
   account: ['Manage'],
   chart: ['Manage'],
-  executions: ['View all', 'Only my'],
+  executions: ['Only my', 'View all'],
   orderBook: ['Manage'],
   orders: ['View all', 'Only my'],
   walletBalance: ['Trading wallet', 'All wallets'],
