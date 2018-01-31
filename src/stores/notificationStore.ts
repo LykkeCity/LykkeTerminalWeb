@@ -1,5 +1,5 @@
 import {observable} from 'mobx';
-// import timeouts from '../constants/timeouts';
+import Notifications from '../models/notification';
 import NotificationModel from '../models/notificationModel';
 import {BaseStore, RootStore} from './index';
 
@@ -17,6 +17,9 @@ class NotificationStore extends BaseStore {
       (self: NotificationModel) => this.closeNotification(self)
     );
     this.notificationLists = [...this.notificationLists, ...[notification]];
+    if (this.notificationLists.length > Notifications.MaxNotifications) {
+      this.closeNotification(this.notificationLists[0]);
+    }
   };
 
   closeNotification = (notification: NotificationModel) => {
