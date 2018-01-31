@@ -50,7 +50,17 @@ const Tile: React.SFC<TileProps> = ({
       additionalControls={additionalControls}
       isAuth={isAuth}
     >
-      {authorize ? isAuth ? children : <Unauthorized /> : children}
+      {authorize ? (
+        isAuth ? (
+          children
+        ) : Array.isArray(children) ? (
+          children.map((el: any, index: number) => <Unauthorized key={index} />)
+        ) : (
+          <Unauthorized />
+        )
+      ) : (
+        children
+      )}
     </TileContent>
   </TileWrapper>
 );
