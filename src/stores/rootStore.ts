@@ -79,7 +79,7 @@ class RootStore {
 
     WampApi.unauthConnect(
       process.env.REACT_APP_WAMP_URL,
-      process.env.REACT_APP_WAMP_REALM
+      process.env.REACT_APP_WAMP_REALM_PRICES
     ).then(() => {
       instruments.forEach((x: any) =>
         WampApi.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
@@ -115,7 +115,7 @@ class RootStore {
         const instruments = this.referenceStore.getInstruments();
         WampApi.authConnect(
           process.env.REACT_APP_WAMP_URL,
-          process.env.REACT_APP_WAMP_REALM,
+          process.env.REACT_APP_WAMP_REALM_PRICES,
           tokenStorage.get() as string,
           notificationStorage.get() as string
         ).then(() => {
@@ -128,8 +128,15 @@ class RootStore {
           this.uiStore.selectInstrument(
             this.checkDefaultInstrument(defaultInstrument)
           );
-          this.tradeStore.subscribe();
         });
+      })
+      .then(() => {
+        WampApi.authConnect(
+          process.env.REACT_APP_WAMP_URL,
+          process.env.REACT_APP_WAMP_REALM_USER,
+          tokenStorage.get() as string,
+          notificationStorage.get() as string
+        ).then(() => this.tradeStore.subscribe());
       })
       .catch(() => this.loadForUnauthUser(defaultInstrument));
   };
