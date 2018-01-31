@@ -72,15 +72,19 @@ const Header: React.SFC<HeaderProps> = ({
 
       <Box ml="auto" is="menu">
         <Flex align="center">
-          <HeaderItem>
-            <BalanceInfo />
-          </HeaderItem>
-          <HeaderItem>
-            <span className="hidden-xs settings" onClick={settings}>
-              <Icon color={`#8c94a0`} name={`cog`} />
-            </span>
-            {settingsStore.settings ? <SettingsModal /> : null}
-          </HeaderItem>
+          {authStore.isAuth ? (
+            <HeaderItem>
+              <BalanceInfo />
+            </HeaderItem>
+          ) : null}
+          {authStore.isAuth ? (
+            <HeaderItem>
+              <span className="hidden-xs settings" onClick={settings}>
+                <Icon color={`#8c94a0`} name={`cog`} />
+              </span>
+              {settingsStore.settings ? <SettingsModal /> : null}
+            </HeaderItem>
+          ) : null}
           <HeaderItem>
             <Link>
               {authStore.isAuth ? (
