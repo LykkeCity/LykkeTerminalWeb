@@ -45,7 +45,7 @@ class WatchlistStore extends BaseStore {
   };
 
   watchlistsByName = (name: string) => {
-    return this.watchlists.filter((wl: WatchlistModel) => wl.name === name)[0];
+    return this.watchlists.find((wl: WatchlistModel) => wl.name === name);
   };
 
   reset = () => {
