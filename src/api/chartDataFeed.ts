@@ -57,7 +57,7 @@ class ChartDataFeed {
         } else {
           onHistoryCallback([], {noData: true});
         }
-      });
+      }, reject => reject.status === 429 && setTimeout(() => this.getBars(symbolInfo, resolution, from, to, onHistoryCallback, onErrorCallback, firstDataRequest), 2000));
   };
 
   subscribeBars = (
