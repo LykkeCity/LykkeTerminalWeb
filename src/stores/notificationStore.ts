@@ -25,6 +25,7 @@ class NotificationStore extends BaseStore {
   closeNotification = (notification: NotificationModel) => {
     const index = this.notificationLists.indexOf(notification);
     this.notificationLists.splice(index, 1);
+    notification.clearTimeout();
   };
 
   reset = () => {
