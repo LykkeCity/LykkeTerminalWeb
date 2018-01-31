@@ -9,9 +9,10 @@ import {TileTabItem} from './';
 const {Flex} = require('grid-styled');
 
 interface TileContentProps {
-  tabs: any;
-  children: any;
   additionalControls: any;
+  children: any;
+  isAuth: any;
+  tabs: any;
 }
 
 interface TileContentState {
@@ -119,26 +120,28 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
             </Flex>
           </TileToolbar>
         )}
-        {this.props.additionalControls && (
-          <TileToolbar>
-            <Flex align="center" justify="flex-end">
-              <Flex align="center">
-                {this.props.additionalControls.map(
-                  (addAction: any, index: number) => {
-                    return (
-                      <TileAdditionalControlItem
-                        key={`tiletabitem_${index}`}
-                        actionName={addAction.title}
-                        index={index}
-                        action={addAction.action}
-                      />
-                    );
-                  }
-                )}
-              </Flex>
-            </Flex>
-          </TileToolbar>
-        )}
+        {this.props.isAuth
+          ? this.props.additionalControls && (
+              <TileToolbar>
+                <Flex align="center" justify="flex-end">
+                  <Flex align="center">
+                    {this.props.additionalControls.map(
+                      (addAction: any, index: number) => {
+                        return (
+                          <TileAdditionalControlItem
+                            key={`tiletabitem_${index}`}
+                            actionName={addAction.title}
+                            index={index}
+                            action={addAction.action}
+                          />
+                        );
+                      }
+                    )}
+                  </Flex>
+                </Flex>
+              </TileToolbar>
+            )
+          : null}
         <Scrollbars autoHide={true}>
           <StyledChild
             hasTabs={this.props.tabs}
