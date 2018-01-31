@@ -14,6 +14,7 @@ class UiStore extends BaseStore {
   @observable searchTerm: string = '';
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
+  stateFns: any = [];
 
   constructor(store: RootStore) {
     super(store);
@@ -23,6 +24,7 @@ class UiStore extends BaseStore {
         if (instrument) {
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
           fns.seq(reset, fetchAll, subscribe)();
+          this.stateFns.forEach((f: any) => f && f(instrument));
         }
       }
     );

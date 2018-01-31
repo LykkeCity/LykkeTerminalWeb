@@ -1,16 +1,9 @@
-import {Form, FormikProps, withFormik} from 'formik';
+import {Form, withFormik} from 'formik';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
-import StringHelpers from '../../utils/string';
-
-// tslint:disable:no-console
-
-// Shape of form values
-interface FormValues {
-  priceValue: number;
-  quantityValue: number;
-}
+import {OrderFormProps} from './index';
+import OrderButton from './OrderButton';
 
 const StyledOrderOptions = styled.div`
   margin: 10px 0 0 0;
@@ -37,36 +30,72 @@ const StyledTitle = styled.span`
   color: #f5f6f7;
 `;
 
-interface OtherProps {
-  isMarket: boolean;
-  amount: string;
-  onChange: any;
-  onSubmit: any;
-  quantityInputValue: number;
-  priceInputValue: number;
-  quoteName: string;
-  price: number;
-}
+const StyledOrderButton = styled.div`
+  margin-top: ${rem(24)};
+`;
 
-const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
+const StyledInput = styled.input`
+  background-color: transparent;
+  border-radius: 4px;
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  color: #f5f6f7;
+  padding-left: 5px;
+  width: 128px;
+  box-sizing: border-box;
+  height: 100%;
+
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    cursor: pointer;
+    display: block;
+    width: 10px;
+    background: transparent;
+  }
+`;
+
+const StyledInputNumberComponent = styled.div`
+  position: sticky;
+
+  > span.up,
+  > span.down {
+    content: '';
+    position: absolute;
+    right: 5px;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 6px solid #fff;
+    z-index: 5;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  > span.up {
+    top: 8px;
+  }
+
+  > span.down {
+    bottom: 8px;
+    transform: rotate(180deg);
+  }
+`;
+
+const OrderForm = (props: OrderFormProps) => {
   const {
-    values,
-    errors,
-    handleChange,
-    isSubmitting,
+    onChange,
+    onArrowClick,
+    price,
+    isDisable,
     isMarket,
-    amount,
-    quoteName
-    // onChange
+    assetName,
+    action,
+    quantity,
+    amount
   } = props;
 
-  const handleInputChange = () => (e: any) => {
-    if (!StringHelpers.isOnlyNumbers(e.target.value)) {
-      return;
-    }
-    e.target.value = e.target.value === '' ? 0 : e.target.value;
-    handleChange(e);
-  };
+  const baseName = assetName.split('/')[0];
+  const quoteName = assetName.split('/')[1];
 
   return (
     <Form>
@@ -75,53 +104,69 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
           <div>
             <StyledTitle>Price</StyledTitle>
             <StyledOptions>
-              <input
-                id="priceValue"
-                type="text"
-                value={values.priceValue}
-                onChange={handleChange}
-                name="priceValue"
-              />
+              <StyledInputNumberComponent>
+                <StyledInput
+                  id="priceValue"
+                  type="text"
+                  value={price}
+                  onChange={onChange('priceValue')}
+                  name="priceValue"
+                />
+                <span
+                  className="up"
+                  onClick={onArrowClick('up', 'priceValue')}
+                />
+                <span
+                  className="down"
+                  onClick={onArrowClick('down', 'priceValue')}
+                />
+              </StyledInputNumberComponent>
             </StyledOptions>
-            {errors.priceValue && <div>{errors.priceValue}</div>}
           </div>
         ) : null}
 
         <StyledTitle>Quantity</StyledTitle>
         <StyledOptions>
-          <input
-            id="quantityValue"
-            type="text"
-            value={values.quantityValue}
-            onChange={handleInputChange()}
-            name="quantityValue"
-          />
+          <StyledInputNumberComponent>
+            <StyledInput
+              id="quantityValue"
+              type="text"
+              value={quantity}
+              onChange={onChange('quantityValue')}
+              name="quantityValue"
+            />
+            <span
+              className="up"
+              onClick={onArrowClick('up', 'quantityValue')}
+            />
+            <span
+              className="down"
+              onClick={onArrowClick('down', 'quantityValue')}
+            />
+          </StyledInputNumberComponent>
           <StyledAmount>
             Total: {amount} {quoteName}
           </StyledAmount>
         </StyledOptions>
-        {errors.quantityValue && <div>{errors.quantityValue}</div>}
       </StyledOrderOptions>
 
-      <button type="submit" disabled={isSubmitting}>
-        Submit
-      </button>
+      <StyledOrderButton>
+        <OrderButton
+          action={action}
+          price={amount}
+          baseName={baseName}
+          quantity={quantity}
+          isDisable={isDisable}
+          type={'submit'}
+        />
+      </StyledOrderButton>
     </Form>
   );
 };
 
-export default withFormik<OtherProps, FormValues>({
-  mapPropsToValues: () => {
-    return {
-      priceValue: 0,
-      quantityValue: 0
-    };
-  },
-
-  handleSubmit: (values, formikBag) => {
-    formikBag.props.onSubmit();
-    console.log(values);
-    console.log(formikBag);
-    formikBag.resetForm();
+export default withFormik<OrderFormProps, {}>({
+  handleSubmit: (values, {props}) => {
+    const {action} = props;
+    props.onSubmit(action);
   }
-})(InnerForm);
+})(OrderForm);

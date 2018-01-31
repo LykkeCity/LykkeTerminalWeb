@@ -11,6 +11,13 @@ class StringHelpers {
     return str;
   }
 
+  static substringMinus(str: string) {
+    if (str[0] === '-') {
+      return str.substring(1);
+    }
+    return str;
+  }
+
   static substringLast(str: string) {
     const subStr = str.substring(0, str.length - 1);
     return subStr[subStr.length - 1] === '.'

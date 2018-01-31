@@ -21,6 +21,8 @@ export interface OrderProps {
   currency: string;
   placeOrder: any;
   name: string;
+  stateFns: any[];
+  getAssetById: any;
 }
 
 export interface OrderOptionProps {
@@ -52,11 +54,10 @@ export interface OrderChoiceButtonProps {
 export interface OrderButtonProps {
   action: string;
   price: string;
-  click: any;
   isDisable: boolean;
   baseName: string;
-  quoteName: string;
   quantity: number;
+  type: string;
 }
 
 export interface OrderActionProps {
@@ -67,25 +68,45 @@ export interface OrderActionProps {
   isActive: boolean;
 }
 
+export interface OrderFormProps {
+  onChange: any;
+  onArrowClick: any;
+  isMarket: boolean;
+  isDisable: boolean;
+  action: string;
+  onSubmit: any;
+  assetName: string;
+  quantity: number;
+  price: number;
+  amount: string;
+}
+
 const ConnectedOrder = withScroll(
   connect(
     ({
       modalStore: {addModal},
       orderBookStore: {bestAsk, bestBid},
       orderStore: {placeOrder},
-      uiStore: {selectedInstrument: instrument},
+      uiStore: {selectedInstrument: instrument, stateFns},
       referenceStore
     }) => ({
       accuracy: {
         priceValue: pathOr(2, ['accuracy'], instrument),
-        quantityValue: referenceStore.getBaseAssetAccuracy
+        get quantityValue() {
+          const asset = referenceStore.getAssetById(
+            pathOr('', ['name'], instrument).split('/')[0]
+          );
+          return asset ? asset.accuracy : 2;
+        }
       },
       addModal,
       ask: bestAsk(),
       bid: bestBid(),
       currency: pathOr('', ['id'], instrument),
+      getAssetById: referenceStore.getAssetById,
       name: pathOr('', ['name'], instrument),
-      placeOrder
+      placeOrder,
+      stateFns
     }),
     Order
   )
