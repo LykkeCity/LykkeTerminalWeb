@@ -24,10 +24,11 @@ const StyledAmount = styled.div`
   color: #8c94a0;
 `;
 
-const StyledTitle = styled.span`
+const StyledTitle = styled.div`
   font-size: ${rem(14)};
   font-weight: 600;
   color: #f5f6f7;
+  margin-top: 10px;
 `;
 
 const StyledOrderButton = styled.div`
