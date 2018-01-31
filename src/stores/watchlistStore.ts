@@ -24,7 +24,7 @@ class WatchlistStore extends BaseStore {
   }
 
   @observable
-  private watchlists: any[] = defaultWatchLists.map(mappers.mapToWatchList);
+  private watchlists: any[] = defaultWatchLists.map(mappers.mapToWatchList); // TODO find a way to load watchlists for unauthorized users
 
   constructor(store: RootStore, private readonly api: WatchlistApi) {
     super(store);
