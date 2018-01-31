@@ -53,8 +53,7 @@ class SettingsStore extends BaseStore {
   };
 
   reset = () => {
-    confirmStorage.set(true);
-    themeStorage.set(true);
+    return null;
   };
 }
 
