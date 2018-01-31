@@ -50,14 +50,39 @@ class ChartDataFeed {
         firstDataRequest ? new Date() : new Date(to * 1000),
         mappers.mapChartResolutionToWampInterval(resolution)
       )
-      .then(resp => {
-        const bars = resp.History.map(mappers.mapToBarFromRest);
-        if (bars) {
-          onHistoryCallback(bars);
-        } else {
-          onHistoryCallback([], {noData: true});
+      .then(
+        resp => {
+          const bars = resp.History.map(mappers.mapToBarFromRest);
+          if (bars.length > 0) {
+            onHistoryCallback(bars);
+          } else {
+            onHistoryCallback([], {noData: true});
+          }
+        },
+        reject => {
+          switch (reject.status) {
+            default:
+            case 404:
+              onHistoryCallback([], {noData: true});
+              break;
+            case 429:
+              setTimeout(
+                () =>
+                  this.getBars(
+                    symbolInfo,
+                    resolution,
+                    from,
+                    to,
+                    onHistoryCallback,
+                    onErrorCallback,
+                    firstDataRequest
+                  ),
+                2000
+              );
+              break;
+          }
         }
-      }, reject => reject.status === 429 && setTimeout(() => this.getBars(symbolInfo, resolution, from, to, onHistoryCallback, onErrorCallback, firstDataRequest), 2000));
+      );
   };
 
   subscribeBars = (

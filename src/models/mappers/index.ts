@@ -24,14 +24,14 @@ export const mapToBarFromRest = ({
   Open,
   High,
   Low,
-  Volume = 0
+  TradingVolume = 0
 }: any) => ({
   close: Close,
   high: High,
   low: Low,
   open: Open,
   time: new Date(DateTime).getTime(),
-  volume: Volume
+  volume: TradingVolume
 });
 
 export const mapToBarFromWamp = ({t, c, o, h, l, v}: any) => ({
@@ -50,7 +50,7 @@ export const mapToChartSymbol = ({
 }: InstrumentModel) => ({
   name,
   minmov: 1,
-  pricescale: 1,
+  pricescale: Math.pow(10, accuracy),
   session: '24x7',
   timezone: 'Europe/Istanbul',
   supported_resolutions: ChartStore.config.supported_resolutions,
