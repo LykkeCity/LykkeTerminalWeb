@@ -7,6 +7,7 @@ import {
   TradeModel
 } from '../index';
 import SideDirection from '../sideDirection';
+import WatchlistModel from '../watchlistModel';
 
 // tslint:disable:object-literal-sort-keys
 
@@ -129,4 +130,12 @@ export const mapToTradeFromWamp = ({Asset, Amount, DateTime, Id}: any) =>
     timestamp: DateTime,
     tradeId: Id,
     side: Amount >= 0 ? Side.Buy : Side.Sell
+  });
+
+export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly}: any) =>
+  new WatchlistModel({
+    assetIds: AssetIds,
+    id: Id,
+    name: Name,
+    readOnly: ReadOnly
   });

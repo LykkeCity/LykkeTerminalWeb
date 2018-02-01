@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import shortcuts from '../../constants/shortcuts';
 import {InstrumentShortcutsProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -36,16 +35,16 @@ class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
   render() {
     return (
       <Flex>
-        {shortcuts.map((shortcut: any, index: number) => {
+        {this.props.shortcuts.map((shortcut: string, index: number) => {
           return (
             <StyledShortcut
               className={
                 this.props.shortcutActiveIndex === index ? 'active' : ''
               }
               key={`shortcutid_${index}`}
-              onClick={this.handleClick(shortcut.value, index)}
+              onClick={this.handleClick(shortcut, index)}
             >
-              {shortcut.key}
+              {shortcut}
             </StyledShortcut>
           );
         })}
