@@ -5,15 +5,20 @@ import {OrderModel} from '../models';
 import OrderType from '../models/orderType';
 import {BaseStore, RootStore} from './index';
 import NotificationStore from './notificationStore';
+import ModalStore from './modalStore';
+import Types from '../models/modals';
+import ModalMessages from '../constants/modalMessages';
 
 // tslint:disable:no-console
 
 class OrderStore extends BaseStore {
+  private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
+    this.modalStore = this.rootStore.modalStore;
   }
 
   placeOrder = async (orderType: string, body: any) => {
@@ -83,6 +88,7 @@ class OrderStore extends BaseStore {
       levels.error,
       `${messages.orderError} ${message}`
     );
+    this.modalStore.addModal(ModalMessages.expired, null, null, Types.Expired);
   };
 }
 
