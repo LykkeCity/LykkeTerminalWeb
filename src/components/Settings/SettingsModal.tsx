@@ -7,7 +7,7 @@ const StyledModal = styled.div`
   font-family: Proxima Nova;
   position: absolute;
   padding: 10px 15px;
-  top: 100%;
+  top: 20px;
   right: 0;
   width: 230px;
   border-radius: 10px;
@@ -50,7 +50,7 @@ const StyledModalArrow = styled.div`
   border-bottom: 5px solid #3c3c3c;
 `;
 
-class ConfirmModal extends React.Component<SettingsModalProps> {
+class SettingsModal extends React.Component<SettingsModalProps> {
   constructor(props: SettingsModalProps) {
     super(props);
   }
@@ -69,7 +69,7 @@ class ConfirmModal extends React.Component<SettingsModalProps> {
 
   render() {
     return (
-      <div onClick={this.preventClose}>
+      <div onClick={this.preventClose} style={{position: 'relative'}}>
         <StyledModal>
           <ul>
             <li>
@@ -95,4 +95,4 @@ class ConfirmModal extends React.Component<SettingsModalProps> {
   }
 }
 
-export default ConfirmModal;
+export default SettingsModal;
