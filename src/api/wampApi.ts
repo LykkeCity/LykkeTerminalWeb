@@ -26,7 +26,6 @@ export class WampApi {
       };
 
       this.connection.onclose = (reason, details) => {
-        this.connection.open();
         return true;
       };
 
