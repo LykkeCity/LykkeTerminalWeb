@@ -13,6 +13,7 @@ import {BaseStore, RootStore} from './index';
 const baseAssetStorage = StorageUtils(keys.baseAsset);
 const withIdAndName = (x: InstrumentModel) => !!x.id && !!x.name;
 
+// tslint:disable:no-bitwise
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
   @observable private categories: AssetCategoryModel[] = [];
@@ -68,15 +69,25 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
-  findInstruments = (term: string) => {
-    return this.instruments.filter(withIdAndName).filter(x =>
-      x.name
-        .toLowerCase()
-        .replace(SearchString.Delimiter, SearchString.Empty)
-        .includes(
-          term.toLowerCase().replace(SearchString.Delimiter, SearchString.Empty)
-        )
-    );
+  findInstruments = (term: string, name: string) => {
+    return this.instruments
+      .filter(withIdAndName)
+      .filter(x =>
+        x.name
+          .toLowerCase()
+          .replace(SearchString.Delimiter, SearchString.Empty)
+          .includes(
+            term
+              .toLowerCase()
+              .replace(SearchString.Delimiter, SearchString.Empty)
+          )
+      )
+      .filter(
+        (instrument: InstrumentModel) =>
+          !!~this.rootStore.watchlistStore
+            .watchlistsByName(name)
+            .assetIds.indexOf(instrument.id)
+      );
   };
 
   fetchReferenceData = async () => {

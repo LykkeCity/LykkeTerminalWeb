@@ -47,17 +47,19 @@ class ChartStore extends BaseStore {
       toolbar_bg: '#333',
       library_path: 'charting_library/',
       disabled_features: [
-        'use_localstorage_for_settings',
         'widget_logo',
         'link_to_tradingview',
         'left_toolbar',
         'header_symbol_search',
         'header_screenshot',
-        'compare_symbol'
+        'compare_symbol',
+        'header_compare',
+        'display_market_status',
+        'border_around_the_chart',
+        'remove_library_container_border',
+        'header_undo_redo'
       ],
       overrides: {
-        volumePaneSize: 'tiny',
-
         'paneProperties.background': '#333333',
         'paneProperties.vertGridProperties.color': 'rgba(140, 148, 160, 0.6)',
         'paneProperties.vertGridProperties.style': LINESTYLE_DOTTED,

@@ -94,6 +94,14 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
     });
   };
 
+  componentWillReceiveProps(curent: any, next: any) {
+    if (!next.isAuth) {
+      this.setState({
+        activeTabIndex: 0
+      });
+    }
+  }
+
   render() {
     const child = this.props.children.length
       ? this.props.children[this.state.activeTabIndex]
