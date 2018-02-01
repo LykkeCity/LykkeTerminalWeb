@@ -114,14 +114,16 @@ export const mapToTrade = ({
   Direction,
   DateTime,
   TradeId
-}: any) =>
-  new TradeModel({
+}: any) => {
+  const side = Direction === SideDirection.Buy ? Side.Buy : Side.Sell;
+  return new TradeModel({
     quantity: Direction === SideDirection.Buy ? Volume : Volume * -1,
-    side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
+    side,
     asset: Asset,
     timestamp: DateTime,
-    tradeId: `${TradeId}${Asset}`
+    tradeId: `${TradeId}${Asset}-${side}`
   });
+};
 
 export const mapToTradeFromWamp = ({Asset, Amount, DateTime, Id}: any) =>
   new TradeModel({
