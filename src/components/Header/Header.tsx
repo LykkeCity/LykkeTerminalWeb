@@ -13,7 +13,6 @@ import {HeaderProps} from './index';
 const {Flex, Box} = require('grid-styled');
 
 const HeaderItem = styled(Box)`
-  position: relative;
   border-right: solid 1px rgba(0, 0, 0, 0.2);
   font-size: ${rem(14)};
   padding: ${rem(20)} ${rem(10)};
