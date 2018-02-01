@@ -1,5 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {compose, reverse, sortBy} from 'rambda';
+import {compose, reverse, sortBy, uniq} from 'rambda';
 import {WampApi} from '../api';
 import {TradeApi} from '../api/index';
 import {TradeModel} from '../models/index';
@@ -40,7 +40,12 @@ class TradeStore extends BaseStore {
 
   onTrades = (args: any) => {
     const mappedTrades = args[0].map(mappers.mapToTrade);
+    const executedOrderIds: string[] = uniq(
+      args[0].map((trade: any) => trade.OrderId)
+    );
+
     this.addTrade(mappedTrades);
+    this.rootStore.orderStore.executeOrder(executedOrderIds);
   };
 
   @action
