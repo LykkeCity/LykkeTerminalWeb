@@ -17,7 +17,7 @@ const withIdAndName = (x: InstrumentModel) => !!x.id && !!x.name;
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
   @observable private categories: AssetCategoryModel[] = [];
-  @observable private instruments: InstrumentModel[] = [];
+  @observable.shallow private instruments: InstrumentModel[] = [];
   @observable private baseAsset: string = '';
 
   @computed
