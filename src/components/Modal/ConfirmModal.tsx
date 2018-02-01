@@ -81,16 +81,29 @@ const CancelButton = styled(Button)`
   border: solid 1px rgba(140, 148, 160, 0.4);
 `;
 
-class ConfirmModal extends React.Component<ConfirmModalProps> {
+interface ConfirmModalState {
+  isReminderChecked: boolean;
+}
+
+class ConfirmModal extends React.Component<
+  ConfirmModalProps,
+  ConfirmModalState
+> {
   constructor(props: ConfirmModalProps) {
     super(props);
+    this.state = {
+      isReminderChecked: false
+    };
   }
 
   handleChange = () => (e: any) => {
-    confirmStorage.set(e.target.checked);
+    this.setState({
+      isReminderChecked: !e.target.checked
+    });
   };
 
   handleApply = (modal: ModalModel) => () => {
+    confirmStorage.set(this.state.isReminderChecked);
     modal.applyAction();
     modal.close();
   };

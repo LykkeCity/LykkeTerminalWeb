@@ -4,6 +4,7 @@ import {BalanceInfo} from '../BalanceInfo';
 import {Icon} from '../Icon/index';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
+import {SettingsModal} from '../Settings';
 import styled from '../styled';
 import {Heading} from '../Typography/index';
 import {HeaderProps} from './index';
@@ -15,6 +16,16 @@ const HeaderItem = styled(Box)`
   border-right: solid 1px rgba(0, 0, 0, 0.2);
   font-size: ${rem(14)};
   padding: ${rem(20)} ${rem(10)};
+
+  > span,
+  a {
+    padding: ${rem(7)};
+    border-radius: 4px;
+    border: 1px solid #333;
+    &.active {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
 `;
 
 const HeaderFlex = styled(Flex)`
@@ -23,7 +34,11 @@ const HeaderFlex = styled(Flex)`
   height: 40px;
 `;
 
-const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
+const Header: React.SFC<HeaderProps> = ({
+  authStore,
+  history,
+  settingsStore
+}) => {
   const signOut = () => {
     authStore.signOut();
   };
@@ -32,8 +47,10 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
     history.push('signin');
   };
 
-  const settings = () => {
-    return 0;
+  const settings = (e: any) => {
+    document.querySelector('.settings')!.classList.toggle('active');
+    e.stopPropagation();
+    settingsStore.toggleSettings();
   };
 
   return (
@@ -54,14 +71,19 @@ const Header: React.SFC<HeaderProps> = ({authStore, history}) => {
 
       <Box ml="auto" is="menu">
         <Flex align="center">
-          <HeaderItem>
-            <BalanceInfo />
-          </HeaderItem>
-          <HeaderItem>
-            <span className="hidden-xs" onClick={settings}>
-              <Icon color={`#8c94a0`} name={`cog`} />
-            </span>
-          </HeaderItem>
+          {authStore.isAuth ? (
+            <HeaderItem>
+              <BalanceInfo />
+            </HeaderItem>
+          ) : null}
+          {authStore.isAuth ? (
+            <HeaderItem>
+              <span className="hidden-xs settings" onClick={settings}>
+                <Icon color={`#8c94a0`} name={`cog`} />
+              </span>
+              {settingsStore.settings ? <SettingsModal /> : null}
+            </HeaderItem>
+          ) : null}
           <HeaderItem>
             <Link>
               {authStore.isAuth ? (

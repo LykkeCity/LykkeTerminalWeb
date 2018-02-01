@@ -10,6 +10,7 @@ import {
 } from '../api/index';
 import shortcuts from '../constants/shortcuts';
 import keys from '../constants/storageKeys';
+import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
@@ -22,6 +23,7 @@ import {
   OrderListStore,
   OrderStore,
   ReferenceStore,
+  SettingsStore,
   TradeStore,
   UiStore,
   WatchlistStore
@@ -46,6 +48,7 @@ class RootStore {
   readonly orderStore: OrderStore;
   readonly notificationStore: NotificationStore;
   readonly modalStore: ModalStore;
+  readonly settingsStore: SettingsStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -66,12 +69,16 @@ class RootStore {
       this.authStore = new AuthStore(this, new AuthApi(this));
       this.chartStore = new ChartStore(this);
       this.orderStore = new OrderStore(this, new OrderApi(this));
+      this.settingsStore = new SettingsStore(this);
     }
   }
 
   loadForUnauthUser = (defaultInstrument: any) => {
     const instruments = shortcuts.reduce((i: any, item) => {
-      return [...i, ...this.referenceStore.findInstruments(item.value)];
+      return [
+        ...i,
+        ...this.referenceStore.findInstruments(item.value, Watchlists.All)
+      ];
     }, []);
 
     WampApi.unauthConnect(
@@ -99,6 +106,8 @@ class RootStore {
     if (!this.authStore.isAuth) {
       return this.loadForUnauthUser(defaultInstrument);
     }
+
+    this.settingsStore.init();
 
     await this.watchlistStore
       .fetchAll()

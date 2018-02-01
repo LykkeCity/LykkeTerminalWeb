@@ -45,8 +45,22 @@ const Tile: React.SFC<TileProps> = ({
     <TileHeader justify="space-between">
       <TileTitle>{title} </TileTitle>
     </TileHeader>
-    <TileContent tabs={tabs} additionalControls={additionalControls}>
-      {authorize ? isAuth ? children : <Unauthorized /> : children}
+    <TileContent
+      tabs={tabs}
+      additionalControls={additionalControls}
+      isAuth={isAuth}
+    >
+      {authorize ? (
+        isAuth ? (
+          children
+        ) : Array.isArray(children) ? (
+          children.map((el: any, index: number) => <Unauthorized key={index} />)
+        ) : (
+          <Unauthorized />
+        )
+      ) : (
+        children
+      )}
     </TileContent>
   </TileWrapper>
 );

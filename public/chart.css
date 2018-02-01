@@ -1,80 +1,96 @@
-.chart-container {
-  border: solid 1px #333 !important;
+.chart-loading-screen {
+  background-color: #333333 !important;
 }
 
-.header-chart-panel .button,
-.header-chart-panel .button.disabled,
-.favored-list-container span {
-  background: #333 !important;
-  border: none;
-  border-right: rgba(0, 0, 0, 0.2) solid 1px;
-  color: #f5f6f7 !important;
+.chart-page {
+  background: #333333;
 }
 
-.apply-common-tooltip:hover {
-  border: none;
-  border-right: rgba(0, 0, 0, 0.2) solid 1px !important;
+.loading-indicator {
+  background-color: #333333;
 }
 
-.tv-close-panel {
+.chart-page .chart-container {
+  border: solid 1px #333333;
+  background-color: #333333;
+}
+
+.tv-close-panel.top {
   display: none;
 }
 
-.feature-no-touch
-  ._tv-dialog
-  .button:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  ._tv-dialog
-  .custom-select
-  .switcher:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  ._tv-dialog
-  .favored-list-container
-  span:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  ._tv-dialog
-  .submenu:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .bottom-widgetbar-content.backtesting
-  .button:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .bottom-widgetbar-content.backtesting
-  .custom-select
-  .switcher:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .bottom-widgetbar-content.backtesting
-  .favored-list-container
-  span:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .bottom-widgetbar-content.backtesting
-  .submenu:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .header-chart-panel
-  .button:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .header-chart-panel
-  .custom-select
-  .switcher:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .header-chart-panel
-  .favored-list-container
-  span:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .header-chart-panel
-  .submenu:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .properties-toolbar
-  .button:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .properties-toolbar
-  .custom-select
-  .switcher:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .properties-toolbar
-  .favored-list-container
-  span:not(.disabled):not(.selected):hover:before,
-.feature-no-touch
-  .properties-toolbar
-  .submenu:not(.disabled):not(.selected):hover:before {
-  border: 1px solid #333333;
+.chart-controls-bar-buttons a:before {
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.favored-list-container span {
+  background: #333333;
+  border-color: #333333;
+  color: #f5f6f7;
+}
+.feature-no-touch .favored-list-container span:hover {
+  background: #333333;
+  border-color: rgba(0, 0, 0, 0.3) !important;
+  color: #f5f6f7;
+}
+
+.bottom-widgetbar-content.backtesting .button,
+.header-chart-panel .button,
+.hotlist-controls .button,
+.symbol-edit-widget .button {
+  background: #333333;
+  border-color: #333333;
+  color: #f5f6f7;
+}
+
+.feature-no-touch .header-chart-panel .button:hover,
+.feature-no-touch .symbol-edit-widget .button:hover {
+  background: #333333;
+  border-color: rgba(0, 0, 0, 0.3) !important;
+  color: #f5f6f7;
+}
+
+.feature-no-touch .header-chart-panel .button.disabled:active,
+.feature-touch .header-chart-panel .button.disabled:active,
+.header-chart-panel .button.disabled,
+.header-chart-panel .button.disabled.active {
+  background: #333333;
+  border-color: rgba(0, 0, 0, 0.3) !important;
+  color: #f5f6f7;
+}
+
+._tv-button,
+.layout-toggle-container ._tv-button,
+button._tv-button {
+  background: #333333;
+  border-color: #333333;
+  color: #f5f6f7;
+}
+
+.drawing-favorites-toolbar .tools-group .button,
+.feature-no-touch .tv-side-toolbar .tools-group .button:active,
+.feature-no-touch .tv-side-toolbar .tools-group .button:hover,
+.feature-touch .tv-side-toolbar .tools-group .button:active,
+.properties-toolbar .tools-group .button,
+.tv-side-toolbar .tools-group .button.active,
+.tv-side-toolbar .tools-group .button.selected {
+  border-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.drawing-favorites-toolbar .tools-group .button.active,
+.feature-no-touch .drawing-favorites-toolbar .tools-group .button:active,
+.feature-no-touch .properties-toolbar .tools-group .button:active,
+.feature-no-touch .tv-side-toolbar .tools-group .button:active .side,
+.feature-no-touch .tv-side-toolbar .tools-group .button:not(.subgroup):active,
+.feature-touch .drawing-favorites-toolbar .tools-group .button:active,
+.feature-touch .properties-toolbar .tools-group .button:active,
+.feature-touch .tv-side-toolbar .tools-group .button:active .side,
+.feature-touch .tv-side-toolbar .tools-group .button:not(.subgroup):active,
+.properties-toolbar .tools-group .button.active,
+.tv-side-toolbar .tools-group .button.active .side,
+.tv-side-toolbar .tools-group .button.selected .main,
+.tv-side-toolbar .tools-group .button:not(.subgroup).active,
+.tv-side-toolbar .tools-group .button:not(.subgroup).selected {
+  background: #333333;
+  border-color: rgba(0, 0, 0, 0.3) !important;
 }

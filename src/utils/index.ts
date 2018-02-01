@@ -3,3 +3,6 @@ export {default as StringHelpers} from './string';
 
 import * as fns from './fn';
 export {fns};
+
+import * as math from './math';
+export {math};

@@ -10,6 +10,7 @@ interface IconProps {
 const StyledIcon = styled.i`
   cursor: pointer;
   color: ${(props: any) => props.color};
+  vertical-align: middle;
   &:hover {
     color: ${(props: any) => lighten(0.1, props.color || '#fff')};
   }

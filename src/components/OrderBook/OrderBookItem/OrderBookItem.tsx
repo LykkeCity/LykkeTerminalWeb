@@ -1,17 +1,17 @@
 import * as React from 'react';
 import {Order, Side} from '../../../models/index';
+import {math} from '../../../utils/';
 import styled from '../../styled';
-
-// tslint:disable-next-line:no-var-requires
-// const {Flex} = require('grid-styled');
 
 const colorBySide = (side: Side) =>
   side === Side.Sell ? '#d070ff' : '#ffae2c';
 
 const alignBySide = (side: Side) => (side === Side.Sell ? 'right' : 'left');
 
-const normalizeVolume = (volume: number, maxVolume: number) =>
-  volume / maxVolume * 100;
+const normalizeVolume = (volume: number, maxVolume: number) => {
+  const normalizedVolume = volume / maxVolume * 100;
+  return math.logBase(100, normalizedVolume) * 100;
+};
 
 const CommonCell = styled.td`
   flex-grow: 1;

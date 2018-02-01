@@ -130,7 +130,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     );
 
     const isConfirm = confirmStorage.get() as string;
-    if (JSON.parse(isConfirm)) {
+    if (!JSON.parse(isConfirm)) {
       return this.applyOrder(action, quantityValue, baseName, currentPrice);
     }
     const message = `${action} ${quantityValue} ${baseName} at ${currentPrice} ${quoteName}`;

@@ -1,6 +1,5 @@
 import {pathOr} from 'rambda';
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar/';
 import Order from './Order';
 
 export interface OrderState {
@@ -81,35 +80,33 @@ export interface OrderFormProps {
   amount: string;
 }
 
-const ConnectedOrder = withScroll(
-  connect(
-    ({
-      modalStore: {addModal},
-      orderBookStore: {bestAsk, bestBid},
-      orderStore: {placeOrder},
-      uiStore: {selectedInstrument: instrument, stateFns},
-      referenceStore
-    }) => ({
-      accuracy: {
-        priceValue: pathOr(2, ['accuracy'], instrument),
-        get quantityValue() {
-          const asset = referenceStore.getAssetById(
-            pathOr('', ['name'], instrument).split('/')[0]
-          );
-          return asset ? asset.accuracy : 2;
-        }
-      },
-      addModal,
-      ask: bestAsk(),
-      bid: bestBid(),
-      currency: pathOr('', ['id'], instrument),
-      getAssetById: referenceStore.getAssetById,
-      name: pathOr('', ['name'], instrument),
-      placeOrder,
-      stateFns
-    }),
-    Order
-  )
+const ConnectedOrder = connect(
+  ({
+    modalStore: {addModal},
+    orderBookStore: {bestAsk, bestBid},
+    orderStore: {placeOrder},
+    uiStore: {selectedInstrument: instrument, stateFns},
+    referenceStore
+  }) => ({
+    accuracy: {
+      priceValue: pathOr(2, ['accuracy'], instrument),
+      get quantityValue() {
+        const asset = referenceStore.getAssetById(
+          pathOr('', ['name'], instrument).split('/')[0]
+        );
+        return asset ? asset.accuracy : 2;
+      }
+    },
+    addModal,
+    ask: bestAsk(),
+    bid: bestBid(),
+    currency: pathOr('', ['id'], instrument),
+    getAssetById: referenceStore.getAssetById,
+    name: pathOr('', ['name'], instrument),
+    placeOrder,
+    stateFns
+  }),
+  Order
 );
 
 export {ConnectedOrder as Order};
