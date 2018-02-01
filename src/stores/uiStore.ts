@@ -53,6 +53,7 @@ class UiStore extends BaseStore {
   reset = () => {
     this.searchTerm = '';
     this.searchWalletName = Watchlists.All;
+    this.stateFns = [];
   };
 }
 
