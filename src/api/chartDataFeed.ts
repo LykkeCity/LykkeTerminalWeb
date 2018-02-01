@@ -28,10 +28,8 @@ class ChartDataFeed {
     onSymbolResolvedCallback: any,
     onResolveErrorCallback: any
   ) => {
-    setTimeout(
-      () => onSymbolResolvedCallback(mappers.mapToChartSymbol(this.instrument)),
-      0
-    );
+    const symbol = mappers.mapToChartSymbol(this.instrument);
+    setTimeout(() => onSymbolResolvedCallback(symbol), 0);
   };
 
   getBars = (
