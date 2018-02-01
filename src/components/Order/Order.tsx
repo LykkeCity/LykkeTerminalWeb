@@ -53,10 +53,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       isMarketActive: true,
       isSellActive: true,
       pendingOrder: false,
-      priceValue: 0,
-      quantityValue: 0,
-      stopLoss: 0,
-      takeProfit: 0
+      priceValue: '0',
+      quantityValue: '0'
     };
 
     this.props.stateFns.push(this.handleChangeInstrument);
@@ -70,8 +68,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     const quantityAccuracy = asset ? asset.accuracy : 2;
 
     this.setState({
-      priceValue: +(+this.state.priceValue).toFixed(priceAccuracy),
-      quantityValue: +(+this.state.quantityValue).toFixed(quantityAccuracy)
+      priceValue: parseFloat(this.state.priceValue).toFixed(priceAccuracy),
+      quantityValue: parseFloat(this.state.quantityValue).toFixed(
+        quantityAccuracy
+      )
     });
   };
 
@@ -95,7 +95,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   applyOrder = (
     action: string,
-    quantity: number,
+    quantity: string,
     baseName: string,
     price: string
   ) => {
@@ -104,11 +104,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       AssetId: baseName,
       AssetPairId: this.props.currency,
       OrderAction: action,
-      Volume: +quantity
+      Volume: parseFloat(quantity)
     };
 
     if (!this.state.isMarketActive) {
-      body.Price = price;
+      body.Price = parseFloat(price);
     }
 
     this.props
@@ -125,9 +125,9 @@ class Order extends React.Component<OrderProps, OrderState> {
     const baseName = this.props.name.split('/')[0];
     const quoteName = this.props.name.split('/')[1];
     const {quantityValue, priceValue} = this.state;
-    const currentPrice = (quantityValue * priceValue).toFixed(
-      this.props.accuracy.priceValue
-    );
+    const currentPrice = (
+      parseFloat(quantityValue) * parseFloat(priceValue)
+    ).toFixed(this.props.accuracy.priceValue);
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
@@ -149,11 +149,12 @@ class Order extends React.Component<OrderProps, OrderState> {
     switch (operation) {
       case 'up':
         tempObj[field] = (
-          +this.state[field] + Math.pow(10, -1 * accuracy)
+          parseFloat(this.state[field]) + Math.pow(10, -1 * accuracy)
         ).toFixed(accuracy);
         break;
       case 'down':
-        let newVal = +this.state[field] - Math.pow(10, -1 * accuracy);
+        let newVal =
+          parseFloat(this.state[field]) - Math.pow(10, -1 * accuracy);
         newVal = newVal < 0 ? 0 : newVal;
         tempObj[field] = newVal.toFixed(accuracy);
         break;
@@ -173,7 +174,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     if (StringHelpers.getPostDecimalsLength(value) > accuracy) {
       value = StringHelpers.substringLast(value);
     }
-    value = value === '' ? 0 : value;
+    value = value === '' ? '0' : value;
 
     const tempObj = {};
     tempObj[field] = value;
@@ -187,10 +188,14 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   fixedAmount = (currentPrice: number) => {
-    const amount = currentPrice * this.state.quantityValue;
+    const amount = currentPrice * parseFloat(this.state.quantityValue);
     return amount === 0
       ? amount.toFixed(2)
       : amount.toFixed(this.props.accuracy.priceValue);
+  };
+
+  fixedValue = (value: any) => {
+    return parseFloat(value) === 0 ? parseFloat(value).toFixed(2) : value + '';
   };
 
   render() {
@@ -200,7 +205,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     const currentPrice =
       (this.state.isMarketActive
         ? this.state.isSellActive ? this.props.bid : this.props.ask
-        : this.state.priceValue) || 0;
+        : parseFloat(this.state.priceValue)) || 0;
     const {bid, ask} = this.props;
     const spread = ask - bid;
 
@@ -248,8 +253,8 @@ class Order extends React.Component<OrderProps, OrderState> {
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
             amount={this.fixedAmount(currentPrice)}
-            quantity={this.state.quantityValue}
-            price={this.state.priceValue}
+            quantity={this.fixedValue(this.state.quantityValue)}
+            price={this.fixedValue(this.state.priceValue)}
           />
         </StyledContentWrap>
       </div>

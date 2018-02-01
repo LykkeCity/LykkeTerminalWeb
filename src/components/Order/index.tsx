@@ -5,11 +5,9 @@ import Order from './Order';
 export interface OrderState {
   isMarketActive: boolean;
   isSellActive: boolean;
-  quantityValue: number;
+  quantityValue: string;
   pendingOrder: boolean;
-  priceValue: number;
-  stopLoss: number;
-  takeProfit: number;
+  priceValue: string;
 }
 
 export interface OrderProps {
@@ -55,7 +53,7 @@ export interface OrderButtonProps {
   price: string;
   isDisable: boolean;
   baseName: string;
-  quantity: number;
+  quantity: string;
   type: string;
 }
 
@@ -75,8 +73,8 @@ export interface OrderFormProps {
   action: string;
   onSubmit: any;
   assetName: string;
-  quantity: number;
-  price: number;
+  quantity: string;
+  price: string;
   amount: string;
 }
 
