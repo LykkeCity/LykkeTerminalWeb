@@ -140,7 +140,10 @@ class RootStore {
           process.env.REACT_APP_WAMP_REALM_USER,
           tokenStorage.get() as string,
           notificationStorage.get() as string
-        ).then(() => this.tradeStore.subscribe());
+        ).then(() => {
+          this.tradeStore.subscribe();
+          this.balanceListStore.subscribe();
+        });
       })
       .catch(() => this.loadForUnauthUser(defaultInstrument));
   };

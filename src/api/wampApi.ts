@@ -25,6 +25,11 @@ export class WampApi {
         resolve(session);
       };
 
+      this.connection.onclose = (reason, details) => {
+        this.connection.open();
+        return true;
+      };
+
       this.connection.open();
     });
   };

@@ -1,5 +1,6 @@
 import {computed, observable, runInAction} from 'mobx';
 import {add, pathOr} from 'rambda';
+import {WampApi} from '../api';
 import {BalanceListApi} from '../api/index';
 import keys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, BalanceModel} from '../models';
@@ -75,6 +76,14 @@ class BalanceListStore extends BaseStore {
         return assetBalance;
       }
     );
+  };
+
+  subscribe = () => {
+    WampApi.subscribe(`balances`, this.onBalance);
+  };
+
+  onBalance = (args: any) => {
+    return args[0];
   };
 
   reset = () => {
