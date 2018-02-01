@@ -186,6 +186,13 @@ class Order extends React.Component<OrderProps, OrderState> {
       : !+this.state.quantityValue || !+this.state.priceValue;
   };
 
+  fixedAmount = (currentPrice: number) => {
+    const amount = currentPrice * this.state.quantityValue;
+    return amount === 0
+      ? amount.toFixed(2)
+      : amount.toFixed(this.props.accuracy.priceValue);
+  };
+
   render() {
     const {action} = this.state.isSellActive
       ? orderAction.sell
@@ -240,9 +247,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             onSubmit={this.handleButtonClick}
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
-            amount={(currentPrice * this.state.quantityValue).toFixed(
-              this.props.accuracy.priceValue
-            )}
+            amount={this.fixedAmount(currentPrice)}
             quantity={this.state.quantityValue}
             price={this.state.priceValue}
           />
