@@ -50,7 +50,7 @@ const StyledModalArrow = styled.div`
   border-bottom: 5px solid #3c3c3c;
 `;
 
-class ConfirmModal extends React.Component<SettingsModalProps> {
+class SettingsModal extends React.Component<SettingsModalProps> {
   constructor(props: SettingsModalProps) {
     super(props);
   }
@@ -95,4 +95,4 @@ class ConfirmModal extends React.Component<SettingsModalProps> {
   }
 }
 
-export default ConfirmModal;
+export default SettingsModal;
