@@ -1,3 +1,4 @@
+import {pathOr} from 'rambda';
 import {ChartStore} from '../../stores/index';
 import {
   InstrumentModel,
@@ -47,7 +48,8 @@ export const mapToBarFromWamp = ({t, c, o, h, l, v}: any) => ({
 export const mapToChartSymbol = ({
   name,
   accuracy,
-  invertedAccuracy
+  invertedAccuracy,
+  baseAsset
 }: InstrumentModel) => ({
   name,
   minmov: 1,
@@ -57,7 +59,8 @@ export const mapToChartSymbol = ({
   supported_resolutions: ChartStore.config.supported_resolutions,
   has_intraday: true,
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
-  has_empty_bars: true
+  has_empty_bars: true,
+  volume_precision: pathOr(0, ['accuracy'], baseAsset)
 });
 
 type ResolutionMapper = (resolution: string) => Interval;
@@ -114,14 +117,16 @@ export const mapToTrade = ({
   Direction,
   DateTime,
   TradeId
-}: any) =>
-  new TradeModel({
+}: any) => {
+  const side = Direction === SideDirection.Buy ? Side.Buy : Side.Sell;
+  return new TradeModel({
     quantity: Direction === SideDirection.Buy ? Volume : Volume * -1,
-    side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
+    side,
     asset: Asset,
     timestamp: DateTime,
-    tradeId: `${TradeId}${Asset}`
+    tradeId: `${TradeId}${Asset}-${side}`
   });
+};
 
 export const mapToTradeFromWamp = ({Asset, Amount, DateTime, Id}: any) =>
   new TradeModel({

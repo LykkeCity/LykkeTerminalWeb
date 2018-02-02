@@ -1,13 +1,13 @@
 import OrderApi from '../api/orderApi';
+import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import {OrderModel} from '../models';
+import Types from '../models/modals';
 import OrderType from '../models/orderType';
 import {BaseStore, RootStore} from './index';
-import NotificationStore from './notificationStore';
 import ModalStore from './modalStore';
-import Types from '../models/modals';
-import ModalMessages from '../constants/modalMessages';
+import NotificationStore from './notificationStore';
 
 // tslint:disable:no-console
 
@@ -59,6 +59,27 @@ class OrderStore extends BaseStore {
     this.updateOrders();
   };
 
+  executeOrder = (orderIds: string[]) => {
+    this.rootStore.orderListStore.fetchAll().then(() => {
+      const orders = orderIds.filter(
+        order =>
+          !!this.rootStore.orderListStore.limitOrders.find(
+            limit => limit.id === order
+          )
+      );
+
+      setTimeout(() => {
+        this.updateOrders();
+        orders.forEach(order =>
+          this.notificationStore.addNotification(
+            levels.success,
+            messages.orderExecuted(order)
+          )
+        );
+      }, 1000);
+    });
+  };
+
   reset = () => {
     return;
   };
@@ -78,6 +99,17 @@ class OrderStore extends BaseStore {
 
   private orderPlacedUnsuccessfully = (error: any) => {
     console.error(error);
+
+    if (error.status === 400) {
+      this.modalStore.addModal(
+        ModalMessages.expired,
+        null,
+        null,
+        Types.Expired
+      );
+      return;
+    }
+
     let message;
     try {
       message = JSON.parse(error.message).message;
@@ -88,7 +120,6 @@ class OrderStore extends BaseStore {
       levels.error,
       `${messages.orderError} ${message}`
     );
-    this.modalStore.addModal(ModalMessages.expired, null, null, Types.Expired);
   };
 }
 

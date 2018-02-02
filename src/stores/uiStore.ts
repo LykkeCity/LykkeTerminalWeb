@@ -36,9 +36,11 @@ class UiStore extends BaseStore {
 
   @action
   selectInstrument = (instrument: InstrumentModel | any) => {
-    instrumentStorage.set(JSON.stringify(instrument));
-    this.selectedInstrument = instrument;
-    this.rootStore.chartStore.renderChart(this.selectedInstrument!);
+    const {getInstrumentById} = this.rootStore.referenceStore;
+    const selectedInstrument = getInstrumentById(instrument.id);
+    instrumentStorage.set(JSON.stringify(selectedInstrument));
+    this.selectedInstrument = selectedInstrument!;
+    this.rootStore.chartStore.renderChart(selectedInstrument!);
   };
 
   @action search = (term: string) => (this.searchTerm = term);
