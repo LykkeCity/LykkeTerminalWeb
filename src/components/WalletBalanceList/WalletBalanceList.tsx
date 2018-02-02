@@ -29,7 +29,11 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
         <td>{total.toFixed(accuracy)}</td>
       </Total>
       {assets.map((assetsItem: any, index: number) => (
-        <TradingWalletItem key={assetsItem.id} {...assetsItem} />
+        <TradingWalletItem
+          key={assetsItem.id}
+          accuracy={accuracy}
+          assetBalance={assetsItem}
+        />
       ))}
     </tbody>
   </Table>

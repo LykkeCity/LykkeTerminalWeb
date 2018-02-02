@@ -24,7 +24,8 @@ class UiStore extends BaseStore {
       instrument => {
         if (instrument) {
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
-          fns.seq(reset, fetchAll, subscribe)();
+          fns.seq(reset, fetchAll)();
+          subscribe(this.getSession());
         }
       }
     );

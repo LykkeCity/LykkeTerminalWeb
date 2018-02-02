@@ -1,14 +1,13 @@
+import {observer} from 'mobx-react';
 import * as React from 'react';
 import {WalletBalanceItemProps} from '../';
 import WalletBalanceNumber from './WalletBalanceNumber';
 
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   accuracy,
-  balance,
-  id,
-  name,
-  reserved
+  assetBalance
 }) => {
+  const {id, name, balance, reserved} = assetBalance;
   const calculatedBalance: string = (balance - (reserved || 0))
     .toFixed(accuracy)
     .replace(/[.,]?0+$/, '');
@@ -22,4 +21,4 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   );
 };
 
-export default WalletBalanceItem;
+export default observer(WalletBalanceItem);

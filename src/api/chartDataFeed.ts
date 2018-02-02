@@ -1,13 +1,14 @@
 import * as topics from '../api/topics';
 import {InstrumentModel, MarketType, PriceType} from '../models/index';
 import * as mappers from '../models/mappers/index';
-import {PriceApi, WampApi} from './index';
+import {PriceApi} from './index';
 
 class ChartDataFeed {
   constructor(
     private readonly config: any,
     private readonly instrument: InstrumentModel,
-    private readonly priceApi: PriceApi
+    private readonly priceApi: PriceApi,
+    private readonly session: any
   ) {}
 
   onReady = (cb: any) => {
@@ -90,7 +91,7 @@ class ChartDataFeed {
     subscriberUID: any,
     onResetCacheNeededCallback: any
   ) => {
-    WampApi.subscribe(
+    this.session.subscribe(
       topics.candle(
         MarketType.Spot,
         this.instrument.id,

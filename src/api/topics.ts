@@ -9,3 +9,6 @@ export const candle = (
   priceType: PriceType,
   interval: Interval
 ) => `candle.${market}.${pair.toLowerCase()}.${priceType}.${interval}`;
+
+export const quote = (symbol: string) =>
+  `quote.spot.${symbol.toLowerCase()}.bid`;

@@ -1,6 +1,8 @@
 import {pathOr} from 'rambda';
 import {ChartStore} from '../../stores/index';
 import {
+  AssetCategoryModel,
+  AssetModel,
   InstrumentModel,
   Interval,
   OrderModel,
@@ -143,4 +145,45 @@ export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly}: any) =>
     id: Id,
     name: Name,
     readOnly: ReadOnly
+  });
+
+export const mapToAsset = (
+  {Id, Name, DisplayId, CategoryId, Accuracy, IsBase, IconUrl}: any,
+  categories: AssetCategoryModel[]
+) =>
+  new AssetModel({
+    accuracy: Accuracy,
+    category:
+      categories.find(x => x.id === CategoryId) || AssetCategoryModel.Other(),
+    iconUrl: IconUrl,
+    id: Id,
+    isBase: IsBase,
+    name: DisplayId || Name
+  });
+
+export const mapToAssetCategory = ({Id: id, Name: name}: any) =>
+  new AssetCategoryModel({id, name});
+
+export const mapToInstrument = (
+  {
+    Id,
+    Accuracy,
+    BaseAssetId,
+    IsDisabled,
+    InvertedAccuracy,
+    Name,
+    QuotingAssetId,
+    Source,
+    Source2
+  }: any,
+  getAssetById: (assetId: string) => AssetModel | undefined
+) =>
+  new InstrumentModel({
+    id: Id,
+    name: Name,
+    // tslint:disable-next-line:object-literal-sort-keys
+    baseAsset: getAssetById(BaseAssetId),
+    quotingAsset: getAssetById(QuotingAssetId),
+    accuracy: Accuracy,
+    invertedAccuracy: InvertedAccuracy
   });

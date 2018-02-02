@@ -1,6 +1,6 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy, uniq} from 'rambda';
-import {WampApi} from '../api';
+// import {WampApi} from '../api';
 import {TradeApi} from '../api/index';
 import {TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
@@ -34,8 +34,8 @@ class TradeStore extends BaseStore {
     }, Promise.reject);
   };
 
-  subscribe = () => {
-    WampApi.subscribe(`trades`, this.onTrades);
+  subscribe = (session: any) => {
+    session.subscribe(`trades`, this.onTrades);
   };
 
   onTrades = (args: any) => {
