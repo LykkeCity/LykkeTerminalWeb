@@ -2,7 +2,8 @@ import {connect} from '../connect';
 import TradeList from './TradeList';
 
 const ConnectedTradeList = connect(
-  ({tradeStore: {allTrades}}) => ({
+  ({tradeStore: {allTrades, fetchPart}}) => ({
+    fetchPart,
     trades: allTrades
   }),
   TradeList

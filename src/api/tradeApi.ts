@@ -4,15 +4,15 @@ import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
 export interface TradeApi {
-  fetchAll: () => ApiResponse;
+  fetchAll: (skip: number, take: number) => ApiResponse;
 }
 
 export class RestTradeApi extends RestApi implements TradeApi {
-  fetchAll = () =>
+  fetchAll = (skip: number, take: number) =>
     HistoryApi.fetchHistory({
       operationType: Operations.Trade,
-      skip: 0,
-      take: 100
+      skip,
+      take
     });
 }
 
