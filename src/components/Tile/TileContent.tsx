@@ -10,6 +10,7 @@ const {Flex} = require('grid-styled');
 
 interface TileContentProps {
   additionalControls: any;
+  additionalControlStore: any;
   children: any;
   isAuth: any;
   tabs: any;
@@ -134,13 +135,15 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
                 <Flex align="center" justify="flex-end">
                   <Flex align="center">
                     {this.props.additionalControls.map(
-                      (addAction: any, index: number) => {
+                      (addControl: any, index: number) => {
                         return (
                           <TileAdditionalControlItem
                             key={`tiletabitem_${index}`}
-                            actionName={addAction.title}
                             index={index}
-                            action={addAction.action}
+                            additionalControlStore={
+                              this.props.additionalControlStore
+                            }
+                            control={addControl}
                           />
                         );
                       }
