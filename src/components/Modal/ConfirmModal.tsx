@@ -92,7 +92,7 @@ class ConfirmModal extends React.Component<
   constructor(props: ConfirmModalProps) {
     super(props);
     this.state = {
-      isReminderChecked: false
+      isReminderChecked: true
     };
   }
 
@@ -103,7 +103,10 @@ class ConfirmModal extends React.Component<
   };
 
   handleApply = (modal: ModalModel) => () => {
-    confirmStorage.set(this.state.isReminderChecked);
+    if (!this.state.isReminderChecked) {
+      confirmStorage.set(this.state.isReminderChecked);
+    }
+
     modal.applyAction();
     modal.close();
   };
