@@ -42,7 +42,8 @@ class ChartStore extends BaseStore {
       datafeed: new ChartDataFeed(
         ChartStore.config,
         instrument,
-        new PriceApi(this)
+        new PriceApi(this),
+        this.getSession()
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
@@ -57,7 +58,9 @@ class ChartStore extends BaseStore {
         'display_market_status',
         'border_around_the_chart',
         'remove_library_container_border',
-        'header_undo_redo'
+        'header_undo_redo',
+        'header_interval_dialog_button',
+        'show_interval_dialog_on_keypress'
       ],
       overrides: {
         'paneProperties.background': '#333333',

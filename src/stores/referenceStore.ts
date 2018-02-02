@@ -7,6 +7,7 @@ import {
   InstrumentModel,
   SearchString
 } from '../models';
+import * as mappers from '../models/mappers';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -91,9 +92,9 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchReferenceData = async () => {
-    await this.fetchBaseAsset();
     await this.fetchCategories();
     await this.fetchAssets();
+    await this.fetchInstruments();
   };
 
   fetchAssets = () => {
@@ -102,7 +103,9 @@ class ReferenceStore extends BaseStore {
       .then((resp: any) => {
         if (resp && resp.Assets) {
           runInAction(() => {
-            this.assets = resp.Assets.map(this.mapAssetFromDto);
+            this.assets = resp.Assets.map((x: any) =>
+              mappers.mapToAsset(x, this.categories)
+            );
           });
         }
         return Promise.resolve();
@@ -116,7 +119,9 @@ class ReferenceStore extends BaseStore {
       .then((resp: any) => {
         if (resp && resp.AssetCategories) {
           runInAction(() => {
-            this.categories = resp.AssetCategories.map(this.mapCategoryFromDto);
+            this.categories = resp.AssetCategories.map(
+              mappers.mapToAssetCategory
+            );
           });
         }
         return Promise.resolve();
@@ -128,7 +133,9 @@ class ReferenceStore extends BaseStore {
     const resp = await this.api.fetchAssetInstruments();
     if (resp && resp.AssetPairs) {
       runInAction(() => {
-        this.instruments = resp.AssetPairs.map(this.mapInstrumentFromDto);
+        this.instruments = resp.AssetPairs.map((x: any) =>
+          mappers.mapToInstrument(x, this.getAssetById)
+        );
       });
     }
   };
@@ -153,51 +160,15 @@ class ReferenceStore extends BaseStore {
     this.rootStore.balanceListStore.updateBalance();
   };
 
+  onQuote = (args: any) => {
+    const {a: id, p: price} = args[0];
+    const instrument = this.getInstrumentById(id);
+    if (instrument && instrument.id) {
+      instrument.updatePrice(price);
+    }
+  };
+
   reset = () => (this.assets = []);
-
-  private mapAssetFromDto = ({
-    Id,
-    Name,
-    DisplayId,
-    CategoryId,
-    Accuracy,
-    IsBase,
-    IconUrl
-  }: any) =>
-    new AssetModel({
-      accuracy: Accuracy,
-      category:
-        this.categories.find(x => x.id === CategoryId) ||
-        AssetCategoryModel.Other(),
-      iconUrl: IconUrl,
-      id: Id,
-      isBase: IsBase,
-      name: DisplayId || Name
-    });
-
-  private mapCategoryFromDto = ({Id: id, Name: name}: any) =>
-    new AssetCategoryModel({id, name});
-
-  private mapInstrumentFromDto = ({
-    Id,
-    Accuracy,
-    BaseAssetId,
-    IsDisabled,
-    InvertedAccuracy,
-    Name,
-    QuotingAssetId,
-    Source,
-    Source2
-  }: any) =>
-    new InstrumentModel({
-      id: Id,
-      name: Name,
-      // tslint:disable-next-line:object-literal-sort-keys
-      baseAsset: this.getAssetById(BaseAssetId),
-      quotingAsset: this.getAssetById(QuotingAssetId),
-      accuracy: Accuracy,
-      invertedAccuracy: InvertedAccuracy
-    });
 }
 
 export default ReferenceStore;

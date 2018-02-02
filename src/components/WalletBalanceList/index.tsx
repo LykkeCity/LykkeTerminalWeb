@@ -1,3 +1,4 @@
+import {AssetBalanceModel} from '../../models/index';
 import {connect} from '../connect';
 import WalletBalanceList from './WalletBalanceList';
 
@@ -9,10 +10,7 @@ export interface WalletBalanceListProps {
 
 export interface WalletBalanceItemProps {
   accuracy: number;
-  balance: number;
-  id: string;
-  reserved: number;
-  name: string;
+  assetBalance: AssetBalanceModel;
 }
 
 const ConnectedWalletBalanceList = connect(
