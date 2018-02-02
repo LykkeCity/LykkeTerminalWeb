@@ -1,8 +1,8 @@
 const additionalActions = {
   orders: [
     {
-      action: '',
       actionParams: {store: 'orderStore', method: 'cancelAll'},
+      conditionsParams: [{store: 'orderListStore', getter: 'isOrderLength'}],
       title: 'Cancel all orders'
     }
   ]

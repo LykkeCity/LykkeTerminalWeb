@@ -7,10 +7,12 @@ export interface TileProps {
   tabs?: string[];
   authorize?: boolean;
   additionalControls?: any[];
+  additionalControlStore: any;
 }
 
 const connectedTile = connect(
-  ({authStore: {isAuth}}) => ({
+  ({additionalControlStore, authStore: {isAuth}}) => ({
+    additionalControlStore,
     isAuth
   }),
   Tile
