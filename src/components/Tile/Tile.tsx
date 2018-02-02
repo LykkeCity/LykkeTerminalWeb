@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from '../styled';
@@ -33,36 +34,42 @@ const TileTitle = styled(Box)`
   margin-bottom: -1px;
 `;
 
-const Tile: React.SFC<TileProps> = ({
-  title = '',
-  children,
-  tabs,
-  authorize = false,
-  isAuth,
-  additionalControls
-}) => (
-  <TileWrapper>
-    <TileHeader justify="space-between">
-      <TileTitle>{title} </TileTitle>
-    </TileHeader>
-    <TileContent
-      tabs={tabs}
-      additionalControls={additionalControls}
-      isAuth={isAuth}
-    >
-      {authorize ? (
-        isAuth ? (
-          children
-        ) : Array.isArray(children) ? (
-          children.map((el: any, index: number) => <Unauthorized key={index} />)
+const Tile: React.SFC<TileProps> = observer(
+  ({
+    title = '',
+    children,
+    tabs,
+    authorize = false,
+    isAuth,
+    additionalControls,
+    additionalControlStore
+  }) => (
+    <TileWrapper>
+      <TileHeader justify="space-between">
+        <TileTitle>{title} </TileTitle>
+      </TileHeader>
+      <TileContent
+        additionalControls={additionalControls}
+        additionalControlStore={additionalControlStore}
+        isAuth={isAuth}
+        tabs={tabs}
+      >
+        {authorize ? (
+          isAuth ? (
+            children
+          ) : Array.isArray(children) ? (
+            children.map((el: any, index: number) => (
+              <Unauthorized key={index} />
+            ))
+          ) : (
+            <Unauthorized />
+          )
         ) : (
-          <Unauthorized />
-        )
-      ) : (
-        children
-      )}
-    </TileContent>
-  </TileWrapper>
+          children
+        )}
+      </TileContent>
+    </TileWrapper>
+  )
 );
 
 export default Tile;

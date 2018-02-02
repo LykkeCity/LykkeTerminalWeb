@@ -56,13 +56,7 @@ const ELEMENT_MAP = (rootStore: any): {[viewId: string]: JSX.Element} => ({
     <Tile
       title="Orders"
       authorize={true}
-      additionalControls={additionalActions.orders.map(addAction => {
-        addAction.action =
-          rootStore[addAction.actionParams.store][
-            addAction.actionParams.method
-          ];
-        return addAction;
-      })}
+      additionalControls={additionalActions.orders}
     >
       <OrderList />
     </Tile>
