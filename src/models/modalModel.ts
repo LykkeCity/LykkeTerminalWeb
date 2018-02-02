@@ -1,7 +1,7 @@
 class ModalModel {
-  message: string;
-  applyAction: any;
-  cancelAction: any;
+  message?: any;
+  applyAction?: any;
+  cancelAction?: any;
   close: any;
   type: string;
 
