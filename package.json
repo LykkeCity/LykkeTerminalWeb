@@ -7,6 +7,7 @@
     "@types/react-router-dom": "^4.2.3",
     "@types/react-select": "^1.1.0",
     "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
+    "date-fns": "^1.29.0",
     "grid-styled": "^2.0.0-11",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",

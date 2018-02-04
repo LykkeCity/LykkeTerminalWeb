@@ -113,7 +113,7 @@ export const mapToLimitOrder = ({
     volume: Voume
   });
 
-export const mapToTrade = ({
+export const mapToTradeFromWamp = ({
   Asset,
   Volume,
   Direction,
@@ -126,12 +126,14 @@ export const mapToTrade = ({
     side,
     asset: Asset,
     timestamp: DateTime,
-    tradeId: `${TradeId}${Asset}-${side}`
+    tradeId: TradeId,
+    id: `${TradeId}${Asset}-${side}`
   });
 };
 
-export const mapToTradeFromWamp = ({Asset, Amount, DateTime, Id}: any) =>
+export const mapToTradeFromRest = ({Asset, Amount, DateTime, Id}: any) =>
   new TradeModel({
+    id: Id,
     quantity: Amount,
     asset: Asset,
     timestamp: DateTime,

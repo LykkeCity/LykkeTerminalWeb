@@ -1,3 +1,4 @@
+import {distanceInWordsToNow, format} from 'date-fns';
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
 import styled, {colorFromSide} from '../styled';
@@ -16,7 +17,9 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   <tr className={className}>
     <td>{asset}</td>
     <td>{quantity}</td>
-    <td>{new Date(timestamp).toLocaleString()}</td>
+    <td title={format(new Date(timestamp))}>
+      {distanceInWordsToNow(new Date(timestamp))} ago
+    </td>
   </tr>
 );
 

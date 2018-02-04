@@ -16,7 +16,7 @@ import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {Tile} from '../Tile';
-import {TradeList} from '../TradeList';
+import {PublicTradeList, TradeList} from '../TradeList';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
 
@@ -44,7 +44,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   e: (
     <Tile title="Executions" tabs={tabs.executions} authorize={true}>
       <TradeList />
-      <div>Market trades</div>
+      <PublicTradeList />
     </Tile>
   ),
   ob: (
