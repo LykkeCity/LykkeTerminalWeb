@@ -1,6 +1,7 @@
 import {extendObservable} from 'mobx';
 
 class TradeModel {
+  id: string;
   asset: string;
   side: string;
   quantity: number;
