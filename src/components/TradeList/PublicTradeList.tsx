@@ -1,15 +1,18 @@
 import * as React from 'react';
-import {TradeModel} from '../../models/index';
-import {TradeListItem} from './index';
+import {TradesProps} from './index';
+import Trades from './Trades';
 
-interface PublicTradeListProps {
-  trades: TradeModel[];
-}
-
-export const PublicTradeList: React.SFC<PublicTradeListProps> = ({
-  trades = []
+export const PublicTradeList: React.SFC<TradesProps> = ({
+  trades = [],
+  fetchPart
 }) => (
-  <div>{trades.map(trade => <TradeListItem key={trade.id} {...trade} />)}</div>
+  <div>
+    <Trades
+      trades={trades}
+      fetchPart={fetchPart}
+      stringId={'public'} // TODO delete after implementing real API for public trades
+    />
+  </div>
 );
 
 export default PublicTradeList;
