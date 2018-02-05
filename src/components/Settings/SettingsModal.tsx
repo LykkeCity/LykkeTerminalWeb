@@ -30,6 +30,10 @@ const StyledModal = styled.div`
       &:last-child {
         margin: 0;
         border: none;
+
+        label {
+          margin: 0;
+        }
       }
 
       label span {
@@ -63,10 +67,6 @@ class SettingsModal extends React.Component<SettingsModalProps> {
     this.props.settingsStore.toggleConfirmations();
   };
 
-  handleTheme = () => {
-    this.props.settingsStore.toggleTheme();
-  };
-
   render() {
     return (
       <div onClick={this.preventClose} style={{position: 'relative'}}>
@@ -79,14 +79,6 @@ class SettingsModal extends React.Component<SettingsModalProps> {
                 label={`Show confirm window`}
               />
             </li>
-            <li>
-              <CustomCheckbox
-                change={this.handleTheme}
-                checked={this.props.settingsStore.theme}
-                label={`Dark theme`}
-              />
-            </li>
-            <li>Layout</li>
           </ul>
           <StyledModalArrow />
         </StyledModal>
