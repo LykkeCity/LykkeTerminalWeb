@@ -93,7 +93,10 @@ class TradeStore extends BaseStore {
   onTrades = (args: any[]) => {
     const mappedTrades = args[0].map(mappers.mapToTradeFromWamp);
     const executedOrderIds: string[] = uniq(
-      args[0].map((trade: any) => trade.OrderId)
+      args[0].map((trade: any) => ({
+        id: trade.OrderId,
+        volume: trade.Volume
+      }))
     );
 
     this.wampTrades += mappedTrades.length;
