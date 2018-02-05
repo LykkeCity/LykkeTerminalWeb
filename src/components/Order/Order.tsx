@@ -253,8 +253,8 @@ class Order extends React.Component<OrderProps, OrderState> {
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
             amount={this.fixedAmount(currentPrice)}
-            quantity={this.fixedValue(this.state.quantityValue)}
-            price={this.fixedValue(this.state.priceValue)}
+            quantity={this.state.quantityValue}
+            price={this.state.priceValue}
           />
         </StyledContentWrap>
       </div>
