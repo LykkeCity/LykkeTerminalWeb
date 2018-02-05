@@ -35,12 +35,13 @@ const TileAdditionalControlItem: React.SFC<
     (condition: any) =>
       !!additionalControlStore.construct(condition.store, condition.getter)
   );
+  const click = () => (conditions ? action() : null);
 
   return (
     <StyledSpan
       className={conditions ? 'clickable' : ''}
       key={index}
-      onClick={action}
+      onClick={click}
     >
       {control.title}
     </StyledSpan>

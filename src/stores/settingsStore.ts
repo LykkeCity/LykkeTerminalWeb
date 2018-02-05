@@ -5,7 +5,6 @@ import {BaseStore, RootStore} from './index';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 const layoutStorage = StorageUtils(keys.layout);
-const themeStorage = StorageUtils(keys.themeDark);
 
 class SettingsStore extends BaseStore {
   @observable settingsShown: boolean = false;
@@ -17,10 +16,6 @@ class SettingsStore extends BaseStore {
 
   get confirmations() {
     return JSON.parse(confirmStorage.get() as string);
-  }
-
-  get theme() {
-    return JSON.parse(themeStorage.get() as string);
   }
 
   get layout() {
@@ -39,16 +34,9 @@ class SettingsStore extends BaseStore {
     confirmStorage.set(!this.confirmations);
   };
 
-  toggleTheme = () => {
-    themeStorage.set(!this.theme);
-  };
-
   init = () => {
     if (this.confirmations === null) {
       confirmStorage.set(true);
-    }
-    if (this.theme === null) {
-      themeStorage.set(true);
     }
   };
 
