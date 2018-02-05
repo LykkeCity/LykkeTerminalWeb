@@ -12,7 +12,7 @@ import {
   takeLast,
   toLower
 } from 'rambda';
-import {OrderBookApi, WampApi} from '../api';
+import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
@@ -29,15 +29,15 @@ class OrderBookStore extends BaseStore {
     super(store);
   }
 
-  subscribe = async () => {
+  subscribe = async (session: any) => {
     const topic = curry(topics.orderBook)(
       this.rootStore.uiStore.selectedInstrument!.id
     );
     this.subscriptions.add(
-      await WampApi.subscribe(topic(Side.Buy), this.onUpdate)
+      await session.subscribe(topic(Side.Buy), this.onUpdate)
     );
     this.subscriptions.add(
-      await WampApi.subscribe(topic(Side.Sell), this.onUpdate)
+      await session.subscribe(topic(Side.Sell), this.onUpdate)
     );
   };
 

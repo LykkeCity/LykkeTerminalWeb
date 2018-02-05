@@ -8,11 +8,13 @@ import {
   WampApi,
   WatchlistApi
 } from '../api/index';
+import * as topics from '../api/topics';
 import shortcuts from '../constants/shortcuts';
 import keys from '../constants/storageKeys';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
+  AdditionalControlStore,
   AuthStore,
   BalanceListStore,
   BaseStore,
@@ -30,12 +32,10 @@ import {
 } from './index';
 
 const tokenStorage = StorageUtils(keys.token);
-const notificationStorage = StorageUtils(keys.notificationId);
+// const notificationStorage = StorageUtils(keys.notificationId);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class RootStore {
-  session: any;
-
   readonly watchlistStore: WatchlistStore;
   readonly tradeStore: TradeStore;
   readonly orderBookStore: OrderBookStore;
@@ -49,8 +49,10 @@ class RootStore {
   readonly notificationStore: NotificationStore;
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
+  readonly additionalControlStore: AdditionalControlStore;
 
   private readonly stores = new Set<BaseStore>();
+  private sockets: WampApi[] = [];
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
@@ -70,6 +72,7 @@ class RootStore {
       this.chartStore = new ChartStore(this);
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
+      this.additionalControlStore = new AdditionalControlStore(this);
     }
   }
 
@@ -81,24 +84,27 @@ class RootStore {
       ];
     }, []);
 
-    WampApi.unauthConnect(
-      process.env.REACT_APP_WAMP_URL,
-      process.env.REACT_APP_WAMP_REALM_PRICES
-    ).then(() => {
-      instruments.forEach((x: any) =>
-        WampApi.subscribe(`quote.spot.${x.id.toLowerCase()}.bid`, this.onQuote)
-      );
-      this.uiStore.selectInstrument(
-        this.checkDefaultInstrument(defaultInstrument)
-      );
-    });
-
-    return Promise.resolve();
+    const ws = new WampApi();
+    this.sockets.push(ws);
+    return ws
+      .connect(
+        process.env.REACT_APP_WAMP_URL || '',
+        process.env.REACT_APP_WAMP_REALM_PRICES || ''
+      )
+      .then(session => {
+        this.uiStore.setSession(session);
+        this.chartStore.setSession(session);
+        instruments.forEach((x: any) =>
+          session.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
+        );
+        this.uiStore.selectInstrument(
+          this.checkDefaultInstrument(defaultInstrument)
+        );
+      });
   };
 
   start = async () => {
     await this.referenceStore.fetchReferenceData();
-    await this.referenceStore.fetchInstruments();
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
@@ -112,38 +118,32 @@ class RootStore {
 
     await this.watchlistStore
       .fetchAll()
+      .then(this.referenceStore.fetchBaseAsset)
       .then(this.tradeStore.fetchAll)
       .then(this.balanceListStore.fetchAll)
       .then(this.orderListStore.fetchAll)
-      .then(() => {
+      .then(async () => {
         const instruments = this.referenceStore.getInstruments();
-        WampApi.authConnect(
-          process.env.REACT_APP_WAMP_URL,
-          process.env.REACT_APP_WAMP_REALM_PRICES,
-          tokenStorage.get() as string,
-          notificationStorage.get() as string
-        ).then(() => {
-          instruments.forEach(x =>
-            WampApi.subscribe(
-              `quote.spot.${x.id.toLowerCase()}.bid`,
-              this.onQuote
-            )
-          );
-          this.uiStore.selectInstrument(
-            this.checkDefaultInstrument(defaultInstrument)
-          );
-        });
-      })
-      .then(() => {
-        WampApi.authConnect(
-          process.env.REACT_APP_WAMP_URL,
-          process.env.REACT_APP_WAMP_REALM_USER,
-          tokenStorage.get() as string,
-          notificationStorage.get() as string
-        ).then(() => {
-          this.tradeStore.subscribe();
-          this.balanceListStore.subscribe();
-        });
+
+        const ws = new WampApi();
+        this.sockets.push(ws);
+        const session = await ws.connect(
+          process.env.REACT_APP_WAMP_URL || '',
+          process.env.REACT_APP_WAMP_REALM_PRICES || '',
+          tokenStorage.get() as string
+        );
+
+        this.uiStore.setSession(session);
+        this.chartStore.setSession(session);
+        instruments.forEach(x =>
+          session.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
+        );
+        this.uiStore.selectInstrument(
+          this.checkDefaultInstrument(defaultInstrument)
+        );
+        this.tradeStore.subscribe(session);
+        this.balanceListStore.subscribe(session);
+        return Promise.resolve();
       })
       .catch(() => this.loadForUnauthUser(defaultInstrument));
   };
@@ -152,15 +152,8 @@ class RootStore {
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());
-    WampApi.close();
-  };
-
-  private onQuote = (args: any) => {
-    const {a: id, p: price} = args[0];
-    const instrument = this.referenceStore.getInstrumentById(id);
-    if (instrument && instrument.id) {
-      instrument.updatePrice(price);
-    }
+    this.sockets.forEach(ws => ws.close());
+    this.sockets = [];
   };
 
   private checkDefaultInstrument = (defaultInstrument: any) =>

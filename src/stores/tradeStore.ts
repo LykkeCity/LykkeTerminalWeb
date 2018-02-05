@@ -1,23 +1,30 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy, uniq} from 'rambda';
-import {WampApi} from '../api';
 import {TradeApi} from '../api/index';
+import * as topics from '../api/topics';
 import {TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import {BaseStore, RootStore} from './index';
 
+const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
+  reverse,
+  sortBy((o: TradeModel) => new Date(o.timestamp).getTime())
+);
+
 class TradeStore extends BaseStore {
   @computed
-  get allTrades() {
-    const sort = compose<TradeModel[], TradeModel[], TradeModel[]>(
-      reverse,
-      sortBy((o: TradeModel) => new Date(o.timestamp).getTime())
-    );
-    return sort(this.trades);
+  get getAllTrades() {
+    return sortByDate(this.trades);
   }
 
-  @observable private trades: TradeModel[] = [];
+  @computed
+  get getPublicTrades() {
+    return sortByDate(this.publicTrades);
+  }
+
+  @observable.shallow private trades: TradeModel[] = [];
+  @observable.shallow private publicTrades: TradeModel[] = [];
   private skip: number = TradeQuantity.Skip;
   private take: number = TradeQuantity.Take;
   private loading: number = TradeQuantity.Loading;
@@ -30,28 +37,37 @@ class TradeStore extends BaseStore {
   @action
   addTrade = (trade: TradeModel[]) => (this.trades = this.trades.concat(trade));
 
+  @action
+  addPublicTrade = (trade: TradeModel) => {
+    this.publicTrades.push(trade);
+  };
+
   fetchAll = () => {
     return this.api.fetchAll(this.skip, this.take).then((dto: any) => {
       runInAction(() => {
-        this.trades = dto.map(mappers.mapToTradeFromWamp);
+        this.trades = dto.map(mappers.mapToTradeFromRest);
       });
       return Promise.resolve();
     }, Promise.reject);
   };
 
-  subscribe = () => {
-    WampApi.subscribe(`trades`, this.onTrades);
+  subscribe = (session: any) => {
+    session.subscribe(topics.trade, this.onTrades);
+    session.subscribe(
+      topics.publicTrade(this.rootStore.uiStore.selectedInstrument!.id),
+      this.onPublicTrades
+    );
   };
 
   fetchPart = async () => {
     this.skip = this.getSkipValue();
     const tradesDto = await this.api.fetchAll(this.skip, this.loading);
-    const mappedTrades = tradesDto.map(mappers.mapToTradeFromWamp);
+    const mappedTrades = tradesDto.map(mappers.mapToTradeFromRest);
     this.addTrade(mappedTrades);
   };
 
-  onTrades = (args: any) => {
-    const mappedTrades = args[0].map(mappers.mapToTrade);
+  onTrades = (args: any[]) => {
+    const mappedTrades = args[0].map(mappers.mapToTradeFromWamp);
     const executedOrderIds: string[] = uniq(
       args[0].map((trade: any) => trade.OrderId)
     );
@@ -60,6 +76,10 @@ class TradeStore extends BaseStore {
 
     this.addTrade(mappedTrades);
     this.rootStore.orderStore.executeOrder(executedOrderIds);
+  };
+
+  onPublicTrades = (args: any[]) => {
+    this.addPublicTrade(args[0].map(mappers.mapToTradeFromWamp));
   };
 
   @action

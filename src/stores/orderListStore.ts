@@ -15,6 +15,11 @@ class OrderListStore extends BaseStore {
     return sort(this.orders);
   }
 
+  @computed
+  get isOrderLength() {
+    return this.orders.length;
+  }
+
   @observable private orders: OrderModel[] = [];
 
   constructor(store: RootStore, private readonly api: OrderApi) {

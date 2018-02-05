@@ -85,7 +85,6 @@ class OrderStore extends BaseStore {
   };
 
   private updateOrders = () => {
-    this.rootStore.balanceListStore.fetchAll();
     this.rootStore.orderListStore.fetchAll();
   };
 
