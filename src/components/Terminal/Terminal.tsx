@@ -16,7 +16,7 @@ import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {Tile} from '../Tile';
-import {TradeList} from '../TradeList';
+import {PublicTradeList, TradeList} from '../TradeList';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
 
@@ -29,7 +29,7 @@ const Shell = styled.div`
 `;
 
 const layoutStorage = StorageUtils(keys.layout);
-const ELEMENT_MAP = (rootStore: any): {[viewId: string]: JSX.Element} => ({
+const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
     <Tile title="Account" tabs={tabs.walletBalance} authorize={true}>
       <WalletBalanceList />
@@ -44,7 +44,7 @@ const ELEMENT_MAP = (rootStore: any): {[viewId: string]: JSX.Element} => ({
   e: (
     <Tile title="Executions" tabs={tabs.executions} authorize={true}>
       <TradeList />
-      <div>Market trades</div>
+      <PublicTradeList />
     </Tile>
   ),
   ob: (
@@ -56,13 +56,7 @@ const ELEMENT_MAP = (rootStore: any): {[viewId: string]: JSX.Element} => ({
     <Tile
       title="Orders"
       authorize={true}
-      additionalControls={additionalActions.orders.map(addAction => {
-        addAction.action =
-          rootStore[addAction.actionParams.store][
-            addAction.actionParams.method
-          ];
-        return addAction;
-      })}
+      additionalControls={additionalActions.orders}
     >
       <OrderList />
     </Tile>
@@ -72,7 +66,7 @@ const ELEMENT_MAP = (rootStore: any): {[viewId: string]: JSX.Element} => ({
       <Order />
     </Tile>
   )
-});
+};
 
 class Terminal extends React.Component<TerminalProps, {}> {
   private unlisten: any;
@@ -151,7 +145,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         <Header history={this.props.history} />
         <Mosaic
           // tslint:disable-next-line:jsx-no-lambda
-          renderTile={(id, path) => ELEMENT_MAP(this.props.rootStore)[id]}
+          renderTile={(id, path) => ELEMENT_MAP[id]}
           onChange={this.handleChange}
           resize={{minimumPaneSizePercentage: 10}}
           initialValue={this.initialValue}

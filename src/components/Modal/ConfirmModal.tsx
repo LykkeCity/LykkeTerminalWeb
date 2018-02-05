@@ -4,25 +4,15 @@ import keys from '../../constants/storageKeys';
 import ModalModel from '../../models/modalModel';
 import {StorageUtils} from '../../utils/index';
 import CustomCheckbox from '../CustomCheckbox/CustomCheckbox';
-import {ConfirmModalProps} from './index';
+import {Button, ConfirmModalProps, StyledModal} from './index';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
-const StyledModal = styled.div`
-  font-family: Proxima Nova;
-  position: absolute;
-  padding: 20px 25px;
-  top: 50%;
-  left: 50%;
-  transform: translateY(-50%) translateX(-50%);
+const StyledConfirmModal = styled(StyledModal)`
   width: 320px;
-  border-radius: 12px;
-  background-color: #3c3c3c;
-  border: solid 1px rgba(0, 0, 0, 0.2);
-  z-index: 3;
 `;
 
 const StyledCloseBtn = styled.a`
@@ -60,17 +50,6 @@ const StyledReminder = styled.div`
   margin-top: 16px;
 `;
 
-const Button = styled.button`
-  color: #f5f6f7;
-  width: 152px;
-  height: 49px;
-  border-radius: 4px;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
 const ApplyButton = styled(Button)`
   background-color: #0388ef;
   border: solid 1px #0388ef;
@@ -92,7 +71,7 @@ class ConfirmModal extends React.Component<
   constructor(props: ConfirmModalProps) {
     super(props);
     this.state = {
-      isReminderChecked: false
+      isReminderChecked: true
     };
   }
 
@@ -103,7 +82,10 @@ class ConfirmModal extends React.Component<
   };
 
   handleApply = (modal: ModalModel) => () => {
-    confirmStorage.set(this.state.isReminderChecked);
+    if (!this.state.isReminderChecked) {
+      confirmStorage.set(this.state.isReminderChecked);
+    }
+
     modal.applyAction();
     modal.close();
   };
@@ -117,7 +99,7 @@ class ConfirmModal extends React.Component<
     const {modal} = this.props;
     return (
       <div>
-        <StyledModal>
+        <StyledConfirmModal>
           <Flex justify={'space-between'}>
             <StyledTitle>Confirm</StyledTitle>
             <StyledCloseBtn href="#" onClick={this.handleCancel(modal)}>
@@ -139,7 +121,7 @@ class ConfirmModal extends React.Component<
               Cancel
             </CancelButton>
           </Flex>
-        </StyledModal>
+        </StyledConfirmModal>
       </div>
     );
   }

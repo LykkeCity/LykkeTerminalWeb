@@ -1,5 +1,8 @@
+import {pathOr} from 'rambda';
 import {ChartStore} from '../../stores/index';
 import {
+  AssetCategoryModel,
+  AssetModel,
   InstrumentModel,
   Interval,
   OrderModel,
@@ -47,7 +50,8 @@ export const mapToBarFromWamp = ({t, c, o, h, l, v}: any) => ({
 export const mapToChartSymbol = ({
   name,
   accuracy,
-  invertedAccuracy
+  invertedAccuracy,
+  baseAsset
 }: InstrumentModel) => ({
   name,
   minmov: 1,
@@ -57,7 +61,8 @@ export const mapToChartSymbol = ({
   supported_resolutions: ChartStore.config.supported_resolutions,
   has_intraday: true,
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
-  has_empty_bars: true
+  has_empty_bars: true,
+  volume_precision: pathOr(0, ['accuracy'], baseAsset)
 });
 
 type ResolutionMapper = (resolution: string) => Interval;
@@ -108,23 +113,27 @@ export const mapToLimitOrder = ({
     volume: Voume
   });
 
-export const mapToTrade = ({
+export const mapToTradeFromWamp = ({
   Asset,
   Volume,
   Direction,
   DateTime,
   TradeId
-}: any) =>
-  new TradeModel({
+}: any) => {
+  const side = Direction === SideDirection.Buy ? Side.Buy : Side.Sell;
+  return new TradeModel({
     quantity: Direction === SideDirection.Buy ? Volume : Volume * -1,
-    side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
+    side,
     asset: Asset,
     timestamp: DateTime,
-    tradeId: `${TradeId}${Asset}`
+    tradeId: TradeId,
+    id: `${TradeId}${Asset}-${side}`
   });
+};
 
-export const mapToTradeFromWamp = ({Asset, Amount, DateTime, Id}: any) =>
+export const mapToTradeFromRest = ({Asset, Amount, DateTime, Id}: any) =>
   new TradeModel({
+    id: Id,
     quantity: Amount,
     asset: Asset,
     timestamp: DateTime,
@@ -138,4 +147,45 @@ export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly}: any) =>
     id: Id,
     name: Name,
     readOnly: ReadOnly
+  });
+
+export const mapToAsset = (
+  {Id, Name, DisplayId, CategoryId, Accuracy, IsBase, IconUrl}: any,
+  categories: AssetCategoryModel[]
+) =>
+  new AssetModel({
+    accuracy: Accuracy,
+    category:
+      categories.find(x => x.id === CategoryId) || AssetCategoryModel.Other(),
+    iconUrl: IconUrl,
+    id: Id,
+    isBase: IsBase,
+    name: DisplayId || Name
+  });
+
+export const mapToAssetCategory = ({Id: id, Name: name}: any) =>
+  new AssetCategoryModel({id, name});
+
+export const mapToInstrument = (
+  {
+    Id,
+    Accuracy,
+    BaseAssetId,
+    IsDisabled,
+    InvertedAccuracy,
+    Name,
+    QuotingAssetId,
+    Source,
+    Source2
+  }: any,
+  getAssetById: (assetId: string) => AssetModel | undefined
+) =>
+  new InstrumentModel({
+    id: Id,
+    name: Name,
+    // tslint:disable-next-line:object-literal-sort-keys
+    baseAsset: getAssetById(BaseAssetId),
+    quotingAsset: getAssetById(QuotingAssetId),
+    accuracy: Accuracy,
+    invertedAccuracy: InvertedAccuracy
   });

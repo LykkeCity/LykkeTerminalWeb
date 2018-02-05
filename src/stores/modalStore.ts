@@ -15,7 +15,7 @@ class ModalStore extends BaseStore {
   }
 
   addModal = (
-    message: string,
+    message: any,
     applyAction: any,
     cancelAction: any,
     type: string

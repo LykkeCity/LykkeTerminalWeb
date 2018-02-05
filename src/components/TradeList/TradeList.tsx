@@ -1,25 +1,11 @@
 import * as React from 'react';
-import {TradeModel} from '../../models/index';
-import {Table} from '../Table/index';
-import {TradeListItem} from './';
+import {TradesProps} from './index';
+import Trades from './Trades';
 
-interface TradeListProps {
-  trades?: TradeModel[];
-}
-
-const TradeList: React.SFC<TradeListProps> = ({trades = []}) => (
-  <Table>
-    <thead>
-      <tr>
-        <th>Asset</th>
-        <th>Volume</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody>
-      {trades.map(trade => <TradeListItem key={trade.tradeId} {...trade} />)}
-    </tbody>
-  </Table>
+const TradeList: React.SFC<TradesProps> = ({trades = [], fetchPart}) => (
+  <div>
+    <Trades trades={trades} fetchPart={fetchPart} />
+  </div>
 );
 
 export default TradeList;

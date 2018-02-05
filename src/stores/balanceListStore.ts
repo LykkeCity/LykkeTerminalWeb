@@ -25,13 +25,12 @@ class BalanceListStore extends BaseStore {
 
   @computed
   get totalWalletAssetsBalance() {
-    return this.balanceLists.length
-      ? this.getTradingWallet(this.balanceLists).balance
-      : 0;
+    const tradingWallet = this.balanceLists.find(w => w.type === keys.trading);
+    return pathOr(0, ['balance'], tradingWallet);
   }
 
   @observable private balanceLists: any[] = [];
-  @observable private tradingAssets: any[] = [];
+  @observable private tradingAssets: AssetBalanceModel[] = [];
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -75,6 +74,19 @@ class BalanceListStore extends BaseStore {
         return assetBalance;
       }
     );
+  };
+
+  subscribe = (session: any) => {
+    session.subscribe(`balances`, this.onUpdateBalance);
+  };
+
+  onUpdateBalance = (args: any) => {
+    const {a: asset, b: balance, r: reserved} = args[0];
+    const assetBalance = this.tradingAssets.find(b => b.id === asset);
+    if (assetBalance) {
+      assetBalance.balance = balance;
+      assetBalance.reserved = reserved;
+    }
   };
 
   reset = () => {

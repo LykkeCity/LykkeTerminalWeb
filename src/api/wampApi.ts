@@ -1,4 +1,10 @@
-import autobahn, {Connection, OnChallengeHandler, Session} from 'autobahn';
+import autobahn, {
+  Connection,
+  IConnectionOptions,
+  OnChallengeHandler,
+  Session,
+  Subscription
+} from 'autobahn';
 import keys from '../constants/storageKeys';
 import {StorageUtils} from '../utils/index';
 
@@ -6,51 +12,40 @@ const tokenStorage = StorageUtils(keys.token);
 
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
-  private session: Session | any;
+  private session: Session;
   private connection: Connection;
 
-  private key: string;
+  private subscriptions: Map<string, Subscription> = new Map();
 
-  connect = (key: string = '', options: any) => {
-    this.key = key;
-    return new Promise(resolve => {
-      if (this.session) {
-        resolve(this.session);
-      }
-
-      this.connection = new autobahn.Connection(options);
-
-      this.connection.onopen = (session: Session) => {
-        this.session = session;
-        resolve(session);
+  connect = (url: string, realm: string, authId?: string) => {
+    let options: IConnectionOptions = {url, realm, max_retries: -1};
+    if (authId) {
+      options = {
+        ...options,
+        authmethods: ['ticket'],
+        authid: authId,
+        onchallenge: this.handleChallenge
       };
-
-      this.connection.open();
-    });
+    }
+    return this._connect(options);
   };
 
-  authConnect = (
-    url: string | undefined,
-    realm: string | undefined,
-    authId: string = '',
-    key: string = ''
-  ) =>
-    this.connect(key, {
-      url,
-      realm,
-      authmethods: ['ticket'],
-      authid: authId,
-      onchallenge: this.handleChallenge
-    });
+  subscribe = async (topic: string, cb: any) => {
+    const subscription = await this.session.subscribe(topic, cb);
+    this.subscriptions.set(topic, subscription);
+  };
 
-  unauthConnect = (url: string | undefined, realm: string | undefined) =>
-    this.connect(undefined, {url, realm});
-
-  subscribe = (topic: string, cb: any) => this.session.subscribe(topic, cb);
+  unsubscribe = async (subscription: Subscription) => {
+    const topic = subscription.topic;
+    if (this.subscriptions.has(topic)) {
+      await this.subscriptions.get(topic)!.unsubscribe();
+      this.subscriptions.delete(topic);
+    }
+  };
 
   close = () => {
+    this.unsubscribeFromAll();
     this.connection.close();
-    this.session = null;
   };
 
   publish = (topic: string, event: [any]) => this.session.publish(topic, event);
@@ -60,9 +55,36 @@ export class WampApi {
 
   call = (topic: string, procedure: any) => this.session.call(topic, procedure);
 
-  get currentSession() {
-    return this.session;
-  }
+  // tslint:disable-next-line:variable-name
+  private _connect = (options: IConnectionOptions) =>
+    new Promise<Session>(resolve => {
+      if (this.session) {
+        resolve(this.session);
+      }
+
+      this.connection = new autobahn.Connection(options);
+
+      this.connection.onopen = (session: Session) => {
+        this.session = session;
+        this.subscribeToAll();
+        resolve(session);
+      };
+
+      this.connection.open();
+    });
+
+  private subscribeToAll = () => {
+    this.subscriptions.forEach(subscription =>
+      this.subscribe(
+        subscription.topic,
+        this.subscriptions.get(subscription.topic)!.handler
+      )
+    );
+  };
+
+  private unsubscribeFromAll = () => {
+    this.subscriptions.forEach(this.unsubscribe);
+  };
 
   private handleChallenge: OnChallengeHandler = (session, method) => {
     if (method === 'ticket') {
@@ -72,5 +94,4 @@ export class WampApi {
   };
 }
 
-const instance = new WampApi();
-export default instance;
+export default WampApi;

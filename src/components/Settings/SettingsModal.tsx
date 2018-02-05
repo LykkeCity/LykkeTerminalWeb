@@ -30,6 +30,10 @@ const StyledModal = styled.div`
       &:last-child {
         margin: 0;
         border: none;
+
+        label {
+          margin: 0;
+        }
       }
 
       label span {
@@ -50,7 +54,7 @@ const StyledModalArrow = styled.div`
   border-bottom: 5px solid #3c3c3c;
 `;
 
-class ConfirmModal extends React.Component<SettingsModalProps> {
+class SettingsModal extends React.Component<SettingsModalProps> {
   constructor(props: SettingsModalProps) {
     super(props);
   }
@@ -61,10 +65,6 @@ class ConfirmModal extends React.Component<SettingsModalProps> {
 
   handleConfirm = () => {
     this.props.settingsStore.toggleConfirmations();
-  };
-
-  handleTheme = () => {
-    this.props.settingsStore.toggleTheme();
   };
 
   render() {
@@ -79,14 +79,6 @@ class ConfirmModal extends React.Component<SettingsModalProps> {
                 label={`Show confirm window`}
               />
             </li>
-            <li>
-              <CustomCheckbox
-                change={this.handleTheme}
-                checked={this.props.settingsStore.theme}
-                label={`Dark theme`}
-              />
-            </li>
-            <li>Layout</li>
           </ul>
           <StyledModalArrow />
         </StyledModal>
@@ -95,4 +87,4 @@ class ConfirmModal extends React.Component<SettingsModalProps> {
   }
 }
 
-export default ConfirmModal;
+export default SettingsModal;

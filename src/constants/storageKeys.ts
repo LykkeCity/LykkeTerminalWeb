@@ -4,7 +4,6 @@ const keys = {
   layout: 'lwt-layout',
   notificationId: 'lwt-notificationId',
   selectedInstrument: 'selected-instrument',
-  themeDark: 'lwt-darkTheme',
   token: 'lwt-token'
 };
 

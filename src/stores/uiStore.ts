@@ -25,7 +25,8 @@ class UiStore extends BaseStore {
       instrument => {
         if (instrument) {
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
-          fns.seq(reset, fetchAll, subscribe)();
+          fns.seq(reset, fetchAll)();
+          subscribe(this.getSession());
           this.stateFns.forEach((f: any) => f && f(instrument));
         }
       }
@@ -38,9 +39,11 @@ class UiStore extends BaseStore {
 
   @action
   selectInstrument = (instrument: InstrumentModel | any) => {
-    instrumentStorage.set(JSON.stringify(instrument));
-    this.selectedInstrument = instrument;
-    this.rootStore.chartStore.renderChart(this.selectedInstrument!);
+    const {getInstrumentById} = this.rootStore.referenceStore;
+    const selectedInstrument = getInstrumentById(instrument.id);
+    instrumentStorage.set(JSON.stringify(selectedInstrument));
+    this.selectedInstrument = selectedInstrument!;
+    this.rootStore.chartStore.renderChart(selectedInstrument!);
   };
 
   @action search = (term: string) => (this.searchTerm = term);
