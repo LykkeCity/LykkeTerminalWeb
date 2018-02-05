@@ -32,7 +32,6 @@ const StyledAmount = styled.div`
 
 const OrderOption: React.SFC<OrderOptionProps> = ({
   title,
-  isOptional,
   isAmountable,
   tumblerValues,
   change,
@@ -43,9 +42,6 @@ const OrderOption: React.SFC<OrderOptionProps> = ({
   return (
     <StyledOrderOptions>
       <div>
-        {isOptional ? (
-          <input type="checkbox" /> // todo have to be styled
-        ) : null}
         <StyledTitle>{title}</StyledTitle>
       </div>
       <StyledOptions>
