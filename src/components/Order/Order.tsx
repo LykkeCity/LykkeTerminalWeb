@@ -1,18 +1,17 @@
 import {rem} from 'polished';
+import {pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
-import orderOptions from '../../constants/orderOptions';
 import keys from '../../constants/storageKeys';
+import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
-import {StorageUtils} from '../../utils/index';
-import StringHelpers from '../../utils/string';
+import {StorageUtils, StringHelpers} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
-import OrderButton from './OrderButton';
 import OrderChoiceButton from './OrderChoiceButton';
-import OrderOption from './OrderOption';
+import {default as OrderForm} from './OrderForm';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
@@ -38,10 +37,6 @@ const StyledContentWrap = styled.div`
   padding: 15px 15px;
 `;
 
-const StyledOrderButton = styled.div`
-  margin-top: ${rem(24)};
-`;
-
 const StyledSplitBlock = styled.div`
   position: absolute;
   left: 50%;
@@ -51,10 +46,6 @@ const StyledSplitBlock = styled.div`
   color: #13b72a;
 `;
 
-const StyledOrderOptions = styled.div`
-  margin-top: ${rem(24)};
-`;
-
 class Order extends React.Component<OrderProps, OrderState> {
   constructor(props: OrderProps) {
     super(props);
@@ -62,12 +53,27 @@ class Order extends React.Component<OrderProps, OrderState> {
       isMarketActive: true,
       isSellActive: true,
       pendingOrder: false,
-      priceValue: 0,
-      quantityValue: 0,
-      stopLoss: 0,
-      takeProfit: 0
+      priceValue: '0',
+      quantityValue: '0'
     };
+
+    this.props.stateFns.push(this.handleChangeInstrument);
   }
+
+  handleChangeInstrument = (instrument: InstrumentModel) => {
+    const priceAccuracy = pathOr(2, ['accuracy'], instrument);
+    const asset = this.props.getAssetById(
+      pathOr('', ['name'], instrument).split('/')[0]
+    );
+    const quantityAccuracy = asset ? asset.accuracy : 2;
+
+    this.setState({
+      priceValue: parseFloat(this.state.priceValue).toFixed(priceAccuracy),
+      quantityValue: parseFloat(this.state.quantityValue).toFixed(
+        quantityAccuracy
+      )
+    });
+  };
 
   handleActionClick = (action: string) => () => {
     this.setState({
@@ -87,17 +93,22 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
-  applyOrder = (action: string) => {
+  applyOrder = (
+    action: string,
+    quantity: string,
+    baseName: string,
+    price: string
+  ) => {
     const orderType = this.state.isMarketActive ? MARKET : LIMIT;
     const body: any = {
-      AssetId: this.props.name.split('/')[0],
+      AssetId: baseName,
       AssetPairId: this.props.currency,
       OrderAction: action,
-      Volume: this.state.quantityValue
+      Volume: parseFloat(quantity)
     };
 
     if (!this.state.isMarketActive) {
-      body.Price = this.state.priceValue;
+      body.Price = parseFloat(price);
     }
 
     this.props
@@ -109,67 +120,95 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.disableButton(false);
   };
 
-  handleButtonClick = (
-    action: string,
-    currentPrice: string,
-    baseName: string,
-    quoteName: string
-  ) => () => {
-    if (this.state.pendingOrder) {
-      return;
-    }
+  handleButtonClick = (action: string) => {
     this.disableButton(true);
+    const baseName = this.props.name.split('/')[0];
+    const quoteName = this.props.name.split('/')[1];
+    const {quantityValue, priceValue} = this.state;
+    const currentPrice = (
+      parseFloat(quantityValue) * parseFloat(priceValue)
+    ).toFixed(this.props.accuracy.priceValue);
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
-      this.applyOrder(action);
-      return;
+      return this.applyOrder(action, quantityValue, baseName, currentPrice);
     }
-    const message = `${action} ${
-      this.state.quantityValue
-    } ${baseName} at ${currentPrice} ${quoteName}`;
+    const message = `${action} ${quantityValue} ${baseName} at ${currentPrice} ${quoteName}`;
     this.props.addModal(
       message,
-      () => this.applyOrder(action),
+      () => this.applyOrder(action, quantityValue, baseName, currentPrice),
       this.cancelOrder,
       Types.Confirm
     );
   };
 
-  handleOnChange = (value: string, accuracy: number) => (e: any) => {
-    e.target.value = StringHelpers.substringZero(e.target.value);
-
-    if (StringHelpers.getPostDecimalsLength(e.target.value) > accuracy) {
-      e.target.value = StringHelpers.substringLast(e.target.value);
-    }
-
+  onArrowClick = (operation: string, field: string) => () => {
     const tempObj = {};
-    tempObj[value] = Math.abs(e.target.value);
+    const accuracy = this.props.accuracy[field];
+
+    switch (operation) {
+      case 'up':
+        tempObj[field] = (
+          parseFloat(this.state[field]) + Math.pow(10, -1 * accuracy)
+        ).toFixed(accuracy);
+        break;
+      case 'down':
+        let newVal =
+          parseFloat(this.state[field]) - Math.pow(10, -1 * accuracy);
+        newVal = newVal < 0 ? 0 : newVal;
+        tempObj[field] = newVal.toFixed(accuracy);
+        break;
+    }
     this.setState(tempObj);
   };
 
-  handleCloseOrder = () => {
-    alert('close order');
+  onChange = (field: string) => (e: any) => {
+    let value = e.target.value;
+    const accuracy = this.props.accuracy[field];
+    if (!StringHelpers.isOnlyNumbers(value)) {
+      return;
+    }
+    value = StringHelpers.substringZero(value);
+    value = StringHelpers.substringMinus(value);
+
+    if (StringHelpers.getPostDecimalsLength(value) > accuracy) {
+      value = StringHelpers.substringLast(value);
+    }
+    value = value === '' ? '0' : value;
+
+    const tempObj = {};
+    tempObj[field] = value;
+    this.setState(tempObj);
+  };
+
+  isInvalidValues = () => {
+    return this.state.isMarketActive
+      ? !+this.state.quantityValue
+      : !+this.state.quantityValue || !+this.state.priceValue;
+  };
+
+  fixedAmount = (currentPrice: number) => {
+    const amount = currentPrice * parseFloat(this.state.quantityValue);
+    return amount === 0
+      ? amount.toFixed(2)
+      : amount.toFixed(this.props.accuracy.priceValue);
+  };
+
+  fixedValue = (value: any) => {
+    return parseFloat(value) === 0 ? parseFloat(value).toFixed(2) : value + '';
   };
 
   render() {
-    const currentAction = this.state.isSellActive
+    const {action} = this.state.isSellActive
       ? orderAction.sell
       : orderAction.buy;
-    const options = this.state.isMarketActive
-      ? orderOptions.filter(opt => opt.isMarketField)
-      : orderOptions;
     const currentPrice =
       (this.state.isMarketActive
         ? this.state.isSellActive ? this.props.bid : this.props.ask
-        : this.state.priceValue) || 0;
-    const price = (this.state.quantityValue * currentPrice).toFixed(
-      this.props.accuracy.priceValue
-    );
+        : parseFloat(this.state.priceValue)) || 0;
     const {bid, ask} = this.props;
     const spread = ask - bid;
-    const baseName = this.props.name.split('/')[0];
-    const quoteName = this.props.name.split('/')[1];
+
     return (
       <div>
         <StyledActionBlock>
@@ -205,40 +244,18 @@ class Order extends React.Component<OrderProps, OrderState> {
             />
           </StyledActionChoice>
 
-          <StyledOrderOptions>
-            {options.map((opt, index) => {
-              return (
-                <OrderOption
-                  key={index}
-                  inputValue={this.state[opt.value]}
-                  change={this.handleOnChange(
-                    opt.value,
-                    this.props.accuracy[opt.value]
-                  )}
-                  amount={price}
-                  quoteName={quoteName}
-                  {...opt}
-                />
-              );
-            })}
-          </StyledOrderOptions>
-
-          <StyledOrderButton>
-            <OrderButton
-              action={currentAction.action}
-              price={price}
-              click={this.handleButtonClick(
-                currentAction.action,
-                price,
-                baseName,
-                quoteName
-              )}
-              quoteName={quoteName}
-              baseName={baseName}
-              quantity={this.state.quantityValue}
-              isDisable={this.state.pendingOrder}
-            />
-          </StyledOrderButton>
+          <OrderForm
+            assetName={this.props.name}
+            isMarket={this.state.isMarketActive}
+            isDisable={this.state.pendingOrder || this.isInvalidValues()}
+            action={action}
+            onSubmit={this.handleButtonClick}
+            onChange={this.onChange}
+            onArrowClick={this.onArrowClick}
+            amount={this.fixedAmount(currentPrice)}
+            quantity={this.fixedValue(this.state.quantityValue)}
+            price={this.fixedValue(this.state.priceValue)}
+          />
         </StyledContentWrap>
       </div>
     );
