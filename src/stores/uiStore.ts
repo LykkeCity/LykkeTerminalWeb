@@ -16,6 +16,7 @@ class UiStore extends BaseStore {
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
+  stateFns: any = [];
 
   constructor(store: RootStore) {
     super(store);
@@ -26,6 +27,7 @@ class UiStore extends BaseStore {
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
           fns.seq(reset, fetchAll)();
           subscribe(this.getSession());
+          this.stateFns.forEach((f: any) => f && f(instrument));
         }
       }
     );
@@ -54,6 +56,7 @@ class UiStore extends BaseStore {
   reset = () => {
     this.searchTerm = '';
     this.searchWalletName = Watchlists.All;
+    this.stateFns = [];
   };
 }
 

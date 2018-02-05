@@ -36,4 +36,22 @@ describe('string utils', () => {
     const subStr = customNumber.substring(0, customNumber.length - 1);
     expect(StringHelpers.substringLast(customNumber)).toBe(subStr);
   });
+
+  it('should return true for for only numbers value', () => {
+    const customNumber = '0.23';
+    expect(StringHelpers.isOnlyNumbers(customNumber)).toBe(true);
+  });
+
+  it('should return true for for not only numbers value', () => {
+    const customNumber = '0.23x';
+    expect(StringHelpers.isOnlyNumbers(customNumber)).toBe(false);
+  });
+
+  it('should substring minus from string', () => {
+    const customNumber = '-0.2';
+    const returned = StringHelpers.substringMinus(customNumber);
+    expect(StringHelpers.substringZero(returned)).toBe(
+      customNumber.substring(1)
+    );
+  });
 });

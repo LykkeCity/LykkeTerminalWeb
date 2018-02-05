@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {capitalize} from '../../utils';
 import {OrderButtonProps} from './index';
 
-const StyledButton = styled.div`
+const StyledButton = styled.button`
   width: 100%;
   min-height: 49px;
   border-radius: 4px;
@@ -13,6 +13,7 @@ const StyledButton = styled.div`
   align-items: center;
   font-size: ${rem(16)};
   cursor: pointer;
+  color: #f5f6f7;
 
   &.sell {
     background-color: #ab00ff;
@@ -35,15 +36,15 @@ const StyledButton = styled.div`
 const OrderButton: React.SFC<OrderButtonProps> = ({
   action,
   price,
-  click,
-  quoteName,
   baseName,
   quantity,
-  isDisable
+  isDisable,
+  type
 }) => {
   const btnClass = isDisable ? 'disable' : action;
+
   return (
-    <StyledButton className={btnClass} onClick={click}>
+    <StyledButton type={type} className={btnClass} disabled={isDisable}>
       {capitalize(action)} {quantity} {baseName} at {price}
     </StyledButton>
   );
