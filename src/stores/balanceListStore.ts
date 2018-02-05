@@ -8,9 +8,9 @@ import {BaseStore, RootStore} from './index';
 class BalanceListStore extends BaseStore {
   @computed
   get getBalances() {
-    return this.balanceLists.sort(
-      (a: BalanceModel, b: BalanceModel) => b.balance - a.balance
-    );
+    return this.balanceLists
+      .filter((b: BalanceModel) => !!b.balance)
+      .sort((a: BalanceModel, b: BalanceModel) => b.balance - a.balance);
   }
 
   @computed
@@ -20,17 +20,16 @@ class BalanceListStore extends BaseStore {
 
   @computed
   get tradingWalletAssets() {
-    return this.tradingAssets;
+    return this.tradingAssets.filter((a: AssetBalanceModel) => !!a.balance);
   }
 
   @computed
   get totalWalletAssetsBalance() {
-    const tradingWallet = this.balanceLists.find(w => w.type === keys.trading);
-    return pathOr(0, ['balance'], tradingWallet);
+    return this.tradingAssets.map(b => b.balance).reduce(add, 0);
   }
 
-  @observable private balanceLists: any[] = [];
-  @observable private tradingAssets: AssetBalanceModel[] = [];
+  @observable.shallow private balanceLists: any[] = [];
+  @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -87,6 +86,14 @@ class BalanceListStore extends BaseStore {
       assetBalance.balance = balance;
       assetBalance.reserved = reserved;
     }
+    this.balanceLists.forEach((bl: BalanceModel) =>
+      bl.balances.forEach(b => {
+        if (b.AssetId === asset) {
+          b.Balance = balance;
+        }
+      })
+    );
+    this.updateBalance(this.balanceLists);
   };
 
   reset = () => {

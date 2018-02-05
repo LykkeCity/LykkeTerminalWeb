@@ -26,7 +26,6 @@ export interface OrderOptionProps {
   title: string;
   amount: string;
   isAmountable: boolean;
-  isOptional: boolean;
   tumblerValues: string[];
   change: any;
   inputValue: number;
