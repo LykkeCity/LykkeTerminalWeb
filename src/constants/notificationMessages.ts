@@ -4,7 +4,9 @@ const messages = {
   expired: 'Your session has expired',
   orderCanceled: 'Order has canceled:',
   orderError: 'There is an error placing your order:',
-  orderExecuted: (id: string) => `Order: ${id} was executed successfully`,
+  orderExecuted: (id: string) => `Order: ${id} was closed successfully`,
+  orderExecutedPartially: (id: string, volume: number) =>
+    `Order: ${id} was partially closed. Amount: ${volume}`,
   orderSuccess: 'Order was placed successfully'
 };
 

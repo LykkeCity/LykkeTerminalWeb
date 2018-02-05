@@ -59,24 +59,29 @@ class OrderStore extends BaseStore {
     this.updateOrders();
   };
 
-  executeOrder = (orderIds: string[]) => {
+  executeOrder = (orders: any[]) => {
     this.rootStore.orderListStore.fetchAll().then(() => {
-      const orders = orderIds.filter(
-        order =>
-          !!this.rootStore.orderListStore.limitOrders.find(
-            limit => limit.id === order
-          )
+      orders.forEach(order =>
+        this.rootStore.orderListStore.limitOrders.forEach(limit => {
+          const match = limit.id === order.id;
+
+          if (match) {
+            if (limit.volume === order.volume) {
+              this.notificationStore.addNotification(
+                levels.success,
+                messages.orderExecuted(order.id)
+              );
+            } else {
+              this.notificationStore.addNotification(
+                levels.success,
+                messages.orderExecutedPartially(order.id, order.volume)
+              );
+            }
+          }
+        })
       );
 
-      setTimeout(() => {
-        this.updateOrders();
-        orders.forEach(order =>
-          this.notificationStore.addNotification(
-            levels.success,
-            messages.orderExecuted(order)
-          )
-        );
-      }, 1000);
+      this.updateOrders();
     });
   };
 
