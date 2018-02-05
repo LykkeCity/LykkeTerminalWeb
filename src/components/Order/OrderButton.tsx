@@ -29,9 +29,7 @@ const StyledButton = styled.button`
 
   &.disable {
     cursor: not-allowed;
-    background: #ebedef !important;
-    color: rgba(63, 77, 96, 0.3) !important;
-    opacity: 1;
+    opacity: 0.72;
   }
 `;
 
@@ -43,7 +41,7 @@ const OrderButton: React.SFC<OrderButtonProps> = ({
   isDisable,
   type
 }) => {
-  const btnClass = isDisable ? 'disable' : action;
+  const btnClass = isDisable ? `disable ${action}` : action;
 
   return (
     <StyledButton type={type} className={btnClass} disabled={isDisable}>
