@@ -4,6 +4,7 @@ import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
+import TradeQuantity from '../models/tradeLoadingQuantity';
 import {BaseStore, RootStore} from './index';
 
 const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
@@ -24,6 +25,13 @@ class TradeStore extends BaseStore {
 
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
+  private skip: number = TradeQuantity.Skip;
+  private publicSkip: number = TradeQuantity.Skip;
+  private take: number = TradeQuantity.Take;
+  private publicTake: number = TradeQuantity.Take;
+  private loading: number = TradeQuantity.Loading;
+  private wampTrades: number = 0;
+  private wampPublicTrades: number = 0;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
@@ -33,17 +41,26 @@ class TradeStore extends BaseStore {
   addTrade = (trade: TradeModel[]) => (this.trades = this.trades.concat(trade));
 
   @action
-  addPublicTrade = (trade: TradeModel) => {
-    this.publicTrades.push(trade);
+  addPublicTrade = (trades: TradeModel[]) => {
+    this.publicTrades = this.publicTrades.concat(trades);
   };
 
   fetchAll = () => {
-    return this.api.fetchAll().then((dto: any) => {
-      runInAction(() => {
-        this.trades = dto.map(mappers.mapToTradeFromRest);
+    return this.api
+      .fetchUserTrade(this.skip, this.take)
+      .then((dto: any) => {
+        runInAction(() => {
+          this.trades = dto.map(mappers.mapToTradeFromRest);
+        });
+        return Promise.resolve();
+      }, Promise.reject)
+      .then(() => {
+        return this.api
+          .fetchPublicTrade(this.publicSkip, this.publicTake)
+          .then((dto: any) => {
+            this.publicTrades = dto.map(mappers.mapToTradeFromRest);
+          });
       });
-      return Promise.resolve();
-    }, Promise.reject);
   };
 
   subscribe = (session: any) => {
@@ -54,24 +71,55 @@ class TradeStore extends BaseStore {
     );
   };
 
+  fetchPartTrade = async () => {
+    this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
+    const tradesDto = await this.api.fetchUserTrade(this.skip, this.loading);
+    this.addTrade(tradesDto.map(mappers.mapToTradeFromRest));
+  };
+
+  fetchPartPublicTrade = async () => {
+    this.publicSkip = this.getSkipValue(
+      'publicSkip',
+      'publicTake',
+      'wampPublicTrades'
+    );
+    const tradesDto = await this.api.fetchPublicTrade(
+      this.publicSkip,
+      this.loading
+    );
+    this.addPublicTrade(tradesDto.map(mappers.mapToTradeFromRest));
+  };
+
   onTrades = (args: any[]) => {
     const mappedTrades = args[0].map(mappers.mapToTradeFromWamp);
     const executedOrderIds: string[] = uniq(
       args[0].map((trade: any) => trade.OrderId)
     );
 
+    this.wampTrades += mappedTrades.length;
+
     this.addTrade(mappedTrades);
     this.rootStore.orderStore.executeOrder(executedOrderIds);
   };
 
   onPublicTrades = (args: any[]) => {
+    this.wampPublicTrades += args[0].length;
     this.addPublicTrade(args[0].map(mappers.mapToTradeFromWamp));
   };
 
   @action
   reset = () => {
     this.trades = [];
+    this.publicTrades = [];
   };
+
+  private getSkipValue(skip: string, take: string, wamp: string) {
+    this[skip] =
+      (!this[skip] ? this[skip] + this[take] : this[skip] + this.loading) +
+      this[wamp];
+    this[wamp] = 0;
+    return this[skip];
+  }
 }
 
 export default TradeStore;
