@@ -14,6 +14,8 @@ const StyledButton = styled.button`
   font-size: ${rem(16)};
   cursor: pointer;
   color: #f5f6f7;
+  outline: none;
+  border: none;
 
   &.sell {
     background-color: #ab00ff;
