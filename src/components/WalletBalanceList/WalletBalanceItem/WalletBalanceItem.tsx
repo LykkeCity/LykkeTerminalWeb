@@ -4,18 +4,15 @@ import {WalletBalanceItemProps} from '../';
 import WalletBalanceNumber from './WalletBalanceNumber';
 
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
-  accuracy,
   assetBalance
 }) => {
-  const {id, name, balance, reserved} = assetBalance;
-  const calculatedBalance: string = (balance - (reserved || 0))
-    .toFixed(accuracy)
-    .replace(/[.,]?0+$/, '');
+  const {id, name, accuracy, available} = assetBalance;
+  const formattedBalance = available.toFixed(accuracy).replace(/[.,]?0+$/, '');
   return (
     <tr key={id}>
       <td>{name}</td>
       <td>
-        <WalletBalanceNumber num={calculatedBalance} />
+        <WalletBalanceNumber num={formattedBalance} />
       </td>
     </tr>
   );
