@@ -100,6 +100,7 @@ class RootStore {
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
+        this.tradeStore.subscribeToPublicTrades(session);
       });
   };
 
