@@ -1,9 +1,14 @@
 import {computed, observable, runInAction} from 'mobx';
 import {add, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
+import {default as storageKeys} from '../constants/storageKeys';
 import keys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, BalanceModel} from '../models';
+import MarketService from '../services/marketService';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
+
+const baseAssetStorage = StorageUtils(storageKeys.baseAsset);
 
 class BalanceListStore extends BaseStore {
   @computed
@@ -25,11 +30,12 @@ class BalanceListStore extends BaseStore {
 
   @computed
   get totalWalletAssetsBalance() {
-    return this.tradingAssets.map(b => b.balance).reduce(add, 0);
+    return this.tradingTotal;
   }
 
   @observable.shallow private balanceLists: any[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
+  @observable private tradingTotal: number = 0;
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -61,7 +67,7 @@ class BalanceListStore extends BaseStore {
     this.balanceLists = [...tempBalanceLists];
   };
 
-  setTradingAssets = (balanceList: BalanceModel[]) => {
+  setTradingAssets = async (balanceList: BalanceModel[]) => {
     this.tradingAssets = this.getTradingWallet(balanceList).balances.map(
       (assetsBalance: any) => {
         const assetBalance = new AssetBalanceModel(assetsBalance);
@@ -73,19 +79,42 @@ class BalanceListStore extends BaseStore {
         return assetBalance;
       }
     );
+
+    await this.updateTradingWallet();
+  };
+
+  updateTradingWallet = async () => {
+    const assets = this.tradingAssets.map(asset => {
+      return {
+        AssetId: asset.id,
+        Balance: asset.balance
+      };
+    });
+    const baseAssetId = baseAssetStorage.get();
+
+    const updatedBalances: any[] = await MarketService.updateQuotes(
+      assets,
+      baseAssetId
+    );
+    this.tradingTotal = updatedBalances.map(b => b.Balance).reduce(add, 0);
+    this.tradingTotal += this.tradingAssets.find(
+      a => a.id === baseAssetId
+    )!.balance;
   };
 
   subscribe = (session: any) => {
     session.subscribe(`balances`, this.onUpdateBalance);
   };
 
-  onUpdateBalance = (args: any) => {
+  onUpdateBalance = async (args: any) => {
     const {a: asset, b: balance, r: reserved} = args[0];
     const assetBalance = this.tradingAssets.find(b => b.id === asset);
     if (assetBalance) {
       assetBalance.balance = balance;
       assetBalance.reserved = reserved;
     }
+    this.updateTradingWallet();
+
     this.balanceLists.forEach((bl: BalanceModel) =>
       bl.balances.forEach(b => {
         if (b.AssetId === asset) {
