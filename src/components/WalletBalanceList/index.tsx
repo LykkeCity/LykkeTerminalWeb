@@ -2,14 +2,8 @@ import {AssetBalanceModel} from '../../models/index';
 import {connect} from '../connect';
 import WalletBalanceList from './WalletBalanceList';
 
-export interface WalletBalanceListProps {
-  assets?: any;
-  accuracy: number;
-  total: number;
-}
-
 export interface WalletBalanceItemProps {
-  accuracy: number;
+  accuracy?: number;
   assetBalance: AssetBalanceModel;
 }
 

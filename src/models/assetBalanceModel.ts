@@ -1,4 +1,4 @@
-import {observable} from 'mobx';
+import {computed, observable} from 'mobx';
 
 class AssetBalanceModel {
   accuracy: number;
@@ -6,6 +6,11 @@ class AssetBalanceModel {
   name: string;
   @observable balance: number;
   @observable reserved: number;
+
+  @computed
+  get available() {
+    return this.balance - this.reserved;
+  }
 
   constructor(assetsBalance: any) {
     this.id = assetsBalance.AssetId;
