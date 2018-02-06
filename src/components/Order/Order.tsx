@@ -133,7 +133,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     if (!JSON.parse(isConfirm)) {
       return this.applyOrder(action, quantityValue, baseName, currentPrice);
     }
-    const message = `${action} ${quantityValue} ${baseName} at ${currentPrice} ${quoteName}`;
+    const messageSuffix = this.state.isMarketActive
+      ? 'at the market price'
+      : `at ${currentPrice} ${quoteName}`;
+    const message = `${action} ${quantityValue} ${baseName} ${messageSuffix}`;
     this.props.addModal(
       message,
       () => this.applyOrder(action, quantityValue, baseName, currentPrice),
