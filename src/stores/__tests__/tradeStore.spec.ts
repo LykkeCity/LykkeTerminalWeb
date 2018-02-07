@@ -8,7 +8,7 @@ describe('trade store', () => {
   };
 
   beforeEach(() => {
-    api.fetchUserTrade = jest.fn(() =>
+    api.fetchUserTrades = jest.fn(() =>
       Promise.resolve([
         {
           Amount: 6500,
@@ -18,7 +18,7 @@ describe('trade store', () => {
         }
       ])
     );
-    api.fetchPublicTrade = jest.fn(() =>
+    api.fetchPublicTrades = jest.fn(() =>
       Promise.resolve([
         {
           Amount: 6500,
@@ -88,7 +88,7 @@ describe('trade store', () => {
 
   describe('add public trade', () => {
     it('should add to public trades collection', () => {
-      tradeStore.addPublicTrade([
+      tradeStore.addPublicTrades([
         {
           asset: 'LKK',
           quantity: 1,

@@ -42,8 +42,8 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   e: (
-    <Tile title="Executions" tabs={tabs.executions} authorize={true}>
-      <TradeList />
+    <Tile title="Executions" tabs={tabs.executions}>
+      <TradeList protected={true} />
       <PublicTradeList />
     </Tile>
   ),
