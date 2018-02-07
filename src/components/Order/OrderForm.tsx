@@ -111,6 +111,21 @@ const OrderForm = (props: OrderFormProps) => {
                   type="text"
                   value={price}
                   onChange={onChange('priceValue')}
+                  // tslint:disable-next-line:jsx-no-lambda
+                  onKeyDown={e => {
+                    switch (e.keyCode) {
+                      case 38:
+                        onArrowClick('up', 'priceValue')();
+                        e.preventDefault();
+                        break;
+                      case 40:
+                        onArrowClick('down', 'priceValue')();
+                        e.preventDefault();
+                        break;
+                      default:
+                        break;
+                    }
+                  }}
                   name="priceValue"
                 />
                 <span
