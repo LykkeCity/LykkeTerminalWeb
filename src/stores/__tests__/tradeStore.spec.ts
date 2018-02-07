@@ -88,7 +88,7 @@ describe('trade store', () => {
 
   describe('add public trade', () => {
     it('should add to public trades collection', () => {
-      tradeStore.addPublicTrade([
+      tradeStore.addPublicTrades([
         {
           asset: 'LKK',
           quantity: 1,

@@ -38,16 +38,17 @@ class TradeStore extends BaseStore {
   }
 
   @action
-  addTrade = (trade: TradeModel[]) => (this.trades = this.trades.concat(trade));
+  addTrades = (trades: TradeModel[]) =>
+    (this.trades = this.trades.concat(trades));
 
   @action
-  addPublicTrade = (trades: TradeModel[]) => {
+  addPublicTrades = (trades: TradeModel[]) => {
     this.publicTrades = this.publicTrades.concat(trades);
   };
 
   fetchAll = () => {
     return this.api
-      .fetchUserTrade(this.skip, this.take)
+      .fetchUserTrades(this.skip, this.take)
       .then((dto: any) => {
         runInAction(() => {
           this.trades = dto.map(mappers.mapToTradeFromRest);
@@ -56,7 +57,7 @@ class TradeStore extends BaseStore {
       }, Promise.reject)
       .then(() => {
         return this.api
-          .fetchPublicTrade(this.publicSkip, this.publicTake)
+          .fetchPublicTrades(this.publicSkip, this.publicTake)
           .then((dto: any) => {
             this.publicTrades = dto.map(mappers.mapToTradeFromRest);
           });
@@ -76,8 +77,8 @@ class TradeStore extends BaseStore {
 
   fetchPartTrade = async () => {
     this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
-    const tradesDto = await this.api.fetchUserTrade(this.skip, this.loading);
-    this.addTrade(tradesDto.map(mappers.mapToTradeFromRest));
+    const tradesDto = await this.api.fetchUserTrades(this.skip, this.loading);
+    this.addTrades(tradesDto.map(mappers.mapToTradeFromRest));
   };
 
   fetchPartPublicTrade = async () => {
@@ -86,11 +87,11 @@ class TradeStore extends BaseStore {
       'publicTake',
       'wampPublicTrades'
     );
-    const tradesDto = await this.api.fetchPublicTrade(
+    const tradesDto = await this.api.fetchPublicTrades(
       this.publicSkip,
       this.loading
     );
-    this.addPublicTrade(tradesDto.map(mappers.mapToTradeFromRest));
+    this.addPublicTrades(tradesDto.map(mappers.mapToTradeFromRest));
   };
 
   onTrades = (args: any[]) => {
@@ -104,13 +105,13 @@ class TradeStore extends BaseStore {
 
     this.wampTrades += mappedTrades.length;
 
-    this.addTrade(mappedTrades);
+    this.addTrades(mappedTrades);
     this.rootStore.orderStore.executeOrder(executedOrderIds);
   };
 
   onPublicTrades = (args: any[]) => {
     this.wampPublicTrades += args[0].length;
-    this.addPublicTrade(args[0].map(mappers.mapToTradeFromWamp));
+    this.addPublicTrades(args[0].map(mappers.mapToTradeFromWamp));
   };
 
   @action
