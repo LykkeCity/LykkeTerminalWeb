@@ -125,9 +125,9 @@ class Order extends React.Component<OrderProps, OrderState> {
     const baseName = this.props.name.split('/')[0];
     const quoteName = this.props.name.split('/')[1];
     const {quantityValue, priceValue} = this.state;
-    const currentPrice = (
-      parseFloat(quantityValue) * parseFloat(priceValue)
-    ).toFixed(this.props.accuracy.priceValue);
+    const currentPrice = parseFloat(priceValue).toFixed(
+      this.props.accuracy.priceValue
+    );
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
@@ -135,7 +135,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     }
     const messageSuffix = this.state.isMarketActive
       ? 'at the market price'
-      : `at ${currentPrice} ${quoteName}`;
+      : `at the price of ${currentPrice} ${quoteName}`;
     const message = `${action} ${quantityValue} ${baseName} ${messageSuffix}`;
     this.props.addModal(
       message,
