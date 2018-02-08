@@ -17,6 +17,7 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
 }) => (
   <tr className={className}>
     <td>{symbol}</td>
+    <td>{side}</td>
     <td>{quantity}</td>
     <td>{price}</td>
     <td title={format(new Date(timestamp))}>

@@ -65,12 +65,10 @@ describe('trade store', () => {
     it('should clear trades', async () => {
       await tradeStore.fetchAll();
       expect(tradeStore.getAllTrades.length).toBeGreaterThan(0);
-      expect(tradeStore.getPublicTrades.length).toBeGreaterThan(0);
 
       tradeStore.reset();
 
       expect(tradeStore.getAllTrades.length).toBe(0);
-      expect(tradeStore.getPublicTrades.length).toBe(0);
     });
   });
 
@@ -78,6 +76,12 @@ describe('trade store', () => {
     it('should populate tradeList collection', async () => {
       await tradeStore.fetchAll();
       expect(tradeStore.getAllTrades.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('fetch public trades', () => {
+    it('should populate public trade list', async () => {
+      await tradeStore.fetchPublicTrades();
       expect(tradeStore.getPublicTrades.length).toBeGreaterThan(0);
     });
   });
