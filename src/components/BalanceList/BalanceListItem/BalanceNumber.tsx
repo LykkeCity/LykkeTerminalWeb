@@ -10,10 +10,12 @@ const StyledBalanceNumber = styled.div`
 
 const BalanceNumber = ({num}: {num: string}) => {
   const sepIdx = num.indexOf('.') + 1;
+  const int = sepIdx > 0 ? num.substr(0, sepIdx) : num;
+  const fractional = sepIdx > 0 ? num.substr(sepIdx) : '';
   return (
     <StyledBalanceNumber>
-      <span>{num.substr(0, sepIdx)}</span>
-      {num.substr(sepIdx)}
+      <span>{int}</span>
+      {fractional}
     </StyledBalanceNumber>
   );
 };
