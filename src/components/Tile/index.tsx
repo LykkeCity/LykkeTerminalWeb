@@ -1,4 +1,5 @@
 import {connect} from '../connect';
+import TabbedTile from './TabbedTile';
 import Tile from './Tile';
 
 export interface TileProps {
@@ -7,10 +8,10 @@ export interface TileProps {
   tabs?: string[];
   authorize?: boolean;
   additionalControls?: any[];
-  additionalControlStore: any;
+  additionalControlStore?: any;
 }
 
-const connectedTile = connect(
+const ConnectedTile = connect(
   ({additionalControlStore, authStore: {isAuth}}) => ({
     additionalControlStore,
     isAuth
@@ -18,7 +19,16 @@ const connectedTile = connect(
   Tile
 );
 
-export {connectedTile as Tile};
+const ConnectedTabbedTile = connect(
+  ({additionalControlStore, authStore: {isAuth}}) => ({
+    additionalControlStore,
+    isAuth
+  }),
+  TabbedTile
+);
+
+export {ConnectedTile as Tile};
+export {ConnectedTabbedTile as TabbedTile};
 export {default as TileContent} from './TileContent';
 export {default as TileTabItem} from './TileTabItem';
 export {
