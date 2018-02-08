@@ -23,7 +23,7 @@ const StyledSpan = styled.span`
     }
   }
   &.active {
-    color: #fff;
+    color: #f5f6f7;
   }
 `;
 

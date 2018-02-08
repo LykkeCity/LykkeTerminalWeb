@@ -21,7 +21,7 @@ const Table = styled.table`
     font-weight: 400;
     text-align: right;
     &:first-child {
-      color: #fff;
+      color: #f5f6f7;
       font-weight: 600;
       text-align: left;
     }

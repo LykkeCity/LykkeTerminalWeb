@@ -30,7 +30,7 @@ const StyledInputNumberComponent = styled.div`
     right: 5px;
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
-    border-bottom: 6px solid #fff;
+    border-bottom: 6px solid #f5f6f7;
     z-index: -1;
   }
 

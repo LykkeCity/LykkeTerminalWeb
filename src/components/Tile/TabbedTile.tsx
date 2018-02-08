@@ -5,9 +5,9 @@ import {TileContent, TileProps} from './index';
 import {TileHeader, TileTitle, TileWrapper} from './Tile';
 
 const TileTab = TileTitle.extend`
-  background: ${(p: any) => (p.active ? '#333' : '#292929')};
+  background: ${(p: any) => (p.selected ? '#333' : '#292929')};
   border-bottom: solid 1px rgba(0, 0, 0, 0.3);
-  border-color: ${(p: any) => (p.active ? '#333' : '#292929')};
+  border-color: ${(p: any) => (p.selected ? '#333' : '#292929')};
   cursor: pointer;
 `;
 
@@ -30,7 +30,7 @@ class TabbedTile extends React.Component<TabbedTileProps> {
           {tabs.map((tab, idx) => (
             <TileTab
               key={tab}
-              active={equals(idx, this.selectedIndex)}
+              selected={equals(idx, this.selectedIndex)}
               onClick={this.handleSelectTab(idx)}
             >
               {tab}
