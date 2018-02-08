@@ -18,19 +18,7 @@ export class RestTradeApi extends RestApi implements TradeApi {
 
   fetchPublicTrades = (skip: number, take: number) =>
     // this.fetchUserTrades(skip, take);
-    Promise.resolve([
-      {
-        Id: Math.random(),
-        // tslint:disable-next-line:object-literal-sort-keys
-        DateTime: '2018-02-07T21:57:44.100Z',
-        Type: 'CashIn',
-        State: 'InProgress',
-        Amount: 0,
-        Asset: 'string',
-        AssetPair: 'string',
-        Price: 0
-      }
-    ]);
+    Promise.resolve([]);
 }
 
 export default TradeApi;

@@ -7,7 +7,7 @@ import {TradeListItem, TradesProps} from './index';
 const StyledBtnSection = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
+  margin: ${rem(5)} 0;
   width: 100%;
 `;
 
@@ -44,9 +44,11 @@ const Trades: React.SFC<TradesProps> = ({
           ))}
         </tbody>
       </Table>
-      <StyledBtnSection>
-        <StyledBtn onClick={fetchPart}>Load more...</StyledBtn>
-      </StyledBtnSection>
+      {!!trades.length && (
+        <StyledBtnSection>
+          <StyledBtn onClick={fetchPart}>Load more...</StyledBtn>
+        </StyledBtnSection>
+      )}
     </div>
   );
 };
