@@ -9,8 +9,8 @@ import {TileTabItem} from './';
 const {Flex} = require('grid-styled');
 
 interface TileContentProps {
-  additionalControls: any;
-  additionalControlStore: any;
+  additionalControls?: any;
+  additionalControlStore?: any;
   children: any;
   isAuth: any;
   tabs: any;

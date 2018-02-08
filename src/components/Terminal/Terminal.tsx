@@ -15,7 +15,7 @@ import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
-import {Tile} from '../Tile';
+import {TabbedTile, Tile} from '../Tile';
 import {PublicTradeList, TradeList} from '../TradeList';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
@@ -42,8 +42,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   e: (
-    <Tile title="Executions" tabs={tabs.executions}>
-      <TradeList protected={true} />
+    <Tile title="Trade log">
       <PublicTradeList />
     </Tile>
   ),
@@ -53,13 +52,14 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   ord: (
-    <Tile
-      title="Orders"
+    <TabbedTile
+      tabs={['Orders', 'Trades']}
       authorize={true}
       additionalControls={additionalActions.orders}
     >
       <OrderList />
-    </Tile>
+      <TradeList />
+    </TabbedTile>
   ),
   wl: (
     <Tile title="Order" authorize={true}>

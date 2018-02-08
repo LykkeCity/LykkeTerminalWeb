@@ -3,16 +3,14 @@ import * as React from 'react';
 import styled from '../styled';
 import Unauthorized from '../Unauthorized/Unauthorized';
 import {TileContent, TileProps} from './index';
-
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
 
-const TileWrapper = styled.div`
-  /* TODO: find a better way for overflowing content */
+export const TileWrapper = styled.div`
   overflow: auto;
 `;
 
-const TileHeader = styled(Flex)`
+export const TileHeader = styled(Flex)`
   position: absolute;
   width: 100%;
   background: #292929;
@@ -22,7 +20,7 @@ const TileHeader = styled(Flex)`
   z-index: 1;
 `;
 
-const TileTitle = styled(Box)`
+export const TileTitle = styled(Box)`
   background: #333;
   border-left: none;
   font-size: ${rem(16)};
@@ -31,6 +29,7 @@ const TileTitle = styled(Box)`
   border-bottom: solid 1px #333;
   padding: ${rem(10)} ${rem(15)};
   margin-bottom: -1px;
+  margin-right: ${rem(5)};
 `;
 
 const Tile: React.SFC<TileProps> = ({
