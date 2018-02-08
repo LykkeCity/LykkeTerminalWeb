@@ -43,7 +43,8 @@ const StyledSplitBlock = styled.div`
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
   font-size: ${rem(14)};
-  color: #13b72a;
+  color: #ccc;
+  text-align: center;
 `;
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -211,13 +212,20 @@ class Order extends React.Component<OrderProps, OrderState> {
         : parseFloat(this.state.priceValue)) || 0;
     const {bid, ask} = this.props;
     const spread = ask - bid;
+    const spreadDiff = (ask - bid) / ask * 100;
 
     return (
       <div>
         <StyledActionBlock>
           <StyledSplitBlock>
-            {!Number.isNaN(spread) &&
-              spread.toFixed(this.props.accuracy.priceValue)}
+            {Number.isNaN(spread) || (
+              <div>{spread.toFixed(this.props.accuracy.priceValue)}</div>
+            )}
+            {Number.isNaN(spreadDiff) || (
+              <small>
+                {spreadDiff.toFixed(this.props.accuracy.priceValue)}%
+              </small>
+            )}
           </StyledSplitBlock>
           <OrderAction
             click={this.handleActionClick(orderAction.sell.action)}
