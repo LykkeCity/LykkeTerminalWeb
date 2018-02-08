@@ -1,4 +1,4 @@
-import {observable} from 'mobx';
+import {computed, observable} from 'mobx';
 import {equals} from 'rambda';
 import * as React from 'react';
 import {TileContent, TileProps} from './index';
@@ -18,12 +18,24 @@ interface TabbedTileProps extends TileProps {
 class TabbedTile extends React.Component<TabbedTileProps> {
   @observable selectedIndex = 0;
 
+  // TODO: rethink additionalControls API, should be passed as a child with specific React context
+  @computed
+  get shouldRenderAdditionalControls() {
+    return this.selectedIndex === 0;
+  }
+
   handleSelectTab = (idx: number) => (e: React.MouseEvent<any>) => {
     this.selectedIndex = idx;
   };
 
   render() {
-    const {tabs = [], children, ...props} = this.props;
+    const {
+      tabs = [],
+      children,
+      additionalControls,
+      additionalControlStore,
+      ...props
+    } = this.props;
     return (
       <TileWrapper>
         <TileHeader justify="left">
@@ -37,7 +49,18 @@ class TabbedTile extends React.Component<TabbedTileProps> {
             </TileTab>
           ))}
         </TileHeader>
-        <TileContent tabs={undefined} {...props}>
+        <TileContent
+          tabs={undefined}
+          additionalControls={
+            this.shouldRenderAdditionalControls ? additionalControls : undefined
+          }
+          additionalControlStore={
+            this.shouldRenderAdditionalControls
+              ? additionalControlStore
+              : undefined
+          }
+          {...props}
+        >
           {React.Children.map(
             children,
             (child, idx) => (equals(idx, this.selectedIndex) ? child : null)
