@@ -8,15 +8,17 @@ interface TradeListItemProps extends TradeModel {
 }
 
 const TradeListItem: React.SFC<TradeListItemProps> = ({
+  price,
   side,
-  asset,
+  symbol,
   quantity,
   timestamp,
   className
 }) => (
   <tr className={className}>
-    <td>{asset}</td>
+    <td>{symbol}</td>
     <td>{quantity}</td>
+    <td>{price}</td>
     <td title={format(new Date(timestamp))}>
       {distanceInWordsToNow(new Date(timestamp))} ago
     </td>

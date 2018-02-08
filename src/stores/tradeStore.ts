@@ -2,7 +2,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
-import {TradeModel} from '../models/index';
+import {Side, TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import {BaseStore, RootStore} from './index';
@@ -51,7 +51,26 @@ class TradeStore extends BaseStore {
       .fetchUserTrades(this.skip, this.take)
       .then((dto: any) => {
         runInAction(() => {
-          this.trades = dto.map(mappers.mapToTradeFromRest);
+          const groupedTrades = dto.reduce((acc: any, curr: any) => {
+            acc[curr.DateTime] = (acc[curr.DateTime] || []).concat(curr);
+            return acc;
+          }, {});
+
+          const trades = [];
+          // tslint:disable-next-line:forin
+          for (const id in groupedTrades) {
+            const t = groupedTrades[id];
+            trades.push({
+              id: t[0].Id,
+              price: Math.abs(t[1].Amount),
+              quantity: Math.abs(t[0].Amount),
+              side: t[0].Amount > 0 ? Side.Buy : Side.Sell,
+              symbol: t[0].Asset.concat('/', t[1].Asset),
+              timestamp: t[0].DateTime,
+              tradeId: t[0].Id
+            });
+          }
+          this.trades = trades; // dto.map(mappers.mapToTradeFromRest);
         });
         return Promise.resolve();
       }, Promise.reject)
