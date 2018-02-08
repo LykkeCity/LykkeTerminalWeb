@@ -33,8 +33,9 @@ const Trades: React.SFC<TradesProps> = ({
       <Table>
         <thead>
           <tr>
-            <th>Asset</th>
+            <th>Symbol</th>
             <th>Volume</th>
+            <th>Price</th>
             <th>Timestamp</th>
           </tr>
         </thead>

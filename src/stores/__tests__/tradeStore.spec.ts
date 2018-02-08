@@ -1,5 +1,7 @@
 import {RootStore, TradeStore} from '../index';
 
+// tslint:disable:object-literal-sort-keys
+
 describe('trade store', () => {
   let tradeStore: TradeStore;
   const api: any = {
@@ -11,23 +13,28 @@ describe('trade store', () => {
     api.fetchUserTrades = jest.fn(() =>
       Promise.resolve([
         {
-          Amount: 6500,
+          Id: '201802081814_8c8b3211-855d-4cdb-b242-68fce3b0c14e',
+          DateTime: '2018-02-08T18:14:25.637Z',
+          Type: 'Trade',
+          State: 'Finished',
+          Amount: 0.0001,
           Asset: 'BTC',
-          DateTime: new Date(),
-          Id: 1
-        }
-      ])
-    );
-    api.fetchPublicTrades = jest.fn(() =>
-      Promise.resolve([
+          AssetPair: null,
+          Price: null
+        },
         {
-          Amount: 6500,
-          Asset: 'BTC',
-          DateTime: new Date(),
-          Id: 2
+          Id: '201802081814_5037f2da-71d6-4bd5-a633-45432de1ee2e',
+          DateTime: '2018-02-08T18:14:25.637Z',
+          Type: 'Trade',
+          State: 'Finished',
+          Amount: -0.85,
+          Asset: 'USD',
+          AssetPair: null,
+          Price: null
         }
       ])
     );
+    api.fetchPublicTrades = api.fetchUserTrades;
 
     tradeStore = new TradeStore(new RootStore(false), api);
   });
@@ -80,7 +87,7 @@ describe('trade store', () => {
       await tradeStore.fetchAll();
       const trade = tradeStore.getAllTrades[0];
       expect(trade.side).toBeDefined();
-      expect(trade.asset).toBeDefined();
+      expect(trade.symbol).toBeDefined();
       expect(trade.quantity).toBeDefined();
       expect(trade.timestamp).toBeDefined();
     });
@@ -90,13 +97,15 @@ describe('trade store', () => {
     it('should add to public trades collection', () => {
       tradeStore.addPublicTrades([
         {
-          asset: 'LKK',
+          asset: '',
+          symbol: 'LKKUSD',
           quantity: 1,
           timestamp: Date.now().toString(),
           // tslint:disable-next-line:object-literal-sort-keys
           side: 'Buy',
           tradeId: 't1',
-          id: '1'
+          id: '1',
+          price: 1
         }
       ]);
       expect(tradeStore.getPublicTrades).toHaveLength(1);
