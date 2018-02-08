@@ -34,6 +34,7 @@ const Trades: React.SFC<TradesProps> = ({
         <thead>
           <tr>
             <th>Symbol</th>
+            <th>Side</th>
             <th>Volume</th>
             <th>Price</th>
             <th>Timestamp</th>
