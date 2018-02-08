@@ -33,7 +33,7 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
     background-color: rgb(51, 51, 51);
     border-radius: 4px;
     border: solid 2px #333;
-    color: #fff;
+    color: #f5f6f7;
     padding: ${rem(10)};
     width: 100%;
     &:active {

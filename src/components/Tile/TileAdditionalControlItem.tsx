@@ -10,17 +10,17 @@ interface TileAdditionalControlProps {
 }
 
 const StyledSpan = styled.span`
+  border-radius: 4px;
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  color: #ccc;
   margin-right: 5px;
   color: #8c94a0;
+  padding: ${rem(8)} ${rem(18)};
+  cursor: not-allowed;
+
   &.clickable {
-    border-radius: 4px;
-    border: solid 1px rgba(140, 148, 160, 0.4);
-    color: #ccc;
-    padding: ${rem(8)} ${rem(18)};
-    &:hover {
-      color: #fff;
-      cursor: pointer;
-    }
+    color: #f5f6f7;
+    cursor: pointer;
   }
 `;
 

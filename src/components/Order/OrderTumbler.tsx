@@ -18,7 +18,7 @@ const StyledDiv = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: #f5f6f7;
 `;
 
 const OrderTumbler: React.SFC<OrderTumbler> = ({tumblers}) => {

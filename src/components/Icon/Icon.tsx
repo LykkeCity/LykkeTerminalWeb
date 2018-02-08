@@ -12,7 +12,7 @@ const StyledIcon = styled.i`
   color: ${(props: any) => props.color};
   vertical-align: middle;
   &:hover {
-    color: ${(props: any) => lighten(0.1, props.color || '#fff')};
+    color: ${(props: any) => lighten(0.1, props.color || '#f5f6f7')};
   }
 `;
 

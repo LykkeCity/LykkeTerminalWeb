@@ -15,7 +15,7 @@ const StyledBtn = styled.span`
   margin-right: 5px;
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
-  color: #fff;
+  color: #f5f6f7;
   padding: ${rem(8)} ${rem(18)};
 
   &:hover {
