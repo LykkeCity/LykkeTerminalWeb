@@ -149,6 +149,30 @@ export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly}: any) =>
     readOnly: ReadOnly
   });
 
+export const mapToTradeList = (dto: any) => {
+  const groupedTrades = dto.reduce((acc: any, curr: any) => {
+    acc[curr.DateTime] = (acc[curr.DateTime] || []).concat(curr);
+    return acc;
+  }, {});
+
+  const trades = [];
+  // tslint:disable-next-line:forin
+  for (const id in groupedTrades) {
+    const t = groupedTrades[id];
+    trades.push({
+      id: t[0].Id,
+      price: Math.abs(t[1].Amount),
+      quantity: Math.abs(t[0].Amount),
+      side: t[0].Amount > 0 ? Side.Buy : Side.Sell,
+      symbol: t[0].Asset.concat('/', t[1].Asset),
+      timestamp: t[0].DateTime,
+      tradeId: t[0].Id
+    });
+  }
+
+  return trades;
+};
+
 export const mapToAsset = (
   {Id, Name, DisplayId, CategoryId, Accuracy, IsBase, IconUrl}: any,
   categories: AssetCategoryModel[]

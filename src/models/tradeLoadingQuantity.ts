@@ -1,5 +1,5 @@
 enum TradeQuantity {
-  Loading = 10,
+  Loading = 50,
   Take = 50,
   Skip = 0
 }
