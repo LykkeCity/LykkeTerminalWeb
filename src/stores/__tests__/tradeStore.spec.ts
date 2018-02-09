@@ -36,7 +36,7 @@ describe('trade store', () => {
     );
     api.fetchPublicTrades = api.fetchUserTrades;
 
-    tradeStore = new TradeStore(new RootStore(false), api);
+    tradeStore = new TradeStore(new RootStore(), api);
   });
 
   describe('state', () => {
