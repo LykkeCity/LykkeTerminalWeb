@@ -49,7 +49,10 @@ class TradeStore extends BaseStore {
   fetchAll = () => {
     return this.api.fetchUserTrades(this.skip, this.take).then((dto: any) => {
       runInAction(() => {
-        this.trades = mappers.mapToTradeList(dto);
+        this.trades = mappers.mapToTradeList(
+          dto,
+          this.rootStore.referenceStore.getInstrumentById
+        );
       });
       return Promise.resolve();
     });
@@ -60,7 +63,10 @@ class TradeStore extends BaseStore {
       .fetchPublicTrades(this.publicSkip, this.publicTake)
       .then((dto: any) => {
         runInAction(() => {
-          this.publicTrades = mappers.mapToTradeList(dto);
+          this.publicTrades = mappers.mapToTradeList(
+            dto,
+            this.rootStore.referenceStore.getInstrumentById
+          );
         });
       });
   };
@@ -79,7 +85,12 @@ class TradeStore extends BaseStore {
   fetchPartTrade = async () => {
     this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
     const tradesDto = await this.api.fetchUserTrades(this.skip, this.loading);
-    this.addTrades(mappers.mapToTradeList(tradesDto));
+    this.addTrades(
+      mappers.mapToTradeList(
+        tradesDto,
+        this.rootStore.referenceStore.getInstrumentById
+      )
+    );
   };
 
   fetchPartPublicTrade = async () => {
@@ -92,7 +103,12 @@ class TradeStore extends BaseStore {
       this.publicSkip,
       this.loading
     );
-    this.addPublicTrades(mappers.mapToTradeList(tradesDto));
+    this.addPublicTrades(
+      mappers.mapToTradeList(
+        tradesDto,
+        this.rootStore.referenceStore.getInstrumentById
+      )
+    );
   };
 
   onTrades = (args: any[]) => {
@@ -127,8 +143,13 @@ class TradeStore extends BaseStore {
   };
 
   onPublicTrades = (args: any[]) => {
-    this.wampPublicTrades += args[0].length;
-    this.addPublicTrades(mappers.mapToTradeList(args[0]));
+    this.wampPublicTrades += args[0].lengths;
+    this.addPublicTrades(
+      mappers.mapToTradeList(
+        args[0],
+        this.rootStore.referenceStore.getInstrumentById
+      )
+    );
   };
 
   @action
