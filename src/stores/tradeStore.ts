@@ -120,7 +120,8 @@ class TradeStore extends BaseStore {
       symbol: e.Asset.concat('/', e.OppositeAsset),
       // tslint:disable-next-line:object-literal-sort-keys
       quantity: e.Volume,
-      price: e.Price,
+      oppositeQuantity: e.OppositeVolume,
+      price: e.OppositeVolume,
       timestamp: e.DateTime,
       tradeId: e.TradeId,
       side: e.Direction === 0 ? Side.Buy : Side.Sell
