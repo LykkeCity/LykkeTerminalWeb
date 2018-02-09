@@ -1,6 +1,7 @@
 import {computed, observable} from 'mobx';
 import {equals} from 'rambda';
 import * as React from 'react';
+import Unauthorized from '../Unauthorized/Unauthorized';
 import {TileContent, TileProps} from './index';
 import {TileHeader, TileTitle, TileWrapper} from './Tile';
 
@@ -21,7 +22,7 @@ class TabbedTile extends React.Component<TabbedTileProps> {
   // TODO: rethink additionalControls API, should be passed as a child with specific React context
   @computed
   get shouldRenderAdditionalControls() {
-    return this.selectedIndex === 0;
+    return this.props.isAuth && this.selectedIndex === 0;
   }
 
   handleSelectTab = (idx: number) => (e: React.MouseEvent<any>) => {
@@ -34,8 +35,11 @@ class TabbedTile extends React.Component<TabbedTileProps> {
       children,
       additionalControls,
       additionalControlStore,
+      authorize,
+      isAuth,
       ...props
     } = this.props;
+    const shouldRender = !authorize || (authorize && isAuth);
     return (
       <TileWrapper>
         <TileHeader justify="left">
@@ -59,11 +63,16 @@ class TabbedTile extends React.Component<TabbedTileProps> {
               ? additionalControlStore
               : undefined
           }
+          isAuth={isAuth}
           {...props}
         >
-          {React.Children.map(
-            children,
-            (child, idx) => (equals(idx, this.selectedIndex) ? child : null)
+          {shouldRender ? (
+            React.Children.map(
+              children,
+              (child, idx) => (equals(idx, this.selectedIndex) ? child : null)
+            )
+          ) : (
+            <Unauthorized />
           )}
         </TileContent>
       </TileWrapper>
