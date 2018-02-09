@@ -109,7 +109,10 @@ describe('trade store', () => {
           side: 'Buy',
           tradeId: 't1',
           id: '1',
-          price: 1
+          price: 1,
+          oppositeQuantity: 1,
+          sellVolume: 1,
+          buyVolume: 1
         }
       ]);
       expect(tradeStore.getPublicTrades).toHaveLength(1);

@@ -164,25 +164,31 @@ export const mapToTradeList = (
     const t = groupedTrades[id];
     const symbol = t[0].Asset + t[1].Asset;
     if (!!getInstrument(symbol)) {
-      trades.push({
-        id: t[0].Id,
-        price: Math.abs(t[1].Amount),
-        quantity: Math.abs(t[0].Amount),
-        side: t[0].Amount > 0 ? Side.Buy : Side.Sell,
-        symbol: t[0].Asset.concat('/', t[1].Asset),
-        timestamp: t[0].DateTime,
-        tradeId: t[0].Id
-      });
+      trades.push(
+        new TradeModel({
+          id: t[0].Id,
+          price: Math.abs(t[1].Amount),
+          quantity: Math.abs(t[0].Amount),
+          side: t[0].Amount > 0 ? Side.Buy : Side.Sell,
+          symbol: t[0].Asset.concat('/', t[1].Asset),
+          timestamp: t[0].DateTime,
+          tradeId: t[0].Id,
+          oppositeQuantity: t[1].Amount
+        })
+      );
     } else {
-      trades.push({
-        id: t[1].Id,
-        price: Math.abs(t[0].Amount),
-        quantity: Math.abs(t[1].Amount),
-        side: t[1].Amount > 0 ? Side.Buy : Side.Sell,
-        symbol: t[1].Asset.concat('/', t[0].Asset),
-        timestamp: t[1].DateTime,
-        tradeId: t[1].Id
-      });
+      trades.push(
+        new TradeModel({
+          id: t[1].Id,
+          price: Math.abs(t[0].Amount),
+          quantity: Math.abs(t[1].Amount),
+          side: t[1].Amount > 0 ? Side.Buy : Side.Sell,
+          symbol: t[1].Asset.concat('/', t[0].Asset),
+          timestamp: t[1].DateTime,
+          tradeId: t[1].Id,
+          oppositeQuantity: t[0].Amount
+        })
+      );
     }
   }
 
