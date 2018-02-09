@@ -2,7 +2,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
-import {TradeModel} from '../models/index';
+import {Side, TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import {BaseStore, RootStore} from './index';
@@ -96,11 +96,27 @@ class TradeStore extends BaseStore {
   };
 
   onTrades = (args: any[]) => {
-    const mappedTrades = mappers.mapToTradeList(args[0]);
+    const side =
+      this.rootStore.orderStore.lastOrder.OrderAction === 'buy' ? 0 : 1;
+    const e = args[0].find((x: any) => x.Direction === side);
+    const trade = new TradeModel({
+      id: e.TradeId,
+      symbol: e.Asset.concat('/', e.OppositeAsset),
+      // tslint:disable-next-line:object-literal-sort-keys
+      quantity: e.Volume,
+      price: e.Price,
+      timestamp: e.DateTime,
+      tradeId: e.TradeId,
+      side: e.Direction === 0 ? Side.Buy : Side.Sell
+    });
+    this.rootStore.orderStore.lastOrder = null;
+
+    const mappedTrades = [trade];
+
     const executedOrderIds: string[] = uniq(
-      args[0].map((trade: any) => ({
-        id: trade.OrderId,
-        volume: trade.Volume
+      args[0].map((t: any) => ({
+        id: t.OrderId,
+        volume: t.Volume
       }))
     );
 
