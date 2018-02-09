@@ -1,21 +1,44 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import {ReferenceStore, UiStore} from '../../stores';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
-import './balance-info.css';
 import {BalanceInfoProps} from './index';
 
-const StyledButton = styled.button`
-  padding-right: 0;
-  background: none;
-  outline: none;
-  border: none;
-  color: #0388ef;
+const StyledBalanceInfo = styled.div`
+  text-align: right;
+`;
 
+const StyledBalanceValue = styled.span`
+  font-family: Akrobat;
+  color: #f5f6f7;
+  font-family: 'Akrobat';
+  font-size: ${rem(16)};
+  font-weight: bold;
+  line-height: 1;
+  text-align: left;
+`;
+
+const StyledButton = styled.button`
+  background: none;
+  border: none;
+  font-family: Akrobat;
+  font-size: ${rem(16)};
+  font-weight: bold;
+  line-height: 1;
+  text-align: right;
+  color: #0388ef;
+  padding-right: 0;
+  outline: none;
   &:hover {
     cursor: pointer;
   }
+`;
+
+const StyledBalanceLabel = styled.div`
+  color: #8c94a0;
+  font-size: 0.7rem;
 `;
 
 class BalanceInfo extends React.Component<BalanceInfoProps> {
@@ -42,12 +65,12 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
 
   render() {
     return (
-      <div className={'balance-info'}>
-        <span>
+      <StyledBalanceInfo>
+        <StyledBalanceValue>
           {this.props.totalBalance.toFixed(
             this.referenceStore.getBaseAssetAccuracy
           )}
-        </span>
+        </StyledBalanceValue>
         <StyledButton onClick={this.handleClick} id="baseAssetBtn">
           {this.referenceStore.baseAssetId}
         </StyledButton>
@@ -65,8 +88,10 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
             />
           </ClickOutside>
         ) : null}
-        <div className={'balance-total'}>Total Balance</div>
-      </div>
+        <StyledBalanceLabel className={'balance-total'}>
+          Total Balance
+        </StyledBalanceLabel>
+      </StyledBalanceInfo>
     );
   }
 }

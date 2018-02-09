@@ -10,6 +10,8 @@ interface TileAdditionalControlProps {
 }
 
 const StyledSpan = styled.span`
+  font-size: ${rem(14)};
+  line-height: 1.14;
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
   color: #ccc;

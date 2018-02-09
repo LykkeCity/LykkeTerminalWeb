@@ -12,7 +12,7 @@ const StyledOrderOptions = styled.div`
 const StyledOptions = styled.div`
   display: flex;
   flex-direction: row;
-  margin: 10px 0 0 0;
+  margin: ${rem(8)} 0 0 0;
   height: 32px;
 `;
 
@@ -28,7 +28,8 @@ const StyledTitle = styled.div`
   font-size: ${rem(14)};
   font-weight: 600;
   color: #f5f6f7;
-  margin-top: 10px;
+  line-height: 1.5;
+  margin-top: ${rem(16)};
 `;
 
 const StyledOrderButton = styled.div`

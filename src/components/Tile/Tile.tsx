@@ -21,13 +21,14 @@ export const TileHeader = styled(Flex)`
 `;
 
 export const TileTitle = styled(Box)`
+  color: #f5f6f7;
   background: #333;
   border-left: none;
   font-size: ${rem(16)};
-  font-weight: 600;
+  line-height: 1.5;
   border-right: solid 1px rgba(0, 0, 0, 0.2);
   border-bottom: solid 1px #333;
-  padding: ${rem(10)} ${rem(15)};
+  padding: ${rem(8)} ${rem(20)};
   margin-bottom: -1px;
   margin-right: ${rem(5)};
 `;

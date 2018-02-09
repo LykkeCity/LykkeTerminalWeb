@@ -30,7 +30,7 @@ const StyledActionChoice = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: ${rem(10)};
+  margin-bottom: ${rem(20)};
 `;
 
 const StyledContentWrap = styled.div`
@@ -38,11 +38,14 @@ const StyledContentWrap = styled.div`
 `;
 
 const StyledSplitBlock = styled.div`
+  font-family: 'Akrobat';
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  font-size: ${rem(14)};
+  font-size: ${rem(20)};
+  font-weight: 600;
+  line-height: 1.33;
   color: #ccc;
   text-align: center;
 `;

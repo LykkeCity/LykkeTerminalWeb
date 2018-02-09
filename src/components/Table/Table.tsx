@@ -1,7 +1,9 @@
+import {rem} from 'polished';
 import styled from '../styled';
 
 const Table = styled.table`
   width: 100%;
+  margin-top: ${rem(3)};
   tr {
     line-height: 0.4;
   }
@@ -10,7 +12,10 @@ const Table = styled.table`
   }
   th {
     text-align: right;
-    padding: 10px 5px;
+    padding: ${rem(7)};
+    font-size: ${rem(14)};
+    font-weight: normal;
+    line-height: 1.14;
     color: #8c94a0;
     &:first-child {
       text-align: left;
@@ -18,7 +23,6 @@ const Table = styled.table`
   }
   td {
     padding: 10px 5px;
-    font-weight: 400;
     text-align: right;
     &:first-child {
       color: #f5f6f7;
