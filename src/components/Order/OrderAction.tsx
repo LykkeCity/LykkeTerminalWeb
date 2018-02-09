@@ -41,16 +41,21 @@ const StyledTitle = styled.div`
 `;
 
 const StyledPrice = styled.div`
-  font-size: ${rem(20)};
+  font-family: 'Akrobat';
+  font-size: ${rem(24)};
   font-weight: bold;
-  color: #ccc;
+  line-height: 1;
+  color: #f5f6f7;
+  opacity: 0.4;
   margin-top: 8px;
 
   &.bid.active {
+    opacity: 1;
     color: #d070ff;
   }
 
   &.ask.active {
+    opacity: 1;
     color: #fb8f01;
   }
 `;

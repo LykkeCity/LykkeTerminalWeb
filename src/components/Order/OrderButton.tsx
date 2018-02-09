@@ -12,8 +12,10 @@ const StyledButton = styled.button`
   justify-content: center;
   align-items: center;
   font-size: ${rem(16)};
+  font-weight: bold;
+  line-height: 1;
   cursor: pointer;
-  color: #f5f6f7;
+  color: #ffffff;
   outline: none;
   border: none;
 

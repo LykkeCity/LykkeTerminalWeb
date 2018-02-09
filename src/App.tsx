@@ -9,7 +9,7 @@ import './index.css';
 
 const addFont = (name: string) => (f: any) =>
   fontFace({
-    fileFormats: ['woff', 'eot', 'ttf'],
+    fileFormats: ['woff', 'eot', 'ttf', 'otf'],
     fontFamily: name,
     fontFilePath: `${process.env.PUBLIC_URL}/fonts/${f.name}`,
     fontStretch: 'normal',
@@ -21,6 +21,7 @@ const addFont = (name: string) => (f: any) =>
   });
 
 const addBaseFont: any = addFont('Proxima Nova');
+const addAkrobatFont: any = addFont('Akrobat');
 const addIconFont: any = addFont('icomoon');
 
 const allFonts = [
@@ -30,11 +31,22 @@ const allFonts = [
   {weight: 600, name: 'ProximaNova-Semibold'},
   {weight: 700, name: 'ProximaNovaBold'}
 ];
+const akrobatFonts = [
+  {weight: 100, name: 'Akrobat-Thin'},
+  {weight: 200, name: 'Akrobat-ExtraLight'},
+  {weight: 300, name: 'Akrobat-Light'},
+  {weight: 400, name: 'Akrobat-Regular'},
+  {weight: 600, name: 'Akrobat-SemiBold'},
+  {weight: 700, name: 'Akrobat-Bold'},
+  {weight: 800, name: 'Akrobat-ExtraBold'},
+  {weight: 1000, name: 'Akrobat-Black'}
+];
 const iconFonts = [{weight: 'normal', name: 'icomoon'}];
 
 // tslint:disable-next-line:no-unused-expression
 injectGlobal`
   ${allFonts.map(addBaseFont)};
+  ${akrobatFonts.map(addAkrobatFont)};
   ${iconFonts.map(addIconFont)}
   ${normalize() as any};
   * {
@@ -43,13 +55,21 @@ injectGlobal`
   :root {
     height: auto;
     min-height: 100%;
-    font: 600 14px "Proxima Nova";
+    font: normal 14px "Proxima Nova";
     color: #f5f6f7;
-    font-size-adjust: none;
     line-height: normal;
+
+    /* Adjust font size */
+    -webkit-text-size-adjust: 100%;
+    /* Font varient */
+    font-variant-ligatures: none;
+    -webkit-font-variant-ligatures: none;
+    /* Smoothing */
     text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: antialiased;
     -webkit-font-smoothing: antialiased;
-    -webkit-text-size-adjust: none;
+
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

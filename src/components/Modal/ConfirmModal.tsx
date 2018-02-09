@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import keys from '../../constants/storageKeys';
@@ -31,9 +32,11 @@ const StyledCloseBtn = styled.a`
 const StyledTitle = styled.div`
   width: 60px;
   height: 16px;
-  font-size: 18px;
+  font-family: 'Akrobat';
+  font-size: ${rem(20)};
   font-weight: bold;
   line-height: 0.8;
+  text-align: left;
 `;
 
 const StyledContent = styled.div`

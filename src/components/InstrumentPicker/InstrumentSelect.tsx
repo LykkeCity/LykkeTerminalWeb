@@ -20,8 +20,9 @@ const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
 );
 
 const StyledInstrumentSelect = styled(InstrumentSelect)`
+  font-family: 'Akrobat';
+  font-weight: bold;
   cursor: pointer;
-
   & > span {
     font-size: 1rem;
   }

@@ -11,7 +11,7 @@ const StyledActionChoice = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: ${rem(10)} 0;
+  padding: ${rem(8)} ${rem(32)};
 
   &:first-child {
     margin-right: 5px;

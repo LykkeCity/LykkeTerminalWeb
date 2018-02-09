@@ -1,20 +1,21 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import CustomCheckbox from '../CustomCheckbox/CustomCheckbox';
 import {SettingsModalProps} from './index';
 
 const StyledModal = styled.div`
-  font-family: Proxima Nova;
+  font-family: 'Proxima Nova';
+  font-size: ${rem(14)};
   position: absolute;
-  padding: 10px 15px;
-  top: 20px;
-  right: 0;
+  padding: ${rem(16)} ${rem(13)};
+  top: 15px;
+  right: -3px;
   width: 230px;
-  border-radius: 10px;
   background-color: #3c3c3c;
-  border: solid 1px rgba(0, 0, 0, 0.2);
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-
+  box-shadow: 0 10px 10px 0 #00000033;
+  border: solid 1px #00000033;
+  border-radius: 10px;
   z-index: 3;
 
   ul {

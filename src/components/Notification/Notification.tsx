@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import {NotificationProps} from './index';
@@ -41,16 +42,18 @@ const StyledCloseBtn = styled.a`
 const StyledTitle = styled.div`
   width: 39px;
   height: 16px;
-  font-size: 16px;
+  font-family: 'Akrobat';
+  font-size: ${rem(20)};
   font-weight: bold;
   line-height: 0.8;
+  text-align: left;
 `;
 
 const StyledMessage = styled.div`
-  font-family: Proxima Nova;
+  font-family: 'Proxima Nova';
   font-size: 12px;
   line-height: 1.14;
-  margin-top: 5px;
+  margin-top: 12px;
 `;
 
 const Notification: React.SFC<NotificationProps> = ({
