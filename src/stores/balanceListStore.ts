@@ -97,9 +97,13 @@ class BalanceListStore extends BaseStore {
       baseAssetId
     );
     this.tradingTotal = updatedBalances.map(b => b.Balance).reduce(add, 0);
-    this.tradingTotal += this.tradingAssets.find(
+
+    const baseAssetInBalances = this.tradingAssets.find(
       a => a.id === baseAssetId
-    )!.balance;
+    );
+    if (!!baseAssetInBalances) {
+      this.tradingTotal += baseAssetInBalances.balance;
+    }
   };
 
   subscribe = (session: any) => {
