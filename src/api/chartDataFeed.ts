@@ -53,9 +53,11 @@ class ChartDataFeed {
         resp => {
           const bars = resp.History.map(mappers.mapToBarFromRest);
           if (bars.length > 0) {
-            onHistoryCallback(bars);
+            // tslint:disable-next-line:no-unused-expression
+            onHistoryCallback && onHistoryCallback(bars);
           } else {
-            onHistoryCallback([], {noData: true});
+            // tslint:disable-next-line:no-unused-expression
+            onHistoryCallback && onHistoryCallback([], {noData: true});
           }
         },
         reject => {

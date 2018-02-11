@@ -34,6 +34,10 @@ class ChartStore extends BaseStore {
   }
 
   renderChart = (instrument: InstrumentModel) => {
+    const chartContainerExists = document.getElementById('tv_chart_container');
+    if (!chartContainerExists || !(window as any).TradingView) {
+      return;
+    }
     return new (window as any).TradingView.widget({
       autosize: true,
       symbol: instrument.name,
