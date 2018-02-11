@@ -144,8 +144,8 @@ class ReferenceStore extends BaseStore {
     return this.api
       .fetchBaseAsset()
       .then((res: any) => {
-        if (res && res.BaseAssetId) {
-          this.baseAsset = res.BaseAssetId;
+        if (!!res) {
+          this.baseAsset = res.BaseAssetId || 'USD';
           baseAssetStorage.set(this.baseAsset);
         }
         return Promise.resolve();
