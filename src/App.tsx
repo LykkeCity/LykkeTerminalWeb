@@ -9,7 +9,7 @@ import './index.css';
 
 const addFont = (name: string) => (f: any) =>
   fontFace({
-    fileFormats: ['woff', 'eot', 'ttf', 'otf'],
+    fileFormats: f.formats || ['woff', 'eot', 'ttf'],
     fontFamily: name,
     fontFilePath: `${process.env.PUBLIC_URL}/fonts/${f.name}`,
     fontStretch: 'normal',
@@ -24,7 +24,7 @@ const addBaseFont: any = addFont('Proxima Nova');
 const addAkrobatFont: any = addFont('Akrobat');
 const addIconFont: any = addFont('icomoon');
 
-const allFonts = [
+const proximaFonts = [
   {weight: 200, name: 'ProximaNovaThin'},
   {weight: 300, name: 'ProximaNova-Light'},
   {weight: 400, name: 'ProximaNovaRegular'},
@@ -32,20 +32,20 @@ const allFonts = [
   {weight: 700, name: 'ProximaNovaBold'}
 ];
 const akrobatFonts = [
-  {weight: 100, name: 'Akrobat-Thin'},
-  {weight: 200, name: 'Akrobat-ExtraLight'},
-  {weight: 300, name: 'Akrobat-Light'},
-  {weight: 400, name: 'Akrobat-Regular'},
-  {weight: 600, name: 'Akrobat-SemiBold'},
-  {weight: 700, name: 'Akrobat-Bold'},
-  {weight: 800, name: 'Akrobat-ExtraBold'},
-  {weight: 1000, name: 'Akrobat-Black'}
+  {weight: 100, name: 'Akrobat-Thin', formats: ['otf']},
+  {weight: 200, name: 'Akrobat-ExtraLight', formats: ['otf']},
+  {weight: 300, name: 'Akrobat-Light', formats: ['otf']},
+  {weight: 400, name: 'Akrobat-Regular', formats: ['otf']},
+  {weight: 600, name: 'Akrobat-SemiBold', formats: ['otf']},
+  {weight: 700, name: 'Akrobat-Bold', formats: ['otf']},
+  {weight: 800, name: 'Akrobat-ExtraBold', formats: ['otf']},
+  {weight: 1000, name: 'Akrobat-Black', formats: ['otf']}
 ];
 const iconFonts = [{weight: 'normal', name: 'icomoon'}];
 
 // tslint:disable-next-line:no-unused-expression
 injectGlobal`
-  ${allFonts.map(addBaseFont)};
+  ${proximaFonts.map(addBaseFont)};
   ${akrobatFonts.map(addAkrobatFont)};
   ${iconFonts.map(addIconFont)}
   ${normalize() as any};
