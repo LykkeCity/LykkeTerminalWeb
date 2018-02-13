@@ -63,9 +63,14 @@ class AuthStore extends BaseStore {
   };
 
   signOut = async () => {
-    await this.api.signout();
     this.rootStore.reset();
     this.rootStore.start();
+    const {REACT_APP_AUTH_URL: url} = process.env;
+    location.replace(
+      `${url}/connect/logout?post_logout_redirect_uri=${encodeURIComponent(
+        location.origin
+      )}`
+    );
   };
 
   reset = () => {
