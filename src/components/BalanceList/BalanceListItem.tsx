@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {BalanceListItemProps} from '../';
+import {BalanceListItemProps} from './';
 import BalanceNumber from './BalanceNumber';
 
 const BalanceListItem: React.SFC<BalanceListItemProps> = ({
   accuracy,
-  balance,
+  totalBalance,
   id,
   profitAndLoss,
   symbol
@@ -12,7 +12,7 @@ const BalanceListItem: React.SFC<BalanceListItemProps> = ({
   <tr key={id}>
     <td>{symbol}</td>
     <td>
-      <BalanceNumber num={balance.toFixed(accuracy)} />
+      <BalanceNumber num={totalBalance.toFixed(accuracy)} />
     </td>
   </tr>
 );

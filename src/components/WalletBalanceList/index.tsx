@@ -9,10 +9,7 @@ export interface WalletBalanceItemProps {
 
 const ConnectedWalletBalanceList = connect(
   ({
-    balanceListStore: {
-      tradingWalletAssets: assets,
-      totalWalletAssetsBalance: total
-    },
+    balanceListStore: {tradingWalletAssets: assets, tradingWalletTotal: total},
     referenceStore
   }) => ({
     accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {

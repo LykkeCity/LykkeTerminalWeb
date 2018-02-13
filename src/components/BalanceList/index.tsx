@@ -1,3 +1,4 @@
+import {pathOr} from 'rambda';
 import {connect} from '../connect';
 import BalanceList from './BalanceList';
 
@@ -9,7 +10,7 @@ export interface BalanceListProps {
 
 export interface BalanceListItemProps {
   accuracy: number;
-  balance: number;
+  totalBalance: number;
   id: number;
   profitAndLoss: number;
   symbol: string;
@@ -18,11 +19,9 @@ export interface BalanceListItemProps {
 const ConnectedBalanceList = connect(
   ({
     balanceListStore: {getBalances: balances, totalBalance: total},
-    referenceStore
+    referenceStore: {getAssetById, baseAssetId}
   }) => ({
-    accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {
-      accuracy: 2
-    })!.accuracy,
+    accuracy: pathOr(0, ['accuracy'], getAssetById(baseAssetId)),
     balances,
     total
   }),
@@ -30,4 +29,4 @@ const ConnectedBalanceList = connect(
 );
 
 export {ConnectedBalanceList as BalanceList};
-export {default as BalanceListItem} from './BalanceListItem/BalanceListItem';
+export {default as BalanceListItem} from './BalanceListItem';
