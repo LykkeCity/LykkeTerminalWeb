@@ -109,7 +109,11 @@ class OrderStore extends BaseStore {
   private orderPlacedUnsuccessfully = (error: any) => {
     console.error(error);
 
-    if (error.status === 400) {
+    if (
+      error.status === 400 &&
+      error.message &&
+      JSON.parse(error.message).Confirmation
+    ) {
       this.modalStore.addModal(
         ModalMessages.expired,
         null,
