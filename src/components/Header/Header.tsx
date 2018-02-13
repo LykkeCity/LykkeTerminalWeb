@@ -44,7 +44,7 @@ const Header: React.SFC<HeaderProps> = ({
   };
 
   const signIn = () => {
-    history.push('signin');
+    authStore.signIn();
   };
 
   const settings = (e: any) => {

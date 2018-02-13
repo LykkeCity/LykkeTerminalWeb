@@ -34,6 +34,13 @@ class AuthStore extends BaseStore {
       })
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
+  fetchToken = async (accessToken: string) => {
+    const {token} = await this.api.fetchToken(accessToken);
+    this.token = token;
+    tokenStorage.set(token);
+    return Promise.resolve();
+  };
+
   catchUnauthorized = () => {
     this.rootStore.notificationStore.addNotification(
       levels.information,
@@ -42,7 +49,21 @@ class AuthStore extends BaseStore {
     this.signOut();
   };
 
-  signOut = () => {
+  signIn = () => {
+    const {
+      REACT_APP_AUTH_URL: url,
+      REACT_APP_ID: clientId,
+      REACT_APP_CALLBACK_URL: callbackUrl
+    } = process.env;
+    location.replace(
+      `${url}/connect/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(
+        callbackUrl!
+      )}`
+    );
+  };
+
+  signOut = async () => {
+    await this.api.signout();
     this.rootStore.reset();
     this.rootStore.start();
   };

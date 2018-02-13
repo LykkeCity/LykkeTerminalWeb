@@ -111,7 +111,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   componentDidMount() {
     this.props.rootStore.start();
     this.unlisten = this.props.history.listen((location: any) => {
-      if (location.pathname === paths.singin) {
+      if (location.pathname === paths.signin) {
         this.props.rootStore.reset();
       }
     });

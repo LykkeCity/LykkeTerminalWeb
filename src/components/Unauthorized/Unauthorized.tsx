@@ -1,25 +1,29 @@
+import {inject} from 'mobx-react';
 import * as React from 'react';
-import {Link as RouterLink} from 'react-router-dom';
 import styled from 'styled-components';
-import paths from '../../constants/paths';
+import {RootStore} from '../../stores/index';
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
-const StyledRouterLink = styled(RouterLink)`
+const StyledRouterLink = styled.a`
   color: #0388ef;
+  cursor: pointer;
+  text-decoration: underline;
 `;
 
 const StyledUnauthorized = styled(Flex)`
   height: 100%;
 `;
 
-const Unauthorized = () => {
-  return (
-    <StyledUnauthorized align="center" justify="center">
-      <StyledRouterLink to={paths.singin}>Connect</StyledRouterLink>&nbsp;to
-      start trading
-    </StyledUnauthorized>
-  );
-};
+const Unauthorized = inject(({authStore: {signIn}}: RootStore) => ({signIn}))(
+  ({signIn}) => {
+    return (
+      <StyledUnauthorized align="center" justify="center">
+        <StyledRouterLink onClick={signIn}>Connect</StyledRouterLink>&nbsp;to
+        start trading
+      </StyledUnauthorized>
+    );
+  }
+);
 
 export default Unauthorized;
