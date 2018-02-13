@@ -3,7 +3,7 @@ import {add, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import {default as storageKeys} from '../constants/storageKeys';
 import keys from '../constants/tradingWalletKeys';
-import {AssetBalanceModel, BalanceModel} from '../models';
+import {AssetBalanceModel, WalletModel} from '../models';
 import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -13,14 +13,14 @@ const baseAssetStorage = StorageUtils(storageKeys.baseAsset);
 class BalanceListStore extends BaseStore {
   @computed
   get getBalances() {
-    return this.balanceLists
-      .filter((b: BalanceModel) => !!b.balance)
-      .sort((a: BalanceModel, b: BalanceModel) => b.balance - a.balance);
+    return this.walletList
+      .filter(b => b.totalBalance > 0)
+      .sort((a, b) => b.totalBalance - a.totalBalance);
   }
 
   @computed
   get totalBalance() {
-    return this.balanceLists.map(b => b.balance).reduce(add, 0);
+    return this.walletList.map(b => b.totalBalance).reduce(add, 0);
   }
 
   @computed
@@ -29,11 +29,11 @@ class BalanceListStore extends BaseStore {
   }
 
   @computed
-  get totalWalletAssetsBalance() {
+  get tradingWalletTotal() {
     return this.tradingTotal;
   }
 
-  @observable.shallow private balanceLists: any[] = [];
+  @observable.shallow private walletList: WalletModel[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
   @observable private tradingTotal: number = 0;
 
@@ -44,31 +44,29 @@ class BalanceListStore extends BaseStore {
   fetchAll = () => {
     return this.api
       .fetchAll()
-      .then((balanceListDto: any) => {
-        runInAction(async () => {
-          const tempBalanceLists = balanceListDto.map(
-            (wallet: any) => new BalanceModel(wallet)
+      .then((resp: any) => {
+        runInAction(() => {
+          const balanceList = resp.map(
+            (wallet: any) => new WalletModel(wallet)
           );
-          this.updateBalance(tempBalanceLists);
-          this.setTradingAssets(tempBalanceLists);
+          this.updateBalance(balanceList);
+          this.setTradingAssets(balanceList);
         });
         return Promise.resolve();
       })
       .catch(Promise.reject);
   };
 
-  updateBalance = async (
-    tempBalanceLists: BalanceModel[] = this.balanceLists
-  ) => {
-    const promises = tempBalanceLists.map((balanceList: BalanceModel) => {
-      return balanceList.updateBalance(this.rootStore.referenceStore);
-    });
+  updateBalance = async (walletList: WalletModel[] = this.walletList) => {
+    const promises = walletList.map(balanceList =>
+      balanceList.updateTotalBalance(this.rootStore.referenceStore)
+    );
     await Promise.all(promises);
-    this.balanceLists = [...tempBalanceLists];
+    this.walletList = [...walletList];
   };
 
-  setTradingAssets = async (balanceList: BalanceModel[]) => {
-    this.tradingAssets = this.getTradingWallet(balanceList).balances.map(
+  setTradingAssets = async (walletList: WalletModel[]) => {
+    this.tradingAssets = this.getTradingWallet(walletList).balances.map(
       (assetsBalance: any) => {
         const assetBalance = new AssetBalanceModel(assetsBalance);
         const assetById = this.rootStore.referenceStore.getAssetById(
@@ -87,22 +85,24 @@ class BalanceListStore extends BaseStore {
     const assets = this.tradingAssets.map(asset => {
       return {
         AssetId: asset.id,
-        Balance: asset.balance
+        Balance: asset.available
       };
     });
     const baseAssetId = baseAssetStorage.get();
 
-    const updatedBalances: any[] = await MarketService.updateQuotes(
+    const updatedBalances: any[] = await MarketService.convert(
       assets,
-      baseAssetId
+      baseAssetId!
     );
     this.tradingTotal = updatedBalances.map(b => b.Balance).reduce(add, 0);
 
-    const baseAssetInBalances = this.tradingAssets.find(
-      a => a.id === baseAssetId
+    const balancesInBaseAsset = this.tradingAssets.filter(a =>
+      this.eqToBaseAssetId(a, baseAssetId!)
     );
-    if (!!baseAssetInBalances) {
-      this.tradingTotal += baseAssetInBalances.balance;
+    if (balancesInBaseAsset.length > 0) {
+      this.tradingTotal += balancesInBaseAsset
+        .map(a => a.available)
+        .reduce(add, 0);
     }
   };
 
@@ -119,24 +119,27 @@ class BalanceListStore extends BaseStore {
     }
     this.updateTradingWallet();
 
-    this.balanceLists.forEach((bl: BalanceModel) =>
-      bl.balances.forEach(b => {
+    this.walletList.forEach((wallet: WalletModel) =>
+      wallet.balances.forEach(b => {
         if (b.AssetId === asset) {
           b.Balance = balance;
         }
       })
     );
-    this.updateBalance(this.balanceLists);
+    this.updateBalance(this.walletList);
   };
 
   reset = () => {
-    this.balanceLists = [];
+    this.walletList = [];
     this.tradingAssets = [];
   };
 
-  private getTradingWallet = (balanceList: BalanceModel[]) => {
-    return balanceList.find(b => b.type === keys.trading)!;
+  private getTradingWallet = (walletList: WalletModel[]) => {
+    return walletList.find(b => b.type === keys.trading)!;
   };
+
+  private eqToBaseAssetId = (a: AssetBalanceModel, baseAssetId: string) =>
+    a.id === baseAssetId;
 }
 
 export default BalanceListStore;

@@ -1,25 +1,22 @@
-import {RestMarketsApi} from '../api/marketsApi';
+import {pathOr} from 'rambda';
+import {MarketApi} from '../api/';
 import {Side} from '../models';
 
-const marketsApi = new RestMarketsApi({});
+const marketApi = new MarketApi();
 
 export default class MarketService {
-  static updateQuotes = async (assets: any, assetId: string | null) => {
-    const convertedQuotes = await marketsApi.convert({
-      AssetsFrom: assets.map((asset: any) => {
-        return {
-          Amount: asset.Balance,
-          AssetId: asset.AssetId
-        };
-      }),
+  static convert = async (assets: any[], assetId: string) => {
+    const convertedQuotes = await marketApi.convert({
+      AssetsFrom: assets.map((asset: any) => ({
+        Amount: asset.Balance,
+        AssetId: asset.AssetId
+      })),
       BaseAssetId: assetId,
       OrderAction: Side.Sell
     });
-    return convertedQuotes.Converted.map((converted: any) => {
-      return {
-        AssetId: converted.To ? converted.To.AssetId : null,
-        Balance: converted.To ? converted.To.Amount : 0
-      };
-    });
+    return convertedQuotes.Converted.map((converted: any) => ({
+      AssetId: pathOr(null, ['To', 'AssetId'], converted),
+      Balance: pathOr(0, ['To', 'Amount'], converted)
+    }));
   };
 }
