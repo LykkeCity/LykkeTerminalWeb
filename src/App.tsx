@@ -1,7 +1,7 @@
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import {SignInPage} from './components/SignInPage';
+import {Auth} from './components/Auth/Auth';
 import {injectGlobal} from './components/styled';
 import {Terminal} from './components/Terminal';
 import paths from './constants/paths';
@@ -85,7 +85,7 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <Route exact={true} path={paths.singin} component={SignInPage} />
+          <Route exact={true} path={paths.auth} component={Auth} />
           <Route exact={true} path="/" component={Terminal} />
         </Switch>
       </Router>

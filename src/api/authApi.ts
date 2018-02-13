@@ -13,6 +13,24 @@ export class RestAuthApi extends RestApi implements AuthApi {
       PartnerId: '',
       Password: password
     });
+
+  fetchToken = (accessToken: string) =>
+    this.wretcher()
+      .url(process.env.REACT_APP_AUTH_URL!, true)
+      .headers({
+        Authorization: `Bearer ${accessToken}`,
+        application_id: process.env.REACT_APP_ID
+      })
+      .url('/getlykkewallettoken')
+      .get()
+      .json();
+
+  signout = () =>
+    this.wretcher()
+      .url(process.env.REACT_APP_AUTH_URL!, true)
+      .url('/signout')
+      .post()
+      .res();
 }
 
 export default RestAuthApi;
