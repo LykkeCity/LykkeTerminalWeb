@@ -66,40 +66,50 @@ class BalanceListStore extends BaseStore {
   };
 
   setTradingAssets = async (walletList: WalletModel[]) => {
-    this.tradingAssets = this.getTradingWallet(walletList).balances.map(
-      (assetsBalance: any) => {
-        const assetBalance = new AssetBalanceModel(assetsBalance);
-        const assetById = this.rootStore.referenceStore.getAssetById(
-          assetBalance.id
-        );
+    const {getAssetById} = this.rootStore.referenceStore;
+    this.tradingAssets = this.getTradingWallet(walletList)
+      .balances.map((dto: any) => {
+        const assetBalance = new AssetBalanceModel(dto);
+        const assetById = getAssetById(assetBalance.id);
         assetBalance.name = pathOr('', ['name'], assetById);
         assetBalance.accuracy = pathOr('', ['accuracy'], assetById);
         return assetBalance;
-      }
-    );
+      })
+      .filter(a => a.id && a.name);
 
     await this.updateTradingWallet();
   };
 
   updateTradingWallet = async () => {
-    const assets = this.tradingAssets.map(asset => {
-      return {
-        AssetId: asset.id,
-        Balance: asset.available
-      };
-    });
+    const assets = this.tradingAssets.map(asset => ({
+      AssetId: asset.id,
+      Balance: asset.available
+    }));
     const baseAssetId = baseAssetStorage.get();
 
     const updatedBalances: any[] = await MarketService.convert(
       assets,
       baseAssetId!
     );
+    this.tradingAssets = this.tradingAssets.map(a => {
+      const balanceInBaseAsset = pathOr(
+        0,
+        ['Balance'],
+        updatedBalances.find(b => b.FromAssetId === a.id)
+      );
+      a.balanceInBaseAsset = balanceInBaseAsset;
+      return a;
+    });
     this.tradingTotal = updatedBalances.map(b => b.Balance).reduce(add, 0);
 
-    const balancesInBaseAsset = this.tradingAssets.filter(a =>
+    const balanceInBaseAssetExists = this.tradingAssets.some(a =>
       this.eqToBaseAssetId(a, baseAssetId!)
     );
-    if (balancesInBaseAsset.length > 0) {
+    if (balanceInBaseAssetExists) {
+      const balancesInBaseAsset = this.tradingAssets.filter(a =>
+        this.eqToBaseAssetId(a, baseAssetId!)
+      );
+      balancesInBaseAsset.forEach(b => (b.balanceInBaseAsset = b.balance));
       this.tradingTotal += balancesInBaseAsset
         .map(a => a.available)
         .reduce(add, 0);

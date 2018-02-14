@@ -6,16 +6,17 @@ class AssetBalanceModel {
   name: string;
   @observable balance: number;
   @observable reserved: number;
+  @observable balanceInBaseAsset: number;
 
   @computed
   get available() {
     return this.balance - this.reserved;
   }
 
-  constructor(assetsBalance: any) {
-    this.id = assetsBalance.AssetId;
-    this.balance = assetsBalance.Balance;
-    this.reserved = assetsBalance.Reserved;
+  constructor(dto: any) {
+    this.id = dto.AssetId;
+    this.balance = dto.Balance;
+    this.reserved = dto.Reserved;
   }
 }
 
