@@ -33,6 +33,7 @@ export class WampApi {
   subscribe = async (topic: string, cb: any) => {
     const subscription = await this.session.subscribe(topic, cb);
     this.subscriptions.set(topic, subscription);
+    return subscription;
   };
 
   unsubscribe = async (subscription: Subscription) => {

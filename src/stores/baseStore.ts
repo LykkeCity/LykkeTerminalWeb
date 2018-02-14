@@ -1,19 +1,19 @@
-import {Session} from 'autobahn';
+import {WampApi} from '../api/index';
 import {RootStore} from './index';
 
 abstract class BaseStore {
   abstract reset: () => void;
 
-  private session: Session;
+  private ws: WampApi;
 
   constructor(readonly rootStore: RootStore) {
     this.rootStore.registerStore(this);
   }
 
-  getSession = () => this.session;
+  getWs = () => this.ws;
 
-  setSession = (session: Session) => {
-    this.session = session;
+  setWs = (ws: WampApi) => {
+    this.ws = ws;
   };
 }
 
