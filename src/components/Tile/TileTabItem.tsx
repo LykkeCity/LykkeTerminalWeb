@@ -26,6 +26,7 @@ const StyledSpan = styled.span`
   }
   &.active {
     color: #f5f6f7;
+    border: solid 2px #0388ef;
   }
 `;
 
