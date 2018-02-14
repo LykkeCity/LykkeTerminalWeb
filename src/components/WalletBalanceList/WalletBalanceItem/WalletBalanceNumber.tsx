@@ -2,20 +2,31 @@ import * as React from 'react';
 import styled from '../../styled';
 
 const StyledNumber = styled.div.attrs({})`
-  color: #8c94a0;
+  color: ${(p: any) => p.color};
   span {
     color: #f5f6f7;
   }
 `;
 
-const WalletBalanceNumber = ({num}: {num: string}) => {
-  const sepIdx = num.indexOf('.') + 1;
-  const int = sepIdx > 0 ? num.substr(0, sepIdx) : num;
-  const fractional = sepIdx > 0 ? num.substr(sepIdx) : '';
+interface WalletBalanceNumberProps {
+  num: number;
+  accuracy: number;
+  color?: string;
+}
+
+const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
+  num,
+  accuracy,
+  color = '#ffffff',
+  children
+}) => {
+  if (!num) {
+    return null;
+  }
   return (
-    <StyledNumber>
-      <span>{int}</span>
-      {fractional}
+    <StyledNumber color={color}>
+      {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
+      {children}
     </StyledNumber>
   );
 };

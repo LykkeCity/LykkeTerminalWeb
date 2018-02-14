@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AssetBalanceModel} from '../../models/index';
+import {AssetBalanceModel, AssetModel} from '../../models/index';
 import styled from '../styled';
 import {Table} from '../Table/index';
 import {TradingWalletItem} from './';
@@ -7,35 +7,44 @@ import {TradingWalletItem} from './';
 const Total = styled.tr`
   background: rgba(0, 0, 0, 0.2);
   td {
-    font-weight: bold;
+    font-weight: bold !important;
   }
 `;
 
 export interface WalletBalanceListProps {
   assets: AssetBalanceModel[];
-  accuracy: number;
+  baseAsset: AssetModel;
   total: number;
 }
 
 const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   assets = [],
-  accuracy,
+  baseAsset,
+  baseAsset: {accuracy, name},
   total
 }) => (
   <Table>
     <thead>
       <tr>
         <th>Assets</th>
+        <th>&nbsp;</th>
         <th>Balance</th>
       </tr>
     </thead>
     <tbody>
       <Total>
         <td>Total</td>
-        <td>{total.toFixed(accuracy)}</td>
+        <td>&nbsp;</td>
+        <td>
+          {total.toFixed(accuracy)} {name}
+        </td>
       </Total>
-      {assets.map(asset => (
-        <TradingWalletItem key={asset.id} assetBalance={asset} />
+      {assets.map(assetBalance => (
+        <TradingWalletItem
+          key={assetBalance.id}
+          assetBalance={assetBalance}
+          baseAsset={baseAsset}
+        />
       ))}
     </tbody>
   </Table>

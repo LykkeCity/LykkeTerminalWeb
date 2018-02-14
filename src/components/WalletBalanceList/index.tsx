@@ -1,10 +1,10 @@
-import {AssetBalanceModel} from '../../models/index';
+import {AssetBalanceModel, AssetModel} from '../../models/index';
 import {connect} from '../connect';
 import WalletBalanceList from './WalletBalanceList';
 
 export interface WalletBalanceItemProps {
-  accuracy?: number;
   assetBalance: AssetBalanceModel;
+  baseAsset: AssetModel;
 }
 
 const ConnectedWalletBalanceList = connect(
@@ -12,10 +12,10 @@ const ConnectedWalletBalanceList = connect(
     balanceListStore: {tradingWalletAssets: assets, tradingWalletTotal: total},
     referenceStore
   }) => ({
-    accuracy: (referenceStore.getAssetById(referenceStore.baseAssetId) || {
-      accuracy: 2
-    })!.accuracy,
     assets,
+    baseAsset:
+      referenceStore.getAssetById(referenceStore.baseAssetId) ||
+      new AssetModel({}),
     total
   }),
   WalletBalanceList

@@ -16,7 +16,8 @@ export default class MarketService {
     });
     return convertedQuotes.Converted.map((converted: any) => ({
       AssetId: pathOr(null, ['To', 'AssetId'], converted),
-      Balance: pathOr(0, ['To', 'Amount'], converted)
+      Balance: pathOr(0, ['To', 'Amount'], converted),
+      FromAssetId: pathOr(null, ['From', 'AssetId'], converted)
     }));
   };
 }
