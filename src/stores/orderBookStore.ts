@@ -29,20 +29,16 @@ class OrderBookStore extends BaseStore {
     super(store);
   }
 
-  subscribe = async (session: any) => {
+  subscribe = async (ws: any) => {
     const topic = curry(topics.orderBook)(
       this.rootStore.uiStore.selectedInstrument!.id
     );
-    this.subscriptions.add(
-      await session.subscribe(topic(Side.Buy), this.onUpdate)
-    );
-    this.subscriptions.add(
-      await session.subscribe(topic(Side.Sell), this.onUpdate)
-    );
+    this.subscriptions.add(await ws.subscribe(topic(Side.Buy), this.onUpdate));
+    this.subscriptions.add(await ws.subscribe(topic(Side.Sell), this.onUpdate));
   };
 
   unsubscribe = () => {
-    this.subscriptions.forEach(s => s.unsubscribe());
+    this.subscriptions.forEach(s => this.getWs().unsubscribe(s));
     this.subscriptions.clear();
   };
 

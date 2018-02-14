@@ -71,12 +71,12 @@ class TradeStore extends BaseStore {
       });
   };
 
-  subscribe = (session: any) => {
-    session.subscribe(topics.trade, this.onTrades);
+  subscribe = (ws: any) => {
+    ws.subscribe(topics.trade, this.onTrades);
   };
 
-  subscribeToPublicTrades = (session: any) => {
-    session.subscribe(
+  subscribeToPublicTrades = (ws: any) => {
+    ws.subscribe(
       topics.publicTrade(this.rootStore.uiStore.selectedInstrument!.id),
       this.onPublicTrades
     );

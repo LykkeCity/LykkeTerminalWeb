@@ -47,7 +47,7 @@ class ChartStore extends BaseStore {
         ChartStore.config,
         instrument,
         new PriceApi(this),
-        this.getSession()
+        this.getWs()
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
