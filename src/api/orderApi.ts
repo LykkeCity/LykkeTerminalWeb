@@ -8,23 +8,15 @@ export interface OrderApi {
   fetchAll: () => ApiResponse;
 }
 
-// TODO: remove once backend implementation will be ready
-const signature = {
-  SignatureVerificationToken: 'asdasdasd'
-};
-
 export class RestOrderApi extends RestApi implements OrderApi {
-  placeMarket = (body: any) =>
-    this.fireAndForget('/Orders/market', body, signature);
+  placeMarket = (body: any) => this.fireAndForget('/Orders/market', body);
 
-  placeLimit = (body: any) =>
-    this.fireAndForget('/Orders/limit', body, signature);
+  placeLimit = (body: any) => this.fireAndForget('/Orders/limit', body);
 
   cancelOrder = (id: string) =>
-    this.fireAndForget(`/orders/limit/${id}/cancel`, {}, signature);
+    this.fireAndForget(`/orders/limit/${id}/cancel`, {});
 
-  // TODO: no need for verification token here
-  fetchAll = () => this.get('/orders', signature);
+  fetchAll = () => this.get('/orders');
 }
 
 export default OrderApi;
