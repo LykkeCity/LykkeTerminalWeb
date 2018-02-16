@@ -14,7 +14,7 @@ export class RestApi {
 
   protected get = (url: string, headers: any = {}) =>
     this.wretcher()
-      .headers(headers) // TODO: hack to make it working, remove after actual implementation
+      .headers(headers)
       .url(url)
       .get()
       .unauthorized((err: WretcherError) => this.catchUnauthorized(err))

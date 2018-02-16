@@ -7,7 +7,6 @@ import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const tokenStorage = StorageUtils(keys.token);
-const notificationStorage = StorageUtils(keys.notificationId);
 
 class AuthStore extends BaseStore {
   @computed
@@ -16,7 +15,6 @@ class AuthStore extends BaseStore {
   }
 
   @observable private token: string = tokenStorage.get() || '';
-  @observable private notificationId: string = notificationStorage.get() || '';
 
   constructor(store: RootStore, private readonly api: AuthApi) {
     super(store);
@@ -27,9 +25,7 @@ class AuthStore extends BaseStore {
       .fetchBearerToken('/client/auth', email, password)
       .then((resp: any) => {
         this.token = resp.AccessToken;
-        this.notificationId = resp.NotificationsId;
         tokenStorage.set(this.token);
-        notificationStorage.set(this.notificationId);
         return Promise.resolve();
       })
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
@@ -64,7 +60,6 @@ class AuthStore extends BaseStore {
 
   signOut = async () => {
     this.rootStore.reset();
-    this.rootStore.start();
     const {REACT_APP_AUTH_URL: url} = process.env;
     location.replace(
       `${url}/connect/logout?post_logout_redirect_uri=${encodeURIComponent(
@@ -75,7 +70,6 @@ class AuthStore extends BaseStore {
 
   reset = () => {
     this.token = '';
-    this.notificationId = '';
     tokenStorage.clear();
   };
 }
