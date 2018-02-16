@@ -113,13 +113,15 @@ class RootStore {
     }
 
     this.settingsStore.init();
+    this.watchlistStore.fetchAll();
 
-    await this.watchlistStore
-      .fetchAll()
-      .then(this.referenceStore.fetchBaseAsset)
-      .then(this.tradeStore.fetchAll)
-      .then(this.balanceListStore.fetchAll)
-      .then(this.orderListStore.fetchAll)
+    await this.referenceStore
+      .fetchBaseAsset()
+      .then(() => {
+        this.tradeStore.fetchAll();
+        this.balanceListStore.fetchAll();
+        this.orderListStore.fetchAll();
+      }, reject => Promise.resolve)
       .then(async () => {
         const instruments = this.referenceStore.getInstruments();
 
