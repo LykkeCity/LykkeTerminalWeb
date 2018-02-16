@@ -42,6 +42,11 @@ class ReferenceStore extends BaseStore {
     return asset ? asset.accuracy : 2;
   }
 
+  @computed
+  get getBaseAsset() {
+    return this.getAssetById(this.baseAssetId);
+  }
+
   constructor(readonly store: RootStore, private api: AssetApi) {
     super(store);
   }

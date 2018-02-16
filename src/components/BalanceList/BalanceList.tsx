@@ -61,7 +61,7 @@ const BalanceList: React.SFC<BalanceListProps> = ({
       href={process.env.REACT_APP_WEBWALLET_URL}
       target="_blank"
     >
-      Manage wallets at Account
+      Manage wallets in Account
     </ManageWalletLink>
   </React.Fragment>
 );
