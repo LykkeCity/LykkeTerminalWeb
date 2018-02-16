@@ -20,7 +20,7 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   color = '#ffffff',
   children
 }) => {
-  if (!num) {
+  if (num === undefined || num === null) {
     return null;
   }
   return (

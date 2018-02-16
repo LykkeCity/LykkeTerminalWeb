@@ -1,4 +1,5 @@
 import {rem} from 'polished';
+import {pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
 import {ReferenceStore, UiStore} from '../../stores';
@@ -55,7 +56,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
   };
 
   getOptions = () => {
-    return this.referenceStore.allAssets.map(asset => {
+    return this.referenceStore.baseAssets.map(asset => {
       return {
         label: asset.name,
         value: asset.id
@@ -72,7 +73,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
           )}
         </StyledBalanceValue>
         <StyledButton onClick={this.handleClick} id="baseAssetBtn">
-          {this.referenceStore.baseAssetId}
+          {pathOr('', ['getBaseAsset', 'name'], this.referenceStore)}
         </StyledButton>
         {this.uiStore.showAssetsSelect ? (
           <ClickOutside onClickOutside={this.uiStore.toggleAssetsSelect}>
