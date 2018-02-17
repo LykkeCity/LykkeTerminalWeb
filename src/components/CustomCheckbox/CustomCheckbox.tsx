@@ -37,7 +37,8 @@ const StyledCustomCheckbox = styled.span`
   height: 18px;
   border-radius: 4px;
   /* border: solid 1px rgba(140, 148, 160, 0.4); */
-  background-color: transparent;
+  /* background-color: transparent; */
+  background-color: #0388ef;
 
   &:after {
     content: '';

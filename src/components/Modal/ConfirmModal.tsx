@@ -74,7 +74,7 @@ class ConfirmModal extends React.Component<
   constructor(props: ConfirmModalProps) {
     super(props);
     this.state = {
-      isReminderChecked: JSON.parse(confirmStorage.get() || 'false')
+      isReminderChecked: !JSON.parse(confirmStorage.get() || 'true')
     };
   }
 
