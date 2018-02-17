@@ -79,9 +79,13 @@ class ReferenceStore extends BaseStore {
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
   findInstruments = (term: string, name: string) => {
-    return this.instruments
-      .filter(i => i.baseAsset && i.quotingAsset)
-      .filter(this.filterAvailableInstrument)
+    const instruments = this.rootStore.authStore.isAuth
+      ? this.instruments
+          .filter(i => i.baseAsset && i.quotingAsset)
+          .filter(this.filterAvailableInstrument)
+      : this.instruments;
+
+    return instruments
       .filter(withIdAndName)
       .filter(x =>
         x.name
@@ -193,7 +197,10 @@ class ReferenceStore extends BaseStore {
     }
   };
 
-  reset = () => (this.assets = []);
+  reset = () => {
+    this.assets = [];
+    this.availableAssets = [];
+  };
 
   private filterAvailableInstrument = (i: InstrumentModel) =>
     this.availableAssets.indexOf(i.baseAsset.id) > -1 &&
