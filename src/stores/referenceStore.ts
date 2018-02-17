@@ -105,7 +105,9 @@ class ReferenceStore extends BaseStore {
     await this.fetchCategories();
     await this.fetchAssets();
     await this.fetchInstruments();
-    await this.fetchAvailableAssets();
+    if (this.rootStore.authStore.isAuth) {
+      await this.fetchAvailableAssets();
+    }
   };
 
   fetchAssets = () => {

@@ -55,7 +55,7 @@ class TradeStore extends BaseStore {
   fetchAll = () => {
     return this.api.fetchUserTrades(this.skip, this.take).then((dto: any) => {
       runInAction(() => {
-        this.moreTradesToLoad = dto.length > 0;
+        this.moreTradesToLoad = dto.length >= this.take - this.skip;
         const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
         this.trades = mappers.mapToTradeList(
           dto,
