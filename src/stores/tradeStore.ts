@@ -1,5 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {compose, reverse, sortBy, uniq} from 'rambda';
+import {compose, pathOr, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {OrderType, Side, TradeModel} from '../models/index';
@@ -56,9 +56,11 @@ class TradeStore extends BaseStore {
     return this.api.fetchUserTrades(this.skip, this.take).then((dto: any) => {
       runInAction(() => {
         this.moreTradesToLoad = dto.length > 0;
+        const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
         this.trades = mappers.mapToTradeList(
           dto,
-          this.rootStore.referenceStore.getInstrumentById
+          getInstrumentById,
+          getAssetById
         );
       });
       return Promise.resolve();
@@ -70,9 +72,14 @@ class TradeStore extends BaseStore {
       .fetchPublicTrades(this.publicSkip, this.publicTake)
       .then((dto: any) => {
         runInAction(() => {
+          const {
+            getInstrumentById,
+            getAssetById
+          } = this.rootStore.referenceStore;
           this.publicTrades = mappers.mapToTradeList(
             dto,
-            this.rootStore.referenceStore.getInstrumentById
+            getInstrumentById,
+            getAssetById
           );
         });
       });
@@ -93,11 +100,9 @@ class TradeStore extends BaseStore {
     this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
     const tradesDto = await this.api.fetchUserTrades(this.skip, this.loading);
     this.moreTradesToLoad = tradesDto.length > 0;
+    const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
     this.addTrades(
-      mappers.mapToTradeList(
-        tradesDto,
-        this.rootStore.referenceStore.getInstrumentById
-      )
+      mappers.mapToTradeList(tradesDto, getInstrumentById, getAssetById)
     );
   };
 
@@ -111,11 +116,9 @@ class TradeStore extends BaseStore {
       this.publicSkip,
       this.loading
     );
+    const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
     this.addPublicTrades(
-      mappers.mapToTradeList(
-        tradesDto,
-        this.rootStore.referenceStore.getInstrumentById
-      )
+      mappers.mapToTradeList(tradesDto, getInstrumentById, getAssetById)
     );
   };
 
@@ -123,9 +126,16 @@ class TradeStore extends BaseStore {
     const side =
       this.rootStore.orderStore.lastOrder.OrderAction === 'buy' ? 0 : 1;
     const execution = args[0].find((x: any) => x.Direction === side);
+    const {getAssetById} = this.rootStore.referenceStore;
+    const baseAssetName = pathOr('', ['name'], getAssetById(execution.Asset));
+    const quoteAssetName = pathOr(
+      '',
+      ['name'],
+      getAssetById(execution.OppositeAsset)
+    );
     const trade = new TradeModel({
       id: execution.TradeId,
-      symbol: execution.Asset.concat('/', execution.OppositeAsset),
+      symbol: baseAssetName.concat('/', quoteAssetName),
       // tslint:disable-next-line:object-literal-sort-keys
       quantity: execution.Volume,
       oppositeQuantity: execution.OppositeVolume,
@@ -155,11 +165,9 @@ class TradeStore extends BaseStore {
 
   onPublicTrades = (args: any[]) => {
     this.wampPublicTrades += args[0].lengths;
+    const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
     this.addPublicTrades(
-      mappers.mapToTradeList(
-        args[0],
-        this.rootStore.referenceStore.getInstrumentById
-      )
+      mappers.mapToTradeList(args[0], getInstrumentById, getAssetById)
     );
   };
 
