@@ -70,7 +70,7 @@ class ReferenceStore extends BaseStore {
       const allowedInstruments = watchlistStore.defaultWatchlist.assetIds;
       return this.instruments
         .filter(x => allowedInstruments.indexOf(x.id) > -1)
-        .filter(i => this.availableAssets.indexOf(i.baseAsset.id) > -1);
+        .filter(this.filterAvailableInstrument);
     }
     return this.instruments;
   };
@@ -80,8 +80,8 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string, name: string) => {
     return this.instruments
-      .filter(i => i.baseAsset)
-      .filter(i => this.availableAssets.indexOf(i.baseAsset.id) > -1)
+      .filter(i => i.baseAsset && i.quotingAsset)
+      .filter(this.filterAvailableInstrument)
       .filter(withIdAndName)
       .filter(x =>
         x.name
@@ -192,6 +192,10 @@ class ReferenceStore extends BaseStore {
   };
 
   reset = () => (this.assets = []);
+
+  private filterAvailableInstrument = (i: InstrumentModel) =>
+    this.availableAssets.indexOf(i.baseAsset.id) > -1 &&
+    this.availableAssets.indexOf(i.quotingAsset.id) > -1;
 }
 
 export default ReferenceStore;
