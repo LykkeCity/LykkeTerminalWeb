@@ -17,13 +17,16 @@ const withIdAndName = (x: InstrumentModel) => !!x.id && !!x.name;
 // tslint:disable:no-bitwise
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
+  @observable.shallow private availableAssets: string[] = [];
   @observable private categories: AssetCategoryModel[] = [];
   @observable.shallow private instruments: InstrumentModel[] = [];
   @observable private baseAsset: string = '';
 
   @computed
   get baseAssets() {
-    return this.assets.filter(x => x.isBase);
+    return this.assets
+      .filter(a => this.availableAssets.indexOf(a.id) > -1)
+      .filter(a => a.isBase);
   }
 
   @computed
@@ -61,13 +64,13 @@ class ReferenceStore extends BaseStore {
   getCategories = () => this.categories;
 
   getInstruments = () => {
+    const {watchlistStore} = this.rootStore;
     // TODO: should be implemented properly
-    if (this.rootStore.watchlistStore) {
-      const allowedInstruments = this.rootStore.watchlistStore.defaultWatchlist
-        .assetIds;
-      return this.instruments.filter(
-        (x: InstrumentModel) => allowedInstruments.indexOf(x.id) > -1
-      );
+    if (watchlistStore) {
+      const allowedInstruments = watchlistStore.defaultWatchlist.assetIds;
+      return this.instruments
+        .filter(x => allowedInstruments.indexOf(x.id) > -1)
+        .filter(i => this.availableAssets.indexOf(i.baseAsset.id) > -1);
     }
     return this.instruments;
   };
@@ -77,6 +80,8 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string, name: string) => {
     return this.instruments
+      .filter(i => i.baseAsset)
+      .filter(i => this.availableAssets.indexOf(i.baseAsset.id) > -1)
       .filter(withIdAndName)
       .filter(x =>
         x.name
@@ -100,6 +105,7 @@ class ReferenceStore extends BaseStore {
     await this.fetchCategories();
     await this.fetchAssets();
     await this.fetchInstruments();
+    await this.fetchAvailableAssets();
   };
 
   fetchAssets = () => {
@@ -116,6 +122,13 @@ class ReferenceStore extends BaseStore {
         return Promise.resolve();
       })
       .catch(Promise.reject);
+  };
+
+  fetchAvailableAssets = async () => {
+    const resp = await this.api.fetchAvailableAssets();
+    runInAction(() => {
+      this.availableAssets = resp.AssetIds;
+    });
   };
 
   fetchCategories = () => {

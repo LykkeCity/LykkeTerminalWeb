@@ -10,6 +10,7 @@ export interface AssetApi {
 
 export class RestAssetApi extends RestApi implements AssetApi {
   fetchAll = () => this.get('/assets');
+  fetchAvailableAssets = () => this.get('/assets/available');
   fetchBaseAsset = () => this.get('/assets/baseAsset');
   fetchAssetCategories = () => this.get('/assets/categories');
   fetchAssetInstruments = () => this.get('/assetpairs');
