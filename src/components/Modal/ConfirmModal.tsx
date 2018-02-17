@@ -74,20 +74,18 @@ class ConfirmModal extends React.Component<
   constructor(props: ConfirmModalProps) {
     super(props);
     this.state = {
-      isReminderChecked: true
+      isReminderChecked: JSON.parse(confirmStorage.get() || 'false')
     };
   }
 
   handleChange = () => (e: any) => {
     this.setState({
-      isReminderChecked: !e.target.checked
+      isReminderChecked: e.target.checked
     });
   };
 
   handleApply = (modal: ModalModel) => () => {
-    if (!this.state.isReminderChecked) {
-      confirmStorage.set(this.state.isReminderChecked);
-    }
+    confirmStorage.set(!this.state.isReminderChecked);
 
     modal.applyAction();
     modal.close();
@@ -114,6 +112,7 @@ class ConfirmModal extends React.Component<
             <CustomCheckbox
               change={this.handleChange()}
               label={`Don't ask me again`}
+              checked={this.state.isReminderChecked}
             />
           </StyledReminder>
           <Flex justify={'space-between'} style={{marginTop: '24px'}}>
