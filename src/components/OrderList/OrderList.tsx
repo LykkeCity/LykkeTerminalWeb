@@ -11,7 +11,7 @@ const OrderList: React.SFC<OrderListProps> = ({orders = [], cancelOrder}) => (
   <Table>
     <thead>
       <tr>
-        <th>Symbol</th>
+        <th>Asset pair</th>
         <th>Close</th>
         <th>OrderID</th>
         <th>Side</th>

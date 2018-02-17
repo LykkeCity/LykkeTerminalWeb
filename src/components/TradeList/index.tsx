@@ -7,17 +7,21 @@ import TradeListItem from './TradeListItem';
 
 export interface TradesProps {
   trades?: TradeModel[];
+  needToLoadMore?: boolean;
   fetchPart: any;
   stringId?: string;
   authorized?: true;
 }
 
 const ConnectedTradeList = connect(
-  ({tradeStore: {getAllTrades, fetchPartTrade}, authStore}) => ({
+  ({
+    tradeStore: {getAllTrades, fetchPartTrade, needToLoadMore},
+    authStore
+  }) => ({
+    authorized: authStore.isAuth,
     fetchPart: fetchPartTrade,
-    trades: getAllTrades,
-    // tslint:disable-next-line:object-literal-sort-keys
-    authorized: authStore.isAuth
+    needToLoadMore,
+    trades: getAllTrades
   }),
   TradeList
 );

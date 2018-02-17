@@ -6,8 +6,11 @@ const StyledBalanceNumber = styled.div`
   font-weight: bold;
 `;
 
-const BalanceNumber = ({num}: {num: string}) => (
-  <StyledBalanceNumber>{num}</StyledBalanceNumber>
+const BalanceNumber: React.SFC<{num: string}> = ({num, children}) => (
+  <StyledBalanceNumber>
+    {num}
+    {children}
+  </StyledBalanceNumber>
 );
 
 export default BalanceNumber;

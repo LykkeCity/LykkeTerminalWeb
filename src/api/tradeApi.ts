@@ -9,12 +9,19 @@ export interface TradeApi {
 }
 
 export class RestTradeApi extends RestApi implements TradeApi {
-  fetchUserTrades = (skip: number, take: number) =>
-    HistoryApi.fetchHistory({
+  fetchUserTrades = async (skip: number, take: number) => {
+    const trades = (await HistoryApi.fetchHistory({
       operationType: Operations.Trade,
       skip,
       take
-    });
+    })) as any[];
+    const limitTrades = (await HistoryApi.fetchHistory({
+      operationType: Operations.LimitTrade,
+      skip,
+      take
+    })) as any[];
+    return [...trades, ...limitTrades];
+  };
 
   fetchPublicTrades = (skip: number, take: number) =>
     // this.fetchUserTrades(skip, take);

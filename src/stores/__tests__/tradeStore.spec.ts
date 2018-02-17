@@ -1,3 +1,4 @@
+import {OrderType} from '../../models/index';
 import {RootStore, TradeStore} from '../index';
 
 // tslint:disable:object-literal-sort-keys
@@ -112,7 +113,8 @@ describe('trade store', () => {
           price: 1,
           oppositeQuantity: 1,
           sellVolume: 1,
-          buyVolume: 1
+          buyVolume: 1,
+          orderType: OrderType.Market
         }
       ]);
       expect(tradeStore.getPublicTrades).toHaveLength(1);

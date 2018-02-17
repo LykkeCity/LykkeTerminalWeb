@@ -1,5 +1,6 @@
 enum Operations {
-  Trade = 'Trade'
+  Trade = 'Trade',
+  LimitTrade = 'LimitTrade'
 }
 
 export default Operations;

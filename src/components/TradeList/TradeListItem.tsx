@@ -12,6 +12,7 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   symbol,
   buyVolume,
   sellVolume,
+  orderType,
   timestamp,
   className
 }) => {
@@ -28,6 +29,7 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
         {side === Side.Sell ? baseAsset : quoteAsset}
       </td>
       <td>{price}</td>
+      <td>{orderType}</td>
       <td>{new Date(timestamp).toLocaleString()}</td>
     </tr>
   );

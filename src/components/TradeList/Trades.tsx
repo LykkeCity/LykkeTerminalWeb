@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -25,6 +26,7 @@ const StyledBtn = styled.span`
 
 const Trades: React.SFC<TradesProps> = ({
   trades = [],
+  needToLoadMore,
   fetchPart,
   stringId = ''
 }) => {
@@ -33,11 +35,12 @@ const Trades: React.SFC<TradesProps> = ({
       <Table>
         <thead>
           <tr>
-            <th>Symbol</th>
+            <th>Asset pair</th>
             <th>Side</th>
             <th>Buy Volume</th>
             <th>Sell Volume</th>
             <th>Price</th>
+            <th>Order type</th>
             <th>Timestamp</th>
           </tr>
         </thead>
@@ -47,7 +50,7 @@ const Trades: React.SFC<TradesProps> = ({
           ))}
         </tbody>
       </Table>
-      {!!trades.length && (
+      {needToLoadMore && (
         <StyledBtnSection>
           <StyledBtn onClick={fetchPart}>Load more...</StyledBtn>
         </StyledBtnSection>
@@ -56,4 +59,4 @@ const Trades: React.SFC<TradesProps> = ({
   );
 };
 
-export default Trades;
+export default observer(Trades);

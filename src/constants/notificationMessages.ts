@@ -1,8 +1,8 @@
 const messages = {
-  allOrdersCanceled: 'All orders have cancelled',
+  allOrdersCanceled: 'All orders have been canceled',
   defaultError: 'Something went wrong',
   expired: 'Your session has expired',
-  orderCanceled: 'Order has canceled:',
+  orderCanceled: 'Order has been canceled:',
   orderError: 'There is an error placing your order:',
   orderExecuted: (id: string) => `Order: ${id} was closed successfully`,
   orderExecutedPartially: (id: string, volume: number) =>

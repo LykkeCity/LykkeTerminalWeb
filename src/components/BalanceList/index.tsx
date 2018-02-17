@@ -4,6 +4,7 @@ import BalanceList from './BalanceList';
 
 export interface BalanceListProps {
   balances?: any[];
+  baseAssetName: string;
   total: number;
   accuracy: number;
 }
@@ -14,6 +15,7 @@ export interface BalanceListItemProps {
   id: number;
   profitAndLoss: number;
   symbol: string;
+  baseAssetName: string;
 }
 
 const ConnectedBalanceList = connect(
@@ -23,6 +25,7 @@ const ConnectedBalanceList = connect(
   }) => ({
     accuracy: pathOr(0, ['accuracy'], getAssetById(baseAssetId)),
     balances,
+    baseAssetName: pathOr('', ['name'], getAssetById(baseAssetId)),
     total
   }),
   BalanceList
