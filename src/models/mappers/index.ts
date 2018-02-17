@@ -6,6 +6,7 @@ import {
   InstrumentModel,
   Interval,
   OrderModel,
+  OrderType,
   Side,
   TradeModel
 } from '../index';
@@ -117,6 +118,7 @@ export const mapToTradeFromWamp = ({
   Asset,
   Volume,
   Direction,
+  OrderType: orderType,
   DateTime,
   TradeId
 }: any) => {
@@ -127,7 +129,8 @@ export const mapToTradeFromWamp = ({
     asset: Asset,
     timestamp: DateTime,
     tradeId: TradeId,
-    id: `${TradeId}${Asset}-${side}`
+    id: `${TradeId}${Asset}-${side}`,
+    orderType: mapHistoryTypeToOrderType(orderType)
   });
 };
 
@@ -149,6 +152,18 @@ export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly}: any) =>
     readOnly: ReadOnly
   });
 
+export const mapHistoryTypeToOrderType = (type: string) => {
+  switch (type) {
+    case 'Trade':
+      return OrderType.Market;
+    case 'LimitTrade':
+      return OrderType.Limit;
+    default:
+      break;
+  }
+  return undefined;
+};
+
 export const mapToTradeList = (
   dto: any,
   getInstrument: (id: string) => InstrumentModel | undefined
@@ -167,26 +182,28 @@ export const mapToTradeList = (
       trades.push(
         new TradeModel({
           id: t[0].Id,
-          price: Math.abs(t[1].Amount),
+          price: Math.abs(t[0].Price),
           quantity: Math.abs(t[0].Amount),
           side: t[0].Amount > 0 ? Side.Buy : Side.Sell,
           symbol: t[0].Asset.concat('/', t[1].Asset),
           timestamp: t[0].DateTime,
           tradeId: t[0].Id,
-          oppositeQuantity: t[1].Amount
+          oppositeQuantity: t[1].Amount,
+          orderType: mapHistoryTypeToOrderType(t[0].Type)
         })
       );
     } else {
       trades.push(
         new TradeModel({
           id: t[1].Id,
-          price: Math.abs(t[0].Amount),
+          price: Math.abs(t[1].Price),
           quantity: Math.abs(t[1].Amount),
           side: t[1].Amount > 0 ? Side.Buy : Side.Sell,
           symbol: t[1].Asset.concat('/', t[0].Asset),
           timestamp: t[1].DateTime,
           tradeId: t[1].Id,
-          oppositeQuantity: t[0].Amount
+          oppositeQuantity: t[0].Amount,
+          orderType: mapHistoryTypeToOrderType(t[0].Type)
         })
       );
     }

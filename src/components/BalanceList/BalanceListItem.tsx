@@ -7,12 +7,15 @@ const BalanceListItem: React.SFC<BalanceListItemProps> = ({
   totalBalance,
   id,
   profitAndLoss,
-  symbol
+  symbol,
+  baseAssetName
 }) => (
   <tr key={id}>
     <td>{symbol}</td>
     <td>
-      <BalanceNumber num={totalBalance.toFixed(accuracy)} />
+      <BalanceNumber num={totalBalance.toFixed(accuracy)}>
+        &nbsp;{baseAssetName}
+      </BalanceNumber>
     </td>
   </tr>
 );

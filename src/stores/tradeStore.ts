@@ -2,7 +2,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
-import {Side, TradeModel} from '../models/index';
+import {OrderType, Side, TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import {BaseStore, RootStore} from './index';
@@ -23,6 +23,11 @@ class TradeStore extends BaseStore {
     return sortByDate(this.publicTrades);
   }
 
+  @computed
+  get needToLoadMore() {
+    return this.trades.length > 0 && this.moreTradesToLoad;
+  }
+
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
   private skip: number = TradeQuantity.Skip;
@@ -32,6 +37,7 @@ class TradeStore extends BaseStore {
   private loading: number = TradeQuantity.Loading;
   private wampTrades: number = 0;
   private wampPublicTrades: number = 0;
+  @observable private moreTradesToLoad = false;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
@@ -49,6 +55,7 @@ class TradeStore extends BaseStore {
   fetchAll = () => {
     return this.api.fetchUserTrades(this.skip, this.take).then((dto: any) => {
       runInAction(() => {
+        this.moreTradesToLoad = dto.length > 0;
         this.trades = mappers.mapToTradeList(
           dto,
           this.rootStore.referenceStore.getInstrumentById
@@ -85,6 +92,7 @@ class TradeStore extends BaseStore {
   fetchPartTrade = async () => {
     this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
     const tradesDto = await this.api.fetchUserTrades(this.skip, this.loading);
+    this.moreTradesToLoad = tradesDto.length > 0;
     this.addTrades(
       mappers.mapToTradeList(
         tradesDto,
@@ -114,17 +122,19 @@ class TradeStore extends BaseStore {
   onTrades = (args: any[]) => {
     const side =
       this.rootStore.orderStore.lastOrder.OrderAction === 'buy' ? 0 : 1;
-    const e = args[0].find((x: any) => x.Direction === side);
+    const execution = args[0].find((x: any) => x.Direction === side);
     const trade = new TradeModel({
-      id: e.TradeId,
-      symbol: e.Asset.concat('/', e.OppositeAsset),
+      id: execution.TradeId,
+      symbol: execution.Asset.concat('/', execution.OppositeAsset),
       // tslint:disable-next-line:object-literal-sort-keys
-      quantity: e.Volume,
-      oppositeQuantity: e.OppositeVolume,
-      price: e.OppositeVolume,
-      timestamp: e.DateTime,
-      tradeId: e.TradeId,
-      side: e.Direction === 0 ? Side.Buy : Side.Sell
+      quantity: execution.Volume,
+      oppositeQuantity: execution.OppositeVolume,
+      price: execution.Price,
+      timestamp: execution.DateTime,
+      tradeId: execution.TradeId,
+      side: execution.Direction === 0 ? Side.Buy : Side.Sell,
+      orderType:
+        execution.OrderType === 'Market' ? OrderType.Market : OrderType.Limit
     });
     this.rootStore.orderStore.lastOrder = null;
 

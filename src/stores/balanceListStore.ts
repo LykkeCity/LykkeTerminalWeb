@@ -109,7 +109,7 @@ class BalanceListStore extends BaseStore {
       const balancesInBaseAsset = this.tradingAssets.filter(a =>
         this.eqToBaseAssetId(a, baseAssetId!)
       );
-      balancesInBaseAsset.forEach(b => (b.balanceInBaseAsset = b.balance));
+      balancesInBaseAsset.forEach(b => (b.balanceInBaseAsset = b.available));
       this.tradingTotal += balancesInBaseAsset
         .map(a => a.available)
         .reduce(add, 0);

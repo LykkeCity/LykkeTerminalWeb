@@ -32,6 +32,7 @@ const Total = styled.tr`
 
 const BalanceList: React.SFC<BalanceListProps> = ({
   balances = [],
+  baseAssetName,
   total,
   accuracy
 }) => (
@@ -40,19 +41,22 @@ const BalanceList: React.SFC<BalanceListProps> = ({
       <thead>
         <tr>
           <th>Symbol</th>
-          <th>Balance</th>
+          <th title="Balance in base asset">Balance</th>
         </tr>
       </thead>
       <tbody>
         <Total>
           <td>Total</td>
-          <td>{total.toFixed(accuracy)}</td>
+          <td>
+            {total.toFixed(accuracy)}&nbsp;{baseAssetName}
+          </td>
         </Total>
         {balances.map((balanceList: any) => (
           <BalanceListItem
             key={`balanceitem_${balanceList.id}`}
             accuracy={accuracy}
             {...balanceList}
+            baseAssetName={baseAssetName}
           />
         ))}
       </tbody>

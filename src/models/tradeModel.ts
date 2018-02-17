@@ -1,5 +1,5 @@
 import {extendObservable} from 'mobx';
-import {Side} from './index';
+import {OrderType, Side} from './index';
 
 class TradeModel {
   id: string;
@@ -13,6 +13,7 @@ class TradeModel {
   oppositeQuantity: number;
   buyVolume: number;
   sellVolume: number;
+  orderType: OrderType;
 
   constructor(trade: Partial<TradeModel>) {
     extendObservable(this, trade);

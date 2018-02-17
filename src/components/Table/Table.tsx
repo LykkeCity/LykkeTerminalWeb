@@ -24,6 +24,11 @@ const Table = styled.table`
   td {
     padding: 10px 5px;
     text-align: right;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
     &:first-child {
       color: #f5f6f7;
       font-weight: 600;
