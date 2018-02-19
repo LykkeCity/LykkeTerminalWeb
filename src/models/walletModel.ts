@@ -18,20 +18,17 @@ export default class WalletModel {
   }
 
   updateTotalBalance = async (referenceStore: ReferenceStore) => {
-    const baseAsset = referenceStore.baseAssetId;
+    const baseAssetId = referenceStore.baseAssetId;
 
-    const balancesInBaseAsset = this.balances
-      .filter(balance => balance.AssetId === baseAsset)
-      .map(this.mapToReserved);
-    let balancesNotInBaseAsset = without(
-      balancesInBaseAsset,
-      this.balances
-    ).map(this.mapToReserved);
+    const balancesInBaseAsset = this.balances.filter(
+      balance => balance.AssetId === baseAssetId
+    );
+    let balancesNotInBaseAsset = without(balancesInBaseAsset, this.balances);
 
     if (balancesNotInBaseAsset.length > 0) {
       balancesNotInBaseAsset = await MarketService.convert(
         balancesNotInBaseAsset,
-        baseAsset
+        baseAssetId
       );
     }
 
@@ -42,9 +39,4 @@ export default class WalletModel {
       .map(b => b.Balance)
       .reduce(add, 0);
   };
-
-  private mapToReserved = (b: any) => ({
-    ...b,
-    Balance: b.Balance - (b.Reserved || 0)
-  });
 }

@@ -29,14 +29,14 @@ export const mapToBarFromRest = ({
   Open,
   High,
   Low,
-  TradingVolume = 0
+  Volume = 0
 }: any) => ({
   close: Close,
   high: High,
   low: Low,
   open: Open,
   time: new Date(DateTime).getTime(),
-  volume: TradingVolume
+  volume: Volume
 });
 
 export const mapToBarFromWamp = ({t, c, o, h, l, v}: any) => ({

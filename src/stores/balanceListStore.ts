@@ -83,7 +83,7 @@ class BalanceListStore extends BaseStore {
   updateTradingWallet = async () => {
     const assets = this.tradingAssets.map(asset => ({
       AssetId: asset.id,
-      Balance: asset.available
+      Balance: asset.balance
     }));
     const baseAssetId = baseAssetStorage.get();
 
@@ -109,9 +109,9 @@ class BalanceListStore extends BaseStore {
       const balancesInBaseAsset = this.tradingAssets.filter(a =>
         this.eqToBaseAssetId(a, baseAssetId!)
       );
-      balancesInBaseAsset.forEach(b => (b.balanceInBaseAsset = b.available));
+      balancesInBaseAsset.forEach(b => (b.balanceInBaseAsset = b.balance));
       this.tradingTotal += balancesInBaseAsset
-        .map(a => a.available)
+        .map(a => a.balance)
         .reduce(add, 0);
     }
   };
