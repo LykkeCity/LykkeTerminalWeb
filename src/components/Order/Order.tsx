@@ -54,7 +54,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   constructor(props: OrderProps) {
     super(props);
     this.state = {
-      isMarketActive: true,
+      isMarketActive: false,
       isSellActive: true,
       pendingOrder: false,
       priceValue: '0',
@@ -247,14 +247,14 @@ class Order extends React.Component<OrderProps, OrderState> {
         <StyledContentWrap>
           <StyledActionChoice>
             <OrderChoiceButton
-              title={MARKET}
-              isActive={this.state.isMarketActive}
-              click={this.handleActionChoiceClick(MARKET)}
-            />
-            <OrderChoiceButton
               title={LIMIT}
               isActive={!this.state.isMarketActive}
               click={this.handleActionChoiceClick(LIMIT)}
+            />
+            <OrderChoiceButton
+              title={MARKET}
+              isActive={this.state.isMarketActive}
+              click={this.handleActionChoiceClick(MARKET)}
             />
           </StyledActionChoice>
 

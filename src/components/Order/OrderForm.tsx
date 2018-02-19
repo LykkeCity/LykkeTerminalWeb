@@ -102,6 +102,41 @@ const OrderForm = (props: OrderFormProps) => {
   return (
     <Form>
       <StyledOrderOptions>
+        <StyledTitle>Quantity</StyledTitle>
+        <StyledOptions>
+          <StyledInputNumberComponent>
+            <StyledInput
+              id="quantityValue"
+              type="text"
+              value={quantity}
+              onChange={onChange('quantityValue')}
+              // tslint:disable-next-line:jsx-no-lambda
+              onKeyDown={e => {
+                switch (e.keyCode) {
+                  case 38:
+                    onArrowClick('up', 'quantityValue')();
+                    e.preventDefault();
+                    break;
+                  case 40:
+                    onArrowClick('down', 'quantityValue')();
+                    e.preventDefault();
+                    break;
+                  default:
+                    break;
+                }
+              }}
+              name="quantityValue"
+            />
+            <span
+              className="up"
+              onClick={onArrowClick('up', 'quantityValue')}
+            />
+            <span
+              className="down"
+              onClick={onArrowClick('down', 'quantityValue')}
+            />
+          </StyledInputNumberComponent>
+        </StyledOptions>
         {!isMarket ? (
           <div>
             <StyledTitle>Price</StyledTitle>
@@ -138,50 +173,13 @@ const OrderForm = (props: OrderFormProps) => {
                   onClick={onArrowClick('down', 'priceValue')}
                 />
               </StyledInputNumberComponent>
+              <StyledAmount>
+                Total: {amount} {quoteName}
+              </StyledAmount>
             </StyledOptions>
           </div>
         ) : null}
-
-        <StyledTitle>Quantity</StyledTitle>
-        <StyledOptions>
-          <StyledInputNumberComponent>
-            <StyledInput
-              id="quantityValue"
-              type="text"
-              value={quantity}
-              onChange={onChange('quantityValue')}
-              // tslint:disable-next-line:jsx-no-lambda
-              onKeyDown={e => {
-                switch (e.keyCode) {
-                  case 38:
-                    onArrowClick('up', 'quantityValue')();
-                    e.preventDefault();
-                    break;
-                  case 40:
-                    onArrowClick('down', 'quantityValue')();
-                    e.preventDefault();
-                    break;
-                  default:
-                    break;
-                }
-              }}
-              name="quantityValue"
-            />
-            <span
-              className="up"
-              onClick={onArrowClick('up', 'quantityValue')}
-            />
-            <span
-              className="down"
-              onClick={onArrowClick('down', 'quantityValue')}
-            />
-          </StyledInputNumberComponent>
-          <StyledAmount>
-            Total: {amount} {quoteName}
-          </StyledAmount>
-        </StyledOptions>
       </StyledOrderOptions>
-
       <StyledOrderButton>
         <OrderButton
           action={action}
