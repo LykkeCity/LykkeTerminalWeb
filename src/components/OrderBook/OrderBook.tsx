@@ -90,9 +90,9 @@ class OrderBook extends React.Component<OrderBookProps> {
         <Table>
           <StyledHead>
             <StyledRow>
-              <StyledHeader align="right">Sell</StyledHeader>
+              <StyledHeader align="right">Buy</StyledHeader>
               <StyledHeader align="center">Price</StyledHeader>
-              <StyledHeader align="left">Buy</StyledHeader>
+              <StyledHeader align="left">Sell</StyledHeader>
             </StyledRow>
           </StyledHead>
         </Table>
