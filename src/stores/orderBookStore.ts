@@ -1,6 +1,7 @@
 import {ISubscription} from 'autobahn';
 import {observable, runInAction} from 'mobx';
 import {
+  add,
   compose,
   curry,
   head,
@@ -52,6 +53,15 @@ class OrderBookStore extends BaseStore {
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
+  calcDepth = (orders: Order[]) =>
+    orders.map(order => ({
+      ...order,
+      depth: orders
+        .slice(0, orders.indexOf(order))
+        .map(o => o.volume)
+        .reduce(add, order.volume)
+    }));
+
   onUpdate = (args: any) => {
     const {IsBuy, Prices, Levels} = args[0];
     const mapToOrders = compose<any[], Order[], Order[], Order[]>(
@@ -60,9 +70,9 @@ class OrderBookStore extends BaseStore {
       map(x => mappers.mapToOrder({...x, IsBuy}))
     );
     if (IsBuy) {
-      this.bids = mapToOrders(Prices || Levels);
+      this.bids = this.calcDepth(mapToOrders(Prices || Levels));
     } else {
-      this.asks = mapToOrders(Prices || Levels);
+      this.asks = this.calcDepth(mapToOrders(Prices || Levels));
     }
   };
 
