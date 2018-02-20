@@ -45,14 +45,15 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
       price = 0,
       accuracy,
       change = 0,
-      dir = Dir.Up
+      dir = Dir.Up,
+      displayName
     } = instrument;
     return (
       <StyledInstrumentItem
         // tslint:disable-next-line:jsx-no-lambda
         onClick={() => onPick && onPick({id, name, price, change, accuracy})}
       >
-        <StyledInstrumentName>{name}</StyledInstrumentName>
+        <StyledInstrumentName>{displayName}</StyledInstrumentName>
         <StyledInstrumentPrice dir={dir}>
           {price.toFixed(accuracy)}
         </StyledInstrumentPrice>
