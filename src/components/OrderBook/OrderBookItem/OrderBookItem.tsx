@@ -78,12 +78,13 @@ interface OrderBookItemProps extends Order {
   invertedAccuracy: number;
   maxVolume?: number;
   minVolume?: number;
+  valueToShow: number;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   id,
   price,
-  volume,
+  valueToShow,
   side,
   accuracy,
   invertedAccuracy,
@@ -96,9 +97,9 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
         <div>
           <VolumeOverlay
             side={side}
-            volume={normalizeVolume(volume, minVolume, maxVolume)}
+            volume={normalizeVolume(valueToShow, minVolume, maxVolume)}
           />
-          {volume.toFixed(accuracy)}
+          {valueToShow.toFixed(accuracy)}
         </div>
       )}
     </VolumeCell>
@@ -108,9 +109,9 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
         <div>
           <VolumeOverlay
             side={side}
-            volume={normalizeVolume(volume, minVolume, maxVolume)}
+            volume={normalizeVolume(valueToShow, minVolume, maxVolume)}
           />
-          {volume.toFixed(accuracy)}
+          {valueToShow.toFixed(accuracy)}
         </div>
       )}
     </VolumeCell>
