@@ -1,28 +1,30 @@
 import {OrderBookStore, RootStore} from '../index';
 
 describe('orderBook store', () => {
-  const {
-    onUpdate,
-    bestBid,
-    bestAsk,
-    mid,
-    bestBids,
-    bestAsks
-  } = new OrderBookStore(new RootStore(false), {} as any);
+  const store = new OrderBookStore(new RootStore(false), {} as any);
+  const {onUpdate, bestBid, bestAsk, mid, bestBids, bestAsks} = store;
 
   beforeEach(() => {
     // bids
     onUpdate([
       {
         IsBuy: true,
-        Prices: [{Price: 1}, {Price: 2}, {Price: 3}]
+        Levels: [
+          {Price: 1, Volume: 1},
+          {Price: 2, Volume: 1},
+          {Price: 3, Volume: 3}
+        ]
       }
     ]);
     // asks
     onUpdate([
       {
         IsBuy: false,
-        Prices: [{Price: 5}, {Price: 6}, {Price: 7}]
+        Levels: [
+          {Price: 5, Volume: 1},
+          {Price: 6, Volume: 2},
+          {Price: 7, Volume: 3}
+        ]
       }
     ]);
   });
@@ -65,5 +67,93 @@ describe('orderBook store', () => {
 
   test('best bid should be less that best bid', () => {
     expect(bestBid()).toBeLessThan(bestAsk());
+  });
+
+  describe('group by price', () => {
+    it('should group levels by price', () => {
+      // bids
+      onUpdate([
+        {
+          IsBuy: true,
+          Levels: [
+            {Price: 1, Volume: 1},
+            {Price: 1, Volume: 2},
+            {Price: 2, Volume: 1},
+            {Price: 3, Volume: 3},
+            {Price: 3, Volume: 5}
+          ]
+        }
+      ]);
+      // asks
+      onUpdate([
+        {
+          IsBuy: false,
+          Levels: [
+            {Price: 5, Volume: 1},
+            {Price: 5, Volume: 10},
+            {Price: 6, Volume: 2},
+            {Price: 6, Volume: 22},
+            {Price: 7, Volume: 3}
+          ]
+        }
+      ]);
+
+      expect(store.bids.find(b => b.price === 1)!.volume).toBe(1 + 2);
+      expect(store.bids.find(b => b.price === 3)!.volume).toBe(3 + 5);
+      expect(store.asks.find(b => b.price === 5)!.volume).toBe(1 + 10);
+      expect(store.asks.find(b => b.price === 6)!.volume).toBe(2 + 22);
+    });
+
+    it('should return empty array if no data provided', () => {
+      // bids
+      onUpdate([
+        {
+          IsBuy: true,
+          Levels: []
+        }
+      ]);
+      // asks
+      onUpdate([
+        {
+          IsBuy: false,
+          Levels: []
+        }
+      ]);
+
+      expect(store.bids).toHaveLength(0);
+      expect(store.asks).toHaveLength(0);
+    });
+
+    it('should not mutate unique prices', () => {
+      const k = 5;
+      const generateLevels = (num: number) => {
+        const levels = [];
+        for (let i = 1; i < num; i++) {
+          levels.push({Price: i, Volume: i});
+        }
+        return levels;
+      };
+      // bids
+      onUpdate([
+        {
+          IsBuy: true,
+          Levels: generateLevels(k)
+        }
+      ]);
+      // asks
+      onUpdate([
+        {
+          IsBuy: false,
+          Levels: generateLevels(k)
+        }
+      ]);
+
+      for (let i = 1; i < k; i++) {
+        expect(store.bids.find(b => b.price === i)!.volume).toBe(i);
+      }
+      for (let i = 1; i < k; i++) {
+        expect(store.asks.find(b => b.price === i)!.volume).toBe(i);
+      }
+    });
   });
 });
