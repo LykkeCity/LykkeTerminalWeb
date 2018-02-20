@@ -12,7 +12,6 @@ import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const baseAssetStorage = StorageUtils(keys.baseAsset);
-const withIdAndName = (x: InstrumentModel) => !!x.id && !!x.name;
 
 // tslint:disable:no-bitwise
 class ReferenceStore extends BaseStore {
@@ -81,14 +80,14 @@ class ReferenceStore extends BaseStore {
   findInstruments = (term: string, name: string) => {
     const instruments = this.rootStore.authStore.isAuth
       ? this.instruments
-          .filter(i => i.baseAsset && i.quotingAsset)
+          .filter(i => i.baseAsset && i.quoteAsset)
           .filter(this.filterAvailableInstrument)
       : this.instruments;
 
     return instruments
-      .filter(withIdAndName)
+      .filter(this.filterWithIdAndName)
       .filter(x =>
-        x.name
+        x.displayName!
           .toLowerCase()
           .replace(SearchString.Delimiter, SearchString.Empty)
           .includes(
@@ -204,7 +203,10 @@ class ReferenceStore extends BaseStore {
 
   private filterAvailableInstrument = (i: InstrumentModel) =>
     this.availableAssets.indexOf(i.baseAsset.id) > -1 &&
-    this.availableAssets.indexOf(i.quotingAsset.id) > -1;
+    this.availableAssets.indexOf(i.quoteAsset.id) > -1;
+
+  private filterWithIdAndName = (i: InstrumentModel) =>
+    i.id && i.name && i.displayName;
 }
 
 export default ReferenceStore;

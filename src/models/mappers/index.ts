@@ -253,7 +253,7 @@ export const mapToInstrument = (
     name: Name,
     // tslint:disable-next-line:object-literal-sort-keys
     baseAsset: getAssetById(BaseAssetId),
-    quotingAsset: getAssetById(QuotingAssetId),
+    quoteAsset: getAssetById(QuotingAssetId),
     accuracy: Accuracy,
     invertedAccuracy: InvertedAccuracy
   });

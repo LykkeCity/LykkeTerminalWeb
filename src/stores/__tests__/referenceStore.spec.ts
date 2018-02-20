@@ -240,7 +240,7 @@ describe('referenceStore', () => {
           accuracy: 3,
           invertedAccuracy: 8,
           baseAsset: expect.any(AssetModel),
-          quotingAsset: expect.any(AssetModel)
+          quoteAsset: expect.any(AssetModel)
         })
       );
     });
@@ -274,8 +274,8 @@ describe('referenceStore', () => {
 
       expect(assetStore.getInstruments()[0].baseAsset.id).toBe('BTC');
       expect(assetStore.getInstruments()[0].baseAsset.id).not.toBe('CHF');
-      expect(assetStore.getInstruments()[0].quotingAsset.id).toBe('CHF');
-      expect(assetStore.getInstruments()[0].quotingAsset.id).not.toBe('BTC');
+      expect(assetStore.getInstruments()[0].quoteAsset.id).toBe('CHF');
+      expect(assetStore.getInstruments()[0].quoteAsset.id).not.toBe('BTC');
     });
   });
 });
