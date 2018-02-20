@@ -1,4 +1,5 @@
-import {action, extendObservable, observable} from 'mobx';
+import {action, computed, extendObservable, observable} from 'mobx';
+import {join} from 'rambda';
 import {Dir} from '../models';
 import {AssetModel} from './index';
 
@@ -6,7 +7,7 @@ class InstrumentModel {
   id: string;
   name: string;
   baseAsset: AssetModel;
-  quotingAsset: AssetModel;
+  quoteAsset: AssetModel;
   accuracy: number;
   invertedAccuracy: number;
 
@@ -14,6 +15,14 @@ class InstrumentModel {
   @observable change: number;
 
   @observable dir: Dir;
+
+  @computed
+  get displayName() {
+    if (this.baseAsset && this.quoteAsset) {
+      return join('/', [this.baseAsset.name, this.quoteAsset.name]);
+    }
+    return undefined;
+  }
 
   constructor(instrument: Partial<InstrumentModel>) {
     extendObservable(this, instrument);
