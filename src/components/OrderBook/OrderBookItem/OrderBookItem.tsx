@@ -51,15 +51,17 @@ const OrderRow = styled.tr`
 
 interface OrderBookItemProps extends Order {
   accuracy: number;
+  invertedAccuracy: number;
   maxVolume?: number;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   id,
   price,
-  depth: volume,
+  volume,
   side,
   accuracy,
+  invertedAccuracy,
   maxVolume = 100
 }) => (
   <OrderRow>
@@ -74,7 +76,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
         </div>
       )}
     </VolumeCell>
-    <MidCell>{price}</MidCell>
+    <MidCell>{price.toFixed(invertedAccuracy)}</MidCell>
     <VolumeCell side={side}>
       {side === Side.Buy && (
         <div>

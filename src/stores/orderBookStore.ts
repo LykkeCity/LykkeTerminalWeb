@@ -22,13 +22,68 @@ import {BaseStore, RootStore} from './index';
 const byPrice = (o: Order) => o.price;
 
 class OrderBookStore extends BaseStore {
-  @observable private bids: Order[] = [];
-  @observable private asks: Order[] = [];
+  @observable bids: Order[] = [];
+  @observable asks: Order[] = [];
   private subscriptions: Set<ISubscription> = new Set();
 
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
   }
+
+  bestBid = () => head(this.bids.map(x => x.price));
+
+  bestAsk = () => last(this.asks.map(a => a.price));
+
+  mid = () => (this.bestAsk() + this.bestBid()) / 2;
+
+  bestBids = (num: number = 10) => take(num, this.bids);
+
+  bestAsks = (num: number = 10) => takeLast(num, this.asks);
+
+  withDepth = (orders: Order[]) =>
+    orders.map(order => ({
+      ...order,
+      depth: orders
+        .slice(0, orders.indexOf(order))
+        .map(o => o.volume)
+        .reduce(add, order.volume)
+    }));
+
+  groupByPrice = (orders: Order[]) =>
+    orders.reduce((acc: Order[], curr: Order) => {
+      const withSamePrice = (p: number) => p === curr.price;
+      const samePriceInBook = acc.map(o => o.price).some(withSamePrice);
+      if (samePriceInBook) {
+        const idx = acc.map(o => o.price).findIndex(withSamePrice);
+        acc[idx].volume += curr.volume;
+      } else {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+
+  onUpdate = (args: any) => {
+    const {IsBuy, Levels} = args[0];
+    const mapToOrders = compose<any[], Order[], Order[], Order[], Order[]>(
+      reverse,
+      sortBy(byPrice),
+      this.groupByPrice,
+      map(x => mappers.mapToOrder({...x, IsBuy}))
+    );
+    if (IsBuy) {
+      this.bids = mapToOrders(Levels);
+    } else {
+      this.asks = mapToOrders(Levels);
+    }
+  };
+
+  fetchAll = async () => {
+    const {selectedInstrument} = this.rootStore.uiStore;
+    const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
+    runInAction(() => {
+      orders.forEach((levels: any) => this.onUpdate([levels]));
+    });
+  };
 
   subscribe = async (ws: any) => {
     const topic = curry(topics.orderBook)(
@@ -41,47 +96,6 @@ class OrderBookStore extends BaseStore {
   unsubscribe = () => {
     this.subscriptions.forEach(s => this.getWs().unsubscribe(s));
     this.subscriptions.clear();
-  };
-
-  bestBid = () => head(this.bids.map(x => x.price));
-
-  bestAsk = () => last(this.asks.map(a => a.price));
-
-  bestBids = (num: number = 10) => take(num, this.bids);
-
-  bestAsks = (num: number = 10) => takeLast(num, this.asks);
-
-  mid = () => (this.bestAsk() + this.bestBid()) / 2;
-
-  calcDepth = (orders: Order[]) =>
-    orders.map(order => ({
-      ...order,
-      depth: orders
-        .slice(0, orders.indexOf(order))
-        .map(o => o.volume)
-        .reduce(add, order.volume)
-    }));
-
-  onUpdate = (args: any) => {
-    const {IsBuy, Prices, Levels} = args[0];
-    const mapToOrders = compose<any[], Order[], Order[], Order[]>(
-      reverse,
-      sortBy(byPrice),
-      map(x => mappers.mapToOrder({...x, IsBuy}))
-    );
-    if (IsBuy) {
-      this.bids = this.calcDepth(mapToOrders(Prices || Levels));
-    } else {
-      this.asks = this.calcDepth(mapToOrders(Prices || Levels));
-    }
-  };
-
-  fetchAll = async () => {
-    const {selectedInstrument} = this.rootStore.uiStore;
-    const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
-    runInAction(() => {
-      orders.forEach((levels: any) => this.onUpdate([levels]));
-    });
   };
 
   reset = () => {
