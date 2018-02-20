@@ -6,6 +6,7 @@ interface Order {
   price: number;
   timestamp: any;
   side: Side;
+  depth: number;
 }
 
 export default Order;

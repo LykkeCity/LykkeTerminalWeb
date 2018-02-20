@@ -20,7 +20,8 @@ export const mapToOrder = (dto: any) => ({
   price: dto.Price,
   side: dto.IsBuy ? Side.Sell : Side.Buy,
   timestamp: dto.DateTime,
-  volume: dto.Volume
+  volume: dto.Volume,
+  depth: 0
 });
 
 export const mapToBarFromRest = ({
