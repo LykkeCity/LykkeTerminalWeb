@@ -53,6 +53,8 @@ interface OrderBookProps {
   asks: Order[];
   bids: Order[];
   mid: number;
+  accuracy: number;
+  invertedAccuracy: number;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -82,7 +84,7 @@ class OrderBook extends React.Component<OrderBookProps> {
   }
 
   render() {
-    const {bids, asks, mid} = this.props;
+    const {bids, asks, mid, accuracy, invertedAccuracy} = this.props;
     const bidMaxVolume = Math.max(...bids.map(b => b.volume));
     const askMaxVolume = Math.max(...asks.map(a => a.volume));
     return (
@@ -104,6 +106,8 @@ class OrderBook extends React.Component<OrderBookProps> {
                   maxVolume={askMaxVolume}
                   key={order.id}
                   {...order}
+                  accuracy={accuracy}
+                  invertedAccuracy={invertedAccuracy}
                 />
               ))}
             </StyledSellOrders>
@@ -118,6 +122,8 @@ class OrderBook extends React.Component<OrderBookProps> {
                   maxVolume={bidMaxVolume}
                   key={order.id}
                   {...order}
+                  accuracy={accuracy}
+                  invertedAccuracy={invertedAccuracy}
                 />
               ))}
             </StyledBuyOrders>
