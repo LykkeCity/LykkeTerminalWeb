@@ -34,10 +34,11 @@ const VolumeCell = CommonCell.extend.attrs({
 })`
   position: relative;
   min-width: 80px !important;
+  width: 33%;
 ` as any;
 
 const MidCell = styled(CommonCell)`
-  width: 80px;
+  width: 33%;
   text-align: center !important;
 `;
 
