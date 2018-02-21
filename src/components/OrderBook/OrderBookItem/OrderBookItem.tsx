@@ -49,11 +49,19 @@ const OrderRow = styled.tr`
   display: flex;
 `;
 
-const OrderBookItem: React.SFC<Order & {maxVolume?: number}> = ({
+interface OrderBookItemProps extends Order {
+  accuracy: number;
+  invertedAccuracy: number;
+  maxVolume?: number;
+}
+
+const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   id,
   price,
   volume,
   side,
+  accuracy,
+  invertedAccuracy,
   maxVolume = 100
 }) => (
   <OrderRow>
@@ -64,11 +72,11 @@ const OrderBookItem: React.SFC<Order & {maxVolume?: number}> = ({
             side={side}
             volume={normalizeVolume(volume, maxVolume)}
           />
-          {volume}
+          {volume.toFixed(accuracy)}
         </div>
       )}
     </VolumeCell>
-    <MidCell>{price}</MidCell>
+    <MidCell>{price.toFixed(invertedAccuracy)}</MidCell>
     <VolumeCell side={side}>
       {side === Side.Buy && (
         <div>
@@ -76,7 +84,7 @@ const OrderBookItem: React.SFC<Order & {maxVolume?: number}> = ({
             side={side}
             volume={normalizeVolume(volume, maxVolume)}
           />
-          {volume}
+          {volume.toFixed(accuracy)}
         </div>
       )}
     </VolumeCell>
