@@ -85,8 +85,10 @@ class OrderBook extends React.Component<OrderBookProps> {
 
   render() {
     const {bids, asks, mid, accuracy, invertedAccuracy} = this.props;
-    const bidMaxVolume = Math.max(...bids.map(b => b.volume));
-    const askMaxVolume = Math.max(...asks.map(a => a.volume));
+    const bidMaxVolume = this.getMinMaxVolume(bids, 'max');
+    const bidMinVolume = this.getMinMaxVolume(bids, 'min');
+    const askMaxVolume = this.getMinMaxVolume(asks, 'max');
+    const askMinVolume = this.getMinMaxVolume(asks, 'min');
     return (
       <Wrapper innerRef={this.refHandlers.wrapper}>
         <Table>
@@ -104,6 +106,7 @@ class OrderBook extends React.Component<OrderBookProps> {
               {asks.map(order => (
                 <OrderBookItem
                   maxVolume={askMaxVolume}
+                  minVolume={askMinVolume}
                   key={order.id}
                   {...order}
                   accuracy={accuracy}
@@ -120,6 +123,7 @@ class OrderBook extends React.Component<OrderBookProps> {
               {bids.map(order => (
                 <OrderBookItem
                   maxVolume={bidMaxVolume}
+                  minVolume={bidMinVolume}
                   key={order.id}
                   {...order}
                   accuracy={accuracy}
@@ -132,6 +136,9 @@ class OrderBook extends React.Component<OrderBookProps> {
       </Wrapper>
     );
   }
+
+  private getMinMaxVolume = (orders: Order[], minOrMax: string) =>
+    Math[minOrMax](...orders.map(o => o.volume));
 }
 
 export default OrderBook;
