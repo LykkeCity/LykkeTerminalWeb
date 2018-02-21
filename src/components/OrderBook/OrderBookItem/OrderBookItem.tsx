@@ -12,8 +12,20 @@ const normalizeVolume = (
   minVolume: number,
   maxVolume: number
 ) => {
-  const minp = 0;
+  const minp = 10;
   const maxp = 100;
+
+  if (volume === minVolume && volume === maxVolume) {
+    return maxp;
+  }
+
+  if (volume === minVolume && minVolume !== maxVolume) {
+    return minp;
+  }
+
+  if (volume === maxVolume && minVolume !== maxVolume) {
+    return maxp;
+  }
 
   const minv = Math.log(minVolume);
   const maxv = Math.log(maxVolume);
@@ -57,6 +69,8 @@ const VolumeOverlay = styled.div.attrs({
 
 const OrderRow = styled.tr`
   display: flex;
+  align-items: center;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.08);
 `;
 
 interface OrderBookItemProps extends Order {
