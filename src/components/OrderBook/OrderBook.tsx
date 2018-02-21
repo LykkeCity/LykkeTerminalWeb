@@ -1,8 +1,13 @@
+import {observable} from 'mobx';
+import {rem} from 'polished';
 import {defaultTo} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
+import {switchers} from '../../constants/orderBook';
 import {Order} from '../../models';
+import {capitalize} from '../../utils';
+import {css} from '../styled';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
 
@@ -49,6 +54,41 @@ const StyledHeader = styled.th.attrs({
   flex-grow: 1;
 ` as any;
 
+const Switch = styled.div`
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  margin: ${rem(8)} 0 ${rem(8)};
+`;
+
+const SwitchItem = styled.div`
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  border-radius: 4px;
+  padding: ${rem(8)} ${rem(18)};
+  cursor: pointer;
+  ${(p: any) =>
+    p.active &&
+    css`
+      background-color: rgb(3, 136, 239);
+      border: solid 1px rgba(0, 0, 0, 0.2);
+      margin: -1px 0 -1px;
+    `};
+  :first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  :last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+` as any;
+
+const Bar = styled.div`
+  background-color: rgba(0, 0, 0, 0.2);
+  height: 1px;
+  margin-right: ${rem(15)};
+`;
+
 interface OrderBookProps {
   asks: Order[];
   bids: Order[];
@@ -58,6 +98,7 @@ interface OrderBookProps {
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
+  @observable valueToShow: string = switchers[0];
   private scrollComponent: any;
   private wrapper: any;
   private content: any;
@@ -69,6 +110,10 @@ class OrderBook extends React.Component<OrderBookProps> {
   };
 
   private isScrollSet: boolean = false;
+
+  handleChange = (e: React.ChangeEvent<any>) => {
+    this.valueToShow = e.target.id;
+  };
 
   componentDidUpdate() {
     if (this.isScrollSet) {
@@ -91,6 +136,19 @@ class OrderBook extends React.Component<OrderBookProps> {
     const askMinVolume = this.getMinMaxVolume(asks, 'min');
     return (
       <Wrapper innerRef={this.refHandlers.wrapper}>
+        <Switch>
+          {switchers.map(x => (
+            <SwitchItem
+              key={x}
+              active={this.valueToShow === x}
+              onClick={this.handleChange}
+              id={x}
+            >
+              {capitalize(x)}
+            </SwitchItem>
+          ))}
+        </Switch>
+        <Bar />
         <Table>
           <StyledHead>
             <StyledRow>
@@ -108,6 +166,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   maxVolume={askMaxVolume}
                   minVolume={askMinVolume}
                   key={order.id}
+                  valueToShow={order[this.valueToShow]}
                   {...order}
                   accuracy={accuracy}
                   invertedAccuracy={invertedAccuracy}
@@ -125,6 +184,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   maxVolume={bidMaxVolume}
                   minVolume={bidMinVolume}
                   key={order.id}
+                  valueToShow={order[this.valueToShow]}
                   {...order}
                   accuracy={accuracy}
                   invertedAccuracy={invertedAccuracy}

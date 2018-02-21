@@ -1,3 +1,4 @@
+import {Order} from '../../models/index';
 import {OrderBookStore, RootStore} from '../index';
 
 describe('orderBook store', () => {
@@ -154,6 +155,24 @@ describe('orderBook store', () => {
       for (let i = 1; i < k; i++) {
         expect(store.asks.find(b => b.price === i)!.volume).toBe(i);
       }
+    });
+  });
+
+  describe('depth', () => {
+    const seed = (count: number = 10) => {
+      const nextOrders = [];
+      for (let idx = 1; idx <= count; idx++) {
+        nextOrders.push({price: idx, volume: idx * count, depth: 0});
+      }
+      return nextOrders;
+    };
+    it('should calculate depth as a sum of prev volumes', () => {
+      store.asks = store.bids = [];
+      store.bids = seed(10) as Order[];
+      store.asks = seed(10) as Order[];
+
+      expect(store.withDepth(store.bids)[0].depth).toBe(10);
+      expect(store.withDepth(store.asks)[9].depth).toBe(550);
     });
   });
 });
