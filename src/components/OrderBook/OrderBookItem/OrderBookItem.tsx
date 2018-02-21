@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Order, Side} from '../../../models/index';
-import {math} from '../../../utils/';
 import styled from '../../styled';
 
 const colorBySide = (side: Side) =>
@@ -8,9 +7,19 @@ const colorBySide = (side: Side) =>
 
 const alignBySide = (side: Side) => (side === Side.Sell ? 'right' : 'left');
 
-const normalizeVolume = (volume: number, maxVolume: number) => {
-  const normalizedVolume = volume / maxVolume * 100;
-  return math.logBase(100, normalizedVolume) * 100;
+const normalizeVolume = (
+  volume: number,
+  minVolume: number,
+  maxVolume: number
+) => {
+  const minp = 0;
+  const maxp = 100;
+
+  const minv = Math.log(minVolume);
+  const maxv = Math.log(maxVolume);
+
+  const scale = (maxv - minv) / (maxp - minp);
+  return (Math.log(volume) - minv) / scale + minp;
 };
 
 const CommonCell = styled.td`
@@ -53,6 +62,7 @@ interface OrderBookItemProps extends Order {
   accuracy: number;
   invertedAccuracy: number;
   maxVolume?: number;
+  minVolume?: number;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -62,6 +72,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   side,
   accuracy,
   invertedAccuracy,
+  minVolume = 1,
   maxVolume = 100
 }) => (
   <OrderRow>
@@ -70,7 +81,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
         <div>
           <VolumeOverlay
             side={side}
-            volume={normalizeVolume(volume, maxVolume)}
+            volume={normalizeVolume(volume, minVolume, maxVolume)}
           />
           {volume.toFixed(accuracy)}
         </div>
@@ -82,7 +93,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
         <div>
           <VolumeOverlay
             side={side}
-            volume={normalizeVolume(volume, maxVolume)}
+            volume={normalizeVolume(volume, minVolume, maxVolume)}
           />
           {volume.toFixed(accuracy)}
         </div>
