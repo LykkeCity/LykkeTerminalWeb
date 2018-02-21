@@ -107,7 +107,7 @@ class ConfirmModal extends React.Component<
               <span>&times;</span>
             </StyledCloseBtn>
           </Flex>
-          <StyledContent>Are you really want to {modal.message}?</StyledContent>
+          <StyledContent>Do you really want to {modal.message}?</StyledContent>
           <StyledReminder>
             <CustomCheckbox
               change={this.handleChange()}
