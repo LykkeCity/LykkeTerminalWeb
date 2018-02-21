@@ -1,10 +1,10 @@
 import {observable} from 'mobx';
 import {rem} from 'polished';
-import {defaultTo} from 'rambda';
+import {curry, defaultTo} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
-import {switchers} from '../../constants/orderBook';
+import {switches} from '../../constants/orderBook';
 import {Order} from '../../models';
 import {capitalize} from '../../utils';
 import {css} from '../styled';
@@ -98,7 +98,7 @@ interface OrderBookProps {
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
-  @observable valueToShow: string = switchers[0];
+  @observable valueToShow: string = switches[0];
   private scrollComponent: any;
   private wrapper: any;
   private content: any;
@@ -130,14 +130,21 @@ class OrderBook extends React.Component<OrderBookProps> {
 
   render() {
     const {bids, asks, mid, accuracy, invertedAccuracy} = this.props;
-    const bidMaxVolume = this.getMinMaxVolume(bids, 'max');
-    const bidMinVolume = this.getMinMaxVolume(bids, 'min');
-    const askMaxVolume = this.getMinMaxVolume(asks, 'max');
-    const askMinVolume = this.getMinMaxVolume(asks, 'min');
+
+    const mapWithValueToShow = (o: Order) => o[this.valueToShow];
+
+    const fromBids = curry(this.getMinMaxValue)(bids, mapWithValueToShow);
+    const maxBidValue = fromBids(Math.max);
+    const minBidValue = fromBids(Math.min);
+
+    const fromAsks = curry(this.getMinMaxValue)(asks, mapWithValueToShow);
+    const maxAskValue = fromAsks(Math.max);
+    const minAskValue = fromAsks(Math.min);
+
     return (
       <Wrapper innerRef={this.refHandlers.wrapper}>
         <Switch>
-          {switchers.map(x => (
+          {switches.map(x => (
             <SwitchItem
               key={x}
               active={this.valueToShow === x}
@@ -163,8 +170,8 @@ class OrderBook extends React.Component<OrderBookProps> {
             <StyledSellOrders>
               {asks.map(order => (
                 <OrderBookItem
-                  maxVolume={askMaxVolume}
-                  minVolume={askMinVolume}
+                  maxValue={maxAskValue}
+                  minValue={minAskValue}
                   key={order.id}
                   valueToShow={order[this.valueToShow]}
                   {...order}
@@ -181,8 +188,8 @@ class OrderBook extends React.Component<OrderBookProps> {
             <StyledBuyOrders>
               {bids.map(order => (
                 <OrderBookItem
-                  maxVolume={bidMaxVolume}
-                  minVolume={bidMinVolume}
+                  maxValue={maxBidValue}
+                  minValue={minBidValue}
                   key={order.id}
                   valueToShow={order[this.valueToShow]}
                   {...order}
@@ -197,8 +204,11 @@ class OrderBook extends React.Component<OrderBookProps> {
     );
   }
 
-  private getMinMaxVolume = (orders: Order[], minOrMax: string) =>
-    Math[minOrMax](...orders.map(o => o.volume));
+  private getMinMaxValue = (
+    orders: Order[],
+    selector: (o: Order) => any,
+    fn: Math['min'] | Math['max']
+  ) => fn(...orders.map(selector));
 }
 
 export default OrderBook;
