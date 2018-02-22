@@ -3,7 +3,6 @@ import {
   AssetModel,
   InstrumentModel
 } from '../../models/index';
-import Watchlists from '../../models/watchlists';
 import {ReferenceStore, RootStore} from '../index';
 
 // tslint:disable:object-literal-sort-keys
@@ -288,7 +287,7 @@ describe('referenceStore', () => {
 
       const rootStore = new RootStore(true);
 
-      const {watchlistStore, referenceStore: refStore, uiStore} = rootStore;
+      const {watchlistStore, referenceStore: refStore} = rootStore;
       watchlistStore.defaultWatchlist.assetIds = instruments;
       // authStore.isAuth = true;
 
