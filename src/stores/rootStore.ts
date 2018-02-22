@@ -103,6 +103,7 @@ class RootStore {
 
   start = async () => {
     await this.referenceStore.fetchReferenceData();
+    await this.referenceStore.fetchRates();
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
@@ -113,7 +114,7 @@ class RootStore {
     }
 
     this.settingsStore.init();
-    this.watchlistStore.fetchAll();
+    await this.watchlistStore.fetchAll();
 
     await this.referenceStore
       .fetchBaseAsset()
