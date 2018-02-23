@@ -129,6 +129,14 @@ class ReferenceStore extends BaseStore {
       .catch(Promise.reject);
   };
 
+  fetchAssetById = (id: string) => {
+    return this.api.fetchAssetById(id).then((resp: any) => {
+      const asset = mappers.mapToAsset(resp.Asset, this.categories);
+      this.assets.push(asset);
+      return Promise.resolve(asset);
+    });
+  };
+
   fetchAvailableAssets = async () => {
     const resp = await this.api.fetchAvailableAssets();
     runInAction(() => {
