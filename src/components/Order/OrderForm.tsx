@@ -2,6 +2,7 @@ import {Form, withFormik} from 'formik';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {keyCodes} from '../../constants/keyCodes';
 import {OrderFormProps} from './index';
 import OrderButton from './OrderButton';
 
@@ -83,113 +84,152 @@ const StyledInputNumberComponent = styled.div`
   }
 `;
 
+class OrderFormClass extends React.Component<{parentProps: any}> {
+  constructor(props: any) {
+    super(props);
+  }
+
+  componentDidMount() {
+    document.body.addEventListener('keyup', this.handleSubmit);
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keyup', this.handleSubmit);
+  }
+
+  handleSubmit = (e: any) => {
+    if (e.keyCode !== keyCodes.Enter || this.props.parentProps.isDisable) {
+      return;
+    }
+    this.props.parentProps.handleSubmit(e);
+  };
+
+  render() {
+    return (
+      <div>
+        <StyledOrderOptions>
+          <StyledTitle>Quantity</StyledTitle>
+          <StyledOptions>
+            <StyledInputNumberComponent>
+              <StyledInput
+                id="quantityValue"
+                type="text"
+                value={this.props.parentProps.quantity}
+                onChange={this.props.parentProps.onChange('quantityValue')}
+                // tslint:disable-next-line:jsx-no-lambda
+                onKeyDown={e => {
+                  switch (e.keyCode) {
+                    case 38:
+                      this.props.parentProps.onArrowClick(
+                        'up',
+                        'quantityValue'
+                      )();
+                      e.preventDefault();
+                      break;
+                    case 40:
+                      this.props.parentProps.onArrowClick(
+                        'down',
+                        'quantityValue'
+                      )();
+                      e.preventDefault();
+                      break;
+                    default:
+                      break;
+                  }
+                }}
+                name="quantityValue"
+              />
+              <span
+                className="up"
+                onClick={this.props.parentProps.onArrowClick(
+                  'up',
+                  'quantityValue'
+                )}
+              />
+              <span
+                className="down"
+                onClick={this.props.parentProps.onArrowClick(
+                  'down',
+                  'quantityValue'
+                )}
+              />
+            </StyledInputNumberComponent>
+          </StyledOptions>
+          {!this.props.parentProps.isMarket ? (
+            <div>
+              <StyledTitle>Price</StyledTitle>
+              <StyledOptions>
+                <StyledInputNumberComponent>
+                  <StyledInput
+                    id="priceValue"
+                    type="text"
+                    value={this.props.parentProps.price}
+                    onChange={this.props.parentProps.onChange('priceValue')}
+                    // tslint:disable-next-line:jsx-no-lambda
+                    onKeyDown={e => {
+                      switch (e.keyCode) {
+                        case 38:
+                          this.props.parentProps.onArrowClick(
+                            'up',
+                            'priceValue'
+                          )();
+                          e.preventDefault();
+                          break;
+                        case 40:
+                          this.props.parentProps.onArrowClick(
+                            'down',
+                            'priceValue'
+                          )();
+                          e.preventDefault();
+                          break;
+                        default:
+                          break;
+                      }
+                    }}
+                    name="priceValue"
+                  />
+                  <span
+                    className="up"
+                    onClick={this.props.parentProps.onArrowClick(
+                      'up',
+                      'priceValue'
+                    )}
+                  />
+                  <span
+                    className="down"
+                    onClick={this.props.parentProps.onArrowClick(
+                      'down',
+                      'priceValue'
+                    )}
+                  />
+                </StyledInputNumberComponent>
+                <StyledAmount>
+                  Total: {this.props.parentProps.amount}{' '}
+                  {this.props.parentProps.assetName.split('/')[1]}
+                </StyledAmount>
+              </StyledOptions>
+            </div>
+          ) : null}
+        </StyledOrderOptions>
+        <StyledOrderButton>
+          <OrderButton
+            action={this.props.parentProps.action}
+            price={this.props.parentProps.amount}
+            baseName={this.props.parentProps.assetName.split('/')[0]}
+            quantity={this.props.parentProps.quantity}
+            isDisable={this.props.parentProps.isDisable}
+            type={'submit'}
+          />
+        </StyledOrderButton>
+      </div>
+    );
+  }
+}
+
 const OrderForm = (props: OrderFormProps) => {
-  const {
-    onChange,
-    onArrowClick,
-    price,
-    isDisable,
-    isMarket,
-    assetName,
-    action,
-    quantity,
-    amount
-  } = props;
-
-  const baseName = assetName.split('/')[0];
-  const quoteName = assetName.split('/')[1];
-
   return (
     <Form>
-      <StyledOrderOptions>
-        <StyledTitle>Quantity</StyledTitle>
-        <StyledOptions>
-          <StyledInputNumberComponent>
-            <StyledInput
-              id="quantityValue"
-              type="text"
-              value={quantity}
-              onChange={onChange('quantityValue')}
-              // tslint:disable-next-line:jsx-no-lambda
-              onKeyDown={e => {
-                switch (e.keyCode) {
-                  case 38:
-                    onArrowClick('up', 'quantityValue')();
-                    e.preventDefault();
-                    break;
-                  case 40:
-                    onArrowClick('down', 'quantityValue')();
-                    e.preventDefault();
-                    break;
-                  default:
-                    break;
-                }
-              }}
-              name="quantityValue"
-            />
-            <span
-              className="up"
-              onClick={onArrowClick('up', 'quantityValue')}
-            />
-            <span
-              className="down"
-              onClick={onArrowClick('down', 'quantityValue')}
-            />
-          </StyledInputNumberComponent>
-        </StyledOptions>
-        {!isMarket ? (
-          <div>
-            <StyledTitle>Price</StyledTitle>
-            <StyledOptions>
-              <StyledInputNumberComponent>
-                <StyledInput
-                  id="priceValue"
-                  type="text"
-                  value={price}
-                  onChange={onChange('priceValue')}
-                  // tslint:disable-next-line:jsx-no-lambda
-                  onKeyDown={e => {
-                    switch (e.keyCode) {
-                      case 38:
-                        onArrowClick('up', 'priceValue')();
-                        e.preventDefault();
-                        break;
-                      case 40:
-                        onArrowClick('down', 'priceValue')();
-                        e.preventDefault();
-                        break;
-                      default:
-                        break;
-                    }
-                  }}
-                  name="priceValue"
-                />
-                <span
-                  className="up"
-                  onClick={onArrowClick('up', 'priceValue')}
-                />
-                <span
-                  className="down"
-                  onClick={onArrowClick('down', 'priceValue')}
-                />
-              </StyledInputNumberComponent>
-              <StyledAmount>
-                Total: {amount} {quoteName}
-              </StyledAmount>
-            </StyledOptions>
-          </div>
-        ) : null}
-      </StyledOrderOptions>
-      <StyledOrderButton>
-        <OrderButton
-          action={action}
-          price={amount}
-          baseName={baseName}
-          quantity={quantity}
-          isDisable={isDisable}
-          type={'submit'}
-        />
-      </StyledOrderButton>
+      <OrderFormClass parentProps={props} />
     </Form>
   );
 };
