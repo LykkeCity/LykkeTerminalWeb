@@ -4,7 +4,7 @@ import {curry, defaultTo} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
-import {switches} from '../../constants/orderBook';
+import {displayType} from '../../constants/orderBook';
 import {Order} from '../../models';
 import {capitalize} from '../../utils';
 import {css} from '../styled';
@@ -98,7 +98,7 @@ interface OrderBookProps {
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
-  @observable valueToShow: string = switches[0];
+  @observable valueToShow: string = displayType[0];
   private scrollComponent: any;
   private wrapper: any;
   private content: any;
@@ -144,7 +144,7 @@ class OrderBook extends React.Component<OrderBookProps> {
     return (
       <Wrapper innerRef={this.refHandlers.wrapper}>
         <Switch>
-          {switches.map(x => (
+          {displayType.map(x => (
             <SwitchItem
               key={x}
               active={this.valueToShow === x}

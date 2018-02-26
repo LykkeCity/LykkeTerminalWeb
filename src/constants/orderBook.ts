@@ -1,1 +1,1 @@
-export const switches = ['depth', 'volume'];
+export const displayType = ['depth', 'volume'];

@@ -37,29 +37,31 @@ const StyledInstrumentPrice = StyledInstrumentField.extend`
   min-width: ${rem(100)};
 `;
 
-const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
-  ({instrument, onPick}) => {
-    const {
-      id,
-      name = '',
-      price = 0,
-      accuracy,
-      change = 0,
-      dir = Dir.Up,
-      displayName
-    } = instrument;
-    return (
-      <StyledInstrumentItem
-        // tslint:disable-next-line:jsx-no-lambda
-        onClick={() => onPick && onPick({id, name, price, change, accuracy})}
-      >
-        <StyledInstrumentName>{displayName}</StyledInstrumentName>
-        <StyledInstrumentPrice dir={dir}>
-          {price.toFixed(accuracy)}
-        </StyledInstrumentPrice>
-      </StyledInstrumentItem>
-    );
-  }
+interface InstrumentPriceProps {
+  instrument: InstrumentModel;
+  dir: Dir;
+}
+
+const InstrumentPrice: React.SFC<InstrumentPriceProps> = observer(
+  ({instrument: {price = 0, accuracy}, dir}) => (
+    <StyledInstrumentPrice dir={dir}>
+      {price.toFixed(accuracy)}
+    </StyledInstrumentPrice>
+  )
+);
+
+const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
+  instrument,
+  instrument: {dir = Dir.Up, displayName},
+  onPick
+}) => (
+  <StyledInstrumentItem
+    // tslint:disable-next-line:jsx-no-lambda
+    onClick={() => onPick && onPick(instrument)}
+  >
+    <StyledInstrumentName>{displayName}</StyledInstrumentName>
+    <InstrumentPrice instrument={instrument} dir={dir} />
+  </StyledInstrumentItem>
 );
 
 export default InstrumentListItem;
