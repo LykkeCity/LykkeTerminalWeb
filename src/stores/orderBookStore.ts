@@ -90,7 +90,7 @@ class OrderBookStore extends BaseStore {
     const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
     runInAction(() => {
       orders.forEach((levels: any) => this.onUpdate([levels]));
-      if (this.isInitFetch) {
+      if (this.isInitFetch && this.rootStore.uiStore.initPriceUpdate) {
         this.rootStore.uiStore.initPriceUpdate(
           this.bestBid(),
           selectedInstrument
