@@ -4,7 +4,11 @@ import OrderBook from './OrderBook';
 
 // tslint:disable:object-literal-sort-keys
 const ConnectedOrderBook = connect(
-  ({orderBookStore: {asks, bids, mid}, uiStore: {selectedInstrument}}) => {
+  ({
+    orderBookStore: {asks, bids, mid},
+    uiStore: {selectedInstrument},
+    orderStore: {updatePrice}
+  }) => {
     const accuracy = pathOr(0, ['baseAsset', 'accuracy'], selectedInstrument);
     // prettier-ignore
     const invertedAccuracy = pathOr(0, ['quoteAsset', 'accuracy'], selectedInstrument);
@@ -14,7 +18,8 @@ const ConnectedOrderBook = connect(
       bids,
       mid: midPrice,
       accuracy,
-      invertedAccuracy
+      invertedAccuracy,
+      updatePrice
     };
   },
   OrderBook
