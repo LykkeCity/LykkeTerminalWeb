@@ -20,6 +20,7 @@ export interface OrderProps {
   name: string;
   stateFns: any[];
   getAssetById: any;
+  updatePriceFn: any;
 }
 
 export interface OrderOptionProps {
@@ -81,7 +82,7 @@ const ConnectedOrder = connect(
   ({
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid},
-    orderStore: {placeOrder},
+    orderStore: {placeOrder, updatePriceFn},
     uiStore: {selectedInstrument: instrument, stateFns},
     referenceStore
   }) => ({
@@ -101,7 +102,8 @@ const ConnectedOrder = connect(
     getAssetById: referenceStore.getAssetById,
     name: pathOr('', ['name'], instrument),
     placeOrder,
-    stateFns
+    stateFns,
+    updatePriceFn
   }),
   Order
 );

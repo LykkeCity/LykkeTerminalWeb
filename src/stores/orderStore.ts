@@ -17,12 +17,23 @@ class OrderStore extends BaseStore {
 
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
+  private updatePriceByOrderBook: any;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
   }
+
+  updatePriceFn = (fn: any) => {
+    this.updatePriceByOrderBook = fn;
+  };
+
+  updatePrice = (price: number) => {
+    if (this.updatePriceByOrderBook) {
+      this.updatePriceByOrderBook(price);
+    }
+  };
 
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {

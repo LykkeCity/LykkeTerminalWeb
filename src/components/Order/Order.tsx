@@ -62,6 +62,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     };
 
     this.props.stateFns.push(this.handleChangeInstrument);
+    this.props.updatePriceFn(this.updatePriceByOrderBook);
   }
 
   handleChangeInstrument = (instrument: InstrumentModel) => {
@@ -79,9 +80,16 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
-  handleActionClick = (action: string) => () => {
+  handleActionClick = (action: string, price: number) => () => {
     this.setState({
-      isSellActive: action === orderAction.sell.action
+      isSellActive: action === orderAction.sell.action,
+      priceValue: price.toFixed(this.props.accuracy.priceValue)
+    });
+  };
+
+  updatePriceByOrderBook = (price: number) => {
+    this.setState({
+      priceValue: price.toFixed(this.props.accuracy.priceValue)
     });
   };
 
@@ -231,13 +239,13 @@ class Order extends React.Component<OrderProps, OrderState> {
             )}
           </StyledSplitBlock>
           <OrderAction
-            click={this.handleActionClick(orderAction.sell.action)}
+            click={this.handleActionClick(orderAction.sell.action, bid)}
             isActive={this.state.isSellActive}
             price={bid}
             {...orderAction.sell}
           />
           <OrderAction
-            click={this.handleActionClick(orderAction.buy.action)}
+            click={this.handleActionClick(orderAction.buy.action, ask)}
             isActive={!this.state.isSellActive}
             price={ask}
             {...orderAction.buy}

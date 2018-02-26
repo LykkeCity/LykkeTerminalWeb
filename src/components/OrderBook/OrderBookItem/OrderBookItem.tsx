@@ -52,6 +52,10 @@ const VolumeCell = CommonCell.extend.attrs({
 const MidCell = styled(CommonCell)`
   width: 33%;
   text-align: center !important;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const VolumeOverlay = styled.div.attrs({
@@ -79,6 +83,7 @@ interface OrderBookItemProps extends Order {
   maxValue?: number;
   minValue?: number;
   valueToShow: number;
+  onClick: any;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -89,33 +94,37 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   accuracy,
   invertedAccuracy,
   minValue = 10,
-  maxValue = 100
-}) => (
-  <OrderRow>
-    <VolumeCell side={side}>
-      {side === Side.Sell && (
-        <div>
-          <VolumeOverlay
-            side={side}
-            volume={normalizeVolume(valueToShow, minValue, maxValue)}
-          />
-          {valueToShow.toFixed(accuracy)}
-        </div>
-      )}
-    </VolumeCell>
-    <MidCell>{price.toFixed(invertedAccuracy)}</MidCell>
-    <VolumeCell side={side}>
-      {side === Side.Buy && (
-        <div>
-          <VolumeOverlay
-            side={side}
-            volume={normalizeVolume(valueToShow, minValue, maxValue)}
-          />
-          {valueToShow.toFixed(accuracy)}
-        </div>
-      )}
-    </VolumeCell>
-  </OrderRow>
-);
+  maxValue = 100,
+  onClick
+}) => {
+  const currentPrice = price.toFixed(invertedAccuracy);
+  return (
+    <OrderRow>
+      <VolumeCell side={side}>
+        {side === Side.Sell && (
+          <div>
+            <VolumeOverlay
+              side={side}
+              volume={normalizeVolume(valueToShow, minValue, maxValue)}
+            />
+            {valueToShow.toFixed(accuracy)}
+          </div>
+        )}
+      </VolumeCell>
+      <MidCell onClick={onClick(+currentPrice)}>{currentPrice}</MidCell>
+      <VolumeCell side={side}>
+        {side === Side.Buy && (
+          <div>
+            <VolumeOverlay
+              side={side}
+              volume={normalizeVolume(valueToShow, minValue, maxValue)}
+            />
+            {valueToShow.toFixed(accuracy)}
+          </div>
+        )}
+      </VolumeCell>
+    </OrderRow>
+  );
+};
 
 export default OrderBookItem;
