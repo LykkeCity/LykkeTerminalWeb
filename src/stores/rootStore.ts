@@ -9,7 +9,6 @@ import {
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
-import shortcuts from '../constants/shortcuts';
 import keys from '../constants/storageKeys';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
@@ -78,21 +77,16 @@ class RootStore {
   }
 
   startPublicMode = (defaultInstrument: any) => {
-    const instruments = shortcuts.reduce((i: any, item) => {
-      return [
-        ...i,
-        ...this.referenceStore.findInstruments(item.value, Watchlists.All)
-      ];
-    }, []);
-
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
-      instruments.forEach((x: any) =>
-        ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-      );
+      this.referenceStore
+        .findInstruments('', Watchlists.All)
+        .forEach((x: any) =>
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
+        );
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
@@ -103,6 +97,7 @@ class RootStore {
 
   start = async () => {
     await this.referenceStore.fetchReferenceData();
+    await this.referenceStore.fetchRates();
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
@@ -113,7 +108,7 @@ class RootStore {
     }
 
     this.settingsStore.init();
-    this.watchlistStore.fetchAll();
+    await this.watchlistStore.fetchAll();
 
     await this.referenceStore
       .fetchBaseAsset()
