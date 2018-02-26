@@ -64,14 +64,13 @@ class ReferenceStore extends BaseStore {
 
   getInstruments = () => {
     const {watchlistStore} = this.rootStore;
-    // TODO: should be implemented properly
-    if (watchlistStore) {
-      const allowedInstruments = watchlistStore.defaultWatchlist.assetIds;
-      return this.instruments
-        .filter(x => allowedInstruments.indexOf(x.id) > -1)
-        .filter(this.filterAvailableInstrument);
-    }
-    return this.instruments;
+    return watchlistStore
+      ? this.instruments
+          .filter(
+            i => watchlistStore.defaultWatchlist.assetIds.indexOf(i.id) > -1
+          )
+          .filter(this.filterAvailableInstrument)
+      : this.instruments;
   };
 
   getInstrumentById = (id: string) =>
@@ -97,11 +96,21 @@ class ReferenceStore extends BaseStore {
           )
       )
       .filter(
-        (instrument: InstrumentModel) =>
+        i =>
           !!~this.rootStore.watchlistStore
             .watchlistsByName(name)
-            .assetIds.indexOf(instrument.id)
+            .assetIds.indexOf(i.id)
       );
+  };
+
+  @action
+  addInstrument = (instrument: InstrumentModel) => {
+    this.instruments.push(instrument);
+  };
+
+  @action
+  addAvailableAsset = (assetId: string) => {
+    this.availableAssets.push(assetId);
   };
 
   fetchReferenceData = async () => {
@@ -182,6 +191,16 @@ class ReferenceStore extends BaseStore {
         return Promise.resolve();
       })
       .catch(Promise.reject);
+  };
+
+  fetchRates = async () => {
+    const resp = await this.api.fetchRates();
+    resp.AssetPairRates.forEach(({AssetPair, BidPrice}: any) => {
+      const instrument = this.getInstrumentById(AssetPair);
+      if (instrument) {
+        instrument.price = BidPrice;
+      }
+    });
   };
 
   setBaseAssetId = async (assetId: string) => {

@@ -10,9 +10,12 @@ interface AuthProps extends RouteComponentProps<any> {
 @inject('authStore')
 export class Auth extends React.Component<AuthProps> {
   componentDidMount() {
-    const accessToken = new URL(location.href).hash.split('&')[1].split('=')[1];
+    const accessToken = new URL(location.href).hash.split('&')[3].split('=')[1];
+    const state = new URL(location.href).hash.split('&')[0].split('=')[1];
     const {authStore} = this.props;
-    authStore.fetchToken(accessToken).then(() => this.props.history.push('/'));
+    authStore
+      .fetchToken(accessToken, state)
+      .then(() => this.props.history.push('/'));
   }
 
   render() {
