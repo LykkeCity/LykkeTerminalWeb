@@ -95,6 +95,7 @@ interface OrderBookProps {
   mid: number;
   accuracy: number;
   invertedAccuracy: number;
+  stateFns: any[];
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -102,14 +103,25 @@ class OrderBook extends React.Component<OrderBookProps> {
   private scrollComponent: any;
   private wrapper: any;
   private content: any;
+  private midPrice: any;
 
   private refHandlers = {
     content: (innerRef: any) => (this.content = innerRef),
+    midPrice: (innerRef: any) => (this.midPrice = innerRef),
     scrollComponent: (ref: any) => (this.scrollComponent = ref),
     wrapper: (innerRef: any) => (this.wrapper = innerRef)
   };
-
   private isScrollSet: boolean = false;
+
+  constructor(props: OrderBookProps) {
+    super(props);
+
+    this.props.stateFns.push(this.clearScroll);
+  }
+
+  clearScroll = () => {
+    this.isScrollSet = false;
+  };
 
   handleChange = (e: React.ChangeEvent<any>) => {
     this.valueToShow = e.target.id;
@@ -120,8 +132,9 @@ class OrderBook extends React.Component<OrderBookProps> {
       return;
     }
 
-    const scroll = (this.content.offsetHeight - this.wrapper.offsetHeight) / 2;
-    this.scrollComponent.scrollTop(scroll > 0 ? scroll : 0);
+    const scroll =
+      this.midPrice.offsetTop - this.scrollComponent.container.offsetHeight / 2;
+    this.scrollComponent.scrollTop(scroll);
 
     if (this.props.asks.length && this.props.bids.length && scroll > 0) {
       this.isScrollSet = true;
@@ -180,7 +193,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice>
+            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
               <tr>
                 <td>{defaultTo('', Number(mid))}</td>
               </tr>
