@@ -14,6 +14,7 @@ import {OrderBookItem} from './';
 const Wrapper = styled.div`
   height: 100%;
   margin-right: -0.9375rem;
+  padding-top: ${rem(55)};
 `;
 
 const StyledHead = styled.thead`
@@ -58,7 +59,11 @@ const Switch = styled.div`
   color: #ffffff;
   display: flex;
   align-items: center;
-  margin: ${rem(8)} 0 ${rem(8)};
+  top: ${rem(18)};
+  left: ${rem(8)};
+  right: ${rem(8)};
+  z-index: 10;
+  position: absolute;
 `;
 
 const SwitchItem = styled.div`
