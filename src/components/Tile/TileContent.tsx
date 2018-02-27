@@ -14,6 +14,7 @@ interface TileContentProps {
   children: any;
   isAuth: any;
   tabs: any;
+  hideScroll: boolean;
 }
 
 interface TileContentState {
@@ -76,6 +77,9 @@ const StyledChild = styled.div.attrs({
   })
 })`
   padding: ${rem(10)} ${rem(15)};
+  &.scroll-hidden {
+    overflow: hidden;
+  }
 ` as any;
 
 class TileContent extends React.Component<TileContentProps, TileContentState> {
@@ -155,6 +159,7 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
           : null}
         <Scrollbars autoHide={true}>
           <StyledChild
+            className={this.props.hideScroll ? 'scroll-hidden' : ''}
             hasTabs={this.props.tabs}
             hasAdditionalControls={this.props.additionalControls}
           >

@@ -9,6 +9,7 @@ export interface TileProps {
   authorize?: boolean;
   additionalControls?: any[];
   additionalControlStore?: any;
+  hideScroll: boolean;
 }
 
 const ConnectedTile = connect(
