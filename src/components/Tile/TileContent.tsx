@@ -79,7 +79,6 @@ const StyledChild = styled.div.attrs({
   padding: ${rem(10)} ${rem(15)};
   &.scroll-hidden {
     overflow: hidden;
-    padding-bottom: ${rem(50)};
   }
 ` as any;
 
