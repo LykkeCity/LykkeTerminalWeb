@@ -14,6 +14,7 @@ import {OrderBookItem} from './';
 const Wrapper = styled.div`
   height: 100%;
   margin-right: -0.9375rem;
+  padding-top: ${rem(55)};
 `;
 
 const StyledHead = styled.thead`
