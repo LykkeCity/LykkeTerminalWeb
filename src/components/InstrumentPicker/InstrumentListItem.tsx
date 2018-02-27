@@ -11,14 +11,15 @@ const {Flex} = require('grid-styled');
 
 interface InstrumentListItemProps extends InstrumentPickerActions {
   instrument: InstrumentModel;
+  inactive: boolean;
 }
 
 const StyledInstrumentItem = styled(Flex)`
   margin-top: 10px;
-  cursor: pointer;
   justify-content: space-between;
-  :hover {
+  &.inactive:hover {
     background: ${lighten(0.05, '#3c3c3c')};
+    cursor: pointer;
   }
 `;
 
@@ -53,11 +54,13 @@ const InstrumentPrice: React.SFC<InstrumentPriceProps> = observer(
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
   instrument,
   instrument: {dir = Dir.Up, displayName},
-  onPick
+  onPick,
+  inactive
 }) => (
   <StyledInstrumentItem
     // tslint:disable-next-line:jsx-no-lambda
-    onClick={() => onPick && onPick(instrument)}
+    onClick={() => inactive && onPick && onPick(instrument)}
+    className={inactive ? 'inactive' : ''}
   >
     <StyledInstrumentName>{displayName}</StyledInstrumentName>
     <InstrumentPrice instrument={instrument} dir={dir} />
