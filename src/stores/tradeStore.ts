@@ -36,12 +36,9 @@ class TradeStore extends BaseStore {
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
   private skip: number = TradeQuantity.Skip;
-  private publicSkip: number = TradeQuantity.Skip;
   private take: number = TradeQuantity.Take;
-  private publicTake: number = TradeQuantity.Take;
   private loading: number = TradeQuantity.Loading;
   private wampTrades: number = 0;
-  private wampPublicTrades: number = 0;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
@@ -76,14 +73,16 @@ class TradeStore extends BaseStore {
     });
   };
 
-  fetchPublicTrades = () => {
-    this.api
-      .fetchPublicTrades(this.publicSkip, this.publicTake)
-      .then((dto: any) => {
-        runInAction(() => {
-          this.publicTrades = mappers.mapToTradeList(dto, 2);
-        });
-      });
+  fetchPublicTrades = async () => {
+    const {uiStore: {selectedInstrument}} = this.rootStore;
+    const resp = await this.api.fetchPublicTrades(
+      (selectedInstrument && selectedInstrument.id) || '',
+      TradeQuantity.Skip,
+      TradeQuantity.Take
+    );
+    runInAction(() => {
+      this.publicTrades = resp.map(mappers.mapToPublicTrade);
+    });
   };
 
   subscribe = (ws: any) => {
@@ -100,19 +99,6 @@ class TradeStore extends BaseStore {
   fetchPartTrade = async () => {
     this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
     this.fetchTrades();
-  };
-
-  fetchPartPublicTrade = async () => {
-    this.publicSkip = this.getSkipValue(
-      'publicSkip',
-      'publicTake',
-      'wampPublicTrades'
-    );
-    const tradesDto = await this.api.fetchPublicTrades(
-      this.publicSkip,
-      this.loading
-    );
-    this.addPublicTrades(mappers.mapToTradeList(tradesDto, 2));
   };
 
   onTrades = async (args: any[]) => {
@@ -133,8 +119,9 @@ class TradeStore extends BaseStore {
   };
 
   onPublicTrades = (args: any[]) => {
-    this.wampPublicTrades += args[0].lengths;
-    this.addPublicTrades(mappers.mapToTradeList(args[0], 2));
+    // tslint:disable-next-line:no-console
+    console.info(args);
+    this.addPublicTrades(args[0].map(mappers.mapToPublicTrade));
   };
 
   @action
