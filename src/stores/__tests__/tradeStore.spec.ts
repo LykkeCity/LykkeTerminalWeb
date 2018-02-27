@@ -35,7 +35,35 @@ describe('trade store', () => {
         }
       ])
     );
-    api.fetchPublicTrades = api.fetchTrades;
+
+    api.fetchPublicTrades = jest.fn((i, s, t) =>
+      Promise.resolve([
+        {
+          Id: '201802272013_a7a25095-1cda-475d-b310-eb816e2a1020',
+          DateTime: '2018-02-27T20:13:29.247Z',
+          Type: 'Trade',
+          State: 'Finished',
+          Amount: -0.001,
+          Asset: 'BTC',
+          AssetPair: i,
+          Price: 10534.575,
+          FeeSize: 0,
+          FeeType: 'Unknown'
+        },
+        {
+          Id: '201802272013_5daa93bc-2b25-4592-ae36-4ef1ff071ea4',
+          DateTime: '2018-02-27T20:13:29.247Z',
+          Type: 'LimitTrade',
+          State: 'Finished',
+          Amount: -10.53,
+          Asset: 'USD',
+          AssetPair: i,
+          Price: 10534.575,
+          FeeSize: 0,
+          FeeType: 'Unknown'
+        }
+      ])
+    );
 
     tradeStore = new TradeStore(new RootStore(), api);
   });

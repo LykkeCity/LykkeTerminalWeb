@@ -254,3 +254,19 @@ export const mapToPublicInstrument = (
     accuracy: Accuracy,
     invertedAccuracy: InvertedAccuracy
   });
+
+export const mapToPublicTrade = ({
+  Id,
+  DateTime,
+  Amount,
+  AssetPair,
+  Price
+}: any) =>
+  new TradeModel({
+    id: Id,
+    quantity: Math.abs(Amount),
+    symbol: AssetPair,
+    price: Price,
+    side: Amount > 0 ? Side.Buy : Side.Sell,
+    timestamp: DateTime
+  });

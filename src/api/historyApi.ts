@@ -7,6 +7,16 @@ export interface HistoryApi {
 
 export class RestHistoryApi extends RestApi implements HistoryApi {
   fetchHistory = (query: any) => this.getWithQuery(`/History/client`, query);
+
+  fetchTradesByInstrument = (
+    instrumentId: string,
+    skip: number,
+    take: number
+  ) =>
+    this.getWithQuery(`/history/trades/${instrumentId}`, {
+      take,
+      skip
+    });
 }
 
 const instance = new RestHistoryApi();
