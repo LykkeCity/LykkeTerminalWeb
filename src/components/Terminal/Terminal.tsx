@@ -47,7 +47,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   ob: (
-    <Tile title="Order book">
+    <Tile hideScroll={true} title="Order book">
       <OrderBook />
     </Tile>
   ),
