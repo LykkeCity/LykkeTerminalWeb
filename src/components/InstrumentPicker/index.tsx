@@ -13,6 +13,7 @@ export interface InstrumentPickerActions {
 export interface InstrumentPickerProps extends InstrumentPickerActions {
   instruments: InstrumentModel[];
   value: string;
+  instrumentId: string;
   show: boolean;
   className?: string;
   watchlistNames: string[];
@@ -35,6 +36,7 @@ export interface InstrumentShortcutsProps {
 }
 
 export interface InstrumentListProps {
+  currentInstrumentId: string;
   change: any;
   instruments: InstrumentModel[];
   onPick: any;
@@ -42,6 +44,7 @@ export interface InstrumentListProps {
 
 const connectedInstrumentPicker = connect(
   ({referenceStore, uiStore, watchlistStore}) => ({
+    instrumentId: pathOr(undefined, ['selectedInstrument', 'id'], uiStore),
     instruments: referenceStore.findInstruments(
       uiStore.searchTerm,
       uiStore.searchWalletName
