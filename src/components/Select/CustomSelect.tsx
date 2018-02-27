@@ -5,7 +5,7 @@ import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
 const StyledSelect = styled.div`
   position: absolute;
   border: 1px solid #f5f6f7;
-  z-index: 10;
+  z-index: 11;
   background-color: rgb(60, 60, 60);
   box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
   border: solid 1px rgba(0, 0, 0, 0.2);
