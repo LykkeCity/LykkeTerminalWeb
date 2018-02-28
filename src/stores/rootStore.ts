@@ -9,9 +9,12 @@ import {
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
+import ModalMessages from '../constants/modalMessages';
+import platforms from '../constants/platforms';
 import keys from '../constants/storageKeys';
+import Types from '../models/modals';
 import Watchlists from '../models/watchlists';
-import {StorageUtils} from '../utils/index';
+import {IsMobile, StorageUtils} from '../utils/index';
 import {
   AdditionalControlStore,
   AuthStore,
@@ -32,6 +35,8 @@ import {
 
 const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
+
+const isMobile = IsMobile();
 
 class RootStore {
   readonly watchlistStore: WatchlistStore;
@@ -102,6 +107,16 @@ class RootStore {
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
     );
+
+    const platform = isMobile.detectByUserAgent();
+    if (platform !== platforms.desktop) {
+      this.modalStore.addModal(
+        ModalMessages.isMobile(platform),
+        null,
+        null,
+        Types.IsMobile
+      );
+    }
 
     if (!this.authStore.isAuth) {
       return this.startPublicMode(defaultInstrument);
