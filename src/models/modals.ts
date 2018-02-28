@@ -1,6 +1,7 @@
 enum Types {
   Confirm = 'Confirm',
-  Expired = 'Expired'
+  Expired = 'Expired',
+  IsMobile = 'IsMobile'
 }
 
 export default Types;
