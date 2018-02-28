@@ -8,13 +8,13 @@ const ModalMessages = {
   },
   isMobile: (platform: string) => ({
     body:
-      'You can get much better experience with the Lykke mobile app for your device',
+      'To offer you the advanced range of services we need you to confirm your identity and pass KYC (Know Your Client) procedure. You can pass the KYC in the Lykke Wallet app. ',
     image: platform === platforms.ios ? 'app-store' : 'google-play',
     link:
       platform === platforms.ios
         ? 'https://itunes.apple.com/ru/app/lykke-wallet/id1112839581'
         : 'https://play.google.com/store/apps/details?id=com.lykkex.LykkeWallet',
-    title: 'Try Lykke mobile app'
+    title: 'Attention!'
   })
 };
 

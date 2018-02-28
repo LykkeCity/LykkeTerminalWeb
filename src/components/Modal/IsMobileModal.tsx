@@ -16,6 +16,7 @@ const StyledButton = styled(Button)`
   background: transparent;
   border: solid 1px rgba(140, 148, 160, 0.4);
   margin: 20px 0 5px 0;
+  padding: 16px 0;
 `;
 
 const StyledBody = styled.div`
@@ -44,7 +45,7 @@ const IsMobileModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
       <a href={modal.message.link}>
         <StyledImage image={modal.message.image} />
       </a>
-      <StyledButton onClick={modal.close}>Don't use mobile app</StyledButton>
+      <StyledButton onClick={modal.close}>OK</StyledButton>
     </StyledExpiredModal>
   );
 };
