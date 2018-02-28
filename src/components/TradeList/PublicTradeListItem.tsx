@@ -11,17 +11,17 @@ export interface PublicTradeListItemProps extends TradeModel {
 export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   quantity,
   price,
+  side,
   timestamp,
   className
-}) => {
-  return (
-    <tr className={className}>
-      <td>{quantity}</td>
-      <td>{price}</td>
-      <td>{format(timestamp, 'HH:mm:ss')}</td>
-    </tr>
-  );
-};
+}) => (
+  <tr className={className}>
+    <td>{quantity}</td>
+    <td>{price}</td>
+    <td>{side}</td>
+    <td>{format(timestamp, 'HH:mm:ss')}</td>
+  </tr>
+);
 
 PublicTradeListItem.displayName = 'PublicTradeListItem';
 

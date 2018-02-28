@@ -81,7 +81,7 @@ class TradeStore extends BaseStore {
       TradeQuantity.Take
     );
     runInAction(() => {
-      this.publicTrades = resp.map(mappers.mapToPublicTrade);
+      this.publicTrades = resp.map(mappers.mapRestDtoToPublicTrade);
     });
   };
 
@@ -90,10 +90,8 @@ class TradeStore extends BaseStore {
   };
 
   subscribeToPublicTrades = (ws: any) => {
-    ws.subscribe(
-      topics.publicTrade(this.rootStore.uiStore.selectedInstrument!.id),
-      this.onPublicTrades
-    );
+    const instrumentId = this.rootStore.uiStore.selectedInstrument!.id;
+    ws.subscribe(topics.publicTrade(instrumentId), this.onPublicTrades);
   };
 
   fetchPartTrade = async () => {
@@ -119,9 +117,7 @@ class TradeStore extends BaseStore {
   };
 
   onPublicTrades = (args: any[]) => {
-    // tslint:disable-next-line:no-console
-    console.info(args);
-    this.addPublicTrades(args[0].map(mappers.mapToPublicTrade));
+    this.addPublicTrades(args.map(mappers.mapWampDtoToPublicTrade));
   };
 
   @action

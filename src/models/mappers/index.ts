@@ -255,18 +255,36 @@ export const mapToPublicInstrument = (
     invertedAccuracy: InvertedAccuracy
   });
 
-export const mapToPublicTrade = ({
+export const mapRestDtoToPublicTrade = ({
+  id,
+  assetPairId,
+  volume,
+  price,
+  action,
+  dateTime
+}: any) =>
+  new TradeModel({
+    id,
+    quantity: volume,
+    symbol: assetPairId,
+    price,
+    side: Side[action],
+    timestamp: dateTime
+  });
+
+export const mapWampDtoToPublicTrade = ({
   Id,
-  DateTime,
-  Amount,
-  AssetPair,
-  Price
+  AssetPairId,
+  Volume,
+  Price,
+  Action,
+  DateTime
 }: any) =>
   new TradeModel({
     id: Id,
-    quantity: Math.abs(Amount),
-    symbol: AssetPair,
+    quantity: Volume,
+    symbol: AssetPairId,
     price: Price,
-    side: Amount > 0 ? Side.Buy : Side.Sell,
+    side: Side[Action],
     timestamp: DateTime
   });
