@@ -1,3 +1,4 @@
+import wretch from 'wretch';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
@@ -13,10 +14,11 @@ export class RestHistoryApi extends RestApi implements HistoryApi {
     skip: number,
     take: number
   ) =>
-    this.getWithQuery(`/history/trades/${instrumentId}`, {
-      take,
-      skip
-    });
+    wretch(process.env.REACT_APP_PUBLIC_API_URL)
+      .url(`/trades/${instrumentId}`)
+      .query({skip, take})
+      .get()
+      .json();
 }
 
 const instance = new RestHistoryApi();

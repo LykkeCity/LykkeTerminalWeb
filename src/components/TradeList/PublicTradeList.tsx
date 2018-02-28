@@ -20,13 +20,12 @@ export const PublicTradeList: React.SFC<PublicTradeListProps> = ({
         <th>
           Price ({pathOr('', ['quoteAsset', 'name'], selectedInstrument)})
         </th>
+        <th>Side</th>
         <th>Time</th>
       </tr>
     </thead>
     <tbody>
-      {trades.map(trade => (
-        <PublicTradeListItem key={trade.id} side={trade.side} {...trade} />
-      ))}
+      {trades.map(trade => <PublicTradeListItem key={trade.id} {...trade} />)}
     </tbody>
   </Table>
 );
