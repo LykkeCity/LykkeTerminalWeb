@@ -75,14 +75,16 @@ class TradeStore extends BaseStore {
 
   fetchPublicTrades = async () => {
     const {uiStore: {selectedInstrument}} = this.rootStore;
-    const resp = await this.api.fetchPublicTrades(
-      (selectedInstrument && selectedInstrument.id) || '',
-      TradeQuantity.Skip,
-      TradeQuantity.Take
-    );
-    runInAction(() => {
-      this.publicTrades = resp.map(mappers.mapRestDtoToPublicTrade);
-    });
+    if (selectedInstrument && selectedInstrument.id) {
+      const resp = await this.api.fetchPublicTrades(
+        selectedInstrument.id,
+        TradeQuantity.Skip,
+        TradeQuantity.Take
+      );
+      runInAction(() => {
+        this.publicTrades = resp.map(mappers.mapRestDtoToPublicTrade);
+      });
+    }
   };
 
   subscribe = (ws: any) => {
