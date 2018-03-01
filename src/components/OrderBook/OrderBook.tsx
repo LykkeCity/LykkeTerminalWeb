@@ -4,12 +4,18 @@ import {curry, defaultTo} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
+import ModalMessages from '../../constants/modalMessages';
 import {displayType} from '../../constants/orderBook';
+import keys from '../../constants/storageKeys';
 import {Order} from '../../models';
+import Types from '../../models/modals';
 import {capitalize} from '../../utils';
+import {StorageUtils} from '../../utils/index';
 import {css} from '../styled';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
+
+const confirmStorage = StorageUtils(keys.confirmReminder);
 
 const Wrapper = styled.div`
   height: 100%;
@@ -95,12 +101,14 @@ const Bar = styled.div`
 `;
 
 interface OrderBookProps {
+  addModal: any;
   asks: Order[];
   bids: Order[];
   mid: number;
   accuracy: number;
   invertedAccuracy: number;
   stateFns: any[];
+  cancelOrder: any;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -132,6 +140,26 @@ class OrderBook extends React.Component<OrderBookProps> {
     this.valueToShow = e.target.id;
   };
 
+  cancelOrders = (connectedOrders: string[]) => {
+    connectedOrders.forEach(id => this.props.cancelOrder(id));
+  };
+
+  handleCloseClick = (connectedOrders: string[]) => () => {
+    const isConfirm = confirmStorage.get() as string;
+    if (!JSON.parse(isConfirm)) {
+      return this.cancelOrders(connectedOrders);
+    }
+
+    const message = ModalMessages.cancelOrder(connectedOrders);
+    this.props.addModal(
+      message,
+      () => this.cancelOrders(connectedOrders),
+      // tslint:disable-next-line:no-empty
+      () => {},
+      Types.Confirm
+    );
+  };
+
   componentDidUpdate() {
     if (this.isScrollSet) {
       return;
@@ -148,6 +176,7 @@ class OrderBook extends React.Component<OrderBookProps> {
 
   render() {
     const {bids, asks, mid, accuracy, invertedAccuracy} = this.props;
+    const customBids = this.props.bids.filter(b => !!b.orderVolume);
 
     const mapWithValueToShow = (o: Order) => o[this.valueToShow];
 
@@ -195,6 +224,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   {...order}
                   accuracy={accuracy}
                   invertedAccuracy={invertedAccuracy}
+                  onClick={this.handleCloseClick}
                 />
               ))}
             </StyledSellOrders>
@@ -204,7 +234,7 @@ class OrderBook extends React.Component<OrderBookProps> {
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
-              {bids.map(order => (
+              {customBids.map(order => (
                 <OrderBookItem
                   maxValue={maxBidValue}
                   minValue={minBidValue}
@@ -213,6 +243,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   {...order}
                   accuracy={accuracy}
                   invertedAccuracy={invertedAccuracy}
+                  onClick={this.handleCloseClick}
                 />
               ))}
             </StyledBuyOrders>
