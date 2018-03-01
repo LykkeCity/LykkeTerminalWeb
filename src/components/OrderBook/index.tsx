@@ -6,7 +6,7 @@ import OrderBook from './OrderBook';
 const ConnectedOrderBook = connect(
   ({
     orderBookStore: {asks, bids, mid},
-    uiStore: {selectedInstrument},
+    uiStore: {selectedInstrument, stateFns},
     orderStore: {updatePrice}
   }) => {
     const accuracy = pathOr(0, ['baseAsset', 'accuracy'], selectedInstrument);
@@ -19,7 +19,8 @@ const ConnectedOrderBook = connect(
       mid: midPrice,
       accuracy,
       invertedAccuracy,
-      updatePrice
+      updatePrice,
+      stateFns
     };
   },
   OrderBook

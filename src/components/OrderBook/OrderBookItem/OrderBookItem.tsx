@@ -52,10 +52,6 @@ const VolumeCell = CommonCell.extend.attrs({
 const MidCell = styled(CommonCell)`
   width: 33%;
   text-align: center !important;
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const VolumeOverlay = styled.div.attrs({
@@ -75,6 +71,10 @@ const OrderRow = styled.tr`
   display: flex;
   align-items: center;
   border-bottom: solid 1px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 interface OrderBookItemProps extends Order {
@@ -84,6 +84,7 @@ interface OrderBookItemProps extends Order {
   minValue?: number;
   valueToShow: number;
   onClick: any;
+  depth: number;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -95,11 +96,12 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   invertedAccuracy,
   minValue = 10,
   maxValue = 100,
-  onClick
+  onClick,
+  depth
 }) => {
   const currentPrice = price.toFixed(invertedAccuracy);
   return (
-    <OrderRow>
+    <OrderRow onClick={onClick(+currentPrice, depth)}>
       <VolumeCell side={side}>
         {side === Side.Sell && (
           <div>
@@ -111,7 +113,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
           </div>
         )}
       </VolumeCell>
-      <MidCell onClick={onClick(+currentPrice)}>{currentPrice}</MidCell>
+      <MidCell>{currentPrice}</MidCell>
       <VolumeCell side={side}>
         {side === Side.Buy && (
           <div>

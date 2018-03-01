@@ -29,9 +29,9 @@ class OrderStore extends BaseStore {
     this.updatePriceByOrderBook = fn;
   };
 
-  updatePrice = (price: number) => {
+  updatePrice = (price: number, quantity: number) => {
     if (this.updatePriceByOrderBook) {
-      this.updatePriceByOrderBook(price);
+      this.updatePriceByOrderBook(price, quantity);
     }
   };
 
