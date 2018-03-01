@@ -21,7 +21,9 @@ export const mapToOrder = (dto: any) => ({
   side: dto.IsBuy ? Side.Sell : Side.Buy,
   timestamp: dto.DateTime,
   volume: dto.Volume,
-  depth: 0
+  depth: 0,
+  orderVolume: 0,
+  connectedLimitOrders: []
 });
 
 export const mapToBarFromRest = ({

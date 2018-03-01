@@ -7,6 +7,8 @@ interface Order {
   timestamp: any;
   side: Side;
   depth: number;
+  orderVolume: number;
+  connectedLimitOrders: string[];
 }
 
 export default Order;

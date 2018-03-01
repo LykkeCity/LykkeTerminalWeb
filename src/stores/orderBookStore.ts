@@ -16,6 +16,7 @@ import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
+import OrderModel from '../models/orderModel';
 import {BaseStore, RootStore} from './index';
 
 const byPrice = (o: Order) => o.price;
@@ -69,14 +70,17 @@ class OrderBookStore extends BaseStore {
       Order[],
       Order[],
       Order[],
+      Order[],
       Order[]
     >(
       reverse,
       sortBy(byPrice),
       this.withDepth,
       this.groupByPrice,
+      this.updateWithLimitOrders(IsBuy),
       map(x => mappers.mapToOrder({...x, IsBuy}))
     );
+
     if (IsBuy) {
       this.bids = mapToOrders(Levels);
     } else {
@@ -84,8 +88,28 @@ class OrderBookStore extends BaseStore {
     }
   };
 
+  updateWithLimitOrders = (isBuy: boolean) => (orders: Order[]) => {
+    const {selectedInstrument} = this.rootStore.uiStore;
+    const limitOrders = this.rootStore.orderListStore.limitOrders.filter(
+      (order: OrderModel) =>
+        isBuy ? order.side === Side.Buy : order.side === Side.Sell
+    );
+    limitOrders.forEach((lo: OrderModel) => {
+      orders.forEach((o: Order) => {
+        if (lo.price === o.price && lo.symbol === selectedInstrument!.id) {
+          o.orderVolume += lo.volume;
+          o.connectedLimitOrders.push(lo.id);
+        }
+      });
+    });
+    return orders;
+  };
+
   fetchAll = async () => {
     const {selectedInstrument} = this.rootStore.uiStore;
+    if (!selectedInstrument) {
+      return;
+    }
     const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
     runInAction(() => {
       orders.forEach((levels: any) => this.onUpdate([levels]));

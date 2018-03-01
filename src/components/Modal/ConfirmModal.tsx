@@ -42,7 +42,6 @@ const StyledTitle = styled.div`
 const StyledContent = styled.div`
   margin-top: 16px;
   width: 312px;
-  height: 48px;
   font-size: 14px;
   line-height: 1.5;
 `;
