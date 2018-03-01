@@ -63,7 +63,15 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     this.props.stateFns.push(this.handleChangeInstrument);
     this.props.updatePriceFn(this.updatePriceByOrderBook);
+    this.props.initPriceFn(this.initPriceUpdate);
   }
+
+  initPriceUpdate = (price: number, instrument: InstrumentModel) => {
+    const priceAccuracy = pathOr(2, ['accuracy'], instrument);
+    this.setState({
+      priceValue: price.toFixed(priceAccuracy)
+    });
+  };
 
   handleChangeInstrument = (instrument: InstrumentModel) => {
     const priceAccuracy = pathOr(2, ['accuracy'], instrument);
@@ -71,12 +79,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       pathOr('', ['name'], instrument).split('/')[0]
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
+    const price = instrument.price ? instrument.price : 0;
 
     this.setState({
-      priceValue: parseFloat(this.state.priceValue).toFixed(priceAccuracy),
-      quantityValue: parseFloat(this.state.quantityValue).toFixed(
-        quantityAccuracy
-      )
+      priceValue: price.toFixed(priceAccuracy),
+      quantityValue: parseFloat('0').toFixed(quantityAccuracy)
     });
   };
 
@@ -87,9 +94,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
-  updatePriceByOrderBook = (price: number) => {
+  updatePriceByOrderBook = (price: number, quantity: number) => {
     this.setState({
-      priceValue: price.toFixed(this.props.accuracy.priceValue)
+      priceValue: price.toFixed(this.props.accuracy.priceValue),
+      quantityValue: quantity.toFixed(this.props.accuracy.quantityValue)
     });
   };
 

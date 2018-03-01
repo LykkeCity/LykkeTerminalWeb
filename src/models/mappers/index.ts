@@ -64,7 +64,8 @@ export const mapToChartSymbol = ({
   has_intraday: true,
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
   has_empty_bars: true,
-  volume_precision: pathOr(0, ['accuracy'], baseAsset)
+  volume_precision: pathOr(0, ['accuracy'], baseAsset),
+  ticker: name
 });
 
 type ResolutionMapper = (resolution: string) => Interval;

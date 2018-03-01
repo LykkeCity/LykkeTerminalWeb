@@ -66,18 +66,42 @@ class BalanceListStore extends BaseStore {
   };
 
   setTradingAssets = async (walletList: WalletModel[]) => {
+    const notFoundAssets: string[] = [];
     const {getAssetById} = this.rootStore.referenceStore;
     this.tradingAssets = this.getTradingWallet(walletList).balances.map(
       (dto: any) => {
         const assetBalance = new AssetBalanceModel(dto);
         const assetById = getAssetById(assetBalance.id);
+        if (!assetById) {
+          notFoundAssets.push(assetBalance.id);
+        }
         assetBalance.name = pathOr('', ['name'], assetById);
         assetBalance.accuracy = pathOr('', ['accuracy'], assetById);
         return assetBalance;
       }
     );
 
+    await this.updateWithAssets(notFoundAssets);
     await this.updateTradingWallet();
+  };
+
+  updateWithAssets = async (ids: string[]) => {
+    const promises: any = [];
+    const {getAssetById, fetchAssetById} = this.rootStore.referenceStore;
+    ids.forEach(id => {
+      promises.push(fetchAssetById(id));
+    });
+    return Promise.all(promises).then(() => {
+      ids.forEach(id => {
+        this.tradingAssets.forEach(asset => {
+          if (asset.id === id) {
+            const assetById = getAssetById(asset.id);
+            asset.name = pathOr('', ['name'], assetById);
+            asset.accuracy = pathOr('', ['accuracy'], assetById);
+          }
+        });
+      });
+    });
   };
 
   updateTradingWallet = async () => {
