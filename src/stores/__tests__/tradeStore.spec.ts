@@ -64,7 +64,7 @@ describe('trade store', () => {
 
   describe('reset', () => {
     it('should clear trades', async () => {
-      await tradeStore.fetchAll();
+      await tradeStore.fetchTrades();
       expect(tradeStore.getAllTrades.length).toBeGreaterThan(0);
 
       tradeStore.reset();
@@ -75,7 +75,7 @@ describe('trade store', () => {
 
   describe('fetch trades', () => {
     it('should populate tradeList collection', async () => {
-      await tradeStore.fetchAll();
+      await tradeStore.fetchTrades();
       expect(tradeStore.getAllTrades.length).toBeGreaterThan(0);
     });
   });
@@ -89,7 +89,7 @@ describe('trade store', () => {
 
   describe('trade item', () => {
     it('should contain the following fields', async () => {
-      await tradeStore.fetchAll();
+      await tradeStore.fetchTrades();
       const trade = tradeStore.getAllTrades[0];
       expect(trade.side).toBeDefined();
       expect(trade.symbol).toBeDefined();

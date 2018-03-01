@@ -1,26 +1,36 @@
-import Operations from '../models/operationTypes';
+import {InstrumentModel, OperationType} from '../models/index';
 import {HistoryApi} from './index';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
+const filterByType = ({Type}: any) =>
+  Type === OperationType.Trade || Type === OperationType.LimitTrade;
+
+const filterByInstrument = (instrument: InstrumentModel) => ({
+  AssetPair
+}: any) => AssetPair === instrument.id;
+
 export interface TradeApi {
-  fetchUserTrades: (skip: number, take: number) => ApiResponse;
+  fetchTrades: (
+    instrument: InstrumentModel,
+    skip: number,
+    take: number
+  ) => ApiResponse;
   fetchPublicTrades: (skip: number, take: number) => ApiResponse;
 }
 
 export class RestTradeApi extends RestApi implements TradeApi {
-  fetchUserTrades = async (skip: number, take: number) => {
-    const trades = (await HistoryApi.fetchHistory({
-      operationType: Operations.Trade,
+  fetchTrades = async (
+    instrument: InstrumentModel,
+    skip: number,
+    take: number
+  ) => {
+    const resp = await HistoryApi.fetchHistory({
+      assetId: instrument.baseAsset.id,
       skip,
       take
-    })) as any[];
-    const limitTrades = (await HistoryApi.fetchHistory({
-      operationType: Operations.LimitTrade,
-      skip,
-      take
-    })) as any[];
-    return [...trades, ...limitTrades];
+    });
+    return resp.filter(filterByInstrument(instrument)).filter(filterByType);
   };
 
   fetchPublicTrades = (skip: number, take: number) =>

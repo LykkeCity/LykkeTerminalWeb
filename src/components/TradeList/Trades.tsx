@@ -1,9 +1,14 @@
 import {observer} from 'mobx-react';
 import {rem} from 'polished';
+import {curry, pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
+import {InstrumentModel} from '../../models/index';
 import Table from '../Table/Table';
 import {TradeListItem, TradesProps} from './index';
+
+const assetFromInstrument = (instrument: InstrumentModel, assetType: string) =>
+  pathOr('', [assetType, 'name'], instrument);
 
 const StyledBtnSection = styled.div`
   display: flex;
@@ -28,8 +33,12 @@ const Trades: React.SFC<TradesProps> = ({
   trades = [],
   needToLoadMore,
   fetchPart,
-  stringId = ''
+  stringId = '',
+  selectedInstrument
 }) => {
+  const assetFromSelectedInstrument = curry(assetFromInstrument)(
+    selectedInstrument!
+  );
   return (
     <div>
       <Table>
@@ -37,11 +46,12 @@ const Trades: React.SFC<TradesProps> = ({
           <tr>
             <th>Asset pair</th>
             <th>Side</th>
-            <th>Buy Volume</th>
-            <th>Sell Volume</th>
+            <th>Volume ({assetFromSelectedInstrument('baseAsset')})</th>
             <th>Price</th>
+            <th>Volume ({assetFromSelectedInstrument('quoteAsset')})</th>
             <th>Order type</th>
-            <th>Timestamp</th>
+            <th>Fee</th>
+            <th>Time</th>
           </tr>
         </thead>
         <tbody>
