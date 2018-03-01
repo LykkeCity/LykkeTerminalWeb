@@ -120,23 +120,8 @@ class BalanceListStore extends BaseStore {
     session.subscribe(`balances`, this.onUpdateBalance);
   };
 
-  onUpdateBalance = async (args: any) => {
-    const {a: asset, b: balance, r: reserved} = args[0];
-    const assetBalance = this.tradingAssets.find(b => b.id === asset);
-    if (assetBalance) {
-      assetBalance.balance = balance;
-      assetBalance.reserved = reserved;
-    }
-    this.updateTradingWallet();
-
-    this.walletList.forEach((wallet: WalletModel) =>
-      wallet.balances.forEach(b => {
-        if (b.AssetId === asset) {
-          b.Balance = balance;
-        }
-      })
-    );
-    this.updateBalance(this.walletList);
+  onUpdateBalance = async () => {
+    this.fetchAll();
   };
 
   reset = () => {
