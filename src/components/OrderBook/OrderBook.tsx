@@ -14,6 +14,7 @@ import {OrderBookItem} from './';
 const Wrapper = styled.div`
   height: 100%;
   margin-right: -0.9375rem;
+  padding-top: ${rem(55)};
 `;
 
 const StyledHead = styled.thead`
@@ -45,7 +46,7 @@ const StyledMidPrice = styled.tbody`
   margin: 0 0.9375rem 0 0;
   background: rgba(0, 0, 0, 0.2);
 
-  td:hover {
+  &:hover {
     cursor: pointer;
   }
 `;
@@ -62,7 +63,11 @@ const Switch = styled.div`
   color: #ffffff;
   display: flex;
   align-items: center;
-  margin: ${rem(8)} 0 ${rem(8)};
+  top: ${rem(18)};
+  left: ${rem(8)};
+  right: ${rem(8)};
+  z-index: 10;
+  position: absolute;
 `;
 
 const SwitchItem = styled.div`
@@ -100,6 +105,7 @@ interface OrderBookProps {
   accuracy: number;
   invertedAccuracy: number;
   updatePrice: any;
+  stateFns: any[];
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -107,14 +113,25 @@ class OrderBook extends React.Component<OrderBookProps> {
   private scrollComponent: any;
   private wrapper: any;
   private content: any;
+  private midPrice: any;
 
   private refHandlers = {
     content: (innerRef: any) => (this.content = innerRef),
+    midPrice: (innerRef: any) => (this.midPrice = innerRef),
     scrollComponent: (ref: any) => (this.scrollComponent = ref),
     wrapper: (innerRef: any) => (this.wrapper = innerRef)
   };
-
   private isScrollSet: boolean = false;
+
+  constructor(props: OrderBookProps) {
+    super(props);
+
+    this.props.stateFns.push(this.clearScroll);
+  }
+
+  clearScroll = () => {
+    this.isScrollSet = false;
+  };
 
   handleChange = (e: React.ChangeEvent<any>) => {
     this.valueToShow = e.target.id;
@@ -125,16 +142,17 @@ class OrderBook extends React.Component<OrderBookProps> {
       return;
     }
 
-    const scroll = (this.content.offsetHeight - this.wrapper.offsetHeight) / 2;
-    this.scrollComponent.scrollTop(scroll > 0 ? scroll : 0);
+    const scroll =
+      this.midPrice.offsetTop - this.scrollComponent.container.offsetHeight / 2;
+    this.scrollComponent.scrollTop(scroll);
 
     if (this.props.asks.length && this.props.bids.length && scroll > 0) {
       this.isScrollSet = true;
     }
   }
 
-  handleClick = (price: number) => () => {
-    this.props.updatePrice(price);
+  handleClick = (price: number, depth: number) => () => {
+    this.props.updatePrice(price, depth);
   };
 
   render() {
@@ -190,11 +208,12 @@ class OrderBook extends React.Component<OrderBookProps> {
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice>
+            <StyledMidPrice
+              innerRef={this.refHandlers.midPrice}
+              onClick={this.handleClick(Number(mid), 0)}
+            >
               <tr>
-                <td onClick={this.handleClick(Number(mid))}>
-                  {defaultTo('', Number(mid))}
-                </td>
+                <td>{defaultTo('', Number(mid))}</td>
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>

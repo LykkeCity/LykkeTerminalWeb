@@ -1,4 +1,3 @@
-import {observable} from 'mobx';
 import OrderApi from '../api/orderApi';
 import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
@@ -13,8 +12,6 @@ import NotificationStore from './notificationStore';
 // tslint:disable:no-console
 
 class OrderStore extends BaseStore {
-  @observable lastOrder: any;
-
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
@@ -29,16 +26,15 @@ class OrderStore extends BaseStore {
     this.updatePriceByOrderBook = fn;
   };
 
-  updatePrice = (price: number) => {
+  updatePrice = (price: number, quantity: number) => {
     if (this.updatePriceByOrderBook) {
-      this.updatePriceByOrderBook(price);
+      this.updatePriceByOrderBook(price, quantity);
     }
   };
 
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        this.lastOrder = body;
         return this.api
           .placeMarket(body)
           .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
