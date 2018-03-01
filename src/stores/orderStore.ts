@@ -6,9 +6,12 @@ import messages from '../constants/notificationMessages';
 import {OrderModel} from '../models';
 import Types from '../models/modals';
 import OrderType from '../models/orderType';
+import {IsMobile} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
+
+const isMobile = IsMobile();
 
 // tslint:disable:no-console
 
@@ -114,12 +117,26 @@ class OrderStore extends BaseStore {
       error.message &&
       JSON.parse(error.message).Confirmation;
 
+    const needKYC =
+      error.status === 400 && error.message && JSON.parse(error.message).KYC;
+
     if (needConfirmation) {
       this.modalStore.addModal(
         ModalMessages.expired,
         null,
         null,
         Types.Expired
+      );
+      return;
+    }
+
+    if (needKYC) {
+      const platform = isMobile.detectByUserAgent();
+      this.modalStore.addModal(
+        ModalMessages.isMobile(platform),
+        null,
+        null,
+        Types.IsMobile
       );
       return;
     }

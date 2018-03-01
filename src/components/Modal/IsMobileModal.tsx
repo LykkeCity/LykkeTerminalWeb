@@ -12,15 +12,13 @@ const StyledExpiredModal = styled(StyledModal)`
   }
 `;
 
-const StyledButton = styled(Button)`
-  background: transparent;
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  margin: 20px 0 5px 0;
-  padding: 16px 0;
-`;
-
-const StyledBody = styled.div`
-  line-height: 1.5;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  div {
+    margin: 0;
+  }
 `;
 
 const StyledTitle = styled.div`
@@ -28,24 +26,59 @@ const StyledTitle = styled.div`
   font-weight: 600;
 `;
 
-const StyledImage = styled.div.attrs({
+const StyledBody = styled.div`
+  line-height: 1.5;
+  text-align: left;
+`;
+
+const StyledButton = styled(Button)`
+  margin: 20px 0 0 0;
+  padding: 16px 0;
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff;
+  background-color: #0388ef;
+  border: none;
+`;
+
+const StyledLink = styled.a.attrs({
   style: (props: any) => ({
-    backgroundImage: `url(assets/images/${props.image}.svg)`
+    backgroundImage: `url('assets/images/${props.image}.svg')`
   })
 })`
-  height: 100px;
+  width: 45%;
+  height: 40px;
   background: no-repeat center;
+  background-size: cover;
+  margin: 20px 0 0 0;
+  text-decoration: none;
 ` as any;
 
 const IsMobileModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
+  const openApp = () => {
+    location.replace(modal.message.mobileApp);
+
+    setTimeout(() => location.replace(modal.message.link), 500);
+  };
+
   return (
     <StyledExpiredModal>
-      <StyledTitle>{modal.message.title}</StyledTitle>
+      <Wrapper style={{marginTop: 0}}>
+        <StyledTitle>{modal.message.title}</StyledTitle>
+        <div onClick={modal.close}>X</div>
+      </Wrapper>
       <StyledBody>{modal.message.body}</StyledBody>
-      <a href={modal.message.link}>
-        <StyledImage image={modal.message.image} />
-      </a>
-      <StyledButton onClick={modal.close}>OK</StyledButton>
+      {typeof modal.message.link === 'string' ? (
+        <StyledButton onClick={openApp}>Go to Lykke Wallet</StyledButton>
+      ) : (
+        <Wrapper>
+          <StyledLink href={modal.message.link.appStore} image={'app-store'} />
+          <StyledLink
+            href={modal.message.link.playMarket}
+            image={'google-play'}
+          />
+        </Wrapper>
+      )}
     </StyledExpiredModal>
   );
 };
