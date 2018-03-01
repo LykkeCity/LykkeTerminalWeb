@@ -6,6 +6,7 @@ export interface AssetApi {
   fetchBaseAsset: () => Promise<any>;
   fetchAssetCategories: () => Promise<any>;
   fetchAssetInstruments: () => Promise<any>;
+  fetchPublicAssetInstruments: () => Promise<any>;
   setBaseAsset: (body: any) => Promise<any>;
   fetchRates: () => ApiResponse;
 }
@@ -16,6 +17,8 @@ export class RestAssetApi extends RestApi implements AssetApi {
   fetchBaseAsset = () => this.get('/assets/baseAsset');
   fetchAssetCategories = () => this.get('/assets/categories');
   fetchAssetInstruments = () => this.get('/assetpairs');
+  fetchPublicAssetInstruments = () =>
+    this.getPublic('/AssetPairs/dictionary/Spot');
   setBaseAsset = (body: any) => this.fireAndForget('/assets/baseAsset', body);
   fetchRates = () => this.get('/assetpairs/rates');
 }
@@ -28,6 +31,7 @@ export class MockAssetApi implements AssetApi {
   fetchAssetInstruments = () => Promise.resolve<any[]>([]);
   setBaseAsset = () => Promise.resolve<any[]>([]);
   fetchRates = () => Promise.resolve([]);
+  fetchPublicAssetInstruments = () => Promise.resolve([]);
 }
 
 export default AssetApi;
