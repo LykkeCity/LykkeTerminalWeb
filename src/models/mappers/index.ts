@@ -259,3 +259,17 @@ export const mapToInstrument = (
     accuracy: Accuracy,
     invertedAccuracy: InvertedAccuracy
   });
+
+export const mapToPublicInstrument = (
+  {id, accuracy, baseAssetId, invertedAccuracy, name, quotingAssetId}: any,
+  getAssetById: (assetId: string) => AssetModel | undefined
+) =>
+  new InstrumentModel({
+    id,
+    name,
+    // tslint:disable-next-line:object-literal-sort-keys
+    baseAsset: getAssetById(baseAssetId),
+    quoteAsset: getAssetById(quotingAssetId),
+    accuracy,
+    invertedAccuracy
+  });
