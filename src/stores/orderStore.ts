@@ -6,10 +6,10 @@ import messages from '../constants/notificationMessages';
 import {OrderModel} from '../models';
 import Types from '../models/modals';
 import OrderType from '../models/orderType';
+import ErrorParser from '../utils/errorParser';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
-import ErrorParser from '../utils/errorParser';
 
 // tslint:disable:no-console
 
