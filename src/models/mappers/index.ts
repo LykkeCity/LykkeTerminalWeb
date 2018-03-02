@@ -178,7 +178,7 @@ export const mapToTradeList = (dto: any, accuracy: number) =>
         symbol: AssetPair,
         timestamp: DateTime,
         tradeId: Id,
-        oppositeQuantity: precisionRound(Amount * Price, accuracy),
+        oppositeQuantity: Math.abs(precisionRound(Amount * Price, accuracy)),
         orderType: mapHistoryTypeToOrderType(Type),
         fee: FeeSize
       })

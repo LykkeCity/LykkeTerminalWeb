@@ -2,11 +2,9 @@ import {pathOr} from 'rambda';
 import {MarketApi} from '../api/';
 import {Side} from '../models';
 
-const marketApi = new MarketApi();
-
 export default class MarketService {
   static convert = async (assets: any[], assetId: string) => {
-    const convertedQuotes = await marketApi.convert({
+    const convertedQuotes = await MarketApi.convert({
       AssetsFrom: assets.map((asset: any) => ({
         Amount: asset.Balance,
         AssetId: asset.AssetId
