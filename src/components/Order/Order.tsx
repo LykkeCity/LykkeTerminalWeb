@@ -80,7 +80,6 @@ class Order extends React.Component<OrderProps, OrderState> {
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
     const price = instrument.price ? instrument.price : 0;
-
     this.setState({
       priceValue: price.toFixed(priceAccuracy),
       quantityValue: parseFloat('0').toFixed(quantityAccuracy)
