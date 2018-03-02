@@ -45,6 +45,10 @@ const StyledMidPrice = styled.tbody`
   justify-content: center;
   margin: 0 0.9375rem 0 0;
   background: rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledHeader = styled.th.attrs({
@@ -100,6 +104,7 @@ interface OrderBookProps {
   mid: number;
   accuracy: number;
   invertedAccuracy: number;
+  updatePrice: any;
   stateFns: any[];
 }
 
@@ -145,6 +150,10 @@ class OrderBook extends React.Component<OrderBookProps> {
       this.isScrollSet = true;
     }
   }
+
+  handleClick = (price: number, depth: number) => () => {
+    this.props.updatePrice(price, depth);
+  };
 
   render() {
     const {bids, asks, mid, accuracy, invertedAccuracy} = this.props;
@@ -195,10 +204,14 @@ class OrderBook extends React.Component<OrderBookProps> {
                   {...order}
                   accuracy={accuracy}
                   invertedAccuracy={invertedAccuracy}
+                  onClick={this.handleClick}
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
+            <StyledMidPrice
+              innerRef={this.refHandlers.midPrice}
+              onClick={this.handleClick(Number(mid), 0)}
+            >
               <tr>
                 <td>{defaultTo('', Number(mid))}</td>
               </tr>
@@ -213,6 +226,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   {...order}
                   accuracy={accuracy}
                   invertedAccuracy={invertedAccuracy}
+                  onClick={this.handleClick}
                 />
               ))}
             </StyledBuyOrders>
