@@ -14,12 +14,23 @@ import NotificationStore from './notificationStore';
 class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
+  private updatePriceByOrderBook: any;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
   }
+
+  updatePriceFn = (fn: any) => {
+    this.updatePriceByOrderBook = fn;
+  };
+
+  updatePrice = (price: number, quantity: number) => {
+    if (this.updatePriceByOrderBook) {
+      this.updatePriceByOrderBook(price, quantity);
+    }
+  };
 
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
