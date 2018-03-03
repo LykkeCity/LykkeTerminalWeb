@@ -18,14 +18,16 @@ class ModalStore extends BaseStore {
     message: any,
     applyAction: any,
     cancelAction: any,
-    type: string
+    type: string,
+    config?: any
   ) => {
     const modal = new ModalModel(
       message,
       applyAction,
       cancelAction,
       (m: ModalModel) => this.closeModal(m),
-      type
+      type,
+      config
     );
     this.modals = [...this.modals, ...[modal]];
   };

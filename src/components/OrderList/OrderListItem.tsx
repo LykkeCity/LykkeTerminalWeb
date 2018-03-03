@@ -1,16 +1,17 @@
 import * as React from 'react';
 import {OrderModel, Side} from '../../models';
 import {Icon} from '../Icon/index';
-import {OrderActions} from './index';
+import {OrderActions, OrderListProps} from './index';
 
-const OrderListItem: React.SFC<OrderModel & OrderActions> = ({
+const OrderListItem: React.SFC<OrderModel & OrderActions & OrderListProps> = ({
   createdAt,
   cancelOrder,
   price,
   id,
   side,
   symbol,
-  volume
+  volume,
+  onEdit
 }) => {
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
   return (
@@ -27,6 +28,12 @@ const OrderListItem: React.SFC<OrderModel & OrderActions> = ({
       <td>{volume}</td>
       <td>{price}</td>
       <td>{createdAt.toLocaleString()}</td>
+      <td>
+        {/* tslint:disable-next-line:jsx-no-lambda */}
+        <span onClick={() => onEdit(id)}>
+          <Icon name="pencil" />
+        </span>
+      </td>
     </tr>
   );
 };

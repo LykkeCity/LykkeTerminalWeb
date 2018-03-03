@@ -53,3 +53,4 @@ const OrderButton: React.SFC<OrderButtonProps> = ({
 };
 
 export default OrderButton;
+export {StyledButton};
