@@ -29,9 +29,6 @@ const StyledHead = styled.thead`
 const StyledRow = styled.tr`
   display: flex;
   justify-content: space-evenly;
-  &:hover {
-    background: rgba(0, 0, 0, 0.6);
-  }
 `;
 
 const StyledSellOrders = styled.tbody`
@@ -104,7 +101,7 @@ const Bar = styled.div`
 interface OrderBookProps {
   asks: Order[];
   bids: Order[];
-  mid: number;
+  mid: string;
   priceAccuracy: number;
   volumeAccuracy: number;
   updatePrice: any;
@@ -216,7 +213,7 @@ class OrderBook extends React.Component<OrderBookProps> {
               onClick={this.handleClick(Number(mid), 0)}
             >
               <tr>
-                <td>{mid}</td>
+                <td>{Number.isNaN(Number.parseFloat(mid)) ? '' : mid}</td>
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
