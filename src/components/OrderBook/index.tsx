@@ -2,6 +2,7 @@ import {pathOr} from 'rambda';
 import {connect} from '../connect';
 import OrderBook from './OrderBook';
 
+// prettier-ignore
 // tslint:disable:object-literal-sort-keys
 const ConnectedOrderBook = connect(
   ({
@@ -9,16 +10,15 @@ const ConnectedOrderBook = connect(
     uiStore: {selectedInstrument, stateFns},
     orderStore: {updatePrice}
   }) => {
-    const accuracy = pathOr(0, ['baseAsset', 'accuracy'], selectedInstrument);
-    // prettier-ignore
-    const invertedAccuracy = pathOr(0, ['quoteAsset', 'accuracy'], selectedInstrument);
-    const midPrice = mid().toFixed(invertedAccuracy);
+    const volumeAccuracy = pathOr(0, ['baseAsset', 'accuracy'], selectedInstrument);
+    const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
+    const midPrice = mid().toFixed(priceAccuracy);
     return {
       asks,
       bids,
       mid: midPrice,
-      accuracy,
-      invertedAccuracy,
+      volumeAccuracy,
+      priceAccuracy,
       updatePrice,
       stateFns
     };
