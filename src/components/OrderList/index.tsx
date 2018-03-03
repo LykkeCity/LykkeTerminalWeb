@@ -5,8 +5,17 @@ export interface OrderActions {
   cancelOrder?: (id: string) => void;
 }
 
+export interface OrderListProps {
+  onEdit: any;
+}
+
 const ConnectedOrderList = connect(
-  ({orderListStore: {limitOrders: orders}, orderStore: {cancelOrder}}) => ({
+  ({
+    orderListStore: {limitOrders: orders},
+    orderStore: {cancelOrder},
+    modalStore: {addModal}
+  }) => ({
+    addModal,
     cancelOrder,
     orders
   }),

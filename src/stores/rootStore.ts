@@ -26,6 +26,7 @@ import {
   ReferenceStore,
   SettingsStore,
   TradeStore,
+  UiOrderStore,
   UiStore,
   WatchlistStore
 } from './index';
@@ -48,6 +49,7 @@ class RootStore {
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
   readonly additionalControlStore: AdditionalControlStore;
+  readonly uiOrderStore: UiOrderStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -73,6 +75,7 @@ class RootStore {
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.additionalControlStore = new AdditionalControlStore(this);
+      this.uiOrderStore = new UiOrderStore(this);
     }
   }
 
