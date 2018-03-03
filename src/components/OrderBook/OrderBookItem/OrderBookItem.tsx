@@ -73,13 +73,14 @@ const OrderRow = styled.tr`
   border-bottom: solid 1px rgba(0, 0, 0, 0.08);
 
   &:hover {
+    background: rgba(0, 0, 0, 0.08);
     cursor: pointer;
   }
 `;
 
 interface OrderBookItemProps extends Order {
-  accuracy: number;
-  invertedAccuracy: number;
+  priceAccuracy: number;
+  volumeAccuracy: number;
   maxValue?: number;
   minValue?: number;
   valueToShow: number;
@@ -92,14 +93,14 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   price,
   valueToShow,
   side,
-  accuracy,
-  invertedAccuracy,
+  priceAccuracy,
+  volumeAccuracy,
   minValue = 10,
   maxValue = 100,
   onClick,
   depth
 }) => {
-  const currentPrice = price.toFixed(invertedAccuracy);
+  const currentPrice = price.toFixed(priceAccuracy);
   return (
     <OrderRow onClick={onClick(+currentPrice, depth)}>
       <VolumeCell side={side}>
@@ -109,7 +110,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
             />
-            {valueToShow.toFixed(accuracy)}
+            {valueToShow.toFixed(volumeAccuracy)}
           </div>
         )}
       </VolumeCell>
@@ -121,7 +122,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
             />
-            {valueToShow.toFixed(accuracy)}
+            {valueToShow.toFixed(volumeAccuracy)}
           </div>
         )}
       </VolumeCell>
