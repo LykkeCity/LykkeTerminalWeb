@@ -7,7 +7,8 @@ const messages = {
   orderExecuted: (id: string) => `Order: ${id} was closed successfully`,
   orderExecutedPartially: (id: string, volume: number) =>
     `Order: ${id} was partially closed. Amount: ${volume}`,
-  orderSuccess: 'Order was placed successfully'
+  orderSuccess: 'Order was placed successfully',
+  editOrderSuccess: 'Order was edited successfully'
 };
 
 export default messages;
