@@ -2,10 +2,11 @@ import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
-import {ModalProps} from './index';
+import {EditOrder, ModalProps} from './index';
 
 const Modals = {
   Confirm: ConfirmModal,
+  EditOrder,
   Expired: ExpiredModal
 };
 

@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 import ModalModel from '../../models/modalModel';
+import OrderModel from '../../models/orderModel';
+import {connect} from '../connect';
+import EditOrder from './EditOrder';
 
 const StyledModal = styled.div`
   font-family: Proxima Nova;
@@ -12,6 +15,10 @@ const StyledModal = styled.div`
   background-color: #3c3c3c;
   border: solid 1px rgba(0, 0, 0, 0.2);
   z-index: 3;
+`;
+
+const StyledExpiredModal = styled(StyledModal)`
+  width: 300px;
 `;
 
 const Button = styled.button`
@@ -34,4 +41,29 @@ export interface ModalProps {
   modals: ModalModel[];
 }
 
-export {StyledModal, Button};
+export interface EditOrderProps {
+  modal: ModalModel;
+  orders: OrderModel[];
+  getInstrumentById: any;
+  onArrowClick: any;
+  onValueChange: any;
+  fixedAmount: any;
+}
+
+const ConnectedEditOrderModal = connect(
+  ({
+    orderListStore: {limitOrders: orders},
+    referenceStore: {getInstrumentById},
+    uiOrderStore: {onArrowClick, onValueChange, fixedAmount}
+  }) => ({
+    fixedAmount,
+    getInstrumentById,
+    onArrowClick,
+    onValueChange,
+    orders
+  }),
+  EditOrder
+);
+
+export {StyledModal, Button, StyledExpiredModal};
+export {ConnectedEditOrderModal as EditOrder};

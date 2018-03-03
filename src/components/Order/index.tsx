@@ -20,6 +20,9 @@ export interface OrderProps {
   name: string;
   stateFns: any[];
   getAssetById: any;
+  onArrowClick: any;
+  onValueChange: any;
+  fixedAmount: any;
 }
 
 export interface OrderOptionProps {
@@ -70,7 +73,7 @@ export interface OrderFormProps {
   isMarket: boolean;
   isDisable: boolean;
   action: string;
-  onSubmit: any;
+  onSubmit?: any;
   assetName: string;
   quantity: string;
   price: string;
@@ -83,7 +86,8 @@ const ConnectedOrder = connect(
     orderBookStore: {bestAsk, bestBid},
     orderStore: {placeOrder},
     uiStore: {selectedInstrument: instrument, stateFns},
-    referenceStore
+    referenceStore,
+    uiOrderStore: {onArrowClick, onValueChange, fixedAmount}
   }) => ({
     accuracy: {
       priceValue: pathOr(2, ['accuracy'], instrument),
@@ -98,8 +102,11 @@ const ConnectedOrder = connect(
     ask: bestAsk(),
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
+    fixedAmount,
     getAssetById: referenceStore.getAssetById,
     name: pathOr('', ['name'], instrument),
+    onArrowClick,
+    onValueChange,
     placeOrder,
     stateFns
   }),
