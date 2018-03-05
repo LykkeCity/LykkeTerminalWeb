@@ -117,7 +117,8 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     this.props
       .placeOrder(orderType, body)
-      .then(() => this.disableButton(false));
+      .then(() => this.disableButton(false))
+      .catch(() => this.disableButton(false));
   };
 
   cancelOrder = () => {
