@@ -1,3 +1,4 @@
+export {default as DateSplitter} from './dateSplitter';
 export {default as StorageUtils} from './storageUtils';
 export {default as StringHelpers} from './string';
 export {default as RandomString} from './randomString';

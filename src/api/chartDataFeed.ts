@@ -1,7 +1,11 @@
+import {uniq} from 'rambda';
 import * as topics from '../api/topics';
 import {InstrumentModel, MarketType, PriceType} from '../models/index';
 import * as mappers from '../models/mappers/index';
+import {DateSplitter} from '../utils/index';
 import {PriceApi} from './index';
+
+const splitter = DateSplitter();
 
 class ChartDataFeed {
   constructor(
@@ -33,7 +37,7 @@ class ChartDataFeed {
     setTimeout(() => onSymbolResolvedCallback(symbol), 0);
   };
 
-  getBars = (
+  getBars = async (
     symbolInfo: any,
     resolution: any,
     from: any,
@@ -42,48 +46,56 @@ class ChartDataFeed {
     onErrorCallback: any,
     firstDataRequest: any
   ) => {
-    this.priceApi
-      .fetchCandles(
+    const timePeriods = splitter.bars(from, to, resolution);
+    const promises = timePeriods!.map(period =>
+      this.priceApi.fetchCandles(
         this.instrument.id,
-        new Date(from * 1000),
-        firstDataRequest ? new Date() : new Date(to * 1000),
+        new Date(period.from * 1000),
+        firstDataRequest ? new Date() : new Date(period.to * 1000),
         mappers.mapChartResolutionToWampInterval(resolution)
       )
-      .then(
-        resp => {
-          const bars = resp.History.map(mappers.mapToBarFromRest);
-          if (bars.length > 0) {
-            // tslint:disable-next-line:no-unused-expression
-            onHistoryCallback && onHistoryCallback(bars);
-          } else {
-            // tslint:disable-next-line:no-unused-expression
-            onHistoryCallback && onHistoryCallback([], {noData: true});
-          }
-        },
-        reject => {
-          switch (reject.status) {
-            default:
-            case 404:
-              onHistoryCallback([], {noData: true});
-              break;
-            case 429:
-              setTimeout(
-                () =>
-                  this.getBars(
-                    symbolInfo,
-                    resolution,
-                    from,
-                    to,
-                    onHistoryCallback,
-                    onErrorCallback,
-                    firstDataRequest
-                  ),
-                2000
-              );
-              break;
-          }
+    );
+
+    await Promise.all(promises).then(
+      resp => {
+        resp = uniq(
+          resp.reduce((prev, current) => prev.concat(current.History), [])
+        );
+
+        const bars = resp.map(mappers.mapToBarFromRest);
+
+        if (bars.length > 0) {
+          // tslint:disable-next-line:no-unused-expression
+          onHistoryCallback && onHistoryCallback(bars);
+        } else {
+          // tslint:disable-next-line:no-unused-expression
+          onHistoryCallback && onHistoryCallback([], {noData: true});
         }
-      );
+      },
+      reject => {
+        switch (reject.status) {
+          default:
+          case 404:
+            onHistoryCallback([], {noData: true});
+            break;
+          case 429:
+            setTimeout(
+              () =>
+                this.getBars(
+                  symbolInfo,
+                  resolution,
+                  from,
+                  to,
+                  onHistoryCallback,
+                  onErrorCallback,
+                  firstDataRequest
+                ),
+              2000
+            );
+            break;
+        }
+      }
+    );
   };
 
   subscribeBars = (
