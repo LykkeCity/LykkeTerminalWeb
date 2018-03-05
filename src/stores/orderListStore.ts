@@ -3,16 +3,23 @@ import {compose, reverse, sortBy} from 'rambda';
 import {OrderApi} from '../api/index';
 import {OrderModel} from '../models';
 import * as mappers from '../models/mappers';
+import OrdersDefaultSelection from '../models/ordersDefaultSelection';
 import {BaseStore, RootStore} from './index';
 
 class OrderListStore extends BaseStore {
   @computed
   get limitOrders() {
-    const sort = compose<OrderModel[], OrderModel[], OrderModel[]>(
+    const update = compose<
+      OrderModel[],
+      OrderModel[],
+      OrderModel[],
+      OrderModel[]
+    >(
       reverse,
-      sortBy((o: OrderModel) => o.createdAt.getTime())
+      sortBy((o: OrderModel) => o.createdAt.getTime()),
+      this.filterOrders
     );
-    return sort(this.orders);
+    return update(this.orders);
   }
 
   @computed
@@ -20,7 +27,13 @@ class OrderListStore extends BaseStore {
     return this.orders.length;
   }
 
+  @computed
+  get selectedOrderOptions() {
+    return this.selectedOrder;
+  }
+
   @observable private orders: OrderModel[] = [];
+  @observable private selectedOrder: string = OrdersDefaultSelection.All;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
@@ -37,8 +50,23 @@ class OrderListStore extends BaseStore {
     this.orders = orders;
   };
 
+  filterOrders = (orders: OrderModel[]) => {
+    return this.selectedOrderOptions === 'all'
+      ? orders
+      : orders.filter(
+          (order: OrderModel) =>
+            order.symbol === this.rootStore.uiStore.selectedInstrument!.id
+        );
+  };
+
+  toggleOrders = (option: string) => {
+    this.selectedOrder = option;
+    this.rootStore.uiStore.toggleOrdersSelect();
+  };
+
   reset = () => {
     this.orders = [];
+    this.selectedOrder = OrdersDefaultSelection.All;
   };
 }
 
