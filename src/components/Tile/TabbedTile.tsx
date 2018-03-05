@@ -34,7 +34,6 @@ class TabbedTile extends React.Component<TabbedTileProps> {
       tabs = [],
       children,
       additionalControls,
-      additionalControlStore,
       authorize,
       isAuth,
       ...props
@@ -57,11 +56,6 @@ class TabbedTile extends React.Component<TabbedTileProps> {
           tabs={undefined}
           additionalControls={
             this.shouldRenderAdditionalControls ? additionalControls : undefined
-          }
-          additionalControlStore={
-            this.shouldRenderAdditionalControls
-              ? additionalControlStore
-              : undefined
           }
           isAuth={isAuth}
           {...props}
