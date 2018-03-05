@@ -51,6 +51,12 @@ export interface EditOrderProps {
   editOrder: any;
 }
 
+export interface EditOrderState {
+  pendingOrder: boolean;
+  priceValue: string;
+  quantityValue: string;
+}
+
 const ConnectedEditOrderModal = connect(
   ({
     orderListStore: {limitOrders: orders},
@@ -58,12 +64,12 @@ const ConnectedEditOrderModal = connect(
     uiOrderStore: {onArrowClick, onValueChange, fixedAmount},
     orderStore: {editOrder}
   }) => ({
+    editOrder,
     fixedAmount,
     getInstrumentById,
     onArrowClick,
     onValueChange,
-    orders,
-    editOrder
+    orders
   }),
   EditOrder
 );

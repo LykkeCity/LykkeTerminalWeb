@@ -2,10 +2,10 @@ import {Form, withFormik} from 'formik';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {capitalize} from '../../utils';
 import {OrderFormProps} from './index';
 import OrderButton from './OrderButton';
 import OrderInput from './OrderInput';
-import {capitalize} from '../../utils';
 
 const StyledOrderButton = styled.div`
   margin-top: ${rem(24)};

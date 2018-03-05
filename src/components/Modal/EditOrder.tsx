@@ -1,11 +1,10 @@
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import {OrderState} from '../Order';
 import EditOrderForm from '../Order/EditOrderForm/EditOrderForm';
-import {EditOrderProps, StyledExpiredModal} from './index';
+import {EditOrderProps, EditOrderState, StyledExpiredModal} from './index';
 import ModalHeader from './ModalHeader/ModalHeader';
 
-class EditOrder extends React.Component<EditOrderProps, OrderState> {
+class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private action: string;
   private accuracy: {priceValue: number; quantityValue: number};
   private assetName: string = '';
@@ -18,8 +17,6 @@ class EditOrder extends React.Component<EditOrderProps, OrderState> {
     const currentInstrument = this.props.getInstrumentById(modal.config.symbol);
 
     this.state = {
-      isMarketActive: false,
-      isSellActive: true,
       pendingOrder: false,
       priceValue: `${modal.config.price}`,
       quantityValue: `${modal.config.volume}`
@@ -72,8 +69,8 @@ class EditOrder extends React.Component<EditOrderProps, OrderState> {
       AssetId: this.assetName.split('/')[0],
       AssetPairId: this.currency,
       OrderAction: this.action,
-      Volume: parseFloat(this.state.quantityValue),
-      Price: parseFloat(this.state.priceValue)
+      Price: parseFloat(this.state.priceValue),
+      Volume: parseFloat(this.state.quantityValue)
     };
 
     this.props
