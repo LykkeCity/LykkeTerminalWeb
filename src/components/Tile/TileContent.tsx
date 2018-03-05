@@ -31,23 +31,27 @@ const iconCss = css`
 const TileToolbar = styled.div`
   position: absolute;
   left: 0;
-  top: 30px;
+  top: ${rem(37)};
   width: 100%;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-  padding: ${rem(15)} 0.9375rem ${rem(10)};
-  ${iconCss};
+  padding: 0 ${rem(15)};
   background-color: #333;
   z-index: 1;
+  ${iconCss};
+
+  > div {
+    border-bottom: solid 1px #292929;
+    padding: ${rem(15)} 0;
+  }
 `;
 
 const StyledTileContent = styled.div`
   font-size: ${rem(14)};
-  height: calc(100% - 30px);
-  min-height: calc(100% - 30px);
-  margin-top: 30px;
+  height: calc(100% - ${rem(37)});
+  min-height: calc(100% - ${rem(37)});
+  margin-top: ${rem(37)};
 `;
 
-const margin = 50;
+const margin = 54;
 const calcHeight = (hasTabs: boolean, hasAdditionalControls: boolean) => {
   if (hasTabs && hasAdditionalControls) {
     return `calc(100% - ${rem(margin * 2)})`;
@@ -110,20 +114,18 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
         {this.props.tabs && (
           <TileToolbar>
             <Flex align="center" justify="space-between">
-              <Flex align="center">
-                {this.props.tabs.map((tab: string, index: number) => {
-                  return (
-                    <TileTabItem
-                      isClickable={!!child}
-                      key={`tiletabitem_${index}`}
-                      tabName={tab}
-                      index={index}
-                      activeIndex={this.state.activeTabIndex}
-                      click={this.handleClick(index)}
-                    />
-                  );
-                })}
-              </Flex>
+              {this.props.tabs.map((tab: string, index: number) => {
+                return (
+                  <TileTabItem
+                    isClickable={!!child}
+                    key={`tiletabitem_${index}`}
+                    tabName={tab}
+                    index={index}
+                    activeIndex={this.state.activeTabIndex}
+                    click={this.handleClick(index)}
+                  />
+                );
+              })}
             </Flex>
           </TileToolbar>
         )}

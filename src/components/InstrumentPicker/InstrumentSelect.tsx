@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import {FAIcon} from '../Icon/Icon';
 import styled from '../styled';
@@ -20,9 +21,12 @@ const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
 );
 
 const StyledInstrumentSelect = styled(InstrumentSelect)`
-  font-family: 'Akrobat';
+  font-family: 'Akrobat', sans-serif;
   font-weight: bold;
   cursor: pointer;
+  height: 100%;
+  padding: ${rem(5)} ${rem(15)};
+
   & > span {
     font-size: 1rem;
   }
