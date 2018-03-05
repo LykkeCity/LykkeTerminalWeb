@@ -6,32 +6,48 @@ import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import {SettingsModal} from '../Settings';
 import styled from '../styled';
-import {Heading} from '../Typography/index';
 import {HeaderProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
 
 const HeaderItem = styled(Box)`
-  border-right: solid 1px rgba(0, 0, 0, 0.2);
+  border-left: solid 1px rgba(0, 0, 0, 0.2);
   font-size: ${rem(14)};
-  padding: ${rem(20)} ${rem(10)};
+  height: 32px;
+
+  &:first-child {
+    border-left: 0;
+  }
 
   > span,
   a {
-    padding: ${rem(7)};
+    padding: ${rem(6)} ${rem(10)} ${rem(9)};
+    margin: 0 ${rem(5)};
     border-radius: 4px;
-    border: 1px solid #333;
+    border: 0;
+    display: block;
+    cursor: pointer;
+
     &.active {
       background-color: rgba(0, 0, 0, 0.2);
     }
   }
 `;
 
-const HeaderFlex = styled(Flex)`
+const HeaderWrapper = styled.header`
+  padding: ${rem(9)} ${rem(11)};
+  height: 50px;
+  border-bottom: solid 1px #292929;
   background: #333;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-  height: 40px;
+`;
+
+const Logo = styled.div`
+  margin-right: ${rem(18)};
+`;
+
+const HeaderFlex = styled(Flex)`
+  height: 100%;
 `;
 
 const Header: React.SFC<HeaderProps> = ({
@@ -54,53 +70,56 @@ const Header: React.SFC<HeaderProps> = ({
   };
 
   return (
-    <HeaderFlex justify="stretch" align="center" is="header">
-      <HeaderItem is="a">
-        <Flex align="center">
-          <img
-            src={`${process.env.PUBLIC_URL}/logo.svg`}
-            width="32"
-            alt="logo"
-          />
-          <Heading>Lykke</Heading>
-        </Flex>
-      </HeaderItem>
-      <HeaderItem>
-        <InstrumentPicker value="BTCUSD" instruments={[]} />
-      </HeaderItem>
+    <HeaderWrapper>
+      <HeaderFlex justify="stretch" align="center">
+        <HeaderItem is="a">
+          <Flex align="center">
+            <Logo>
+              <img
+                src={`${process.env.PUBLIC_URL}/logo_lykke.svg`}
+                width="100"
+                alt="logo"
+              />
+            </Logo>
+          </Flex>
+        </HeaderItem>
+        <HeaderItem>
+          <InstrumentPicker value="BTCUSD" instruments={[]} />
+        </HeaderItem>
 
-      <Box ml="auto" is="menu">
-        <Flex align="center">
-          {authStore.isAuth ? (
-            <HeaderItem>
-              <BalanceInfo />
-            </HeaderItem>
-          ) : null}
-          {authStore.isAuth ? (
-            <HeaderItem>
-              <span className="hidden-xs settings" onClick={settings}>
-                <Icon color={`#8c94a0`} name={`cog`} />
-              </span>
-              {settingsStore.settings ? <SettingsModal /> : null}
-            </HeaderItem>
-          ) : null}
-          <HeaderItem>
-            <Link>
-              {authStore.isAuth ? (
-                <span className="hidden-xs" onClick={signOut}>
-                  <Icon color={'#8c94a0'} name={'exit'} />
+        <Box ml="auto" is="menu">
+          <Flex align="center">
+            {authStore.isAuth ? (
+              <HeaderItem>
+                <BalanceInfo />
+              </HeaderItem>
+            ) : null}
+            {authStore.isAuth ? (
+              <HeaderItem>
+                <span className="hidden-xs settings" onClick={settings}>
+                  <Icon color={`#8c94a0`} name={`cog`} />
                 </span>
-              ) : (
-                <span className="hidden-xs" onClick={signIn}>
-                  <Icon color={'#8c94a0'} name={'enter'} />
-                </span>
-              )}
-              <i className="icon icon--participate visible-xs" />
-            </Link>
-          </HeaderItem>
-        </Flex>
-      </Box>
-    </HeaderFlex>
+                {settingsStore.settings ? <SettingsModal /> : null}
+              </HeaderItem>
+            ) : null}
+            <HeaderItem>
+              <Link>
+                {authStore.isAuth ? (
+                  <span className="hidden-xs" onClick={signOut}>
+                    <Icon color={'#8c94a0'} name={'exit'} />
+                  </span>
+                ) : (
+                  <span className="hidden-xs" onClick={signIn}>
+                    <Icon color={'#8c94a0'} name={'enter'} />
+                  </span>
+                )}
+                <i className="icon icon--participate visible-xs" />
+              </Link>
+            </HeaderItem>
+          </Flex>
+        </Box>
+      </HeaderFlex>
+    </HeaderWrapper>
   );
 };
 

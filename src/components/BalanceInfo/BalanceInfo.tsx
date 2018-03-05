@@ -9,12 +9,12 @@ import {BalanceInfoProps} from './index';
 
 const StyledBalanceInfo = styled.div`
   text-align: right;
+  padding-right: ${rem(15)};
 `;
 
 const StyledBalanceValue = styled.span`
-  font-family: Akrobat;
   color: #f5f6f7;
-  font-family: 'Akrobat';
+  font-family: 'Akrobat', sans-serif;
   font-size: ${rem(16)};
   font-weight: bold;
   line-height: 1;
@@ -24,7 +24,7 @@ const StyledBalanceValue = styled.span`
 const StyledButton = styled.button`
   background: none;
   border: none;
-  font-family: Akrobat;
+  font-family: 'Akrobat', sans-serif;
   font-size: ${rem(16)};
   font-weight: bold;
   line-height: 1;

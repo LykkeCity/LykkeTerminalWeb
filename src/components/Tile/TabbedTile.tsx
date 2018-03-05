@@ -6,10 +6,15 @@ import {TileContent, TileProps} from './index';
 import {TileHeader, TileTitle, TileWrapper} from './Tile';
 
 const TileTab = TileTitle.extend`
-  background: ${(p: any) => (p.selected ? '#333' : '#292929')};
-  border-bottom: solid 1px rgba(0, 0, 0, 0.3);
-  border-color: ${(p: any) => (p.selected ? '#333' : '#292929')};
+  background: ${(p: any) => (p.selected ? '#333' : 'transparent')};
+  border-right-color: ${(p: any) => (p.selected ? '#292929' : 'transparent')};
+  border-left: 1px solid ${(p: any) => (p.selected ? '#292929' : 'transparent')};
+  border-bottom-color: ${(p: any) => (p.selected ? '#333' : 'transparent')};
   cursor: pointer;
+
+  &:first-child {
+    border-left: 0 !important;
+  }
 `;
 
 interface TabbedTileProps extends TileProps {

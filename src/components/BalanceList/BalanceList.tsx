@@ -24,9 +24,12 @@ const ManageWalletLink = styled.a`
 `;
 
 const Total = styled.tr`
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.1);
+
   td {
-    font-weight: bold;
+    font-weight: bold !important;
+    padding-top: ${rem(12)};
+    padding-bottom: ${rem(12)};
   }
 `;
 

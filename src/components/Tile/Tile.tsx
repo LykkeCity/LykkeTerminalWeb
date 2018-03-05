@@ -13,11 +13,12 @@ export const TileWrapper = styled.div`
 export const TileHeader = styled(Flex)`
   position: absolute;
   width: 100%;
-  background: #292929;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid #292929;
   border-left: none;
   border-top: none;
   z-index: 1;
+  margin-left: 1px;
 `;
 
 export const TileTitle = styled(Box)`
@@ -26,11 +27,10 @@ export const TileTitle = styled(Box)`
   border-left: none;
   font-size: ${rem(16)};
   line-height: 1.5;
-  border-right: solid 1px rgba(0, 0, 0, 0.2);
+  border-right: 1px solid #292929;
   border-bottom: solid 1px #333;
-  padding: ${rem(8)} ${rem(20)};
+  padding: ${rem(6)} ${rem(16)};
   margin-bottom: -1px;
-  margin-right: ${rem(5)};
 `;
 
 const Tile: React.SFC<TileProps> = ({
