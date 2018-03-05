@@ -63,9 +63,8 @@ class UiOrderStore extends BaseStore {
     return amount === 0 ? amount.toFixed(2) : amount.toFixed(accuracy);
   };
 
-  reset = () => {
-    alert('test');
-  };
+  // tslint:disable-next-line:no-empty
+  reset = () => {};
 }
 
 export default UiOrderStore;
