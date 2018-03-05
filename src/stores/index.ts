@@ -13,4 +13,3 @@ export {default as OrderStore} from './orderStore';
 export {default as ModalStore} from './modalStore';
 export {default as NotificationStore} from './notificationStore';
 export {default as SettingsStore} from './settingsStore';
-export {default as AdditionalControlStore} from './additionalControlStore';
