@@ -13,7 +13,6 @@ import keys from '../constants/storageKeys';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
-  AdditionalControlStore,
   AuthStore,
   BalanceListStore,
   BaseStore,
@@ -47,7 +46,6 @@ class RootStore {
   readonly notificationStore: NotificationStore;
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
-  readonly additionalControlStore: AdditionalControlStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -72,7 +70,6 @@ class RootStore {
       this.chartStore = new ChartStore(this);
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
-      this.additionalControlStore = new AdditionalControlStore(this);
     }
   }
 
