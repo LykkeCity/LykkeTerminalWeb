@@ -51,7 +51,7 @@ class OrderStore extends BaseStore {
     await this.api.cancelOrder(id);
     this.notificationStore.addNotification(
       levels.information,
-      `${messages.orderCanceled} ${id}`
+      `${messages.orderCancelled} ${id}`
     );
     this.updateOrders();
   };
