@@ -1,8 +1,43 @@
+import {AssetModel, InstrumentModel} from '../../models';
 import {Order} from '../../models/index';
+import * as mappers from '../../models/mappers';
 import {OrderBookStore, RootStore} from '../index';
 
 describe('orderBook store', () => {
-  const store = new OrderBookStore(new RootStore(false), {} as any);
+  const rootStore = new RootStore(true);
+  rootStore.orderBookStore.fetchAll = jest.fn();
+  rootStore.orderBookStore.reset = jest.fn();
+  rootStore.orderBookStore.subscribe = jest.fn();
+  rootStore.uiStore.selectedInstrument = new InstrumentModel({
+    baseAsset: new AssetModel({name: 'BTC'}),
+    id: 'BTCUSD',
+    quoteAsset: new AssetModel({name: 'USD'})
+  });
+
+  const orders = [
+    {
+      AssetPairId: 'BTCUSD',
+      CreateDateTime: '2018-01-17T07:17:40.84Z',
+      Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
+      OrderAction: 'Buy',
+      Price: 1,
+      Status: 'InOrderBook',
+      Voume: 0.0001
+    },
+    {
+      AssetPairId: 'BTCUSD',
+      CreateDateTime: '2018-01-17T07:17:40.84Z',
+      Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c5',
+      OrderAction: 'Buy',
+      Price: 1,
+      Status: 'InOrderBook',
+      Voume: 0.0001
+    }
+  ];
+  const limitOrders = orders.map(mappers.mapToLimitOrder);
+  rootStore.orderListStore.updateOrders(limitOrders);
+
+  const store = new OrderBookStore(rootStore, {} as any);
   const {onUpdate, bestBid, bestAsk, mid, bestBids, bestAsks} = store;
 
   beforeEach(() => {
@@ -28,6 +63,15 @@ describe('orderBook store', () => {
         ]
       }
     ]);
+  });
+
+  test('order should contain users volume with equal price', () => {
+    const order = store.bids.find(bid => bid.price === limitOrders[0].price);
+    const ownVolume = limitOrders.reduce((sum, limitOrder) => {
+      sum += limitOrder.volume;
+      return sum;
+    }, 0);
+    expect(order!.orderVolume).toBe(ownVolume);
   });
 
   test('best bid should have highest price', () => {

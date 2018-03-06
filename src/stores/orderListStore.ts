@@ -43,6 +43,7 @@ class OrderListStore extends BaseStore {
     const dto = await this.api.fetchAll();
 
     this.updateOrders(dto.map(mappers.mapToLimitOrder));
+    this.rootStore.orderBookStore.fetchAll();
   };
 
   @action

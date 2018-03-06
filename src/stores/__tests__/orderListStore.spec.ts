@@ -11,7 +11,9 @@ describe('orderList store', () => {
   };
 
   beforeEach(() => {
-    orderListStore = new OrderListStore(new RootStore(false), api);
+    const rootStore = new RootStore(true);
+    rootStore.orderBookStore.fetchAll = jest.fn();
+    orderListStore = new OrderListStore(rootStore, api);
 
     api.fetchAll = jest.fn(() => [
       {
