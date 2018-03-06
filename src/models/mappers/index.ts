@@ -65,7 +65,9 @@ export const mapToChartSymbol = ({
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
   has_empty_bars: true,
   volume_precision: pathOr(0, ['accuracy'], baseAsset),
-  ticker: name
+  ticker: name,
+  has_daily: true,
+  has_weekly_and_monthly: true
 });
 
 type ResolutionMapper = (resolution: string) => Interval;
@@ -87,10 +89,13 @@ export const mapChartResolutionToWampInterval: ResolutionMapper = resolution => 
       return 'hour6';
     case '720':
       return 'hour12';
+    case 'D':
     case '1D':
       return 'day';
+    case 'W':
     case '1W':
       return 'week';
+    case 'M':
     case '1M':
       return 'month';
 

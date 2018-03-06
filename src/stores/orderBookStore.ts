@@ -24,6 +24,7 @@ class OrderBookStore extends BaseStore {
   @observable bids: Order[] = [];
   @observable asks: Order[] = [];
   private subscriptions: Set<ISubscription> = new Set();
+  private isInitFetch: boolean = true;
 
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
@@ -89,6 +90,13 @@ class OrderBookStore extends BaseStore {
     const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
     runInAction(() => {
       orders.forEach((levels: any) => this.onUpdate([levels]));
+      if (this.isInitFetch && this.rootStore.uiStore.initPriceUpdate) {
+        this.rootStore.uiStore.initPriceUpdate(
+          this.bestBid(),
+          selectedInstrument
+        );
+        this.isInitFetch = false;
+      }
     });
   };
 
