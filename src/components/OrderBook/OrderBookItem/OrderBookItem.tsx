@@ -155,6 +155,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   orderVolume,
   onClick,
   connectedLimitOrders,
+  onClick,
   depth
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);

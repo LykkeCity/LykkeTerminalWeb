@@ -5,6 +5,7 @@ import messages from '../constants/notificationMessages';
 import {OrderModel} from '../models';
 import Types from '../models/modals';
 import OrderType from '../models/orderType';
+import ErrorParser from '../utils/errorParser';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
@@ -51,7 +52,7 @@ class OrderStore extends BaseStore {
     await this.api.cancelOrder(id);
     this.notificationStore.addNotification(
       levels.information,
-      `${messages.orderCanceled} ${id}`
+      `${messages.orderCancelled} ${id}`
     );
     this.updateOrders();
   };
@@ -133,14 +134,13 @@ class OrderStore extends BaseStore {
 
     let message;
     try {
-      message = JSON.parse(error.message).message;
+      message =
+        JSON.parse(error.message).ME || JSON.parse(error.message).message;
+      message = ErrorParser.getMessage(message);
     } catch (e) {
       message = !!error.message.length ? error.message : messages.defaultError;
     }
-    this.notificationStore.addNotification(
-      levels.error,
-      `${messages.orderError} ${message}`
-    );
+    this.notificationStore.addNotification(levels.error, `${message}`);
   };
 }
 
