@@ -15,29 +15,36 @@ const StyledSelect = styled.div`
 
 const StyledList = styled.div`
   overflow: auto;
-
-  & > li {
-    cursor: pointer;
-    font-size: 1rem;
-    margin-top: 10px;
-    padding: 0.625rem;
-
-    &:hover {
-      background: #494949;
-    }
-  }
 `;
+
+const StyledItem = styled.li.attrs({
+  style: (props: any) => ({
+    background: props.isActive ? '#0388ef' : 'transparent'
+  })
+})`
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.625rem;
+
+  &:hover {
+    background: #494949;
+  }
+` as any;
 
 interface CustomSelectProps {
   items: any[];
   click: any;
   styles?: any;
+  isActiveMarked?: boolean;
+  activeValue?: string;
 }
 
 const CustomSelect: React.SFC<CustomSelectProps> = ({
   items = [],
   click,
-  styles
+  styles,
+  isActiveMarked = false,
+  activeValue
 }) => {
   return (
     <StyledSelect style={styles}>
@@ -45,9 +52,13 @@ const CustomSelect: React.SFC<CustomSelectProps> = ({
         <StyledList>
           {items.map((item: any) => {
             return (
-              <li key={item.value} onClick={click(item.value)}>
+              <StyledItem
+                key={item.value}
+                onClick={click(item.value)}
+                isActive={isActiveMarked && activeValue === item.value}
+              >
                 {item.label}
-              </li>
+              </StyledItem>
             );
           })}
         </StyledList>
