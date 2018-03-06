@@ -13,7 +13,6 @@ import keys from '../constants/storageKeys';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
-  AdditionalControlStore,
   AuthStore,
   BalanceListStore,
   BaseStore,

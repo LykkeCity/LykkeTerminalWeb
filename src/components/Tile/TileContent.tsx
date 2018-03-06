@@ -2,7 +2,6 @@ import {lighten, rem} from 'polished';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled, {css} from '../styled';
-import {TileAdditionalControlItem} from './';
 import {TileTabItem} from './';
 
 // tslint:disable-next-line:no-var-requires
@@ -10,7 +9,6 @@ const {Flex} = require('grid-styled');
 
 interface TileContentProps {
   additionalControls?: any;
-  additionalControlStore?: any;
   children: any;
   isAuth: any;
   tabs: any;
@@ -132,23 +130,12 @@ class TileContent extends React.Component<TileContentProps, TileContentState> {
         {this.props.isAuth
           ? this.props.additionalControls && (
               <TileToolbar>
-                <Flex align="center" justify="flex-end">
-                  <Flex align="center">
-                    {this.props.additionalControls.map(
-                      (addControl: any, index: number) => {
-                        return (
-                          <TileAdditionalControlItem
-                            key={`tiletabitem_${index}`}
-                            index={index}
-                            additionalControlStore={
-                              this.props.additionalControlStore
-                            }
-                            control={addControl}
-                          />
-                        );
-                      }
-                    )}
-                  </Flex>
+                <Flex align="center" justify="space-between" width="100%">
+                  {this.props.additionalControls.map(
+                    (Control: any, index: number) => {
+                      return <Control key={index} />;
+                    }
+                  )}
                 </Flex>
               </TileToolbar>
             )

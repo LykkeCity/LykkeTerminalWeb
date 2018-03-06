@@ -54,6 +54,10 @@ const StyledMessage = styled.div`
   font-size: 12px;
   line-height: 1.14;
   margin-top: 12px;
+
+  &:first-letter {
+    text-transform: capitalize;
+  }
 `;
 
 const Notification: React.SFC<NotificationProps> = ({

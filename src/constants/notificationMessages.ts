@@ -3,7 +3,7 @@ const messages = {
   defaultError: 'Something went wrong',
   editOrderSuccess: 'Order was edited successfully',
   expired: 'Your session has expired',
-  orderCanceled: 'Order has been canceled:',
+  orderCancelled: 'Order has been cancelled:',
   orderError: 'There is an error placing your order:',
   orderExecuted: (id: string) => `Order: ${id} was closed successfully`,
   orderExecutedPartially: (id: string, volume: number) =>
