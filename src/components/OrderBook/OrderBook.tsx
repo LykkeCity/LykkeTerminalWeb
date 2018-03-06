@@ -1,6 +1,6 @@
 import {observable} from 'mobx';
 import {rem} from 'polished';
-import {curry, defaultTo} from 'rambda';
+import {curry} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
@@ -45,6 +45,10 @@ const StyledMidPrice = styled.tbody`
   justify-content: center;
   margin: 0 0.9375rem 0 0;
   background: rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledHeader = styled.th.attrs({
@@ -97,9 +101,10 @@ const Bar = styled.div`
 interface OrderBookProps {
   asks: Order[];
   bids: Order[];
-  mid: number;
-  accuracy: number;
-  invertedAccuracy: number;
+  mid: string;
+  priceAccuracy: number;
+  volumeAccuracy: number;
+  updatePrice: any;
   stateFns: any[];
 }
 
@@ -146,8 +151,12 @@ class OrderBook extends React.Component<OrderBookProps> {
     }
   }
 
+  handleClick = (price: number, depth: number) => () => {
+    this.props.updatePrice(price, depth);
+  };
+
   render() {
-    const {bids, asks, mid, accuracy, invertedAccuracy} = this.props;
+    const {bids, asks, mid, priceAccuracy, volumeAccuracy} = this.props;
 
     const mapWithValueToShow = (o: Order) => o[this.valueToShow];
 
@@ -193,14 +202,18 @@ class OrderBook extends React.Component<OrderBookProps> {
                   key={order.id}
                   valueToShow={order[this.valueToShow]}
                   {...order}
-                  accuracy={accuracy}
-                  invertedAccuracy={invertedAccuracy}
+                  priceAccuracy={priceAccuracy}
+                  volumeAccuracy={volumeAccuracy}
+                  onClick={this.handleClick}
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
+            <StyledMidPrice
+              innerRef={this.refHandlers.midPrice}
+              onClick={this.handleClick(Number(mid), 0)}
+            >
               <tr>
-                <td>{defaultTo('', Number(mid))}</td>
+                <td>{Number.isNaN(Number.parseFloat(mid)) ? '' : mid}</td>
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
@@ -211,8 +224,9 @@ class OrderBook extends React.Component<OrderBookProps> {
                   key={order.id}
                   valueToShow={order[this.valueToShow]}
                   {...order}
-                  accuracy={accuracy}
-                  invertedAccuracy={invertedAccuracy}
+                  priceAccuracy={priceAccuracy}
+                  volumeAccuracy={volumeAccuracy}
+                  onClick={this.handleClick}
                 />
               ))}
             </StyledBuyOrders>
