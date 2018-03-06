@@ -12,6 +12,9 @@ export class RestApi {
   protected readonly wretcher = () =>
     wretch(process.env.REACT_APP_API_URL).auth(`Bearer ${tokenStorage.get()}`);
 
+  protected readonly publicWretcher = () =>
+    wretch(process.env.REACT_APP_PUBLIC_API_URL);
+
   protected get = (url: string, headers: any = {}) =>
     this.wretcher()
       .headers(headers)
@@ -26,6 +29,12 @@ export class RestApi {
       .query(query)
       .get()
       .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .json();
+
+  protected getPublic = (url: string) =>
+    this.publicWretcher()
+      .url(url)
+      .get()
       .json();
 
   protected post = (url: string, body: any) => this._post(url, body).json();

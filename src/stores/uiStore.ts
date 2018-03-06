@@ -16,6 +16,7 @@ class UiStore extends BaseStore {
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
+  @observable showOrdersSelect: boolean = false;
   stateFns: any = [];
   initPriceUpdate: any;
 
@@ -41,6 +42,10 @@ class UiStore extends BaseStore {
   @action
   readonly toggleAssetsSelect = () =>
     (this.showAssetsSelect = !this.showAssetsSelect);
+
+  @action
+  readonly toggleOrdersSelect = () =>
+    (this.showOrdersSelect = !this.showOrdersSelect);
 
   @action
   selectInstrument = (instrument: InstrumentModel | any) => {

@@ -1,11 +1,10 @@
+import {
+  CancelAllOrders,
+  ToggleOrders
+} from '../components/OrderList/OrderListAdditional';
+
 const additionalActions = {
-  orders: [
-    {
-      actionParams: {store: 'orderStore', method: 'cancelAll'},
-      conditionsParams: [{store: 'orderListStore', getter: 'isOrderLength'}],
-      title: 'Cancel all orders'
-    }
-  ]
+  orders: [ToggleOrders, CancelAllOrders]
 };
 
 export default additionalActions;

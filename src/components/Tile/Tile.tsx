@@ -39,8 +39,7 @@ const Tile: React.SFC<TileProps> = ({
   tabs,
   authorize = false,
   isAuth,
-  additionalControls,
-  additionalControlStore
+  additionalControls
 }) => (
   <TileWrapper>
     <TileHeader justify="space-between">
@@ -48,7 +47,6 @@ const Tile: React.SFC<TileProps> = ({
     </TileHeader>
     <TileContent
       additionalControls={additionalControls}
-      additionalControlStore={additionalControlStore}
       isAuth={isAuth}
       tabs={tabs}
     >
