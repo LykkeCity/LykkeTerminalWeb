@@ -1,8 +1,8 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {compose, pathOr, reverse, sortBy, uniq} from 'rambda';
+import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
-import {OrderType, Side, TradeModel} from '../models/index';
+import {TradeModel} from '../models/index';
 import * as mappers from '../models/mappers';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import {BaseStore, RootStore} from './index';
@@ -122,34 +122,12 @@ class TradeStore extends BaseStore {
     );
   };
 
-  onTrades = (args: any[]) => {
-    const side =
-      this.rootStore.orderStore.lastOrder.OrderAction === 'buy' ? 0 : 1;
-    const execution = args[0].find((x: any) => x.Direction === side);
-    const {getAssetById} = this.rootStore.referenceStore;
-    const baseAssetName = pathOr('', ['name'], getAssetById(execution.Asset));
-    const quoteAssetName = pathOr(
-      '',
-      ['name'],
-      getAssetById(execution.OppositeAsset)
-    );
-    const trade = new TradeModel({
-      id: execution.TradeId,
-      symbol: baseAssetName.concat('/', quoteAssetName),
-      // tslint:disable-next-line:object-literal-sort-keys
-      quantity: execution.Volume,
-      oppositeQuantity: execution.OppositeVolume,
-      price: execution.Price,
-      timestamp: execution.DateTime,
-      tradeId: execution.TradeId,
-      side: execution.Direction === 0 ? Side.Buy : Side.Sell,
-      orderType:
-        execution.OrderType === 'Market' ? OrderType.Market : OrderType.Limit
-    });
-    this.rootStore.orderStore.lastOrder = null;
-
-    const mappedTrades = [trade];
-
+  onTrades = async (args: any[]) => {
+    this.take += this.skip;
+    this.skip = TradeQuantity.Skip;
+    await this.fetchAll();
+    this.skip = this.take - TradeQuantity.Take;
+    this.take = TradeQuantity.Take;
     const executedOrderIds: string[] = uniq(
       args[0].map((t: any) => ({
         id: t.OrderId,
@@ -157,9 +135,7 @@ class TradeStore extends BaseStore {
       }))
     );
 
-    this.wampTrades += mappedTrades.length;
-
-    this.addTrades(mappedTrades);
+    this.wampTrades += args[0].length;
     this.rootStore.orderStore.executeOrder(executedOrderIds);
   };
 

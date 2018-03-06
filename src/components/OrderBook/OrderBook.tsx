@@ -1,11 +1,12 @@
 import {observable} from 'mobx';
 import {rem} from 'polished';
-import {curry, defaultTo} from 'rambda';
+import {curry} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
 import ModalMessages from '../../constants/modalMessages';
 import {displayType} from '../../constants/orderBook';
+import OrderClickAction from '../../constants/orderbookClickActions';
 import keys from '../../constants/storageKeys';
 import {Order} from '../../models';
 import Types from '../../models/modals';
@@ -51,6 +52,10 @@ const StyledMidPrice = styled.tbody`
   justify-content: center;
   margin: 0 0.9375rem 0 0;
   background: rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledHeader = styled.th.attrs({
@@ -104,9 +109,10 @@ interface OrderBookProps {
   addModal: any;
   asks: Order[];
   bids: Order[];
-  mid: number;
-  accuracy: number;
-  invertedAccuracy: number;
+  mid: string;
+  priceAccuracy: number;
+  volumeAccuracy: number;
+  updatePrice: any;
   stateFns: any[];
   cancelOrder: any;
 }
@@ -144,22 +150,6 @@ class OrderBook extends React.Component<OrderBookProps> {
     connectedOrders.forEach(id => this.props.cancelOrder(id));
   };
 
-  handleCloseClick = (connectedOrders: string[]) => () => {
-    const isConfirm = confirmStorage.get() as string;
-    if (!JSON.parse(isConfirm)) {
-      return this.cancelOrders(connectedOrders);
-    }
-
-    const message = ModalMessages.cancelOrder(connectedOrders);
-    this.props.addModal(
-      message,
-      () => this.cancelOrders(connectedOrders),
-      // tslint:disable-next-line:no-empty
-      () => {},
-      Types.Confirm
-    );
-  };
-
   componentDidUpdate() {
     if (this.isScrollSet) {
       return;
@@ -174,9 +164,33 @@ class OrderBook extends React.Component<OrderBookProps> {
     }
   }
 
+  handleClick = (options: any) => (e: any) => {
+    const {clickType, connectedLimitOrders, price, depth} = options;
+    switch (clickType) {
+      case OrderClickAction.UpdatePrice:
+        this.props.updatePrice(price, depth);
+        break;
+      case OrderClickAction.CancelOrder:
+        e.stopPropagation();
+        const isConfirm = confirmStorage.get() as string;
+        if (!JSON.parse(isConfirm)) {
+          return this.cancelOrders(connectedLimitOrders);
+        }
+
+        const message = ModalMessages.cancelOrder(connectedLimitOrders);
+        this.props.addModal(
+          message,
+          () => this.cancelOrders(connectedLimitOrders),
+          // tslint:disable-next-line:no-empty
+          () => {},
+          Types.Confirm
+        );
+        break;
+    }
+  };
+
   render() {
-    const {bids, asks, mid, accuracy, invertedAccuracy} = this.props;
-    const customBids = this.props.bids.filter(b => !!b.orderVolume);
+    const {bids, asks, mid, priceAccuracy, volumeAccuracy} = this.props;
 
     const mapWithValueToShow = (o: Order) => o[this.valueToShow];
 
@@ -222,28 +236,35 @@ class OrderBook extends React.Component<OrderBookProps> {
                   key={order.id}
                   valueToShow={order[this.valueToShow]}
                   {...order}
-                  accuracy={accuracy}
-                  invertedAccuracy={invertedAccuracy}
-                  onClick={this.handleCloseClick}
+                  priceAccuracy={priceAccuracy}
+                  volumeAccuracy={volumeAccuracy}
+                  onClick={this.handleClick}
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
+            <StyledMidPrice
+              innerRef={this.refHandlers.midPrice}
+              onClick={this.handleClick({
+                clickType: OrderClickAction.UpdatePrice,
+                depth: 0,
+                price: Number(mid)
+              })}
+            >
               <tr>
-                <td>{defaultTo('', Number(mid))}</td>
+                <td>{Number.isNaN(Number.parseFloat(mid)) ? '' : mid}</td>
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
-              {customBids.map(order => (
+              {bids.map(order => (
                 <OrderBookItem
                   maxValue={maxBidValue}
                   minValue={minBidValue}
                   key={order.id}
                   valueToShow={order[this.valueToShow]}
                   {...order}
-                  accuracy={accuracy}
-                  invertedAccuracy={invertedAccuracy}
-                  onClick={this.handleCloseClick}
+                  priceAccuracy={priceAccuracy}
+                  volumeAccuracy={volumeAccuracy}
+                  onClick={this.handleClick}
                 />
               ))}
             </StyledBuyOrders>

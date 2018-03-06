@@ -78,6 +78,7 @@ class InstrumentPicker extends React.Component<
               />
             </StyledSearchWrap>
             <InstrumentList
+              currentInstrumentId={this.props.instrumentId}
               instruments={this.props.instruments}
               onPick={this.props.onPick}
               change={this.changeValue}
