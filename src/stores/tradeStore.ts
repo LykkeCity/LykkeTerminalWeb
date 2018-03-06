@@ -118,7 +118,7 @@ class TradeStore extends BaseStore {
   onTrades = async (args: any[]) => {
     this.take += this.skip;
     this.skip = TradeQuantity.Skip;
-    await this.fetchAll();
+    await this.fetchTrades();
     this.skip = this.take - TradeQuantity.Take;
     this.take = TradeQuantity.Take;
     const executedOrderIds: string[] = uniq(
