@@ -17,6 +17,7 @@ class UiStore extends BaseStore {
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
   stateFns: any = [];
+  initPriceUpdate: any;
 
   constructor(store: RootStore) {
     super(store);
@@ -32,6 +33,10 @@ class UiStore extends BaseStore {
       }
     );
   }
+
+  initPriceFn = (fn: any) => {
+    this.initPriceUpdate = fn;
+  };
 
   @action
   readonly toggleAssetsSelect = () =>

@@ -22,6 +22,7 @@ class InstrumentList extends React.Component<InstrumentListProps> {
               key={x.id}
               instrument={x}
               onPick={this.props.onPick}
+              inactive={this.props.currentInstrumentId !== x.id}
             />
           ))}
         </Scrollbars>
