@@ -20,6 +20,8 @@ export interface OrderProps {
   name: string;
   stateFns: any[];
   getAssetById: any;
+  updatePriceFn: any;
+  initPriceFn: any;
 }
 
 export interface OrderOptionProps {
@@ -81,8 +83,8 @@ const ConnectedOrder = connect(
   ({
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid},
-    orderStore: {placeOrder},
-    uiStore: {selectedInstrument: instrument, stateFns},
+    orderStore: {placeOrder, updatePriceFn},
+    uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
     referenceStore
   }) => ({
     accuracy: {
@@ -99,9 +101,11 @@ const ConnectedOrder = connect(
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
     getAssetById: referenceStore.getAssetById,
+    initPriceFn,
     name: pathOr('', ['name'], instrument),
     placeOrder,
-    stateFns
+    stateFns,
+    updatePriceFn
   }),
   Order
 );

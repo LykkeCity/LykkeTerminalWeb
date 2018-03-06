@@ -77,7 +77,8 @@ class ReferenceStore extends BaseStore {
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
   findInstruments = (term: string, name: string) => {
-    const instruments = this.rootStore.authStore.isAuth
+    const isAuth = this.rootStore.authStore.isAuth;
+    const instruments = isAuth
       ? this.instruments
           .filter(i => i.baseAsset && i.quoteAsset)
           .filter(this.filterAvailableInstrument)
@@ -97,9 +98,11 @@ class ReferenceStore extends BaseStore {
       )
       .filter(
         i =>
-          !!~this.rootStore.watchlistStore
-            .watchlistsByName(name)
-            .assetIds.indexOf(i.id)
+          isAuth
+            ? !!~this.rootStore.watchlistStore
+                .watchlistsByName(name)
+                .assetIds.indexOf(i.id)
+            : i
       );
   };
 
@@ -116,8 +119,11 @@ class ReferenceStore extends BaseStore {
   fetchReferenceData = async () => {
     await this.fetchCategories();
     await this.fetchAssets();
-    await this.fetchInstruments();
-    if (this.rootStore.authStore.isAuth) {
+
+    if (!this.rootStore.authStore.isAuth) {
+      await this.fetchPublicInstruments();
+    } else {
+      await this.fetchInstruments();
       await this.fetchAvailableAssets();
     }
   };
@@ -136,6 +142,14 @@ class ReferenceStore extends BaseStore {
         return Promise.resolve();
       })
       .catch(Promise.reject);
+  };
+
+  fetchAssetById = (id: string) => {
+    return this.api.fetchAssetById(id).then((resp: any) => {
+      const asset = mappers.mapToAsset(resp.Asset, this.categories);
+      this.assets.push(asset);
+      return Promise.resolve(asset);
+    });
   };
 
   fetchAvailableAssets = async () => {
@@ -167,6 +181,17 @@ class ReferenceStore extends BaseStore {
       runInAction(() => {
         this.instruments = resp.AssetPairs.map((x: any) =>
           mappers.mapToInstrument(x, this.getAssetById)
+        );
+      });
+    }
+  };
+
+  fetchPublicInstruments = async () => {
+    const resp = await this.api.fetchPublicAssetInstruments();
+    if (resp) {
+      runInAction(() => {
+        this.instruments = resp.map((x: any) =>
+          mappers.mapToPublicInstrument(x, this.getAssetById)
         );
       });
     }

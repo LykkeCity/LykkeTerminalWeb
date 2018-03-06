@@ -71,14 +71,21 @@ const OrderRow = styled.tr`
   display: flex;
   align-items: center;
   border-bottom: solid 1px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+  }
 `;
 
 interface OrderBookItemProps extends Order {
-  accuracy: number;
-  invertedAccuracy: number;
+  priceAccuracy: number;
+  volumeAccuracy: number;
   maxValue?: number;
   minValue?: number;
   valueToShow: number;
+  onClick: any;
+  depth: number;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -86,36 +93,41 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   price,
   valueToShow,
   side,
-  accuracy,
-  invertedAccuracy,
+  priceAccuracy,
+  volumeAccuracy,
   minValue = 10,
-  maxValue = 100
-}) => (
-  <OrderRow>
-    <VolumeCell side={side}>
-      {side === Side.Sell && (
-        <div>
-          <VolumeOverlay
-            side={side}
-            volume={normalizeVolume(valueToShow, minValue, maxValue)}
-          />
-          {valueToShow.toFixed(accuracy)}
-        </div>
-      )}
-    </VolumeCell>
-    <MidCell>{price.toFixed(invertedAccuracy)}</MidCell>
-    <VolumeCell side={side}>
-      {side === Side.Buy && (
-        <div>
-          <VolumeOverlay
-            side={side}
-            volume={normalizeVolume(valueToShow, minValue, maxValue)}
-          />
-          {valueToShow.toFixed(accuracy)}
-        </div>
-      )}
-    </VolumeCell>
-  </OrderRow>
-);
+  maxValue = 100,
+  onClick,
+  depth
+}) => {
+  const currentPrice = price.toFixed(priceAccuracy);
+  return (
+    <OrderRow onClick={onClick(+currentPrice, depth)}>
+      <VolumeCell side={side}>
+        {side === Side.Sell && (
+          <div>
+            <VolumeOverlay
+              side={side}
+              volume={normalizeVolume(valueToShow, minValue, maxValue)}
+            />
+            {valueToShow.toFixed(volumeAccuracy)}
+          </div>
+        )}
+      </VolumeCell>
+      <MidCell>{currentPrice}</MidCell>
+      <VolumeCell side={side}>
+        {side === Side.Buy && (
+          <div>
+            <VolumeOverlay
+              side={side}
+              volume={normalizeVolume(valueToShow, minValue, maxValue)}
+            />
+            {valueToShow.toFixed(volumeAccuracy)}
+          </div>
+        )}
+      </VolumeCell>
+    </OrderRow>
+  );
+};
 
 export default OrderBookItem;

@@ -64,7 +64,10 @@ export const mapToChartSymbol = ({
   has_intraday: true,
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
   has_empty_bars: true,
-  volume_precision: pathOr(0, ['accuracy'], baseAsset)
+  volume_precision: pathOr(0, ['accuracy'], baseAsset),
+  ticker: name,
+  has_daily: true,
+  has_weekly_and_monthly: true
 });
 
 type ResolutionMapper = (resolution: string) => Interval;
@@ -86,10 +89,13 @@ export const mapChartResolutionToWampInterval: ResolutionMapper = resolution => 
       return 'hour6';
     case '720':
       return 'hour12';
+    case 'D':
     case '1D':
       return 'day';
+    case 'W':
     case '1W':
       return 'week';
+    case 'M':
     case '1M':
       return 'month';
 
@@ -257,4 +263,18 @@ export const mapToInstrument = (
     quoteAsset: getAssetById(QuotingAssetId),
     accuracy: Accuracy,
     invertedAccuracy: InvertedAccuracy
+  });
+
+export const mapToPublicInstrument = (
+  {id, accuracy, baseAssetId, invertedAccuracy, name, quotingAssetId}: any,
+  getAssetById: (assetId: string) => AssetModel | undefined
+) =>
+  new InstrumentModel({
+    id,
+    name,
+    // tslint:disable-next-line:object-literal-sort-keys
+    baseAsset: getAssetById(baseAssetId),
+    quoteAsset: getAssetById(quotingAssetId),
+    accuracy,
+    invertedAccuracy
   });

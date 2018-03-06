@@ -1,4 +1,3 @@
-import {observable} from 'mobx';
 import OrderApi from '../api/orderApi';
 import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
@@ -6,6 +5,7 @@ import messages from '../constants/notificationMessages';
 import {OrderModel} from '../models';
 import Types from '../models/modals';
 import OrderType from '../models/orderType';
+import ErrorParser from '../utils/errorParser';
 import {IsMobile} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
@@ -16,10 +16,9 @@ const isMobile = IsMobile();
 // tslint:disable:no-console
 
 class OrderStore extends BaseStore {
-  @observable lastOrder: any;
-
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
+  private updatePriceByOrderBook: any;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
@@ -27,10 +26,19 @@ class OrderStore extends BaseStore {
     this.modalStore = this.rootStore.modalStore;
   }
 
+  updatePriceFn = (fn: any) => {
+    this.updatePriceByOrderBook = fn;
+  };
+
+  updatePrice = (price: number, quantity: number) => {
+    if (this.updatePriceByOrderBook) {
+      this.updatePriceByOrderBook(price, quantity);
+    }
+  };
+
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        this.lastOrder = body;
         return this.api
           .placeMarket(body)
           .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
@@ -47,7 +55,7 @@ class OrderStore extends BaseStore {
     await this.api.cancelOrder(id);
     this.notificationStore.addNotification(
       levels.information,
-      `${messages.orderCanceled} ${id}`
+      `${messages.orderCancelled} ${id}`
     );
     this.updateOrders();
   };
@@ -143,14 +151,13 @@ class OrderStore extends BaseStore {
 
     let message;
     try {
-      message = JSON.parse(error.message).message;
+      message =
+        JSON.parse(error.message).ME || JSON.parse(error.message).message;
+      message = ErrorParser.getMessage(message);
     } catch (e) {
       message = !!error.message.length ? error.message : messages.defaultError;
     }
-    this.notificationStore.addNotification(
-      levels.error,
-      `${messages.orderError} ${message}`
-    );
+    this.notificationStore.addNotification(levels.error, `${message}`);
   };
 }
 

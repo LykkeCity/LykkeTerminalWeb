@@ -66,18 +66,42 @@ class BalanceListStore extends BaseStore {
   };
 
   setTradingAssets = async (walletList: WalletModel[]) => {
+    const notFoundAssets: string[] = [];
     const {getAssetById} = this.rootStore.referenceStore;
     this.tradingAssets = this.getTradingWallet(walletList).balances.map(
       (dto: any) => {
         const assetBalance = new AssetBalanceModel(dto);
         const assetById = getAssetById(assetBalance.id);
+        if (!assetById) {
+          notFoundAssets.push(assetBalance.id);
+        }
         assetBalance.name = pathOr('', ['name'], assetById);
         assetBalance.accuracy = pathOr('', ['accuracy'], assetById);
         return assetBalance;
       }
     );
 
+    await this.updateWithAssets(notFoundAssets);
     await this.updateTradingWallet();
+  };
+
+  updateWithAssets = async (ids: string[]) => {
+    const promises: any = [];
+    const {getAssetById, fetchAssetById} = this.rootStore.referenceStore;
+    ids.forEach(id => {
+      promises.push(fetchAssetById(id));
+    });
+    return Promise.all(promises).then(() => {
+      ids.forEach(id => {
+        this.tradingAssets.forEach(asset => {
+          if (asset.id === id) {
+            const assetById = getAssetById(asset.id);
+            asset.name = pathOr('', ['name'], assetById);
+            asset.accuracy = pathOr('', ['accuracy'], assetById);
+          }
+        });
+      });
+    });
   };
 
   updateTradingWallet = async () => {
@@ -120,23 +144,8 @@ class BalanceListStore extends BaseStore {
     session.subscribe(`balances`, this.onUpdateBalance);
   };
 
-  onUpdateBalance = async (args: any) => {
-    const {a: asset, b: balance, r: reserved} = args[0];
-    const assetBalance = this.tradingAssets.find(b => b.id === asset);
-    if (assetBalance) {
-      assetBalance.balance = balance;
-      assetBalance.reserved = reserved;
-    }
-    this.updateTradingWallet();
-
-    this.walletList.forEach((wallet: WalletModel) =>
-      wallet.balances.forEach(b => {
-        if (b.AssetId === asset) {
-          b.Balance = balance;
-        }
-      })
-    );
-    this.updateBalance(this.walletList);
+  onUpdateBalance = async () => {
+    this.fetchAll();
   };
 
   reset = () => {
