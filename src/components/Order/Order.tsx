@@ -7,7 +7,7 @@ import keys from '../../constants/storageKeys';
 import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
-import {StorageUtils, StringHelpers} from '../../utils/index';
+import {StorageUtils} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderChoiceButton from './OrderChoiceButton';
@@ -132,7 +132,8 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     this.props
       .placeOrder(orderType, body)
-      .then(() => this.disableButton(false));
+      .then(() => this.disableButton(false))
+      .catch(() => this.disableButton(false));
   };
 
   cancelOrder = () => {
@@ -165,55 +166,30 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   onArrowClick = (operation: string, field: string) => () => {
-    const tempObj = {};
-    const accuracy = this.props.accuracy[field];
-
-    switch (operation) {
-      case 'up':
-        tempObj[field] = (
-          parseFloat(this.state[field]) + Math.pow(10, -1 * accuracy)
-        ).toFixed(accuracy);
-        break;
-      case 'down':
-        let newVal =
-          parseFloat(this.state[field]) - Math.pow(10, -1 * accuracy);
-        newVal = newVal < 0 ? 0 : newVal;
-        tempObj[field] = newVal.toFixed(accuracy);
-        break;
-    }
-    this.setState(tempObj);
+    this.setState(
+      this.props.onArrowClick({
+        accuracy: this.props.accuracy[field],
+        field,
+        operation,
+        value: this.state[field]
+      })
+    );
   };
 
   onChange = (field: string) => (e: any) => {
-    let value = e.target.value;
-    const accuracy = this.props.accuracy[field];
-    if (!StringHelpers.isOnlyNumbers(value)) {
-      return;
-    }
-    value = StringHelpers.substringZero(value);
-    value = StringHelpers.substringMinus(value);
-
-    if (StringHelpers.getPostDecimalsLength(value) > accuracy) {
-      value = StringHelpers.substringLast(value);
-    }
-    value = value === '' ? '0' : value;
-
-    const tempObj = {};
-    tempObj[field] = value;
-    this.setState(tempObj);
+    this.setState(
+      this.props.onValueChange({
+        accuracy: this.props.accuracy[field],
+        field,
+        value: e.target.value
+      })
+    );
   };
 
   isInvalidValues = () => {
     return this.state.isMarketActive
       ? !+this.state.quantityValue
       : !+this.state.quantityValue || !+this.state.priceValue;
-  };
-
-  fixedAmount = (currentPrice: number) => {
-    const amount = currentPrice * parseFloat(this.state.quantityValue);
-    return amount === 0
-      ? amount.toFixed(2)
-      : amount.toFixed(this.props.accuracy.priceValue);
   };
 
   fixedValue = (value: any) => {
@@ -281,7 +257,11 @@ class Order extends React.Component<OrderProps, OrderState> {
             onSubmit={this.handleButtonClick}
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
-            amount={this.fixedAmount(currentPrice)}
+            amount={this.props.fixedAmount(
+              currentPrice,
+              this.state.quantityValue,
+              this.props.accuracy.priceValue
+            )}
             quantity={this.state.quantityValue}
             price={this.state.priceValue}
           />

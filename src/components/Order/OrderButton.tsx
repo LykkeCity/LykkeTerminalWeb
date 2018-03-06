@@ -1,7 +1,6 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
-import {capitalize} from '../../utils';
 import {OrderButtonProps} from './index';
 
 const StyledButton = styled.button`
@@ -37,19 +36,18 @@ const StyledButton = styled.button`
 
 const OrderButton: React.SFC<OrderButtonProps> = ({
   action,
-  price,
-  baseName,
-  quantity,
   isDisable,
-  type
+  type,
+  message
 }) => {
   const btnClass = isDisable ? `disable ${action}` : action;
 
   return (
     <StyledButton type={type} className={btnClass} disabled={isDisable}>
-      {capitalize(action)} {quantity} {baseName}
+      {message}
     </StyledButton>
   );
 };
 
 export default OrderButton;
+export {StyledButton};

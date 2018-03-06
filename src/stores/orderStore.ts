@@ -48,6 +48,16 @@ class OrderStore extends BaseStore {
     }
   };
 
+  editOrder = async (body: any, id: string) => {
+    return this.api.placeLimit(body).then((orderId: string) => {
+      return this.api
+        .cancelOrder(id)
+        .then(this.orderEditedSuccessfully)
+        .catch(() => this.api.cancelOrder(orderId))
+        .then(this.updateOrders);
+    }, this.orderPlacedUnsuccessfully);
+  };
+
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
     this.notificationStore.addNotification(
@@ -140,7 +150,19 @@ class OrderStore extends BaseStore {
     } catch (e) {
       message = !!error.message.length ? error.message : messages.defaultError;
     }
-    this.notificationStore.addNotification(levels.error, `${message}`);
+    this.notificationStore.addNotification(
+      levels.error,
+      `${messages.orderError} ${message}`
+    );
+
+    return Promise.reject(error);
+  };
+
+  private orderEditedSuccessfully = () => {
+    this.notificationStore.addNotification(
+      levels.success,
+      messages.editOrderSuccess
+    );
   };
 }
 
