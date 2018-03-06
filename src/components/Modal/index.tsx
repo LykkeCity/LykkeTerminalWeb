@@ -17,10 +17,6 @@ const StyledModal = styled.div`
   z-index: 3;
 `;
 
-const StyledExpiredModal = styled(StyledModal)`
-  width: 300px;
-`;
-
 const Button = styled.button`
   color: #f5f6f7;
   width: 152px;
@@ -74,5 +70,5 @@ const ConnectedEditOrderModal = connect(
   EditOrder
 );
 
-export {StyledModal, Button, StyledExpiredModal};
+export {StyledModal, Button};
 export {ConnectedEditOrderModal as EditOrder};

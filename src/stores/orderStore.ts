@@ -150,10 +150,7 @@ class OrderStore extends BaseStore {
     } catch (e) {
       message = !!error.message.length ? error.message : messages.defaultError;
     }
-    this.notificationStore.addNotification(
-      levels.error,
-      `${messages.orderError} ${message}`
-    );
+    this.notificationStore.addNotification(levels.error, `${message}`);
 
     return Promise.reject(error);
   };
