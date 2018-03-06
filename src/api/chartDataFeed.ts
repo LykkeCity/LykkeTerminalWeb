@@ -2,10 +2,8 @@ import {uniq} from 'rambda';
 import * as topics from '../api/topics';
 import {InstrumentModel, MarketType, PriceType} from '../models/index';
 import * as mappers from '../models/mappers/index';
-import {DateSplitter} from '../utils/index';
+import {dateFns} from '../utils/index';
 import {PriceApi} from './index';
-
-const splitter = DateSplitter();
 
 class ChartDataFeed {
   constructor(
@@ -46,7 +44,7 @@ class ChartDataFeed {
     onErrorCallback: any,
     firstDataRequest: any
   ) => {
-    const timePeriods = splitter.bars(from, to, resolution);
+    const timePeriods = dateFns.splitter(from, to, resolution);
     const promises = timePeriods!.map(period =>
       this.priceApi.fetchCandles(
         this.instrument.id,
