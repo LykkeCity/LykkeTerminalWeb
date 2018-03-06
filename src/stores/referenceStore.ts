@@ -188,9 +188,9 @@ class ReferenceStore extends BaseStore {
 
   fetchPublicInstruments = async () => {
     const resp = await this.api.fetchPublicAssetInstruments();
-    if (resp) {
+    if (resp && resp.AssetPairs) {
       runInAction(() => {
-        this.instruments = resp.map((x: any) =>
+        this.instruments = resp.AssetPairs.map((x: any) =>
           mappers.mapToPublicInstrument(x, this.getAssetById)
         );
       });
