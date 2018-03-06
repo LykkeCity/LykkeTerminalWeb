@@ -5,19 +5,20 @@ import {OrderActionProps} from './index';
 
 const StyledOrderAction = styled.div`
   display: flex;
-  border: solid 1px rgba(0, 0, 0, 0.2);
+  border-bottom: solid 1px #292929;
   flex-direction: column;
   width: 50%;
-  padding: 8px 0;
+  padding: ${rem(8)} 0;
+  height: ${rem(100)};
 
   &.ask {
-    padding-right: 15px;
+    padding-right: ${rem(15)};
     align-items: flex-end;
     border-left: none;
   }
 
   &.bid {
-    padding-left: 15px;
+    padding-left: ${rem(15)};
     align-items: flex-start;
   }
 
@@ -32,44 +33,37 @@ const StyledOrderAction = styled.div`
 
 const StyledTitle = styled.div`
   font-size: ${rem(14)};
-  color: #ccc;
+  color: rgba(245, 246, 247, 0.4);
   text-transform: capitalize;
-
-  &.active {
-    color: #f5f6f7;
-  }
 `;
 
 const StyledPrice = styled.div`
   font-family: 'Akrobat';
-  font-size: ${rem(24)};
+  font-size: ${rem(28)};
   font-weight: bold;
   line-height: 1;
-  color: #f5f6f7;
-  opacity: 0.4;
-  margin-top: 8px;
+  margin-top: ${rem(4)};
+  color: rgba(245, 246, 247, 0.4);
 
   &.bid.active {
-    opacity: 1;
     color: #d070ff;
   }
 
   &.ask.active {
-    opacity: 1;
     color: #fb8f01;
   }
 `;
 
 const StyledAction = styled.div`
-  margin-top: 8px;
+  margin-top: ${rem(8)};
   font-size: ${rem(14)};
-  color: #ccc;
+  color: rgba(245, 246, 247, 0.6);
   text-align: center;
   width: 40px;
   border-radius: 4px;
   text-transform: capitalize;
-  border: solid 1px #ccc;
-  padding: ${rem(5)};
+  border: solid 1px rgba(245, 246, 247, 0.4);
+  padding: ${rem(3)} ${rem(5)};
 
   &.bid.active {
     background-color: #ab00ff;

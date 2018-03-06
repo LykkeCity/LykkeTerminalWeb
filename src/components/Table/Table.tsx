@@ -3,12 +3,12 @@ import styled from '../styled';
 
 const Table = styled.table`
   width: 100%;
-  margin-top: ${rem(3)};
+  margin-bottom: ${rem(10)};
   tr {
-    line-height: 0.4;
+    line-height: 1;
   }
   thead {
-    border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+    border-bottom: solid 1px #292929;
   }
   th {
     text-align: right;
@@ -22,12 +22,13 @@ const Table = styled.table`
     }
   }
   td {
-    padding: 10px 5px;
+    padding: ${rem(8)} ${rem(8)};
     text-align: right;
 
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
     &:first-child {
       color: #f5f6f7;
