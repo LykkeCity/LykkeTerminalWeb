@@ -1,5 +1,6 @@
 import {pathOr} from 'rambda';
 import {ChartStore} from '../../stores/index';
+import {precisionRound} from '../../utils/math';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -171,58 +172,22 @@ export const mapHistoryTypeToOrderType = (type: string) => {
   return undefined;
 };
 
-export const mapToTradeList = (
-  dto: any,
-  getInstrument: (id: string) => InstrumentModel | undefined,
-  getAsset: (id: string) => AssetModel | undefined
-) => {
-  const groupedTrades = dto.reduce((acc: any, curr: any) => {
-    acc[curr.DateTime] = (acc[curr.DateTime] || []).concat(curr);
-    return acc;
-  }, {});
-
-  const trades = [];
-  // tslint:disable-next-line:forin
-  for (const id in groupedTrades) {
-    const t = groupedTrades[id];
-    const symbol = t[0].Asset + t[1].Asset;
-    if (!!getInstrument(symbol)) {
-      const baseAssetName = pathOr('', ['name'], getAsset(t[0].Asset));
-      const quoteAssetName = pathOr('', ['name'], getAsset(t[1].Asset));
-      trades.push(
-        new TradeModel({
-          id: t[0].Id,
-          price: Math.abs(t[0].Price),
-          quantity: Math.abs(t[0].Amount),
-          side: t[0].Amount > 0 ? Side.Buy : Side.Sell,
-          symbol: baseAssetName.concat('/', quoteAssetName),
-          timestamp: t[0].DateTime,
-          tradeId: t[0].Id,
-          oppositeQuantity: t[1].Amount,
-          orderType: mapHistoryTypeToOrderType(t[0].Type)
-        })
-      );
-    } else {
-      const baseAssetName = pathOr('', ['name'], getAsset(t[1].Asset));
-      const quoteAssetName = pathOr('', ['name'], getAsset(t[0].Asset));
-      trades.push(
-        new TradeModel({
-          id: t[1].Id,
-          price: Math.abs(t[1].Price),
-          quantity: Math.abs(t[1].Amount),
-          side: t[1].Amount > 0 ? Side.Buy : Side.Sell,
-          symbol: baseAssetName.concat('/', quoteAssetName),
-          timestamp: t[1].DateTime,
-          tradeId: t[1].Id,
-          oppositeQuantity: t[0].Amount,
-          orderType: mapHistoryTypeToOrderType(t[0].Type)
-        })
-      );
-    }
-  }
-
-  return trades;
-};
+export const mapToTradeList = (dto: any, accuracy: number) =>
+  dto.map(
+    ({Id, AssetPair, Price, Amount, DateTime, Type, FeeSize}: any) =>
+      new TradeModel({
+        id: Id,
+        price: Price,
+        quantity: Math.abs(Amount),
+        side: Amount > 0 ? Side.Buy : Side.Sell,
+        symbol: AssetPair,
+        timestamp: DateTime,
+        tradeId: Id,
+        oppositeQuantity: Math.abs(precisionRound(Amount * Price, accuracy)),
+        orderType: mapHistoryTypeToOrderType(Type),
+        fee: FeeSize
+      })
+  );
 
 export const mapToAsset = (
   {Id, Name, DisplayId, CategoryId, Accuracy, IsBase, IconUrl}: any,
@@ -258,7 +223,6 @@ export const mapToInstrument = (
   new InstrumentModel({
     id: Id,
     name: Name,
-    // tslint:disable-next-line:object-literal-sort-keys
     baseAsset: getAssetById(BaseAssetId),
     quoteAsset: getAssetById(QuotingAssetId),
     accuracy: Accuracy,

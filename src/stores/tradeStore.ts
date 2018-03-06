@@ -25,7 +25,12 @@ class TradeStore extends BaseStore {
 
   @computed
   get needToLoadMore() {
-    return this.trades.length > 0 && this.moreTradesToLoad;
+    return this.trades.length > 0;
+  }
+
+  @computed
+  get selectedInstrument() {
+    return this.rootStore.uiStore.selectedInstrument;
   }
 
   @observable.shallow private trades: TradeModel[] = [];
@@ -37,33 +42,37 @@ class TradeStore extends BaseStore {
   private loading: number = TradeQuantity.Loading;
   private wampTrades: number = 0;
   private wampPublicTrades: number = 0;
-  @observable private moreTradesToLoad = false;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
   }
 
   @action
-  addTrades = (trades: TradeModel[]) =>
-    (this.trades = this.trades.concat(trades));
+  addTrades = (trades: TradeModel[]) => {
+    this.trades = this.trades.concat(trades);
+  };
 
   @action
   addPublicTrades = (trades: TradeModel[]) => {
     this.publicTrades = this.publicTrades.concat(trades);
   };
 
-  fetchAll = () => {
-    return this.api.fetchUserTrades(this.skip, this.take).then((dto: any) => {
-      runInAction(() => {
-        this.moreTradesToLoad = dto.length >= this.take - this.skip;
-        const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
-        this.trades = mappers.mapToTradeList(
-          dto,
-          getInstrumentById,
-          getAssetById
-        );
-      });
-      return Promise.resolve();
+  fetchTrades = async () => {
+    if (!this.selectedInstrument) {
+      return;
+    }
+    const resp = await this.api.fetchTrades(
+      this.selectedInstrument,
+      this.skip,
+      this.take
+    );
+    runInAction(() => {
+      this.addTrades(
+        mappers.mapToTradeList(
+          resp,
+          this.selectedInstrument!.quoteAsset.accuracy
+        )
+      );
     });
   };
 
@@ -72,15 +81,7 @@ class TradeStore extends BaseStore {
       .fetchPublicTrades(this.publicSkip, this.publicTake)
       .then((dto: any) => {
         runInAction(() => {
-          const {
-            getInstrumentById,
-            getAssetById
-          } = this.rootStore.referenceStore;
-          this.publicTrades = mappers.mapToTradeList(
-            dto,
-            getInstrumentById,
-            getAssetById
-          );
+          this.publicTrades = mappers.mapToTradeList(dto, 2);
         });
       });
   };
@@ -98,12 +99,7 @@ class TradeStore extends BaseStore {
 
   fetchPartTrade = async () => {
     this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
-    const tradesDto = await this.api.fetchUserTrades(this.skip, this.loading);
-    this.moreTradesToLoad = tradesDto.length > 0;
-    const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
-    this.addTrades(
-      mappers.mapToTradeList(tradesDto, getInstrumentById, getAssetById)
-    );
+    this.fetchTrades();
   };
 
   fetchPartPublicTrade = async () => {
@@ -116,10 +112,7 @@ class TradeStore extends BaseStore {
       this.publicSkip,
       this.loading
     );
-    const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
-    this.addPublicTrades(
-      mappers.mapToTradeList(tradesDto, getInstrumentById, getAssetById)
-    );
+    this.addPublicTrades(mappers.mapToTradeList(tradesDto, 2));
   };
 
   onTrades = async (args: any[]) => {
@@ -141,10 +134,7 @@ class TradeStore extends BaseStore {
 
   onPublicTrades = (args: any[]) => {
     this.wampPublicTrades += args[0].lengths;
-    const {getInstrumentById, getAssetById} = this.rootStore.referenceStore;
-    this.addPublicTrades(
-      mappers.mapToTradeList(args[0], getInstrumentById, getAssetById)
-    );
+    this.addPublicTrades(mappers.mapToTradeList(args[0], 2));
   };
 
   @action

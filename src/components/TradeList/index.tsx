@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react';
-import {TradeModel} from '../../models/index';
+import {InstrumentModel, TradeModel} from '../../models/index';
 import {connect} from '../connect';
 import PublicTradeList from './PublicTradeList';
 import TradeList from './TradeList';
@@ -11,17 +11,21 @@ export interface TradesProps {
   fetchPart: any;
   stringId?: string;
   authorized?: true;
+  selectedInstrument?: InstrumentModel; // TODO: move it back as mandatory after merge with public trades
 }
 
 const ConnectedTradeList = connect(
   ({
     tradeStore: {getAllTrades, fetchPartTrade, needToLoadMore},
-    authStore
+    authStore,
+    uiStore: {selectedInstrument}
   }) => ({
     authorized: authStore.isAuth,
     fetchPart: fetchPartTrade,
     needToLoadMore,
-    trades: getAllTrades
+    trades: getAllTrades,
+    // tslint:disable-next-line:object-literal-sort-keys
+    selectedInstrument
   }),
   TradeList
 );

@@ -2,7 +2,7 @@ export {RestWatchlistApi as WatchlistApi} from './watchlistApi';
 export {RestTradeApi as TradeApi} from './tradeApi';
 export {RestBalanceListApi as BalanceListApi} from './balanceListApi';
 export {RestAssetApi as AssetApi} from './assetApi';
-export {RestMarketApi as MarketApi} from './marketApi';
+export {default as MarketApi} from './marketApi';
 export {RestOrderApi as OrderApi} from './orderApi';
 export {RestOrderBookApi as OrderBookApi} from './orderBookApi';
 export {default as HistoryApi} from './historyApi';
