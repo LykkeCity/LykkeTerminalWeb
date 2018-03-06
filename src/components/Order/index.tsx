@@ -1,6 +1,6 @@
 import {pathOr} from 'rambda';
 import {connect} from '../connect';
-import Order from './Order';
+import Order from './OrderNew';
 
 export interface OrderState {
   isMarketActive: boolean;
@@ -8,6 +8,9 @@ export interface OrderState {
   quantityValue: string;
   pendingOrder: boolean;
   priceValue: string;
+  percents?: any[];
+  buyValue?: string;
+  sellValue?: string;
 }
 
 export interface OrderProps {
@@ -80,6 +83,10 @@ export interface OrderFormProps {
   quantity: string;
   price: string;
   amount: string;
+  buy?: string;
+  sell?: string;
+  quantityAccuracy?: number;
+  priceAccuracy?: number;
 }
 
 const ConnectedOrder = connect(
