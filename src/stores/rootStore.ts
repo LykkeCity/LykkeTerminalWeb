@@ -47,7 +47,6 @@ class RootStore {
   readonly notificationStore: NotificationStore;
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
-  readonly additionalControlStore: AdditionalControlStore;
   readonly uiOrderStore: UiOrderStore;
 
   private readonly stores = new Set<BaseStore>();
@@ -73,7 +72,6 @@ class RootStore {
       this.chartStore = new ChartStore(this);
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
-      this.additionalControlStore = new AdditionalControlStore(this);
       this.uiOrderStore = new UiOrderStore(this);
     }
   }
