@@ -55,7 +55,7 @@ injectGlobal`
   :root {
     height: auto;
     min-height: 100%;
-    font: normal 14px "Proxima Nova";
+    font: normal 16px "Proxima Nova", sans-serif;
     color: #f5f6f7;
     line-height: normal;
 
@@ -77,6 +77,12 @@ injectGlobal`
   }
   li {
     list-style: none;
+  }
+  input:focus {
+    outline: none;
+  }
+  button {
+    font-family: 'Proxima Nova',sans-serif;
   }
 `;
 

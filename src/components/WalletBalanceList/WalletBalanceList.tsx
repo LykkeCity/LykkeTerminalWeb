@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
 import styled from '../styled';
@@ -5,9 +6,12 @@ import {Table} from '../Table/index';
 import {TradingWalletItem} from './';
 
 const Total = styled.tr`
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.1);
+
   td {
     font-weight: bold !important;
+    padding-top: ${rem(12)};
+    padding-bottom: ${rem(12)};
   }
 `;
 

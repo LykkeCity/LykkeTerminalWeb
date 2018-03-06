@@ -24,7 +24,6 @@ const StyledNotification = styled.div`
   padding: 12px 16px;
   background-color: ${(p: any) => getBackground(p.level)};
   box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
 ` as any;
 
 const StyledCloseBtn = styled.a`

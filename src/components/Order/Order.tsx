@@ -23,31 +23,34 @@ const StyledActionBlock = styled.div`
   flex-direction: row;
   justify-content: space-between;
   position: relative;
-  margin-top: ${rem(10)};
+  margin: ${rem(-10)} ${rem(-15)} ${rem(18)};
 `;
 
 const StyledActionChoice = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-bottom: ${rem(20)};
+  margin-bottom: ${rem(16)};
 `;
 
-const StyledContentWrap = styled.div`
-  padding: 15px 15px;
-`;
+const StyledContentWrap = styled.div``;
 
 const StyledSplitBlock = styled.div`
-  font-family: 'Akrobat';
+  font-family: 'Akrobat', sans-serif;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 54%;
   transform: translateX(-50%) translateY(-50%);
-  font-size: ${rem(20)};
+  font-size: ${rem(24)};
   font-weight: 600;
-  line-height: 1.33;
-  color: #ccc;
+  line-height: 1;
+  color: #fff;
   text-align: center;
+
+  small {
+    font-size: ${rem(14)};
+    opacity: 0.4;
+  }
 `;
 
 class Order extends React.Component<OrderProps, OrderState> {
