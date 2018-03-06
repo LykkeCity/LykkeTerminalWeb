@@ -1,7 +1,8 @@
 import {RestApi} from './restApi';
+import {ApiResponse} from './types';
 
 export interface MarketApi {
-  convert: (body: any) => Promise<any>;
+  convert: (body: any) => ApiResponse;
 }
 
 export class RestMarketApi extends RestApi implements MarketApi {
@@ -13,4 +14,4 @@ export class MockMarketApi implements MarketApi {
   convert = () => Promise.resolve([]);
 }
 
-export default MarketApi;
+export default new RestMarketApi();

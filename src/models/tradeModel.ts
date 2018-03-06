@@ -14,6 +14,7 @@ class TradeModel {
   buyVolume: number;
   sellVolume: number;
   orderType: OrderType;
+  fee?: number;
 
   constructor(trade: Partial<TradeModel>) {
     extendObservable(this, trade);

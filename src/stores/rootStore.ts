@@ -110,7 +110,6 @@ class RootStore {
     await this.referenceStore
       .fetchBaseAsset()
       .then(() => {
-        this.tradeStore.fetchAll();
         this.balanceListStore.fetchAll();
         this.orderListStore.fetchAll();
       }, reject => Promise.resolve)
@@ -133,6 +132,7 @@ class RootStore {
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
+        this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
         return Promise.resolve();
