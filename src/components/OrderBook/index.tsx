@@ -6,16 +6,19 @@ import OrderBook from './OrderBook';
 // tslint:disable:object-literal-sort-keys
 const ConnectedOrderBook = connect(
   ({
+    modalStore: {addModal},
     orderBookStore: {asks, bids, mid},
     uiStore: {selectedInstrument, stateFns},
-    orderStore: {updatePrice}
+    orderStore: {cancelOrder, updatePrice}
   }) => {
     const volumeAccuracy = pathOr(0, ['baseAsset', 'accuracy'], selectedInstrument);
     const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
     const midPrice = mid().toFixed(priceAccuracy);
     return {
+      addModal,
       asks,
       bids,
+      cancelOrder,
       mid: midPrice,
       volumeAccuracy,
       priceAccuracy,

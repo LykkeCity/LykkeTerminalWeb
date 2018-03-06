@@ -4,12 +4,19 @@ import {curry} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
+import ModalMessages from '../../constants/modalMessages';
 import {displayType} from '../../constants/orderBook';
+import OrderClickAction from '../../constants/orderbookClickActions';
+import keys from '../../constants/storageKeys';
 import {Order} from '../../models';
+import Types from '../../models/modals';
 import {capitalize} from '../../utils';
+import {StorageUtils} from '../../utils/index';
 import {css} from '../styled';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
+
+const confirmStorage = StorageUtils(keys.confirmReminder);
 
 const Wrapper = styled.div`
   height: 100%;
@@ -99,6 +106,7 @@ const Bar = styled.div`
 `;
 
 interface OrderBookProps {
+  addModal: any;
   asks: Order[];
   bids: Order[];
   mid: string;
@@ -106,6 +114,7 @@ interface OrderBookProps {
   volumeAccuracy: number;
   updatePrice: any;
   stateFns: any[];
+  cancelOrder: any;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -137,6 +146,10 @@ class OrderBook extends React.Component<OrderBookProps> {
     this.valueToShow = e.target.id;
   };
 
+  cancelOrders = (connectedOrders: string[]) => {
+    connectedOrders.forEach(id => this.props.cancelOrder(id));
+  };
+
   componentDidUpdate() {
     if (this.isScrollSet) {
       return;
@@ -151,8 +164,29 @@ class OrderBook extends React.Component<OrderBookProps> {
     }
   }
 
-  handleClick = (price: number, depth: number) => () => {
-    this.props.updatePrice(price, depth);
+  handleClick = (options: any) => (e: any) => {
+    const {clickType, connectedLimitOrders, price, depth} = options;
+    switch (clickType) {
+      case OrderClickAction.UpdatePrice:
+        this.props.updatePrice(price, depth);
+        break;
+      case OrderClickAction.CancelOrder:
+        e.stopPropagation();
+        const isConfirm = confirmStorage.get() as string;
+        if (!JSON.parse(isConfirm)) {
+          return this.cancelOrders(connectedLimitOrders);
+        }
+
+        const message = ModalMessages.cancelOrder(connectedLimitOrders);
+        this.props.addModal(
+          message,
+          () => this.cancelOrders(connectedLimitOrders),
+          // tslint:disable-next-line:no-empty
+          () => {},
+          Types.Confirm
+        );
+        break;
+    }
   };
 
   render() {
@@ -210,7 +244,11 @@ class OrderBook extends React.Component<OrderBookProps> {
             </StyledSellOrders>
             <StyledMidPrice
               innerRef={this.refHandlers.midPrice}
-              onClick={this.handleClick(Number(mid), 0)}
+              onClick={this.handleClick({
+                clickType: OrderClickAction.UpdatePrice,
+                depth: 0,
+                price: Number(mid)
+              })}
             >
               <tr>
                 <td>{Number.isNaN(Number.parseFloat(mid)) ? '' : mid}</td>
