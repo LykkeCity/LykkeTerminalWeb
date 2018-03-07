@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react';
-import {lighten, rem} from 'polished';
+import {rem} from 'polished';
 import * as React from 'react';
 import {Dir} from '../../models';
 import {InstrumentModel} from '../../models/index';
@@ -18,7 +18,7 @@ const StyledInstrumentItem = styled(Flex)`
   margin-top: 10px;
   justify-content: space-between;
   &.inactive:hover {
-    background: ${lighten(0.05, '#3c3c3c')};
+    background-color: rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
 `;

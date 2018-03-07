@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
+import {css} from '../styled';
 
 const StyledSelect = styled.div`
   position: absolute;
@@ -26,9 +27,13 @@ const StyledItem = styled.li.attrs({
   font-size: 1rem;
   padding: 0.625rem;
 
-  &:hover {
-    background: #494949;
-  }
+  ${(p: any) =>
+    p.isActive ||
+    css`
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2) !important;
+      }
+    `};
 ` as any;
 
 interface CustomSelectProps {
