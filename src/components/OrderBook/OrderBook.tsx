@@ -112,9 +112,10 @@ interface OrderBookProps {
   priceAccuracy: number;
   volumeAccuracy: number;
   updatePrice: any;
-  updateDepth: any;
+  updatePriceAndDepth: any;
   stateFns: any[];
   cancelOrder: any;
+  setIsOrderBookClicked: any;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -164,11 +165,13 @@ class OrderBook extends React.Component<OrderBookProps> {
     }
   }
 
-  handleUpdateDepth = (depth: number) => () => {
-    this.props.updateDepth(depth);
+  handleUpdatePriceAndDepth = (price: number, depth: number) => () => {
+    this.props.setIsOrderBookClicked(true);
+    this.props.updatePriceAndDepth(price, depth);
   };
 
   handleUpdatePrice = (price: number) => () => {
+    this.props.setIsOrderBookClicked(true);
     this.props.updatePrice(price);
   };
 
@@ -238,7 +241,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
-                  onDepthClick={this.handleUpdateDepth}
+                  onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
                 />
               ))}
@@ -261,7 +264,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
-                  onDepthClick={this.handleUpdateDepth}
+                  onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
                 />
               ))}

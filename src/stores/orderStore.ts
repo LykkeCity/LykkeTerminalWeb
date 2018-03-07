@@ -17,11 +17,13 @@ class OrderStore extends BaseStore {
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
   private updateDepthByOrderBook: any;
+  private isOrderBookClicked: boolean;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
+    this.isOrderBookClicked = false;
   }
 
   updatePriceFn = (fn: any) => {
@@ -42,6 +44,11 @@ class OrderStore extends BaseStore {
     if (this.updateDepthByOrderBook) {
       this.updateDepthByOrderBook(quantity);
     }
+  };
+
+  updatePriceAndDepth = (price: number, quantity: number) => {
+    this.updatePrice(price);
+    this.updateDepth(quantity);
   };
 
   placeOrder = async (orderType: string, body: any) => {
@@ -118,7 +125,16 @@ class OrderStore extends BaseStore {
     });
   };
 
+  getIsOrderBookClicked = (): boolean => {
+    return this.isOrderBookClicked;
+  };
+
+  setIsOrderBookClicked = (value: boolean) => {
+    this.isOrderBookClicked = value;
+  };
+
   reset = () => {
+    this.setIsOrderBookClicked(false);
     return;
   };
 

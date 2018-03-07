@@ -38,7 +38,7 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
-    const widget = new (window as any).TradingView.widget({
+    return new (window as any).TradingView.widget({
       autosize: true,
       symbol: instrument.name,
       interval: '60',
@@ -88,18 +88,6 @@ class ChartStore extends BaseStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
-
-    let p = 0;
-    widget.onChartReady(() => {
-      widget.chart().crossHairMoved(({time, price}: any) => {
-        p = price;
-      });
-      widget.subscribe('mouse_down', () => {
-        this.rootStore.orderStore.updatePrice(p);
-      });
-    });
-
-    return widget;
   };
 
   reset = () => {
