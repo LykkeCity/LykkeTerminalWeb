@@ -10,6 +10,10 @@ const StyledOrdersSelection = styled.div`
   border-right: 1px solid rgba(0, 0, 0, 0.2);
   position: relative;
 
+  font-size: 14px;
+  text-align: left;
+  color: rgb(245, 246, 247);
+
   &:first-letter {
     text-transform: capitalize;
   }
@@ -24,7 +28,7 @@ const StyledOrdersSelection = styled.div`
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;
     border-top: 4px solid #f5f6f7;
-    top: 5px;
+    top: 7px;
     right: 13px;
   }
 `;

@@ -154,12 +154,13 @@ export const mapToTradeFromRest = ({Asset, Amount, DateTime, Id}: any) =>
     side: Amount >= 0 ? Side.Buy : Side.Sell
   });
 
-export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly}: any) =>
+export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly, Order}: any) =>
   new WatchlistModel({
     assetIds: AssetIds,
     id: Id,
     name: Name,
-    readOnly: ReadOnly
+    readOnly: ReadOnly,
+    order: Order
   });
 
 export const mapHistoryTypeToOrderType = (type: string) => {
