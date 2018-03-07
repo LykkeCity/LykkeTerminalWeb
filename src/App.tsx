@@ -55,7 +55,7 @@ injectGlobal`
   :root {
     height: auto;
     min-height: 100%;
-    font: normal 16px "Proxima Nova", sans-serif;
+    font: normal 14px "Proxima Nova", sans-serif;
     color: #f5f6f7;
     line-height: normal;
 
