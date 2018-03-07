@@ -66,6 +66,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     this.props.stateFns.push(this.handleChangeInstrument);
     this.props.updatePriceFn(this.updatePriceByOrderBook);
+    this.props.updateDepthFn(this.updateDepthByOrderBook);
     this.props.initPriceFn(this.initPriceUpdate);
   }
 
@@ -96,9 +97,14 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
-  updatePriceByOrderBook = (price: number, quantity: number) => {
+  updatePriceByOrderBook = (price: number) => {
     this.setState({
-      priceValue: price.toFixed(this.props.accuracy.priceValue),
+      priceValue: price.toFixed(this.props.accuracy.priceValue)
+    });
+  };
+
+  updateDepthByOrderBook = (quantity: number) => {
+    this.setState({
       quantityValue: quantity.toFixed(this.props.accuracy.quantityValue)
     });
   };
