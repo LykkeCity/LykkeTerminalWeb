@@ -1,5 +1,5 @@
 enum Search {
-  Default = 'BTC'
+  Default = ''
 }
 
 export default Search;

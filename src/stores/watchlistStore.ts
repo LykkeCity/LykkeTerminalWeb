@@ -2,7 +2,6 @@ import {computed, observable, runInAction} from 'mobx';
 import {WatchlistApi} from '../api/index';
 import defaultWatchLists from '../constants/watchlists';
 import * as mappers from '../models/mappers';
-import WatchlistModel from '../models/watchlistModel';
 import {BaseStore, RootStore} from './index';
 
 class WatchlistStore extends BaseStore {
@@ -16,21 +15,12 @@ class WatchlistStore extends BaseStore {
     return this.watchlists;
   }
 
-  @computed
-  get watchlistNames() {
-    return this.watchlists
-      .filter((watchlist: WatchlistModel) => watchlist.readOnly)
-      .map((wl: WatchlistModel) => wl.name);
-  }
-
   @observable
   private watchlists: any[] = defaultWatchLists.map(mappers.mapToWatchList);
 
   constructor(store: RootStore, private readonly api: WatchlistApi) {
     super(store);
   }
-
-  getWatchlistById = (id: string) => this.watchlists.find(x => x.id === id);
 
   fetchAll = () => {
     return this.api
@@ -42,10 +32,6 @@ class WatchlistStore extends BaseStore {
         return Promise.resolve();
       })
       .catch(Promise.reject);
-  };
-
-  watchlistsByName = (name: string) => {
-    return this.watchlists.find((wl: WatchlistModel) => wl.name === name);
   };
 
   reset = () => {

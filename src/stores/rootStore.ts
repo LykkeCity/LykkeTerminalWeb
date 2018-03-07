@@ -10,7 +10,6 @@ import {
 } from '../api/index';
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
-import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
@@ -83,7 +82,7 @@ class RootStore {
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
       this.referenceStore
-        .findInstruments('', Watchlists.All)
+        .findInstruments('')
         .forEach((x: any) =>
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
         );
