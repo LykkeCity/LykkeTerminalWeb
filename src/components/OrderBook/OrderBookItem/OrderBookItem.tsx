@@ -169,7 +169,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
     <OrderRow>
       <VolumeCell side={side}>
         {side === Side.Sell ? (
-          <div onClick={onDepthClick(depth)}>
+          <div onClick={onDepthClick(+currentPrice, depth)}>
             <VolumeOverlay
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
@@ -194,7 +194,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
       <MidCell onClick={onPriceClick(+currentPrice)}>{currentPrice}</MidCell>
       <VolumeCell side={side}>
         {side === Side.Buy ? (
-          <div onClick={onDepthClick(depth)}>
+          <div onClick={onDepthClick(+currentPrice, depth)}>
             <VolumeOverlay
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
