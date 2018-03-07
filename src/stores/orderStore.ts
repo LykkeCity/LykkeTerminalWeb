@@ -16,6 +16,7 @@ class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
+  private updateDepthByOrderBook: any;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
@@ -27,9 +28,19 @@ class OrderStore extends BaseStore {
     this.updatePriceByOrderBook = fn;
   };
 
-  updatePrice = (price: number, quantity: number) => {
+  updateDepthFn = (fn: any) => {
+    this.updateDepthByOrderBook = fn;
+  };
+
+  updatePrice = (price: number) => {
     if (this.updatePriceByOrderBook) {
-      this.updatePriceByOrderBook(price, quantity);
+      this.updatePriceByOrderBook(price);
+    }
+  };
+
+  updateDepth = (quantity: number) => {
+    if (this.updateDepthByOrderBook) {
+      this.updateDepthByOrderBook(quantity);
     }
   };
 
