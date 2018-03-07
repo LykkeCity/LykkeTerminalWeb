@@ -28,7 +28,7 @@ const Table = styled.table`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
 
     &:first-child {
       color: #f5f6f7;
