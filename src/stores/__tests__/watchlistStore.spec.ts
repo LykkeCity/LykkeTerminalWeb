@@ -23,17 +23,6 @@ describe('watchlist store', () => {
       expect(watchlistStore.activeWatchlists.length).toBe(1);
       expect(watchlistStore.activeWatchlists[0].name).toBe(Watchlists.All);
     });
-
-    it('should return name of watchlist', () => {
-      expect(watchlistStore.activeWatchlists[0].name).toBe(
-        watchlistStore.watchlistNames[0]
-      );
-    });
-
-    it('should return watch list by its name', () => {
-      const watchlist = watchlistStore.watchlistsByName(Watchlists.All);
-      expect(watchlist.name).toBe(Watchlists.All);
-    });
   });
 
   describe('reset', () => {

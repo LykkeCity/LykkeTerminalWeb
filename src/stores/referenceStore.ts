@@ -76,7 +76,7 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
-  findInstruments = (term: string, name: string) => {
+  findInstruments = (term: string) => {
     const isAuth = this.rootStore.authStore.isAuth;
     const instruments = isAuth
       ? this.instruments
@@ -84,26 +84,14 @@ class ReferenceStore extends BaseStore {
           .filter(this.filterAvailableInstrument)
       : this.instruments;
 
-    return instruments
-      .filter(this.filterWithIdAndName)
-      .filter(x =>
-        x.displayName!
-          .toLowerCase()
-          .replace(SearchString.Delimiter, SearchString.Empty)
-          .includes(
-            term
-              .toLowerCase()
-              .replace(SearchString.Delimiter, SearchString.Empty)
-          )
-      )
-      .filter(
-        i =>
-          isAuth
-            ? !!~this.rootStore.watchlistStore
-                .watchlistsByName(name)
-                .assetIds.indexOf(i.id)
-            : i
-      );
+    return instruments.filter(this.filterWithIdAndName).filter(x =>
+      x.displayName!
+        .toLowerCase()
+        .replace(SearchString.Delimiter, SearchString.Empty)
+        .includes(
+          term.toLowerCase().replace(SearchString.Delimiter, SearchString.Empty)
+        )
+    );
   };
 
   @action

@@ -1,7 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
-import Watchlists from '../../models/watchlists';
+import Search from '../../models/search';
 import {
   InstrumentList,
   InstrumentPickerProps,
@@ -28,35 +28,18 @@ class InstrumentPicker extends React.Component<
     super(props);
     this.state = {
       activeShortcut: 0,
-      searchValue: '',
-      searchWallet: Watchlists.All
+      searchValue: Search.Default
     };
   }
 
-  changeWallet = (value: string = Watchlists.All, index: number = 0) => {
+  changeValue = (value: string = Search.Default, index: number = 0) => {
     this.setState({
       activeShortcut: index,
-      searchWallet: value
-    });
-
-    if (this.props.onSearchWalletName) {
-      this.props.onSearchWalletName(value);
-    }
-  };
-
-  changeValue = (value: string = '') => {
-    this.setState({
-      activeShortcut: 0,
-      searchValue: value,
-      searchWallet: Watchlists.All
+      searchValue: value
     });
 
     if (this.props.onSearch) {
       this.props.onSearch(value);
-    }
-
-    if (this.props.onSearchWalletName) {
-      this.props.onSearchWalletName(Watchlists.All);
     }
   };
 
@@ -68,9 +51,8 @@ class InstrumentPicker extends React.Component<
           <InstrumentPopover onToggle={this.props.onToggle}>
             <StyledSearchWrap align={'center'} justify={'space-between'}>
               <InstrumentShortcuts
-                changeValue={this.changeWallet}
+                changeValue={this.changeValue}
                 shortcutActiveIndex={this.state.activeShortcut}
-                shortcuts={this.props.watchlistNames}
               />
               <InstrumentSearch
                 inputValue={this.state.searchValue}
