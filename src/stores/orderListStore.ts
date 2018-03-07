@@ -33,7 +33,8 @@ class OrderListStore extends BaseStore {
   }
 
   @observable private orders: OrderModel[] = [];
-  @observable private selectedOrder: string = OrdersDefaultSelection.All;
+  @observable
+  private selectedOrder: string = OrdersDefaultSelection.CurrentAsset;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
@@ -52,10 +53,11 @@ class OrderListStore extends BaseStore {
   };
 
   filterOrders = (orders: OrderModel[]) => {
-    return this.selectedOrderOptions === 'all'
+    return this.selectedOrderOptions === OrdersDefaultSelection.All
       ? orders
       : orders.filter(
-          (order: OrderModel) =>
+          order =>
+            this.rootStore.uiStore.selectedInstrument &&
             order.symbol === this.rootStore.uiStore.selectedInstrument!.id
         );
   };
