@@ -24,7 +24,9 @@ export interface OrderProps {
   onValueChange: any;
   fixedAmount: any;
   updatePriceFn: any;
+  updateDepthFn: any;
   initPriceFn: any;
+  getIsOrderBookClicked: any;
 }
 
 export interface OrderOptionProps {
@@ -84,7 +86,12 @@ const ConnectedOrder = connect(
   ({
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid},
-    orderStore: {placeOrder, updatePriceFn},
+    orderStore: {
+      placeOrder,
+      updatePriceFn,
+      updateDepthFn,
+      getIsOrderBookClicked
+    },
     uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
     referenceStore,
     uiOrderStore: {onArrowClick, onValueChange, fixedAmount}
@@ -104,12 +111,14 @@ const ConnectedOrder = connect(
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
     getAssetById: referenceStore.getAssetById,
+    getIsOrderBookClicked,
     initPriceFn,
     name: pathOr('', ['name'], instrument),
     onArrowClick,
     onValueChange,
     placeOrder,
     stateFns,
+    updateDepthFn,
     updatePriceFn
   }),
   Order
