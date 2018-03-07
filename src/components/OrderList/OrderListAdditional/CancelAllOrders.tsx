@@ -26,7 +26,7 @@ const CancelAllOrders: React.SFC<CancelAllOrderProps> = observer(
     return (
       <StyledSpan
         className={isOrderLength ? 'clickable' : ''}
-        onClick={cancelAll}
+        onClick={isOrderLength ? cancelAll : null}
       >
         Cancel all
       </StyledSpan>

@@ -129,7 +129,7 @@ const OrderRow = styled.tr`
   }
 
   &:hover {
-    background: rgba(0, 0, 0, 0.08);
+    background-color: rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
 `;

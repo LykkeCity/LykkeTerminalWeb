@@ -31,7 +31,7 @@ const OrderList: React.SFC<OrderListProps> = ({
       <thead>
         <tr>
           <th>Asset pair</th>
-          <th>Close</th>
+          <th>Cancel order</th>
           <th>OrderID</th>
           <th>Side</th>
           <th>Volume</th>
