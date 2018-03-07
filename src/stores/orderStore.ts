@@ -16,21 +16,39 @@ class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
+  private updateDepthByOrderBook: any;
+  private isOrderBookClicked: boolean;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
+    this.isOrderBookClicked = false;
   }
 
   updatePriceFn = (fn: any) => {
     this.updatePriceByOrderBook = fn;
   };
 
-  updatePrice = (price: number, quantity: number) => {
+  updateDepthFn = (fn: any) => {
+    this.updateDepthByOrderBook = fn;
+  };
+
+  updatePrice = (price: number) => {
     if (this.updatePriceByOrderBook) {
-      this.updatePriceByOrderBook(price, quantity);
+      this.updatePriceByOrderBook(price);
     }
+  };
+
+  updateDepth = (quantity: number) => {
+    if (this.updateDepthByOrderBook) {
+      this.updateDepthByOrderBook(quantity);
+    }
+  };
+
+  updatePriceAndDepth = (price: number, quantity: number) => {
+    this.updatePrice(price);
+    this.updateDepth(quantity);
   };
 
   placeOrder = async (orderType: string, body: any) => {
@@ -107,7 +125,16 @@ class OrderStore extends BaseStore {
     });
   };
 
+  getIsOrderBookClicked = (): boolean => {
+    return this.isOrderBookClicked;
+  };
+
+  setIsOrderBookClicked = (value: boolean) => {
+    this.isOrderBookClicked = value;
+  };
+
   reset = () => {
+    this.setIsOrderBookClicked(false);
     return;
   };
 

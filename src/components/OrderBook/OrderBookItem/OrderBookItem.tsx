@@ -1,5 +1,4 @@
 import * as React from 'react';
-import OrderClickAction from '../../../constants/orderbookClickActions';
 import {Order, Side} from '../../../models/index';
 import styled from '../../styled';
 
@@ -125,6 +124,10 @@ const OrderRow = styled.tr`
   align-items: center;
   border-bottom: solid 1px rgba(0, 0, 0, 0.08);
 
+  & > td {
+    border-bottom: none;
+  }
+
   &:hover {
     background: rgba(0, 0, 0, 0.08);
     cursor: pointer;
@@ -137,7 +140,9 @@ interface OrderBookItemProps extends Order {
   maxValue?: number;
   minValue?: number;
   valueToShow: number;
-  onClick: any;
+  onPriceClick: any;
+  onDepthClick: any;
+  onOrderClick: any;
   depth: number;
   orderVolume: number;
   connectedLimitOrders: string[];
@@ -153,22 +158,18 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   minValue = 10,
   maxValue = 100,
   orderVolume,
-  onClick,
   connectedLimitOrders,
-  depth
+  depth,
+  onPriceClick,
+  onDepthClick,
+  onOrderClick
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
   return (
-    <OrderRow
-      onClick={onClick({
-        clickType: OrderClickAction.UpdatePrice,
-        depth,
-        price: +currentPrice
-      })}
-    >
+    <OrderRow>
       <VolumeCell side={side}>
         {side === Side.Sell ? (
-          <div>
+          <div onClick={onDepthClick(+currentPrice, depth)}>
             <VolumeOverlay
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
@@ -181,10 +182,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
             <AskVolume side={side}>
               <CloseOrders
                 side={side}
-                onClick={onClick({
-                  clickType: OrderClickAction.CancelOrder,
-                  connectedLimitOrders
-                })}
+                onClick={onOrderClick(connectedLimitOrders)}
               >
                 &times;
               </CloseOrders>
@@ -193,10 +191,10 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
           )
         )}
       </VolumeCell>
-      <MidCell>{currentPrice}</MidCell>
+      <MidCell onClick={onPriceClick(+currentPrice)}>{currentPrice}</MidCell>
       <VolumeCell side={side}>
         {side === Side.Buy ? (
-          <div>
+          <div onClick={onDepthClick(+currentPrice, depth)}>
             <VolumeOverlay
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
@@ -210,10 +208,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               <div>{orderVolume}</div>
               <CloseOrders
                 side={side}
-                onClick={onClick({
-                  clickType: OrderClickAction.CancelOrder,
-                  connectedLimitOrders
-                })}
+                onClick={onOrderClick(connectedLimitOrders)}
               >
                 &times;
               </CloseOrders>

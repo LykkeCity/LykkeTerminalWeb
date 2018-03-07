@@ -66,6 +66,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     this.props.stateFns.push(this.handleChangeInstrument);
     this.props.updatePriceFn(this.updatePriceByOrderBook);
+    this.props.updateDepthFn(this.updateDepthByOrderBook);
     this.props.initPriceFn(this.initPriceUpdate);
   }
 
@@ -90,15 +91,23 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   handleActionClick = (action: string, price: number) => () => {
+    const tempObj: any = {
+      isSellActive: action === orderAction.sell.action
+    };
+    if (!this.props.getIsOrderBookClicked()) {
+      tempObj.priceValue = price.toFixed(this.props.accuracy.priceValue);
+    }
+    this.setState(tempObj);
+  };
+
+  updatePriceByOrderBook = (price: number) => {
     this.setState({
-      isSellActive: action === orderAction.sell.action,
       priceValue: price.toFixed(this.props.accuracy.priceValue)
     });
   };
 
-  updatePriceByOrderBook = (price: number, quantity: number) => {
+  updateDepthByOrderBook = (quantity: number) => {
     this.setState({
-      priceValue: price.toFixed(this.props.accuracy.priceValue),
       quantityValue: quantity.toFixed(this.props.accuracy.quantityValue)
     });
   };
