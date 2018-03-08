@@ -94,9 +94,6 @@ class Order extends React.Component<OrderProps, OrderState> {
     const tempObj: any = {
       isSellActive: action === orderAction.sell.action
     };
-    if (!this.props.getIsOrderBookClicked()) {
-      tempObj.priceValue = price.toFixed(this.props.accuracy.priceValue);
-    }
     this.setState(tempObj);
   };
 

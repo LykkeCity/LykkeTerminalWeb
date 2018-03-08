@@ -22,11 +22,11 @@ const StyledSpan = styled.span`
 `;
 
 const CancelAllOrders: React.SFC<CancelAllOrderProps> = observer(
-  ({cancelAll, isOrderLength}) => {
+  ({cancelAll, hasOrders}) => {
     return (
       <StyledSpan
-        className={isOrderLength ? 'clickable' : ''}
-        onClick={isOrderLength ? cancelAll : null}
+        className={hasOrders ? 'clickable' : ''}
+        onClick={hasOrders ? cancelAll : null}
       >
         Cancel all
       </StyledSpan>
