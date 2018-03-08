@@ -23,8 +23,8 @@ class OrderListStore extends BaseStore {
   }
 
   @computed
-  get isOrderLength() {
-    return this.orders.length;
+  get hasOrders() {
+    return this.limitOrders.length > 0;
   }
 
   @computed

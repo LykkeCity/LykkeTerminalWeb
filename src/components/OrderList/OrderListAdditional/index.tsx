@@ -15,9 +15,9 @@ export interface ToggleOrdersProps {
 }
 
 const ConnectedCancelAllOrders = connect(
-  ({orderListStore: {isOrderLength}, orderStore: {cancelAll}}) => ({
+  ({orderListStore: {hasOrders}, orderStore: {cancelAll}}) => ({
     cancelAll,
-    isOrderLength
+    hasOrders
   }),
   CancelAllOrders
 );
