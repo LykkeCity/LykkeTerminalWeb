@@ -8,7 +8,7 @@ const {Flex} = require('grid-styled');
 
 const StyledShortcutList = styled(Flex)`
   width: 200px;
-  overflow: auto;
+  overflow: hidden;
   flex-wrap: wrap;
   height: 22px;
 `;
