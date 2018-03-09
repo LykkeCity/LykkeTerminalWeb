@@ -66,15 +66,13 @@ class OrderStore extends BaseStore {
     }
   };
 
-  editOrder = async (body: any, id: string) => {
-    return this.api.placeLimit(body).then((orderId: string) => {
-      return this.api
-        .cancelOrder(id)
-        .then(this.orderEditedSuccessfully)
-        .catch(() => this.api.cancelOrder(orderId))
-        .then(this.updateOrders);
-    }, this.orderPlacedUnsuccessfully);
-  };
+  editOrder = async (body: any, id: string) =>
+    this.api
+      .cancelOrder(id)
+      .then(() => this.api.placeLimit(body))
+      .then(this.updateOrders)
+      .then(this.orderEditedSuccessfully)
+      .catch(this.orderPlacedUnsuccessfully);
 
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
