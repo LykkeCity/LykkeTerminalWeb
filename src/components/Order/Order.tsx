@@ -70,7 +70,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.props.initPriceFn(this.initPriceUpdate);
   }
 
-  initPriceUpdate = (price: number, instrument: InstrumentModel) => {
+  initPriceUpdate = (price: number = 0, instrument: InstrumentModel) => {
     const priceAccuracy = pathOr(2, ['accuracy'], instrument);
     this.setState({
       priceValue: price.toFixed(priceAccuracy)
