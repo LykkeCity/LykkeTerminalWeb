@@ -15,6 +15,7 @@ const StyledModal = styled.div`
   background-color: #3c3c3c;
   border: solid 1px rgba(0, 0, 0, 0.2);
   z-index: 3;
+  min-width: 360px;
 `;
 
 const Button = styled.button`
