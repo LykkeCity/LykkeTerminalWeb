@@ -10,9 +10,8 @@ export interface TradesProps {
   trades?: TradeModel[];
   needToLoadMore?: boolean;
   fetchPart: any;
-  stringId?: string;
   authorized?: true;
-  selectedInstrument?: InstrumentModel; // TODO: move it back as mandatory after merge with public trades
+  selectedInstrument: InstrumentModel;
 }
 
 const ConnectedTradeList = connect(

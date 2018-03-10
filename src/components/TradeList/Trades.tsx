@@ -33,7 +33,6 @@ const Trades: React.SFC<TradesProps> = ({
   trades = [],
   needToLoadMore,
   fetchPart,
-  stringId = '',
   selectedInstrument
 }) => {
   const assetFromSelectedInstrument = curry(assetFromInstrument)(
@@ -56,7 +55,7 @@ const Trades: React.SFC<TradesProps> = ({
         </thead>
         <tbody>
           {trades.map(trade => (
-            <TradeListItem key={`${trade.id}_${stringId}`} {...trade} />
+            <TradeListItem key={`${trade.id}`} {...trade} />
           ))}
         </tbody>
       </Table>
