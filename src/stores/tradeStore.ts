@@ -3,8 +3,9 @@ import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {TradeModel} from '../models/index';
-import * as mappers from '../models/mappers';
 import TradeQuantity from '../models/tradeLoadingQuantity';
+import * as map from '../models/tradeModel.mapper';
+import {delay} from '../utils';
 import {BaseStore, RootStore} from './index';
 
 const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
@@ -36,12 +37,9 @@ class TradeStore extends BaseStore {
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
   private skip: number = TradeQuantity.Skip;
-  private publicSkip: number = TradeQuantity.Skip;
   private take: number = TradeQuantity.Take;
-  private publicTake: number = TradeQuantity.Take;
   private loading: number = TradeQuantity.Loading;
   private wampTrades: number = 0;
-  private wampPublicTrades: number = 0;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
@@ -67,8 +65,9 @@ class TradeStore extends BaseStore {
       this.take
     );
     runInAction(() => {
+      this.trades = [];
       this.addTrades(
-        mappers.mapToTradeList(
+        map.fromRestToTradeList(
           resp,
           this.selectedInstrument!.quoteAsset.accuracy
         )
@@ -76,14 +75,18 @@ class TradeStore extends BaseStore {
     });
   };
 
-  fetchPublicTrades = () => {
-    this.api
-      .fetchPublicTrades(this.publicSkip, this.publicTake)
-      .then((dto: any) => {
-        runInAction(() => {
-          this.publicTrades = mappers.mapToTradeList(dto, 2);
-        });
+  fetchPublicTrades = async () => {
+    const {uiStore: {selectedInstrument}} = this.rootStore;
+    if (selectedInstrument && selectedInstrument.id) {
+      const resp = await this.api.fetchPublicTrades(
+        selectedInstrument.id,
+        TradeQuantity.Skip,
+        TradeQuantity.Take
+      );
+      runInAction(() => {
+        this.publicTrades = resp.map(map.fromRestToPublicTrade);
       });
+    }
   };
 
   subscribe = (ws: any) => {
@@ -91,10 +94,8 @@ class TradeStore extends BaseStore {
   };
 
   subscribeToPublicTrades = (ws: any) => {
-    ws.subscribe(
-      topics.publicTrade(this.rootStore.uiStore.selectedInstrument!.id),
-      this.onPublicTrades
-    );
+    const instrumentId = this.rootStore.uiStore.selectedInstrument!.id;
+    ws.subscribe(topics.publicTrade(instrumentId), this.onPublicTrades);
   };
 
   fetchPartTrade = async () => {
@@ -102,23 +103,10 @@ class TradeStore extends BaseStore {
     this.fetchTrades();
   };
 
-  fetchPartPublicTrade = async () => {
-    this.publicSkip = this.getSkipValue(
-      'publicSkip',
-      'publicTake',
-      'wampPublicTrades'
-    );
-    const tradesDto = await this.api.fetchPublicTrades(
-      this.publicSkip,
-      this.loading
-    );
-    this.addPublicTrades(mappers.mapToTradeList(tradesDto, 2));
-  };
-
   onTrades = async (args: any[]) => {
     this.take += this.skip;
     this.skip = TradeQuantity.Skip;
-    await this.fetchTrades();
+    await delay(1500).then(() => this.fetchTrades());
     this.skip = this.take - TradeQuantity.Take;
     this.take = TradeQuantity.Take;
     const executedOrderIds: string[] = uniq(
@@ -133,8 +121,7 @@ class TradeStore extends BaseStore {
   };
 
   onPublicTrades = (args: any[]) => {
-    this.wampPublicTrades += args[0].lengths;
-    this.addPublicTrades(mappers.mapToTradeList(args[0], 2));
+    this.addPublicTrades(args.map(map.fromWampToPublicTrade));
   };
 
   @action

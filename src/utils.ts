@@ -11,3 +11,6 @@ export const asChange = compose(withPercent, withSign, withAccuracy);
 
 export const capitalize = (str: string | undefined | null) =>
   str ? str.substr(0, 1).toUpperCase() + str.substr(1).toLowerCase() : '';
+
+export const delay = (ms: number) =>
+  new Promise(resolve => setTimeout(resolve, ms));

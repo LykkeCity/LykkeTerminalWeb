@@ -137,7 +137,9 @@ class RootStore {
         );
         this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
+        this.tradeStore.subscribeToPublicTrades(ws);
         this.balanceListStore.subscribe(ws);
+        this.tradeStore.fetchPublicTrades();
         return Promise.resolve();
       })
       .catch(() => {
