@@ -3,8 +3,9 @@ import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {TradeModel} from '../models/index';
-import * as mappers from '../models/mappers';
 import TradeQuantity from '../models/tradeLoadingQuantity';
+import * as map from '../models/tradeModel.mapper';
+import {delay} from '../utils';
 import {BaseStore, RootStore} from './index';
 
 const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
@@ -64,8 +65,9 @@ class TradeStore extends BaseStore {
       this.take
     );
     runInAction(() => {
+      this.trades = [];
       this.addTrades(
-        mappers.mapToTradeList(
+        map.fromRestToTradeList(
           resp,
           this.selectedInstrument!.quoteAsset.accuracy
         )
@@ -82,7 +84,7 @@ class TradeStore extends BaseStore {
         TradeQuantity.Take
       );
       runInAction(() => {
-        this.publicTrades = resp.map(mappers.mapRestDtoToPublicTrade);
+        this.publicTrades = resp.map(map.fromRestToPublicTrade);
       });
     }
   };
@@ -104,7 +106,7 @@ class TradeStore extends BaseStore {
   onTrades = async (args: any[]) => {
     this.take += this.skip;
     this.skip = TradeQuantity.Skip;
-    await this.fetchTrades();
+    await delay(1500).then(() => this.fetchTrades());
     this.skip = this.take - TradeQuantity.Take;
     this.take = TradeQuantity.Take;
     const executedOrderIds: string[] = uniq(
@@ -119,7 +121,7 @@ class TradeStore extends BaseStore {
   };
 
   onPublicTrades = (args: any[]) => {
-    this.addPublicTrades(args.map(mappers.mapWampDtoToPublicTrade));
+    this.addPublicTrades(args.map(map.fromWampToPublicTrade));
   };
 
   @action
