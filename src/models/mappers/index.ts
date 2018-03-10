@@ -1,6 +1,5 @@
 import {pathOr} from 'rambda';
 import {ChartStore} from '../../stores/index';
-import {precisionRound} from '../../utils/math';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -174,23 +173,6 @@ export const mapHistoryTypeToOrderType = (type: string) => {
   }
   return undefined;
 };
-
-export const mapToTradeList = (dto: any, accuracy: number) =>
-  dto.map(
-    ({Id, AssetPair, Price, Amount, DateTime, Type, FeeSize}: any) =>
-      new TradeModel({
-        id: Id,
-        price: Price,
-        quantity: Math.abs(Amount),
-        side: Amount > 0 ? Side.Buy : Side.Sell,
-        symbol: AssetPair,
-        timestamp: DateTime,
-        tradeId: Id,
-        oppositeQuantity: Math.abs(precisionRound(Amount * Price, accuracy)),
-        orderType: mapHistoryTypeToOrderType(Type),
-        fee: FeeSize
-      })
-  );
 
 export const mapToAsset = (
   {Id, Name, DisplayId, CategoryId, Accuracy, IsBase, IconUrl}: any,

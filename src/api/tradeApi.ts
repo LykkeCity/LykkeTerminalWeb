@@ -16,7 +16,11 @@ export interface TradeApi {
     skip: number,
     take: number
   ) => ApiResponse;
-  fetchPublicTrades: (skip: number, take: number) => ApiResponse;
+  fetchPublicTrades: (
+    instrumentId: string,
+    skip: number,
+    take: number
+  ) => ApiResponse;
 }
 
 export class RestTradeApi extends RestApi implements TradeApi {
@@ -33,9 +37,8 @@ export class RestTradeApi extends RestApi implements TradeApi {
     return resp.filter(filterByInstrument(instrument)).filter(filterByType);
   };
 
-  fetchPublicTrades = (skip: number, take: number) =>
-    // this.fetchUserTrades(skip, take);
-    Promise.resolve([]);
+  fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
+    HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
 }
 
 export default TradeApi;

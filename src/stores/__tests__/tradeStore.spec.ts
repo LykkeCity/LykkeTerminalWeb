@@ -35,7 +35,6 @@ describe('trade store', () => {
         }
       ])
     );
-    api.fetchPublicTrades = api.fetchTrades;
 
     tradeStore = new TradeStore(new RootStore(), api);
   });
@@ -77,13 +76,6 @@ describe('trade store', () => {
     it('should populate tradeList collection', async () => {
       await tradeStore.addTrades([new TradeModel({})]);
       expect(tradeStore.getAllTrades.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('fetch public trades', () => {
-    it('should populate public trade list', async () => {
-      await tradeStore.fetchPublicTrades();
-      expect(tradeStore.getPublicTrades.length).toBeGreaterThan(0);
     });
   });
 
