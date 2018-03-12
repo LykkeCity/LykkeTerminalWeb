@@ -164,8 +164,10 @@ export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly, Order}: any) =>
 
 export const mapHistoryTypeToOrderType = (type: string) => {
   switch (type) {
+    case 'Market':
     case 'Trade':
       return OrderType.Market;
+    case 'Limit':
     case 'LimitTrade':
       return OrderType.Limit;
     default:

@@ -5,7 +5,6 @@ import * as topics from '../api/topics';
 import {TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
-import {delay} from '../utils';
 import {BaseStore, RootStore} from './index';
 
 const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
@@ -106,7 +105,14 @@ class TradeStore extends BaseStore {
   onTrades = async (args: any[]) => {
     this.take += this.skip;
     this.skip = TradeQuantity.Skip;
-    await delay(1500).then(() => this.fetchTrades());
+
+    this.addTrades([
+      map.fromWampToTrade(
+        args[0],
+        this.rootStore.referenceStore.getInstruments()
+      )
+    ]);
+
     this.skip = this.take - TradeQuantity.Take;
     this.take = TradeQuantity.Take;
     const executedOrderIds: string[] = uniq(
