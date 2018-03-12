@@ -14,6 +14,7 @@ import OrderChoiceButton from './OrderChoiceButton';
 // import {default as OrderForm} from './OrderForm';
 import OrderLimit from './OrderLimit';
 import OrderMarket from './OrderMarket';
+import OrderStopLimit from './OrderStopLimit';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
@@ -271,6 +272,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
+  isLimitDisable = () => {
+    return !+this.state.priceValue || !+this.state.quantityValue;
+  };
+
   render() {
     const {action} = this.state.isSellActive
       ? orderAction.sell
@@ -298,11 +303,11 @@ class Order extends React.Component<OrderProps, OrderState> {
             isActive={this.state.isMarketActive}
             click={this.handleActionChoiceClick(MARKET)}
           />
-          {/*<OrderChoiceButton*/}
-          {/*title={STOP_LIMIT}*/}
-          {/*isActive={this.state.isStopLimitActive}*/}
-          {/*click={this.handleActionChoiceClick(STOP_LIMIT)}*/}
-          {/*/>*/}
+          <OrderChoiceButton
+            title={STOP_LIMIT}
+            isActive={this.state.isStopLimitActive}
+            click={this.handleActionChoiceClick(STOP_LIMIT)}
+          />
         </StyledMarkets>
 
         <StyledActions>
@@ -324,8 +329,8 @@ class Order extends React.Component<OrderProps, OrderState> {
             onSubmit={this.handleButtonClick}
             quantity={this.state.quantityValue}
             price={this.state.priceValue}
-            quantityAccuracy={this.props.accuracy.quantityAccuracy}
-            priceAccuracy={this.props.accuracy.priceAccuracy}
+            quantityAccuracy={this.props.accuracy.quantityValue}
+            priceAccuracy={this.props.accuracy.priceValue}
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
             percents={this.state.percents}
@@ -338,39 +343,12 @@ class Order extends React.Component<OrderProps, OrderState> {
               this.props.accuracy.priceAccuracy
             )}
             isDisable={this.isLimitDisable()}
-            onReset={this.reset}
-            balance={
-              available &&
-              available.toFixed(this.props.accuracy.quantityAccuracy)
-            }
           />
         )}
 
-        {this.state.isMarketActive && (
-          <OrderMarket
-            quantityAccuracy={this.props.accuracy.quantityAccuracy}
-            action={action}
-            quantity={this.state.quantityValue}
-            assetName={this.props.name}
-            percents={this.state.percents}
-            onHandlePercentageChange={this.handlePercentageChange}
-            onChange={this.onChange}
-            onArrowClick={this.onArrowClick}
-            onReset={this.reset}
-            isDisable={this.isMarketDisable()}
-            onSubmit={this.handleButtonClick}
-            balance={
-              available &&
-              available.toFixed(this.props.accuracy.quantityAccuracy)
-            }
-            isSell={this.state.isSellActive}
-          />
-        )}
+        {this.state.isMarketActive && <OrderMarket />}
 
-        {/*{this.state.isStopLimitActive && (*/}
-        {/*<OrderStopLimit*/}
-        {/*/>*/}
-        {/*)}*/}
+        {this.state.isStopLimitActive && <OrderStopLimit />}
 
         {/*<div>*/}
         {/*<OrderForm*/}
