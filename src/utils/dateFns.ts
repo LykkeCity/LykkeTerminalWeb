@@ -1,7 +1,7 @@
 import dates from '../constants/dateKeys';
 
 export const splitter = (from: number, to: number, resolution: string) => {
-  const requestLimit = 4500;
+  const requestLimit = 5000;
   const resolutionNum = Number(resolution) || 1;
   const timePeriods: any[] = [];
 

@@ -44,7 +44,7 @@ class ChartDataFeed {
     onErrorCallback: any,
     firstDataRequest: any
   ) => {
-    const timePeriods = dateFns.splitter(from, to, resolution);
+    const timePeriods = dateFns.splitter(from * 1000, to * 1000, resolution);
     const promises = timePeriods!.map(period =>
       this.priceApi.fetchCandles(
         this.instrument.id,
