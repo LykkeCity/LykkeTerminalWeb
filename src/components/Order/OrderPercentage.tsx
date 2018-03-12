@@ -9,19 +9,24 @@ interface OrderPercentageProps {
 
 const StyledPercent = styled.div.attrs({
   style: (props: any) => ({
-    backgroundColor: props.isActive ? '#fff' : 'transparent',
-    color: props.isActive ? '#333333' : '#f5f6f7'
+    color: '#f5f6f7'
   })
 })`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 4px;
-  width: 76px;
+  width: 25%;
   padding: 8px 24px;
-  border: 1px dashed rgba(140, 148, 160, 0.4);
+  border: 1px solid transparent;
+  border-right: 1px solid rgba(140, 148, 160, 0.4);
+
+  &:last-child {
+    border-right: none;
+  }
 
   &:hover {
+    border: 1px solid rgba(140, 148, 160, 0.4);
+    border-radius: 4px;
     cursor: pointer;
   }
 ` as any;
