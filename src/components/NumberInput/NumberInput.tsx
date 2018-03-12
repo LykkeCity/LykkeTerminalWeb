@@ -8,7 +8,8 @@ const StyledInput = styled.input`
   color: #f5f6f7;
   padding-left: 5px;
   box-sizing: border-box;
-  height: 100%;
+  height: 32px;
+  width: 100%;
 
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
