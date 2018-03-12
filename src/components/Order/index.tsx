@@ -4,11 +4,13 @@ import Order from './OrderNew';
 
 export interface OrderState {
   isMarketActive: boolean;
+  isLimitActive: boolean;
+  isStopLimitActive: boolean;
   isSellActive: boolean;
   quantityValue: string;
   pendingOrder: boolean;
   priceValue: string;
-  percents?: any[];
+  percents: any[];
   buyValue?: string;
   sellValue?: string;
 }

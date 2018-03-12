@@ -11,11 +11,10 @@ import {StorageUtils} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
 import OrderActionButton from './OrderActionButton';
 import OrderChoiceButton from './OrderChoiceButton';
-import {default as OrderForm} from './OrderForm';
-import OrderPercentage from './OrderPercentage';
-
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
+// import {default as OrderForm} from './OrderForm';
+import OrderLimit from './OrderLimit';
+import OrderMarket from './OrderMarket';
+import OrderStopLimit from './OrderStopLimit';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
@@ -40,6 +39,7 @@ const percentage = [
 
 const MARKET = OrderType.Market;
 const LIMIT = OrderType.Limit;
+const STOP_LIMIT = OrderType.StopLimit;
 
 const StyledMarkets = styled.div`
   display: flex;
@@ -56,8 +56,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     super(props);
     this.state = {
       buyValue: '0',
+      isLimitActive: true,
       isMarketActive: false,
       isSellActive: true,
+      isStopLimitActive: false,
       pendingOrder: false,
       percents: percentage,
       priceValue: '0',
@@ -107,7 +109,9 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   handleActionChoiceClick = (choice: string) => () => {
     this.setState({
-      isMarketActive: choice === MARKET
+      isLimitActive: choice === LIMIT,
+      isMarketActive: choice === MARKET,
+      isStopLimitActive: choice === STOP_LIMIT
     });
   };
 
@@ -255,6 +259,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
+  isLimitDisable = () => {
+    return !+this.state.priceValue || !+this.state.quantityValue;
+  };
+
   render() {
     const {action} = this.state.isSellActive
       ? orderAction.sell
@@ -270,13 +278,18 @@ class Order extends React.Component<OrderProps, OrderState> {
         <StyledMarkets>
           <OrderChoiceButton
             title={LIMIT}
-            isActive={!this.state.isMarketActive}
+            isActive={this.state.isLimitActive}
             click={this.handleActionChoiceClick(LIMIT)}
           />
           <OrderChoiceButton
             title={MARKET}
             isActive={this.state.isMarketActive}
             click={this.handleActionChoiceClick(MARKET)}
+          />
+          <OrderChoiceButton
+            title={STOP_LIMIT}
+            isActive={this.state.isStopLimitActive}
+            click={this.handleActionChoiceClick(STOP_LIMIT)}
           />
         </StyledMarkets>
 
@@ -293,39 +306,55 @@ class Order extends React.Component<OrderProps, OrderState> {
           />
         </StyledActions>
 
-        <Flex justify={'space-between'}>
-          {this.state.percents!.map((item: any, index: number) => (
-            <OrderPercentage
-              percent={item.percent}
-              key={index}
-              onClick={this.handlePercentageChange(index)}
-              isActive={item.isActive}
-            />
-          ))}
-        </Flex>
-
-        <div>
-          <OrderForm
-            assetName={this.props.name}
-            isMarket={this.state.isMarketActive}
-            isDisable={this.state.pendingOrder || this.isInvalidValues()}
+        {this.state.isLimitActive && (
+          <OrderLimit
             action={action}
             onSubmit={this.handleButtonClick}
+            quantity={this.state.quantityValue}
+            price={this.state.priceValue}
+            quantityAccuracy={this.props.accuracy.quantityValue}
+            priceAccuracy={this.props.accuracy.priceValue}
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
+            percents={this.state.percents}
+            onHandlePercentageChange={this.handlePercentageChange}
+            assetName={this.props.name}
+            isSell={this.state.isSellActive}
             amount={this.props.fixedAmount(
               currentPrice,
               this.state.quantityValue,
               this.props.accuracy.priceValue
             )}
-            quantity={this.state.quantityValue}
-            price={this.state.priceValue}
-            buy={this.state.buyValue}
-            sell={this.state.sellValue}
-            quantityAccuracy={this.props.accuracy.quantityValue}
-            priceAccuracy={this.props.accuracy.priceValue}
+            isDisable={this.isLimitDisable()}
           />
-        </div>
+        )}
+
+        {this.state.isMarketActive && <OrderMarket />}
+
+        {this.state.isStopLimitActive && <OrderStopLimit />}
+
+        {/*<div>*/}
+        {/*<OrderForm*/}
+        {/*assetName={this.props.name}*/}
+        {/*isMarket={this.state.isMarketActive}*/}
+        {/*isDisable={this.state.pendingOrder || this.isInvalidValues()}*/}
+        {/*action={action}*/}
+        {/*onSubmit={this.handleButtonClick}*/}
+        {/*onChange={this.onChange}*/}
+        {/*onArrowClick={this.onArrowClick}*/}
+        {/*amount={this.props.fixedAmount(*/}
+        {/*currentPrice,*/}
+        {/*this.state.quantityValue,*/}
+        {/*this.props.accuracy.priceValue*/}
+        {/*)}*/}
+        {/*quantity={this.state.quantityValue}*/}
+        {/*price={this.state.priceValue}*/}
+        {/*buy={this.state.buyValue}*/}
+        {/*sell={this.state.sellValue}*/}
+        {/*quantityAccuracy={this.props.accuracy.quantityValue}*/}
+        {/*priceAccuracy={this.props.accuracy.priceValue}*/}
+        {/*/>*/}
+        {/*</div>*/}
       </div>
     );
   }
