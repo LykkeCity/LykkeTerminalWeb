@@ -90,8 +90,8 @@ class RootStore {
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
-      this.tradeStore.fetchPublicTrades();
-      this.tradeStore.subscribeToPublicTrades(ws);
+      // this.tradeStore.fetchPublicTrades();
+      // this.tradeStore.subscribeToPublicTrades(ws);
     });
   };
 
@@ -137,9 +137,9 @@ class RootStore {
         );
         this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
-        this.tradeStore.subscribeToPublicTrades(ws);
+        // this.tradeStore.subscribeToPublicTrades(ws);
         this.balanceListStore.subscribe(ws);
-        this.tradeStore.fetchPublicTrades();
+        // this.tradeStore.fetchPublicTrades();
         return Promise.resolve();
       })
       .catch(() => {
