@@ -154,12 +154,13 @@ export const mapToTradeFromRest = ({Asset, Amount, DateTime, Id}: any) =>
     side: Amount >= 0 ? Side.Buy : Side.Sell
   });
 
-export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly}: any) =>
+export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly, Order}: any) =>
   new WatchlistModel({
     assetIds: AssetIds,
     id: Id,
     name: Name,
-    readOnly: ReadOnly
+    readOnly: ReadOnly,
+    order: Order
   });
 
 export const mapHistoryTypeToOrderType = (type: string) => {
@@ -232,15 +233,24 @@ export const mapToInstrument = (
   });
 
 export const mapToPublicInstrument = (
-  {id, accuracy, baseAssetId, invertedAccuracy, name, quotingAssetId}: any,
+  {
+    Id,
+    Accuracy,
+    BaseAssetId,
+    IsDisabled,
+    InvertedAccuracy,
+    Name,
+    QuotingAssetId,
+    Source,
+    Source2
+  }: any,
   getAssetById: (assetId: string) => AssetModel | undefined
 ) =>
   new InstrumentModel({
-    id,
-    name,
-    // tslint:disable-next-line:object-literal-sort-keys
-    baseAsset: getAssetById(baseAssetId),
-    quoteAsset: getAssetById(quotingAssetId),
-    accuracy,
-    invertedAccuracy
+    id: Id,
+    name: Name,
+    baseAsset: getAssetById(BaseAssetId),
+    quoteAsset: getAssetById(QuotingAssetId),
+    accuracy: Accuracy,
+    invertedAccuracy: InvertedAccuracy
   });

@@ -35,7 +35,7 @@ const EditOrderForm = (props: EditOrderFormProps) => {
           message={'Modify'}
         />
         <StyledCancelButton type="button" onClick={onCancel}>
-          Cancel
+          Hide
         </StyledCancelButton>
       </StyledOrderButton>
     </Form>

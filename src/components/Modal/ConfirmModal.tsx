@@ -12,10 +12,6 @@ const confirmStorage = StorageUtils(keys.confirmReminder);
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
-const StyledConfirmModal = styled(StyledModal)`
-  width: 320px;
-`;
-
 const StyledContent = styled.div`
   margin-top: 16px;
   width: 312px;
@@ -76,7 +72,7 @@ class ConfirmModal extends React.Component<
     const {modal} = this.props;
     return (
       <div>
-        <StyledConfirmModal>
+        <StyledModal>
           <ModalHeader title={'Confirm'} onClick={this.handleCancel(modal)} />
           <StyledContent>Do you really want to {modal.message}?</StyledContent>
           <StyledReminder>
@@ -94,7 +90,7 @@ class ConfirmModal extends React.Component<
               Cancel
             </CancelButton>
           </Flex>
-        </StyledConfirmModal>
+        </StyledModal>
       </div>
     );
   }

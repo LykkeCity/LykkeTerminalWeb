@@ -15,10 +15,7 @@ const StyledModal = styled.div`
   background-color: #3c3c3c;
   border: solid 1px rgba(0, 0, 0, 0.2);
   z-index: 3;
-`;
-
-const StyledExpiredModal = styled(StyledModal)`
-  width: 300px;
+  min-width: 360px;
 `;
 
 const Button = styled.button`
@@ -74,5 +71,5 @@ const ConnectedEditOrderModal = connect(
   EditOrder
 );
 
-export {StyledModal, Button, StyledExpiredModal};
+export {StyledModal, Button};
 export {ConnectedEditOrderModal as EditOrder};

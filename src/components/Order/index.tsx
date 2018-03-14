@@ -17,8 +17,6 @@ export interface OrderState {
   pendingOrder: boolean;
   priceValue: string;
   percents: any[];
-  buyValue?: string;
-  sellValue?: string;
 }
 
 export interface OrderProps {
@@ -35,7 +33,9 @@ export interface OrderProps {
   onValueChange: any;
   fixedAmount: any;
   updatePriceFn: any;
+  updateDepthFn: any;
   initPriceFn: any;
+  getIsOrderBookClicked: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
 }
@@ -147,7 +147,12 @@ const ConnectedOrder = connect(
     balanceListStore: {availableBalance: getBalance},
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid},
-    orderStore: {placeOrder, updatePriceFn},
+    orderStore: {
+      placeOrder,
+      updatePriceFn,
+      updateDepthFn,
+      getIsOrderBookClicked
+    },
     uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
     referenceStore,
     uiOrderStore: {onArrowClick, onValueChange, fixedAmount}
@@ -167,12 +172,14 @@ const ConnectedOrder = connect(
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
     getAssetById: referenceStore.getAssetById,
+    getIsOrderBookClicked,
     initPriceFn,
     name: pathOr('', ['name'], instrument),
     onArrowClick,
     onValueChange,
     placeOrder,
     stateFns,
+    updateDepthFn,
     updatePriceFn,
     get baseAssetBalance() {
       const asset = getBalance.find((a: AssetBalanceModel) => {
