@@ -160,10 +160,8 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.disableButton(false);
   };
 
-  handleButtonClick = (action: string) => {
+  handleButtonClick = (action: string, baseName: string, quoteName: string) => {
     this.disableButton(true);
-    const baseName = this.props.name.split('/')[0];
-    const quoteName = this.props.name.split('/')[1];
     const {quantityValue, priceValue} = this.state;
     const currentPrice = parseFloat(priceValue).toFixed(
       this.props.accuracy.priceAccuracy
@@ -250,27 +248,36 @@ class Order extends React.Component<OrderProps, OrderState> {
             this.props.baseAssetBalance
           ).toFixed(this.props.accuracy.quantityAccuracy);
         } else {
-          const convertedQuoteAsset = await MarketService.convert(
-            [
-              {
-                AssetId: this.props.name.split('/')[0],
-                Balance: this.props.baseAssetBalance
-              }
-            ],
+          const convertedBalance = await MarketService.convertAsset(
+            {
+              Amount: this.props.baseAssetBalance,
+              AssetId: this.props.name.split('/')[0]
+            },
             this.props.name.split('/')[1]
           );
+          tempObj.quantityValue = (value / 100 * convertedBalance).toFixed(
+            this.props.accuracy.quantityAccuracy
+          );
+        }
+      } else {
+        if (isInverted) {
           tempObj.quantityValue = (
             value /
             100 *
-            convertedQuoteAsset[0].Balance
+            this.props.quoteAssetBalance
           ).toFixed(this.props.accuracy.quantityAccuracy);
+        } else {
+          const convertedBalance = await MarketService.convertAsset(
+            {
+              Amount: this.props.quoteAssetBalance,
+              AssetId: this.props.name.split('/')[1]
+            },
+            this.props.name.split('/')[0]
+          );
+          tempObj.quantityValue = (value / 100 * convertedBalance).toFixed(
+            this.props.accuracy.quantityAccuracy
+          );
         }
-      } else {
-        tempObj.quantityValue = (
-          value /
-          100 *
-          this.props.quoteAssetBalance
-        ).toFixed(this.props.accuracy.quantityAccuracy);
       }
     }
     tempObj.percents = percentage;
