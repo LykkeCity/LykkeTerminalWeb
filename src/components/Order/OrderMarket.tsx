@@ -1,3 +1,5 @@
+import {Form, FormikProps, withFormik} from 'formik';
+import {rem} from 'polished';
 import * as React from 'react';
 
 // tslint:disable-next-line:no-var-requires
@@ -25,13 +27,13 @@ interface OrderBasicFormState {
 }
 
 class OrderMarket extends React.Component<
-  OrderBasicFormProps,
+  OrderBasicFormProps & FormikProps<{}>,
   OrderBasicFormState
 > {
   private isInverted: boolean = false;
   private previousPropsAction: string;
 
-  constructor(props: OrderBasicFormProps) {
+  constructor(props: OrderBasicFormProps & FormikProps<{}>) {
     super(props);
 
     this.state = {
@@ -45,18 +47,28 @@ class OrderMarket extends React.Component<
         action: nextProps.action
       });
       this.isInverted = false;
+      this.updateInvertedValues(nextProps.action);
     }
   }
 
+  updateInvertedValues = (action: any) => {
+    this.props.setValues({
+      invertedAction: action,
+      isInverted: this.isInverted
+    });
+  };
+
   onInvert = () => {
     this.isInverted = !this.isInverted;
+    const action = !this.isInverted
+      ? this.props.action
+      : this.state.action === orderAction.sell.action
+        ? orderAction.buy.action
+        : orderAction.sell.action;
     this.setState({
-      action: !this.isInverted
-        ? this.props.action
-        : this.state.action === orderAction.sell.action
-          ? orderAction.buy.action
-          : orderAction.sell.action
+      action
     });
+    this.updateInvertedValues(action);
   };
 
   reset = () => {
@@ -64,6 +76,7 @@ class OrderMarket extends React.Component<
       action: this.props.action
     });
     this.isInverted = false;
+    this.updateInvertedValues(null);
     this.props.onReset();
   };
 
@@ -114,7 +127,6 @@ class OrderMarket extends React.Component<
                 <OrderPercentage
                   percent={item.percent}
                   key={index}
-                  index={index}
                   onClick={this.handlePercentageChange(index)}
                   isActive={item.isActive}
                 />
@@ -127,9 +139,9 @@ class OrderMarket extends React.Component<
             action={this.props.action}
             isDisable={this.props.isDisable}
             type={'submit'}
-            message={`${capitalize(this.props.action)} ${
-              this.props.quantity
-            } ${baseName}`}
+            message={`${capitalize(this.state.action)} ${this.props.quantity} ${
+              !this.isInverted ? baseName : quoteName
+            }`}
           />
         </StyledOrderButton>
         <StyledReset justify={'center'}>
@@ -140,8 +152,8 @@ class OrderMarket extends React.Component<
   }
 }
 
-const OrderMarketForm: React.SFC<OrderBasicFormProps> = (
-  props: OrderBasicFormProps
+const OrderMarketForm: React.SFC<OrderBasicFormProps & FormikProps<{}>> = (
+  props: OrderBasicFormProps & FormikProps<{}>
 ) => {
   return (
     <Form>
@@ -150,4 +162,16 @@ const OrderMarketForm: React.SFC<OrderBasicFormProps> = (
   );
 };
 
-export default OrderMarket;
+export default withFormik<OrderBasicFormProps, {}>({
+  handleSubmit: (values: any, {props}) => {
+    const {action, assetName} = props;
+    const baseName = assetName.split('/')[0];
+    const quoteName = assetName.split('/')[1];
+    const {invertedAction, isInverted} = values;
+    props.onSubmit(
+      invertedAction || action,
+      isInverted ? quoteName : baseName,
+      isInverted ? baseName : quoteName
+    );
+  }
+})(OrderMarketForm);

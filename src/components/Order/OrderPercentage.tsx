@@ -5,53 +5,53 @@ interface OrderPercentageProps {
   percent: number;
   isActive: boolean;
   onClick: any;
-  index: number;
 }
 
-const StyledPercent = styled.div.attrs({
-  style: (props: any) => ({
-    border: `1px solid ${
-      props.isActive ? 'rgba(140, 148, 160, 0.4)' : 'transparent'
-    }`,
-    borderLeftColor: `${
-      props.isFirst ? 'transparent' : 'rgba(140, 148, 160, 0.4)'
-    }`,
-    borderRadius: `${props.isActive ? '4px' : '0px'}`
-  })
-})`
+const StyledPercent = styled.div`
   color: #f5f6f7;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 25%;
   padding: 8px 24px;
+  border: 1px solid transparent;
+  border-left: 1px solid rgba(140, 148, 160, 0.4);
 
-  &:hover {
-    border: 1px solid rgba(140, 148, 160, 0.4) !important;
-    border-left: 1px solid rgba(140, 148, 160, 0.4) !important;
-    border-radius: 4px !important;
+  &.active,
+  &.active:first-child {
+    border: 1px solid rgba(140, 148, 160, 0.4);
+    border-radius: 4px;
+  }
+
+  &:first-child {
+    border-left: 1px solid transparent;
+  }
+
+  &:hover,
+  &.active + div:hover {
+    border: 1px solid rgba(140, 148, 160, 0.4);
+    border-left: 1px solid rgba(140, 148, 160, 0.4);
+    border-radius: 4px;
     cursor: pointer;
+  }
+
+  &:hover + .active {
+    border-left: 1px solid rgba(140, 148, 160, 0.4);
   }
 
   &:hover + div,
   &.active + div {
-    border-left: 1px solid transparent !important;
+    border-left: 1px solid transparent;
   }
 ` as any;
 
 const OrderPercentage: React.SFC<OrderPercentageProps> = ({
   percent,
   isActive,
-  onClick,
-  index
+  onClick
 }) => {
   return (
-    <StyledPercent
-      isActive={isActive}
-      isFirst={index === 0}
-      className={isActive ? 'active' : ''}
-      onClick={onClick}
-    >
+    <StyledPercent className={isActive ? 'active' : ''} onClick={onClick}>
       {percent}%
     </StyledPercent>
   );
