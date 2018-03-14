@@ -14,12 +14,25 @@ import {
 import OrderButton from './OrderButton';
 import OrderPercentage from './OrderPercentage';
 
+// tslint:disable-next-line:no-var-requires
+const {Flex, Box} = require('grid-styled');
+
 const StyledOrderButton = styled.div`
   margin-top: ${rem(24)};
 `;
 
-// tslint:disable-next-line:no-var-requires
-const {Flex, Box} = require('grid-styled');
+const StyledInvertedBtn = Box.extend`
+  background: url('assets/images/invert.png') no-repeat center;
+  border: 1px solid rgba(140, 148, 160, 0.4);
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  margin: 0 8px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
 
 interface OrderBasicFormState {
   action: string;
@@ -56,48 +69,53 @@ class OrderMarket extends React.Component<
 
     return (
       <div>
-        <Flex>
-          <Flex column={true} style={{width: '75%'}}>
-            <Flex>
-              <StyledInputControl style={{width: '100%'}}>
-                <Flex justify="space-between">
-                  <StyledActionTitle>
-                    {this.state.action}{' '}
-                    {!this.isInverted ? baseName : quoteName}
-                  </StyledActionTitle>
-                  <div>
-                    {this.props.balance}{' '}
-                    {this.props.isSell ? baseName : quoteName} available
-                  </div>
-                </Flex>
-                <NumberInput
-                  value={this.props.quantity}
-                  id={'quantityValue'}
-                  onChange={this.props.onChange(this.props.quantityAccuracy)}
-                  onArrowClick={this.props.onArrowClick(
-                    this.props.quantityAccuracy
-                  )}
-                />
-              </StyledInputControl>
-            </Flex>
-            <Flex>
-              <Flex justify={'space-between'} style={{width: '100%'}}>
-                {this.props.percents!.map((item: any, index: number) => (
-                  <OrderPercentage
-                    percent={item.percent}
-                    key={index}
-                    onClick={this.props.onHandlePercentageChange(index)}
-                    isActive={item.isActive}
-                  />
-                ))}
+        <div>
+          <div>
+            <div style={{width: '75%'}}>
+              <Flex justify="space-between">
+                <StyledActionTitle>
+                  {this.state.action} {!this.isInverted ? baseName : quoteName}
+                </StyledActionTitle>
+                <div>
+                  {this.props.balance}{' '}
+                  {this.props.isSell ? baseName : quoteName} available
+                </div>
               </Flex>
+            </div>
+          </div>
+          <Flex>
+            <StyledInputControl style={{width: '75%'}}>
+              <NumberInput
+                value={this.props.quantity}
+                id={'quantityValue'}
+                onChange={this.props.onChange(this.props.quantityAccuracy)}
+                onArrowClick={this.props.onArrowClick(
+                  this.props.quantityAccuracy
+                )}
+              />
+            </StyledInputControl>
+            <Flex align={'center'}>
+              <StyledInvertedBtn onClick={this.onInvert} />
+              <Box>{this.isInverted ? baseName : quoteName}</Box>
             </Flex>
           </Flex>
-          <Flex align={'center'}>
-            <Box onClick={this.onInvert}>invert</Box>
-            <Box>{this.isInverted ? baseName : quoteName}</Box>
-          </Flex>
-        </Flex>
+          <div style={{width: '75%'}}>
+            <Flex
+              justify={'space-between'}
+              style={{width: '100%', marginTop: '14px'}}
+            >
+              {this.props.percents!.map((item: any, index: number) => (
+                <OrderPercentage
+                  percent={item.percent}
+                  key={index}
+                  index={index}
+                  onClick={this.props.onHandlePercentageChange(index)}
+                  isActive={item.isActive}
+                />
+              ))}
+            </Flex>
+          </div>
+        </div>
         <StyledOrderButton>
           <OrderButton
             action={this.props.action}
