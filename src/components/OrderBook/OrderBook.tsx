@@ -6,7 +6,6 @@ import Scrollbars from 'react-custom-scrollbars';
 import styled from 'styled-components';
 import ModalMessages from '../../constants/modalMessages';
 import {displayType} from '../../constants/orderBook';
-import OrderClickAction from '../../constants/orderbookClickActions';
 import keys from '../../constants/storageKeys';
 import {Order} from '../../models';
 import Types from '../../models/modals';
@@ -113,8 +112,10 @@ interface OrderBookProps {
   priceAccuracy: number;
   volumeAccuracy: number;
   updatePrice: any;
+  updatePriceAndDepth: any;
   stateFns: any[];
   cancelOrder: any;
+  setIsOrderBookClicked: any;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -164,29 +165,30 @@ class OrderBook extends React.Component<OrderBookProps> {
     }
   }
 
-  handleClick = (options: any) => (e: any) => {
-    const {clickType, connectedLimitOrders, price, depth} = options;
-    switch (clickType) {
-      case OrderClickAction.UpdatePrice:
-        this.props.updatePrice(price, depth);
-        break;
-      case OrderClickAction.CancelOrder:
-        e.stopPropagation();
-        const isConfirm = confirmStorage.get() as string;
-        if (!JSON.parse(isConfirm)) {
-          return this.cancelOrders(connectedLimitOrders);
-        }
+  handleUpdatePriceAndDepth = (price: number, depth: number) => () => {
+    this.props.setIsOrderBookClicked(true);
+    this.props.updatePriceAndDepth(price, depth);
+  };
 
-        const message = ModalMessages.cancelOrder(connectedLimitOrders);
-        this.props.addModal(
-          message,
-          () => this.cancelOrders(connectedLimitOrders),
-          // tslint:disable-next-line:no-empty
-          () => {},
-          Types.Confirm
-        );
-        break;
+  handleUpdatePrice = (price: number) => () => {
+    this.props.setIsOrderBookClicked(true);
+    this.props.updatePrice(price);
+  };
+
+  handleCancelOrder = (connectedLimitOrders: string[]) => () => {
+    const isConfirm = confirmStorage.get() as string;
+    if (!JSON.parse(isConfirm)) {
+      return this.cancelOrders(connectedLimitOrders);
     }
+
+    const message = ModalMessages.cancelOrder(connectedLimitOrders);
+    this.props.addModal(
+      message,
+      () => this.cancelOrders(connectedLimitOrders),
+      // tslint:disable-next-line:no-empty
+      () => {},
+      Types.Confirm
+    );
   };
 
   render() {
@@ -238,20 +240,17 @@ class OrderBook extends React.Component<OrderBookProps> {
                   {...order}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
-                  onClick={this.handleClick}
+                  onPriceClick={this.handleUpdatePrice}
+                  onDepthClick={this.handleUpdatePriceAndDepth}
+                  onOrderClick={this.handleCancelOrder}
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice
-              innerRef={this.refHandlers.midPrice}
-              onClick={this.handleClick({
-                clickType: OrderClickAction.UpdatePrice,
-                depth: 0,
-                price: Number(mid)
-              })}
-            >
+            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
               <tr>
-                <td>{Number.isNaN(Number.parseFloat(mid)) ? '' : mid}</td>
+                <td onClick={this.handleUpdatePrice(Number(mid))}>
+                  {Number.isNaN(Number.parseFloat(mid)) ? '' : mid}
+                </td>
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
@@ -264,7 +263,9 @@ class OrderBook extends React.Component<OrderBookProps> {
                   {...order}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
-                  onClick={this.handleClick}
+                  onPriceClick={this.handleUpdatePrice}
+                  onDepthClick={this.handleUpdatePriceAndDepth}
+                  onOrderClick={this.handleCancelOrder}
                 />
               ))}
             </StyledBuyOrders>

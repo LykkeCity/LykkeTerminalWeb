@@ -1,4 +1,5 @@
 import {computed, observable, runInAction} from 'mobx';
+import {compose, map, sortBy} from 'rambda';
 import {WatchlistApi} from '../api/index';
 import defaultWatchLists from '../constants/watchlists';
 import * as mappers from '../models/mappers';
@@ -18,9 +19,12 @@ class WatchlistStore extends BaseStore {
 
   @computed
   get watchlistNames() {
-    return this.watchlists
-      .filter((watchlist: WatchlistModel) => watchlist.readOnly)
-      .map((wl: WatchlistModel) => wl.name);
+    const sortedWatchlistNames = compose<
+      WatchlistModel[],
+      WatchlistModel[],
+      string[]
+    >(map(w => w.name), sortBy(w => w.order));
+    return sortedWatchlistNames(this.watchlists);
   }
 
   @observable

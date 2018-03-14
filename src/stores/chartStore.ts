@@ -64,7 +64,8 @@ class ChartStore extends BaseStore {
         'remove_library_container_border',
         'header_undo_redo',
         'header_interval_dialog_button',
-        'show_interval_dialog_on_keypress'
+        'show_interval_dialog_on_keypress',
+        'timeframes_toolbar'
       ],
       overrides: {
         'paneProperties.background': '#333333',

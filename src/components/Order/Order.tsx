@@ -66,10 +66,11 @@
 //
 //     this.props.stateFns.push(this.handleChangeInstrument);
 //     this.props.updatePriceFn(this.updatePriceByOrderBook);
+//     this.props.updateDepthFn(this.updateDepthByOrderBook);
 //     this.props.initPriceFn(this.initPriceUpdate);
 //   }
 //
-//   initPriceUpdate = (price: number, instrument: InstrumentModel) => {
+//   initPriceUpdate = (price: number = 0, instrument: InstrumentModel) => {
 //     const priceAccuracy = pathOr(2, ['accuracy'], instrument);
 //     this.setState({
 //       priceValue: price.toFixed(priceAccuracy)
@@ -90,15 +91,20 @@
 //   };
 //
 //   handleActionClick = (action: string, price: number) => () => {
+//     const tempObj: any = {
+//       isSellActive: action === orderAction.sell.action
+//     };
+//     this.setState(tempObj);
+//   };
+//
+//   updatePriceByOrderBook = (price: number) => {
 //     this.setState({
-//       isSellActive: action === orderAction.sell.action,
 //       priceValue: price.toFixed(this.props.accuracy.priceValue)
 //     });
 //   };
 //
-//   updatePriceByOrderBook = (price: number, quantity: number) => {
+//   updateDepthByOrderBook = (quantity: number) => {
 //     this.setState({
-//       priceValue: price.toFixed(this.props.accuracy.priceValue),
 //       quantityValue: quantity.toFixed(this.props.accuracy.quantityValue)
 //     });
 //   };

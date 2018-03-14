@@ -16,21 +16,39 @@ class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
+  private updateDepthByOrderBook: any;
+  private isOrderBookClicked: boolean;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
+    this.isOrderBookClicked = false;
   }
 
   updatePriceFn = (fn: any) => {
     this.updatePriceByOrderBook = fn;
   };
 
-  updatePrice = (price: number, quantity: number) => {
+  updateDepthFn = (fn: any) => {
+    this.updateDepthByOrderBook = fn;
+  };
+
+  updatePrice = (price: number) => {
     if (this.updatePriceByOrderBook) {
-      this.updatePriceByOrderBook(price, quantity);
+      this.updatePriceByOrderBook(price);
     }
+  };
+
+  updateDepth = (quantity: number) => {
+    if (this.updateDepthByOrderBook) {
+      this.updateDepthByOrderBook(quantity);
+    }
+  };
+
+  updatePriceAndDepth = (price: number, quantity: number) => {
+    this.updatePrice(price);
+    this.updateDepth(quantity);
   };
 
   placeOrder = async (orderType: string, body: any) => {
@@ -48,15 +66,13 @@ class OrderStore extends BaseStore {
     }
   };
 
-  editOrder = async (body: any, id: string) => {
-    return this.api.placeLimit(body).then((orderId: string) => {
-      return this.api
-        .cancelOrder(id)
-        .then(this.orderEditedSuccessfully)
-        .catch(() => this.api.cancelOrder(orderId))
-        .then(this.updateOrders);
-    }, this.orderPlacedUnsuccessfully);
-  };
+  editOrder = async (body: any, id: string) =>
+    this.api
+      .cancelOrder(id)
+      .then(() => this.api.placeLimit(body))
+      .then(this.updateOrders)
+      .then(this.orderEditedSuccessfully)
+      .catch(this.orderPlacedUnsuccessfully);
 
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
@@ -107,7 +123,16 @@ class OrderStore extends BaseStore {
     });
   };
 
+  getIsOrderBookClicked = (): boolean => {
+    return this.isOrderBookClicked;
+  };
+
+  setIsOrderBookClicked = (value: boolean) => {
+    this.isOrderBookClicked = value;
+  };
+
   reset = () => {
+    this.setIsOrderBookClicked(false);
     return;
   };
 
@@ -150,10 +175,7 @@ class OrderStore extends BaseStore {
     } catch (e) {
       message = !!error.message.length ? error.message : messages.defaultError;
     }
-    this.notificationStore.addNotification(
-      levels.error,
-      `${messages.orderError} ${message}`
-    );
+    this.notificationStore.addNotification(levels.error, `${message}`);
 
     return Promise.reject(error);
   };

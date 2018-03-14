@@ -1,7 +1,7 @@
 import {pathOr} from 'rambda';
 import * as React from 'react';
 import EditOrderForm from '../Order/EditOrderForm/EditOrderForm';
-import {EditOrderProps, EditOrderState, StyledExpiredModal} from './index';
+import {EditOrderProps, EditOrderState, StyledModal} from './index';
 import ModalHeader from './ModalHeader/ModalHeader';
 
 class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
@@ -85,7 +85,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
 
   render() {
     return (
-      <StyledExpiredModal>
+      <StyledModal>
         <ModalHeader title={'Edit Order'} onClick={this.handleCancel} />
         <EditOrderForm
           assetName={this.assetName}
@@ -104,7 +104,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           onSubmit={this.handleEditOrder}
           onCancel={this.handleCancel}
         />
-      </StyledExpiredModal>
+      </StyledModal>
     );
   }
 }
