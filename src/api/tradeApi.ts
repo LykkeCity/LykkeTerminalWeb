@@ -38,8 +38,7 @@ export class RestTradeApi extends RestApi implements TradeApi {
   };
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
-    Promise.resolve([]);
-  // HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
+    HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
 }
 
 export default TradeApi;
