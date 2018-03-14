@@ -29,6 +29,7 @@ class OrderMarket extends React.Component<
   OrderBasicFormState
 > {
   private isInverted: boolean = false;
+  private previousPropsAction: string;
 
   constructor(props: OrderBasicFormProps) {
     super(props);
@@ -36,6 +37,15 @@ class OrderMarket extends React.Component<
     this.state = {
       action: this.props.action
     };
+  }
+
+  componentWillReceiveProps(nextProps: any) {
+    if (this.previousPropsAction !== nextProps.action) {
+      this.setState({
+        action: nextProps.action
+      });
+      this.isInverted = false;
+    }
   }
 
   onInvert = () => {
@@ -49,9 +59,22 @@ class OrderMarket extends React.Component<
     });
   };
 
+  reset = () => {
+    this.setState({
+      action: this.props.action
+    });
+    this.isInverted = false;
+    this.props.onReset();
+  };
+
+  handlePercentageChange = (index: number) => () => {
+    this.props.onHandlePercentageChange(index)(this.isInverted);
+  };
+
   render() {
     const baseName = this.props.assetName.split('/')[0];
     const quoteName = this.props.assetName.split('/')[1];
+    this.previousPropsAction = this.props.action;
 
     return (
       <div>
@@ -86,16 +109,13 @@ class OrderMarket extends React.Component<
             </Flex>
           </Flex>
           <div style={{width: '75%'}}>
-            <Flex
-              justify={'space-between'}
-              style={{width: '100%', marginTop: '14px'}}
-            >
+            <Flex justify={'space-between'} style={{width: '100%'}}>
               {this.props.percents!.map((item: any, index: number) => (
                 <OrderPercentage
                   percent={item.percent}
                   key={index}
                   index={index}
-                  onClick={this.props.onHandlePercentageChange(index)}
+                  onClick={this.handlePercentageChange(index)}
                   isActive={item.isActive}
                 />
               ))}
@@ -113,7 +133,7 @@ class OrderMarket extends React.Component<
           />
         </StyledOrderButton>
         <StyledReset justify={'center'}>
-          <span onClick={this.props.onReset}>Reset and clear</span>
+          <span onClick={this.reset}>Reset and clear</span>
         </StyledReset>
       </div>
     );

@@ -3,6 +3,7 @@ import {curry} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import ModalMessages from '../../constants/modalMessages';
+import {displayType} from '../../constants/orderBook';
 import keys from '../../constants/storageKeys';
 import {Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
@@ -92,6 +93,27 @@ class OrderBook extends React.Component<OrderBookProps> {
   handleUpdatePriceAndDepth = (price: number, depth: number) => () => {
     this.props.setIsOrderBookClicked(true);
     this.props.updatePriceAndDepth(price, depth);
+  };
+
+  handleUpdatePrice = (price: number) => () => {
+    this.props.setIsOrderBookClicked(true);
+    this.props.updatePrice(price);
+  };
+
+  handleCancelOrder = (connectedLimitOrders: string[]) => () => {
+    const isConfirm = confirmStorage.get() as string;
+    if (!JSON.parse(isConfirm)) {
+      return this.cancelOrders(connectedLimitOrders);
+    }
+
+    const message = ModalMessages.cancelOrder(connectedLimitOrders);
+    this.props.addModal(
+      message,
+      () => this.cancelOrders(connectedLimitOrders),
+      // tslint:disable-next-line:no-empty
+      () => {},
+      Types.Confirm
+    );
   };
 
   handleUpdatePrice = (price: number) => () => {
