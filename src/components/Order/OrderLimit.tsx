@@ -70,7 +70,6 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           <OrderPercentage
             percent={item.percent}
             key={index}
-            index={index}
             onClick={onHandlePercentageChange(index)}
             isActive={item.isActive}
           />
@@ -113,8 +112,10 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
 };
 
 export default withFormik<OrderLimitProps, {}>({
-  handleSubmit: (values, {props}) => {
-    const {action} = props;
-    props.onSubmit(action);
+  handleSubmit: (values: any, {props}) => {
+    const {action, assetName} = props;
+    const baseName = assetName.split('/')[0];
+    const quoteName = assetName.split('/')[1];
+    props.onSubmit(action, baseName, quoteName);
   }
 })(OrderLimit);
