@@ -70,6 +70,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           <OrderPercentage
             percent={item.percent}
             key={index}
+            index={index}
             onClick={onHandlePercentageChange(index)}
             isActive={item.isActive}
           />
