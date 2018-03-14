@@ -1,11 +1,12 @@
 import {ISubscription} from 'autobahn';
-import {observable, runInAction} from 'mobx';
+import {action, computed, observable, runInAction} from 'mobx';
 import {
   compose,
-  curry,
+  // curry,
   head,
   last,
   map,
+  multiply,
   reverse,
   sortBy,
   take,
@@ -13,7 +14,7 @@ import {
   toLower
 } from 'rambda';
 import {OrderBookApi} from '../api';
-import * as topics from '../api/topics';
+// import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
 import OrderModel from '../models/orderModel';
@@ -21,9 +22,40 @@ import {BaseStore, RootStore} from './index';
 
 const byPrice = (o: Order) => o.price;
 
+export const getNextMultiplierIdx = (currIdx: number, list: number[]) =>
+  Math.min(++currIdx, list.length);
+
+export const getPrevMultiplierIdx = (currIdx: number, list: number[]) =>
+  Math.max(--currIdx, 0);
+
+export const getMultiplier = (idx: number, list: number[]) =>
+  take(idx, list).reduce(multiply);
+
 class OrderBookStore extends BaseStore {
-  @observable bids: Order[] = [];
-  @observable asks: Order[] = [];
+  @observable rawBids: Order[] = [];
+  @observable rawAsks: Order[] = [];
+
+  // 0.01 0.05 0.1 0.5 1 2.5 5 10
+  spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
+
+  @observable spanMultiplierIdx = 0;
+
+  @computed
+  get initialSpan() {
+    if (this.rootStore.uiStore.selectedInstrument) {
+      return Math.pow(10, -this.rootStore.uiStore.selectedInstrument!.accuracy);
+    }
+    return 0;
+  }
+
+  @computed
+  get span() {
+    return (
+      this.initialSpan *
+      getMultiplier(this.spanMultiplierIdx + 1, this.spanMultipliers)
+    );
+  }
+
   private subscriptions: Set<ISubscription> = new Set();
   private isInitFetch: boolean = true;
 
@@ -31,17 +63,27 @@ class OrderBookStore extends BaseStore {
     super(store);
   }
 
-  bestBid = () => head(this.bids.map(x => x.price));
+  @computed
+  get bids() {
+    return this.aggregateBy(this.span, this.rawBids);
+  }
 
-  bestAsk = () => last(this.asks.map(a => a.price));
+  @computed
+  get asks() {
+    return reverse(this.aggregateBy(this.span, reverse(this.rawAsks)));
+  }
+
+  bestBid = () => head(this.rawBids.map(x => x.price));
+
+  bestAsk = () => last(this.rawAsks.map(a => a.price));
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
-  bestBids = (num: number = 10) => take(num, this.bids);
+  bestBids = (num: number = 10) => take(num, this.rawBids);
 
-  bestAsks = (num: number = 10) => takeLast(num, this.asks);
+  bestAsks = (num: number = 10) => takeLast(num, this.rawAsks);
 
-  withDepth = (orders: Order[]) => {
+  addDepth = (orders: Order[]) => {
     const newOrders = [...orders];
     newOrders.forEach((order, idx) => {
       order.depth =
@@ -52,10 +94,10 @@ class OrderBookStore extends BaseStore {
 
   groupByPrice = (orders: Order[]) =>
     orders.reduce((acc: Order[], curr: Order) => {
-      const withSamePrice = (p: number) => p === curr.price;
-      const samePriceInBook = acc.map(o => o.price).some(withSamePrice);
-      if (samePriceInBook) {
-        const idx = acc.map(o => o.price).findIndex(withSamePrice);
+      const hasSamePrice = (o: Order) => o.price === curr.price;
+      const hasSamePriceInBook = acc.some(hasSamePrice);
+      if (hasSamePriceInBook) {
+        const idx = acc.findIndex(hasSamePrice);
         acc[idx].volume += curr.volume;
       } else {
         acc.push(curr);
@@ -63,29 +105,50 @@ class OrderBookStore extends BaseStore {
       return acc;
     }, []);
 
+  aggregateBy = (span: number, orders: Order[]) => {
+    const newOrders = orders.slice();
+    if (span <= 0) {
+      return newOrders;
+    }
+
+    const aggregatedOrders = [];
+    let i = 0;
+    let k = 0;
+    while (i < newOrders.length) {
+      const lowerPrice = newOrders[i].price;
+      const spannedOrders = newOrders.filter(
+        order => order.price >= lowerPrice && order.price < lowerPrice + span
+      );
+      const spannedLevel = spannedOrders.reduce((acc: any, curr: any) => {
+        return {
+          ...curr,
+          depth: (acc.depth || 0) + curr.depth,
+          price: newOrders[0].price + k * span,
+          volume: (acc.volume || 0) + curr.volume
+        } as Order;
+      });
+      aggregatedOrders.push(spannedLevel);
+      k++;
+      i += spannedOrders.length;
+    }
+    return aggregatedOrders;
+  };
+
   onUpdate = (args: any) => {
     const {IsBuy, Levels} = args[0];
-    const mapToOrders = compose<
-      any[],
-      Order[],
-      Order[],
-      Order[],
-      Order[],
-      Order[],
-      Order[]
-    >(
+    const mapToOrders = compose(
       reverse,
       sortBy(byPrice),
-      this.withDepth,
+      this.addDepth,
       this.groupByPrice,
       this.updateWithLimitOrders(IsBuy),
       map(x => mappers.mapToOrder({...x, IsBuy}))
     );
 
     if (IsBuy) {
-      this.bids = mapToOrders(Levels);
+      this.rawBids = mapToOrders(Levels) as Order[];
     } else {
-      this.asks = mapToOrders(Levels);
+      this.rawAsks = mapToOrders(Levels) as Order[];
     }
   };
 
@@ -104,6 +167,22 @@ class OrderBookStore extends BaseStore {
       });
     });
     return orders;
+  };
+
+  @action
+  incSpan = () => {
+    this.spanMultiplierIdx = getNextMultiplierIdx(
+      this.spanMultiplierIdx,
+      this.spanMultipliers
+    );
+  };
+
+  @action
+  decSpan = () => {
+    this.spanMultiplierIdx = getPrevMultiplierIdx(
+      this.spanMultiplierIdx,
+      this.spanMultipliers
+    );
   };
 
   fetchAll = async () => {
@@ -125,11 +204,11 @@ class OrderBookStore extends BaseStore {
   };
 
   subscribe = async (ws: any) => {
-    const topic = curry(topics.orderBook)(
-      this.rootStore.uiStore.selectedInstrument!.id
-    );
-    this.subscriptions.add(await ws.subscribe(topic(Side.Buy), this.onUpdate));
-    this.subscriptions.add(await ws.subscribe(topic(Side.Sell), this.onUpdate));
+    // const topic = curry(topics.orderBook)(
+    //   this.rootStore.uiStore.selectedInstrument!.id
+    // );
+    // this.subscriptions.add(await ws.subscribe(topic(Side.Buy), this.onUpdate));
+    // this.subscriptions.add(await ws.subscribe(topic(Side.Sell), this.onUpdate));
   };
 
   unsubscribe = () => {
@@ -138,7 +217,7 @@ class OrderBookStore extends BaseStore {
   };
 
   reset = () => {
-    this.bids = this.asks = [];
+    this.rawBids = this.rawAsks = [];
     this.unsubscribe();
   };
 }
