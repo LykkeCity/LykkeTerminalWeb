@@ -8,12 +8,14 @@ import {Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
 import {minOrMaxFromList} from '../../utils/math';
-import Bar from '../Bar/Bar';
+import Bar, {VBar} from '../Bar/Bar';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
+  StyledBar,
   StyledBuyOrders,
+  StyledGrouping,
   StyledHead,
   StyledHeader,
   StyledMidPrice,
@@ -39,6 +41,9 @@ interface OrderBookProps {
   stateFns: any[];
   cancelOrder: any;
   setIsOrderBookClicked: any;
+  span: number;
+  onIncSpan: () => void;
+  onDecSpan: () => void;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -62,7 +67,7 @@ class OrderBook extends React.Component<OrderBookProps> {
     this.isScrollSet = false;
   };
 
-  handleChange = (displayType: OrderBookDisplayType) => (e: any) => {
+  handleChange = (displayType: OrderBookDisplayType) => {
     this.displayType = displayType;
   };
 
@@ -111,7 +116,16 @@ class OrderBook extends React.Component<OrderBookProps> {
   };
 
   render() {
-    const {bids, asks, mid, priceAccuracy, volumeAccuracy} = this.props;
+    const {
+      bids,
+      asks,
+      mid,
+      priceAccuracy,
+      volumeAccuracy,
+      span,
+      onIncSpan,
+      onDecSpan
+    } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
     const fromBids = curry(minOrMaxFromList)(bids.map(withCurrentType));
@@ -124,10 +138,19 @@ class OrderBook extends React.Component<OrderBookProps> {
 
     return (
       <StyledWrapper>
-        <OrderBookSwitch
-          value={this.displayType}
-          onChange={this.handleChange}
-        />
+        <StyledBar>
+          <StyledGrouping>
+            Grouping: <button onClick={onDecSpan}>-</button>
+            <strong>{span}</strong>
+            <button onClick={onIncSpan}>+</button>
+          </StyledGrouping>
+          <VBar />
+          <OrderBookSwitch
+            value={this.displayType}
+            onChange={this.handleChange}
+          />
+          {/* <VBar /> */}
+        </StyledBar>
         <Bar />
         <Table>
           <StyledHead>
@@ -141,11 +164,11 @@ class OrderBook extends React.Component<OrderBookProps> {
         <Scrollbars autoHide={true} ref={this.refHandlers.scrollComponent}>
           <Table>
             <StyledSellOrders>
-              {asks.map(order => (
+              {asks.map((order, idx) => (
                 <OrderBookItem
                   maxValue={maxAskValue}
                   minValue={minAskValue}
-                  key={order.id}
+                  key={idx}
                   valueToShow={withCurrentType(order)}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
@@ -164,11 +187,11 @@ class OrderBook extends React.Component<OrderBookProps> {
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
-              {bids.map(order => (
+              {bids.map((order, idx) => (
                 <OrderBookItem
                   maxValue={maxBidValue}
                   minValue={minBidValue}
-                  key={order.id}
+                  key={idx}
                   valueToShow={withCurrentType(order)}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}

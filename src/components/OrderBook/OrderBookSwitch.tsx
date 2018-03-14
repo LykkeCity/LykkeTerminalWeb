@@ -1,29 +1,56 @@
+import {observable} from 'mobx';
+import {observer} from 'mobx-react';
 import * as React from 'react';
 import {OrderBookDisplayType} from '../../models';
-import {capitalize} from '../../utils';
-import {StyledSwitch, StyledSwitchItem} from './styles';
+import ClickOutside from '../ClickOutside/ClickOutside';
+import CustomSelect from '../Select/CustomSelect';
+// import {capitalize} from '../../utils';
+import {StyledSwitch} from './styles';
 
 interface OrderBookSwitchProps {
   value: OrderBookDisplayType;
-  onChange: (displayType: OrderBookDisplayType) => (e: any) => void;
+  onChange: (displayType: OrderBookDisplayType) => void;
 }
+
+const show = observable(false);
 
 const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
   value,
   onChange
-}: any) => (
-  <StyledSwitch>
-    {Object.keys(OrderBookDisplayType).map(x => (
-      <StyledSwitchItem
-        key={x}
-        active={value === x}
-        onClick={onChange(x)}
-        id={x}
-      >
-        {capitalize(OrderBookDisplayType[x])}
-      </StyledSwitchItem>
-    ))}
-  </StyledSwitch>
-);
+}: any) => {
+  const toggle = () => {
+    show.set(!show.get());
+  };
 
-export default OrderBookSwitch;
+  const handleClick = (val: string) => (e: any) => {
+    toggle();
+    onChange(val);
+  };
+
+  return (
+    <StyledSwitch>
+      <label onClick={toggle}>{value}</label>
+      {show.get() && (
+        <ClickOutside onClickOutside={toggle}>
+          <CustomSelect
+            styles={{
+              borderRadius: '6px',
+              height: '67px',
+              left: '120px',
+              minWidth: '150px',
+              top: '45px'
+            }}
+            items={Object.keys(OrderBookDisplayType).map(x => ({
+              label: x,
+              value: x
+            }))}
+            activeValue={value}
+            click={handleClick}
+          />
+        </ClickOutside>
+      )}
+    </StyledSwitch>
+  );
+};
+
+export default observer(OrderBookSwitch);

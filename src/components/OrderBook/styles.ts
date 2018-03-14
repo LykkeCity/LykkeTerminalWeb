@@ -1,6 +1,6 @@
 import {rem} from 'polished';
 import {Side} from '../../models';
-import styled, {css} from '../styled';
+import styled from '../styled';
 
 const colorBySide = (side: Side) =>
   side === Side.Sell ? '#d070ff' : '#ffae2c';
@@ -16,7 +16,50 @@ const marginBySide = (side: Side) =>
 export const StyledWrapper = styled.div`
   height: 100%;
   margin-right: -0.9375rem;
-  padding-top: ${rem(55)};
+  /* padding-top: ${rem(55)}; */
+`;
+
+export const StyledBar = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: ${rem(14)};
+  font-weight: normal;
+  text-align: left;
+  color: rgb(245, 246, 247);
+  margin: ${rem(12)} 0;
+`;
+
+export const StyledGrouping = styled.div`
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+
+  button {
+    background: none;
+    border: none;
+    color: rgb(216, 216, 216);
+    opacity: 0.4;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+
+    &:first-child {
+      margin-left: ${rem(17)};
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+    min-width: ${rem(52)};
+    display: inline-block;
+    text-align: center;
+  }
 `;
 
 export const StyledHead = styled.thead`
@@ -65,34 +108,24 @@ export const StyledSwitch = styled.div`
   color: #ffffff;
   display: flex;
   align-items: center;
-  top: ${rem(18)};
-  left: ${rem(8)};
-  right: ${rem(8)};
-  z-index: 10;
-  position: absolute;
-`;
 
-export const StyledSwitchItem = styled.div`
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  border-radius: 4px;
-  padding: ${rem(8)} ${rem(18)};
-  cursor: pointer;
-  ${(p: any) =>
-    p.active &&
-    css`
-      background-color: rgb(3, 136, 239);
-      border: solid 1px rgba(0, 0, 0, 0.2);
-      margin: -1px 0 -1px;
-    `};
-  :first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+  label {
+    cursor: pointer;
+    position: relative;
+
+    &:after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-top: 4px solid rgba(245, 246, 247, 0.4);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      position: absolute;
+      top: 6px;
+      right: -16px;
+    }
   }
-  :last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-` as any;
+`;
 
 export const StyledCommonCell = styled.td`
   flex-grow: 1;

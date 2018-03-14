@@ -1,7 +1,13 @@
+import {times} from 'rambda';
 import {AssetModel, InstrumentModel} from '../../models';
 import {Order} from '../../models/index';
 import * as mappers from '../../models/mappers';
 import {OrderBookStore, RootStore} from '../index';
+import {
+  getMultiplier,
+  getNextMultiplierIdx,
+  getPrevMultiplierIdx
+} from '../orderBookStore';
 
 describe('orderBook store', () => {
   const rootStore = new RootStore(true);
@@ -66,7 +72,7 @@ describe('orderBook store', () => {
   });
 
   test('order should contain users volume with equal price', () => {
-    const order = store.bids.find(bid => bid.price === limitOrders[0].price);
+    const order = store.rawBids.find(bid => bid.price === limitOrders[0].price);
     const ownVolume = limitOrders.reduce((sum, limitOrder) => {
       sum += limitOrder.volume;
       return sum;
@@ -143,10 +149,10 @@ describe('orderBook store', () => {
         }
       ]);
 
-      expect(store.bids.find(b => b.price === 1)!.volume).toBe(1 + 2);
-      expect(store.bids.find(b => b.price === 3)!.volume).toBe(3 + 5);
-      expect(store.asks.find(b => b.price === 5)!.volume).toBe(1 + 10);
-      expect(store.asks.find(b => b.price === 6)!.volume).toBe(2 + 22);
+      expect(store.rawBids.find(b => b.price === 1)!.volume).toBe(1 + 2);
+      expect(store.rawBids.find(b => b.price === 3)!.volume).toBe(3 + 5);
+      expect(store.rawAsks.find(b => b.price === 5)!.volume).toBe(1 + 10);
+      expect(store.rawAsks.find(b => b.price === 6)!.volume).toBe(2 + 22);
     });
 
     it('should return empty array if no data provided', () => {
@@ -165,8 +171,8 @@ describe('orderBook store', () => {
         }
       ]);
 
-      expect(store.bids).toHaveLength(0);
-      expect(store.asks).toHaveLength(0);
+      expect(store.rawBids).toHaveLength(0);
+      expect(store.rawAsks).toHaveLength(0);
     });
 
     it('should not mutate unique prices', () => {
@@ -194,10 +200,10 @@ describe('orderBook store', () => {
       ]);
 
       for (let i = 1; i < k; i++) {
-        expect(store.bids.find(b => b.price === i)!.volume).toBe(i);
+        expect(store.rawBids.find(b => b.price === i)!.volume).toBe(i);
       }
       for (let i = 1; i < k; i++) {
-        expect(store.asks.find(b => b.price === i)!.volume).toBe(i);
+        expect(store.rawAsks.find(b => b.price === i)!.volume).toBe(i);
       }
     });
   });
@@ -211,12 +217,86 @@ describe('orderBook store', () => {
       return nextOrders;
     };
     it('should calculate depth as a sum of prev volumes', () => {
-      store.asks = store.bids = [];
-      store.bids = seed(10) as Order[];
-      store.asks = seed(10) as Order[];
+      store.rawAsks = store.rawBids = [];
+      store.rawBids = seed(10) as Order[];
+      store.rawAsks = seed(10) as Order[];
 
-      expect(store.withDepth(store.bids)[0].depth).toBe(10);
-      expect(store.withDepth(store.asks)[9].depth).toBe(550);
+      expect(store.addDepth(store.rawBids)[0].depth).toBe(10);
+      expect(store.addDepth(store.rawAsks)[9].depth).toBe(550);
+    });
+  });
+
+  describe('aggregation', () => {
+    it('should be defined', expect(store.aggregateBy).toBeDefined);
+
+    it('should aggregate orders by price', () => {
+      const span = 2000;
+      const bids = [];
+      const asks = [];
+      for (let i = 1; i < 11; i++) {
+        bids.push({price: i * 1000} as Order);
+      }
+
+      for (let i = 1; i < 11; i++) {
+        asks.push({price: i < 5 ? i * 1000 : i * 2000} as Order);
+      }
+
+      const spannedBids = store.aggregateBy(span, bids);
+      expect(spannedBids).toHaveLength(5);
+
+      const spannedAsks = store.aggregateBy(span, asks);
+      expect(spannedAsks).toHaveLength(8);
+
+      expect(store.aggregateBy(0, [])).toHaveLength(0);
+    });
+
+    it('should correctly set price range of spans', () => {
+      const asks = [];
+      for (let i = 0; i < 10; i++) {
+        asks.push({price: i < 5 ? i + 10 : i + 20} as Order);
+      }
+
+      const spannedAsks = store.aggregateBy(10, asks);
+      expect(spannedAsks).toHaveLength(2);
+      expect(spannedAsks[0].price).toBe(asks[0].price);
+      expect(spannedAsks[1].price).toBe(asks[0].price + 10);
+    });
+
+    it('should return original orders if span eq to 0', () => {
+      const asks = [];
+      for (let i = 0; i < 5; i++) {
+        asks.push({price: i} as Order);
+      }
+
+      const spannedAsks = store.aggregateBy(0, asks);
+      expect(spannedAsks).toHaveLength(asks.length);
+      expect(spannedAsks[0].price).toBe(asks[0].price);
+      expect(spannedAsks[spannedAsks.length - 1].price).toBe(
+        asks[asks.length - 1].price
+      );
+    });
+
+    describe('span multiplier', () => {
+      // 1,2,3,4,5,6,7,8,9,10
+      const list = times(i => i + 1, 10);
+
+      it('should inc multiplier index', () => {
+        expect(getNextMultiplierIdx(0, list)).toBe(1);
+        expect(getNextMultiplierIdx(5, list)).toBe(6);
+        expect(getNextMultiplierIdx(10, list)).toBe(10);
+      });
+
+      it('should dec multiplier index', () => {
+        expect(getPrevMultiplierIdx(0, list)).toBe(0);
+        expect(getPrevMultiplierIdx(5, list)).toBe(4);
+        expect(getPrevMultiplierIdx(10, list)).toBe(9);
+      });
+
+      it('should get correct multiplier', () => {
+        expect(getMultiplier(1, list)).toBe(1);
+        expect(getMultiplier(2, list)).toBe(1 * 2);
+        expect(getMultiplier(6, list)).toBe(1 * 2 * 3 * 4 * 5 * 6);
+      });
     });
   });
 });
