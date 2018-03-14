@@ -13,10 +13,8 @@ const StyledPercent = styled.div.attrs({
     border: `1px solid ${
       props.isActive ? 'rgba(140, 148, 160, 0.4)' : 'transparent'
     }`,
-    borderLeft: `${
-      props.isFirst && !props.isActive
-        ? 'none'
-        : '1px solid rgba(140, 148, 160, 0.4)'
+    borderLeftColor: `${
+      props.isFirst ? 'transparent' : 'rgba(140, 148, 160, 0.4)'
     }`,
     borderRadius: `${props.isActive ? '4px' : '0px'}`
   })

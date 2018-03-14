@@ -17,8 +17,6 @@ export interface OrderState {
   pendingOrder: boolean;
   priceValue: string;
   percents: any[];
-  buyValue?: string;
-  sellValue?: string;
 }
 
 export interface OrderProps {
@@ -37,6 +35,7 @@ export interface OrderProps {
   updatePriceFn: any;
   updateDepthFn: any;
   initPriceFn: any;
+  getIsOrderBookClicked: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
 }
@@ -180,6 +179,7 @@ const ConnectedOrder = connect(
     onValueChange,
     placeOrder,
     stateFns,
+    updateDepthFn,
     updatePriceFn,
     get baseAssetBalance() {
       const asset = getBalance.find((a: AssetBalanceModel) => {
