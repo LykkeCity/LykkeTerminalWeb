@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 const OrderStopLimit: React.SFC<{}> = () => {
-  return <h1>Hello</h1>;
+  return <div>Order Stop limit</div>;
 };
 
 export default OrderStopLimit;
