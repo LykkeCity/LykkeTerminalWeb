@@ -98,6 +98,9 @@ class OrderMarket extends React.Component<
   render() {
     const {baseName, quoteName} = this.props;
     this.previousPropsAction = this.props.action;
+    const {quantityAccuracy, priceAccuracy, quantity} = this.props;
+    const currentAccuracy = this.isInverted ? priceAccuracy : quantityAccuracy;
+    const currentQuantity = parseFloat(quantity).toFixed(currentAccuracy);
 
     return (
       <div>
@@ -118,12 +121,10 @@ class OrderMarket extends React.Component<
           <Flex>
             <StyledInputControl style={{width: '75%'}}>
               <NumberInput
-                value={this.props.quantity}
+                value={currentQuantity}
                 id={OrderInputs.Quantity}
-                onChange={this.props.onChange(this.props.quantityAccuracy)}
-                onArrowClick={this.props.onArrowClick(
-                  this.props.quantityAccuracy
-                )}
+                onChange={this.props.onChange(currentAccuracy)}
+                onArrowClick={this.props.onArrowClick(currentAccuracy)}
               />
             </StyledInputControl>
             <Flex align={'center'}>
@@ -149,7 +150,7 @@ class OrderMarket extends React.Component<
             action={this.props.action}
             isDisable={this.props.isDisable}
             type={'submit'}
-            message={`${capitalize(this.state.action)} ${this.props.quantity} ${
+            message={`${capitalize(this.state.action)} ${currentQuantity} ${
               !this.isInverted ? baseName : quoteName
             }`}
           />
@@ -174,12 +175,19 @@ const OrderMarketForm: React.SFC<OrderMarketProps & FormikProps<{}>> = (
 
 export default withFormik<OrderMarketProps, {}>({
   handleSubmit: (values: any, {props}) => {
-    const {action, baseName, quoteName} = props;
+    const {
+      action,
+      baseName,
+      quoteName,
+      quantityAccuracy,
+      priceAccuracy
+    } = props;
     const {invertedAction, isInverted} = values;
     props.onSubmit(
       invertedAction || action,
       isInverted ? quoteName : baseName,
-      isInverted ? baseName : quoteName
+      isInverted ? baseName : quoteName,
+      isInverted ? priceAccuracy : quantityAccuracy
     );
   }
 })(OrderMarketForm);
