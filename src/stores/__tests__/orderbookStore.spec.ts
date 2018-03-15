@@ -1,13 +1,15 @@
-import {times} from 'rambda';
+import {add, range, times} from 'rambda';
 import {AssetModel, InstrumentModel} from '../../models';
 import {Order} from '../../models/index';
 import * as mappers from '../../models/mappers';
 import {OrderBookStore, RootStore} from '../index';
 import {
+  aggregateOrders,
   getMultiplier,
-  getNextMultiplierIdx,
-  getPrevMultiplierIdx
-} from '../orderBookStore';
+  getNextIdx,
+  getPrevIdx,
+  groupOrdersByPrice
+} from '../orderBookHelpers';
 
 describe('orderBook store', () => {
   const rootStore = new RootStore(true);
@@ -20,58 +22,33 @@ describe('orderBook store', () => {
     quoteAsset: new AssetModel({name: 'USD'})
   });
 
-  const orders = [
-    {
-      AssetPairId: 'BTCUSD',
-      CreateDateTime: '2018-01-17T07:17:40.84Z',
-      Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
-      OrderAction: 'Buy',
-      Price: 1,
-      Status: 'InOrderBook',
-      Voume: 0.0001
-    },
-    {
-      AssetPairId: 'BTCUSD',
-      CreateDateTime: '2018-01-17T07:17:40.84Z',
-      Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c5',
-      OrderAction: 'Buy',
-      Price: 1,
-      Status: 'InOrderBook',
-      Voume: 0.0001
-    }
-  ];
-  const limitOrders = orders.map(mappers.mapToLimitOrder);
-  rootStore.orderListStore.updateOrders(limitOrders);
-
   const store = new OrderBookStore(rootStore, {} as any);
-  const {onUpdate, bestBid, bestAsk, mid, bestBids, bestAsks} = store;
-
-  beforeEach(() => {
-    // bids
-    onUpdate([
-      {
-        IsBuy: true,
-        Levels: [
-          {Price: 1, Volume: 1},
-          {Price: 2, Volume: 1},
-          {Price: 3, Volume: 3}
-        ]
-      }
-    ]);
-    // asks
-    onUpdate([
-      {
-        IsBuy: false,
-        Levels: [
-          {Price: 5, Volume: 1},
-          {Price: 6, Volume: 2},
-          {Price: 7, Volume: 3}
-        ]
-      }
-    ]);
-  });
+  const {bestBid, bestAsk, mid} = store;
 
   test('order should contain users volume with equal price', () => {
+    const orders = [
+      {
+        AssetPairId: 'BTCUSD',
+        CreateDateTime: '2018-01-17T07:17:40.84Z',
+        Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
+        OrderAction: 'Buy',
+        Price: 1,
+        Status: 'InOrderBook',
+        Voume: 0.0001
+      },
+      {
+        AssetPairId: 'BTCUSD',
+        CreateDateTime: '2018-01-17T07:17:40.84Z',
+        Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c5',
+        OrderAction: 'Buy',
+        Price: 1,
+        Status: 'InOrderBook',
+        Voume: 0.0001
+      }
+    ];
+    const limitOrders = orders.map(mappers.mapToLimitOrder);
+    rootStore.orderListStore.updateOrders(limitOrders);
+
     const order = store.rawBids.find(bid => bid.price === limitOrders[0].price);
     const ownVolume = limitOrders.reduce((sum, limitOrder) => {
       sum += limitOrder.volume;
@@ -81,39 +58,39 @@ describe('orderBook store', () => {
   });
 
   test('best bid should have highest price', () => {
-    expect(bestBid()).toBe(3);
+    store.rawBids = [
+      {price: 10, volume: 1},
+      {price: 20, volume: 2},
+      {price: 30, volume: 3}
+    ] as Order[];
+
+    expect(store.bestBid()).toBe(30);
   });
 
   test('best ask should have lowest price', () => {
-    expect(bestAsk()).toBe(5);
+    store.rawAsks = [
+      {price: 10, volume: 1},
+      {price: 20, volume: 2},
+      {price: 30, volume: 3}
+    ] as Order[];
+
+    expect(bestAsk()).toBe(10);
   });
 
   test('mid should be as an average between bestBid and bestAsk', () => {
-    expect(mid()).toBe(4);
-  });
+    store.rawAsks = [
+      {price: 40, volume: 1},
+      {price: 50, volume: 2},
+      {price: 60, volume: 3}
+    ] as Order[];
 
-  test('best bids should return N best bids', () => {
-    const bids = bestBids(2);
-    expect(bids).toHaveLength(2);
-    expect(bids.map(x => x.price)).toEqual([3, 2]);
-    expect(bids.map(x => x.price)[0]).toEqual(bestBid());
-  });
+    store.rawBids = [
+      {price: 10, volume: 1},
+      {price: 20, volume: 2},
+      {price: 30, volume: 3}
+    ] as Order[];
 
-  test('best asks should return N best asks', () => {
-    const asks = bestAsks(2);
-    expect(asks).toHaveLength(2);
-    expect(asks.map(x => x.price)).toEqual([6, 5]);
-    expect(asks.map(x => x.price)[asks.length - 1]).toEqual(bestAsk());
-  });
-
-  test('best asks should be sorted by price descending', () => {
-    const asks = bestAsks(2).map(o => o.price);
-    expect(asks[0]).toBeGreaterThan(asks[asks.length - 1]);
-  });
-
-  test('best bids should be sorted by price descending', () => {
-    const bids = bestBids(2).map(o => o.price);
-    expect(bids[0]).toBeGreaterThan(bids[bids.length - 1]);
+    expect(mid()).toBe((40 + 30) / 2);
   });
 
   test('best bid should be less that best bid', () => {
@@ -123,131 +100,61 @@ describe('orderBook store', () => {
   describe('group by price', () => {
     it('should group levels by price', () => {
       // bids
-      onUpdate([
-        {
-          IsBuy: true,
-          Levels: [
-            {Price: 1, Volume: 1},
-            {Price: 1, Volume: 2},
-            {Price: 2, Volume: 1},
-            {Price: 3, Volume: 3},
-            {Price: 3, Volume: 5}
-          ]
-        }
-      ]);
-      // asks
-      onUpdate([
-        {
-          IsBuy: false,
-          Levels: [
-            {Price: 5, Volume: 1},
-            {Price: 5, Volume: 10},
-            {Price: 6, Volume: 2},
-            {Price: 6, Volume: 22},
-            {Price: 7, Volume: 3}
-          ]
-        }
-      ]);
+      const orders = [
+        {price: 1000, volume: 1},
+        {price: 1000, volume: 1},
+        {price: 1000, volume: 1},
+        {price: 2000, volume: 2},
+        {price: 2000, volume: 2},
+        {price: 3000, volume: 3},
+        {price: 10000, volume: 10}
+      ] as Order[];
+      const newOrders = groupOrdersByPrice(orders);
 
-      expect(store.rawBids.find(b => b.price === 1)!.volume).toBe(1 + 2);
-      expect(store.rawBids.find(b => b.price === 3)!.volume).toBe(3 + 5);
-      expect(store.rawAsks.find(b => b.price === 5)!.volume).toBe(1 + 10);
-      expect(store.rawAsks.find(b => b.price === 6)!.volume).toBe(2 + 22);
+      expect(newOrders).toHaveLength(4);
+      expect(newOrders[0]).toEqual({price: 1000, volume: 3, depth: 3});
+      expect(newOrders[1]).toEqual({price: 2000, volume: 4, depth: 7});
+      expect(newOrders[2]).toEqual({price: 3000, volume: 3, depth: 10});
+      expect(newOrders[3]).toEqual({price: 10000, volume: 10, depth: 20});
     });
 
     it('should return empty array if no data provided', () => {
-      // bids
-      onUpdate([
-        {
-          IsBuy: true,
-          Levels: []
-        }
-      ]);
-      // asks
-      onUpdate([
-        {
-          IsBuy: false,
-          Levels: []
-        }
-      ]);
-
-      expect(store.rawBids).toHaveLength(0);
-      expect(store.rawAsks).toHaveLength(0);
-    });
-
-    it('should not mutate unique prices', () => {
-      const k = 5;
-      const generateLevels = (num: number) => {
-        const levels = [];
-        for (let i = 1; i < num; i++) {
-          levels.push({Price: i, Volume: i});
-        }
-        return levels;
-      };
-      // bids
-      onUpdate([
-        {
-          IsBuy: true,
-          Levels: generateLevels(k)
-        }
-      ]);
-      // asks
-      onUpdate([
-        {
-          IsBuy: false,
-          Levels: generateLevels(k)
-        }
-      ]);
-
-      for (let i = 1; i < k; i++) {
-        expect(store.rawBids.find(b => b.price === i)!.volume).toBe(i);
-      }
-      for (let i = 1; i < k; i++) {
-        expect(store.rawAsks.find(b => b.price === i)!.volume).toBe(i);
-      }
+      expect(groupOrdersByPrice([])).toHaveLength(0);
     });
   });
 
   describe('depth', () => {
-    const seed = (count: number = 10) => {
-      const nextOrders = [];
-      for (let idx = 1; idx <= count; idx++) {
-        nextOrders.push({price: idx, volume: idx * count, depth: 0});
-      }
-      return nextOrders;
-    };
     it('should calculate depth as a sum of prev volumes', () => {
-      store.rawAsks = store.rawBids = [];
-      store.rawBids = seed(10) as Order[];
-      store.rawAsks = seed(10) as Order[];
+      const orders = times(i => ({price: i, volume: i}), 10) as Order[];
 
-      expect(store.addDepth(store.rawBids)[0].depth).toBe(10);
-      expect(store.addDepth(store.rawAsks)[9].depth).toBe(550);
+      const newOrders = groupOrdersByPrice(orders);
+
+      expect(newOrders[0].depth).toBe(0);
+      expect(newOrders[4].depth).toBe(range(1, 5).reduce(add, 0));
+      expect(newOrders[orders.length - 1].depth).toBe(
+        range(1, 10).reduce(add, 0)
+      );
     });
   });
 
   describe('aggregation', () => {
-    it('should be defined', expect(store.aggregateBy).toBeDefined);
-
     it('should aggregate orders by price', () => {
-      const span = 2000;
-      const bids = [];
-      const asks = [];
-      for (let i = 1; i < 11; i++) {
-        bids.push({price: i * 1000} as Order);
-      }
+      const orders = [
+        {price: 10, volume: 1},
+        {price: 20, volume: 2},
+        {price: 30, volume: 3},
+        {price: 100, volume: 10}
+      ] as Order[];
 
-      for (let i = 1; i < 11; i++) {
-        asks.push({price: i < 5 ? i * 1000 : i * 2000} as Order);
-      }
+      const newOrders = aggregateOrders(orders, 15, true);
 
-      const spannedBids = store.aggregateBy(span, bids);
-      expect(spannedBids).toHaveLength(5);
-
-      const spannedAsks = store.aggregateBy(span, asks);
-      expect(spannedAsks).toHaveLength(8);
-
-      expect(store.aggregateBy(0, [])).toHaveLength(0);
+      expect(newOrders).toHaveLength(3);
+      expect(newOrders[0].price).toBe(15);
+      expect(newOrders[0].volume).toBe(1);
+      expect(newOrders[1].price).toBe(30);
+      expect(newOrders[1].volume).toBe(5);
+      expect(newOrders[2].price).toBe(105);
+      expect(newOrders[2].volume).toBe(10);
     });
 
     it('should correctly set price range of spans', () => {
@@ -256,10 +163,10 @@ describe('orderBook store', () => {
         asks.push({price: i < 5 ? i + 10 : i + 20} as Order);
       }
 
-      const spannedAsks = store.aggregateBy(10, asks);
-      expect(spannedAsks).toHaveLength(2);
-      expect(spannedAsks[0].price).toBe(asks[0].price);
-      expect(spannedAsks[1].price).toBe(asks[0].price + 10);
+      const spannedAsks = aggregateOrders(asks, 10, true);
+      expect(spannedAsks).toHaveLength(3);
+      expect(spannedAsks[0].price).toBe(10);
+      expect(spannedAsks[2].price).toBe(30);
     });
 
     it('should return original orders if span eq to 0', () => {
@@ -268,7 +175,7 @@ describe('orderBook store', () => {
         asks.push({price: i} as Order);
       }
 
-      const spannedAsks = store.aggregateBy(0, asks);
+      const spannedAsks = aggregateOrders(asks, 0, true);
       expect(spannedAsks).toHaveLength(asks.length);
       expect(spannedAsks[0].price).toBe(asks[0].price);
       expect(spannedAsks[spannedAsks.length - 1].price).toBe(
@@ -281,21 +188,21 @@ describe('orderBook store', () => {
       const list = times(i => i + 1, 10);
 
       it('should inc multiplier index', () => {
-        expect(getNextMultiplierIdx(0, list)).toBe(1);
-        expect(getNextMultiplierIdx(5, list)).toBe(6);
-        expect(getNextMultiplierIdx(10, list)).toBe(10);
+        expect(getNextIdx(0, list)).toBe(1);
+        expect(getNextIdx(5, list)).toBe(6);
+        expect(getNextIdx(10, list)).toBe(10);
       });
 
       it('should dec multiplier index', () => {
-        expect(getPrevMultiplierIdx(0, list)).toBe(0);
-        expect(getPrevMultiplierIdx(5, list)).toBe(4);
-        expect(getPrevMultiplierIdx(10, list)).toBe(9);
+        expect(getPrevIdx(0, list)).toBe(0);
+        expect(getPrevIdx(5, list)).toBe(4);
+        expect(getPrevIdx(10, list)).toBe(9);
       });
 
       it('should get correct multiplier', () => {
-        expect(getMultiplier(1, list)).toBe(1);
-        expect(getMultiplier(2, list)).toBe(1 * 2);
-        expect(getMultiplier(6, list)).toBe(1 * 2 * 3 * 4 * 5 * 6);
+        expect(getMultiplier(0, list)).toBe(1);
+        expect(getMultiplier(1, list)).toBe(1 * 2);
+        expect(getMultiplier(5, list)).toBe(1 * 2 * 3 * 4 * 5 * 6);
       });
     });
   });
