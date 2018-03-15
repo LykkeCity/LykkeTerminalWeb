@@ -78,10 +78,6 @@ export interface OrderFormProps {
   quantity: string;
   price: string;
   amount: string;
-  buy?: string;
-  sell?: string;
-  quantityAccuracy?: number;
-  priceAccuracy?: number;
 }
 
 export interface OrderBasicFormProps {
