@@ -2,9 +2,9 @@ import OrderApi from '../api/orderApi';
 import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import {OrderModel} from '../models';
+import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
-import OrderType from '../models/orderType';
+import MarketService from '../services/marketService';
 import ErrorParser from '../utils/errorParser';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
@@ -17,13 +17,11 @@ class OrderStore extends BaseStore {
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
   private updateDepthByOrderBook: any;
-  private isOrderBookClicked: boolean;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
-    this.isOrderBookClicked = false;
   }
 
   updatePriceFn = (fn: any) => {
@@ -97,6 +95,20 @@ class OrderStore extends BaseStore {
     this.updateOrders();
   };
 
+  convertPartiallyBalance = async (
+    balance: number,
+    baseName: string,
+    quoteName: string
+  ) => {
+    return await MarketService.convertAsset(
+      {
+        Amount: balance,
+        AssetId: baseName
+      },
+      quoteName
+    );
+  };
+
   executeOrder = (orders: any[]) => {
     this.rootStore.orderListStore.fetchAll().then(() => {
       orders.forEach(order =>
@@ -123,16 +135,7 @@ class OrderStore extends BaseStore {
     });
   };
 
-  getIsOrderBookClicked = (): boolean => {
-    return this.isOrderBookClicked;
-  };
-
-  setIsOrderBookClicked = (value: boolean) => {
-    this.isOrderBookClicked = value;
-  };
-
   reset = () => {
-    this.setIsOrderBookClicked(false);
     return;
   };
 
