@@ -2,14 +2,13 @@ import OrderApi from '../api/orderApi';
 import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import {OrderModel} from '../models';
+import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
-import {OrderType} from '../models/orderType';
+import MarketService from '../services/marketService';
 import ErrorParser from '../utils/errorParser';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
-import MarketService from '../services/marketService';
 
 // tslint:disable:no-console
 
