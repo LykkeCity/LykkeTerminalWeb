@@ -41,20 +41,6 @@ export interface OrderProps {
   convertPartiallyBalance: any;
 }
 
-export interface OrderOptionProps {
-  title: string;
-  amount: string;
-  isAmountable: boolean;
-  tumblerValues: string[];
-  change: any;
-  inputValue: number;
-  quoteName: string;
-}
-
-export interface OrderTumbler {
-  tumblers: string[];
-}
-
 export interface OrderHeaderProps {
   orderCurrency: string;
   click: any;
