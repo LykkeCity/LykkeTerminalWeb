@@ -2,6 +2,7 @@ import {
   AssetApi,
   AuthApi,
   BalanceListApi,
+  ChartApi,
   OrderApi,
   OrderBookApi,
   TradeApi,
@@ -69,7 +70,7 @@ class RootStore {
       this.uiStore = new UiStore(this);
       this.referenceStore = new ReferenceStore(this, new AssetApi(this));
       this.authStore = new AuthStore(this, new AuthApi(this));
-      this.chartStore = new ChartStore(this);
+      this.chartStore = new ChartStore(this, new ChartApi(this));
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
