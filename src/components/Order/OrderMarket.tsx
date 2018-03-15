@@ -3,6 +3,7 @@ import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
+import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
 import NumberInput from '../NumberInput/NumberInput';
 import {
@@ -97,8 +98,7 @@ class OrderMarket extends React.Component<
   };
 
   render() {
-    const baseName = this.props.assetName.split('/')[0];
-    const quoteName = this.props.assetName.split('/')[1];
+    const {baseName, quoteName} = this.props;
     this.previousPropsAction = this.props.action;
 
     return (
@@ -121,7 +121,7 @@ class OrderMarket extends React.Component<
             <StyledInputControl style={{width: '75%'}}>
               <NumberInput
                 value={this.props.quantity}
-                id={'quantityValue'}
+                id={OrderInputs.Quantity}
                 onChange={this.props.onChange(this.props.quantityAccuracy)}
                 onArrowClick={this.props.onArrowClick(
                   this.props.quantityAccuracy
@@ -176,9 +176,7 @@ const OrderMarketForm: React.SFC<OrderBasicFormProps & FormikProps<{}>> = (
 
 export default withFormik<OrderBasicFormProps, {}>({
   handleSubmit: (values: any, {props}) => {
-    const {action, assetName} = props;
-    const baseName = assetName.split('/')[0];
-    const quoteName = assetName.split('/')[1];
+    const {action, baseName, quoteName} = props;
     const {invertedAction, isInverted} = values;
     props.onSubmit(
       invertedAction || action,
