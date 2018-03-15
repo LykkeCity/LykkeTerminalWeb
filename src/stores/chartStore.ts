@@ -1,4 +1,5 @@
 import {ChartDataFeed, PriceApi} from '../api';
+import * as api from '../api/chartApi';
 import {InstrumentModel} from '../models/index';
 import {BaseStore, RootStore} from './index';
 
@@ -38,7 +39,7 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
-    return new (window as any).TradingView.widget({
+    const widget = new (window as any).TradingView.widget({
       autosize: true,
       symbol: instrument.name,
       interval: '60',
@@ -88,7 +89,19 @@ class ChartStore extends BaseStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
+    widget.onChartReady(() => {
+      this.load().then((settings: any) => settings && widget.load(settings));
+      widget.subscribe('onAutoSaveNeeded', () => {
+        widget.save(this.save);
+      });
+    });
   };
+
+  save = (settings: any) => {
+    api.save(settings);
+  };
+
+  load = () => api.load();
 
   reset = () => {
     return;
