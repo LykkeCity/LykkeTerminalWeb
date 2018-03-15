@@ -90,7 +90,7 @@ class ChartStore extends BaseStore {
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
     widget.onChartReady(() => {
-      this.load().then(res => {
+      this.load().then((res: any) => {
         if (res && res.Data) {
           const settings = JSON.parse(res.Data);
           widget.load(settings);
