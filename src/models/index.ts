@@ -13,5 +13,5 @@ export {default as SearchString} from './searchString';
 export {default as Interval} from './interval';
 export {default as PriceType} from './priceType';
 export {default as MarketType} from './marketType';
-export {default as OrderType} from './orderType';
+export {OrderType, OrderInputs} from './orderType';
 export {default as OperationType} from './operationType';
