@@ -21,6 +21,9 @@ export class RestApi {
       .url(url)
       .get()
       .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .notFound(() => {
+        return;
+      })
       .json();
 
   protected getWithQuery = (url: string, query: {[key: string]: any}) =>
@@ -29,6 +32,9 @@ export class RestApi {
       .query(query)
       .get()
       .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .notFound(() => {
+        return;
+      })
       .json();
 
   protected getPublic = (url: string) =>
