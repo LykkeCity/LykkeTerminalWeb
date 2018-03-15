@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {OrderInputs} from '../../models';
 import Side from '../../models/side';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderFormProps} from './index';
@@ -94,7 +95,7 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
           <StyledOptions>
             <NumberInput
               value={price}
-              id={'priceValue'}
+              id={OrderInputs.Price}
               onChange={onChange(priceAccuracy)}
               onArrowClick={onArrowClick(priceAccuracy)}
             />
