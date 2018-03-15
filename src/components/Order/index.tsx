@@ -3,7 +3,7 @@ import {pathOr} from 'rambda';
 import styled from 'styled-components';
 import {AssetBalanceModel} from '../../models';
 import {connect} from '../connect';
-import Order from './OrderNew';
+import Order from './Order';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
@@ -39,20 +39,6 @@ export interface OrderProps {
   baseAssetBalance: any;
   quoteAssetBalance: any;
   convertPartiallyBalance: any;
-}
-
-export interface OrderOptionProps {
-  title: string;
-  amount: string;
-  isAmountable: boolean;
-  tumblerValues: string[];
-  change: any;
-  inputValue: number;
-  quoteName: string;
-}
-
-export interface OrderTumbler {
-  tumblers: string[];
 }
 
 export interface OrderHeaderProps {
@@ -113,6 +99,14 @@ export interface OrderBasicFormProps {
   percents: any[];
   quantity: string;
   quantityAccuracy: number;
+}
+
+export interface OrderMarketState {
+  action: string;
+}
+
+export interface OrderMarketProps extends OrderBasicFormProps {
+  onResetPercentage: any;
 }
 
 export interface OrderLimitProps extends OrderBasicFormProps {
