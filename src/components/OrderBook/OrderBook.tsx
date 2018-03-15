@@ -91,12 +91,10 @@ class OrderBook extends React.Component<OrderBookProps> {
   }
 
   handleUpdatePriceAndDepth = (price: number, depth: number) => () => {
-    this.props.setIsOrderBookClicked(true);
     this.props.updatePriceAndDepth(price, depth);
   };
 
   handleUpdatePrice = (price: number) => () => {
-    this.props.setIsOrderBookClicked(true);
     this.props.updatePrice(price);
   };
 

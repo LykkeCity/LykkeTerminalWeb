@@ -2,19 +2,11 @@ import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrderInputs} from '../../models';
-import Side from '../../models/side';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderFormProps} from './index';
 
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
-
 const StyledOrderOptions = styled.div`
   margin: 10px 0 0 0;
-`;
-
-const StyledInputBlock = styled.div`
-  width: 50%;
 `;
 
 const StyledOptions = styled.div`
@@ -40,71 +32,67 @@ const StyledTitle = styled.div`
   margin-top: ${rem(16)};
 `;
 
+const StyledInputNumberComponent = styled.div`
+  position: sticky;
+
+  > span.up,
+  > span.down {
+    content: '';
+    position: absolute;
+    right: 5px;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 6px solid #f5f6f7;
+    z-index: 5;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  > span.up {
+    top: 8px;
+  }
+
+  > span.down {
+    bottom: 8px;
+    transform: rotate(180deg);
+  }
+`;
+
+// TODO should be deleted after design updating
 const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
-  const {
-    onChange,
-    onArrowClick,
-    price,
-    isMarket,
-    amount,
-    assetName,
-    action,
-    buy,
-    sell,
-    quantityAccuracy,
-    priceAccuracy
-  } = props;
+  const {onChange, onArrowClick, price, quantity, amount, assetName} = props;
 
   const quoteName = assetName.split('/')[1];
-  const baseName = assetName.split('/')[0];
 
   return (
     <StyledOrderOptions>
-      <Flex justify={'space-between'}>
-        <StyledInputBlock>
-          <StyledTitle>
-            Sell {action === Side.Sell.toLowerCase() ? baseName : quoteName}
-          </StyledTitle>
-          <StyledOptions>
-            <NumberInput
-              value={sell}
-              id={'sellValue'}
-              onChange={onChange(quantityAccuracy)}
-              onArrowClick={onArrowClick(quantityAccuracy)}
-            />
-          </StyledOptions>
-        </StyledInputBlock>
-        <StyledInputBlock>
-          <StyledTitle>
-            Buy {action === Side.Sell.toLowerCase() ? quoteName : baseName}
-          </StyledTitle>
-          <StyledOptions>
-            <NumberInput
-              value={buy}
-              id={'buyValue'}
-              onChange={onChange(quantityAccuracy)}
-              onArrowClick={onArrowClick(quantityAccuracy)}
-            />
-          </StyledOptions>
-        </StyledInputBlock>
-      </Flex>
-
-      {!isMarket ? (
-        <div>
-          <StyledTitle>Price</StyledTitle>
-          <StyledOptions>
-            <NumberInput
-              value={price}
-              id={OrderInputs.Price}
-              onChange={onChange(priceAccuracy)}
-              onArrowClick={onArrowClick(priceAccuracy)}
-            />
-            <StyledAmount>
-              Total: {amount} {quoteName}
-            </StyledAmount>
-          </StyledOptions>
-        </div>
-      ) : null}
+      <StyledTitle>Quantity</StyledTitle>
+      <StyledOptions>
+        <StyledInputNumberComponent>
+          <NumberInput
+            value={quantity}
+            id={OrderInputs.Quantity}
+            onChange={onChange()}
+            onArrowClick={onArrowClick()}
+          />
+        </StyledInputNumberComponent>
+      </StyledOptions>
+      <StyledTitle>Price</StyledTitle>
+      <StyledOptions>
+        <StyledInputNumberComponent>
+          <NumberInput
+            value={price}
+            id={OrderInputs.Price}
+            onChange={onChange(2)}
+            onArrowClick={onArrowClick(2)}
+          />
+        </StyledInputNumberComponent>
+        <StyledAmount>
+          Total: {amount} {quoteName}
+        </StyledAmount>
+      </StyledOptions>
     </StyledOrderOptions>
   );
 };
