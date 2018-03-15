@@ -7,7 +7,8 @@ import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
 import NumberInput from '../NumberInput/NumberInput';
 import {
-  OrderBasicFormProps,
+  OrderMarketProps,
+  OrderMarketState,
   StyledActionTitle,
   StyledInputControl,
   StyledReset
@@ -35,18 +36,14 @@ const StyledInvertedBtn = Box.extend`
   }
 `;
 
-interface OrderBasicFormState {
-  action: string;
-}
-
 class OrderMarket extends React.Component<
-  OrderBasicFormProps & FormikProps<{}>,
-  OrderBasicFormState
+  OrderMarketProps & FormikProps<{}>,
+  OrderMarketState
 > {
   private isInverted: boolean = false;
   private previousPropsAction: string;
 
-  constructor(props: OrderBasicFormProps & FormikProps<{}>) {
+  constructor(props: OrderMarketProps & FormikProps<{}>) {
     super(props);
 
     this.state = {
@@ -72,6 +69,7 @@ class OrderMarket extends React.Component<
   };
 
   onInvert = () => {
+    this.props.onResetPercentage();
     this.isInverted = !this.isInverted;
     const action = !this.isInverted
       ? this.props.action
@@ -164,8 +162,8 @@ class OrderMarket extends React.Component<
   }
 }
 
-const OrderMarketForm: React.SFC<OrderBasicFormProps & FormikProps<{}>> = (
-  props: OrderBasicFormProps & FormikProps<{}>
+const OrderMarketForm: React.SFC<OrderMarketProps & FormikProps<{}>> = (
+  props: OrderMarketProps & FormikProps<{}>
 ) => {
   return (
     <Form>
@@ -174,7 +172,7 @@ const OrderMarketForm: React.SFC<OrderBasicFormProps & FormikProps<{}>> = (
   );
 };
 
-export default withFormik<OrderBasicFormProps, {}>({
+export default withFormik<OrderMarketProps, {}>({
   handleSubmit: (values: any, {props}) => {
     const {action, baseName, quoteName} = props;
     const {invertedAction, isInverted} = values;
