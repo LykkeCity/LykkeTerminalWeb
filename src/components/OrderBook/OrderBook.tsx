@@ -42,8 +42,8 @@ interface OrderBookProps {
   cancelOrder: any;
   setIsOrderBookClicked: any;
   span: number;
-  onIncSpan: () => void;
-  onDecSpan: () => void;
+  onNextSpan: () => void;
+  onPrevSpan: () => void;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -123,8 +123,8 @@ class OrderBook extends React.Component<OrderBookProps> {
       priceAccuracy,
       volumeAccuracy,
       span,
-      onIncSpan,
-      onDecSpan
+      onNextSpan,
+      onPrevSpan
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
@@ -140,9 +140,9 @@ class OrderBook extends React.Component<OrderBookProps> {
       <StyledWrapper>
         <StyledBar>
           <StyledGrouping>
-            Grouping: <button onClick={onDecSpan}>-</button>
+            Grouping: <button onClick={onPrevSpan}>-</button>
             <strong>{span}</strong>
-            <button onClick={onIncSpan}>+</button>
+            <button onClick={onNextSpan}>+</button>
           </StyledGrouping>
           <VBar />
           <OrderBookSwitch
