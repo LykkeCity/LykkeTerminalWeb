@@ -6,7 +6,7 @@ import OrderBook from './OrderBook';
 const ConnectedOrderBook = connect(
   ({
     modalStore: {addModal},
-    orderBookStore: {asks, bids, mid, initialSpan, span, incSpan, decSpan},
+    orderBookStore: {asks, bids, mid, seedSpan, span, nextSpan, prevSpan},
     uiStore: {selectedInstrument, stateFns},
     orderStore: {
       cancelOrder,
@@ -35,8 +35,8 @@ const ConnectedOrderBook = connect(
       stateFns,
       setIsOrderBookClicked,
       span,
-      onIncSpan: incSpan,
-      onDecSpan: decSpan
+      onNextSpan: nextSpan,
+      onPrevSpan: prevSpan
     };
   },
   OrderBook
