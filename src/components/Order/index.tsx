@@ -99,6 +99,7 @@ export interface OrderBasicFormProps {
   percents: any[];
   quantity: string;
   quantityAccuracy: number;
+  priceAccuracy: number;
 }
 
 export interface OrderMarketState {
@@ -112,7 +113,6 @@ export interface OrderMarketProps extends OrderBasicFormProps {
 export interface OrderLimitProps extends OrderBasicFormProps {
   amount: string;
   price: string;
-  priceAccuracy: number;
 }
 
 const StyledOrderButton = styled.div`
