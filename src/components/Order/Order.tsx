@@ -159,24 +159,33 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.disableButton(false);
   };
 
-  handleButtonClick = (action: string, baseName: string, quoteName: string) => {
+  handleButtonClick = (
+    action: string,
+    baseName: string,
+    quoteName: string,
+    accuracy?: number
+  ) => {
     this.disableButton(true);
     const {quantityValue, priceValue} = this.state;
     const currentPrice = parseFloat(priceValue).toFixed(
       this.props.accuracy.priceAccuracy
     );
 
+    const currentQuantity = accuracy
+      ? parseFloat(quantityValue).toFixed(accuracy)
+      : quantityValue;
+
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
-      return this.applyOrder(action, quantityValue, baseName, currentPrice);
+      return this.applyOrder(action, currentQuantity, baseName, currentPrice);
     }
     const messageSuffix = this.state.isMarketActive
       ? 'at the market price'
       : `at the price of ${currentPrice} ${quoteName}`;
-    const message = `${action} ${quantityValue} ${baseName} ${messageSuffix}`;
+    const message = `${action} ${currentQuantity} ${baseName} ${messageSuffix}`;
     this.props.addModal(
       message,
-      () => this.applyOrder(action, quantityValue, baseName, currentPrice),
+      () => this.applyOrder(action, currentQuantity, baseName, currentPrice),
       this.cancelOrder,
       Types.Confirm
     );
@@ -313,11 +322,12 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   reset = () => {
+    const {priceAccuracy, quantityAccuracy} = this.props.accuracy;
     this.resetPercentage();
     this.setState({
       percents: percentage,
-      priceValue: this.props.bid.toFixed(this.props.accuracy.priceAccuracy),
-      quantityValue: '0'
+      priceValue: this.props.bid.toFixed(priceAccuracy),
+      quantityValue: parseFloat('0').toFixed(quantityAccuracy)
     });
   };
 
@@ -416,6 +426,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             }
             isSell={this.state.isSellActive}
             onResetPercentage={this.resetPercentage}
+            priceAccuracy={this.props.accuracy.priceAccuracy}
           />
         )}
 
