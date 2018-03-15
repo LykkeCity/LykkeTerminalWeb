@@ -4,4 +4,9 @@ enum OrderType {
   StopLimit = 'Stop Limit'
 }
 
-export default OrderType;
+enum OrderInputs {
+  Price = 'priceValue',
+  Quantity = 'quantityValue'
+}
+
+export {OrderType, OrderInputs};

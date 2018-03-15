@@ -4,11 +4,12 @@ import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import {OrderModel} from '../models';
 import Types from '../models/modals';
-import OrderType from '../models/orderType';
+import {OrderType} from '../models/orderType';
 import ErrorParser from '../utils/errorParser';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
+import MarketService from '../services/marketService';
 
 // tslint:disable:no-console
 
@@ -95,6 +96,20 @@ class OrderStore extends BaseStore {
       )
     );
     this.updateOrders();
+  };
+
+  convertPartiallyBalance = async (
+    balance: number,
+    baseName: string,
+    quoteName: string
+  ) => {
+    return await MarketService.convertAsset(
+      {
+        Amount: balance,
+        AssetId: baseName
+      },
+      quoteName
+    );
   };
 
   executeOrder = (orders: any[]) => {

@@ -1,6 +1,7 @@
 import {Form, withFormik} from 'formik';
 import * as React from 'react';
 import styled from 'styled-components';
+import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
 import NumberInput from '../NumberInput/NumberInput';
 import {
@@ -37,16 +38,14 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   priceAccuracy,
   percents,
   onHandlePercentageChange,
-  assetName,
+  baseName,
+  quoteName,
   isSell,
   amount,
   isDisable,
   onReset,
   balance
 }) => {
-  const baseName = assetName.split('/')[0];
-  const quoteName = assetName.split('/')[1];
-
   return (
     <Form>
       <StyledInputControl>
@@ -60,7 +59,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         </Flex>
         <NumberInput
           value={quantity}
-          id={'quantityValue'}
+          id={OrderInputs.Quantity}
           onChange={onChange(quantityAccuracy)}
           onArrowClick={onArrowClick(quantityAccuracy)}
         />
@@ -81,7 +80,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         </Flex>
         <NumberInput
           value={price}
-          id={'priceValue'}
+          id={OrderInputs.Price}
           onChange={onChange(priceAccuracy)}
           onArrowClick={onArrowClick(priceAccuracy)}
         />
@@ -113,9 +112,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
 
 export default withFormik<OrderLimitProps, {}>({
   handleSubmit: (values: any, {props}) => {
-    const {action, assetName} = props;
-    const baseName = assetName.split('/')[0];
-    const quoteName = assetName.split('/')[1];
+    const {action, baseName, quoteName} = props;
     props.onSubmit(action, baseName, quoteName);
   }
 })(OrderLimit);

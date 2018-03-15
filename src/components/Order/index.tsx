@@ -26,7 +26,8 @@ export interface OrderProps {
   accuracy: any;
   currency: string;
   placeOrder: any;
-  name: string;
+  baseName: string;
+  quoteName: string;
   stateFns: any[];
   getAssetById: any;
   onArrowClick: any;
@@ -38,6 +39,7 @@ export interface OrderProps {
   getIsOrderBookClicked: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
+  convertPartiallyBalance: any;
 }
 
 export interface OrderOptionProps {
@@ -99,7 +101,8 @@ export interface OrderFormProps {
 
 export interface OrderBasicFormProps {
   action: string;
-  assetName: string;
+  baseName: string;
+  quoteName: string;
   balance: number;
   isDisable: boolean;
   isSell: boolean;
@@ -151,7 +154,8 @@ const ConnectedOrder = connect(
       placeOrder,
       updatePriceFn,
       updateDepthFn,
-      getIsOrderBookClicked
+      getIsOrderBookClicked,
+      convertPartiallyBalance
     },
     uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
     referenceStore,
@@ -168,13 +172,21 @@ const ConnectedOrder = connect(
     },
     addModal,
     ask: bestAsk(),
+    get baseName() {
+      const name = pathOr('', ['name'], instrument);
+      return name && name.split('/')[0];
+    },
+    get quoteName() {
+      const name = pathOr('', ['name'], instrument);
+      return name && name.split('/')[1];
+    },
     bid: bestBid(),
+    convertPartiallyBalance,
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
     getAssetById: referenceStore.getAssetById,
     getIsOrderBookClicked,
     initPriceFn,
-    name: pathOr('', ['name'], instrument),
     onArrowClick,
     onValueChange,
     placeOrder,
