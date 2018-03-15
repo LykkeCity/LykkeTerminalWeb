@@ -8,12 +8,7 @@ const ConnectedOrderBook = connect(
     modalStore: {addModal},
     orderBookStore: {asks, bids, mid, seedSpan, span, nextSpan, prevSpan},
     uiStore: {selectedInstrument, stateFns},
-    orderStore: {
-      cancelOrder,
-      updatePrice,
-      updatePriceAndDepth,
-      setIsOrderBookClicked
-    }
+    orderStore: {cancelOrder, updatePrice, updatePriceAndDepth}
   }) => {
     const volumeAccuracy = pathOr(
       0,
@@ -33,7 +28,6 @@ const ConnectedOrderBook = connect(
       updatePrice,
       updatePriceAndDepth,
       stateFns,
-      setIsOrderBookClicked,
       span,
       onNextSpan: nextSpan,
       onPrevSpan: prevSpan

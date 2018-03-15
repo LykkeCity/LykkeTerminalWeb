@@ -43,7 +43,7 @@ const StyledPercent = styled.div`
   &.active + div {
     border-left: 1px solid transparent;
   }
-` as any;
+`;
 
 const OrderPercentage: React.SFC<OrderPercentageProps> = ({
   percent,

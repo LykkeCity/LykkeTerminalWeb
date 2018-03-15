@@ -36,7 +36,6 @@ export interface OrderProps {
   updatePriceFn: any;
   updateDepthFn: any;
   initPriceFn: any;
-  getIsOrderBookClicked: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
   convertPartiallyBalance: any;
@@ -154,7 +153,6 @@ const ConnectedOrder = connect(
       placeOrder,
       updatePriceFn,
       updateDepthFn,
-      getIsOrderBookClicked,
       convertPartiallyBalance
     },
     uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
@@ -185,7 +183,6 @@ const ConnectedOrder = connect(
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
     getAssetById: referenceStore.getAssetById,
-    getIsOrderBookClicked,
     initPriceFn,
     onArrowClick,
     onValueChange,
