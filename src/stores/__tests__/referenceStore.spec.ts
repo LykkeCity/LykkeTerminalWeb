@@ -13,10 +13,13 @@ describe('referenceStore', () => {
     fetchAssetInstruments: jest.fn(),
     fetchBaseAsset: jest.fn()
   };
+  const priceApi: any = {
+    fetchCandles: jest.fn()
+  };
   let assetStore: ReferenceStore;
 
   beforeEach(() => {
-    assetStore = new ReferenceStore(new RootStore(false), api);
+    assetStore = new ReferenceStore(new RootStore(false), api, priceApi);
   });
 
   describe('asset list', () => {
