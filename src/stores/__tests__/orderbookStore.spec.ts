@@ -26,7 +26,7 @@ describe('orderBook store', () => {
   const {bestBid, bestAsk, mid} = store;
 
   test('order should contain users volume with equal price', () => {
-    const orders = [
+    const limitOrdersDto = [
       {
         AssetPairId: 'BTCUSD',
         CreateDateTime: '2018-01-17T07:17:40.84Z',
@@ -46,14 +46,24 @@ describe('orderBook store', () => {
         Voume: 0.0001
       }
     ];
-    const limitOrders = orders.map(mappers.mapToLimitOrder);
+    const limitOrders = limitOrdersDto.map(mappers.mapToLimitOrder);
     rootStore.orderListStore.updateOrders(limitOrders);
+    const ownVolume = limitOrders.map(x => x.volume).reduce(add, 0);
 
-    const order = store.rawBids.find(bid => bid.price === limitOrders[0].price);
-    const ownVolume = limitOrders.reduce((sum, limitOrder) => {
-      sum += limitOrder.volume;
-      return sum;
-    }, 0);
+    const orders = [
+      {price: 1, volume: 1},
+      {price: 2, volume: 2},
+      {price: 3, volume: 3}
+    ] as Order[];
+
+    const aggOrders = aggregateOrders(orders, 1, false);
+    const connOrders = store.connectLimitOrders(aggOrders, 1, false);
+    const order = connOrders.find(
+      x =>
+        x.price > limitOrders[0].price - 1 && x.price < limitOrders[0].price + 1
+    );
+    expect(order!.price).toBe(1);
+    expect(order!.connectedLimitOrders).toHaveLength(2);
     expect(order!.orderVolume).toBe(ownVolume);
   });
 
@@ -155,6 +165,19 @@ describe('orderBook store', () => {
       expect(newOrders[1].volume).toBe(5);
       expect(newOrders[2].price).toBe(105);
       expect(newOrders[2].volume).toBe(10);
+    });
+
+    it('should return original orders if span is too low', () => {
+      const orders = [
+        {price: 10, volume: 1, depth: 1},
+        {price: 11, volume: 2, depth: 3},
+        {price: 12, volume: 3, depth: 6},
+        {price: 13, volume: 10, depth: 16}
+      ] as Order[];
+
+      const newOrders = aggregateOrders(orders, 1, true);
+
+      expect(orders).toEqual(newOrders);
     });
 
     it('should correctly set price range of spans', () => {
