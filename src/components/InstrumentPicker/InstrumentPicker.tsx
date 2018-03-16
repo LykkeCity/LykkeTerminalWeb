@@ -1,4 +1,4 @@
-import {rem} from 'polished';
+import {observer} from 'mobx-react';
 import * as React from 'react';
 import styled from 'styled-components';
 import Watchlists from '../../models/watchlists';
@@ -16,10 +16,10 @@ import InstrumentShortcuts from './InstrumentShortcuts';
 const {Flex} = require('grid-styled');
 
 const StyledSearchWrap = styled(Flex)`
-  padding-bottom: ${rem(10)};
   border-bottom: solid 1px rgba(0, 0, 0, 0.2);
 `;
 
+@observer
 class InstrumentPicker extends React.Component<
   InstrumentPickerProps,
   InstrumentPickerStats
@@ -44,7 +44,7 @@ class InstrumentPicker extends React.Component<
     }
   };
 
-  changeValue = (value: string = '') => {
+  changeValue = (value: string = '', closeSelection: boolean) => {
     this.setState({
       activeShortcut: 0,
       searchValue: value,
@@ -69,8 +69,12 @@ class InstrumentPicker extends React.Component<
             <StyledSearchWrap align={'center'} justify={'space-between'}>
               <InstrumentShortcuts
                 changeValue={this.changeWallet}
+                onToggleInstrumentSelection={
+                  this.props.onToggleInstrumentSelection
+                }
                 shortcutActiveIndex={this.state.activeShortcut}
                 shortcuts={this.props.watchlistNames}
+                showInstrumentSelection={this.props.showInstrumentSelection}
               />
               <InstrumentSearch
                 inputValue={this.state.searchValue}
@@ -78,8 +82,9 @@ class InstrumentPicker extends React.Component<
               />
             </StyledSearchWrap>
             <InstrumentList
+              baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}
-              instruments={this.props.instruments}
+              instruments={[...this.props.instruments]}
               onPick={this.props.onPick}
               change={this.changeValue}
             />

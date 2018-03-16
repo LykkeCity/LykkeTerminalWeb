@@ -68,6 +68,12 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-table@6.7.3":
+  version "6.7.3"
+  resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-6.7.3.tgz#c594eefb0a749f0a0304894139bf712faa0fea1b"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^16.0.34":
   version "16.0.34"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.34.tgz#7a8f795afd8a404a9c4af9539b24c75d3996914e"
@@ -5248,6 +5254,12 @@ react-scripts-ts@2.8.0:
     whatwg-fetch "2.0.3"
   optionalDependencies:
     fsevents "1.1.2"
+
+react-table@^6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.8.0.tgz#5ce402eb735df68534c03dabb3faa031478b6a58"
+  dependencies:
+    classnames "^2.2.5"
 
 react@^16.2.0:
   version "16.2.0"

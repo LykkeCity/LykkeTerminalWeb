@@ -4,12 +4,14 @@ import {
   BalanceListApi,
   OrderApi,
   OrderBookApi,
+  PriceApi,
   TradeApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
+// import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
@@ -67,7 +69,11 @@ class RootStore {
       );
       this.orderListStore = new OrderListStore(this, new OrderApi(this));
       this.uiStore = new UiStore(this);
-      this.referenceStore = new ReferenceStore(this, new AssetApi(this));
+      this.referenceStore = new ReferenceStore(
+        this,
+        new AssetApi(this),
+        new PriceApi(this)
+      );
       this.authStore = new AuthStore(this, new AuthApi(this));
       this.chartStore = new ChartStore(this);
       this.orderStore = new OrderStore(this, new OrderApi(this));
@@ -84,9 +90,10 @@ class RootStore {
       this.chartStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
-        .forEach((x: any) =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        .forEach((x: any) => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          // ws.subscribe(topics.candle('spot', x.id, PriceType.Bid, 'day'), this.referenceStore.onCandle);
+        });
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
@@ -109,6 +116,7 @@ class RootStore {
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
+    await this.referenceStore.getInstrumentsBaseAssetPrice();
 
     await this.referenceStore
       .fetchBaseAsset()
@@ -129,9 +137,10 @@ class RootStore {
         this.uiStore.setWs(ws);
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
-        instruments.forEach(x =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        instruments.forEach(x => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          // ws.subscribe(topics.candle('spot', x.id, PriceType.Bid, 'day'), this.referenceStore.onCandle);
+        });
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );

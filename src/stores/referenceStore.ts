@@ -1,5 +1,6 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {AssetApi} from '../api/index';
+import {AssetApi, PriceApi} from '../api/index';
+import dates from '../constants/dateKeys';
 import keys from '../constants/storageKeys';
 import {
   AssetCategoryModel,
@@ -8,6 +9,7 @@ import {
   SearchString
 } from '../models';
 import * as mappers from '../models/mappers';
+import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -49,7 +51,11 @@ class ReferenceStore extends BaseStore {
     return this.getAssetById(this.baseAssetId);
   }
 
-  constructor(readonly store: RootStore, private api: AssetApi) {
+  constructor(
+    readonly store: RootStore,
+    private api: AssetApi,
+    private priceApi: PriceApi
+  ) {
     super(store);
   }
 
@@ -76,6 +82,7 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
+  @observable
   findInstruments = (term: string, name: string) => {
     const isAuth = this.rootStore.authStore.isAuth;
     const instruments = isAuth
@@ -232,12 +239,62 @@ class ReferenceStore extends BaseStore {
     updateTradingWallet();
   };
 
-  onQuote = (args: any) => {
+  onQuote = async (args: any) => {
     const {a: id, p: price} = args[0];
     const instrument = this.getInstrumentById(id);
+
     if (instrument && instrument.id) {
       instrument.updatePrice(price);
     }
+  };
+
+  // onCandle = async (args: any) => {
+  //   const {a: id, p: price} = args[0];
+  // };
+
+  getInstrumentsBaseAssetPrice = async () => {
+    const prices = this.getInstruments().map(x => ({
+      AssetId: x.quoteAsset.id,
+      Balance: x.price,
+      ConvertedBalance: 0
+    }));
+    const baseAssetId = baseAssetStorage.get();
+    const priceInBase: any[] = await MarketService.convert(
+      prices,
+      baseAssetId!
+    );
+
+    priceInBase.forEach((price, index) => {
+      prices[index].ConvertedBalance = price.Balance;
+    });
+
+    this.getInstruments().forEach(async (instrument, index) => {
+      await this.priceApi
+        .fetchCandles(
+          instrument.id,
+          new Date(new Date().getTime() - dates.day),
+          new Date(),
+          'day'
+        )
+        .then(res => {
+          if (res.History && res.History.length) {
+            const candle = res.History[0];
+            instrument.volume = candle.Volume;
+            instrument.change24h =
+              (candle.Close - candle.Open) / candle.Open * 100;
+          }
+        })
+        .catch(() => {
+          instrument.change24h = 0;
+          instrument.volume = 0;
+        });
+
+      if (instrument.quoteAsset.id === baseAssetId) {
+        instrument.priceInBase = instrument.price;
+      } else {
+        instrument.priceInBase = prices[index].ConvertedBalance;
+      }
+    });
   };
 
   reset = () => {
