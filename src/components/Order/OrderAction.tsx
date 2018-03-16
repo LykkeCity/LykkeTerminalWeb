@@ -94,7 +94,7 @@ const OrderAction: React.SFC<OrderActionProps> = ({
     <StyledOrderAction className={classes.join(' ')} onClick={click}>
       <StyledTitle className={classes.join(' ')}>{title}</StyledTitle>
       <StyledPrice className={classes.join(' ')}>
-        {<FormattedNumber value={price ? price : 0} />}
+        <FormattedNumber value={price ? price : 0} />
       </StyledPrice>
       <StyledAction className={classes.join(' ')}>{action}</StyledAction>
     </StyledOrderAction>
