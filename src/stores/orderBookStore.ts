@@ -5,7 +5,6 @@ import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
-// import OrderModel from '../models/orderModel';
 import {BaseStore, RootStore} from './index';
 import {
   aggregateOrders,

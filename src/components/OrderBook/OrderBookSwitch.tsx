@@ -35,7 +35,7 @@ const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
           <CustomSelect
             styles={{
               borderRadius: '6px',
-              height: '67px',
+              height: '70px',
               left: '120px',
               minWidth: '150px',
               top: '45px'

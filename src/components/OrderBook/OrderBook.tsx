@@ -149,7 +149,6 @@ class OrderBook extends React.Component<OrderBookProps> {
             value={this.displayType}
             onChange={this.handleChange}
           />
-          {/* <VBar /> */}
         </StyledBar>
         <Bar />
         <Table>
