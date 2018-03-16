@@ -14,9 +14,8 @@ const marginBySide = (side: Side) =>
   side === Side.Sell ? 'marginLeft' : 'marginRight';
 
 export const StyledWrapper = styled.div`
-  height: 100%;
+  height: calc(100% - 50px);
   margin-right: -0.9375rem;
-  /* padding-top: ${rem(55)}; */
 `;
 
 export const StyledBar = styled.div`
@@ -33,6 +32,7 @@ export const StyledGrouping = styled.div`
   display: flex;
   align-items: center;
   min-height: 24px;
+  padding-left: 2px;
 
   button {
     background: none;
@@ -120,9 +120,9 @@ export const StyledSwitch = styled.div`
       border-top: 4px solid rgba(245, 246, 247, 0.4);
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
-      position: absolute;
-      top: 6px;
-      right: -16px;
+      position: relative;
+      top: 10px;
+      left: 10px;
     }
   }
 `;
