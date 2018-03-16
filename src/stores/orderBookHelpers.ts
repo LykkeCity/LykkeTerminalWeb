@@ -12,8 +12,9 @@ export const getMultiplier = (idx: number, list: number[]) =>
 
 export const withSamePrice = (price: number) => (x: Order) => x.price === price;
 
-export const between = (min: number, max: number) => (x: Order) =>
-  x.price >= min && x.price < max;
+export const priceBetween = (min: number, max: number) => (
+  x: Pick<Order, 'price'>
+) => x.price >= min && x.price < max;
 
 export const floorInt = (num: number, span: number, isAsk: boolean) =>
   num % span > 0 ? (isAsk ? num + (span - num % span) : num - num % span) : num;
