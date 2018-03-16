@@ -1,4 +1,5 @@
 import {Form, withFormik} from 'formik';
+import rem from 'polished/lib/helpers/rem';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrderInputs} from '../../models';
@@ -7,6 +8,7 @@ import NumberInput from '../NumberInput/NumberInput';
 import {
   OrderLimitProps,
   StyledActionTitle,
+  StyledAvailable,
   StyledInputControl,
   StyledOrderButton,
   StyledReset
@@ -25,7 +27,11 @@ const StyledTotal = Flex.extend`
 `;
 
 const StyledNote = styled.div`
-  margin-top: 28px;
+  margin-top: ${rem(28)};
+`;
+
+const StyledTitle = styled.div`
+  font-size: ${rem(16)};
 `;
 
 const OrderLimit: React.SFC<OrderLimitProps> = ({
@@ -53,9 +59,9 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           <StyledActionTitle>
             {action} {baseName}
           </StyledActionTitle>
-          <div>
+          <StyledAvailable>
             {balance} {isSell ? baseName : quoteName} available
-          </div>
+          </StyledAvailable>
         </Flex>
         <NumberInput
           value={quantity}
@@ -76,7 +82,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       </Flex>
       <StyledInputControl style={{borderBottom: '1px solid #333'}}>
         <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
-          <div>Price ({quoteName})</div>
+          <StyledTitle>Price ({quoteName})</StyledTitle>
         </Flex>
         <NumberInput
           value={price}
@@ -86,10 +92,10 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         />
       </StyledInputControl>
       <StyledTotal>
-        <div>Total</div>
-        <div>
+        <StyledTitle>Total</StyledTitle>
+        <StyledAvailable>
           {amount} {quoteName}
-        </div>
+        </StyledAvailable>
       </StyledTotal>
       <StyledNote>
         Your order may execute as a maker order or taker order.
@@ -97,7 +103,6 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
 
       <StyledOrderButton>
         <OrderButton
-          action={action}
           isDisable={isDisable}
           type={'submit'}
           message={`${capitalize(action)} ${quantity} ${baseName}`}

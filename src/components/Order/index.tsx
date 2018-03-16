@@ -53,7 +53,6 @@ export interface OrderChoiceButtonProps {
 }
 
 export interface OrderButtonProps {
-  action: string;
   isDisable: boolean;
   type: string;
   message?: string;
@@ -116,11 +115,11 @@ const StyledOrderButton = styled.div`
 `;
 
 const StyledInputControl = styled.div`
-  margin: 14px 0;
+  margin: ${rem(14)} 0;
 `;
 
 const StyledReset = Flex.extend`
-  padding: 17px 0;
+  padding: ${rem(17)} 0;
   color: #0388ef;
 
   span:hover {
@@ -129,9 +128,16 @@ const StyledReset = Flex.extend`
 `;
 
 const StyledActionTitle = styled.div`
+  font-size: ${rem(16)};
   &:first-letter {
     text-transform: capitalize;
   }
+`;
+
+const StyledAvailable = styled.div`
+  padding-top: ${rem(1)};
+  color: #8c94a0;
+  font-size: ${rem(15)};
 `;
 
 const ConnectedOrder = connect(
@@ -199,4 +205,10 @@ const ConnectedOrder = connect(
 );
 
 export {ConnectedOrder as Order};
-export {StyledActionTitle, StyledInputControl, StyledOrderButton, StyledReset};
+export {
+  StyledActionTitle,
+  StyledInputControl,
+  StyledOrderButton,
+  StyledReset,
+  StyledAvailable
+};
