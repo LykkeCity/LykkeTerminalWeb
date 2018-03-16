@@ -15,3 +15,4 @@ export {default as PriceType} from './priceType';
 export {default as MarketType} from './marketType';
 export {OrderType, OrderInputs} from './orderType';
 export {default as OperationType} from './operationType';
+export {default as OrderBookDisplayType} from './orderBookDisplayType';
