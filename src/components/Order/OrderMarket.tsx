@@ -10,6 +10,7 @@ import {
   OrderMarketProps,
   OrderMarketState,
   StyledActionTitle,
+  StyledAvailable,
   StyledInputControl,
   StyledReset
 } from './index';
@@ -21,6 +22,15 @@ const {Flex, Box} = require('grid-styled');
 
 const StyledOrderButton = styled.div`
   margin-top: ${rem(24)};
+`;
+
+const StyledInvertedTitle = Box.extend`
+  font-size: ${rem(14)};
+  opacity: 0.4;
+
+  &:first-letter {
+    text-transform: capitalize;
+  }
 `;
 
 const StyledInvertedBtn = Box.extend`
@@ -80,6 +90,7 @@ class OrderMarket extends React.Component<
       action
     });
     this.updateInvertedValues(action);
+    this.props.onInvert(this.isInverted);
   };
 
   reset = () => {
@@ -100,28 +111,27 @@ class OrderMarket extends React.Component<
     this.previousPropsAction = this.props.action;
     const {quantityAccuracy, priceAccuracy, quantity} = this.props;
     const currentAccuracy = this.isInverted ? priceAccuracy : quantityAccuracy;
-    const currentQuantity = parseFloat(quantity).toFixed(currentAccuracy);
 
     return (
       <div>
         <div>
           <div>
-            <div style={{width: '75%'}}>
+            <div style={{width: '70%'}}>
               <Flex justify="space-between">
                 <StyledActionTitle>
                   {this.state.action} {!this.isInverted ? baseName : quoteName}
                 </StyledActionTitle>
-                <div>
+                <StyledAvailable>
                   {this.props.balance}{' '}
                   {this.props.isSell ? baseName : quoteName} available
-                </div>
+                </StyledAvailable>
               </Flex>
             </div>
           </div>
           <Flex>
-            <StyledInputControl style={{width: '75%'}}>
+            <StyledInputControl style={{width: '70%'}}>
               <NumberInput
-                value={currentQuantity}
+                value={quantity}
                 id={OrderInputs.Quantity}
                 onChange={this.props.onChange(currentAccuracy)}
                 onArrowClick={this.props.onArrowClick(currentAccuracy)}
@@ -129,10 +139,15 @@ class OrderMarket extends React.Component<
             </StyledInputControl>
             <Flex align={'center'}>
               <StyledInvertedBtn onClick={this.onInvert} />
-              <Box>{this.isInverted ? baseName : quoteName}</Box>
+              <StyledInvertedTitle>
+                {this.state.action === orderAction.sell.action
+                  ? orderAction.buy.action
+                  : orderAction.sell.action}{' '}
+                {this.isInverted ? baseName : quoteName}
+              </StyledInvertedTitle>
             </Flex>
           </Flex>
-          <div style={{width: '75%'}}>
+          <div style={{width: '70%'}}>
             <Flex justify={'space-between'} style={{width: '100%'}}>
               {this.props.percents!.map((item: any, index: number) => (
                 <OrderPercentage
@@ -147,10 +162,9 @@ class OrderMarket extends React.Component<
         </div>
         <StyledOrderButton>
           <OrderButton
-            action={this.props.action}
             isDisable={this.props.isDisable}
             type={'submit'}
-            message={`${capitalize(this.state.action)} ${currentQuantity} ${
+            message={`${capitalize(this.state.action)} ${quantity} ${
               !this.isInverted ? baseName : quoteName
             }`}
           />

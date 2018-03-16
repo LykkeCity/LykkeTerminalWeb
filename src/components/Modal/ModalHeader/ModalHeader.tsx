@@ -9,17 +9,16 @@ const StyledCloseBtn = styled.a`
   color: #f5f6f7;
   text-decoration: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: ${rem(16)};
 
   > span {
     position: absolute;
-    top: 5px;
-    right: 25px;
+    top: ${rem(5)};
+    right: ${rem(25)};
   }
 `;
 
 const StyledTitle = styled.div`
-  height: 16px;
   font-family: 'Akrobat';
   font-size: ${rem(20)};
   font-weight: bold;
@@ -27,13 +26,14 @@ const StyledTitle = styled.div`
   text-align: left;
 `;
 
-const ModalHeader: React.SFC<{title: string; onClick: any}> = ({
-  title,
-  onClick
-}) => {
+const ModalHeader: React.SFC<{
+  title?: string;
+  onClick: any;
+  children?: any;
+}> = ({title, onClick, children}) => {
   return (
     <Flex justify={'space-between'}>
-      <StyledTitle>{title}</StyledTitle>
+      <StyledTitle>{title ? title : children}</StyledTitle>
       <StyledCloseBtn href="#" onClick={onClick}>
         <span>&times;</span>
       </StyledCloseBtn>
