@@ -9,24 +9,26 @@ const StyledColumn = styled.div`
   align-items: center;
 
   &:first-child {
-    padding-right: 4px;
+    padding-right: ${rem(4)};
   }
 
   &:not(:first-child):last-child {
-    padding-left: 4px;
+    padding-left: ${rem(4)};
   }
+
+  margin-bottom: -1px;
 `;
 
 const StyledActionChoice = styled.div`
   cursor: pointer;
   text-align: center;
-  padding: ${rem(7)} 0;
+  padding: ${rem(16)} 0;
   color: #8c94a0;
-  font-size: 18px;
+  font-size: ${rem(18)};
   border-bottom: 1px solid transparent;
 
   &.active {
-    border-bottom: solid 1px #0388ef;
+    border-bottom: 1px solid #0388ef;
     color: #ffffff;
   }
 `;
