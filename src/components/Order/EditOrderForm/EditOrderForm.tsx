@@ -22,18 +22,13 @@ interface EditOrderFormProps extends OrderFormProps {
 }
 
 const EditOrderForm = (props: EditOrderFormProps) => {
-  const {isDisable, action, onCancel} = props;
+  const {isDisable, onCancel} = props;
 
   return (
     <Form>
       <OrderInput {...props} />
       <StyledOrderButton>
-        <OrderButton
-          action={action}
-          isDisable={isDisable}
-          type={'submit'}
-          message={'Modify'}
-        />
+        <OrderButton isDisable={isDisable} type={'submit'} message={'Modify'} />
         <StyledCancelButton type="button" onClick={onCancel}>
           Hide
         </StyledCancelButton>
