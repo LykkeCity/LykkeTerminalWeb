@@ -1,108 +1,33 @@
 import {observable} from 'mobx';
-import {rem} from 'polished';
 import {curry} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import styled from 'styled-components';
 import ModalMessages from '../../constants/modalMessages';
-import {displayType} from '../../constants/orderBook';
 import keys from '../../constants/storageKeys';
-import {Order} from '../../models';
+import {Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
-import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
-import {css} from '../styled';
+import {minOrMaxFromList} from '../../utils/math';
+import Bar, {VBar} from '../Bar/Bar';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
+import OrderBookSwitch from './OrderBookSwitch';
+import {
+  StyledBar,
+  StyledBuyOrders,
+  StyledGrouping,
+  StyledHead,
+  StyledHeader,
+  StyledMidPrice,
+  StyledRow,
+  StyledSellOrders,
+  StyledWrapper
+} from './styles';
 
-const confirmStorage = StorageUtils(keys.confirmReminder);
+const confirmStorage = StorageUtils(keys.confirmReminder); // TODO: refactor to withStorage HOC
 
-const Wrapper = styled.div`
-  height: 100%;
-  margin-right: -0.9375rem;
-  padding-top: ${rem(55)};
-`;
-
-const StyledHead = styled.thead`
-  display: block;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  background: #333;
-  z-index: 1;
-`;
-
-const StyledRow = styled.tr`
-  display: flex;
-  justify-content: space-evenly;
-`;
-
-const StyledSellOrders = styled.tbody`
-  display: block;
-  margin: 34px 0.9375rem 0 0;
-`;
-
-const StyledBuyOrders = styled(StyledSellOrders)`
-  margin: 0 0.9375rem 0 0;
-`;
-
-const StyledMidPrice = styled.tbody`
-  display: flex;
-  justify-content: center;
-  margin: 0 0.9375rem 0 0;
-  background: rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const StyledHeader = styled.th.attrs({
-  style: (props: any) => ({
-    textAlign: props.align
-  })
-})`
-  flex-grow: 1;
-` as any;
-
-const Switch = styled.div`
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  top: ${rem(18)};
-  left: ${rem(8)};
-  right: ${rem(8)};
-  z-index: 10;
-  position: absolute;
-`;
-
-const SwitchItem = styled.div`
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  border-radius: 4px;
-  padding: ${rem(8)} ${rem(18)};
-  cursor: pointer;
-  ${(p: any) =>
-    p.active &&
-    css`
-      background-color: rgb(3, 136, 239);
-      border: solid 1px rgba(0, 0, 0, 0.2);
-      margin: -1px 0 -1px;
-    `};
-  :first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  :last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-` as any;
-
-const Bar = styled.div`
-  background-color: rgba(0, 0, 0, 0.2);
-  height: 1px;
-  margin-right: ${rem(15)};
-`;
+const mapToDisplayType = (displayType: OrderBookDisplayType) => (o: Order) =>
+  o[displayType.toLowerCase()];
 
 interface OrderBookProps {
   addModal: any;
@@ -115,20 +40,19 @@ interface OrderBookProps {
   updatePriceAndDepth: any;
   stateFns: any[];
   cancelOrder: any;
+  span: number;
+  onNextSpan: () => void;
+  onPrevSpan: () => void;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
-  @observable valueToShow: string = displayType[0];
+  @observable displayType = OrderBookDisplayType.Volume;
   private scrollComponent: any;
-  private wrapper: any;
-  private content: any;
   private midPrice: any;
 
   private refHandlers = {
-    content: (innerRef: any) => (this.content = innerRef),
-    midPrice: (innerRef: any) => (this.midPrice = innerRef),
-    scrollComponent: (ref: any) => (this.scrollComponent = ref),
-    wrapper: (innerRef: any) => (this.wrapper = innerRef)
+    midPrice: (ref: any) => (this.midPrice = ref),
+    scrollComponent: (ref: any) => (this.scrollComponent = ref)
   };
   private isScrollSet: boolean = false;
 
@@ -142,8 +66,8 @@ class OrderBook extends React.Component<OrderBookProps> {
     this.isScrollSet = false;
   };
 
-  handleChange = (e: React.ChangeEvent<any>) => {
-    this.valueToShow = e.target.id;
+  handleChange = (displayType: OrderBookDisplayType) => {
+    this.displayType = displayType;
   };
 
   cancelOrders = (connectedOrders: string[]) => {
@@ -189,32 +113,40 @@ class OrderBook extends React.Component<OrderBookProps> {
   };
 
   render() {
-    const {bids, asks, mid, priceAccuracy, volumeAccuracy} = this.props;
+    const {
+      bids,
+      asks,
+      mid,
+      priceAccuracy,
+      volumeAccuracy,
+      span,
+      onNextSpan,
+      onPrevSpan
+    } = this.props;
 
-    const mapWithValueToShow = (o: Order) => o[this.valueToShow];
+    const withCurrentType = mapToDisplayType(this.displayType);
+    const fromBids = curry(minOrMaxFromList)(bids.map(withCurrentType));
+    const maxBidValue = fromBids('max');
+    const minBidValue = fromBids('min');
 
-    const fromBids = curry(this.getMinMaxValue)(bids, mapWithValueToShow);
-    const maxBidValue = fromBids(Math.max);
-    const minBidValue = fromBids(Math.min);
-
-    const fromAsks = curry(this.getMinMaxValue)(asks, mapWithValueToShow);
-    const maxAskValue = fromAsks(Math.max);
-    const minAskValue = fromAsks(Math.min);
+    const fromAsks = curry(minOrMaxFromList)(asks.map(withCurrentType));
+    const maxAskValue = fromAsks('max');
+    const minAskValue = fromAsks('min');
 
     return (
-      <Wrapper innerRef={this.refHandlers.wrapper}>
-        <Switch>
-          {displayType.map(x => (
-            <SwitchItem
-              key={x}
-              active={this.valueToShow === x}
-              onClick={this.handleChange}
-              id={x}
-            >
-              {capitalize(x)}
-            </SwitchItem>
-          ))}
-        </Switch>
+      <StyledWrapper>
+        <StyledBar>
+          <StyledGrouping>
+            Grouping: <button onClick={onPrevSpan}>-</button>
+            <strong>{span}</strong>
+            <button onClick={onNextSpan}>+</button>
+          </StyledGrouping>
+          <VBar />
+          <OrderBookSwitch
+            value={this.displayType}
+            onChange={this.handleChange}
+          />
+        </StyledBar>
         <Bar />
         <Table>
           <StyledHead>
@@ -226,20 +158,20 @@ class OrderBook extends React.Component<OrderBookProps> {
           </StyledHead>
         </Table>
         <Scrollbars autoHide={true} ref={this.refHandlers.scrollComponent}>
-          <Table innerRef={this.refHandlers.content}>
+          <Table>
             <StyledSellOrders>
-              {asks.map(order => (
+              {asks.map((order, idx) => (
                 <OrderBookItem
                   maxValue={maxAskValue}
                   minValue={minAskValue}
-                  key={order.id}
-                  valueToShow={order[this.valueToShow]}
-                  {...order}
+                  key={idx}
+                  valueToShow={withCurrentType(order)}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  {...order}
                 />
               ))}
             </StyledSellOrders>
@@ -251,32 +183,26 @@ class OrderBook extends React.Component<OrderBookProps> {
               </tr>
             </StyledMidPrice>
             <StyledBuyOrders>
-              {bids.map(order => (
+              {bids.map((order, idx) => (
                 <OrderBookItem
                   maxValue={maxBidValue}
                   minValue={minBidValue}
-                  key={order.id}
-                  valueToShow={order[this.valueToShow]}
-                  {...order}
+                  key={idx}
+                  valueToShow={withCurrentType(order)}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  {...order}
                 />
               ))}
             </StyledBuyOrders>
           </Table>
         </Scrollbars>
-      </Wrapper>
+      </StyledWrapper>
     );
   }
-
-  private getMinMaxValue = (
-    orders: Order[],
-    selector: (o: Order) => any,
-    fn: Math['min'] | Math['max']
-  ) => fn(...orders.map(selector));
 }
 
 export default OrderBook;

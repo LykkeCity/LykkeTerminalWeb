@@ -14,3 +14,6 @@ export const precisionFloor = (num: number, precision: number) => {
   const factor = Math.pow(10, precision);
   return Math.floor(num * factor) / factor;
 };
+
+export const minOrMaxFromList = (list: number[], type: 'min' | 'max') =>
+  Math[type](...list);
