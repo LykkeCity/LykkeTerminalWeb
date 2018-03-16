@@ -90,13 +90,19 @@ class ChartStore extends BaseStore {
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
     if (this.rootStore.authStore.isAuth) {
+      chartContainerExists.style.display = 'none';
       widget.onChartReady(() => {
-        this.load().then((res: any) => {
-          if (res && res.Data) {
-            const settings = JSON.parse(res.Data);
-            widget.load(settings);
-          }
-        });
+        this.load()
+          .then((res: any) => {
+            if (res && res.Data) {
+              const settings = JSON.parse(res.Data);
+              widget.load(settings);
+            }
+            chartContainerExists.style.display = 'block';
+          })
+          .catch(() => {
+            chartContainerExists.style.display = 'block';
+          });
         widget.subscribe('onAutoSaveNeeded', () => {
           widget.save(this.save);
         });
