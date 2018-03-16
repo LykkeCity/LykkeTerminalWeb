@@ -1,5 +1,5 @@
-import {format} from 'date-fns';
 import * as React from 'react';
+import {FormattedTime} from 'react-intl';
 import {TradeModel} from '../../models/index';
 import styled, {colorFromSide} from '../styled';
 
@@ -19,7 +19,16 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
     <td>{quantity}</td>
     <td>{price}</td>
     <td>{side}</td>
-    <td>{format(timestamp, 'HH:mm:ss')}</td>
+    <td>
+      <td>
+        <FormattedTime
+          value={timestamp}
+          hour="numeric"
+          minute="numeric"
+          second="numeric"
+        />
+      </td>
+    </td>
   </tr>
 );
 
