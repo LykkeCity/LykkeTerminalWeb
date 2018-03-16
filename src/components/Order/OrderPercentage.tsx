@@ -1,3 +1,4 @@
+import rem from 'polished/lib/helpers/rem';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -13,18 +14,31 @@ const StyledPercent = styled.div`
   justify-content: center;
   align-items: center;
   width: 25%;
-  padding: 8px 24px;
+  padding: ${rem(8)} 0;
   border: 1px solid transparent;
-  border-left: 1px solid rgba(140, 148, 160, 0.4);
+  font-size: ${rem(14)};
+  display: flex;
+  justify-content: center;
 
-  &.active,
-  &.active:first-child {
+  div {
+    border-left: 1px solid rgba(140, 148, 160, 0.4);
+    width: 100%;
+    text-align: center;
+  }
+
+  &.active {
     border: 1px solid rgba(140, 148, 160, 0.4);
     border-radius: 4px;
+
+    div {
+      border-left: 1px solid transparent;
+    }
   }
 
   &:first-child {
-    border-left: 1px solid transparent;
+    div {
+      border-left: 1px solid transparent;
+    }
   }
 
   &:hover,
@@ -33,15 +47,17 @@ const StyledPercent = styled.div`
     border-left: 1px solid rgba(140, 148, 160, 0.4);
     border-radius: 4px;
     cursor: pointer;
-  }
 
-  &:hover + .active {
-    border-left: 1px solid rgba(140, 148, 160, 0.4);
+    div {
+      border-left: 1px solid transparent;
+    }
   }
 
   &:hover + div,
   &.active + div {
-    border-left: 1px solid transparent;
+    div {
+      border-left: 1px solid transparent;
+    }
   }
 `;
 
@@ -52,7 +68,7 @@ const OrderPercentage: React.SFC<OrderPercentageProps> = ({
 }) => {
   return (
     <StyledPercent className={isActive ? 'active' : ''} onClick={onClick}>
-      {percent}%
+      <div>{percent}%</div>
     </StyledPercent>
   );
 };

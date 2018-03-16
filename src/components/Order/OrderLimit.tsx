@@ -1,13 +1,15 @@
 import {Form, withFormik} from 'formik';
+import rem from 'polished/lib/helpers/rem';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrderInputs} from '../../models';
-import {capitalize} from '../../utils';
 import NumberInput from '../NumberInput/NumberInput';
 import {
   OrderLimitProps,
   StyledActionTitle,
+  StyledAvailable,
   StyledInputControl,
+  StyledNote,
   StyledOrderButton,
   StyledReset
 } from './index';
@@ -21,11 +23,12 @@ const StyledTotal = Flex.extend`
   justify-content: space-between;
   border-top: 2px solid #2d2d2d;
   border-bottom: 2px solid #2d2d2d;
-  padding: 19px 0;
+  padding: ${rem(19)} 0;
+  margin: ${rem(23)} 0;
 `;
 
-const StyledNote = styled.div`
-  margin-top: 28px;
+const StyledTitle = styled.div`
+  font-size: ${rem(16)};
 `;
 
 const OrderLimit: React.SFC<OrderLimitProps> = ({
@@ -39,23 +42,25 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   percents,
   onHandlePercentageChange,
   baseName,
+  buttonMessage,
   quoteName,
   isSell,
   amount,
   isDisable,
   onReset,
-  balance
+  balance,
+  isEditForm
 }) => {
   return (
     <Form>
       <StyledInputControl>
         <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
           <StyledActionTitle>
-            {action} {baseName}
+            {isEditForm ? 'Volume' : `${action} ${baseName}`}
           </StyledActionTitle>
-          <div>
+          <StyledAvailable>
             {balance} {isSell ? baseName : quoteName} available
-          </div>
+          </StyledAvailable>
         </Flex>
         <NumberInput
           value={quantity}
@@ -76,7 +81,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       </Flex>
       <StyledInputControl style={{borderBottom: '1px solid #333'}}>
         <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
-          <div>Price ({quoteName})</div>
+          <StyledTitle>Price ({quoteName})</StyledTitle>
         </Flex>
         <NumberInput
           value={price}
@@ -86,26 +91,31 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         />
       </StyledInputControl>
       <StyledTotal>
-        <div>Total</div>
-        <div>
+        <StyledTitle>Total</StyledTitle>
+        <StyledAvailable>
           {amount} {quoteName}
-        </div>
+        </StyledAvailable>
       </StyledTotal>
-      <StyledNote>
-        Your order may execute as a maker order or taker order.
-      </StyledNote>
+
+      {isEditForm && (
+        <StyledNote>
+          Your order may execute as a maker order or taker order.
+        </StyledNote>
+      )}
 
       <StyledOrderButton>
         <OrderButton
-          action={action}
           isDisable={isDisable}
           type={'submit'}
-          message={`${capitalize(action)} ${quantity} ${baseName}`}
+          message={buttonMessage}
         />
       </StyledOrderButton>
-      <StyledReset justify={'center'}>
-        <span onClick={onReset}>Reset and clear</span>
-      </StyledReset>
+
+      {onReset && (
+        <StyledReset justify={'center'}>
+          <span onClick={onReset}>Reset and clear</span>
+        </StyledReset>
+      )}
     </Form>
   );
 };
