@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import * as React from 'react';
+import {FormattedNumber} from 'react-intl';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import keys from '../../constants/storageKeys';
@@ -222,11 +223,17 @@ class Order extends React.Component<OrderProps, OrderState> {
         <StyledActionBlock>
           <StyledSplitBlock>
             {Number.isNaN(spread) || (
-              <div>{spread.toFixed(this.props.accuracy.priceValue)}</div>
+              <div>
+                <FormattedNumber
+                  value={+spread.toFixed(this.props.accuracy.priceValue)}
+                />
+              </div>
             )}
             {Number.isNaN(spreadDiff) || (
               <small>
-                {spreadDiff.toFixed(this.props.accuracy.priceValue)}%
+                <FormattedNumber
+                  value={+spreadDiff.toFixed(this.props.accuracy.priceValue)}
+                />%
               </small>
             )}
           </StyledSplitBlock>
