@@ -118,6 +118,14 @@ class OrderBookStore extends BaseStore {
         }
       });
     }
+    const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
+    runInAction(() => {
+      orders.forEach((levels: any) => this.onUpdate([levels]));
+      if (this.isInitFetch && this.rootStore.uiStore.initPriceUpdate) {
+        this.rootStore.uiStore.initPriceUpdate(this.mid(), selectedInstrument);
+        this.isInitFetch = false;
+      }
+    });
   };
 
   subscribe = async (ws: any) => {
