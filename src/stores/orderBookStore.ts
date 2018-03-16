@@ -1,27 +1,17 @@
 import {ISubscription} from 'autobahn';
 import {action, computed, observable, runInAction} from 'mobx';
-import {
-  compose,
-  curry,
-  head,
-  last,
-  map,
-  reverse,
-  sortBy,
-  toLower
-} from 'rambda';
+import {curry, head, last, map, reverse, sortBy, toLower} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
-import OrderModel from '../models/orderModel';
+// import OrderModel from '../models/orderModel';
 import {BaseStore, RootStore} from './index';
 import {
   aggregateOrders,
+  floorInt,
   getMultiplier,
-  // getNextIdx,
-  // getPrevIdx,
-  groupOrdersByPrice
+  priceBetween
 } from './orderBookHelpers';
 
 class OrderBookStore extends BaseStore {
@@ -60,12 +50,14 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get bids() {
-    return aggregateOrders(this.rawBids, this.span, false);
+    const aggregatedOrders = aggregateOrders(this.rawBids, this.span, false);
+    return this.connectLimitOrders(aggregatedOrders, this.span, false);
   }
 
   @computed
   get asks() {
-    return reverse(aggregateOrders(this.rawAsks, this.span, true));
+    const aggregatedOrders = aggregateOrders(this.rawAsks, this.span, true);
+    return reverse(this.connectLimitOrders(aggregatedOrders, this.span, true));
   }
 
   bestBid = () =>
@@ -75,37 +67,6 @@ class OrderBookStore extends BaseStore {
     this.asks.length && head(sortBy(x => x.price, this.rawAsks)).price;
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
-
-  onUpdate = (args: any) => {
-    const {IsBuy, Levels} = args[0];
-    const mapToOrders = compose(
-      // this.updateWithLimitOrders(IsBuy),
-      groupOrdersByPrice,
-      map(x => mappers.mapToOrder({...x, IsBuy}))
-    );
-
-    if (IsBuy) {
-      this.rawBids = mapToOrders(Levels);
-    } else {
-      this.rawAsks = mapToOrders(Levels);
-    }
-  };
-
-  updateWithLimitOrders = (isBuy: boolean) => (orders: Order[]) => {
-    const {selectedInstrument} = this.rootStore.uiStore;
-    const limitOrders = this.rootStore.orderListStore.limitOrders.filter(
-      order => (isBuy ? order.side === Side.Buy : order.side === Side.Sell)
-    );
-    limitOrders.forEach((lo: OrderModel) => {
-      orders.forEach((o: Order) => {
-        if (lo.price === o.price && lo.symbol === selectedInstrument!.id) {
-          o.orderVolume += lo.volume;
-          o.connectedLimitOrders.push(lo.id);
-        }
-      });
-    });
-    return orders;
-  };
 
   @action
   nextSpan = () => {
@@ -119,6 +80,36 @@ class OrderBookStore extends BaseStore {
     if (this.spanMultiplierIdx > 0) {
       this.spanMultiplierIdx--;
     }
+  };
+
+  connectLimitOrders = (orders: Order[], span: number, isAsk: boolean) => {
+    const {
+      uiStore: {selectedInstrument},
+      orderListStore: {limitOrders}
+    } = this.rootStore;
+    const filteredLimitOrders = limitOrders.filter(
+      order =>
+        order.side === (isAsk ? Side.Sell : Side.Buy) &&
+        order.symbol === (selectedInstrument && selectedInstrument.id)
+    );
+
+    filteredLimitOrders.forEach(limitOrder => {
+      orders.forEach((order, idx) => {
+        if (
+          priceBetween(
+            floorInt(order.price, span, isAsk) - span,
+            floorInt(order.price, span, isAsk) + span
+          )(limitOrder)
+        ) {
+          if (!order.connectedLimitOrders) {
+            order.connectedLimitOrders = [];
+          }
+          order.orderVolume = (order.orderVolume || 0) + limitOrder.volume;
+          (order.connectedLimitOrders || []).push(limitOrder.id);
+        }
+      });
+    });
+    return orders;
   };
 
   fetchAll = async () => {
@@ -141,6 +132,17 @@ class OrderBookStore extends BaseStore {
     );
     this.subscriptions.add(await ws.subscribe(topic(Side.Buy), this.onUpdate));
     this.subscriptions.add(await ws.subscribe(topic(Side.Sell), this.onUpdate));
+  };
+
+  onUpdate = (args: any) => {
+    const {IsBuy, Levels} = args[0];
+    const mapToOrders = map(x => mappers.mapToOrder({...x, IsBuy}));
+
+    if (IsBuy) {
+      this.rawBids = mapToOrders(Levels);
+    } else {
+      this.rawAsks = mapToOrders(Levels);
+    }
   };
 
   unsubscribe = () => {
