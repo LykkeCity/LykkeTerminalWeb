@@ -7,7 +7,7 @@ const StyledBackdrop = styled.div`
   background: #000;
   opacity: 0.5;
   position: absolute;
-  z-index: 2;
+  z-index: 30;
 `;
 
 const Backdrop: React.SFC = () => {

@@ -14,7 +14,7 @@ const StyledModal = styled.div`
   border-radius: 12px;
   background-color: #3c3c3c;
   border: solid 1px rgba(0, 0, 0, 0.2);
-  z-index: 3;
+  z-index: 30;
   min-width: 360px;
 `;
 
@@ -46,27 +46,41 @@ export interface EditOrderProps {
   onValueChange: any;
   fixedAmount: any;
   editOrder: any;
+  resetPercentage: any;
+  handlePercentageChange: any;
+  getBalance: any;
 }
 
 export interface EditOrderState {
   pendingOrder: boolean;
   priceValue: string;
   quantityValue: string;
+  percents: any[];
 }
 
 const ConnectedEditOrderModal = connect(
   ({
+    balanceListStore: {availableBalance: getBalance},
     orderListStore: {limitOrders: orders},
     referenceStore: {getInstrumentById},
-    uiOrderStore: {onArrowClick, onValueChange, fixedAmount},
+    uiOrderStore: {
+      onArrowClick,
+      onValueChange,
+      fixedAmount,
+      resetPercentage,
+      handlePercentageChange
+    },
     orderStore: {editOrder}
   }) => ({
     editOrder,
     fixedAmount,
+    getBalance,
     getInstrumentById,
+    handlePercentageChange,
     onArrowClick,
     onValueChange,
-    orders
+    orders,
+    resetPercentage
   }),
   EditOrder
 );
