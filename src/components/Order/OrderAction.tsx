@@ -1,5 +1,6 @@
 import {rem} from 'polished';
 import * as React from 'react';
+import {FormattedNumber} from 'react-intl';
 import styled from 'styled-components';
 import {OrderActionProps} from './index';
 
@@ -92,7 +93,9 @@ const OrderAction: React.SFC<OrderActionProps> = ({
   return (
     <StyledOrderAction className={classes.join(' ')} onClick={click}>
       <StyledTitle className={classes.join(' ')}>{title}</StyledTitle>
-      <StyledPrice className={classes.join(' ')}>{price}</StyledPrice>
+      <StyledPrice className={classes.join(' ')}>
+        {<FormattedNumber value={price ? price : 0} />}
+      </StyledPrice>
       <StyledAction className={classes.join(' ')}>{action}</StyledAction>
     </StyledOrderAction>
   );
