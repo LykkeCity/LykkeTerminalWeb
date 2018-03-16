@@ -34,10 +34,14 @@ const StyledActionChoice = styled.div.attrs({
   cursor: pointer;
   text-align: center;
   border-radius: ${rem(4)};
-  padding: ${rem(7)} ${rem(12)};
+  padding: ${rem(10)} ${rem(61)} ${rem(14)};
   border: solid 1px rgba(140, 148, 160, 0.4);
   text-transform: capitalize;
   color: #f5f6f7;
+  font-size: ${rem(28)};
+  font-family: 'Akrobat';
+  font-weight: bold;
+  line-height: 0.86;
 ` as any;
 
 const OrderActionButton: React.SFC<OrderChoiceButtonProps> = ({
