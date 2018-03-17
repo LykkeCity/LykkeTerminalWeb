@@ -1,10 +1,10 @@
 import {add, range, times} from 'rambda';
-import {AssetModel, InstrumentModel} from '../../models';
+import {AssetModel, InstrumentModel, Side} from '../../models';
 import {Order} from '../../models/index';
-import * as mappers from '../../models/mappers';
 import {OrderBookStore, RootStore} from '../index';
 import {
   aggregateOrders,
+  connectLimitOrders,
   getMultiplier,
   getNextIdx,
   getPrevIdx,
@@ -26,28 +26,20 @@ describe('orderBook store', () => {
   const {bestBid, bestAsk, mid} = store;
 
   test('order should contain users volume with equal price', () => {
-    const limitOrdersDto = [
+    const limitOrders = [
       {
-        AssetPairId: 'BTCUSD',
-        CreateDateTime: '2018-01-17T07:17:40.84Z',
-        Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
-        OrderAction: 'Buy',
-        Price: 1,
-        Status: 'InOrderBook',
-        Voume: 0.0001
+        id: '0',
+        price: 1,
+        volume: 0.0001,
+        side: Side.Buy
       },
       {
-        AssetPairId: 'BTCUSD',
-        CreateDateTime: '2018-01-17T07:17:40.84Z',
-        Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c5',
-        OrderAction: 'Buy',
-        Price: 1,
-        Status: 'InOrderBook',
-        Voume: 0.0001
+        id: '1',
+        price: 1,
+        volume: 0.0001,
+        side: Side.Buy
       }
     ];
-    const limitOrders = limitOrdersDto.map(mappers.mapToLimitOrder);
-    rootStore.orderListStore.updateOrders(limitOrders);
     const ownVolume = limitOrders.map(x => x.volume).reduce(add, 0);
 
     const orders = [
@@ -57,14 +49,10 @@ describe('orderBook store', () => {
     ] as Order[];
 
     const aggOrders = aggregateOrders(orders, 1, false);
-    const connOrders = store.connectLimitOrders(aggOrders, 1, false);
-    const order = connOrders.find(
-      x =>
-        x.price > limitOrders[0].price - 1 && x.price < limitOrders[0].price + 1
-    );
-    expect(order!.price).toBe(1);
-    expect(order!.connectedLimitOrders).toHaveLength(2);
-    expect(order!.orderVolume).toBe(ownVolume);
+    const connOrders = connectLimitOrders(aggOrders, limitOrders, 1, false);
+    expect(connOrders[0].price).toBe(1);
+    expect(connOrders[0].connectedLimitOrders).toHaveLength(2);
+    expect(connOrders[0].orderVolume).toBe(ownVolume);
   });
 
   test('best bid should have highest price', () => {
