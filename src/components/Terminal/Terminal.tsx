@@ -14,6 +14,7 @@ import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
+import {OrderBookChart} from '../OrderBookChart/index';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {TabbedTile, Tile} from '../Tile';
@@ -50,9 +51,14 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   [ChartWidget]: (
-    <Tile title="Chart">
+    <TabbedTile
+      tabs={['Price chart', 'Orderbook chart']}
+      authorize={false}
+      additionalControls={additionalActions.orders}
+    >
       <Chart />
-    </Tile>
+      <OrderBookChart />
+    </TabbedTile>
   ),
   [TradeListWidget]: (
     <Tile title="Trade log">
