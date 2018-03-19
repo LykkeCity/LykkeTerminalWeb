@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {FormattedNumber} from 'react-intl';
 import styled from '../styled';
 
 const StyledBalanceNumber = styled.div`
@@ -8,7 +9,7 @@ const StyledBalanceNumber = styled.div`
 
 const BalanceNumber: React.SFC<{num: string}> = ({num, children}) => (
   <StyledBalanceNumber>
-    {num}
+    <FormattedNumber value={+num} />
     {children}
   </StyledBalanceNumber>
 );
