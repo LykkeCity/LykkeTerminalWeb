@@ -40,6 +40,9 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get maxMultiplierIdx() {
+    if (!this.rawAsks.length) {
+      return 0;
+    }
     const maxAsk = compose<Order[], Order[], Order[], Order>(
       head,
       reverse,
