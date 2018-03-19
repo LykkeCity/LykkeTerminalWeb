@@ -1,11 +1,18 @@
 import * as React from 'react';
+import {StyledBar, StyledGrouping, StyledWrapper} from '../OrderBook/styles';
 
 class OrderBookChart extends React.Component {
   render() {
     return (
-      <div>
-        <p>test</p>
-      </div>
+      <StyledWrapper>
+        <StyledBar>
+          <StyledGrouping>
+            Grouping: <button>-</button>
+            <strong>1</strong>
+            <button>+</button>
+          </StyledGrouping>
+        </StyledBar>
+      </StyledWrapper>
     );
   }
 }
