@@ -1,17 +1,21 @@
 import {ISubscription} from 'autobahn';
 import {action, computed, observable, runInAction} from 'mobx';
-import {curry, head, last, map, reverse, sortBy, toLower} from 'rambda';
+import {
+  compose,
+  curry,
+  head,
+  last,
+  map,
+  reverse,
+  sortBy,
+  toLower
+} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
 import {BaseStore, RootStore} from './index';
-import {
-  aggregateOrders,
-  floorInt,
-  getMultiplier,
-  priceBetween
-} from './orderBookHelpers';
+import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
 class OrderBookStore extends BaseStore {
   @observable rawBids: Order[] = [];
@@ -31,7 +35,17 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get spanMultiplier() {
-    return getMultiplier(this.spanMultiplierIdx, this.spanMultipliers);
+    return Math.pow(10, this.spanMultiplierIdx);
+  }
+
+  @computed
+  get maxMultiplierIdx() {
+    const maxAsk = compose<Order[], Order[], Order[], Order>(
+      head,
+      reverse,
+      sortBy(x => x.price)
+    )(this.rawAsks).price;
+    return Math.log10(maxAsk / this.seedSpan);
   }
 
   @computed
@@ -49,14 +63,22 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get bids() {
+    const {
+      orderListStore: {limitOrdersForThePair: limitOrders}
+    } = this.rootStore;
     const aggregatedOrders = aggregateOrders(this.rawBids, this.span, false);
-    return this.connectLimitOrders(aggregatedOrders, this.span, false);
+    return connectLimitOrders(aggregatedOrders, limitOrders, this.span, false);
   }
 
   @computed
   get asks() {
+    const {
+      orderListStore: {limitOrdersForThePair: limitOrders}
+    } = this.rootStore;
     const aggregatedOrders = aggregateOrders(this.rawAsks, this.span, true);
-    return reverse(this.connectLimitOrders(aggregatedOrders, this.span, true));
+    return reverse(
+      connectLimitOrders(aggregatedOrders, limitOrders, this.span, true)
+    );
   }
 
   bestBid = () =>
@@ -69,7 +91,7 @@ class OrderBookStore extends BaseStore {
 
   @action
   nextSpan = () => {
-    if (this.spanMultiplierIdx < this.spanMultipliers.length - 1) {
+    if (this.spanMultiplierIdx < this.maxMultiplierIdx) {
       this.spanMultiplierIdx++;
     }
   };
@@ -79,36 +101,6 @@ class OrderBookStore extends BaseStore {
     if (this.spanMultiplierIdx > 0) {
       this.spanMultiplierIdx--;
     }
-  };
-
-  connectLimitOrders = (orders: Order[], span: number, isAsk: boolean) => {
-    const {
-      uiStore: {selectedInstrument},
-      orderListStore: {limitOrders}
-    } = this.rootStore;
-    const filteredLimitOrders = limitOrders.filter(
-      order =>
-        order.side === (isAsk ? Side.Sell : Side.Buy) &&
-        order.symbol === (selectedInstrument && selectedInstrument.id)
-    );
-
-    filteredLimitOrders.forEach(limitOrder => {
-      orders.forEach((order, idx) => {
-        if (
-          priceBetween(
-            floorInt(order.price, span, isAsk) - span,
-            floorInt(order.price, span, isAsk) + span
-          )(limitOrder)
-        ) {
-          if (!order.connectedLimitOrders) {
-            order.connectedLimitOrders = [];
-          }
-          order.orderVolume = (order.orderVolume || 0) + limitOrder.volume;
-          (order.connectedLimitOrders || []).push(limitOrder.id);
-        }
-      });
-    });
-    return orders;
   };
 
   fetchAll = async () => {
