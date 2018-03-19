@@ -14,7 +14,7 @@ import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
-import {OrderBookChart} from '../OrderBookChart/index';
+import OrderBookChart from '../OrderBookChart';
 import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {TabbedTile, Tile} from '../Tile';
