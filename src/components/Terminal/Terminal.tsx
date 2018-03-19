@@ -19,7 +19,7 @@ import {TradeLog, Trades} from '../TradeList';
 import {TerminalProps} from './index';
 
 const MAX_LEFT_PADDING = 20;
-const MAX_RIGHT_PADDING = 80;
+const MAX_RIGHT_PADDING = 75;
 
 const Shell = styled.div`
   background: ${colors.darkGraphite};
