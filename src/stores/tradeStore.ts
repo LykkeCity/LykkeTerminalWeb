@@ -1,3 +1,4 @@
+import {ISubscription} from 'autobahn';
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
@@ -35,10 +36,14 @@ class TradeStore extends BaseStore {
 
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
+  private subscriptions: Set<ISubscription> = new Set();
+
   private skip: number = TradeQuantity.Skip;
   private take: number = TradeQuantity.Take;
   private loading: number = TradeQuantity.Loading;
   private wampTrades: number = 0;
+
+  // this wss = ws;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
@@ -75,10 +80,9 @@ class TradeStore extends BaseStore {
   };
 
   fetchPublicTrades = async () => {
-    const {uiStore: {selectedInstrument}} = this.rootStore;
-    if (selectedInstrument && selectedInstrument.id) {
+    if (this.selectedInstrument) {
       const resp = await this.api.fetchPublicTrades(
-        selectedInstrument.id,
+        this.selectedInstrument.id,
         TradeQuantity.Skip,
         TradeQuantity.Take
       );
@@ -92,9 +96,21 @@ class TradeStore extends BaseStore {
     ws.subscribe(topics.trade, this.onTrades);
   };
 
-  subscribeToPublicTrades = (ws: any) => {
-    const instrumentId = this.rootStore.uiStore.selectedInstrument!.id;
-    ws.subscribe(topics.publicTrade(instrumentId), this.onPublicTrades);
+  subscribeToPublicTrades = async () => {
+    this.subscriptions.add(
+      await this.getWs().subscribe(
+        topics.publicTrade(this.selectedInstrument!.id),
+        this.onPublicTrades
+      )
+    );
+  };
+
+  unsubscribeFromPublicTrades = async () => {
+    const subscriptions = Array.from(this.subscriptions).map(
+      this.getWs().unsubscribe
+    );
+    await Promise.all(subscriptions);
+    this.subscriptions.clear();
   };
 
   fetchPartTrade = async () => {
