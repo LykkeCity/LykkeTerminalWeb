@@ -82,7 +82,7 @@ class RootStore {
     }
   }
 
-  startPublicMode = (defaultInstrument: any) => {
+  startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
@@ -111,12 +111,13 @@ class RootStore {
     );
 
     if (!this.authStore.isAuth) {
+      await this.referenceStore.getInstrumentsAdditionalData();
       return this.startPublicMode(defaultInstrument);
     }
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
-    await this.referenceStore.getInstrumentsBaseAssetPrice();
+    await this.referenceStore.getInstrumentsAdditionalData();
 
     await this.referenceStore
       .fetchBaseAsset()

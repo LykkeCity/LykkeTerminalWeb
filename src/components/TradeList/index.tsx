@@ -3,7 +3,7 @@ import {InstrumentModel, TradeModel} from '../../models/index';
 import {connect} from '../connect';
 import PublicTradeList from './PublicTradeList';
 import TradeList from './TradeList';
-import TradeListItem from './TradeListItem';
+import TradeListCell from './TradeListCell';
 
 export interface TradesProps {
   trades?: TradeModel[];
@@ -38,8 +38,8 @@ const ConnectedPublicTradeList = connect(
   PublicTradeList
 );
 
-const ObservedTradeListItem = observer(TradeListItem);
+const ObservedTradeListCell = observer(TradeListCell);
 
 export {ConnectedTradeList as TradeList};
 export {ConnectedPublicTradeList as PublicTradeList};
-export {ObservedTradeListItem as TradeListItem};
+export {ObservedTradeListCell as TradeListCell};

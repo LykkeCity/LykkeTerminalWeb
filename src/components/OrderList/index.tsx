@@ -23,4 +23,3 @@ const ConnectedOrderList = connect(
 );
 
 export {ConnectedOrderList as OrderList};
-export {default as OrderListItem} from './OrderListItem';

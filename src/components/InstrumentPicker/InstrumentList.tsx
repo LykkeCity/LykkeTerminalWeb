@@ -3,34 +3,13 @@ import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import styled from 'styled-components';
+import styled from '../styled';
+import {ReactStyledTable} from '../Table/index';
 import {InstrumentListNumber, InstrumentListProps} from './index';
 
-const StyledInstruments = styled.div`
-  overflow: auto;
-  max-height: 570px;
+const InstrumentsReactTable = styled(ReactStyledTable)`
   .table {
     margin-right: 10px;
-  }
-  .no-border {
-    border: none !important;
-  }
-  .header {
-    padding: 10px 0 !important;
-    color: rgba(245, 246, 247, 0.4);
-    outline: none;
-    &.-sort-asc {
-      box-shadow: inset 0 3px 0 0 rgb(51, 51, 51) !important;
-    }
-    &.-sort-desc {
-      box-shadow: inset 0 -3px 0 0 rgb(51, 51, 51) !important;
-    }
-  }
-  .left-align {
-    text-align: left;
-  }
-  .right-align {
-    text-align: right;
   }
 `;
 
@@ -58,7 +37,7 @@ class InstrumentList extends React.Component<InstrumentListProps> {
     const data = [...this.props.instruments];
 
     return (
-      <StyledInstruments>
+      <InstrumentsReactTable>
         <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={555}>
           <ReactTable
             data={data}
@@ -134,7 +113,7 @@ class InstrumentList extends React.Component<InstrumentListProps> {
             getTdProps={click}
           />
         </Scrollbars>
-      </StyledInstruments>
+      </InstrumentsReactTable>
     );
   }
 }

@@ -1,8 +1,11 @@
 import * as React from 'react';
-import {OrderModel} from '../../models/index';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import {OrderModel, Side} from '../../models/index';
 import Types from '../../models/modals';
-import {Table} from '../Table/index';
-import {OrderActions, OrderListItem} from './';
+import {Icon} from '../Icon/index';
+import {ReactStyledTable} from '../Table/index';
+import {OrderActions} from './';
 
 interface OrderListProps extends OrderActions {
   orders?: OrderModel[];
@@ -14,9 +17,10 @@ const OrderList: React.SFC<OrderListProps> = ({
   cancelOrder,
   addModal
 }) => {
-  const handleEditOrder = (order: any) => (id: string) => {
+  const data = [...orders];
+  const handleEditOrder = (order: any) => {
     addModal(
-      id,
+      order.id,
       // tslint:disable-next-line:no-empty
       () => {},
       // tslint:disable-next-line:no-empty
@@ -27,30 +31,92 @@ const OrderList: React.SFC<OrderListProps> = ({
   };
 
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th>Asset pair</th>
-          <th>Cancel order</th>
-          <th>OrderID</th>
-          <th>Side</th>
-          <th>Volume</th>
-          <th>Price</th>
-          <th>Created Date</th>
-          <th>Edit</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.map(order => (
-          <OrderListItem
-            key={order.id}
-            cancelOrder={cancelOrder}
-            {...order}
-            onEdit={handleEditOrder(order)}
-          />
-        ))}
-      </tbody>
-    </Table>
+    <ReactStyledTable>
+      <ReactTable
+        data={data}
+        columns={[
+          {
+            Header: 'Asset pair',
+            accessor: 'symbol',
+            className: 'left-align no-border',
+            headerClassName: 'left-align header no-border',
+            minWidth: 65
+          },
+          {
+            Cell: props => (
+              // tslint:disable-next-line:jsx-no-lambda
+              <span onClick={() => cancelOrder!(props.original.id)}>
+                <Icon name="cross" />
+              </span>
+            ),
+            Header: 'Cancel order',
+            className: 'right-align no-border',
+            headerClassName: 'right-align header no-border',
+            minWidth: 55
+          },
+          {
+            Header: 'OrderID',
+            accessor: 'id',
+            className: 'right-align no-border',
+            headerClassName: 'right-align header no-border',
+            minWidth: 280
+          },
+          {
+            Cell: props => {
+              const colorSide =
+                props.original.side === Side.Buy ? '#fb8f01' : '#d070ff';
+              return (
+                <span style={{color: colorSide}}>{props.original.side}</span>
+              );
+            },
+            Header: 'Side',
+            accessor: 'side',
+            className: 'right-align no-border',
+            headerClassName: 'right-align header no-border',
+            minWidth: 40
+          },
+          {
+            Header: 'Volume',
+            accessor: 'volume',
+            className: 'right-align no-border',
+            headerClassName: 'right-align header no-border',
+            minWidth: 60
+          },
+          {
+            Header: 'Price',
+            accessor: 'price',
+            className: 'right-align no-border',
+            headerClassName: 'right-align header no-border',
+            minWidth: 45
+          },
+          {
+            Cell: props => (
+              <span>{props.original.createdAt.toLocaleString()}</span>
+            ),
+            Header: 'Created Date',
+            accessor: 'createdAt',
+            className: 'right-align no-border',
+            headerClassName: 'right-align header no-border',
+            minWidth: 155
+          },
+          {
+            Cell: props => (
+              // tslint:disable-next-line:jsx-no-lambda
+              <span onClick={() => handleEditOrder(props.original)}>
+                <Icon name="pencil" />
+              </span>
+            ),
+            Header: 'Edit',
+            className: 'right-align no-border',
+            headerClassName: 'right-align header no-border',
+            minWidth: 40
+          }
+        ]}
+        className={'no-border table'}
+        showPagination={false}
+        pageSize={data.length}
+      />
+    </ReactStyledTable>
   );
 };
 
