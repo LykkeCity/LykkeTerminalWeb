@@ -8,6 +8,7 @@ describe('orderBook store', () => {
   rootStore.orderBookStore.fetchAll = jest.fn();
   rootStore.orderBookStore.reset = jest.fn();
   rootStore.orderBookStore.subscribe = jest.fn();
+  rootStore.tradeStore.fetchPublicTrades = rootStore.tradeStore.subscribeToPublicTrades = rootStore.tradeStore.unsubscribeFromPublicTrades = jest.fn();
   rootStore.uiStore.selectedInstrument = new InstrumentModel({
     baseAsset: new AssetModel({name: 'BTC'}),
     id: 'BTCUSD',
