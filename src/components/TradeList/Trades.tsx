@@ -2,10 +2,12 @@ import {observer} from 'mobx-react';
 import {rem} from 'polished';
 import {curry, pathOr} from 'rambda';
 import * as React from 'react';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 import styled from 'styled-components';
 import {InstrumentModel} from '../../models/index';
-import Table from '../Table/Table';
-import {TradeListItem, TradesProps} from './index';
+import {ReactStyledTable} from '../Table/index';
+import {TradeListCell, TradesProps} from './index';
 
 const assetFromInstrument = (instrument: InstrumentModel, assetType: string) =>
   pathOr('', [assetType, 'name'], instrument);
@@ -36,30 +38,114 @@ const Trades: React.SFC<TradesProps> = ({
   stringId = '',
   selectedInstrument
 }) => {
+  const data = [...trades];
+  const columns = [
+    {
+      Header: 'Asset pair',
+      accessor: 'symbol',
+      className: 'left-align no-border',
+      headerClassName: 'left-align header no-border',
+      minWidth: 65
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {props.original.side}
+        </TradeListCell>
+      ),
+      Header: 'Side',
+      accessor: 'side',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 40
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {props.original.quantity}
+        </TradeListCell>
+      ),
+      Header: () => `Volume (${assetFromSelectedInstrument('baseAsset')})`,
+      accessor: 'quantity',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 65
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {props.original.price}
+        </TradeListCell>
+      ),
+      Header: 'Price',
+      accessor: 'price',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 60
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {props.original.oppositeQuantity}
+        </TradeListCell>
+      ),
+      Header: () => `Volume (${assetFromSelectedInstrument('quoteAsset')})`,
+      accessor: 'oppositeQuantity',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 60
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {props.original.orderType}
+        </TradeListCell>
+      ),
+      Header: 'Order type',
+      accessor: 'orderType',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 50
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {props.original.fee}
+        </TradeListCell>
+      ),
+      Header: 'Fee',
+      accessor: 'fee',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 35
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {new Date(props.original.timestamp).toLocaleString()}
+        </TradeListCell>
+      ),
+      Header: 'Time',
+      accessor: 'timestamp',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 155
+    }
+  ];
   const assetFromSelectedInstrument = curry(assetFromInstrument)(
     selectedInstrument!
   );
   return (
     <div>
-      <Table>
-        <thead>
-          <tr>
-            <th>Asset pair</th>
-            <th>Side</th>
-            <th>Volume ({assetFromSelectedInstrument('baseAsset')})</th>
-            <th>Price</th>
-            <th>Volume ({assetFromSelectedInstrument('quoteAsset')})</th>
-            <th>Order type</th>
-            <th>Fee</th>
-            <th>Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {trades.map(trade => (
-            <TradeListItem key={`${trade.id}_${stringId}`} {...trade} />
-          ))}
-        </tbody>
-      </Table>
+      <ReactStyledTable>
+        <ReactTable
+          data={data}
+          columns={columns}
+          className={'no-border table'}
+          showPagination={false}
+          pageSize={data.length}
+        />
+      </ReactStyledTable>
       {needToLoadMore && (
         <StyledBtnSection>
           <StyledBtn onClick={fetchPart}>Load more...</StyledBtn>

@@ -1,4 +1,3 @@
-import {observer} from 'mobx-react';
 import * as React from 'react';
 import styled from 'styled-components';
 import Watchlists from '../../models/watchlists';
@@ -19,7 +18,6 @@ const StyledSearchWrap = styled(Flex)`
   border-bottom: solid 1px rgba(0, 0, 0, 0.2);
 `;
 
-@observer
 class InstrumentPicker extends React.Component<
   InstrumentPickerProps,
   InstrumentPickerStats
@@ -84,7 +82,7 @@ class InstrumentPicker extends React.Component<
             <InstrumentList
               baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}
-              instruments={[...this.props.instruments]}
+              instruments={this.props.instruments}
               onPick={this.props.onPick}
               change={this.changeValue}
             />

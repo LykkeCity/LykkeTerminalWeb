@@ -82,7 +82,6 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) =>
     this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
 
-  @observable
   findInstruments = (term: string, name: string) => {
     const isAuth = this.rootStore.authStore.isAuth;
     const instruments = isAuth
@@ -248,12 +247,21 @@ class ReferenceStore extends BaseStore {
     }
   };
 
-  // onCandle = async (args: any) => {
-  //   const {a: id, p: price} = args[0];
-  // };
+  onCandle = async (args: any) => {
+    const {a: id, o: openPrice, c: closePrice, v: volume} = args[0];
+    const instrument = this.getInstrumentById(id);
 
-  getInstrumentsBaseAssetPrice = async () => {
-    const prices = this.getInstruments().map(x => ({
+    if (instrument && instrument.id) {
+      instrument.updateFromCandle(openPrice, closePrice, volume);
+    }
+  };
+
+  getInstrumentsAdditionalData = async () => {
+    const instruments = this.findInstruments(
+      this.rootStore.uiStore.searchTerm,
+      this.rootStore.uiStore.searchWalletName
+    );
+    const prices = instruments.map(x => ({
       AssetId: x.quoteAsset.id,
       Balance: x.price,
       ConvertedBalance: 0
@@ -268,7 +276,7 @@ class ReferenceStore extends BaseStore {
       prices[index].ConvertedBalance = price.Balance;
     });
 
-    this.getInstruments().forEach(async (instrument, index) => {
+    instruments.forEach(async (instrument, index) => {
       await this.priceApi
         .fetchCandles(
           instrument.id,

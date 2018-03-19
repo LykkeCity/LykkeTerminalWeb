@@ -29,7 +29,7 @@ const StyledNumber = styled.div.attrs({})`
   }
 `;
 
-interface InstrumentPriceProps {
+interface InstrumentListNumberProps {
   num: number;
   accuracy: number;
   color?: string;
@@ -37,7 +37,7 @@ interface InstrumentPriceProps {
   preSign?: string;
 }
 
-const InstrumentPrice: React.SFC<InstrumentPriceProps> = ({
+const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = ({
   num,
   accuracy,
   color = '#ffffff',
@@ -58,4 +58,4 @@ const InstrumentPrice: React.SFC<InstrumentPriceProps> = ({
   );
 };
 
-export default InstrumentPrice;
+export default InstrumentListNumber;

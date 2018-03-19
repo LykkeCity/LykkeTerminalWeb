@@ -11,7 +11,7 @@ import {
 } from '../api/index';
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
-// import {PriceType} from '../models/index';
+import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
@@ -82,7 +82,7 @@ class RootStore {
     }
   }
 
-  startPublicMode = (defaultInstrument: any) => {
+  startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
@@ -92,7 +92,10 @@ class RootStore {
         .findInstruments('', Watchlists.All)
         .forEach((x: any) => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          // ws.subscribe(topics.candle('spot', x.id, PriceType.Bid, 'day'), this.referenceStore.onCandle);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            this.referenceStore.onCandle
+          );
         });
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
@@ -111,12 +114,13 @@ class RootStore {
     );
 
     if (!this.authStore.isAuth) {
+      await this.referenceStore.getInstrumentsAdditionalData();
       return this.startPublicMode(defaultInstrument);
     }
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
-    await this.referenceStore.getInstrumentsBaseAssetPrice();
+    await this.referenceStore.getInstrumentsAdditionalData();
 
     await this.referenceStore
       .fetchBaseAsset()
@@ -139,7 +143,10 @@ class RootStore {
         this.chartStore.setWs(ws);
         instruments.forEach(x => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          // ws.subscribe(topics.candle('spot', x.id, PriceType.Bid, 'day'), this.referenceStore.onCandle);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            this.referenceStore.onCandle
+          );
         });
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
