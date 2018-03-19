@@ -40,6 +40,7 @@ interface OrderBookProps {
   updatePriceAndDepth: any;
   stateFns: any[];
   cancelOrder: any;
+  setIsOrderBookClicked: any;
   span: number;
   onNextSpan: () => void;
   onPrevSpan: () => void;

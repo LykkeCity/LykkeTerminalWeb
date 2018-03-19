@@ -1,5 +1,5 @@
 import {multiply, sortBy, take} from 'rambda';
-import {Order} from '../models';
+import {Order, Side} from '../models';
 
 export const getNextIdx = (currIdx: number, list: number[]) =>
   Math.min(++currIdx, list.length);
@@ -61,4 +61,27 @@ export const aggregateOrders = (
     newOrders.push(newOrder);
   }
   return groupOrdersByPrice(newOrders);
+};
+
+export const connectLimitOrders = (
+  orders: Order[],
+  limitOrders: Array<Pick<Order, 'side' | 'price' | 'volume' | 'id'>>,
+  span: number,
+  isAsk: boolean
+) => {
+  limitOrders.forEach(limitOrder => {
+    if (limitOrder.side === (isAsk ? Side.Buy : Side.Sell)) {
+      return;
+    }
+    orders.forEach((order, idx) => {
+      if (order.price === floorInt(limitOrder.price, span, isAsk)) {
+        if (!order.connectedLimitOrders) {
+          order.connectedLimitOrders = [];
+        }
+        order.orderVolume = (order.orderVolume || 0) + limitOrder.volume;
+        order.connectedLimitOrders.push(limitOrder.id);
+      }
+    });
+  });
+  return orders;
 };

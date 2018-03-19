@@ -40,6 +40,14 @@ class OrderListStore extends BaseStore {
     super(store);
   }
 
+  @computed
+  get limitOrdersForThePair() {
+    const {uiStore: {selectedInstrument}} = this.rootStore;
+    return this.limitOrders.filter(
+      order => order.symbol === (selectedInstrument && selectedInstrument.id)
+    );
+  }
+
   fetchAll = async () => {
     const dto = await this.api.fetchAll();
 
