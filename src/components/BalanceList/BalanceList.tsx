@@ -49,7 +49,7 @@ const BalanceList: React.SFC<BalanceListProps> = ({
       </thead>
       <tbody>
         <Total>
-          <td>Total</td>
+          <td>Total</td>z
           <td>
             {total.toFixed(accuracy)}&nbsp;{baseAssetName}
           </td>
