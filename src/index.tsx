@@ -30,6 +30,4 @@ const render = (AppComponent: any) => {
 
 render(App);
 
-export function getLocale() {
-  return locale;
-}
+export {locale};

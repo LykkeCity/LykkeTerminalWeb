@@ -1,17 +1,13 @@
-import {getLocale} from '../index';
+import {locale} from '../index';
 
-const locale = getLocale();
-export function formattedNumber(value: number): string {
-  return new Intl.NumberFormat(locale).format(value);
-}
-
-export function formattedNumberWithCurrency(
-  value: number,
-  currency: string
-): string {
-  if (currency.length !== 3) currency = 'USD';
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency
-  }).format(value);
+export function formattedNumber(value: number, accuracy?: number): string {
+  const result = new Intl.NumberFormat(locale).format(value);
+  if (!accuracy) {
+    return result;
+  } else {
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: accuracy,
+      maximumFractionDigits: accuracy
+    }).format(value);
+  }
 }

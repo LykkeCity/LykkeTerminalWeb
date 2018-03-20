@@ -9,6 +9,7 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
 import {StorageUtils} from '../../utils/index';
+import {formattedNumber} from '../../utils/localFormatted';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderChoiceButton from './OrderChoiceButton';
@@ -85,6 +86,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
     const price = instrument.price ? instrument.price : 0;
+
     this.setState({
       priceValue: price.toFixed(priceAccuracy),
       quantityValue: parseFloat('0').toFixed(quantityAccuracy)
@@ -217,6 +219,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {bid, ask} = this.props;
     const spread = ask - bid;
     const spreadDiff = (ask - bid) / ask * 100;
+    const priceWithLocale = formattedNumber(
+      spread,
+      this.props.accuracy.priceValue
+    );
 
     return (
       <div>
@@ -224,6 +230,7 @@ class Order extends React.Component<OrderProps, OrderState> {
           <StyledSplitBlock>
             {Number.isNaN(spread) || (
               <div>
+                {priceWithLocale}
                 <FormattedNumber
                   value={+spread.toFixed(this.props.accuracy.priceValue)}
                 />

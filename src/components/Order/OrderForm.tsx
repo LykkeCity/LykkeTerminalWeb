@@ -2,8 +2,8 @@ import {Form, withFormik} from 'formik';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
-import {getLocale} from '../../index';
 import {capitalize} from '../../utils';
+import {formattedNumber} from '../../utils/localFormatted';
 import {OrderFormProps} from './index';
 import OrderButton from './OrderButton';
 import OrderInput from './OrderInput';
@@ -15,11 +15,9 @@ const StyledOrderButton = styled.div`
 const OrderForm = (props: OrderFormProps) => {
   const {isDisable, assetName, action, quantity} = props;
 
-  const currency = assetName.split('/')[0];
-  const price = new Intl.NumberFormat(getLocale(), {
-    style: 'currency',
-    currency: currency ? currency : 'USD'
-  }).format(+quantity);
+  const baseName = assetName.split('/')[0];
+  const accuracy = quantity.length - quantity.search(/\./) - 1;
+  const price = formattedNumber(+quantity, accuracy);
 
   return (
     <Form>
@@ -29,7 +27,7 @@ const OrderForm = (props: OrderFormProps) => {
           action={action}
           isDisable={isDisable}
           type={'submit'}
-          message={`${capitalize(action)} ${price}`}
+          message={`${capitalize(action)} ${price} ${baseName}`}
         />
       </StyledOrderButton>
     </Form>
