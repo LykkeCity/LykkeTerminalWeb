@@ -1,8 +1,11 @@
 import * as React from 'react';
 import {OrderModel} from '../../models/index';
 import Types from '../../models/modals';
+import {HBar} from '../Bar';
 import {Table} from '../Table/index';
 import {OrderActions, OrderListItem} from './';
+import {CancelAllOrders, ToggleOrders} from './OrderListAdditional';
+import OrderListToolbar from './OrderListToolbar';
 
 interface OrderListProps extends OrderActions {
   orders?: OrderModel[];
@@ -27,30 +30,37 @@ const OrderList: React.SFC<OrderListProps> = ({
   };
 
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th>Asset pair</th>
-          <th>Cancel order</th>
-          <th>OrderID</th>
-          <th>Side</th>
-          <th>Volume</th>
-          <th>Price</th>
-          <th>Created Date</th>
-          <th>Edit</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.map(order => (
-          <OrderListItem
-            key={order.id}
-            cancelOrder={cancelOrder}
-            {...order}
-            onEdit={handleEditOrder(order)}
-          />
-        ))}
-      </tbody>
-    </Table>
+    <React.Fragment>
+      <OrderListToolbar>
+        <ToggleOrders />
+        <CancelAllOrders />
+      </OrderListToolbar>
+      <HBar />
+      <Table>
+        <thead>
+          <tr>
+            <th>Asset pair</th>
+            <th>Cancel order</th>
+            <th>OrderID</th>
+            <th>Side</th>
+            <th>Volume</th>
+            <th>Price</th>
+            <th>Created Date</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map(order => (
+            <OrderListItem
+              key={order.id}
+              cancelOrder={cancelOrder}
+              {...order}
+              onEdit={handleEditOrder(order)}
+            />
+          ))}
+        </tbody>
+      </Table>
+    </React.Fragment>
   );
 };
 

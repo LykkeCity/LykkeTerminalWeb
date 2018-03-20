@@ -54,11 +54,12 @@ class OrderListStore extends BaseStore {
 
   filterOrders = (orders: OrderModel[]) => {
     const {selectedInstrument} = this.rootStore.uiStore;
-    return this.selectedOrderOptions === OrdersDefaultSelection.All
-      ? orders
-      : selectedInstrument
-        ? orders.filter(order => order.symbol === selectedInstrument.id)
+    if (selectedInstrument) {
+      return this.selectedOrderOptions === OrdersDefaultSelection.CurrentAsset
+        ? orders.filter(order => order.symbol === selectedInstrument!.id)
         : orders;
+    }
+    return [];
   };
 
   toggleOrders = (option: string) => {

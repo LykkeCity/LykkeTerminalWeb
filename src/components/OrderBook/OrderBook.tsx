@@ -11,6 +11,7 @@ import {Order} from '../../models';
 import Types from '../../models/modals';
 import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
+import {HBar} from '../Bar';
 import {css} from '../styled';
 import {Table} from '../Table/index';
 import {OrderBookItem} from './';
@@ -20,7 +21,6 @@ const confirmStorage = StorageUtils(keys.confirmReminder);
 const Wrapper = styled.div`
   height: 100%;
   margin-right: -0.9375rem;
-  padding-top: ${rem(55)};
 `;
 
 const StyledHead = styled.thead`
@@ -69,11 +69,7 @@ const Switch = styled.div`
   color: #ffffff;
   display: flex;
   align-items: center;
-  top: ${rem(18)};
-  left: ${rem(8)};
-  right: ${rem(8)};
-  z-index: 10;
-  position: absolute;
+  margin: ${rem(8)} 0 ${rem(16)};
 `;
 
 const SwitchItem = styled.div`
@@ -97,12 +93,6 @@ const SwitchItem = styled.div`
     border-bottom-left-radius: 0;
   }
 ` as any;
-
-const Bar = styled.div`
-  background-color: rgba(0, 0, 0, 0.2);
-  height: 1px;
-  margin-right: ${rem(15)};
-`;
 
 interface OrderBookProps {
   addModal: any;
@@ -218,7 +208,7 @@ class OrderBook extends React.Component<OrderBookProps> {
             </SwitchItem>
           ))}
         </Switch>
-        <Bar />
+        <HBar />
         <Table>
           <StyledHead>
             <StyledRow>

@@ -1,18 +1,16 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrdersSelection} from '../../../constants/ordersSelection';
 import ClickOutside from '../../ClickOutside/ClickOutside';
 import CustomSelect from '../../Select/CustomSelect';
+import {colors, fonts} from '../../styled';
 import {ToggleOrdersProps} from './index';
 
 const StyledOrdersSelection = styled.div`
-  padding-right: 30px;
-  border-right: 1px solid rgba(0, 0, 0, 0.2);
   position: relative;
-
-  font-size: 14px;
-  text-align: left;
-  color: rgb(245, 246, 247);
+  font-size: ${rem(fonts.normal)};
+  color: ${colors.white};
 
   &:first-letter {
     text-transform: capitalize;
@@ -24,12 +22,14 @@ const StyledOrdersSelection = styled.div`
 
   &:after {
     content: '';
-    position: absolute;
-    border-left: 2px solid transparent;
-    border-right: 2px solid transparent;
-    border-top: 4px solid #f5f6f7;
-    top: 7px;
-    right: 13px;
+    width: 0;
+    height: 0;
+    border-top: 4px solid rgba(245, 246, 247, 0.4);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    position: relative;
+    top: 10px;
+    left: 10px;
   }
 `;
 
