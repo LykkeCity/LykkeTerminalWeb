@@ -20,6 +20,7 @@ import {
   ChartStore,
   ModalStore,
   NotificationStore,
+  OrderBookChartStore,
   OrderBookStore,
   OrderListStore,
   OrderStore,
@@ -37,6 +38,7 @@ const instrumentStorage = StorageUtils(keys.selectedInstrument);
 class RootStore {
   readonly watchlistStore: WatchlistStore;
   readonly tradeStore: TradeStore;
+  readonly orderBookChartStore: OrderBookChartStore;
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
@@ -61,6 +63,7 @@ class RootStore {
       this.notificationStore = new NotificationStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
       this.tradeStore = new TradeStore(this, new TradeApi(this));
+      this.orderBookChartStore = new OrderBookChartStore(this);
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi(this));
       this.balanceListStore = new BalanceListStore(
         this,
@@ -81,6 +84,7 @@ class RootStore {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
+      this.orderBookChartStore.setWs(ws);
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
       this.tradeStore.setWs(ws);
@@ -127,6 +131,7 @@ class RootStore {
         );
 
         this.uiStore.setWs(ws);
+        this.orderBookChartStore.setWs(ws);
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);

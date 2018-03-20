@@ -94,6 +94,8 @@ class OrderBookStore extends BaseStore {
 
   @action
   nextSpan = () => {
+    // tslint:disable-next-line:no-console
+    console.log(this.spanMultiplierIdx + ' ' + this.maxMultiplierIdx);
     if (this.spanMultiplierIdx < this.maxMultiplierIdx) {
       this.spanMultiplierIdx++;
     }
