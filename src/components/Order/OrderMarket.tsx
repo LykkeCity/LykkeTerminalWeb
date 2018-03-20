@@ -90,6 +90,7 @@ class OrderMarket extends React.Component<
       action
     });
     this.updateInvertedValues(action);
+    this.props.onInvert(this.isInverted);
   };
 
   reset = () => {
@@ -110,7 +111,6 @@ class OrderMarket extends React.Component<
     this.previousPropsAction = this.props.action;
     const {quantityAccuracy, priceAccuracy, quantity} = this.props;
     const currentAccuracy = this.isInverted ? priceAccuracy : quantityAccuracy;
-    const currentQuantity = parseFloat(quantity).toFixed(currentAccuracy);
 
     return (
       <div>
@@ -131,7 +131,7 @@ class OrderMarket extends React.Component<
           <Flex>
             <StyledInputControl style={{width: '70%'}}>
               <NumberInput
-                value={currentQuantity}
+                value={quantity}
                 id={OrderInputs.Quantity}
                 onChange={this.props.onChange(currentAccuracy)}
                 onArrowClick={this.props.onArrowClick(currentAccuracy)}
@@ -164,7 +164,7 @@ class OrderMarket extends React.Component<
           <OrderButton
             isDisable={this.props.isDisable}
             type={'submit'}
-            message={`${capitalize(this.state.action)} ${currentQuantity} ${
+            message={`${capitalize(this.state.action)} ${quantity} ${
               !this.isInverted ? baseName : quoteName
             }`}
           />
