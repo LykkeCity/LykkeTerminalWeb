@@ -83,6 +83,7 @@ class RootStore {
       this.uiStore.setWs(ws);
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
+      this.tradeStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
         .forEach((x: any) =>
@@ -91,8 +92,6 @@ class RootStore {
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
-      this.tradeStore.fetchPublicTrades();
-      this.tradeStore.subscribeToPublicTrades(ws);
     });
   };
 
@@ -130,6 +129,7 @@ class RootStore {
         this.uiStore.setWs(ws);
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
+        this.tradeStore.setWs(ws);
         instruments.forEach(x =>
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
         );
@@ -138,9 +138,7 @@ class RootStore {
         );
         this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
-        this.tradeStore.subscribeToPublicTrades(ws);
         this.balanceListStore.subscribe(ws);
-        this.tradeStore.fetchPublicTrades();
         return Promise.resolve();
       })
       .catch(() => {
