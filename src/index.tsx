@@ -14,7 +14,6 @@ const locale =
   (navigator.languages && navigator.languages[0]) ||
   navigator.language ||
   'en-US';
-
 const rootStore = new RootStore();
 
 const render = (AppComponent: any) => {
