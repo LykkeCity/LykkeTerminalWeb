@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import ReactTable from 'react-table';
@@ -11,6 +12,10 @@ const InstrumentsReactTable = styled(ReactStyledTable)`
     margin-right: 10px;
   }
 `;
+
+const ObservedTable: React.SFC = observer(({children}) => {
+  return <div>{children}</div>;
+});
 
 class InstrumentList extends React.Component<InstrumentListProps> {
   componentDidMount() {
@@ -100,14 +105,16 @@ class InstrumentList extends React.Component<InstrumentListProps> {
     return (
       <InstrumentsReactTable>
         <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={555}>
-          <ReactTable
-            data={data}
-            columns={columns}
-            className={'-highlight no-border table'}
-            showPagination={false}
-            pageSize={data.length}
-            getTdProps={click}
-          />
+          <ObservedTable>
+            <ReactTable
+              data={data}
+              columns={columns}
+              className={'-highlight no-border table'}
+              showPagination={false}
+              pageSize={data.length}
+              getTdProps={click}
+            />
+          </ObservedTable>
         </Scrollbars>
       </InstrumentsReactTable>
     );

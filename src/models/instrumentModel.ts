@@ -44,6 +44,10 @@ class InstrumentModel {
   ) => {
     this.change24h = (closePrice - openPrice) / openPrice * 100;
     this.volume = volume;
+
+    // if (this.name === 'BTC/CHF') {
+    //   console.log(this.name, this.volume, this.change24h);
+    // }
   };
 }
 

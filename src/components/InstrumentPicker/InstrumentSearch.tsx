@@ -32,6 +32,7 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
 
 const StyledInstrumentSearch = styled(InstrumentSearch)`
   width: 250px;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
   & > i.icon {
     display: inline-block;
     width: 10%;

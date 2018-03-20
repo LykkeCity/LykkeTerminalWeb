@@ -51,6 +51,14 @@ export interface InstrumentListProps {
   onPick: any;
 }
 
+export interface InstrumentShortcutSelectionProps {
+  toggleShortcuts: any;
+  onToggleInstrumentSelection: any;
+  selectedShortcut: number;
+  shortcuts: any[];
+  showInstrumentSelection: boolean;
+}
+
 const connectedInstrumentPicker = connect(
   ({referenceStore, uiStore, watchlistStore}) => ({
     baseAsset:
@@ -85,5 +93,8 @@ export {connectedInstrumentPicker as InstrumentPicker};
 export {default as InstrumentSelect} from './InstrumentSelect';
 export {default as InstrumentPopover} from './InstrumentPopover';
 export {default as InstrumentSearch} from './InstrumentSearch';
+export {
+  default as InstrumentShortcutSelection
+} from './InstrumentShortcutSelection';
 export {ObservedInstrumentList as InstrumentList};
 export {ObservedInstrumentListNumber as InstrumentListNumber};

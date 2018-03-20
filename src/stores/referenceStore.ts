@@ -245,6 +245,7 @@ class ReferenceStore extends BaseStore {
     if (instrument && instrument.id) {
       instrument.updatePrice(price);
     }
+    this.instruments = [...this.instruments];
   };
 
   onCandle = async (args: any) => {
