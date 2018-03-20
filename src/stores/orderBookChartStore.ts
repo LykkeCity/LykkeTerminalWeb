@@ -2,29 +2,50 @@ import {action, computed, observable} from 'mobx';
 import {BaseStore, RootStore} from './index';
 
 class OrderBookChartStore extends BaseStore {
-  @observable spanValue = 1;
+  @observable spanMultiplierIdx = 0;
+
+  @computed
+  get seedSpan() {
+    return this.rootStore.orderBookStore.seedSpan;
+  }
+
+  @computed
+  get spanMultiplier() {
+    return Math.pow(10, this.spanMultiplierIdx);
+  }
+
+  @computed
+  get maxMultiplierIdx() {
+    return this.rootStore.orderBookStore.maxMultiplierIdx;
+  }
 
   @computed
   get span() {
-    return this.spanValue;
+    return this.seedSpan * this.spanMultiplier;
   }
 
   constructor(store: RootStore) {
     super(store);
   }
 
+  mid = () => this.rootStore.orderBookStore.mid();
+
   @action
   nextSpan = () => {
-    this.spanValue++;
+    if (this.spanMultiplierIdx < this.maxMultiplierIdx) {
+      this.spanMultiplierIdx++;
+    }
   };
 
   @action
   prevSpan = () => {
-    this.spanValue--;
+    if (this.spanMultiplierIdx > 0) {
+      this.spanMultiplierIdx--;
+    }
   };
 
   reset = () => {
-    this.spanValue = 1;
+    this.spanMultiplierIdx = 0;
   };
 }
 

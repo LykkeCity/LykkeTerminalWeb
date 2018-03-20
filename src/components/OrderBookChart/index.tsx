@@ -1,10 +1,17 @@
+import {pathOr} from 'rambda';
 import {connect} from '../connect';
 import OrderBookChart from './OrderBookChart';
 
 // tslint:disable:object-literal-sort-keys
 const ConnectedOrderBookChart = connect(
-  ({orderBookChartStore: {span, nextSpan, prevSpan}}) => {
+  ({
+    orderBookChartStore: {mid, span, nextSpan, prevSpan},
+    uiStore: {selectedInstrument}
+  }) => {
+    const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
+    const midPrice = mid().toFixed(priceAccuracy);
     return {
+      mid: midPrice,
       span,
       onNextSpan: nextSpan,
       onPrevSpan: prevSpan

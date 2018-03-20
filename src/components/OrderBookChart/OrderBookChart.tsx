@@ -28,7 +28,7 @@ class OrderBookChart extends React.Component<OrderBookProps> {
   }
 
   render() {
-    const {span, onNextSpan, onPrevSpan} = this.props;
+    const {mid, span, onNextSpan, onPrevSpan} = this.props;
 
     return (
       <StyledWrapper>
@@ -37,6 +37,9 @@ class OrderBookChart extends React.Component<OrderBookProps> {
             Grouping: <button onClick={onPrevSpan}>-</button>
             <strong>{span}</strong>
             <button onClick={onNextSpan}>+</button>
+          </StyledGrouping>
+          <StyledGrouping>
+            <span>{mid}</span>
           </StyledGrouping>
         </StyledBar>
       </StyledWrapper>
