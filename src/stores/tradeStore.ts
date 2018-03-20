@@ -3,7 +3,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy, uniq} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
-import {TradeModel} from '../models/index';
+import {TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {BaseStore, RootStore} from './index';
@@ -14,6 +14,8 @@ const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
 );
 
 class TradeStore extends BaseStore {
+  @observable filter = TradeFilter.CurrentAsset;
+
   @computed
   get getAllTrades() {
     return sortByDate(this.trades);
@@ -34,8 +36,16 @@ class TradeStore extends BaseStore {
     return this.rootStore.uiStore.selectedInstrument;
   }
 
+  @computed
+  get filteredTrades() {
+    return this.filter === TradeFilter.CurrentAsset
+      ? this.getAllTrades.filter(t => t.symbol === this.selectedInstrument!.id)
+      : this.getAllTrades;
+  }
+
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
+
   private subscriptions: Set<ISubscription> = new Set();
 
   private skip: number = TradeQuantity.Skip;
@@ -43,11 +53,14 @@ class TradeStore extends BaseStore {
   private loading: number = TradeQuantity.Loading;
   private wampTrades: number = 0;
 
-  // this wss = ws;
-
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
   }
+
+  @action
+  setFilter = (filter: TradeFilter) => {
+    this.filter = filter;
+  };
 
   @action
   addTrades = (trades: TradeModel[]) => {

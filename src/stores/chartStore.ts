@@ -41,6 +41,7 @@ class ChartStore extends BaseStore {
     }
     const widget = new (window as any).TradingView.widget({
       autosize: true,
+      // fullscreen: true,
       symbol: instrument.name,
       interval: '60',
       container_id: 'tv_chart_container',
