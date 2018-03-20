@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
+import {formattedDateTime, formattedNumber} from '../../utils/localFormatted';
 import styled, {colorFromSide} from '../styled';
 
 interface TradeListItemProps extends TradeModel {
@@ -20,12 +21,12 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   <tr className={className}>
     <td>{symbol}</td>
     <td>{side}</td>
-    <td>{quantity}</td>
-    <td>{price}</td>
-    <td>{oppositeQuantity}</td>
+    <td>{formattedNumber(quantity)}</td>
+    <td>{formattedNumber(price)}</td>
+    <td>{formattedNumber(oppositeQuantity)}</td>
     <td>{orderType}</td>
     <td>{fee}</td>
-    <td>{new Date(timestamp).toLocaleString()}</td>
+    <td>{formattedDateTime(new Date(timestamp))}</td>
   </tr>
 );
 

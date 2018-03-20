@@ -16,8 +16,7 @@ const OrderForm = (props: OrderFormProps) => {
   const {isDisable, assetName, action, quantity} = props;
 
   const baseName = assetName.split('/')[0];
-  const accuracy = quantity.length - quantity.search(/\./) - 1;
-  const price = formattedNumber(+quantity, accuracy);
+  const price = formattedNumber(quantity);
 
   return (
     <Form>

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {FormattedTime} from 'react-intl';
 import {TradeModel} from '../../models/index';
+import {formattedTime} from '../../utils/localFormatted';
 import styled, {colorFromSide} from '../styled';
 
 // tslint:disable-next-line:no-empty-interface
@@ -20,14 +20,7 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
     <td>{price}</td>
     <td>{side}</td>
     <td>
-      <td>
-        <FormattedTime
-          value={timestamp}
-          hour="numeric"
-          minute="numeric"
-          second="numeric"
-        />
-      </td>
+      <td>{formattedTime(timestamp)}</td>
     </td>
   </tr>
 );
