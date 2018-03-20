@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {formattedNumber} from '../../utils/localFormatted';
 import {OrderFormProps} from './index';
 
 const StyledOrderOptions = styled.div`
@@ -89,7 +90,6 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
   } = props;
 
   const quoteName = assetName.split('/')[1];
-
   return (
     <StyledOrderOptions>
       <StyledTitle>Quantity</StyledTitle>
@@ -98,7 +98,7 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
           <StyledInput
             id="quantityValue"
             type="text"
-            value={quantity}
+            value={formattedNumber(quantity)}
             onChange={onChange('quantityValue')}
             // tslint:disable-next-line:jsx-no-lambda
             onKeyDown={e => {
@@ -132,7 +132,7 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
               <StyledInput
                 id="priceValue"
                 type="text"
-                value={price}
+                value={formattedNumber(price)}
                 onChange={onChange('priceValue')}
                 // tslint:disable-next-line:jsx-no-lambda
                 onKeyDown={e => {
@@ -158,7 +158,7 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
               />
             </StyledInputNumberComponent>
             <StyledAmount>
-              Total: {amount} {quoteName}
+              Total: {formattedNumber(amount)} {quoteName}
             </StyledAmount>
           </StyledOptions>
         </div>
