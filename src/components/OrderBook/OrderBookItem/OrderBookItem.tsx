@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Order, Side} from '../../../models/index';
+import {formattedNumber} from '../../../utils/localFormatted';
 import styled from '../../styled';
 
 const colorBySide = (side: Side) =>
@@ -174,7 +175,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
             />
-            {valueToShow.toFixed(volumeAccuracy)}
+            {formattedNumber(valueToShow, volumeAccuracy)}
           </div>
         ) : (
           !!orderVolume &&
@@ -186,12 +187,14 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               >
                 &times;
               </CloseOrders>
-              <div>{orderVolume}</div>
+              <div>{formattedNumber(orderVolume)}</div>
             </AskVolume>
           )
         )}
       </VolumeCell>
-      <MidCell onClick={onPriceClick(+currentPrice)}>{currentPrice}</MidCell>
+      <MidCell onClick={onPriceClick(+currentPrice)}>
+        {formattedNumber(currentPrice)}
+      </MidCell>
       <VolumeCell side={side}>
         {side === Side.Buy ? (
           <div onClick={onDepthClick(+currentPrice, depth)}>
@@ -199,13 +202,13 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
             />
-            {valueToShow.toFixed(volumeAccuracy)}
+            {formattedNumber(valueToShow, volumeAccuracy)}
           </div>
         ) : (
           !!orderVolume &&
           side === Side.Sell && (
             <BidVolume side={side}>
-              <div>{orderVolume}</div>
+              <div>{formattedNumber(orderVolume)}</div>
               <CloseOrders
                 side={side}
                 onClick={onOrderClick(connectedLimitOrders)}
