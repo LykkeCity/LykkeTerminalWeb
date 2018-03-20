@@ -1,4 +1,7 @@
-import {locale} from '../index';
+const locale =
+  (navigator.languages && navigator.languages[0]) ||
+  navigator.language ||
+  'en-US';
 
 export function formattedNumber(value: any, accuracy?: number): string {
   if (typeof value === 'string') {
@@ -22,7 +25,7 @@ export function formattedDate(date: any): string {
 }
 
 export function formattedTime(date: any): string {
-  let options = {
+  const options = {
     hour: 'numeric',
     minute: 'numeric',
     second: 'numeric'
@@ -31,7 +34,7 @@ export function formattedTime(date: any): string {
 }
 
 export function formattedDateTime(date: any): string {
-  let options = {
+  const options = {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
