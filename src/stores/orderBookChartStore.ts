@@ -1,4 +1,5 @@
 import {action, computed, observable} from 'mobx';
+import {TradeModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class OrderBookChartStore extends BaseStore {
@@ -28,7 +29,30 @@ class OrderBookChartStore extends BaseStore {
     super(store);
   }
 
+  @computed
+  get bids() {
+    return this.rootStore.orderBookStore.bids;
+  }
+
+  get asks() {
+    return this.rootStore.orderBookStore.asks;
+  }
+
   mid = () => this.rootStore.orderBookStore.mid();
+
+  spread = () => {
+    return (
+      (this.rootStore.orderBookStore.bestAsk() -
+        this.rootStore.orderBookStore.bestBid()) /
+      this.rootStore.orderBookStore.bestAsk() *
+      100
+    );
+  };
+
+  lastTradePrice = () => {
+    const trades: TradeModel[] = this.rootStore.tradeStore.getAllTrades;
+    return trades[0] ? trades[0]!.price : 0;
+  };
 
   @action
   nextSpan = () => {

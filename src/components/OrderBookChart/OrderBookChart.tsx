@@ -1,34 +1,34 @@
 import {observable} from 'mobx';
 import * as React from 'react';
-import {Order, OrderBookDisplayType} from '../../models';
+import {OrderBookDisplayType} from '../../models';
+import {VBar} from '../Bar/Bar';
 import {StyledBar, StyledGrouping, StyledWrapper} from '../OrderBook/styles';
 
-interface OrderBookProps {
-  addModal: any;
-  asks: Order[];
-  bids: Order[];
+interface OrderBookChartProps {
   mid: string;
-  priceAccuracy: number;
-  volumeAccuracy: number;
-  updatePrice: any;
-  updatePriceAndDepth: any;
-  stateFns: any[];
-  cancelOrder: any;
-  setIsOrderBookClicked: any;
+  spread: string;
+  lastTradePrice: string;
   span: number;
   onNextSpan: () => void;
   onPrevSpan: () => void;
 }
 
-class OrderBookChart extends React.Component<OrderBookProps> {
+class OrderBookChart extends React.Component<OrderBookChartProps> {
   @observable displayType = OrderBookDisplayType.Volume;
 
-  constructor(props: OrderBookProps) {
+  constructor(props: OrderBookChartProps) {
     super(props);
   }
 
   render() {
-    const {mid, span, onNextSpan, onPrevSpan} = this.props;
+    const {
+      mid,
+      spread,
+      lastTradePrice,
+      span,
+      onNextSpan,
+      onPrevSpan
+    } = this.props;
 
     return (
       <StyledWrapper>
@@ -38,8 +38,13 @@ class OrderBookChart extends React.Component<OrderBookProps> {
             <strong>{span}</strong>
             <button onClick={onNextSpan}>+</button>
           </StyledGrouping>
+          <VBar />
           <StyledGrouping>
-            <span>{mid}</span>
+            Mid price: <span>{mid}</span>
+            <VBar />
+            Spread: <span>{spread}</span>%
+            <VBar />
+            Last Trade Price: <span>{lastTradePrice}</span>
           </StyledGrouping>
         </StyledBar>
       </StyledWrapper>
