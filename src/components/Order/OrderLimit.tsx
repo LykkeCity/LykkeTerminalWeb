@@ -3,13 +3,13 @@ import rem from 'polished/lib/helpers/rem';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrderInputs} from '../../models';
-import {capitalize} from '../../utils';
 import NumberInput from '../NumberInput/NumberInput';
 import {
   OrderLimitProps,
   StyledActionTitle,
   StyledAvailable,
   StyledInputControl,
+  StyledNote,
   StyledOrderButton,
   StyledReset
 } from './index';
@@ -23,11 +23,8 @@ const StyledTotal = Flex.extend`
   justify-content: space-between;
   border-top: 2px solid #2d2d2d;
   border-bottom: 2px solid #2d2d2d;
-  padding: 19px 0;
-`;
-
-const StyledNote = styled.div`
-  margin-top: ${rem(28)};
+  padding: ${rem(19)} 0;
+  margin: ${rem(23)} 0;
 `;
 
 const StyledTitle = styled.div`
@@ -45,19 +42,21 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   percents,
   onHandlePercentageChange,
   baseName,
+  buttonMessage,
   quoteName,
   isSell,
   amount,
   isDisable,
   onReset,
-  balance
+  balance,
+  isEditForm
 }) => {
   return (
     <Form>
       <StyledInputControl>
         <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
           <StyledActionTitle>
-            {action} {baseName}
+            {isEditForm ? 'Volume' : `${action} ${baseName}`}
           </StyledActionTitle>
           <StyledAvailable>
             {balance} {isSell ? baseName : quoteName} available
@@ -97,20 +96,26 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           {amount} {quoteName}
         </StyledAvailable>
       </StyledTotal>
-      <StyledNote>
-        Your order may execute as a maker order or taker order.
-      </StyledNote>
+
+      {isEditForm && (
+        <StyledNote>
+          Your order may execute as a maker order or taker order.
+        </StyledNote>
+      )}
 
       <StyledOrderButton>
         <OrderButton
           isDisable={isDisable}
           type={'submit'}
-          message={`${capitalize(action)} ${quantity} ${baseName}`}
+          message={buttonMessage}
         />
       </StyledOrderButton>
-      <StyledReset justify={'center'}>
-        <span onClick={onReset}>Reset and clear</span>
-      </StyledReset>
+
+      {onReset && (
+        <StyledReset justify={'center'}>
+          <span onClick={onReset}>Reset and clear</span>
+        </StyledReset>
+      )}
     </Form>
   );
 };

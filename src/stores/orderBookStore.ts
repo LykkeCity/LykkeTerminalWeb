@@ -113,7 +113,7 @@ class OrderBookStore extends BaseStore {
       runInAction(() => {
         orders.forEach((levels: any) => this.onUpdate([levels]));
         if (this.isInitFetch && initPriceUpdate) {
-          initPriceUpdate(this.bestBid(), selectedInstrument);
+          initPriceUpdate(this.mid(), selectedInstrument);
           this.isInitFetch = false;
         }
       });
