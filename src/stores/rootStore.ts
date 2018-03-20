@@ -82,6 +82,7 @@ class RootStore {
       this.uiStore.setWs(ws);
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
+      this.tradeStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
         .forEach((x: any) =>
