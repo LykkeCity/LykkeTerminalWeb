@@ -63,6 +63,10 @@ class OrderBookChartStore extends BaseStore {
 
   @action
   prevSpan = () => {
+    // tslint:disable-next-line:no-console
+    console.log(this.bids);
+    // tslint:disable-next-line:no-console
+    console.log(this.asks);
     if (this.spanMultiplierIdx > 0) {
       this.spanMultiplierIdx--;
     }

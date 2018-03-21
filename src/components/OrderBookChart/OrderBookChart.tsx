@@ -3,6 +3,7 @@ import * as React from 'react';
 import {OrderBookDisplayType} from '../../models';
 import {VBar} from '../Bar/Bar';
 import {StyledBar, StyledGrouping, StyledWrapper} from '../OrderBook/styles';
+import Chart from './Chart';
 
 interface OrderBookChartProps {
   mid: string;
@@ -47,6 +48,9 @@ class OrderBookChart extends React.Component<OrderBookChartProps> {
             Last Trade Price: <span>{lastTradePrice}</span>
           </StyledGrouping>
         </StyledBar>
+        <StyledWrapper>
+          <Chart />
+        </StyledWrapper>
       </StyledWrapper>
     );
   }
