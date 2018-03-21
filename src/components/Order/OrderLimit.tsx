@@ -20,8 +20,8 @@ const {Flex} = require('grid-styled');
 
 const StyledTotal = Flex.extend`
   justify-content: space-between;
-  border-top: 2px solid #2d2d2d;
-  border-bottom: 2px solid #2d2d2d;
+  border-top: 1px solid rgb(45, 45, 45);
+  border-bottom: 1px solid rgb(45, 45, 45);
   padding: ${rem(19)} 0;
   margin: ${rem(23)} 0;
 `;
