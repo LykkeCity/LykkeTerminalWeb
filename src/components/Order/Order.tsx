@@ -10,7 +10,7 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
-import {OrderProps, OrderState, StyledNote} from './index';
+import {OrderProps, OrderState} from './index';
 import OrderActionButton from './OrderActionButton';
 import OrderChoiceButton from './OrderChoiceButton';
 import OrderLimit from './OrderLimit';
@@ -382,31 +382,9 @@ class Order extends React.Component<OrderProps, OrderState> {
         {/*/>*/}
         {/*)}*/}
 
-        {/*<div>*/}
-        {/*<OrderForm*/}
-        {/*assetName={this.props.name}*/}
-        {/*isMarket={this.state.isMarketActive}*/}
-        {/*isDisable={this.state.pendingOrder || this.isInvalidValues()}*/}
-        {/*action={action}*/}
-        {/*onSubmit={this.handleButtonClick}*/}
-        {/*onChange={this.onChange}*/}
-        {/*onArrowClick={this.onArrowClick}*/}
-        {/*amount={this.props.fixedAmount(*/}
-        {/*currentPrice,*/}
-        {/*this.state.quantityValue,*/}
-        {/*this.props.accuracy.priceValue*/}
-        {/*)}*/}
-        {/*quantity={this.state.quantityValue}*/}
-        {/*price={this.state.priceValue}*/}
-        {/*buy={this.state.buyValue}*/}
-        {/*sell={this.state.sellValue}*/}
-        {/*quantityAccuracy={this.props.accuracy.quantityValue}*/}
-        {/*priceAccuracy={this.props.accuracy.priceValue}*/}
-        {/*/>*/}
-        {/*</div>*/}
-        <StyledNote>
-          Your order may execute as a maker order or taker order.
-        </StyledNote>
+        {/*<StyledNote>*/}
+        {/*Your order may execute as a maker order or taker order.*/}
+        {/*</StyledNote>*/}
       </div>
     );
   }

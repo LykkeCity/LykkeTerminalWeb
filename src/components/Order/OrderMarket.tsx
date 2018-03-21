@@ -18,33 +18,33 @@ import OrderButton from './OrderButton';
 import OrderPercentage from './OrderPercentage';
 
 // tslint:disable-next-line:no-var-requires
-const {Flex, Box} = require('grid-styled');
+const {Flex} = require('grid-styled');
 
 const StyledOrderButton = styled.div`
   margin-top: ${rem(24)};
 `;
 
-const StyledInvertedTitle = Box.extend`
-  font-size: ${rem(14)};
-  opacity: 0.4;
-
-  &:first-letter {
-    text-transform: capitalize;
-  }
-`;
-
-const StyledInvertedBtn = Box.extend`
-  background: url('assets/images/invert.png') no-repeat center;
-  border: 1px solid rgba(140, 148, 160, 0.4);
-  border-radius: 4px;
-  width: 32px;
-  height: 32px;
-  margin: 0 8px;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
+// const StyledInvertedTitle = Box.extend`
+//   font-size: ${rem(14)};
+//   opacity: 0.4;
+//
+//   &:first-letter {
+//     text-transform: capitalize;
+//   }
+// `;
+//
+// const StyledInvertedBtn = Box.extend`
+//   background: url('assets/images/invert.png') no-repeat center;
+//   border: 1px solid rgba(140, 148, 160, 0.4);
+//   border-radius: 4px;
+//   width: 32px;
+//   height: 32px;
+//   margin: 0 8px;
+//
+//   &:hover {
+//     cursor: pointer;
+//   }
+// `;
 
 class OrderMarket extends React.Component<
   OrderMarketProps & FormikProps<{}>,
@@ -116,7 +116,7 @@ class OrderMarket extends React.Component<
       <div>
         <div>
           <div>
-            <div style={{width: '70%'}}>
+            <div>
               <Flex justify="space-between">
                 <StyledActionTitle>
                   {this.state.action} {!this.isInverted ? baseName : quoteName}
@@ -129,7 +129,7 @@ class OrderMarket extends React.Component<
             </div>
           </div>
           <Flex>
-            <StyledInputControl style={{width: '70%'}}>
+            <StyledInputControl style={{width: '100%'}}>
               <NumberInput
                 value={quantity}
                 id={OrderInputs.Quantity}
@@ -137,17 +137,17 @@ class OrderMarket extends React.Component<
                 onArrowClick={this.props.onArrowClick(currentAccuracy)}
               />
             </StyledInputControl>
-            <Flex align={'center'}>
-              <StyledInvertedBtn onClick={this.onInvert} />
-              <StyledInvertedTitle>
-                {this.state.action === orderAction.sell.action
-                  ? orderAction.buy.action
-                  : orderAction.sell.action}{' '}
-                {this.isInverted ? baseName : quoteName}
-              </StyledInvertedTitle>
-            </Flex>
+            {/*<Flex align={'center'}>*/}
+            {/*<StyledInvertedBtn onClick={this.onInvert} />*/}
+            {/*<StyledInvertedTitle>*/}
+            {/*{this.state.action === orderAction.sell.action*/}
+            {/*? orderAction.buy.action*/}
+            {/*: orderAction.sell.action}{' '}*/}
+            {/*{this.isInverted ? baseName : quoteName}*/}
+            {/*</StyledInvertedTitle>*/}
+            {/*</Flex>*/}
           </Flex>
-          <div style={{width: '70%'}}>
+          <div>
             <Flex justify={'space-between'} style={{width: '100%'}}>
               {this.props.percents!.map((item: any, index: number) => (
                 <OrderPercentage
