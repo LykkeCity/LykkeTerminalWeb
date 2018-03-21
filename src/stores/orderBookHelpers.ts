@@ -21,9 +21,11 @@ export const floorInt = (num: number, span: number, isAsk: boolean) =>
 
 export const groupOrdersByPrice = (orders: Order[]) => {
   sortBy(o => o.price, orders);
+
   let depth = 0;
   let idx = 0;
   const newOrders = [];
+
   while (idx < orders.length) {
     const newOrder = {...orders[idx]};
     depth += orders[idx].volume;
@@ -36,13 +38,14 @@ export const groupOrdersByPrice = (orders: Order[]) => {
     newOrders.push(newOrder);
     if (idx === orders.length - 1) {
       const lastOrder = orders[idx];
-      if (lastOrder.price !== orders[idx - 1].price) {
+      if (orders[idx - 1] && lastOrder.price !== orders[idx - 1].price) {
         lastOrder.depth = depth + lastOrder.volume;
         newOrders.push(lastOrder);
       }
       break;
     }
   }
+
   return newOrders;
 };
 
@@ -54,12 +57,14 @@ export const aggregateOrders = (
   if (span === 0) {
     return orders;
   }
+
   const newOrders = [];
   for (const order of orders) {
     const newOrder = {...order};
     newOrder.price = floorInt(order.price, span, isAsk);
     newOrders.push(newOrder);
   }
+
   return groupOrdersByPrice(newOrders);
 };
 
