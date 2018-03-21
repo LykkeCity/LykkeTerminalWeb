@@ -1,21 +1,20 @@
 import {observable} from 'mobx';
-import {observer} from 'mobx-react';
 import * as React from 'react';
 import {BalanceList} from '../BalanceList';
 import {Pill, Pills} from '../Tile/styles';
 import {WalletBalanceList} from '../WalletBalanceList';
-
-export interface AccountProps {
-  foo?: string;
-}
 
 enum AccountDisplayType {
   Trading,
   All
 }
 
-export class Account extends React.Component<AccountProps> {
+export class Account extends React.Component {
   @observable selectedIdx = AccountDisplayType.Trading;
+
+  constructor(props: any) {
+    super(props);
+  }
 
   toggle = (accountDisplayType: AccountDisplayType) => () => {
     this.selectedIdx = accountDisplayType;
@@ -47,4 +46,4 @@ export class Account extends React.Component<AccountProps> {
   }
 }
 
-export default observer(Account);
+export default Account;

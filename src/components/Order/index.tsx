@@ -1,4 +1,5 @@
 import {pathOr} from 'rambda';
+import withAuth from '../Auth/withAuth';
 import {connect} from '../connect';
 import Order from './Order';
 
@@ -94,7 +95,8 @@ const ConnectedOrder = connect(
     },
     uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
     referenceStore,
-    uiOrderStore: {onArrowClick, onValueChange, fixedAmount}
+    uiOrderStore: {onArrowClick, onValueChange, fixedAmount},
+    authStore: {isAuth}
   }) => ({
     accuracy: {
       priceValue: pathOr(2, ['accuracy'], instrument),
@@ -119,9 +121,10 @@ const ConnectedOrder = connect(
     placeOrder,
     stateFns,
     updateDepthFn,
-    updatePriceFn
+    updatePriceFn,
+    isAuth
   }),
-  Order
+  withAuth(Order)
 );
 
 export {ConnectedOrder as Order};
