@@ -3,7 +3,7 @@ import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import {capitalize} from '../../utils';
-import {formattedNumber} from '../../utils/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {OrderFormProps} from './index';
 import OrderButton from './OrderButton';
 import OrderInput from './OrderInput';

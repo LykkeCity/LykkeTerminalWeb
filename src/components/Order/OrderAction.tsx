@@ -1,7 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
-import {formattedNumber} from '../../utils/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {OrderActionProps} from './index';
 
 const StyledOrderAction = styled.div`

@@ -1,7 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
-import {formattedNumber} from '../../utils/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import styled from '../styled';
 import {Table} from '../Table/index';
 import {TradingWalletItem} from './';

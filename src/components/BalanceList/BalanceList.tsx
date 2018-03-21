@@ -1,6 +1,6 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import {formattedNumber} from '../../utils/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import styled from '../styled';
 import {Table} from '../Table/index';
 import {BalanceListItem} from './';

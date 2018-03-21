@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {formattedNumber} from '../../utils/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {FormattedNumberProps} from './index';
 
 const FormattedNumber: React.SFC<FormattedNumberProps> = ({

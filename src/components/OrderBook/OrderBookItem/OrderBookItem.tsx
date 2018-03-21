@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Order, Side} from '../../../models/index';
-import {formattedNumber} from '../../../utils/localFormatted';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import styled from '../../styled';
 
 const colorBySide = (side: Side) =>

@@ -1,6 +1,9 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
-import {formattedDateTime, formattedNumber} from '../../utils/localFormatted';
+import {
+  formattedDateTime,
+  formattedNumber
+} from '../../utils/localFormatted/localFormatted';
 import styled, {colorFromSide} from '../styled';
 
 interface TradeListItemProps extends TradeModel {
