@@ -106,11 +106,6 @@ class OrderBookStore extends BaseStore {
     }
   };
 
-  @action
-  resetSpanMultiplier = () => {
-    this.spanMultiplierIdx = 0;
-  };
-
   fetchAll = async () => {
     const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
     if (selectedInstrument) {
@@ -151,6 +146,7 @@ class OrderBookStore extends BaseStore {
 
   reset = () => {
     this.rawBids = this.rawAsks = [];
+    this.spanMultiplierIdx = 0;
     this.unsubscribe();
   };
 }
