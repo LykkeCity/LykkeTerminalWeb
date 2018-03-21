@@ -1,5 +1,6 @@
 import {observer} from 'mobx-react';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
+import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
@@ -9,12 +10,12 @@ import TradeListItem from './TradeListItem';
 import Trades from './Trades';
 
 const ConnectedTrades = connect(
-  ({tradeStore: {fetchPartTrade, needToLoadMore}, authStore}) => ({
-    authorized: authStore.isAuth,
+  ({tradeStore: {fetchPartTrade, needToLoadMore}, authStore: {isAuth}}) => ({
     fetchPart: fetchPartTrade,
-    needToLoadMore
+    needToLoadMore,
+    isAuth
   }),
-  Trades
+  withAuth(Trades)
 );
 
 const ConnectedTradeList = connect<TradeListProps>(

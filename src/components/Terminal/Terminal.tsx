@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
 import {StorageUtils} from '../../utils/index';
-import Account from '../Account';
+import {Account} from '../Account';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
