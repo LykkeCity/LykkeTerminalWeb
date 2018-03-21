@@ -1,4 +1,5 @@
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
+import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {InstrumentModel} from '../models/index';
 import {BaseStore, RootStore} from './index';
 
@@ -88,8 +89,8 @@ class ChartStore extends BaseStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
+    chartContainerExists.style.display = 'none';
     if (this.rootStore.authStore.isAuth) {
-      chartContainerExists.style.display = 'none';
       widget.onChartReady(() => {
         this.load()
           .then((res: any) => {
@@ -99,12 +100,20 @@ class ChartStore extends BaseStore {
             }
             chartContainerExists.style.display = 'block';
           })
-          .catch(() => {
+          .catch(err => {
+            if (err.status === 404) {
+              widget.load(CHART_DEFAULT_SETTINGS);
+            }
             chartContainerExists.style.display = 'block';
           });
         widget.subscribe('onAutoSaveNeeded', () => {
           widget.save(this.save);
         });
+      });
+    } else {
+      widget.onChartReady(() => {
+        widget.load(CHART_DEFAULT_SETTINGS);
+        chartContainerExists.style.display = 'block';
       });
     }
   };
