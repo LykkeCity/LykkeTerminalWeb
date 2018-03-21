@@ -39,6 +39,10 @@ export interface OrderProps {
   baseAssetBalance: any;
   quoteAssetBalance: any;
   convertPartiallyBalance: any;
+  mid: number;
+  handlePercentageChange: any;
+  updatePercentageState: any;
+  resetPercentage: any;
 }
 
 export interface OrderHeaderProps {
@@ -89,7 +93,7 @@ export interface OrderBasicFormProps {
   onArrowClick: any;
   onChange: any;
   onHandlePercentageChange: any;
-  onReset: any;
+  onReset?: any;
   onSubmit: any;
   percents: any[];
   quantity: string;
@@ -103,11 +107,14 @@ export interface OrderMarketState {
 
 export interface OrderMarketProps extends OrderBasicFormProps {
   onResetPercentage: any;
+  onInvert: any;
 }
 
 export interface OrderLimitProps extends OrderBasicFormProps {
-  amount: string;
+  amount?: string;
   price: string;
+  buttonMessage: string;
+  isEditForm?: boolean;
 }
 
 const StyledOrderButton = styled.div`
@@ -115,7 +122,7 @@ const StyledOrderButton = styled.div`
 `;
 
 const StyledInputControl = styled.div`
-  margin: ${rem(14)} 0;
+  margin: ${rem(14)} 0 ${rem(8)} 0;
 `;
 
 const StyledReset = Flex.extend`
@@ -129,6 +136,7 @@ const StyledReset = Flex.extend`
 
 const StyledActionTitle = styled.div`
   font-size: ${rem(16)};
+  font-weight: 600;
   &:first-letter {
     text-transform: capitalize;
   }
@@ -140,11 +148,16 @@ const StyledAvailable = styled.div`
   font-size: ${rem(15)};
 `;
 
+const StyledNote = styled.div`
+  font-size: ${rem(14)};
+  color: #fff;
+`;
+
 const ConnectedOrder = connect(
   ({
     balanceListStore: {availableBalance: getBalance},
     modalStore: {addModal},
-    orderBookStore: {bestAsk, bestBid},
+    orderBookStore: {bestAsk, bestBid, mid},
     orderStore: {
       placeOrder,
       updatePriceFn,
@@ -153,7 +166,14 @@ const ConnectedOrder = connect(
     },
     uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
     referenceStore,
-    uiOrderStore: {onArrowClick, onValueChange, fixedAmount}
+    uiOrderStore: {
+      onArrowClick,
+      onValueChange,
+      fixedAmount,
+      handlePercentageChange,
+      updatePercentageState,
+      resetPercentage
+    }
   }) => ({
     accuracy: {
       priceAccuracy: pathOr(2, ['accuracy'], instrument),
@@ -179,12 +199,16 @@ const ConnectedOrder = connect(
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
     getAssetById: referenceStore.getAssetById,
+    handlePercentageChange,
     initPriceFn,
+    mid: mid(),
     onArrowClick,
     onValueChange,
     placeOrder,
+    resetPercentage,
     stateFns,
     updateDepthFn,
+    updatePercentageState,
     updatePriceFn,
     get baseAssetBalance() {
       const asset = getBalance.find((a: AssetBalanceModel) => {
@@ -210,5 +234,6 @@ export {
   StyledInputControl,
   StyledOrderButton,
   StyledReset,
-  StyledAvailable
+  StyledAvailable,
+  StyledNote
 };

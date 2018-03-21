@@ -17,11 +17,14 @@ import * as mappers from '../models/mappers';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
+// help tsc to infer correct type
+const headArr: <T = Order>(l: T[]) => T = head;
+const sortByPrice = sortBy(x => x.price);
+
 class OrderBookStore extends BaseStore {
   @observable rawBids: Order[] = [];
   @observable rawAsks: Order[] = [];
 
-  // 0.01 0.05 0.1 0.5 1 2.5 5 10
   spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
   @observable spanMultiplierIdx = 0;
 
@@ -40,15 +43,12 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get maxMultiplierIdx() {
-    if (!this.rawAsks.length) {
-      return 0;
+    if (this.rawAsks.length > 0) {
+      const sortByPriceDesc = compose(headArr, reverse, sortByPrice);
+      const bestAsk = sortByPriceDesc(this.rawAsks).price;
+      return Math.floor(Math.log10(bestAsk / this.seedSpan));
     }
-    const maxAsk = compose<Order[], Order[], Order[], Order>(
-      head,
-      reverse,
-      sortBy(x => x.price)
-    )(this.rawAsks).price;
-    return Math.log10(maxAsk / this.seedSpan);
+    return 0;
   }
 
   @computed
@@ -113,7 +113,7 @@ class OrderBookStore extends BaseStore {
       runInAction(() => {
         orders.forEach((levels: any) => this.onUpdate([levels]));
         if (this.isInitFetch && initPriceUpdate) {
-          initPriceUpdate(this.bestBid(), selectedInstrument);
+          initPriceUpdate(this.mid(), selectedInstrument);
           this.isInitFetch = false;
         }
       });
@@ -146,6 +146,7 @@ class OrderBookStore extends BaseStore {
 
   reset = () => {
     this.rawBids = this.rawAsks = [];
+    this.spanMultiplierIdx = 0;
     this.unsubscribe();
   };
 }

@@ -2,8 +2,7 @@ import {action, observable, reaction} from 'mobx';
 import keys from '../constants/storageKeys';
 import {InstrumentModel} from '../models/index';
 import Watchlists from '../models/watchlists';
-import {fns} from '../utils/index';
-import {StorageUtils} from '../utils/index';
+import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
@@ -24,10 +23,11 @@ class UiStore extends BaseStore {
     super(store);
     reaction(
       () => this.selectedInstrument,
-      instrument => {
+      async instrument => {
         if (instrument) {
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
-          fns.seq(reset, fetchAll)();
+          reset();
+          await fetchAll(); // should be waited for loading bids and asks
           subscribe(this.getWs());
 
           const {

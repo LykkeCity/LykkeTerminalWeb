@@ -3,10 +3,12 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
+import {Percentage} from '../../constants/ordersPercentage';
 import keys from '../../constants/storageKeys';
 import {OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
+import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
 import {OrderProps, OrderState} from './index';
 import OrderActionButton from './OrderActionButton';
@@ -16,24 +18,9 @@ import OrderMarket from './OrderMarket';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
-const percentage = [
-  {
-    isActive: false,
-    percent: 25
-  },
-  {
-    isActive: false,
-    percent: 50
-  },
-  {
-    isActive: false,
-    percent: 75
-  },
-  {
-    isActive: false,
-    percent: 100
-  }
-];
+const percentage = Percentage.map((i: any) => {
+  return {...i};
+});
 
 const MARKET = OrderType.Market;
 const LIMIT = OrderType.Limit;
@@ -84,24 +71,17 @@ class Order extends React.Component<OrderProps, OrderState> {
       pathOr('', ['name'], instrument).split('/')[0]
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
-    const price = instrument.price ? instrument.price : 0;
     this.setState({
-      priceValue: price.toFixed(priceAccuracy),
+      priceValue: this.props.mid.toFixed(priceAccuracy),
       quantityValue: parseFloat('0').toFixed(quantityAccuracy)
     });
   };
 
   handleActionClick = (action: string) => () => {
-    this.resetPercentage();
+    this.props.resetPercentage(percentage);
     this.setState({
       isSellActive: action === orderAction.sell.action,
       percents: percentage
-    });
-  };
-
-  resetPercentage = () => {
-    percentage.forEach((item: any) => {
-      item.isActive = false;
     });
   };
 
@@ -118,7 +98,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   handleActionChoiceClick = (choice: string) => () => {
-    this.resetPercentage();
+    this.reset();
     this.setState({
       isLimitActive: choice === LIMIT,
       isMarketActive: choice === MARKET,
@@ -130,6 +110,16 @@ class Order extends React.Component<OrderProps, OrderState> {
   disableButton = (value: boolean) => {
     this.setState({
       pendingOrder: value
+    });
+  };
+
+  handleInvert = (isInverted: boolean) => {
+    const {quantityValue} = this.state;
+    const {accuracy: {priceAccuracy, quantityAccuracy}} = this.props;
+    this.setState({
+      quantityValue: isInverted
+        ? parseFloat(quantityValue).toFixed(priceAccuracy)
+        : parseFloat(quantityValue).toFixed(quantityAccuracy)
     });
   };
 
@@ -197,13 +187,13 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {isLimitActive, isSellActive, isMarketActive} = this.state;
     const tempObj: any = {};
     if (isLimitActive && isSellActive && field === OrderInputs.Quantity) {
-      this.resetPercentage();
+      this.props.resetPercentage(percentage);
       tempObj.percents = percentage;
     } else if (isLimitActive && !isSellActive && field === OrderInputs.Price) {
-      this.resetPercentage();
+      this.props.resetPercentage(percentage);
       tempObj.percents = percentage;
     } else if (isMarketActive) {
-      this.resetPercentage();
+      this.props.resetPercentage(percentage);
       tempObj.percents = percentage;
     }
     this.setState(tempObj);
@@ -234,84 +224,30 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState(tempObj);
   };
 
-  getPartlyValue = (percent: number, balance: number, accuracy: number) => {
-    return (percent / 100 * balance).toFixed(accuracy);
-  };
-
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
-    let value: number = 0;
     const {
       baseAssetBalance,
       quoteAssetBalance,
-      accuracy,
+      accuracy: {quantityAccuracy, priceAccuracy},
       baseName,
       quoteName
     } = this.props;
-    percentage.forEach((item: any, i: number) => {
-      if (index === i) {
-        item.isActive = true;
-        value = item.percent;
-      } else {
-        item.isActive = false;
-      }
+    const {isLimitActive, isSellActive, isMarketActive} = this.state;
+
+    const tempObj = await this.props.handlePercentageChange({
+      balance: this.state.isSellActive ? baseAssetBalance : quoteAssetBalance,
+      baseName,
+      index,
+      isInverted,
+      isLimitActive,
+      isMarketActive,
+      isSellActive,
+      percentage,
+      priceAccuracy,
+      quantityAccuracy,
+      quoteName
     });
-    const tempObj: any = {};
-    if (this.state.isLimitActive) {
-      if (this.state.isSellActive) {
-        tempObj.quantityValue = this.getPartlyValue(
-          value,
-          baseAssetBalance,
-          accuracy.quantityAccuracy
-        );
-      } else if (!this.state.isSellActive) {
-        tempObj.priceValue = this.getPartlyValue(
-          value,
-          quoteAssetBalance,
-          accuracy.priceAccuracy
-        );
-      }
-    } else if (this.state.isMarketActive) {
-      if (this.state.isSellActive) {
-        if (!isInverted) {
-          tempObj.quantityValue = this.getPartlyValue(
-            value,
-            baseAssetBalance,
-            accuracy.quantityAccuracy
-          );
-        } else {
-          const convertedBalance = await this.props.convertPartiallyBalance(
-            baseAssetBalance,
-            baseName,
-            quoteName
-          );
-          tempObj.quantityValue = this.getPartlyValue(
-            value,
-            convertedBalance,
-            accuracy.quantityAccuracy
-          );
-        }
-      } else {
-        if (isInverted) {
-          tempObj.quantityValue = this.getPartlyValue(
-            value,
-            quoteAssetBalance,
-            accuracy.quantityAccuracy
-          );
-        } else {
-          const convertedBalance = await this.props.convertPartiallyBalance(
-            quoteAssetBalance,
-            quoteName,
-            baseName
-          );
-          tempObj.quantityValue = this.getPartlyValue(
-            value,
-            convertedBalance,
-            accuracy.quantityAccuracy
-          );
-        }
-      }
-    }
-    tempObj.percents = percentage;
+
     this.setState(tempObj);
   };
 
@@ -325,10 +261,10 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   reset = () => {
     const {priceAccuracy, quantityAccuracy} = this.props.accuracy;
-    this.resetPercentage();
+    this.props.resetPercentage(percentage);
     this.setState({
       percents: percentage,
-      priceValue: this.props.bid.toFixed(priceAccuracy),
+      priceValue: this.props.mid.toFixed(priceAccuracy),
       quantityValue: parseFloat('0').toFixed(quantityAccuracy)
     });
   };
@@ -337,14 +273,14 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {
       baseAssetBalance,
       quoteAssetBalance,
-      accuracy,
+      accuracy: {quantityAccuracy, priceAccuracy},
       baseName,
       quoteName,
       fixedAmount,
       bid,
-      ask
+      ask,
+      resetPercentage
     } = this.props;
-    const {quantityAccuracy, priceAccuracy} = accuracy;
     const {
       isSellActive,
       isMarketActive,
@@ -414,6 +350,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             isDisable={this.isLimitDisable()}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
+            buttonMessage={`${capitalize(action)} ${quantityValue} ${baseName}`}
           />
         )}
 
@@ -433,8 +370,10 @@ class Order extends React.Component<OrderProps, OrderState> {
             onSubmit={this.handleButtonClick}
             balance={available && available.toFixed(balanceAccuracy)}
             isSell={isSellActive}
-            onResetPercentage={this.resetPercentage}
+            // tslint:disable-next-line:jsx-no-lambda
+            onResetPercentage={() => resetPercentage(percentage)}
             priceAccuracy={priceAccuracy}
+            onInvert={this.handleInvert}
           />
         )}
 
@@ -443,28 +382,9 @@ class Order extends React.Component<OrderProps, OrderState> {
         {/*/>*/}
         {/*)}*/}
 
-        {/*<div>*/}
-        {/*<OrderForm*/}
-        {/*assetName={this.props.name}*/}
-        {/*isMarket={this.state.isMarketActive}*/}
-        {/*isDisable={this.state.pendingOrder || this.isInvalidValues()}*/}
-        {/*action={action}*/}
-        {/*onSubmit={this.handleButtonClick}*/}
-        {/*onChange={this.onChange}*/}
-        {/*onArrowClick={this.onArrowClick}*/}
-        {/*amount={this.props.fixedAmount(*/}
-        {/*currentPrice,*/}
-        {/*this.state.quantityValue,*/}
-        {/*this.props.accuracy.priceValue*/}
-        {/*)}*/}
-        {/*quantity={this.state.quantityValue}*/}
-        {/*price={this.state.priceValue}*/}
-        {/*buy={this.state.buyValue}*/}
-        {/*sell={this.state.sellValue}*/}
-        {/*quantityAccuracy={this.props.accuracy.quantityValue}*/}
-        {/*priceAccuracy={this.props.accuracy.priceValue}*/}
-        {/*/>*/}
-        {/*</div>*/}
+        {/*<StyledNote>*/}
+        {/*Your order may execute as a maker order or taker order.*/}
+        {/*</StyledNote>*/}
       </div>
     );
   }
