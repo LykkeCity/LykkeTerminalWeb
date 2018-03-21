@@ -1,5 +1,6 @@
 const keys = {
   baseAsset: 'lwt-baseAsset',
+  chartKey: 'lwt-chart-settings',
   confirmReminder: 'lwt-confirmReminder',
   layout: 'lwt-layout',
   notificationId: 'lwt-notificationId',
