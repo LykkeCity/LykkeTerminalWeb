@@ -2,8 +2,8 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
 import {StorageUtils} from '../../utils/index';
+import Account from '../Account';
 import Backdrop from '../Backdrop/Backdrop';
-import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
@@ -14,7 +14,6 @@ import {OrderList} from '../OrderList';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
 import {PublicTradeList, Trades} from '../TradeList';
-import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
 
 const Shell = styled.div`
@@ -29,8 +28,7 @@ const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
     <Tile title="Account">
-      <WalletBalanceList />
-      <BalanceList />
+      <Account />
     </Tile>
   ),
   c: (
