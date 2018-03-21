@@ -1,5 +1,5 @@
-import {rem} from 'polished';
-import styled, {colors, dims, fonts, padding} from '../styled';
+import {margin, rem} from 'polished';
+import styled, {colors, css, dims, fonts, padding} from '../styled';
 
 const lightGraphite = (p: any) =>
   p.selected ? colors.lightGraphite : 'transparent';
@@ -73,29 +73,20 @@ export const TileToolbar = styled.div`
 export const Pills = styled.div`
   display: flex;
   align-items: center;
-  width: 50%;
-
-  &:first-child {
-    padding-right: 4px;
-  }
-
-  &:not(:first-child):last-child {
-    padding-left: 4px;
-  }
+  ${margin(rem(8), 0) as any};
 `;
 
 export const Pill = styled.span`
-  &.clickable {
-    width: 100%;
-    cursor: pointer;
-    text-align: center;
-    border-radius: ${rem(4)};
-    padding: ${rem(7)} ${rem(10)};
-    border: solid 1px rgba(140, 148, 160, 0.4);
-  }
-
-  &.active {
-    border-color: #0388ef;
-    box-shadow: inset 0 0 0 1px #0388ef;
-  }
-`;
+  cursor: pointer;
+  text-align: center;
+  border-radius: ${rem(4)};
+  padding: ${padding(...dims.padding)};
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  margin-right: ${rem(8)};
+  ${(p: any) =>
+    p.active &&
+    css`
+      border-color: #0388ef;
+      box-shadow: inset 0 0 0 1px #0388ef;
+    `};
+` as any;
