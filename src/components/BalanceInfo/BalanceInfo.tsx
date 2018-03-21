@@ -3,7 +3,7 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
 import {ReferenceStore, UiStore} from '../../stores';
-import {formattedNumber} from '../../utils/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
 import {BalanceInfoProps} from './index';

@@ -1,6 +1,9 @@
 import * as React from 'react';
 import {OrderModel, Side} from '../../models';
-import {formattedDateTime, formattedNumber} from '../../utils/localFormatted';
+import {
+  formattedDateTime,
+  formattedNumber
+} from '../../utils/localFormatted/localFormatted';
 import {Icon} from '../Icon/index';
 import {OrderActions, OrderListProps} from './index';
 

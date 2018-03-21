@@ -1,7 +1,8 @@
-const locale =
+export const locale =
   (navigator.languages && navigator.languages[0]) ||
   navigator.language ||
   'en-US';
+const timezone = 'UTC';
 
 export function formattedNumber(value: any, accuracy?: number): string {
   if (typeof value === 'string') {
@@ -28,7 +29,8 @@ export function formattedTime(date: any): string {
   const options = {
     hour: 'numeric',
     minute: 'numeric',
-    second: 'numeric'
+    second: 'numeric',
+    timeZone: timezone
   };
   return new Intl.DateTimeFormat(locale, options).format(date);
 }
@@ -41,7 +43,8 @@ export function formattedDateTime(date: any): string {
     hour: 'numeric',
     minute: 'numeric',
     second: 'numeric',
-    hour12: true
+    hour12: true,
+    timeZone: timezone
   };
   return new Intl.DateTimeFormat(locale, options).format(date);
 }

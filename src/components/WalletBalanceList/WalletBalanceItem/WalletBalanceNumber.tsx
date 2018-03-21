@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {formattedNumber} from '../../../utils/localFormatted';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import styled from '../../styled';
 
 const StyledNumber = styled.div.attrs({})`

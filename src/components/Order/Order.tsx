@@ -8,7 +8,7 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
 import {StorageUtils} from '../../utils/index';
-import {formattedNumber} from '../../utils/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderChoiceButton from './OrderChoiceButton';
