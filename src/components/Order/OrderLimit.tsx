@@ -9,7 +9,6 @@ import {
   StyledActionTitle,
   StyledAvailable,
   StyledInputControl,
-  StyledNote,
   StyledOrderButton,
   StyledReset
 } from './index';
@@ -97,11 +96,11 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         </StyledAvailable>
       </StyledTotal>
 
-      {isEditForm && (
-        <StyledNote>
-          Your order may execute as a maker order or taker order.
-        </StyledNote>
-      )}
+      {/*{isEditForm && (*/}
+      {/*<StyledNote>*/}
+      {/*Your order may execute as a maker order or taker order.*/}
+      {/*</StyledNote>*/}
+      {/*)}*/}
 
       <StyledOrderButton>
         <OrderButton
