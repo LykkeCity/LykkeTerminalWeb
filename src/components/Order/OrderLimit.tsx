@@ -9,7 +9,6 @@ import {
   StyledActionTitle,
   StyledAvailable,
   StyledInputControl,
-  StyledNote,
   StyledOrderButton,
   StyledReset
 } from './index';
