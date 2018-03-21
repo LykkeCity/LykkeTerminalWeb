@@ -1,3 +1,4 @@
+import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import OrderList from './OrderList';
 
@@ -13,13 +14,15 @@ const ConnectedOrderList = connect(
   ({
     orderListStore: {limitOrders: orders},
     orderStore: {cancelOrder},
-    modalStore: {addModal}
+    modalStore: {addModal},
+    authStore: {isAuth}
   }) => ({
     addModal,
     cancelOrder,
-    orders
+    orders,
+    isAuth
   }),
-  OrderList
+  withAuth(OrderList)
 );
 
 export {ConnectedOrderList as OrderList};
