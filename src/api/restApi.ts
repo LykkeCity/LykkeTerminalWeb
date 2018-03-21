@@ -31,12 +31,6 @@ export class RestApi {
       .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
       .json();
 
-  protected getPublic = (url: string) =>
-    this.publicWretcher()
-      .url(url)
-      .get()
-      .json();
-
   protected post = (url: string, body: any) => this._post(url, body).json();
 
   protected fireAndForget = (url: string, body: any, headers: any = {}) =>
