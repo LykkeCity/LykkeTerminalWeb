@@ -27,13 +27,8 @@ class UiStore extends BaseStore {
       instrument => {
         if (instrument) {
           this.rootStore.orderStore.setIsOrderBookClicked(false);
-          const {
-            reset,
-            fetchAll,
-            subscribe,
-            resetSpanMultiplier
-          } = this.rootStore.orderBookStore;
-          fns.seq(reset, fetchAll, resetSpanMultiplier)();
+          const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
+          fns.seq(reset, fetchAll)();
           subscribe(this.getWs());
           this.stateFns.forEach((f: any) => f && f(instrument));
         }
