@@ -91,7 +91,7 @@ describe('orderBook store', () => {
     expect(mid()).toBe((40 + 30) / 2);
   });
 
-  test('best bid should be less that best bid', () => {
+  test('best bid should be less that best ask', () => {
     expect(bestBid()).toBeLessThan(bestAsk());
   });
 
@@ -118,6 +118,15 @@ describe('orderBook store', () => {
 
     it('should return empty array if no data provided', () => {
       expect(groupOrdersByPrice([])).toHaveLength(0);
+    });
+
+    it('should handle single-element arrays', () => {
+      const orders = [{price: 1000, volume: 1, depth: 1}] as Order[];
+
+      const newOrders = groupOrdersByPrice(orders);
+
+      expect(newOrders).toHaveLength(1);
+      expect(newOrders[0]).toEqual(orders[0]);
     });
   });
 
