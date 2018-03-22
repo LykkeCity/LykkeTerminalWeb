@@ -1,12 +1,17 @@
 import {action, computed, observable} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {OrderApi} from '../api/index';
-import {OrderModel} from '../models';
+import {InstrumentModel, OrderModel} from '../models';
 import * as mappers from '../models/mappers';
 import OrdersDefaultSelection from '../models/ordersDefaultSelection';
 import {BaseStore, RootStore} from './index';
 
 class OrderListStore extends BaseStore {
+  @computed
+  get allOrders() {
+    return this.orders;
+  }
+
   @computed
   get limitOrders() {
     const update = compose<
@@ -52,9 +57,9 @@ class OrderListStore extends BaseStore {
     this.orders = orders;
   };
 
-  filterOrders = (orders: OrderModel[]) => {
+  filterOrders = (orders: OrderModel[], instrument?: InstrumentModel) => {
     const {selectedInstrument} = this.rootStore.uiStore;
-    if (selectedInstrument) {
+    if (selectedInstrument || instrument) {
       return this.selectedOrderOptions === OrdersDefaultSelection.CurrentAsset
         ? orders.filter(order => order.symbol === selectedInstrument!.id)
         : orders;
@@ -65,6 +70,11 @@ class OrderListStore extends BaseStore {
   toggleOrders = (option: string) => {
     this.selectedOrder = option;
     this.rootStore.uiStore.toggleOrdersSelect();
+  };
+
+  @action
+  addOrders = (orders: OrderModel[]) => {
+    this.orders.push(...orders);
   };
 
   reset = () => {
