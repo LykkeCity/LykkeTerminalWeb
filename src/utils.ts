@@ -14,3 +14,12 @@ export const capitalize = (str: string | undefined | null) =>
 
 export const delay = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms));
+
+export const nextSkip = (skip: number, take: number, skipWamp: number) => {
+  return skip + take + skipWamp;
+  //   skip =
+  //   (!skip ? skip + take : skip + loading) +
+  //   skipWamp;
+  // skipWamp = 0;
+  // return skip;
+};

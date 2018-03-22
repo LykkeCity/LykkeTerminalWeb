@@ -73,13 +73,7 @@ export const fromWampToTrade = (dto: any[], instruments: InstrumentModel[]) => {
   );
   const baseAssetId = instrument!.baseAsset.id;
   const tradesByBaseAsset = dto.filter(x => x.Asset === baseAssetId);
-  const {
-    TradeId,
-    DateTime,
-    OrderType,
-    FeeSize,
-    Direction
-  } = tradesByBaseAsset[0];
+  const {TradeId, DateTime, OrderType, Direction} = tradesByBaseAsset[0];
   const effectivePrice = mapToEffectivePrice(
     tradesByBaseAsset.map(({Volume, OppositeVolume, Asset, Price}) => ({
       volume: Volume,
@@ -103,7 +97,7 @@ export const fromWampToTrade = (dto: any[], instruments: InstrumentModel[]) => {
       tradesByBaseAsset.map(t => t.OppositeVolume).reduce(add)
     ),
     orderType: mapHistoryTypeToOrderType(OrderType),
-    fee: FeeSize
+    fee: tradesByBaseAsset.map(t => t.Fee && t.Fee.Volume).reduce(add, 0)
   });
 };
 
