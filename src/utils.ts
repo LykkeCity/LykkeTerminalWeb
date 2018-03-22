@@ -44,9 +44,4 @@ export const normalizeVolume = (
 
 export const nextSkip = (skip: number, take: number, skipWamp: number) => {
   return skip + take + skipWamp;
-  //   skip =
-  //   (!skip ? skip + take : skip + loading) +
-  //   skipWamp;
-  // skipWamp = 0;
-  // return skip;
 };
