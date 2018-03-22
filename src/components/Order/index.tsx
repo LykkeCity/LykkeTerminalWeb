@@ -81,6 +81,10 @@ export interface OrderFormProps {
   quantity: string;
   price: string;
   amount: string;
+  buy?: string;
+  sell?: string;
+  quantityAccuracy?: number;
+  priceAccuracy?: number;
 }
 
 export interface OrderBasicFormProps {
@@ -119,6 +123,7 @@ export interface OrderLimitProps extends OrderBasicFormProps {
 
 const StyledOrderButton = styled.div`
   margin-top: ${rem(24)};
+  margin-bottom: ${rem(10)};
 `;
 
 const StyledInputControl = styled.div`
@@ -126,8 +131,11 @@ const StyledInputControl = styled.div`
 `;
 
 const StyledReset = Flex.extend`
-  padding: ${rem(17)} 0;
-  color: #0388ef;
+  color: rgb(3, 136, 239);
+  font-size: ${rem(16)};
+  font-weight: bold;
+  line-height: 1;
+  padding: ${rem(16)} 0;
 
   span:hover {
     cursor: pointer;
