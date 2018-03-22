@@ -2,6 +2,7 @@ import {
   AssetApi,
   AuthApi,
   BalanceListApi,
+  ChartApi,
   OrderApi,
   OrderBookApi,
   TradeApi,
@@ -69,7 +70,7 @@ class RootStore {
       this.uiStore = new UiStore(this);
       this.referenceStore = new ReferenceStore(this, new AssetApi(this));
       this.authStore = new AuthStore(this, new AuthApi(this));
-      this.chartStore = new ChartStore(this);
+      this.chartStore = new ChartStore(this, new ChartApi(this));
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
@@ -82,6 +83,7 @@ class RootStore {
       this.uiStore.setWs(ws);
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
+      this.tradeStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
         .forEach((x: any) =>
@@ -90,8 +92,6 @@ class RootStore {
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
-      // this.tradeStore.fetchPublicTrades();
-      // this.tradeStore.subscribeToPublicTrades(ws);
     });
   };
 
@@ -129,6 +129,7 @@ class RootStore {
         this.uiStore.setWs(ws);
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
+        this.tradeStore.setWs(ws);
         instruments.forEach(x =>
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
         );
@@ -137,9 +138,8 @@ class RootStore {
         );
         this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
-        // this.tradeStore.subscribeToPublicTrades(ws);
         this.balanceListStore.subscribe(ws);
-        // this.tradeStore.fetchPublicTrades();
+      
         return Promise.resolve();
       })
       .catch(() => {

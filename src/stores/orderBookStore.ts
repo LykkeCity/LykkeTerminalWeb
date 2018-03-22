@@ -1,5 +1,5 @@
 import {ISubscription} from 'autobahn';
-import {observable, runInAction} from 'mobx';
+import {action, computed, observable, runInAction} from 'mobx';
 import {
   compose,
   curry,
@@ -8,120 +8,116 @@ import {
   map,
   reverse,
   sortBy,
-  take,
-  takeLast,
   toLower
 } from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
-import OrderModel from '../models/orderModel';
 import {BaseStore, RootStore} from './index';
+import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
-const byPrice = (o: Order) => o.price;
+// help tsc to infer correct type
+const headArr: <T = Order>(l: T[]) => T = head;
+const sortByPrice = sortBy(x => x.price);
 
 class OrderBookStore extends BaseStore {
-  @observable bids: Order[] = [];
-  @observable asks: Order[] = [];
+  @observable rawBids: Order[] = [];
+  @observable rawAsks: Order[] = [];
+
+  spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
+  @observable spanMultiplierIdx = 0;
+
+  @computed
+  get seedSpan() {
+    if (this.rootStore.uiStore.selectedInstrument) {
+      return Math.pow(10, -this.rootStore.uiStore.selectedInstrument.accuracy);
+    }
+    return 0;
+  }
+
+  @computed
+  get spanMultiplier() {
+    return Math.pow(10, this.spanMultiplierIdx);
+  }
+
+  @computed
+  get maxMultiplierIdx() {
+    if (this.rawAsks.length > 0) {
+      const sortByPriceDesc = compose(headArr, reverse, sortByPrice);
+      const bestAsk = sortByPriceDesc(this.rawAsks).price;
+      return Math.floor(Math.log10(bestAsk / this.seedSpan));
+    }
+    return 0;
+  }
+
+  @computed
+  get span() {
+    return this.seedSpan * this.spanMultiplier;
+  }
+
   private subscriptions: Set<ISubscription> = new Set();
+
   private isInitFetch: boolean = true;
 
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
   }
 
-  bestBid = () => head(this.bids.map(x => x.price));
+  @computed
+  get bids() {
+    const {
+      orderListStore: {limitOrdersForThePair: limitOrders}
+    } = this.rootStore;
+    const aggregatedOrders = aggregateOrders(this.rawBids, this.span, false);
+    return connectLimitOrders(aggregatedOrders, limitOrders, this.span, false);
+  }
 
-  bestAsk = () => last(this.asks.map(a => a.price));
+  @computed
+  get asks() {
+    const {
+      orderListStore: {limitOrdersForThePair: limitOrders}
+    } = this.rootStore;
+    const aggregatedOrders = aggregateOrders(this.rawAsks, this.span, true);
+    return reverse(
+      connectLimitOrders(aggregatedOrders, limitOrders, this.span, true)
+    );
+  }
+
+  bestBid = () =>
+    this.bids.length && last(sortBy(x => x.price, this.rawBids)).price;
+
+  bestAsk = () =>
+    this.asks.length && head(sortBy(x => x.price, this.rawAsks)).price;
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
-  bestBids = (num: number = 10) => take(num, this.bids);
-
-  bestAsks = (num: number = 10) => takeLast(num, this.asks);
-
-  withDepth = (orders: Order[]) => {
-    const newOrders = [...orders];
-    newOrders.forEach((order, idx) => {
-      order.depth =
-        idx === 0 ? order.volume : newOrders[idx - 1].depth + order.volume;
-    });
-    return newOrders;
-  };
-
-  groupByPrice = (orders: Order[]) =>
-    orders.reduce((acc: Order[], curr: Order) => {
-      const withSamePrice = (p: number) => p === curr.price;
-      const samePriceInBook = acc.map(o => o.price).some(withSamePrice);
-      if (samePriceInBook) {
-        const idx = acc.map(o => o.price).findIndex(withSamePrice);
-        acc[idx].volume += curr.volume;
-      } else {
-        acc.push(curr);
-      }
-      return acc;
-    }, []);
-
-  onUpdate = (args: any) => {
-    const {IsBuy, Levels} = args[0];
-    const mapToOrders = compose<
-      any[],
-      Order[],
-      Order[],
-      Order[],
-      Order[],
-      Order[],
-      Order[]
-    >(
-      reverse,
-      sortBy(byPrice),
-      this.withDepth,
-      this.groupByPrice,
-      this.updateWithLimitOrders(IsBuy),
-      map(x => mappers.mapToOrder({...x, IsBuy}))
-    );
-
-    if (IsBuy) {
-      this.bids = mapToOrders(Levels);
-    } else {
-      this.asks = mapToOrders(Levels);
+  @action
+  nextSpan = () => {
+    if (this.spanMultiplierIdx < this.maxMultiplierIdx) {
+      this.spanMultiplierIdx++;
     }
   };
 
-  updateWithLimitOrders = (isBuy: boolean) => (orders: Order[]) => {
-    const {selectedInstrument} = this.rootStore.uiStore;
-    const limitOrders = this.rootStore.orderListStore.limitOrders.filter(
-      (order: OrderModel) =>
-        isBuy ? order.side === Side.Buy : order.side === Side.Sell
-    );
-    limitOrders.forEach((lo: OrderModel) => {
-      orders.forEach((o: Order) => {
-        if (lo.price === o.price && lo.symbol === selectedInstrument!.id) {
-          o.orderVolume += lo.volume;
-          o.connectedLimitOrders.push(lo.id);
-        }
-      });
-    });
-    return orders;
+  @action
+  prevSpan = () => {
+    if (this.spanMultiplierIdx > 0) {
+      this.spanMultiplierIdx--;
+    }
   };
 
   fetchAll = async () => {
-    const {selectedInstrument} = this.rootStore.uiStore;
-    if (!selectedInstrument) {
-      return;
+    const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
+    if (selectedInstrument) {
+      const orders = await this.api.fetchAll(toLower(selectedInstrument.id));
+      runInAction(() => {
+        orders.forEach((levels: any) => this.onUpdate([levels]));
+        if (this.isInitFetch && initPriceUpdate) {
+          initPriceUpdate(this.mid(), selectedInstrument);
+          this.isInitFetch = false;
+        }
+      });
     }
-    const orders = await this.api.fetchAll(toLower(selectedInstrument!.id));
-    runInAction(() => {
-      orders.forEach((levels: any) => this.onUpdate([levels]));
-      if (this.isInitFetch && this.rootStore.uiStore.initPriceUpdate) {
-        this.rootStore.uiStore.initPriceUpdate(
-          this.bestBid(),
-          selectedInstrument
-        );
-        this.isInitFetch = false;
-      }
-    });
   };
 
   subscribe = async (ws: any) => {
@@ -132,13 +128,25 @@ class OrderBookStore extends BaseStore {
     this.subscriptions.add(await ws.subscribe(topic(Side.Sell), this.onUpdate));
   };
 
+  onUpdate = (args: any) => {
+    const {IsBuy, Levels} = args[0];
+    const mapToOrders = map(x => mappers.mapToOrder({...x, IsBuy}));
+
+    if (IsBuy) {
+      this.rawBids = mapToOrders(Levels);
+    } else {
+      this.rawAsks = mapToOrders(Levels);
+    }
+  };
+
   unsubscribe = () => {
     this.subscriptions.forEach(s => this.getWs().unsubscribe(s));
     this.subscriptions.clear();
   };
 
   reset = () => {
-    this.bids = this.asks = [];
+    this.rawBids = this.rawAsks = [];
+    this.spanMultiplierIdx = 0;
     this.unsubscribe();
   };
 }
