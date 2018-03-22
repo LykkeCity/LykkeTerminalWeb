@@ -8,13 +8,13 @@ describe('settings store', () => {
   });
 
   it('settings should be hidden by default', () => {
-    expect(settingsStoreStore.settings).toBeDefined();
-    expect(settingsStoreStore.settings).toBe(false);
+    expect(settingsStoreStore.showSettings).toBeDefined();
+    expect(settingsStoreStore.showSettings).toBe(false);
   });
 
   it('should show settings modal', () => {
     settingsStoreStore.toggleSettings();
 
-    expect(settingsStoreStore.settings).toBe(true);
+    expect(settingsStoreStore.showSettings).toBe(true);
   });
 });
