@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Order, Side} from '../../../models/index';
-import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
+import FormattedNumber from '../../FormattedNumber/FormattedNumber';
 import styled from '../../styled';
 
 const colorBySide = (side: Side) =>
@@ -175,7 +175,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
             />
-            {formattedNumber(valueToShow, volumeAccuracy)}
+            <FormattedNumber value={valueToShow} accuracy={volumeAccuracy} />
           </div>
         ) : (
           !!orderVolume &&
@@ -187,13 +187,15 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               >
                 &times;
               </CloseOrders>
-              <div>{formattedNumber(orderVolume)}</div>
+              <div>
+                <FormattedNumber value={orderVolume} />
+              </div>
             </AskVolume>
           )
         )}
       </VolumeCell>
       <MidCell onClick={onPriceClick(+currentPrice)}>
-        {formattedNumber(currentPrice)}
+        <FormattedNumber value={currentPrice} />
       </MidCell>
       <VolumeCell side={side}>
         {side === Side.Buy ? (
@@ -202,13 +204,15 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
               side={side}
               volume={normalizeVolume(valueToShow, minValue, maxValue)}
             />
-            {formattedNumber(valueToShow, volumeAccuracy)}
+            <FormattedNumber value={valueToShow} accuracy={volumeAccuracy} />
           </div>
         ) : (
           !!orderVolume &&
           side === Side.Sell && (
             <BidVolume side={side}>
-              <div>{formattedNumber(orderVolume)}</div>
+              <div>
+                <FormattedNumber value={orderVolume} />
+              </div>
               <CloseOrders
                 side={side}
                 onClick={onOrderClick(connectedLimitOrders)}
