@@ -6,6 +6,8 @@ import OrderBookChart from './OrderBookChart';
 const ConnectedOrderBookChart = connect(
   ({
     orderBookChartStore: {
+      asks,
+      bids,
       mid,
       spread,
       lastTradePrice,
@@ -22,6 +24,8 @@ const ConnectedOrderBookChart = connect(
     const priceSpread = spread().toFixed(accuracy);
     const lastPrice = lastTradePrice().toFixed(accuracy);
     return {
+      asks,
+      bids,
       mid: midPrice,
       spread: priceSpread,
       lastTradePrice: lastPrice,

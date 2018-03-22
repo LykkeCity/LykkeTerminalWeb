@@ -1,11 +1,13 @@
 import {observable} from 'mobx';
 import * as React from 'react';
-import {OrderBookDisplayType} from '../../models';
+import {Order, OrderBookDisplayType} from '../../models';
 import {VBar} from '../Bar/Bar';
 import {StyledBar, StyledGrouping, StyledWrapper} from '../OrderBook/styles';
 import Chart from './Chart';
 
 interface OrderBookChartProps {
+  asks: Order[];
+  bids: Order[];
   mid: string;
   spread: string;
   lastTradePrice: string;
@@ -23,6 +25,8 @@ class OrderBookChart extends React.Component<OrderBookChartProps> {
 
   render() {
     const {
+      asks,
+      bids,
       mid,
       spread,
       lastTradePrice,
@@ -49,7 +53,7 @@ class OrderBookChart extends React.Component<OrderBookChartProps> {
           </StyledGrouping>
         </StyledBar>
         <StyledWrapper>
-          <Chart />
+          <Chart asks={asks} bids={bids} mid={mid} />
         </StyledWrapper>
       </StyledWrapper>
     );
