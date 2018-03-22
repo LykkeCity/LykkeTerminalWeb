@@ -1,5 +1,6 @@
 import {rem} from 'polished';
 import * as React from 'react';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import styled from '../styled';
 import {Table} from '../Table/index';
 import {BalanceListItem} from './';
@@ -51,7 +52,7 @@ const BalanceList: React.SFC<BalanceListProps> = ({
         <Total>
           <td>Total</td>
           <td>
-            {total.toFixed(accuracy)}&nbsp;{baseAssetName}
+            {formattedNumber(+total, accuracy)}&nbsp;{baseAssetName}
           </td>
         </Total>
         {balances.map((balanceList: any) => (

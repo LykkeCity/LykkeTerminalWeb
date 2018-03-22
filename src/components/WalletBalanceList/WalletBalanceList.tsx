@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import styled from '../styled';
 import {Table} from '../Table/index';
 import {TradingWalletItem} from './';
@@ -40,7 +41,7 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
         <td>Total</td>
         <td>&nbsp;</td>
         <td>
-          {total.toFixed(accuracy)} {name}
+          {formattedNumber(total, accuracy)} {name}
         </td>
       </Total>
       {assets.map(assetBalance => (
