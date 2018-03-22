@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react';
 import * as React from 'react';
 import styled from '../styled';
 
@@ -37,25 +38,20 @@ interface InstrumentListNumberProps {
   preSign?: string;
 }
 
-const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = ({
-  num,
-  accuracy,
-  color = '#ffffff',
-  children,
-  dynamics,
-  preSign
-}) => {
-  if (num === undefined || num === null) {
-    return null;
+const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
+  ({num, accuracy, color = '#ffffff', children, dynamics, preSign}) => {
+    if (num === undefined || num === null) {
+      return null;
+    }
+    return (
+      <StyledNumber color={color} className={dynamics}>
+        {preSign}
+        {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
+        {children}
+        {dynamics ? <div className={'arrow ' + dynamics} /> : ''}
+      </StyledNumber>
+    );
   }
-  return (
-    <StyledNumber color={color} className={dynamics}>
-      {preSign}
-      {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
-      {children}
-      {dynamics ? <div className={'arrow ' + dynamics} /> : ''}
-    </StyledNumber>
-  );
-};
+);
 
 export default InstrumentListNumber;

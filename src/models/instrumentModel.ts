@@ -11,10 +11,9 @@ class InstrumentModel {
   invertedAccuracy: number;
 
   @observable price: number;
-  @observable priceInBase: number;
-  @observable change: number;
-  @observable change24h: number;
-  @observable volume: number;
+  @observable priceInBase: number = 0;
+  @observable change24h: number = 0;
+  @observable volume: number = 0;
 
   @computed
   get displayName() {
@@ -31,7 +30,6 @@ class InstrumentModel {
   @action
   updatePrice = (nextPrice: number) => {
     if (this.price !== nextPrice) {
-      this.change = (nextPrice - this.price) / this.price * 100;
       this.price = nextPrice;
     }
   };
@@ -44,10 +42,6 @@ class InstrumentModel {
   ) => {
     this.change24h = (closePrice - openPrice) / openPrice * 100;
     this.volume = volume;
-
-    // if (this.name === 'BTC/CHF') {
-    //   console.log(this.name, this.volume, this.change24h);
-    // }
   };
 }
 

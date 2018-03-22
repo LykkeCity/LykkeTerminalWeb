@@ -1,9 +1,6 @@
-import {observer} from 'mobx-react';
 import {pathOr} from 'rambda';
 import {AssetModel, InstrumentModel} from '../../models/index';
 import {connect} from '../connect';
-import InstrumentList from './InstrumentList';
-import InstrumentListNumber from './InstrumentListNumber';
 import InstrumentPicker from './InstrumentPicker';
 
 export interface InstrumentPickerActions {
@@ -86,15 +83,15 @@ const connectedInstrumentPicker = connect(
   InstrumentPicker
 );
 
-const ObservedInstrumentList = observer(InstrumentList);
-const ObservedInstrumentListNumber = observer(InstrumentListNumber);
-
 export {connectedInstrumentPicker as InstrumentPicker};
+export {default as InstrumentField} from './InstrumentField';
+export {default as InstrumentListHeader} from './InstrumentListHeader';
+export {default as InstrumentListItem} from './InstrumentListItem';
 export {default as InstrumentSelect} from './InstrumentSelect';
 export {default as InstrumentPopover} from './InstrumentPopover';
 export {default as InstrumentSearch} from './InstrumentSearch';
 export {
   default as InstrumentShortcutSelection
 } from './InstrumentShortcutSelection';
-export {ObservedInstrumentList as InstrumentList};
-export {ObservedInstrumentListNumber as InstrumentListNumber};
+export {default as InstrumentList} from './InstrumentList';
+export {default as InstrumentListNumber} from './InstrumentListNumber';

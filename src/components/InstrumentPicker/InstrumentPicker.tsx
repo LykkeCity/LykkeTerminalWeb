@@ -42,7 +42,7 @@ class InstrumentPicker extends React.Component<
     }
   };
 
-  changeValue = (value: string = '', closeSelection: boolean) => {
+  changeValue = (value: string = '') => {
     this.setState({
       activeShortcut: 0,
       searchValue: value,

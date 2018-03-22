@@ -24,7 +24,7 @@ const StyledOther = styled.div`
   }
 `;
 
-const StyledShortcut = styled.div`
+const StyledShortcut = styled(StyledOther)`
   display: flex;
   align-items: center;
   width: 70px;
@@ -39,10 +39,6 @@ const StyledShortcut = styled.div`
   &.active {
     color: #0388ef;
     box-shadow: inset 0 -3px 0 0 #0388ef;
-  }
-
-  &:hover {
-    cursor: pointer;
   }
 `;
 
@@ -79,7 +75,6 @@ class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
   };
 
   render() {
-    this.props.shortcuts.push('BTC', 'ETH');
     this.sortShorcuts();
 
     return (

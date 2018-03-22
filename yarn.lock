@@ -24,7 +24,7 @@
   version "8.5.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.8.tgz#92509422653f10e9c0ac18d87e0610b39f9821c7"
 
-"@types/prop-types@^15.5.2":
+"@types/prop-types@*", "@types/prop-types@^15.5.2":
   version "15.5.2"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.5.2.tgz#3c6b8dceb2906cc87fe4358e809f9d20c8d59be1"
 
@@ -72,6 +72,13 @@
   version "6.7.3"
   resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-6.7.3.tgz#c594eefb0a749f0a0304894139bf712faa0fea1b"
   dependencies:
+    "@types/react" "*"
+
+"@types/react-virtualized@^9.7.13":
+  version "9.7.13"
+  resolved "https://registry.yarnpkg.com/@types/react-virtualized/-/react-virtualized-9.7.13.tgz#4502eb1959c0d79383100095d7d4a74bf6ce5ec0"
+  dependencies:
+    "@types/prop-types" "*"
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^16.0.34":

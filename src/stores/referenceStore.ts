@@ -1,6 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {AssetApi, PriceApi} from '../api/index';
-import dates from '../constants/dateKeys';
+import {AssetApi} from '../api/index';
 import keys from '../constants/storageKeys';
 import {
   AssetCategoryModel,
@@ -51,11 +50,7 @@ class ReferenceStore extends BaseStore {
     return this.getAssetById(this.baseAssetId);
   }
 
-  constructor(
-    readonly store: RootStore,
-    private api: AssetApi,
-    private priceApi: PriceApi
-  ) {
+  constructor(readonly store: RootStore, private api: AssetApi) {
     super(store);
   }
 
@@ -245,7 +240,6 @@ class ReferenceStore extends BaseStore {
     if (instrument && instrument.id) {
       instrument.updatePrice(price);
     }
-    this.instruments = [...this.instruments];
   };
 
   onCandle = async (args: any) => {
@@ -278,26 +272,6 @@ class ReferenceStore extends BaseStore {
     });
 
     instruments.forEach(async (instrument, index) => {
-      await this.priceApi
-        .fetchCandles(
-          instrument.id,
-          new Date(new Date().getTime() - dates.day),
-          new Date(),
-          'day'
-        )
-        .then(res => {
-          if (res.History && res.History.length) {
-            const candle = res.History[0];
-            instrument.volume = candle.Volume;
-            instrument.change24h =
-              (candle.Close - candle.Open) / candle.Open * 100;
-          }
-        })
-        .catch(() => {
-          instrument.change24h = 0;
-          instrument.volume = 0;
-        });
-
       if (instrument.quoteAsset.id === baseAssetId) {
         instrument.priceInBase = instrument.price;
       } else {
