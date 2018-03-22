@@ -2,7 +2,7 @@ import {action, observable, reaction} from 'mobx';
 import keys from '../constants/storageKeys';
 import {InstrumentModel} from '../models/index';
 import Watchlists from '../models/watchlists';
-import {StorageUtils} from '../utils/index';
+import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
