@@ -8,7 +8,7 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import OrderType from '../../models/orderType';
 import {StorageUtils} from '../../utils/index';
-import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import FormattedNumber from '../FormattedNumber/FormattedNumber';
 import {OrderProps, OrderState} from './index';
 import OrderAction from './OrderAction';
 import OrderChoiceButton from './OrderChoiceButton';
@@ -218,22 +218,26 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {bid, ask} = this.props;
     const spread = ask - bid;
     const spreadDiff = (ask - bid) / ask * 100;
-    const priceWithLocale = formattedNumber(
-      spread,
-      this.props.accuracy.priceValue
-    );
-    const pricePercentWithLocale = formattedNumber(
-      spreadDiff,
-      this.props.accuracy.priceValue
-    );
 
     return (
       <div>
         <StyledActionBlock>
           <StyledSplitBlock>
-            {Number.isNaN(spread) || <div>{priceWithLocale}</div>}
+            {Number.isNaN(spread) || (
+              <div>
+                <FormattedNumber
+                  value={spread}
+                  accuracy={this.props.accuracy.priceValue}
+                />
+              </div>
+            )}
             {Number.isNaN(spreadDiff) || (
-              <small>{pricePercentWithLocale}%</small>
+              <small>
+                <FormattedNumber
+                  value={spreadDiff}
+                  accuracy={this.props.accuracy.priceValue}
+                />%
+              </small>
             )}
           </StyledSplitBlock>
           <OrderAction

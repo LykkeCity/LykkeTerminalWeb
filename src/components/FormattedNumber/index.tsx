@@ -3,4 +3,4 @@ export interface FormattedNumberProps {
   accuracy?: number;
 }
 
-export {default as FormattedNumber} from './Number';
+export {default as FormattedNumber} from './FormattedNumber';

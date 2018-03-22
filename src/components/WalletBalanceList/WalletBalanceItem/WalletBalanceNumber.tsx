@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
+import FormattedNumber from '../../FormattedNumber/FormattedNumber';
 import styled from '../../styled';
 
 const StyledNumber = styled.div.attrs({})`
@@ -27,7 +27,7 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   const price = +num.toFixed(accuracy).replace(/[.,]?0+$/, '');
   return (
     <StyledNumber color={color}>
-      {formattedNumber(price)}
+      <FormattedNumber value={price} />
       {children}
     </StyledNumber>
   );
