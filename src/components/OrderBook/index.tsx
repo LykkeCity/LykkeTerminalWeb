@@ -9,7 +9,7 @@ const ConnectedOrderBook = connect(
     modalStore: {addModal},
     orderBookStore: {asks, bids, mid},
     uiStore: {selectedInstrument, stateFns},
-    orderStore: {cancelOrder, updatePrice, updatePriceAndDepth, setIsOrderBookClicked}
+    orderStore: {cancelOrder, updatePrice, updatePriceAndDepth}
   }) => {
     const volumeAccuracy = pathOr(0, ['baseAsset', 'accuracy'], selectedInstrument);
     const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
@@ -24,8 +24,7 @@ const ConnectedOrderBook = connect(
       priceAccuracy,
       updatePrice,
       updatePriceAndDepth,
-      stateFns,
-      setIsOrderBookClicked
+      stateFns
     };
   },
   OrderBook

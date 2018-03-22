@@ -24,6 +24,11 @@ class BalanceListStore extends BaseStore {
   }
 
   @computed
+  get availableBalance() {
+    return this.tradingAssets.filter((a: AssetBalanceModel) => a.name);
+  }
+
+  @computed
   get tradingWalletAssets() {
     return this.tradingAssets.filter((a: AssetBalanceModel) => !!a.balance);
   }

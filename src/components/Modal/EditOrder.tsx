@@ -31,7 +31,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.currency = currentInstrument.id;
   }
 
-  onChange = (field: string) => (e: any) => {
+  onChange = () => (field: string) => (e: any) => {
     this.setState(
       this.props.onValueChange({
         accuracy: this.accuracy[field],
@@ -41,7 +41,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     );
   };
 
-  onArrowClick = (operation: string, field: string) => (e: any) => {
+  onArrowClick = () => (operation: string, field: string) => (e: any) => {
     this.setState(
       this.props.onArrowClick({
         accuracy: this.accuracy[field],
