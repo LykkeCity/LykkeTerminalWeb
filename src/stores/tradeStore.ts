@@ -6,6 +6,7 @@ import * as topics from '../api/topics';
 import {TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
+import {nextSkip} from '../utils';
 import {BaseStore, RootStore} from './index';
 
 const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
@@ -50,8 +51,7 @@ class TradeStore extends BaseStore {
 
   private skip: number = TradeQuantity.Skip;
   private take: number = TradeQuantity.Take;
-  private loading: number = TradeQuantity.Loading;
-  private wampTrades: number = 0;
+  private skipWamp: number = 0;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
@@ -127,8 +127,19 @@ class TradeStore extends BaseStore {
   };
 
   fetchPartTrade = async () => {
-    this.skip = this.getSkipValue('skip', 'take', 'wampTrades');
-    this.fetchTrades();
+    if (this.selectedInstrument) {
+      const {accuracy} = this.selectedInstrument.quoteAsset;
+      this.skip = nextSkip(this.skip, this.take, this.skipWamp);
+      const resp = await this.api.fetchTrades(
+        this.selectedInstrument,
+        this.skip,
+        this.take
+      );
+      const trades = map.fromRestToTradeList(resp, accuracy);
+      runInAction(() => {
+        this.addTrades(trades);
+      });
+    }
   };
 
   onTrades = async (args: any[]) => {
@@ -151,7 +162,7 @@ class TradeStore extends BaseStore {
       }))
     );
 
-    this.wampTrades += args[0].length;
+    this.skipWamp += args[0].length;
     this.rootStore.orderStore.executeOrder(executedOrderIds);
   };
 
@@ -164,14 +175,6 @@ class TradeStore extends BaseStore {
     this.trades = [];
     this.publicTrades = [];
   };
-
-  private getSkipValue(skip: string, take: string, wamp: string) {
-    this[skip] =
-      (!this[skip] ? this[skip] + this[take] : this[skip] + this.loading) +
-      this[wamp];
-    this[wamp] = 0;
-    return this[skip];
-  }
 }
 
 export default TradeStore;
