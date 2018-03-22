@@ -139,6 +139,7 @@ class RootStore {
         this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
+      
         return Promise.resolve();
       })
       .catch(() => {

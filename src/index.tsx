@@ -15,5 +15,4 @@ const render = (AppComponent: any) => {
     document.getElementById('root') as HTMLElement
   );
 };
-
 render(App);

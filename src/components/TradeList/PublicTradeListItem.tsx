@@ -1,6 +1,9 @@
-import {format} from 'date-fns';
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
+import {
+  formattedNumber,
+  formattedTime
+} from '../../utils/localFormatted/localFormatted';
 import styled, {colorFromSide} from '../styled';
 
 // tslint:disable-next-line:no-empty-interface
@@ -16,10 +19,12 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   className
 }) => (
   <tr className={className}>
-    <td>{quantity}</td>
-    <td>{price}</td>
+    <td>{formattedNumber(quantity)}</td>
+    <td>{formattedNumber(price)}</td>
     <td>{side}</td>
-    <td>{format(timestamp, 'HH:mm:ss')}</td>
+    <td>
+      <td>{formattedTime(timestamp)}</td>
+    </td>
   </tr>
 );
 

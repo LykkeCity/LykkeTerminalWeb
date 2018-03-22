@@ -71,6 +71,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       pathOr('', ['name'], instrument).split('/')[0]
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
+
     this.setState({
       priceValue: this.props.mid.toFixed(priceAccuracy),
       quantityValue: parseFloat('0').toFixed(quantityAccuracy)
