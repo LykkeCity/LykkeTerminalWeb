@@ -1,43 +1,55 @@
-import {rem} from 'polished';
+import {rem, rgba} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import Side from '../../models/side';
+import {css} from '../styled';
 import {OrderChoiceButtonProps} from './index';
-
-const StyledColumn = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 50%;
-  &:first-child {
-    padding-right: 4px;
-  }
-  &:not(:first-child):last-child {
-    padding-left: 4px;
-  }
-`;
 
 const buttonColorBySide = (side: string, isActive: boolean) => {
   return isActive
     ? side === Side.Sell.toLowerCase() ? '#ab00ff' : '#fb8f01'
-    : '#2d2d2d';
+    : 'transparent';
 };
+
+const buttonBorderColorBySide = (isActive: boolean) => {
+  return isActive ? rgba(0, 0, 0, 0.2) : rgba(140, 148, 160, 0.4);
+};
+
+const StyledColumn = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+`;
 
 const StyledActionChoice = styled.div.attrs({
   style: (props: any) => ({
-    backgroundColor: buttonColorBySide(props.side, props.isActive),
-    opacity: props.isActive ? '1' : '0.4'
+    backgroundColor: buttonColorBySide(props.side, props.isActive)
   })
 })`
-  width: 100%;
+  background: transparent;
+  border: solid 1px ${(p: any) => buttonBorderColorBySide(p.isActive)};
+  color: rgb(245, 246, 247);
   cursor: pointer;
+  font-size: ${rem(14)};
+  line-height: 1.14;
   text-align: center;
-  border-radius: ${rem(4)};
-  padding: ${rem(7)} ${rem(12)};
-  border: solid 1px rgba(140, 148, 160, 0.4);
   text-transform: capitalize;
-  color: #f5f6f7;
+  padding: ${rem(8)} ${rem(58)};
+  width: 100%;
+  border-radius: 4px;
+
+  ${(p: any) =>
+    p.side === Side.Sell.toLowerCase()
+      ? css`
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        `
+      : css`
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          border-left: none;
+        `};
 ` as any;
 
 const OrderActionButton: React.SFC<OrderChoiceButtonProps> = ({

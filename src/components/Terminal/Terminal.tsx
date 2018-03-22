@@ -4,6 +4,7 @@ import additionalActions from '../../constants/additionalActions';
 import paths from '../../constants/paths';
 import keys from '../../constants/storageKeys';
 import tabs from '../../constants/tabs';
+import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {BalanceList} from '../BalanceList';
@@ -20,6 +21,9 @@ import {PublicTradeList, TradeList} from '../TradeList';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
 
+const MAX_LEFT_PADDING = 20;
+const MAX_RIGHT_PADDING = 75;
+
 const Shell = styled.div`
   background: rgba(0, 0, 0, 0.2);
   height: 100vh;
@@ -28,30 +32,39 @@ const Shell = styled.div`
   margin: 0;
 `;
 
+const {
+  AccountWidget,
+  ChartWidget,
+  OrderWidget,
+  OrderBookWidget,
+  OrderListWidget,
+  TradeListWidget
+} = Widgets;
+
 const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
-  acc: (
+  [AccountWidget]: (
     <Tile title="Account" tabs={tabs.walletBalance} authorize={true}>
       <WalletBalanceList />
       <BalanceList />
     </Tile>
   ),
-  c: (
+  [ChartWidget]: (
     <Tile title="Chart">
       <Chart />
     </Tile>
   ),
-  e: (
+  [TradeListWidget]: (
     <Tile title="Trade log">
       <PublicTradeList />
     </Tile>
   ),
-  ob: (
+  [OrderBookWidget]: (
     <Tile title="Order book">
       <OrderBook />
     </Tile>
   ),
-  ord: (
+  [OrderListWidget]: (
     <TabbedTile
       tabs={['Orders', 'Trades']}
       authorize={true}
@@ -61,44 +74,48 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
       <TradeList />
     </TabbedTile>
   ),
-  wl: (
+  [OrderWidget]: (
     <Tile title="Order" authorize={true}>
       <Order />
     </Tile>
   )
 };
 
-class Terminal extends React.Component<TerminalProps, {}> {
+class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
   private unlisten: any;
   private initialValue: any = {
     direction: 'row' as MosaicDirection,
     first: {
       direction: 'column' as MosaicDirection,
-      first: 'wl',
-      second: 'acc',
+      first: OrderWidget,
+      second: AccountWidget,
       splitPercentage: 60
     },
     second: {
       direction: 'row' as MosaicDirection,
       first: {
         direction: 'column' as MosaicDirection,
-        first: 'c',
-        second: 'ord',
+        first: ChartWidget,
+        second: OrderListWidget,
         splitPercentage: 70
       },
       second: {
         direction: 'column' as MosaicDirection,
-        first: 'ob',
-        second: 'e',
+        first: OrderBookWidget,
+        second: TradeListWidget,
         splitPercentage: 70
       },
-      splitPercentage: 78
+      splitPercentage: MAX_RIGHT_PADDING
     },
-    splitPercentage: 22
+    splitPercentage: MAX_LEFT_PADDING
   };
 
   constructor(props: TerminalProps) {
     super(props);
+
+    this.state = {
+      initialValue: this.initialValue
+    };
   }
 
   componentWillMount() {
@@ -122,6 +139,15 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   handleChange = (args: any) => {
+    if (args.splitPercentage > MAX_LEFT_PADDING) {
+      args.splitPercentage = MAX_LEFT_PADDING;
+    } else if (args.second.splitPercentage < MAX_RIGHT_PADDING) {
+      args.second.splitPercentage = MAX_RIGHT_PADDING;
+    }
+
+    this.setState({
+      initialValue: args
+    });
     layoutStorage.set(JSON.stringify(args));
   };
 
@@ -148,7 +174,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
           renderTile={(id, path) => ELEMENT_MAP[id]}
           onChange={this.handleChange}
           resize={{minimumPaneSizePercentage: 20}}
-          initialValue={this.initialValue}
+          value={this.state.initialValue}
         />
       </Shell>
     );
