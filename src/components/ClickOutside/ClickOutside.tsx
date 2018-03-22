@@ -2,15 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 interface IClickOutsideProps {
-  children?: React.ReactChild;
   onClickOutside?: () => void;
 }
 
-export class ClickOutside extends React.Component<IClickOutsideProps, {}> {
-  constructor(props: IClickOutsideProps) {
-    super(props);
-  }
-
+export class ClickOutside extends React.Component<IClickOutsideProps> {
   componentDidMount() {
     document.addEventListener('click', this.handleDocumentClick, false);
     document.addEventListener('touchend', this.handleDocumentClick, false);
@@ -30,8 +25,7 @@ export class ClickOutside extends React.Component<IClickOutsideProps, {}> {
   };
 
   render() {
-    const {children} = this.props;
-    return <div>{children}</div>;
+    return this.props.children;
   }
 }
 
