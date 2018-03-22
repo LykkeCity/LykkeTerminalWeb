@@ -10,7 +10,7 @@ import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
-import {OrderList} from '../OrderList';
+import {Orders} from '../OrderList';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
 import {PublicTradeList, Trades} from '../TradeList';
@@ -48,7 +48,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ),
   ord: (
     <TabbedTile tabs={['Orders', 'Trades']}>
-      <OrderList />
+      <Orders />
       <Trades />
     </TabbedTile>
   ),
