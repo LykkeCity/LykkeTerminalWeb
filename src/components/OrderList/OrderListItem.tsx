@@ -18,7 +18,7 @@ const OrderListItem: React.SFC<OrderModel & OrderActions & OrderListProps> = ({
   onEdit
 }) => {
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
-  const dateTime = new Date(createdAt.toLocaleString());
+  const dateTime = new Date(createdAt);
   return (
     <tr>
       <td>{symbol}</td>
