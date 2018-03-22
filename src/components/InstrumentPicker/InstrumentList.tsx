@@ -1,122 +1,142 @@
-import {observer} from 'mobx-react';
+import {rem} from 'polished';
+import {prop, sortBy} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
 import styled from '../styled';
-import {ReactStyledTable} from '../Table/index';
-import {InstrumentListNumber, InstrumentListProps} from './index';
+import {InstrumentListItem, InstrumentListProps} from './index';
 
-const InstrumentsReactTable = styled(ReactStyledTable)`
-  .table {
-    margin-right: 10px;
+interface InstrumentListState {
+  data: any[];
+  sortBy: string;
+  sortDirection: string;
+}
+
+const StyledInstrumentListHeader = styled.div`
+  width: ${rem(150)};
+  padding: ${rem(10)};
+  display: inline-block;
+  color: rgba(245, 246, 247, 0.4);
+
+  &.double {
+    width: ${rem(300)};
+  }
+  &.right-align {
+    text-align: right;
   }
 `;
 
-const ObservedTable: React.SFC = observer(({children}) => {
-  return <div>{children}</div>;
-});
+interface InstrumentListHeaderProps {
+  className?: string;
+  sort: any;
+  sortByParam: string;
+  sortDirectionDefault: string;
+}
 
-class InstrumentList extends React.Component<InstrumentListProps> {
+const InstrumentListHeader: React.SFC<InstrumentListHeaderProps> = ({
+  sort,
+  sortByParam,
+  sortDirectionDefault,
+  className,
+  children
+}) => {
+  const sortList = () => sort(sortByParam, sortDirectionDefault);
+
+  return (
+    <StyledInstrumentListHeader className={className} onClick={sortList}>
+      {children}
+    </StyledInstrumentListHeader>
+  );
+};
+
+class InstrumentList extends React.Component<
+  InstrumentListProps,
+  InstrumentListState
+> {
+  constructor(props: InstrumentListProps) {
+    super(props);
+    this.state = {
+      data: this.props.instruments,
+      sortBy: '',
+      sortDirection: 'ASC'
+    };
+  }
+
   componentDidMount() {
     this.props.change();
   }
 
-  render() {
-    const percentageAccuracy = 3;
-    const click = (state: any, rowInfo: any) => {
-      return {
-        onClick: () => {
-          if (
-            this.props.currentInstrumentId !== rowInfo.original.id &&
-            this.props.onPick
-          ) {
-            this.props.onPick(rowInfo.original);
-          }
-        }
-      };
-    };
-
-    const data = [...this.props.instruments];
-    const columns = [
-      {
-        Header: 'Asset pair',
-        accessor: 'name',
-        className: 'left-align no-border',
-        headerClassName: 'left-align header no-border'
-      },
-      {
-        Cell: (props: any) => (
-          <InstrumentListNumber
-            num={props.value}
-            accuracy={props.original.accuracy}
-          />
-        ),
-        Header: 'Price',
-        accessor: 'price',
-        className: 'left-align no-border',
-        headerClassName: 'left-align header no-border',
-        resizable: false
-      },
-      {
-        Cell: (props: any) => (
-          <InstrumentListNumber
-            num={props.value}
-            accuracy={this.props.baseAsset.accuracy}
-            color={'rgba(245, 246, 247, 0.4)'}
-          >
-            &nbsp;{this.props.baseAsset.name}
-          </InstrumentListNumber>
-        ),
-        Header: '',
-        accessor: 'priceInBase',
-        className: 'left-align no-border',
-        headerClassName: 'header no-border'
-      },
-      {
-        Cell: (props: any) => (
-          <InstrumentListNumber
-            num={props.value}
-            accuracy={percentageAccuracy}
-            dynamics={props.value >= 0 ? 'up' : 'down'}
-            preSign={props.value >= 0 ? '+' : ''}
-          >
-            %
-          </InstrumentListNumber>
-        ),
-        Header: '24h Change',
-        accessor: 'change24h',
-        className: 'right-align no-border',
-        headerClassName: 'right-align header no-border'
-      },
-      {
-        Cell: (props: any) => (
-          <InstrumentListNumber num={props.value} accuracy={percentageAccuracy}>
-            &nbsp;{props.original.name.match(/\w*$/i)[0]}
-          </InstrumentListNumber>
-        ),
-        Header: 'Volume',
-        accessor: 'volume',
-        className: 'right-align',
-        headerClassName: 'right-align header no-border '
+  sort = (sortByParam: string, sortDirectionDefault: string) => {
+    const sort = sortBy(prop(sortByParam));
+    const sortDirection =
+      this.state.sortBy === sortByParam
+        ? this.state.sortDirection === 'ASC' ? 'DESC' : 'ASC'
+        : sortDirectionDefault;
+    const data = (() => {
+      switch (sortDirection) {
+        default:
+        case 'ASC':
+          return sort(this.props.instruments);
+        case 'DESC':
+          return sort(this.props.instruments).reverse();
       }
-    ];
+    })();
 
+    return this.setState({
+      data,
+      sortBy: sortByParam,
+      sortDirection
+    });
+  };
+
+  render() {
     return (
-      <InstrumentsReactTable>
+      <div>
+        <InstrumentListHeader
+          sortByParam={'name'}
+          sortDirectionDefault={'ASC'}
+          sort={this.sort}
+        >
+          Asset pair
+        </InstrumentListHeader>
+
+        <InstrumentListHeader
+          className={'double'}
+          sortByParam={'price'}
+          sortDirectionDefault={'ASC'}
+          sort={this.sort}
+        >
+          Price
+        </InstrumentListHeader>
+
+        <InstrumentListHeader
+          className={'right-align'}
+          sortByParam={'change24h'}
+          sortDirectionDefault={'ASC'}
+          sort={this.sort}
+        >
+          24h Change
+        </InstrumentListHeader>
+
+        <InstrumentListHeader
+          className={'right-align'}
+          sortByParam={'volume'}
+          sortDirectionDefault={'ASC'}
+          sort={this.sort}
+        >
+          Volume
+        </InstrumentListHeader>
+
         <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={555}>
-          <ObservedTable>
-            <ReactTable
-              data={data}
-              columns={columns}
-              className={'-highlight no-border table'}
-              showPagination={false}
-              pageSize={data.length}
-              getTdProps={click}
+          {this.state.data.map(x => (
+            <InstrumentListItem
+              key={x.id}
+              instrument={x}
+              onPick={this.props.onPick}
+              inactive={this.props.currentInstrumentId !== x.id}
             />
-          </ObservedTable>
+          ))}
         </Scrollbars>
-      </InstrumentsReactTable>
+      </div>
     );
   }
 }

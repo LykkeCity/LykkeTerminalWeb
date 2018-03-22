@@ -14,10 +14,6 @@ const StyledShortcutSelection = styled.div`
   text-align: left;
   color: rgb(245, 246, 247);
 
-  &:hover {
-    cursor: pointer;
-  }
-
   &:after {
     content: '';
     margin: 0 10px;
@@ -75,6 +71,7 @@ const InstrumentShortcutSelection: React.SFC<
               top: '45px'
             }}
             isActiveMarked={true}
+            activeValue={currentOption ? currentOption!.value : ''}
             items={shortcuts}
             click={handleChange}
           />
