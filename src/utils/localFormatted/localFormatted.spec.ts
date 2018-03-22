@@ -9,9 +9,9 @@ const results = {
   'en-US': {
     expectNumber: '50,000.05',
     expectNumberWithAccuracy: '50,000.0500',
-    expectDateTime: '12/17/1995, 5:24:00 AM',
+    expectDateTime: '12/17/1995, 3:24:00 AM',
     expectDate: '12/17/1995',
-    expectTime: '5:24:00 AM'
+    expectTime: '3:24:00 AM'
   }
 };
 
