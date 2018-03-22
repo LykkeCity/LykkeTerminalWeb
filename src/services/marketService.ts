@@ -18,4 +18,14 @@ export default class MarketService {
       FromAssetId: pathOr(null, ['From', 'AssetId'], converted)
     }));
   };
+
+  static convertAsset = async (convertForm: any, convertTo: string) => {
+    const resp = await MarketApi.convert({
+      AssetsFrom: [convertForm],
+      BaseAssetId: convertTo,
+      OrderAction: Side.Sell
+    });
+    const converted = resp.Converted[0];
+    return pathOr(0, ['To', 'Amount'], converted);
+  };
 }

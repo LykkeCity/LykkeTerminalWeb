@@ -40,7 +40,6 @@ interface OrderBookProps {
   updatePriceAndDepth: any;
   stateFns: any[];
   cancelOrder: any;
-  setIsOrderBookClicked: any;
   span: number;
   onNextSpan: () => void;
   onPrevSpan: () => void;
@@ -90,12 +89,10 @@ class OrderBook extends React.Component<OrderBookProps> {
   }
 
   handleUpdatePriceAndDepth = (price: number, depth: number) => () => {
-    this.props.setIsOrderBookClicked(true);
     this.props.updatePriceAndDepth(price, depth);
   };
 
   handleUpdatePrice = (price: number) => () => {
-    this.props.setIsOrderBookClicked(true);
     this.props.updatePrice(price);
   };
 

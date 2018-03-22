@@ -1,6 +1,8 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {OrderInputs} from '../../models';
+import NumberInput from '../NumberInput/NumberInput';
 import {OrderFormProps} from './index';
 
 const StyledOrderOptions = styled.div`
@@ -28,25 +30,6 @@ const StyledTitle = styled.div`
   color: #f5f6f7;
   line-height: 1.5;
   margin-top: ${rem(16)};
-`;
-
-const StyledInput = styled.input`
-  background-color: transparent;
-  border-radius: 4px;
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  color: #f5f6f7;
-  padding-left: 5px;
-  width: 128px;
-  box-sizing: border-box;
-  height: 100%;
-
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    cursor: pointer;
-    display: block;
-    width: 10px;
-    background: transparent;
-  }
 `;
 
 const StyledInputNumberComponent = styled.div`
@@ -77,16 +60,9 @@ const StyledInputNumberComponent = styled.div`
   }
 `;
 
+// TODO should be deleted after design updating
 const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
-  const {
-    onChange,
-    onArrowClick,
-    price,
-    isMarket,
-    quantity,
-    amount,
-    assetName
-  } = props;
+  const {onChange, onArrowClick, price, quantity, amount, assetName} = props;
 
   const quoteName = assetName.split('/')[1];
 
@@ -95,74 +71,28 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
       <StyledTitle>Quantity</StyledTitle>
       <StyledOptions>
         <StyledInputNumberComponent>
-          <StyledInput
-            id="quantityValue"
-            type="text"
+          <NumberInput
             value={quantity}
-            onChange={onChange('quantityValue')}
-            // tslint:disable-next-line:jsx-no-lambda
-            onKeyDown={e => {
-              switch (e.keyCode) {
-                case 38:
-                  onArrowClick('up', 'quantityValue')();
-                  e.preventDefault();
-                  break;
-                case 40:
-                  onArrowClick('down', 'quantityValue')();
-                  e.preventDefault();
-                  break;
-                default:
-                  break;
-              }
-            }}
-            name="quantityValue"
-          />
-          <span className="up" onClick={onArrowClick('up', 'quantityValue')} />
-          <span
-            className="down"
-            onClick={onArrowClick('down', 'quantityValue')}
+            id={OrderInputs.Quantity}
+            onChange={onChange()}
+            onArrowClick={onArrowClick()}
           />
         </StyledInputNumberComponent>
       </StyledOptions>
-      {!isMarket ? (
-        <div>
-          <StyledTitle>Price</StyledTitle>
-          <StyledOptions>
-            <StyledInputNumberComponent>
-              <StyledInput
-                id="priceValue"
-                type="text"
-                value={price}
-                onChange={onChange('priceValue')}
-                // tslint:disable-next-line:jsx-no-lambda
-                onKeyDown={e => {
-                  switch (e.keyCode) {
-                    case 38:
-                      onArrowClick('up', 'priceValue')();
-                      e.preventDefault();
-                      break;
-                    case 40:
-                      onArrowClick('down', 'priceValue')();
-                      e.preventDefault();
-                      break;
-                    default:
-                      break;
-                  }
-                }}
-                name="priceValue"
-              />
-              <span className="up" onClick={onArrowClick('up', 'priceValue')} />
-              <span
-                className="down"
-                onClick={onArrowClick('down', 'priceValue')}
-              />
-            </StyledInputNumberComponent>
-            <StyledAmount>
-              Total: {amount} {quoteName}
-            </StyledAmount>
-          </StyledOptions>
-        </div>
-      ) : null}
+      <StyledTitle>Price</StyledTitle>
+      <StyledOptions>
+        <StyledInputNumberComponent>
+          <NumberInput
+            value={price}
+            id={OrderInputs.Price}
+            onChange={onChange(2)}
+            onArrowClick={onArrowClick(2)}
+          />
+        </StyledInputNumberComponent>
+        <StyledAmount>
+          Total: {amount} {quoteName}
+        </StyledAmount>
+      </StyledOptions>
     </StyledOrderOptions>
   );
 };
