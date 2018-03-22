@@ -1,31 +1,27 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
-import additionalActions from '../../constants/additionalActions';
-import paths from '../../constants/paths';
 import keys from '../../constants/storageKeys';
-import tabs from '../../constants/tabs';
 import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
+import {Account} from '../Account';
 import Backdrop from '../Backdrop/Backdrop';
-import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
-import {OrderList} from '../OrderList';
-import styled from '../styled';
+import {Orders} from '../OrderList';
+import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
-import {PublicTradeList, TradeList} from '../TradeList';
-import {WalletBalanceList} from '../WalletBalanceList';
+import {PublicTradeList, Trades} from '../TradeList';
 import {TerminalProps} from './index';
 
 const MAX_LEFT_PADDING = 20;
 const MAX_RIGHT_PADDING = 75;
 
 const Shell = styled.div`
-  background: rgba(0, 0, 0, 0.2);
+  background: ${colors.darkGraphite};
   height: 100vh;
   width: 100vw;
   padding: 0;
@@ -44,9 +40,8 @@ const {
 const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   [AccountWidget]: (
-    <Tile title="Account" tabs={tabs.walletBalance} authorize={true}>
-      <WalletBalanceList />
-      <BalanceList />
+    <Tile title="Account">
+      <Account />
     </Tile>
   ),
   [ChartWidget]: (
@@ -65,13 +60,9 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile
-      tabs={['Orders', 'Trades']}
-      authorize={true}
-      additionalControls={additionalActions.orders}
-    >
-      <OrderList />
-      <TradeList />
+    <TabbedTile tabs={['Orders', 'Trades']}>
+      <Orders />
+      <Trades />
     </TabbedTile>
   ),
   [OrderWidget]: (
@@ -82,7 +73,6 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 };
 
 class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
-  private unlisten: any;
   private initialValue: any = {
     direction: 'row' as MosaicDirection,
     first: {
@@ -127,18 +117,11 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
 
   componentDidMount() {
     this.props.rootStore.start();
-    this.unlisten = this.props.history.listen((location: any) => {
-      if (location.pathname === paths.signin) {
-        this.props.rootStore.reset();
-      }
-    });
   }
 
-  componentWillUnmount() {
-    this.unlisten();
-  }
+  handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
-  handleChange = (args: any) => {
+  handleChangeLayout = (args: any) => {
     if (args.splitPercentage > MAX_LEFT_PADDING) {
       args.splitPercentage = MAX_LEFT_PADDING;
     } else if (args.second.splitPercentage < MAX_RIGHT_PADDING) {
@@ -151,16 +134,9 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
     layoutStorage.set(JSON.stringify(args));
   };
 
-  handleOuterClick = () => {
-    if (this.props.rootStore.settingsStore.settings) {
-      document.querySelector('.settings')!.classList.remove('active');
-      this.props.rootStore.settingsStore.toggleSettings();
-    }
-  };
-
   render() {
     return (
-      <Shell onClick={this.handleOuterClick}>
+      <Shell>
         <NotificationList />
         {this.props.rootStore.modalStore.isModals ? (
           <div>
@@ -170,9 +146,8 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
         ) : null}
         <Header history={this.props.history} />
         <Mosaic
-          // tslint:disable-next-line:jsx-no-lambda
-          renderTile={(id, path) => ELEMENT_MAP[id]}
-          onChange={this.handleChange}
+          renderTile={this.handleRenderTile}
+          onChange={this.handleChangeLayout}
           resize={{minimumPaneSizePercentage: 20}}
           value={this.state.initialValue}
         />

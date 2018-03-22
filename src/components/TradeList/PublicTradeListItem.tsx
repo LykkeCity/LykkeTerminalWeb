@@ -1,12 +1,8 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
-import {
-  formattedNumber,
-  formattedTime
-} from '../../utils/localFormatted/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import styled, {colorFromSide} from '../styled';
 
-// tslint:disable-next-line:no-empty-interface
 export interface PublicTradeListItemProps extends TradeModel {
   className?: string;
 }
@@ -22,9 +18,7 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
     <td>{formattedNumber(quantity)}</td>
     <td>{formattedNumber(price)}</td>
     <td>{side}</td>
-    <td>
-      <td>{formattedTime(timestamp)}</td>
-    </td>
+    <td>{new Date(timestamp).toLocaleTimeString()}</td>
   </tr>
 );
 

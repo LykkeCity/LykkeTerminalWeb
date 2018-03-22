@@ -1,7 +1,7 @@
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import {Auth} from './components/Auth/Auth';
+import {Auth} from './components/Auth';
 import {injectGlobal} from './components/styled';
 import {Terminal} from './components/Terminal';
 import paths from './constants/paths';

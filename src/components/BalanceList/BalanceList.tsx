@@ -1,7 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import styled from '../styled';
+import styled, {dims, fonts} from '../styled';
 import {Table} from '../Table/index';
 import {BalanceListItem} from './';
 import {BalanceListProps} from './';
@@ -9,19 +9,17 @@ import {BalanceListProps} from './';
 const ManageWalletLink = styled.a`
   cursor: pointer;
   text-decoration: none;
-  color: rgb(255, 255, 255);
-  min-width: 250px;
-  min-height: 48px;
+  color: rgb(245, 246, 247);
+  width: 100%;
+  min-height: 32px;
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${rem(16)};
-  font-weight: bold;
-  line-height: 1;
-  text-align: center;
-  margin-top: ${rem(24)};
+  font-size: ${rem(fonts.normal)};
+  line-height: 1.14;
+  margin: ${rem(dims.padding[1])} 0;
 `;
 
 const Total = styled.tr`
@@ -69,7 +67,7 @@ const BalanceList: React.SFC<BalanceListProps> = ({
       href={process.env.REACT_APP_WEBWALLET_URL}
       target="_blank"
     >
-      Manage wallets in Account
+      Manage wallets
     </ManageWalletLink>
   </React.Fragment>
 );
