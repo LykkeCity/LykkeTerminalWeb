@@ -2,7 +2,7 @@ import {observer} from 'mobx-react';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar';
+// import {withScroll} from '../CustomScrollbar';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
@@ -25,7 +25,7 @@ const ConnectedTradeList = connect<TradeListProps>(
     trades: filteredTrades,
     selectedInstrument
   }),
-  withScroll(TradeList)
+  withStyledScroll({height: 'calc(100% - 85px)'})(TradeList)
 );
 
 const ObservedTradeListItem = observer(TradeListItem);

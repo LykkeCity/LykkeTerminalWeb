@@ -41,3 +41,12 @@ export const normalizeVolume = (
   const scale = (maxv - minv) / (maxp - minp);
   return (Math.log(volume) - minv) / scale + minp;
 };
+
+export const nextSkip = (skip: number, take: number, skipWamp: number) => {
+  return skip + take + skipWamp;
+  //   skip =
+  //   (!skip ? skip + take : skip + loading) +
+  //   skipWamp;
+  // skipWamp = 0;
+  // return skip;
+};
