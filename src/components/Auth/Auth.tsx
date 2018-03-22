@@ -8,7 +8,7 @@ interface AuthProps extends RouteComponentProps<any> {
 }
 
 @inject('authStore')
-export class Auth extends React.Component<AuthProps> {
+class Auth extends React.Component<AuthProps> {
   componentDidMount() {
     const accessToken = new URL(location.href).hash.split('&')[3].split('=')[1];
     const state = new URL(location.href).hash.split('&')[0].split('=')[1];

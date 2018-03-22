@@ -6,9 +6,9 @@ import {ApiResponse} from './types';
 const filterByType = ({Type}: any) =>
   Type === OperationType.Trade || Type === OperationType.LimitTrade;
 
-const filterByInstrument = (instrument: InstrumentModel) => ({
-  AssetPair
-}: any) => AssetPair === instrument.id;
+// const filterByInstrument = (instrument: InstrumentModel) => ({
+//   AssetPair
+// }: any) => AssetPair === instrument.id;
 
 export interface TradeApi {
   fetchTrades: (
@@ -34,12 +34,11 @@ export class RestTradeApi extends RestApi implements TradeApi {
       skip,
       take
     });
-    return resp.filter(filterByInstrument(instrument)).filter(filterByType);
+    return resp.filter(filterByType);
   };
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
-    Promise.resolve([]);
-  // HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
+    HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
 }
 
 export default TradeApi;

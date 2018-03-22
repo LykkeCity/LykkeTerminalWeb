@@ -42,9 +42,6 @@ describe('orderList store', () => {
 
   describe('reset', () => {
     it('should clear orderLists', async () => {
-      await orderListStore.fetchAll();
-      expect(orderListStore.limitOrders.length).toBeGreaterThan(0);
-
       orderListStore.reset();
 
       expect(orderListStore.limitOrders.length).toBe(0);
@@ -53,14 +50,18 @@ describe('orderList store', () => {
 
   describe('fetch orderLists', () => {
     it('should populate orderList collection', async () => {
+      orderListStore.updateOrders = jest.fn();
+
       await orderListStore.fetchAll();
-      expect(orderListStore.limitOrders.length).toBeGreaterThan(0);
+
+      expect(orderListStore.updateOrders).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('update orderLists', () => {
     it('should update orderLists', async () => {
-      expect(orderListStore.limitOrders.length).toBe(0);
+      orderListStore.reset();
+
       orderListStore.updateOrders(
         [
           {
@@ -73,15 +74,17 @@ describe('orderList store', () => {
           }
         ].map(mappers.mapToLimitOrder)
       );
-      expect(orderListStore.limitOrders.length).toBe(1);
+
+      expect(orderListStore.allOrders.length).toBe(1);
     });
   });
 
   describe('order item', () => {
     it('should correctly map from dto', async () => {
       await orderListStore.fetchAll();
-      const order = orderListStore.limitOrders[0];
-      expect(orderListStore.limitOrders).toHaveLength(1);
+      const order = orderListStore.allOrders[0];
+
+      expect(orderListStore.allOrders).toHaveLength(1);
       expect(order.createdAt).toBeDefined();
       expect(order.price).toBeDefined();
       expect(order.id).toBeDefined();
@@ -92,7 +95,7 @@ describe('orderList store', () => {
 
     it('should be an instance of OrderModel', async () => {
       await orderListStore.fetchAll();
-      const order = orderListStore.limitOrders[0];
+      const order = orderListStore.allOrders[0];
       expect(order instanceof OrderModel).toBeTruthy();
     });
   });
