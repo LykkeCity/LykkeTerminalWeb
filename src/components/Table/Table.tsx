@@ -21,6 +21,10 @@ const Table = styled.table`
       text-align: left;
       padding-left: 0;
     }
+    &:last-child {
+      text-align: right;
+      padding-right: 0;
+    }
   }
   td {
     padding: ${rem(8)} ${rem(8)};
@@ -36,6 +40,10 @@ const Table = styled.table`
       font-weight: 600;
       text-align: left;
       padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
     }
   }
 `;
