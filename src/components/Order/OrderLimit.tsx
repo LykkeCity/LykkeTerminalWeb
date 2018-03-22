@@ -67,7 +67,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           onChange={onChange(quantityAccuracy)}
           onArrowClick={onArrowClick(quantityAccuracy)}
         />
-      </div>
+      </StyledInputControl>
       <Flex justify={'space-between'}>
         {percents!.map((item: any, index: number) => (
           <OrderPercentage
