@@ -8,18 +8,18 @@ import {Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
 import {minOrMaxFromList} from '../../utils/math';
-import Bar, {VBar} from '../Bar/Bar';
-import {Table} from '../Table/index';
+import {HBar, VBar} from '../Bar';
 import {OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
   StyledBar,
   StyledBuyOrders,
   StyledGrouping,
-  StyledHead,
   StyledHeader,
+  StyledHeaderCell,
+  StyledHeaderRow,
   StyledMidPrice,
-  StyledRow,
+  StyledOrders,
   StyledSellOrders,
   StyledWrapper
 } from './styles';
@@ -147,18 +147,21 @@ class OrderBook extends React.Component<OrderBookProps> {
             onChange={this.handleChange}
           />
         </StyledBar>
-        <Bar />
-        <Table>
-          <StyledHead>
-            <StyledRow>
-              <StyledHeader align="right">Buy</StyledHeader>
-              <StyledHeader align="center">Price</StyledHeader>
-              <StyledHeader align="left">Sell</StyledHeader>
-            </StyledRow>
-          </StyledHead>
-        </Table>
-        <Scrollbars autoHide={true} ref={this.refHandlers.scrollComponent}>
-          <Table>
+        <HBar />
+        <StyledHeader>
+          <StyledHeaderRow>
+            <StyledHeaderCell align="left">Price</StyledHeaderCell>
+            <StyledHeaderCell align="left">Volume</StyledHeaderCell>
+            <StyledHeaderCell align="right">Value</StyledHeaderCell>
+          </StyledHeaderRow>
+        </StyledHeader>
+        <HBar />
+        <Scrollbars
+          autoHide={true}
+          style={{width: 'calc(100% + 2rem)', marginLeft: '-1rem'}}
+          ref={this.refHandlers.scrollComponent}
+        >
+          <StyledOrders>
             <StyledSellOrders>
               {asks.map((order, idx) => (
                 <OrderBookItem
@@ -175,13 +178,17 @@ class OrderBook extends React.Component<OrderBookProps> {
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
+            <tbody ref={this.refHandlers.midPrice}>
               <tr>
-                <td onClick={this.handleUpdatePrice(Number(mid))}>
+                <StyledMidPrice
+                  onClick={this.handleUpdatePrice(Number(mid))}
+                  colSpan={3}
+                >
                   {Number.isNaN(Number.parseFloat(mid)) ? '' : mid}
-                </td>
+                  <div>&nbsp;</div>
+                </StyledMidPrice>
               </tr>
-            </StyledMidPrice>
+            </tbody>
             <StyledBuyOrders>
               {bids.map((order, idx) => (
                 <OrderBookItem
@@ -198,7 +205,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                 />
               ))}
             </StyledBuyOrders>
-          </Table>
+          </StyledOrders>
         </Scrollbars>
       </StyledWrapper>
     );
