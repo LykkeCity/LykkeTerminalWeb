@@ -91,7 +91,8 @@ const OrderList: React.SFC<OrderListProps> = ({
       Header: 'Edit',
       className: 'right-align no-border',
       headerClassName: 'right-align header no-border',
-      minWidth: 40
+      minWidth: 40,
+      resizable: false
     }
   ];
   const handleEditOrder = (order: any) => {

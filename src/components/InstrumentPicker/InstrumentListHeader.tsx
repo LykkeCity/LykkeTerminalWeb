@@ -5,7 +5,7 @@ import styled from '../styled';
 const StyledInstrumentListHeader = styled.div`
   display: flex;
   align-items: center;
-  width: 20%;
+  width: 25%;
   padding: ${rem(10)};
   color: rgba(245, 246, 247, 0.4);
 
@@ -22,10 +22,10 @@ const StyledInstrumentListHeader = styled.div`
     border-right: 2px solid transparent;
   }
   &.ASC:after {
-    border-bottom: 4px solid #f5f6f7;
+    border-bottom: 4px solid rgba(245, 246, 247, 0.4);
   }
   &.DESC:after {
-    border-top: 4px solid #f5f6f7;
+    border-top: 4px solid rgba(245, 246, 247, 0.4);
   }
 `;
 

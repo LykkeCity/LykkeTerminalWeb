@@ -35,6 +35,13 @@ class InstrumentModel {
   };
 
   @action
+  updatePriceInBase = (nextPriceInBase: number) => {
+    if (this.priceInBase !== nextPriceInBase) {
+      this.priceInBase = nextPriceInBase;
+    }
+  };
+
+  @action
   updateFromCandle = (
     openPrice: number,
     closePrice: number,

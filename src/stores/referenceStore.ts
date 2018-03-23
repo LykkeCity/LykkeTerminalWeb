@@ -8,7 +8,6 @@ import {
   SearchString
 } from '../models';
 import * as mappers from '../models/mappers';
-import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -213,6 +212,7 @@ class ReferenceStore extends BaseStore {
 
   fetchRates = async () => {
     const resp = await this.api.fetchRates();
+
     resp.AssetPairRates.forEach(({AssetPair, BidPrice}: any) => {
       const instrument = this.getInstrumentById(AssetPair);
       if (instrument) {
@@ -249,35 +249,6 @@ class ReferenceStore extends BaseStore {
     if (instrument && instrument.id) {
       instrument.updateFromCandle(openPrice, closePrice, volume);
     }
-  };
-
-  getInstrumentsAdditionalData = async () => {
-    const instruments = this.findInstruments(
-      this.rootStore.uiStore.searchTerm,
-      this.rootStore.uiStore.searchWalletName
-    );
-    const prices = instruments.map(x => ({
-      AssetId: x.quoteAsset.id,
-      Balance: x.price,
-      ConvertedBalance: 0
-    }));
-    const baseAssetId = baseAssetStorage.get();
-    const priceInBase: any[] = await MarketService.convert(
-      prices,
-      baseAssetId!
-    );
-
-    priceInBase.forEach((price, index) => {
-      prices[index].ConvertedBalance = price.Balance;
-    });
-
-    instruments.forEach(async (instrument, index) => {
-      if (instrument.quoteAsset.id === baseAssetId) {
-        instrument.priceInBase = instrument.price;
-      } else {
-        instrument.priceInBase = prices[index].ConvertedBalance;
-      }
-    });
   };
 
   reset = () => {

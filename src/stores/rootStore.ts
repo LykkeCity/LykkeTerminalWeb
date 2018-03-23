@@ -102,20 +102,17 @@ class RootStore {
 
   start = async () => {
     await this.referenceStore.fetchReferenceData();
-    await this.referenceStore.fetchRates();
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
     );
 
     if (!this.authStore.isAuth) {
-      await this.referenceStore.getInstrumentsAdditionalData();
       return this.startPublicMode(defaultInstrument);
     }
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
-    await this.referenceStore.getInstrumentsAdditionalData();
 
     await this.referenceStore
       .fetchBaseAsset()
@@ -154,6 +151,8 @@ class RootStore {
       .catch(() => {
         this.startPublicMode(defaultInstrument);
       });
+
+    await this.referenceStore.fetchRates();
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
