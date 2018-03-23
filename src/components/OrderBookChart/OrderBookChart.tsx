@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Order, OrderBookDisplayType} from '../../models';
 import {VBar} from '../Bar/Bar';
 import {StyledBar, StyledGrouping, StyledWrapper} from '../OrderBook/styles';
-import Chart from './Chart';
+import Chart from './Chart/index';
 
 interface OrderBookChartProps {
   asks: Order[];
@@ -25,8 +25,6 @@ class OrderBookChart extends React.Component<OrderBookChartProps> {
 
   render() {
     const {
-      asks,
-      bids,
       mid,
       spread,
       lastTradePrice,
@@ -53,7 +51,7 @@ class OrderBookChart extends React.Component<OrderBookChartProps> {
           </StyledGrouping>
         </StyledBar>
         <StyledWrapper>
-          <Chart asks={asks} bids={bids} mid={mid} />
+          <Chart />
         </StyledWrapper>
       </StyledWrapper>
     );

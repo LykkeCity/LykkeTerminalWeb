@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
+import additionalActions from '../../constants/additionalActions';
 import keys from '../../constants/storageKeys';
 import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
