@@ -1,5 +1,9 @@
 import * as React from 'react';
 import {OrderModel, Side} from '../../models';
+import {
+  formattedDateTime,
+  formattedNumber
+} from '../../utils/localFormatted/localFormatted';
 import {Icon} from '../Icon/index';
 import {OrderActions, OrderListProps} from './index';
 
@@ -14,6 +18,7 @@ const OrderListItem: React.SFC<OrderModel & OrderActions & OrderListProps> = ({
   onEdit
 }) => {
   const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
+  const dateTime = new Date(createdAt);
   return (
     <tr>
       <td>{symbol}</td>
@@ -25,9 +30,9 @@ const OrderListItem: React.SFC<OrderModel & OrderActions & OrderListProps> = ({
       </td>
       <td>{id}</td>
       <td style={{color: colorSide}}>{side}</td>
-      <td>{volume}</td>
-      <td>{price}</td>
-      <td>{createdAt.toLocaleString()}</td>
+      <td>{formattedNumber(volume)}</td>
+      <td>{formattedNumber(price)}</td>
+      <td>{formattedDateTime(dateTime)}</td>
       <td>
         {/* tslint:disable-next-line:jsx-no-lambda */}
         <span onClick={() => onEdit(id)}>

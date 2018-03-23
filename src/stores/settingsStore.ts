@@ -1,4 +1,4 @@
-import {computed, observable} from 'mobx';
+import {observable} from 'mobx';
 import keys from '../constants/storageKeys';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -7,12 +7,7 @@ const confirmStorage = StorageUtils(keys.confirmReminder);
 const layoutStorage = StorageUtils(keys.layout);
 
 class SettingsStore extends BaseStore {
-  @observable settingsShown: boolean = false;
-
-  @computed
-  get settings() {
-    return this.settingsShown;
-  }
+  @observable showSettings: boolean = false;
 
   get confirmations() {
     return JSON.parse(confirmStorage.get() as string);
@@ -27,7 +22,7 @@ class SettingsStore extends BaseStore {
   }
 
   toggleSettings = () => {
-    this.settingsShown = !this.settingsShown;
+    this.showSettings = !this.showSettings;
   };
 
   toggleConfirmations = () => {

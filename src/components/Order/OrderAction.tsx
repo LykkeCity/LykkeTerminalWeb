@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {OrderActionProps} from './index';
 
 const StyledOrderAction = styled.div`
@@ -86,13 +87,14 @@ const OrderAction: React.SFC<OrderActionProps> = ({
   isActive
 }) => {
   const classes = [title];
+  const priceWithLocale = formattedNumber(price ? price : 0);
   if (isActive) {
     classes.push('active');
   }
   return (
     <StyledOrderAction className={classes.join(' ')} onClick={click}>
       <StyledTitle className={classes.join(' ')}>{title}</StyledTitle>
-      <StyledPrice className={classes.join(' ')}>{price}</StyledPrice>
+      <StyledPrice className={classes.join(' ')}>{priceWithLocale}</StyledPrice>
       <StyledAction className={classes.join(' ')}>{action}</StyledAction>
     </StyledOrderAction>
   );

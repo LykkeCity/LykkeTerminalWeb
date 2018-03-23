@@ -2,6 +2,7 @@ import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import styled from 'styled-components';
 import {AssetBalanceModel} from '../../models';
+import withAuth from '../Auth/withAuth';
 import {connect} from '../connect';
 import Order from './Order';
 
@@ -181,7 +182,8 @@ const ConnectedOrder = connect(
       handlePercentageChange,
       updatePercentageState,
       resetPercentage
-    }
+    },
+    authStore: {isAuth}
   }) => ({
     accuracy: {
       priceAccuracy: pathOr(2, ['accuracy'], instrument),
@@ -231,9 +233,10 @@ const ConnectedOrder = connect(
         return a.id === quoteAssetName;
       });
       return asset && asset.available;
-    }
+    },
+    isAuth
   }),
-  Order
+  withAuth(Order)
 );
 
 export {ConnectedOrder as Order};
