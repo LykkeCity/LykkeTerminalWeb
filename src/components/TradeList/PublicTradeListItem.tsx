@@ -3,7 +3,6 @@ import * as React from 'react';
 import {TradeModel} from '../../models/index';
 import styled, {colorFromSide} from '../styled';
 
-// tslint:disable-next-line:no-empty-interface
 export interface PublicTradeListItemProps extends TradeModel {
   className?: string;
 }

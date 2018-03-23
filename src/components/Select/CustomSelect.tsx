@@ -36,6 +36,11 @@ const StyledItem = styled.li.attrs({
     `};
 ` as any;
 
+export interface Option {
+  value: string;
+  label: string;
+}
+
 interface CustomSelectProps {
   items: any[];
   click: any;
