@@ -16,6 +16,7 @@ interface InstrumentListState {
 
 const Header = styled.div`
   display: flex;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
 `;
 
 class InstrumentList extends React.Component<
@@ -80,7 +81,6 @@ class InstrumentList extends React.Component<
           <InstrumentListHeader
             currentSortDirection={this.state.sortDirection}
             currentSortByParam={this.state.sortBy}
-            className={'double'}
             sortByParam={'price'}
             sort={this.sort}
           >
@@ -112,6 +112,7 @@ class InstrumentList extends React.Component<
           {this.state.data.map(x => (
             <InstrumentListItem
               key={x.id}
+              baseAsset={this.props.baseAsset}
               instrument={x}
               onPick={this.props.onPick}
               inactive={this.props.currentInstrumentId !== x.id}

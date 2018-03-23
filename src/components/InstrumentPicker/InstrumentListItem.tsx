@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react';
 import {rem} from 'polished';
 import * as React from 'react';
-import {InstrumentModel} from '../../models/index';
+import {AssetModel, InstrumentModel} from '../../models/index';
 import styled from '../styled';
 import {
   InstrumentField,
@@ -12,6 +12,7 @@ import {
 const {Flex} = require('grid-styled');
 
 interface InstrumentListItemProps extends InstrumentPickerActions {
+  baseAsset: AssetModel;
   instrument: InstrumentModel;
   inactive: boolean;
 }
@@ -30,12 +31,12 @@ const StyledInstrumentItem = styled(Flex)`
 `;
 
 const InstrumentListWrapper = styled(InstrumentField)`
-  width: 20%;
+  width: 25%;
   padding: ${rem(10)};
 `;
 
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
-  ({instrument, onPick, inactive}) => {
+  ({baseAsset, instrument, onPick, inactive}) => {
     const percentageAccuracy = 3;
     const click = () => inactive && onPick && onPick(instrument);
 
@@ -53,15 +54,15 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           />
         </InstrumentListWrapper>
 
-        <InstrumentListWrapper>
-          <InstrumentListNumber
-            num={instrument.priceInBase}
-            accuracy={instrument.baseAsset.accuracy}
-            color={'rgba(245, 246, 247, 0.4)'}
-          >
-            &nbsp;{instrument.baseAsset.name}
-          </InstrumentListNumber>
-        </InstrumentListWrapper>
+        {/*<InstrumentListWrapper>*/}
+        {/*<InstrumentListNumber*/}
+        {/*num={instrument.priceInBase}*/}
+        {/*accuracy={baseAsset.accuracy}*/}
+        {/*color={'rgba(245, 246, 247, 0.4)'}*/}
+        {/*>*/}
+        {/*&nbsp;{baseAsset.name}*/}
+        {/*</InstrumentListNumber>*/}
+        {/*</InstrumentListWrapper>*/}
 
         <InstrumentListWrapper className={'right-align'}>
           <InstrumentListNumber

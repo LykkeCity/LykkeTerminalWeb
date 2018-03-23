@@ -36,6 +36,7 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
   & > i.icon {
     display: inline-block;
     width: 10%;
+    text-align: center;
   }
   & > input {
     background-color: #3c3c3c;
