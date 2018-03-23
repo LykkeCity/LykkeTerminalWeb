@@ -67,7 +67,6 @@ const connectedInstrumentPicker = connect(
       uiStore.searchWalletName
     ),
     value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
-    // tslint:disable-next-line:object-literal-sort-keys
     show: uiStore.showInstrumentPicker,
     showInstrumentSelection: uiStore.showInstrumentSelection,
     onPick: (instrument: InstrumentModel) => {

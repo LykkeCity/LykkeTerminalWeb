@@ -1,157 +1,52 @@
 import {observer} from 'mobx-react';
-import {rem} from 'polished';
-import {curry, pathOr} from 'rambda';
 import * as React from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
-import styled from 'styled-components';
-import {InstrumentModel} from '../../models/index';
-import {ReactStyledTable} from '../Table/index';
-import {TradeListCell, TradesProps} from './index';
+import {
+  InstrumentModel,
+  TradeFilter as TradeFilterModel,
+  TradeModel
+} from '../../models/index';
+import * as TradeFilterFns from '../../models/tradeFilter';
+import {HBar} from '../Bar';
+import {TradeFilter, TradeList} from './index';
+import {StyledLoadMore, StyledLoadMoreButton, TradeListToolbar} from './styles';
 
-const assetFromInstrument = (instrument: InstrumentModel, assetType: string) =>
-  pathOr('', [assetType, 'name'], instrument);
-
-const StyledBtnSection = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: ${rem(5)} 0;
-  width: 100%;
-`;
-
-const StyledBtn = styled.span`
-  margin-right: 5px;
-  border-radius: 4px;
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  color: #f5f6f7;
-  padding: ${rem(8)} ${rem(18)};
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
+interface TradesProps {
+  trades?: TradeModel[];
+  needToLoadMore?: boolean;
+  fetchPart: any;
+  authorized?: true;
+  selectedInstrument: InstrumentModel;
+  currentFilter: TradeFilterModel;
+  onFilter: (filter: string) => void;
+}
 
 const Trades: React.SFC<TradesProps> = ({
   trades = [],
   needToLoadMore,
   fetchPart,
-  stringId = '',
-  selectedInstrument
+  selectedInstrument,
+  currentFilter,
+  onFilter
 }) => {
-  const data = [...trades];
-  const columns = [
-    {
-      Header: 'Asset pair',
-      accessor: 'symbol',
-      className: 'left-align no-border',
-      headerClassName: 'left-align header no-border',
-      minWidth: 65
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.side}
-        </TradeListCell>
-      ),
-      Header: 'Side',
-      accessor: 'side',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 40
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.quantity}
-        </TradeListCell>
-      ),
-      Header: () => `Volume (${assetFromSelectedInstrument('baseAsset')})`,
-      accessor: 'quantity',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 65
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.price}
-        </TradeListCell>
-      ),
-      Header: 'Price',
-      accessor: 'price',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 60
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.oppositeQuantity}
-        </TradeListCell>
-      ),
-      Header: () => `Volume (${assetFromSelectedInstrument('quoteAsset')})`,
-      accessor: 'oppositeQuantity',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 60
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.orderType}
-        </TradeListCell>
-      ),
-      Header: 'Order type',
-      accessor: 'orderType',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 50
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.fee}
-        </TradeListCell>
-      ),
-      Header: 'Fee',
-      accessor: 'fee',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 35
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {new Date(props.original.timestamp).toLocaleString()}
-        </TradeListCell>
-      ),
-      Header: 'Time',
-      accessor: 'timestamp',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 155
-    }
-  ];
-  const assetFromSelectedInstrument = curry(assetFromInstrument)(
-    selectedInstrument!
-  );
   return (
-    <div>
-      <ReactStyledTable>
-        <ReactTable
-          data={data}
-          columns={columns}
-          className={'no-border table'}
-          showPagination={false}
-          pageSize={data.length}
+    <React.Fragment>
+      <TradeListToolbar>
+        <TradeFilter
+          value={currentFilter}
+          options={TradeFilterFns.toOptions()}
+          onFilter={onFilter}
         />
-      </ReactStyledTable>
-      {needToLoadMore && (
-        <StyledBtnSection>
-          <StyledBtn onClick={fetchPart}>Load more...</StyledBtn>
-        </StyledBtnSection>
+      </TradeListToolbar>
+      <HBar />
+      <TradeList />
+      {true && (
+        <StyledLoadMore>
+          <StyledLoadMoreButton onClick={fetchPart}>
+            Load more...
+          </StyledLoadMoreButton>
+        </StyledLoadMore>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 

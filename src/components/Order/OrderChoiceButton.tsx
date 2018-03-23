@@ -5,31 +5,27 @@ import {OrderChoiceButtonProps} from './index';
 
 const StyledColumn = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   align-items: center;
-  width: 50%;
 
-  &:first-child {
-    padding-right: 4px;
+  &:not(:last-child) {
+    margin-right: ${rem(22)};
   }
 
-  &:not(:first-child):last-child {
-    padding-left: 4px;
-  }
+  margin-bottom: -1px;
 `;
 
 const StyledActionChoice = styled.div`
-  width: 100%;
   cursor: pointer;
   text-align: center;
-  border-radius: ${rem(4)};
-  padding: ${rem(7)} ${rem(12)};
-  border: solid 1px rgba(140, 148, 160, 0.4);
+  padding: ${rem(16)} 0;
+  color: rgb(140, 148, 160);
+  font-size: ${rem(18)};
+  border-bottom: 1px solid transparent;
 
   &.active {
-    border-color: #0388ef;
-    box-shadow: inset 0 0 0 1px #0388ef;
+    border-bottom: 2px solid rgb(3, 136, 239);
+    color: rgb(255, 255, 255);
+    font-weight: 600;
   }
 `;
 

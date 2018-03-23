@@ -7,7 +7,6 @@ import {InstrumentShortcutSelection, InstrumentShortcutsProps} from './index';
 const {Flex} = require('grid-styled');
 
 const StyledShortcutList = styled(Flex)`
-  min-width: 450px;
   overflow: hidden;
   flex-wrap: wrap;
   font-size: 14px;
@@ -31,10 +30,6 @@ const StyledShortcut = styled(StyledOther)`
   margin: 0 ${rem(8)};
   padding: ${rem(16)} 0;
   overflow: hidden;
-
-  &:first-child {
-    margin-left: 0px;
-  }
 
   &.active {
     color: #0388ef;

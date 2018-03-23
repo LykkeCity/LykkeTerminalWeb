@@ -1,45 +1,49 @@
-import {observer} from 'mobx-react';
-import {InstrumentModel, TradeModel} from '../../models/index';
+import * as TradeFilterModelFns from '../../models/tradeFilter';
+import {withAuth} from '../Auth';
 import {connect} from '../connect';
+// import {withScroll} from '../CustomScrollbar';
+import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import PublicTradeList from './PublicTradeList';
-import TradeList from './TradeList';
-import TradeListCell from './TradeListCell';
+import TradeFilter, {TradeFilterProps} from './TradeFilter';
+import TradeList, {TradeListProps} from './TradeList';
+import Trades from './Trades';
 
-export interface TradesProps {
-  trades?: TradeModel[];
-  needToLoadMore?: boolean;
-  fetchPart: any;
-  stringId?: string;
-  authorized?: true;
-  selectedInstrument?: InstrumentModel; // TODO: move it back as mandatory after merge with public trades
-}
-
-const ConnectedTradeList = connect(
-  ({
-    tradeStore: {getAllTrades, fetchPartTrade, needToLoadMore},
-    authStore,
-    uiStore: {selectedInstrument}
-  }) => ({
-    authorized: authStore.isAuth,
+const ConnectedTrades = connect(
+  ({tradeStore: {fetchPartTrade, needToLoadMore}, authStore: {isAuth}}) => ({
     fetchPart: fetchPartTrade,
     needToLoadMore,
-    trades: getAllTrades,
-    // tslint:disable-next-line:object-literal-sort-keys
+    isAuth
+  }),
+  withAuth(Trades)
+);
+
+const ConnectedTradeList = connect<TradeListProps>(
+  ({tradeStore: {filteredTrades}, uiStore: {selectedInstrument}}) => ({
+    trades: filteredTrades,
     selectedInstrument
   }),
-  TradeList
+  withStyledScroll({height: 'calc(100% - 85px)'})(TradeList)
+);
+
+const ConnectedTradeFilter = connect<TradeFilterProps>(
+  ({tradeStore: {filter, setFilter}}) => ({
+    value: filter,
+    options: TradeFilterModelFns.toOptions(),
+    onFilter: setFilter
+  }),
+  TradeFilter
 );
 
 const ConnectedPublicTradeList = connect(
-  ({tradeStore: {getPublicTrades, fetchPartPublicTrade}, authStore}) => ({
-    fetchPart: fetchPartPublicTrade,
-    trades: getPublicTrades
+  ({tradeStore: {getPublicTrades}, uiStore: {selectedInstrument}}) => ({
+    trades: getPublicTrades,
+    selectedInstrument
   }),
-  PublicTradeList
+  withStyledScroll({height: '100%'})(PublicTradeList)
 );
 
-const ObservedTradeListCell = observer(TradeListCell);
-
+export {ConnectedTrades as Trades};
 export {ConnectedTradeList as TradeList};
 export {ConnectedPublicTradeList as PublicTradeList};
-export {ObservedTradeListCell as TradeListCell};
+export {ConnectedTradeFilter as TradeFilter};
+export {default as TradeListCell} from './TradeListCell';

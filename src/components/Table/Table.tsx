@@ -19,6 +19,11 @@ const Table = styled.table`
     color: #8c94a0;
     &:first-child {
       text-align: left;
+      padding-left: 0;
+    }
+    &:last-child {
+      text-align: right;
+      padding-right: 0;
     }
   }
   td {
@@ -34,6 +39,11 @@ const Table = styled.table`
       color: #f5f6f7;
       font-weight: 600;
       text-align: left;
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
     }
   }
 `;

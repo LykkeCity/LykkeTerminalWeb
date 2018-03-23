@@ -56,12 +56,14 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
   };
 
   getOptions = () => {
-    return this.referenceStore.baseAssets.map(asset => {
-      return {
-        label: asset.name,
-        value: asset.id
-      };
-    });
+    return this.referenceStore.baseAssets
+      .map(asset => {
+        return {
+          label: asset.name,
+          value: asset.id
+        };
+      })
+      .sort((a: any, b: any) => (a.label > b.label ? 1 : -1));
   };
 
   render() {

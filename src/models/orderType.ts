@@ -1,6 +1,12 @@
 enum OrderType {
   Market = 'Market',
-  Limit = 'Limit'
+  Limit = 'Limit',
+  StopLimit = 'Stop Limit'
 }
 
-export default OrderType;
+enum OrderInputs {
+  Price = 'priceValue',
+  Quantity = 'quantityValue'
+}
+
+export {OrderType, OrderInputs};

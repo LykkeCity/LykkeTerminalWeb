@@ -1,23 +1,25 @@
 import * as React from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import {OrderModel, Side} from '../../models/index';
-import Types from '../../models/modals';
+import {OrderModel, Side} from '../../models';
+import {
+  formattedDateTime,
+  formattedNumber
+} from '../../utils/localFormatted/localFormatted';
 import {Icon} from '../Icon/index';
-import {ReactStyledTable} from '../Table/index';
-import {OrderActions} from './';
+import {ReactStyledTable} from '../Table';
 
-interface OrderListProps extends OrderActions {
-  orders?: OrderModel[];
-  addModal: any;
+interface OrderListProps {
+  orders: OrderModel[];
+  onEditOrder: (order: OrderModel) => void;
+  onCancelOrder?: (id: string) => void;
 }
 
 const OrderList: React.SFC<OrderListProps> = ({
-  orders = [],
-  cancelOrder,
-  addModal
+  orders,
+  onEditOrder,
+  onCancelOrder
 }) => {
-  const data = [...orders];
   const columns = [
     {
       Header: 'Asset pair',
@@ -29,7 +31,7 @@ const OrderList: React.SFC<OrderListProps> = ({
     {
       Cell: (props: any) => (
         // tslint:disable-next-line:jsx-no-lambda
-        <span onClick={() => cancelOrder!(props.original.id)}>
+        <span onClick={() => onCancelOrder!(props.original.id)}>
           <Icon name="cross" />
         </span>
       ),
@@ -58,6 +60,7 @@ const OrderList: React.SFC<OrderListProps> = ({
       minWidth: 40
     },
     {
+      Cell: (row: any) => <span>{formattedNumber(row.value)}</span>,
       Header: 'Volume',
       accessor: 'volume',
       className: 'right-align no-border',
@@ -65,6 +68,7 @@ const OrderList: React.SFC<OrderListProps> = ({
       minWidth: 60
     },
     {
+      Cell: (row: any) => <span>{formattedNumber(row.value)}</span>,
       Header: 'Price',
       accessor: 'price',
       className: 'right-align no-border',
@@ -72,9 +76,9 @@ const OrderList: React.SFC<OrderListProps> = ({
       minWidth: 45
     },
     {
-      Cell: (props: any) => (
-        <span>{props.original.createdAt.toLocaleString()}</span>
-      ),
+      Cell: (row: any) => {
+        return <span>{formattedDateTime(new Date(row.value))}</span>;
+      },
       Header: 'Created Date',
       accessor: 'createdAt',
       className: 'right-align no-border',
@@ -84,7 +88,7 @@ const OrderList: React.SFC<OrderListProps> = ({
     {
       Cell: (props: any) => (
         // tslint:disable-next-line:jsx-no-lambda
-        <span onClick={() => handleEditOrder(props.original)}>
+        <span onClick={() => onEditOrder(props.original)}>
           <Icon name="pencil" />
         </span>
       ),
@@ -95,26 +99,15 @@ const OrderList: React.SFC<OrderListProps> = ({
       resizable: false
     }
   ];
-  const handleEditOrder = (order: any) => {
-    addModal(
-      order.id,
-      // tslint:disable-next-line:no-empty
-      () => {},
-      // tslint:disable-next-line:no-empty
-      () => {},
-      Types.EditOrder,
-      order
-    );
-  };
 
   return (
     <ReactStyledTable>
       <ReactTable
-        data={data}
+        data={orders}
         columns={columns}
         className={'no-border table'}
         showPagination={false}
-        pageSize={data.length}
+        pageSize={orders.length}
       />
     </ReactStyledTable>
   );
