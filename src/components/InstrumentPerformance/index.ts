@@ -1,3 +1,4 @@
+import {pathOr} from 'rambda';
 import {RootStore} from '../../stores';
 import {connect} from '../connect';
 import InstrumentPerformance, {
@@ -9,7 +10,17 @@ const mapStoreToProps = ({priceStore}: RootStore) => ({
   change: priceStore.dailyChange,
   high: priceStore.dailyHigh,
   low: priceStore.dailyLow,
-  volume: priceStore.dailyVolume
+  volume: priceStore.dailyVolume,
+  instrumentAccuracy: pathOr(
+    undefined,
+    ['selectedInstrument', 'accuracy'],
+    priceStore
+  ),
+  baseAssetAccuracy: pathOr(
+    undefined,
+    ['selectedInstrument', 'baseAsset', 'accuracy'],
+    priceStore
+  )
 });
 
 const ConnectedInstrumentPerformance = connect<InstrumentPerformanceProps>(
