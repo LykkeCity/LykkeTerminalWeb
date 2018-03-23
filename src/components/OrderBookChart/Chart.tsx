@@ -10,8 +10,8 @@ interface ChartProps {
   mid: string;
 }
 
-interface AsksProps {
-  asks: Order[];
+interface OrdersProps {
+  orders: Order[];
 }
 
 class Mesh extends React.Component {
@@ -86,13 +86,13 @@ class Mesh extends React.Component {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class Asks extends React.Component<AsksProps> {
+class Asks extends React.Component<OrdersProps> {
   lines: any = [];
 
   width = 1125;
   height = 549;
 
-  midX = this.width / 2;
+  midX = this.width / 2 - 2;
   midY = this.height;
 
   stepLength: number;
@@ -101,12 +101,18 @@ class Asks extends React.Component<AsksProps> {
   asks: Order[];
 
   color = '#ab00ff';
+  strokeWidth = 3;
 
-  constructor(props: AsksProps) {
+  constructor(props: OrdersProps) {
     super(props);
-    this.asks = this.props.asks.reverse();
+    this.asks = this.props.orders.reverse();
     this.stepLength = this.midX / this.asks.length;
     this.coef = this.height / this.asks[this.asks.length - 1].depth;
+  }
+
+  onMouseOver(ask: Order): void {
+    // tslint:disable-next-line:no-console
+    console.log(ask);
   }
 
   drawAsks = () => {
@@ -117,14 +123,76 @@ class Asks extends React.Component<AsksProps> {
     this.asks.forEach((ask, index) => {
       newX -= this.stepLength;
       newY = this.midY - this.coef * Math.ceil(ask.depth);
-      newY > 0 ? (newY = newY) : (newY = 1);
+      newY > 0 ? (newY = newY) : (newY = this.strokeWidth);
       this.lines.push(
         <Line
           points={[currentX, currentY, currentX, newY, newX, newY]}
           closed={false}
           stroke={this.color}
-          strokeWidth={2}
-          opacity={0.6}
+          strokeWidth={this.strokeWidth}
+          fill={this.color}
+          // onMouseEnter={() => this.onMouseOver(ask)}
+        />
+      );
+      currentX = newX;
+      currentY = newY;
+    });
+  };
+
+  render() {
+    this.lines = [];
+    this.drawAsks();
+    return this.lines;
+  }
+}
+
+// tslint:disable-next-line:max-classes-per-file
+class Bids extends React.Component<OrdersProps> {
+  lines: any = [];
+
+  width = 1125;
+  height = 549;
+
+  midX = this.width / 2 + 2;
+  midY = this.height;
+
+  stepLength: number;
+  coef: number;
+
+  bids: Order[];
+
+  color = '#ffae2c';
+  strokeWidth = 3;
+
+  constructor(props: OrdersProps) {
+    super(props);
+    this.bids = this.props.orders;
+    this.stepLength = this.midX / this.bids.length;
+    this.coef = this.height / this.bids[this.bids.length - 1].depth;
+  }
+
+  onMouseOver(ask: Order): void {
+    // tslint:disable-next-line:no-console
+    console.log(ask);
+  }
+
+  drawAsks = () => {
+    let currentX = this.midX;
+    let currentY = this.midY;
+    let newX = this.midX;
+    let newY = this.midY;
+    this.bids.forEach((bid, index) => {
+      newX += this.stepLength;
+      newY = this.midY - this.coef * Math.ceil(bid.depth);
+      newY > 0 ? (newY = newY) : (newY = this.strokeWidth);
+      this.lines.push(
+        <Line
+          points={[currentX, currentY, currentX, newY, newX, newY]}
+          closed={false}
+          stroke={this.color}
+          strokeWidth={this.strokeWidth}
+          fill={this.color}
+          // onMouseEnter={() => this.onMouseOver(bid)}
         />
       );
       currentX = newX;
@@ -165,8 +233,9 @@ class Chart extends React.Component<ChartProps> {
     return (
       <Stage width={this.width} height={this.height}>
         <Layer>
-          <Asks asks={this.asks} />
           <Mesh />
+          <Asks orders={this.asks} />
+          <Bids orders={this.bids} />
         </Layer>
       </Stage>
     );
