@@ -1,35 +1,31 @@
 import * as React from 'react';
 
-import {Line} from 'react-konva';
+import {Line, Rect} from 'react-konva';
 
 import {Order} from '../../../models';
 
 import {OrdersProps} from './Models';
 
 class Asks extends React.Component<OrdersProps> {
-  lines: any = [];
+  asks: Order[];
+  graphics: any = [];
 
   width = 1125;
   height = 549;
 
-  midX = this.width / 2 - 2;
+  lineColor = '#ab00ff';
+  blockColor = 'rgba(171, 0, 255, 0.2)';
+  blockStrokeColor = 'rgba(171, 0, 255, 0.05)';
+  strokeWidth = 3;
+
+  midX = this.width / 2 - Math.round(this.strokeWidth / 2);
   midY = this.height;
 
   stepLength: number;
   coef: number;
 
-  asks: Order[];
-
-  color = '#ab00ff';
-  strokeWidth = 3;
-
   constructor(props: OrdersProps) {
     super(props);
-  }
-
-  onMouseOver(ask: Order): void {
-    // tslint:disable-next-line:no-console
-    console.log(ask);
   }
 
   drawAsks = () => {
@@ -41,14 +37,23 @@ class Asks extends React.Component<OrdersProps> {
       newX -= this.stepLength;
       newY = this.midY - this.coef * Math.ceil(ask.depth);
       newY > 0 ? (newY = newY) : (newY = this.strokeWidth);
-      this.lines.push(
+      this.graphics.push(
         <Line
           points={[currentX, currentY, currentX, newY, newX, newY]}
           closed={false}
-          stroke={this.color}
+          stroke={this.lineColor}
           strokeWidth={this.strokeWidth}
-          fill={this.color}
-          // onMouseEnter={() => this.onMouseOver(ask)}
+        />
+      );
+      this.graphics.push(
+        <Rect
+          x={newX}
+          y={newY}
+          width={currentX - newX}
+          height={this.midY - newY}
+          stroke={this.blockStrokeColor}
+          fill={this.blockColor}
+          opacity={0.2}
         />
       );
       currentX = newX;
@@ -57,7 +62,7 @@ class Asks extends React.Component<OrdersProps> {
   };
 
   initialize() {
-    this.lines = [];
+    this.graphics = [];
     this.asks = this.props.orders.reverse();
     this.stepLength = this.midX / this.asks.length;
     this.coef = this.height / this.asks[this.asks.length - 1].depth;
@@ -66,7 +71,7 @@ class Asks extends React.Component<OrdersProps> {
   render() {
     this.initialize();
     this.drawAsks();
-    return this.lines;
+    return this.graphics;
   }
 }
 

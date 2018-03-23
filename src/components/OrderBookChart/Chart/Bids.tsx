@@ -1,35 +1,31 @@
 import * as React from 'react';
 
-import {Line} from 'react-konva';
+import {Line, Rect} from 'react-konva';
 
 import {Order} from '../../../models';
 
 import {OrdersProps} from './Models';
 
 class Bids extends React.Component<OrdersProps> {
-  lines: any = [];
+  bids: Order[];
+  graphics: any = [];
 
   width = 1125;
   height = 549;
 
-  midX = this.width / 2 + 2;
+  lineColor = '#ffae2c';
+  blockColor = 'rgba(255, 174, 44, 0.15)';
+  blockStrokeColor = 'rgba(255, 174, 44, 0.001)';
+  strokeWidth = 3;
+
+  midX = this.width / 2 + Math.round(this.strokeWidth / 2);
   midY = this.height;
 
   stepLength: number;
   coef: number;
 
-  bids: Order[];
-
-  color = '#ffae2c';
-  strokeWidth = 3;
-
   constructor(props: OrdersProps) {
     super(props);
-  }
-
-  onMouseOver(ask: Order): void {
-    // tslint:disable-next-line:no-console
-    console.log(ask);
   }
 
   drawAsks = () => {
@@ -41,14 +37,22 @@ class Bids extends React.Component<OrdersProps> {
       newX += this.stepLength;
       newY = this.midY - this.coef * Math.ceil(bid.depth);
       newY > 0 ? (newY = newY) : (newY = this.strokeWidth);
-      this.lines.push(
+      this.graphics.push(
         <Line
           points={[currentX, currentY, currentX, newY, newX, newY]}
           closed={false}
-          stroke={this.color}
+          stroke={this.lineColor}
           strokeWidth={this.strokeWidth}
-          fill={this.color}
-          // onMouseEnter={() => this.onMouseOver(bid)}
+        />
+      );
+      this.graphics.push(
+        <Rect
+          x={newX}
+          y={newY}
+          width={currentX - newX}
+          height={this.midY - newY}
+          stroke={this.blockStrokeColor}
+          fill={this.blockColor}
         />
       );
       currentX = newX;
@@ -57,7 +61,7 @@ class Bids extends React.Component<OrdersProps> {
   };
 
   initilaize() {
-    this.lines = [];
+    this.graphics = [];
     this.bids = this.props.orders;
     this.stepLength = this.midX / this.bids.length;
     this.coef = this.height / this.bids[this.bids.length - 1].depth;
@@ -66,7 +70,7 @@ class Bids extends React.Component<OrdersProps> {
   render() {
     this.initilaize();
     this.drawAsks();
-    return this.lines;
+    return this.graphics;
   }
 }
 
