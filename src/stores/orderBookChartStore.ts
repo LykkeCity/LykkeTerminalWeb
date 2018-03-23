@@ -1,6 +1,8 @@
 import {action, computed, observable} from 'mobx';
+import {reverse} from 'rambda';
 import {TradeModel} from '../models';
 import {BaseStore, RootStore} from './index';
+import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
 class OrderBookChartStore extends BaseStore {
   @observable spanMultiplierIdx = 0;
@@ -31,11 +33,29 @@ class OrderBookChartStore extends BaseStore {
 
   @computed
   get bids() {
-    return this.rootStore.orderBookStore.bids;
+    const {
+      orderListStore: {limitOrdersForThePair: limitOrders}
+    } = this.rootStore;
+    const aggregatedOrders = aggregateOrders(
+      this.rootStore.orderBookStore.rawBids,
+      this.span,
+      false
+    );
+    return connectLimitOrders(aggregatedOrders, limitOrders, this.span, false);
   }
 
   get asks() {
-    return this.rootStore.orderBookStore.asks;
+    const {
+      orderListStore: {limitOrdersForThePair: limitOrders}
+    } = this.rootStore;
+    const aggregatedOrders = aggregateOrders(
+      this.rootStore.orderBookStore.rawAsks,
+      this.span,
+      true
+    );
+    return reverse(
+      connectLimitOrders(aggregatedOrders, limitOrders, this.span, true)
+    );
   }
 
   mid = () => this.rootStore.orderBookStore.mid();
