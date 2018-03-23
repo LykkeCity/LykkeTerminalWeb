@@ -8,7 +8,12 @@ import {
 } from './styles';
 
 const colorFromChange = (change: number) =>
-  change > 0 ? '#13b72a' : '#ff3e2e';
+  Number.isFinite(change) ? (change > 0 ? '#13b72a' : '#ff3e2e') : undefined;
+
+const mapToPercentageWithAccuracy = (acc: number) => (val: number) =>
+  Math.abs(val)
+    .toFixed(acc)
+    .concat('%');
 
 export interface InstrumentPerformanceProps {
   lastPrice: number;
@@ -16,21 +21,27 @@ export interface InstrumentPerformanceProps {
   high: number;
   low: number;
   volume: number;
+  instrumentAccuracy: number;
+  baseAssetAccuracy: number;
 }
 
 interface InstrumentPerformanceFigureProps {
   label: string;
   value: number;
+  accuracy: number;
   color?: string;
+  valueFormatter?: (value: number | string) => string;
 }
 
 const InstrumentPerformanceFigure: React.SFC<
   InstrumentPerformanceFigureProps
-> = ({label = '', value = 0, ...rest}) => (
+> = ({label = '', value, accuracy, color, valueFormatter}) => (
   <HeaderItem>
     <StyledInstrumentPerformanceFigure>
-      <InstrumentPerformanceFigureValue {...rest}>
-        {value && isFinite(value) && value.toFixed(2)}
+      <InstrumentPerformanceFigureValue color={color}>
+        {Number.isFinite(value)
+          ? valueFormatter ? valueFormatter(value) : value.toFixed(accuracy)
+          : '---'}
       </InstrumentPerformanceFigureValue>
       <InstrumentPerformanceFigureLabel>
         {label}
@@ -44,19 +55,44 @@ const InstrumentPerformance: React.SFC<InstrumentPerformanceProps> = ({
   change,
   high,
   low,
-  volume
-}) => (
-  <StyledInstrumentPerformance>
-    <InstrumentPerformanceFigure label="Last price" value={lastPrice} />
-    <InstrumentPerformanceFigure
-      label="Change, %"
-      value={Math.abs(change)}
-      color={colorFromChange(change)}
-    />
-    <InstrumentPerformanceFigure label="High" value={high} />
-    <InstrumentPerformanceFigure label="Low" value={low} />
-    <InstrumentPerformanceFigure label="Volume" value={volume} />
-  </StyledInstrumentPerformance>
-);
+  volume,
+  instrumentAccuracy = 2,
+  baseAssetAccuracy = 2
+}) => {
+  const mapToPercentageWithInstrumentAccuracy = mapToPercentageWithAccuracy(
+    instrumentAccuracy
+  );
+  return (
+    <StyledInstrumentPerformance>
+      <InstrumentPerformanceFigure
+        label="Last price"
+        value={lastPrice}
+        accuracy={instrumentAccuracy}
+      />
+      <InstrumentPerformanceFigure
+        label="Change (24h)"
+        value={Math.abs(change)}
+        valueFormatter={mapToPercentageWithInstrumentAccuracy}
+        color={colorFromChange(change)}
+        accuracy={instrumentAccuracy}
+      />
+      <InstrumentPerformanceFigure
+        label="High (24h)"
+        value={high}
+        accuracy={instrumentAccuracy}
+      />
+      <InstrumentPerformanceFigure
+        label="Low (24h)"
+        value={low}
+        accuracy={instrumentAccuracy}
+      />
+      <InstrumentPerformanceFigure
+        label="Volume (24h)"
+        value={volume}
+        accuracy={baseAssetAccuracy}
+      />
+    </StyledInstrumentPerformance>
+  );
+};
 
 export default InstrumentPerformance;

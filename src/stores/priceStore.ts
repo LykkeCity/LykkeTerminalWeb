@@ -1,10 +1,15 @@
 import {ISubscription} from 'autobahn';
-import {computed, observable} from 'mobx';
+import {endOfToday, startOfToday} from 'date-fns';
+import {computed, observable, runInAction} from 'mobx';
+import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
+import {PriceApi} from '../api';
 import * as topics from '../api/topics';
 import {MarketType, PriceType} from '../models';
+import * as map from '../models/mappers';
 
 class PriceStore extends BaseStore {
+  priceApi: any;
   @observable lastTradePrice: number;
   @observable dailyHigh: number;
   @observable dailyLow: number;
@@ -15,7 +20,7 @@ class PriceStore extends BaseStore {
 
   @computed
   get dailyChange() {
-    return (this.lastTradePrice - this.dailyOpen) / this.dailyOpen;
+    return (this.lastTradePrice - this.dailyOpen) / this.dailyOpen * 100;
   }
 
   @computed
@@ -23,9 +28,28 @@ class PriceStore extends BaseStore {
     return this.rootStore.uiStore.selectedInstrument;
   }
 
-  constructor(store: RootStore) {
+  constructor(store: RootStore, private readonly api: PriceApi) {
     super(store);
   }
+
+  fetchDailyCandle = async () => {
+    const resp = await this.api.fetchCandles(
+      this.selectedInstrument!.id,
+      startOfToday(),
+      endOfToday(),
+      'day'
+    );
+    runInAction(() => {
+      const {open, high, low, close, volume} = map.mapToBarFromRest(
+        last(resp.History)
+      );
+      this.dailyOpen = open;
+      this.dailyHigh = high;
+      this.dailyLow = low;
+      this.lastTradePrice = close;
+      this.dailyVolume = volume;
+    });
+  };
 
   subscribeToDailyCandle = async () => {
     this.subscriptions.add(
@@ -42,12 +66,12 @@ class PriceStore extends BaseStore {
   };
 
   onDailyTradeCandle = (args: any[]) => {
-    const {o, h, l, c, v} = args[0];
-    this.dailyOpen = o;
-    this.dailyHigh = h;
-    this.dailyLow = l;
-    this.lastTradePrice = c;
-    this.dailyVolume = v;
+    const {open, high, low, close, volume} = map.mapToBarFromWamp(args[0]);
+    this.dailyOpen = open;
+    this.dailyHigh = high;
+    this.dailyLow = low;
+    this.lastTradePrice = close;
+    this.dailyVolume = volume;
   };
 
   unsubscribeFromDailyCandle = async () => {
