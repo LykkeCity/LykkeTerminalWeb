@@ -1,14 +1,64 @@
+import rem from 'polished/lib/helpers/rem';
 import {pathOr} from 'rambda';
 import * as React from 'react';
+import styled from 'styled-components';
+import {Percentage} from '../../constants/ordersPercentage';
+import {AssetBalanceModel, OrderInputs} from '../../models';
+import Side from '../../models/side';
 import EditOrderForm from '../Order/EditOrderForm/EditOrderForm';
-import {EditOrderProps, EditOrderState, StyledModal} from './index';
+import {EditOrderProps, EditOrderState} from './index';
 import ModalHeader from './ModalHeader/ModalHeader';
+
+const percentage = Percentage.map((i: any) => {
+  return {...i};
+});
+
+const StyledEditModal = styled.div.attrs({
+  style: (props: any) => ({
+    borderTop: `${rem(6)} solid ${props.isSell ? '#ab00ff' : '#fb8f01'}`
+  })
+})`
+  border-radius: ${rem(6)};
+  font-family: Proxima Nova;
+  position: absolute;
+  padding: ${rem(20)} ${rem(24)};
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  background-color: #3c3c3c;
+  border: solid 1px rgba(0, 0, 0, 0.2);
+  z-index: 31;
+  width: ${rem(360)};
+  font-size: ${rem(14)};
+` as any;
+
+const StyledActionTitle = styled.div.attrs({
+  style: (props: any) => ({
+    color: props.isSell ? '#d070ff' : '#fb8f01'
+  })
+})`
+  text-transform: uppercase;
+  font-size: ${rem(12)};
+  letter-spacing: ${rem(1.5)};
+` as any;
+
+const StyledTitle = styled.div`
+  font-family: 'Akrobat', sans-serif;
+  font-size: ${rem(24)};
+  font-weight: bold;
+  line-height: 0.67;
+  margin-top: ${rem(12)};
+  margin-bottom: ${rem(12)};
+`;
 
 class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private action: string;
-  private accuracy: {priceValue: number; quantityValue: number};
-  private assetName: string = '';
+  private accuracy: {priceAccuracy: number; quantityAccuracy: number};
+  private baseName: string = '';
+  private quoteName: string = '';
   private currency: string = '';
+  private isSellActive: boolean;
+  private balance: number = 0;
 
   constructor(props: EditOrderProps) {
     super(props);
@@ -18,38 +68,89 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
 
     this.state = {
       pendingOrder: false,
+      percents: percentage,
       priceValue: `${modal.config.price}`,
       quantityValue: `${modal.config.volume}`
     };
 
     this.accuracy = {
-      priceValue: pathOr(2, ['accuracy'], currentInstrument),
-      quantityValue: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument)
+      priceAccuracy: pathOr(2, ['accuracy'], currentInstrument),
+      quantityAccuracy: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument)
     };
-    this.assetName = currentInstrument.name;
+    this.baseName = currentInstrument.name.split('/')[0];
+    this.quoteName = currentInstrument.name.split('/')[1];
     this.action = modal.config.side.toLowerCase();
     this.currency = currentInstrument.id;
+    this.isSellActive = this.action === Side.Sell.toLowerCase();
+
+    const assetName = this.isSellActive ? this.baseName : this.quoteName;
+    const asset = this.props.getBalance.find((a: AssetBalanceModel) => {
+      return a.id === assetName;
+    });
+    const reserved = this.isSellActive
+      ? modal.config.volume
+      : modal.config.price;
+    this.balance = (asset.available + reserved).toFixed(asset.accuracy);
   }
 
-  onChange = (field: string) => (e: any) => {
-    this.setState(
-      this.props.onValueChange({
-        accuracy: this.accuracy[field],
-        field,
-        value: e.target.value
-      })
-    );
+  handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
+    const {
+      accuracy: {quantityAccuracy, priceAccuracy},
+      baseName,
+      quoteName
+    } = this;
+
+    const tempObj = await this.props.handlePercentageChange({
+      balance: this.balance,
+      baseName,
+      index,
+      isInverted,
+      isSellActive: this.isSellActive,
+      percentage,
+      priceAccuracy,
+      quantityAccuracy,
+      quoteName
+    });
+
+    this.setState(tempObj);
   };
 
-  onArrowClick = (operation: string, field: string) => (e: any) => {
-    this.setState(
-      this.props.onArrowClick({
-        accuracy: this.accuracy[field],
-        field,
-        operation,
-        value: this.state[field]
-      })
-    );
+  updatePercentageState = (field: string) => {
+    const tempObj: any = {};
+    if (this.isSellActive && field === OrderInputs.Quantity) {
+      this.props.resetPercentage(percentage);
+      tempObj.percents = percentage;
+    } else if (!this.isSellActive && field === OrderInputs.Price) {
+      this.props.resetPercentage(percentage);
+      tempObj.percents = percentage;
+    }
+    this.setState(tempObj);
+  };
+
+  onChange = (accuracy: number) => (field: string) => (e: any) => {
+    const tempObj = this.props.onValueChange({
+      accuracy,
+      field,
+      value: e.target.value
+    });
+
+    this.updatePercentageState(field);
+    this.setState(tempObj);
+  };
+
+  onArrowClick = (accuracy: number) => (
+    operation: string,
+    field: string
+  ) => () => {
+    const tempObj = this.props.onArrowClick({
+      accuracy,
+      field,
+      operation,
+      value: this.state[field]
+    });
+
+    this.updatePercentageState(field);
+    this.setState(tempObj);
   };
 
   toggleDisableBtn = (value: boolean) => {
@@ -58,15 +159,10 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     });
   };
 
-  isInvalidValues = () => {
-    return !+this.state.quantityValue || !+this.state.priceValue;
-  };
-
-  // tslint:disable-next-line:no-empty
   handleEditOrder = () => {
     this.toggleDisableBtn(true);
     const body: any = {
-      AssetId: this.assetName.split('/')[0],
+      AssetId: this.baseName,
       AssetPairId: this.currency,
       OrderAction: this.action,
       Price: parseFloat(this.state.priceValue),
@@ -79,32 +175,49 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       .catch(() => this.toggleDisableBtn(false));
   };
 
+  isDisable = () => {
+    return !+this.state.priceValue || !+this.state.quantityValue;
+  };
+
   handleCancel = () => {
+    this.props.resetPercentage(percentage);
     this.props.modal.close();
   };
 
   render() {
     return (
-      <StyledModal>
-        <ModalHeader title={'Edit Order'} onClick={this.handleCancel} />
+      <StyledEditModal isSell={this.action === Side.Sell.toLowerCase()}>
+        <ModalHeader onClick={this.handleCancel}>
+          <StyledActionTitle isSell={this.action === Side.Sell.toLowerCase()}>
+            {this.action}
+          </StyledActionTitle>
+          <StyledTitle>Edit Limit Order</StyledTitle>
+        </ModalHeader>
         <EditOrderForm
-          assetName={this.assetName}
+          action={this.action}
+          onSubmit={this.handleEditOrder}
+          quantity={this.state.quantityValue}
+          price={this.state.priceValue}
+          quantityAccuracy={this.accuracy.quantityAccuracy}
+          priceAccuracy={this.accuracy.priceAccuracy}
           onChange={this.onChange}
           onArrowClick={this.onArrowClick}
-          price={this.state.priceValue}
-          isDisable={this.state.pendingOrder || this.isInvalidValues()}
-          isMarket={false}
-          action={this.action}
-          quantity={this.state.quantityValue}
+          percents={this.state.percents}
+          onHandlePercentageChange={this.handlePercentageChange}
+          baseName={this.baseName}
+          quoteName={this.quoteName}
+          isSell={this.isSellActive}
+          isDisable={this.isDisable()}
           amount={this.props.fixedAmount(
-            +this.state.priceValue,
+            this.state.priceValue,
             this.state.quantityValue,
-            this.accuracy.priceValue
+            this.accuracy.priceAccuracy
           )}
-          onSubmit={this.handleEditOrder}
-          onCancel={this.handleCancel}
+          balance={this.balance}
+          buttonMessage={'Modify'}
+          isEditForm={true}
         />
-      </StyledModal>
+      </StyledEditModal>
     );
   }
 }

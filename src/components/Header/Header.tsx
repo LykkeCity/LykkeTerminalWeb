@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {BalanceInfo} from '../BalanceInfo';
+import ClickOutside from '../ClickOutside/ClickOutside';
 import {Icon} from '../Icon/index';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
@@ -63,10 +64,15 @@ const Header: React.SFC<HeaderProps> = ({
     authStore.signIn();
   };
 
-  const settings = (e: any) => {
+  const handleToggleSettings = (e: any) => {
     document.querySelector('.settings')!.classList.toggle('active');
     e.stopPropagation();
     settingsStore.toggleSettings();
+  };
+
+  const handleCloseSettings = () => {
+    document.querySelector('.settings')!.classList.remove('active');
+    settingsStore.showSettings = false;
   };
 
   return (
@@ -95,12 +101,17 @@ const Header: React.SFC<HeaderProps> = ({
               </HeaderItem>
             ) : null}
             {authStore.isAuth ? (
-              <HeaderItem>
-                <span className="hidden-xs settings" onClick={settings}>
-                  <Icon color={`#8c94a0`} name={`cog`} />
-                </span>
-                {settingsStore.settings ? <SettingsModal /> : null}
-              </HeaderItem>
+              <ClickOutside onClickOutside={handleCloseSettings}>
+                <HeaderItem>
+                  <span
+                    className="hidden-xs settings"
+                    onClick={handleToggleSettings}
+                  >
+                    <Icon color={`#8c94a0`} name={`cog`} />
+                  </span>
+                  {settingsStore.showSettings ? <SettingsModal /> : null}
+                </HeaderItem>
+              </ClickOutside>
             ) : null}
             <HeaderItem>
               <Link>

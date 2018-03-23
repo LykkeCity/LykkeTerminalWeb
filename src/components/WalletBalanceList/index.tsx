@@ -1,5 +1,6 @@
 import {AssetBalanceModel, AssetModel} from '../../models/index';
 import {connect} from '../connect';
+import {withScroll} from '../CustomScrollbar';
 import WalletBalanceList from './WalletBalanceList';
 
 export interface WalletBalanceItemProps {
@@ -18,7 +19,7 @@ const ConnectedWalletBalanceList = connect(
       new AssetModel({}),
     total
   }),
-  WalletBalanceList
+  withScroll(WalletBalanceList)
 );
 
 export {ConnectedWalletBalanceList as WalletBalanceList};
