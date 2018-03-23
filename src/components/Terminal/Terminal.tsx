@@ -10,6 +10,7 @@ import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
+import MyWallets from '../MyWallets/MyWallets';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
@@ -57,7 +58,10 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
       authorize={true}
       additionalControls={additionalActions.orders}
     >
-      <WalletBalanceList />
+      <MyWallets>
+        <WalletBalanceList />
+        <BalanceList />
+      </MyWallets>
       <OrderList />
       <TradeList />
     </TabbedTile>

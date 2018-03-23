@@ -27,7 +27,7 @@ class TabbedTile extends React.Component<TabbedTileProps> {
   // TODO: rethink additionalControls API, should be passed as a child with specific React context
   @computed
   get shouldRenderAdditionalControls() {
-    return this.props.isAuth && this.selectedIndex === 0;
+    return this.props.isAuth && this.selectedIndex === 1;
   }
 
   handleSelectTab = (idx: number) => (e: React.MouseEvent<any>) => {
