@@ -1,13 +1,11 @@
 import * as React from 'react';
-import {Order, Side} from '../../models/index';
+import {Order} from '../../models/index';
 import {normalizeVolume} from '../../utils';
 import {
-  StyledAskVolume,
-  StyledBidVolume,
-  StyledCloseOrders,
-  StyledMidCell,
   StyledOrderRow,
-  StyledVolumeCell,
+  StyledPrice,
+  StyledValue,
+  StyledVolume,
   StyledVolumeOverlay
 } from './styles';
 
@@ -44,57 +42,19 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   const currentPrice = price.toFixed(priceAccuracy);
   return (
     <StyledOrderRow>
-      <StyledVolumeCell side={side}>
-        {side === Side.Sell ? (
-          <div onClick={onDepthClick(+currentPrice, depth)}>
-            <StyledVolumeOverlay
-              side={side}
-              volume={normalizeVolume(valueToShow, minValue, maxValue)}
-            />
-            {valueToShow.toFixed(volumeAccuracy)}
-          </div>
-        ) : (
-          !!orderVolume &&
-          side === Side.Buy && (
-            <StyledAskVolume side={side}>
-              <StyledCloseOrders
-                side={side}
-                onClick={onOrderClick(connectedLimitOrders)}
-              >
-                &times;
-              </StyledCloseOrders>
-              <div>{orderVolume}</div>
-            </StyledAskVolume>
-          )
-        )}
-      </StyledVolumeCell>
-      <StyledMidCell onClick={onPriceClick(+currentPrice)}>
+      <StyledPrice onClick={onPriceClick(+currentPrice)}>
         {currentPrice}
-      </StyledMidCell>
-      <StyledVolumeCell side={side}>
-        {side === Side.Buy ? (
-          <div onClick={onDepthClick(+currentPrice, depth)}>
-            <StyledVolumeOverlay
-              side={side}
-              volume={normalizeVolume(valueToShow, minValue, maxValue)}
-            />
-            {valueToShow.toFixed(volumeAccuracy)}
-          </div>
-        ) : (
-          !!orderVolume &&
-          side === Side.Sell && (
-            <StyledBidVolume side={side}>
-              <div>{orderVolume}</div>
-              <StyledCloseOrders
-                side={side}
-                onClick={onOrderClick(connectedLimitOrders)}
-              >
-                &times;
-              </StyledCloseOrders>
-            </StyledBidVolume>
-          )
-        )}
-      </StyledVolumeCell>
+      </StyledPrice>
+      <StyledVolume side={side}>
+        <div onClick={onDepthClick(+currentPrice, depth)}>
+          <StyledVolumeOverlay
+            side={side}
+            volume={normalizeVolume(valueToShow, minValue, maxValue)}
+          />
+          {valueToShow.toFixed(volumeAccuracy)}
+        </div>
+      </StyledVolume>
+      <StyledValue>{(valueToShow * price).toFixed(priceAccuracy)}</StyledValue>
     </StyledOrderRow>
   );
 };

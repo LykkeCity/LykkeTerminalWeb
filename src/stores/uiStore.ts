@@ -43,6 +43,12 @@ class UiStore extends BaseStore {
           )();
 
           this.stateFns.forEach((f: any) => f && f(instrument));
+
+          const {
+            subscribeToDailyCandle,
+            reset: resetPriceStore
+          } = this.rootStore.priceStore;
+          fns.seq(resetPriceStore, subscribeToDailyCandle)();
         }
       }
     );
