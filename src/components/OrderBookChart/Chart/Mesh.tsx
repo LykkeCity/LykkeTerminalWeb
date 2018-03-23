@@ -7,7 +7,7 @@ import {ChartProps} from './Models';
 class Mesh extends React.Component<ChartProps> {
   lines: any = [];
 
-  width = 1125;
+  width = 1080;
   height = 510;
 
   color = '#8c94a0';
@@ -18,7 +18,7 @@ class Mesh extends React.Component<ChartProps> {
   fontFamily = 'Proxima Nova';
   fontColor = '#8c94a0';
 
-  stepVertical = 140;
+  stepVertical = this.width / 8;
   stepHorizontal = 40;
 
   startVertical = this.stepVertical / 2;
@@ -87,13 +87,13 @@ class Mesh extends React.Component<ChartProps> {
 
   drawHorizontal = () => {
     for (
-      let i = this.startHorizontal;
-      i < this.height;
-      i += this.stepHorizontal
+      let startY = this.startHorizontal;
+      startY < this.height;
+      startY += this.stepHorizontal
     ) {
       this.lines.push(
         <Line
-          points={[0, i, this.width, i]}
+          points={[0, startY, this.width, startY]}
           closed={true}
           stroke={this.color}
           strokeWidth={this.strikeWidth}

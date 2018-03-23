@@ -10,7 +10,7 @@ class Bids extends React.Component<OrdersProps> {
   bids: Order[];
   graphics: any = [];
 
-  width = 1125;
+  width = 1080;
   height = 500;
 
   lineColor = '#ffae2c';

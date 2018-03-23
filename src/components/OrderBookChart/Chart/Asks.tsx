@@ -10,7 +10,7 @@ class Asks extends React.Component<OrdersProps> {
   asks: Order[];
   graphics: any = [];
 
-  width = 1125;
+  width = 1080;
   height = 500;
 
   lineColor = '#ab00ff';
