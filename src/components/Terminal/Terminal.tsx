@@ -53,10 +53,11 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ),
   ord: (
     <TabbedTile
-      tabs={['Orders', 'Trades']}
+      tabs={['My wallets', 'Orders', 'Trades']}
       authorize={true}
       additionalControls={additionalActions.orders}
     >
+      <WalletBalanceList />
       <OrderList />
       <TradeList />
     </TabbedTile>
