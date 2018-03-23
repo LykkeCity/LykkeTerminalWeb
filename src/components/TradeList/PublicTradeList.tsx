@@ -1,8 +1,12 @@
+import {format} from 'date-fns';
 import {pathOr} from 'rambda';
 import * as React from 'react';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 import {InstrumentModel, TradeModel} from '../../models/index';
-import {Table} from '../Table/index';
-import {PublicTradeListItem} from './index';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import {ReactStyledTable} from '../Table/index';
+import {TradeListCell} from './index';
 
 interface PublicTradeListProps {
   trades: TradeModel[];
@@ -12,22 +16,69 @@ interface PublicTradeListProps {
 export const PublicTradeList: React.SFC<PublicTradeListProps> = ({
   trades = [],
   selectedInstrument
-}) => (
-  <Table>
-    <thead>
-      <tr>
-        <th>Trade size</th>
-        <th>
-          Price ({pathOr('', ['quoteAsset', 'name'], selectedInstrument)})
-        </th>
-        <th>Side</th>
-        <th>Time</th>
-      </tr>
-    </thead>
-    <tbody>
-      {trades.map(trade => <PublicTradeListItem key={trade.id} {...trade} />)}
-    </tbody>
-  </Table>
-);
+}) => {
+  const columns = [
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {formattedNumber(props.original.quantity)}
+        </TradeListCell>
+      ),
+      Header: 'Trade size',
+      accessor: 'quantity',
+      className: 'left-align no-border',
+      headerClassName: 'left-align header no-border',
+      minWidth: 90
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {formattedNumber(props.original.price)}
+        </TradeListCell>
+      ),
+      Header: () =>
+        `Price (${pathOr('', ['quoteAsset', 'name'], selectedInstrument)})`,
+      accessor: 'price',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 75
+    },
+    {
+      Cell: (row: any) => (
+        <TradeListCell side={row.value}>{row.value}</TradeListCell>
+      ),
+      Header: 'Side',
+      accessor: 'side',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 40,
+      resizable: false
+    },
+    {
+      Cell: (props: any) => (
+        <TradeListCell side={props.original.side}>
+          {format(props.original.timestamp, 'HH:mm:ss')}
+        </TradeListCell>
+      ),
+      Header: 'Time',
+      accessor: 'timestamp',
+      className: 'right-align no-border',
+      headerClassName: 'right-align header no-border',
+      minWidth: 60
+    }
+  ];
+
+  return (
+    <ReactStyledTable>
+      <ReactTable
+        data={trades}
+        columns={columns}
+        className={'no-border table'}
+        showPagination={false}
+        pageSize={trades.length}
+      />
+    </ReactStyledTable>
+  );
+};
 
 export default PublicTradeList;

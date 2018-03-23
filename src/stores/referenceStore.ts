@@ -212,6 +212,7 @@ class ReferenceStore extends BaseStore {
 
   fetchRates = async () => {
     const resp = await this.api.fetchRates();
+
     resp.AssetPairRates.forEach(({AssetPair, BidPrice}: any) => {
       const instrument = this.getInstrumentById(AssetPair);
       if (instrument) {
@@ -232,11 +233,21 @@ class ReferenceStore extends BaseStore {
     updateTradingWallet();
   };
 
-  onQuote = (args: any) => {
+  onQuote = async (args: any) => {
     const {a: id, p: price} = args[0];
     const instrument = this.getInstrumentById(id);
+
     if (instrument && instrument.id) {
       instrument.updatePrice(price);
+    }
+  };
+
+  onCandle = async (args: any) => {
+    const {a: id, o: openPrice, c: closePrice, v: volume} = args[0];
+    const instrument = this.getInstrumentById(id);
+
+    if (instrument && instrument.id) {
+      instrument.updateFromCandle(openPrice, closePrice, volume);
     }
   };
 

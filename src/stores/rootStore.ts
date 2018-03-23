@@ -11,6 +11,7 @@ import {
 } from '../api/index';
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
+import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
@@ -77,7 +78,7 @@ class RootStore {
     }
   }
 
-  startPublicMode = (defaultInstrument: any) => {
+  startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
@@ -86,9 +87,13 @@ class RootStore {
       this.tradeStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
-        .forEach((x: any) =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        .forEach((x: any) => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            this.referenceStore.onCandle
+          );
+        });
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
@@ -130,16 +135,20 @@ class RootStore {
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
-        instruments.forEach(x =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        instruments.forEach(x => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            this.referenceStore.onCandle
+          );
+        });
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
         this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
-      
+
         return Promise.resolve();
       })
       .catch(() => {
