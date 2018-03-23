@@ -1,6 +1,5 @@
-import {observable} from 'mobx';
 import * as React from 'react';
-import {Order, OrderBookDisplayType} from '../../models';
+import {Order} from '../../models';
 import {VBar} from '../Bar/Bar';
 import {StyledBar, StyledGrouping, StyledWrapper} from '../OrderBook/styles';
 import Chart from './Chart/index';
@@ -17,8 +16,6 @@ interface OrderBookChartProps {
 }
 
 class OrderBookChart extends React.Component<OrderBookChartProps> {
-  @observable displayType = OrderBookDisplayType.Volume;
-
   constructor(props: OrderBookChartProps) {
     super(props);
   }

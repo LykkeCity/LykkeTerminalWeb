@@ -11,7 +11,7 @@ class Bids extends React.Component<OrdersProps> {
   graphics: any = [];
 
   width = 1125;
-  height = 549;
+  height = 500;
 
   lineColor = '#ffae2c';
   blockColor = 'rgba(255, 174, 44, 0.15)';

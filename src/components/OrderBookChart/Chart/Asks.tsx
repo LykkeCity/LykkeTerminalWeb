@@ -11,7 +11,7 @@ class Asks extends React.Component<OrdersProps> {
   graphics: any = [];
 
   width = 1125;
-  height = 549;
+  height = 500;
 
   lineColor = '#ab00ff';
   blockColor = 'rgba(171, 0, 255, 0.2)';
