@@ -12,6 +12,8 @@ import {HBar, VBar} from '../Bar';
 import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
+  MidFigures,
+  MidOverlay,
   StyledBar,
   StyledBuyOrders,
   StyledGrouping,
@@ -34,6 +36,7 @@ interface OrderBookProps {
   asks: Order[];
   bids: Order[];
   mid: string;
+  spread: number;
   priceAccuracy: number;
   volumeAccuracy: number;
   updatePrice: any;
@@ -120,6 +123,7 @@ class OrderBook extends React.Component<OrderBookProps> {
       bids,
       asks,
       mid,
+      spread,
       priceAccuracy,
       volumeAccuracy,
       span,
@@ -167,7 +171,7 @@ class OrderBook extends React.Component<OrderBookProps> {
           style={{
             width: 'calc(100% + 2rem)',
             marginLeft: '-1rem',
-            height: '80%'
+            height: 'calc(100% - 5.2rem)'
           }}
           ref={this.refHandlers.scrollComponent}
         >
@@ -195,8 +199,17 @@ class OrderBook extends React.Component<OrderBookProps> {
                   onClick={this.handleUpdatePrice(Number(mid))}
                   colSpan={3}
                 >
-                  {Number.isNaN(Number.parseFloat(mid)) ? '' : mid}
-                  <div>&nbsp;</div>
+                  <MidFigures>
+                    <strong>
+                      {Number.isFinite(parseFloat(mid)) ? mid : ''}
+                    </strong>
+                    <small>
+                      {spread.toFixed(priceAccuracy)}
+                      <br />
+                      <span>Spread</span>
+                    </small>
+                  </MidFigures>
+                  <MidOverlay />
                 </StyledMidPrice>
               </tr>
             </tbody>
