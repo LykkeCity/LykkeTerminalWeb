@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Order} from '../../models/index';
 import {normalizeVolume} from '../../utils';
 import {
+  MyOrdersIndicator,
   StyledOrderRow,
   StyledPrice,
   StyledValue,
@@ -21,6 +22,7 @@ interface OrderBookItemProps extends Order {
   depth: number;
   orderVolume: number;
   connectedLimitOrders: string[];
+  showMyOrders: any;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -37,16 +39,29 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   depth,
   onPriceClick,
   onDepthClick,
-  onOrderClick
+  onOrderClick,
+  showMyOrders
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
+  const ownOrders = connectedLimitOrders.length > 0;
   return (
-    <StyledOrderRow>
+    <StyledOrderRow
+      // tslint:disable-next-line:jsx-no-lambda
+      onMouseEnter={e =>
+        showMyOrders({
+          position: {top: e.clientY - 130},
+          orders: connectedLimitOrders,
+          volume: orderVolume,
+          onCancel: onOrderClick
+        })
+      }
+    >
       <StyledPrice onClick={onPriceClick(+currentPrice)}>
         {currentPrice}
       </StyledPrice>
       <StyledVolume side={side}>
         <div onClick={onDepthClick(+currentPrice, depth)}>
+          {ownOrders && <MyOrdersIndicator side={side} />}
           <StyledVolumeOverlay
             side={side}
             volume={normalizeVolume(valueToShow, minValue, maxValue)}

@@ -9,7 +9,7 @@ import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
 import {minOrMaxFromList} from '../../utils/math';
 import {HBar, VBar} from '../Bar';
-import {OrderBookItem} from './';
+import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
   StyledBar,
@@ -43,6 +43,7 @@ interface OrderBookProps {
   span: number;
   onNextSpan: () => void;
   onPrevSpan: () => void;
+  showMyOrders: any;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -102,6 +103,8 @@ class OrderBook extends React.Component<OrderBookProps> {
       return this.cancelOrders(connectedLimitOrders);
     }
 
+    this.props.showMyOrders({orders: []});
+
     const message = ModalMessages.cancelOrder(connectedLimitOrders);
     this.props.addModal(
       message,
@@ -121,7 +124,8 @@ class OrderBook extends React.Component<OrderBookProps> {
       volumeAccuracy,
       span,
       onNextSpan,
-      onPrevSpan
+      onPrevSpan,
+      showMyOrders
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
@@ -149,31 +153,38 @@ class OrderBook extends React.Component<OrderBookProps> {
         </StyledBar>
         <HBar />
         <StyledHeader>
-          <StyledHeaderRow>
-            <StyledHeaderCell align="left">Price</StyledHeaderCell>
-            <StyledHeaderCell align="left">Volume</StyledHeaderCell>
-            <StyledHeaderCell align="right">Value</StyledHeaderCell>
-          </StyledHeaderRow>
+          <tbody>
+            <StyledHeaderRow>
+              <StyledHeaderCell align="left">Price</StyledHeaderCell>
+              <StyledHeaderCell align="left">Volume</StyledHeaderCell>
+              <StyledHeaderCell align="right">Value</StyledHeaderCell>
+            </StyledHeaderRow>
+          </tbody>
         </StyledHeader>
         <HBar />
         <Scrollbars
           autoHide={true}
-          style={{width: 'calc(100% + 2rem)', marginLeft: '-1rem'}}
+          style={{
+            width: 'calc(100% + 2rem)',
+            marginLeft: '-1rem',
+            height: '80%'
+          }}
           ref={this.refHandlers.scrollComponent}
         >
           <StyledOrders>
             <StyledSellOrders>
               {asks.map((order, idx) => (
                 <OrderBookItem
-                  maxValue={maxAskValue}
-                  minValue={minAskValue}
                   key={idx}
                   valueToShow={withCurrentType(order)}
+                  maxValue={maxAskValue}
+                  minValue={minAskValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  showMyOrders={showMyOrders}
                   {...order}
                 />
               ))}
@@ -192,21 +203,23 @@ class OrderBook extends React.Component<OrderBookProps> {
             <StyledBuyOrders>
               {bids.map((order, idx) => (
                 <OrderBookItem
-                  maxValue={maxBidValue}
-                  minValue={minBidValue}
                   key={idx}
                   valueToShow={withCurrentType(order)}
+                  maxValue={maxBidValue}
+                  minValue={minBidValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  showMyOrders={showMyOrders}
                   {...order}
                 />
               ))}
             </StyledBuyOrders>
           </StyledOrders>
         </Scrollbars>
+        <MyOrders />
       </StyledWrapper>
     );
   }

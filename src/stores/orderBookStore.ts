@@ -25,6 +25,14 @@ class OrderBookStore extends BaseStore {
   @observable rawBids: Order[] = [];
   @observable rawAsks: Order[] = [];
 
+  @observable
+  myOrders = {
+    position: {top: 0, left: 0},
+    orders: [],
+    volume: 0,
+    onCancel: undefined
+  };
+
   spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
   @observable spanMultiplierIdx = 0;
 
@@ -104,6 +112,11 @@ class OrderBookStore extends BaseStore {
     if (this.spanMultiplierIdx > 0) {
       this.spanMultiplierIdx--;
     }
+  };
+
+  @action
+  showMyOrders = (myOrders: any) => {
+    Object.assign(this.myOrders, myOrders);
   };
 
   fetchAll = async () => {
