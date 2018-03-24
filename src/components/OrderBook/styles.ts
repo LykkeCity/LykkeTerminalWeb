@@ -1,15 +1,10 @@
 import {rem} from 'polished';
 import {Side} from '../../models';
-import styled, {colors, dims, fonts} from '../styled';
+import styled, {colors, dims, fonts, padding} from '../styled';
 import {Table} from '../Table';
 
 const colorBySide = (side: Side) =>
   side === Side.Sell ? '#d070ff' : '#ffae2c';
-
-// const volumeColorBySide = (side: Side) =>
-//   side === Side.Sell ? '#ab00ff' : '#fb8f01';
-
-// const alignBySide = (side: Side) => (side === Side.Sell ? 'right' : 'left');
 
 const marginBySide = (side: Side) =>
   side === Side.Sell ? 'marginLeft' : 'marginRight';
@@ -108,7 +103,7 @@ export const StyledOrders = Table.extend`
 
 export const StyledSellOrders = styled.tbody``;
 
-export const StyledBuyOrders = styled(StyledSellOrders)``;
+export const StyledBuyOrders = styled.tbody``;
 
 export const StyledMidPrice = styled.td`
   min-height: 24px;
@@ -184,4 +179,73 @@ export const StyledCloseOrders = styled.div.attrs({
   })
 })`
   cursor: pointer;
+` as any;
+
+export const MyOrdersPopover = styled.div`
+  position: absolute;
+  top: ${(p: any) => p.position.top}px;
+  right: 100%;
+  z-index: 999;
+  min-width: ${rem(180)};
+  background-color: rgb(60, 60, 60);
+  border: solid 1px ${colors.darkGraphite};
+  box-shadow: 0 10px 10px 0 ${colors.darkGraphite};
+  padding: ${padding(dims.padding[1])};
+  font-size: ${rem(fonts.normal)};
+  text-align: center;
+  visibility: ${(p: any) => (p.show ? 'visible' : 'hidden')};
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 45%;
+    right: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid rgb(60, 60, 60);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  }
+` as any;
+
+export const MyOrdersCount = styled.h4`
+  color: ${colors.white};
+  font-family: 'Akrobat', sans-serif;
+  font-size: ${rem(fonts.extraLarge)};
+  font-weight: bold;
+  line-height: 0.67;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  margin-bottom: ${rem(20)};
+`;
+
+export const MyOrdersVolume = styled.div`
+  color: ${colors.white};
+  text-align: center;
+  margin-bottom: ${rem(20)};
+
+  small {
+    opacity: 0.4;
+  }
+`;
+
+export const MyOrdersCancelButton = styled.button`
+  background: transparent;
+  border-radius: 4px;
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  color: ${colors.white};
+  font-size: ${rem(fonts.normal)};
+  padding: ${padding(...dims.padding)};
+  cursor: pointer;
+  outline: none;
+`;
+
+export const MyOrdersIndicator = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 2px;
+  background: ${(p: any) => colorBySide(p.side)};
 ` as any;
