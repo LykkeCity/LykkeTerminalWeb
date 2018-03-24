@@ -8,18 +8,20 @@ import {Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
 import {minOrMaxFromList} from '../../utils/math';
-import Bar, {VBar} from '../Bar/Bar';
-import {Table} from '../Table/index';
-import {OrderBookItem} from './';
+import {HBar, VBar} from '../Bar';
+import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
+  MidFigures,
+  MidOverlay,
   StyledBar,
   StyledBuyOrders,
   StyledGrouping,
-  StyledHead,
   StyledHeader,
+  StyledHeaderCell,
+  StyledHeaderRow,
   StyledMidPrice,
-  StyledRow,
+  StyledOrders,
   StyledSellOrders,
   StyledWrapper
 } from './styles';
@@ -34,6 +36,7 @@ interface OrderBookProps {
   asks: Order[];
   bids: Order[];
   mid: string;
+  spread: number;
   priceAccuracy: number;
   volumeAccuracy: number;
   updatePrice: any;
@@ -43,6 +46,7 @@ interface OrderBookProps {
   span: number;
   onNextSpan: () => void;
   onPrevSpan: () => void;
+  showMyOrders: any;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -102,6 +106,8 @@ class OrderBook extends React.Component<OrderBookProps> {
       return this.cancelOrders(connectedLimitOrders);
     }
 
+    this.props.showMyOrders({orders: []});
+
     const message = ModalMessages.cancelOrder(connectedLimitOrders);
     this.props.addModal(
       message,
@@ -117,11 +123,13 @@ class OrderBook extends React.Component<OrderBookProps> {
       bids,
       asks,
       mid,
+      spread,
       priceAccuracy,
       volumeAccuracy,
       span,
       onNextSpan,
-      onPrevSpan
+      onPrevSpan,
+      showMyOrders
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
@@ -147,59 +155,84 @@ class OrderBook extends React.Component<OrderBookProps> {
             onChange={this.handleChange}
           />
         </StyledBar>
-        <Bar />
-        <Table>
-          <StyledHead>
-            <StyledRow>
-              <StyledHeader align="right">Buy</StyledHeader>
-              <StyledHeader align="center">Price</StyledHeader>
-              <StyledHeader align="left">Sell</StyledHeader>
-            </StyledRow>
-          </StyledHead>
-        </Table>
-        <Scrollbars autoHide={true} ref={this.refHandlers.scrollComponent}>
-          <Table>
+        <HBar />
+        <StyledHeader>
+          <tbody>
+            <StyledHeaderRow>
+              <StyledHeaderCell align="left">Price</StyledHeaderCell>
+              <StyledHeaderCell align="left">Volume</StyledHeaderCell>
+              <StyledHeaderCell align="right">Value</StyledHeaderCell>
+            </StyledHeaderRow>
+          </tbody>
+        </StyledHeader>
+        <HBar />
+        <Scrollbars
+          autoHide={true}
+          style={{
+            width: 'calc(100% + 2rem)',
+            marginLeft: '-1rem',
+            height: 'calc(100% - 5.2rem)'
+          }}
+          ref={this.refHandlers.scrollComponent}
+        >
+          <StyledOrders>
             <StyledSellOrders>
               {asks.map((order, idx) => (
                 <OrderBookItem
-                  maxValue={maxAskValue}
-                  minValue={minAskValue}
                   key={idx}
                   valueToShow={withCurrentType(order)}
+                  maxValue={maxAskValue}
+                  minValue={minAskValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  showMyOrders={showMyOrders}
                   {...order}
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
+            <tbody ref={this.refHandlers.midPrice}>
               <tr>
-                <td onClick={this.handleUpdatePrice(Number(mid))}>
-                  {Number.isNaN(Number.parseFloat(mid)) ? '' : mid}
-                </td>
+                <StyledMidPrice
+                  onClick={this.handleUpdatePrice(Number(mid))}
+                  colSpan={3}
+                >
+                  <MidFigures>
+                    <strong>
+                      {Number.isFinite(parseFloat(mid)) ? mid : ''}
+                    </strong>
+                    <small>
+                      {spread.toFixed(priceAccuracy)}
+                      <br />
+                      <span>Spread</span>
+                    </small>
+                  </MidFigures>
+                  <MidOverlay />
+                </StyledMidPrice>
               </tr>
-            </StyledMidPrice>
+            </tbody>
             <StyledBuyOrders>
               {bids.map((order, idx) => (
                 <OrderBookItem
-                  maxValue={maxBidValue}
-                  minValue={minBidValue}
                   key={idx}
                   valueToShow={withCurrentType(order)}
+                  maxValue={maxBidValue}
+                  minValue={minBidValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  showMyOrders={showMyOrders}
                   {...order}
                 />
               ))}
             </StyledBuyOrders>
-          </Table>
+          </StyledOrders>
         </Scrollbars>
+        <MyOrders />
       </StyledWrapper>
     );
   }

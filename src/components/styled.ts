@@ -26,7 +26,8 @@ export const colors = {
 
 export const fonts = {
   normal: 14,
-  large: 16
+  large: 16,
+  extraLarge: 24
 };
 
 export const dims = {

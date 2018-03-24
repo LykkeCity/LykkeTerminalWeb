@@ -10,13 +10,13 @@ interface InstrumentPickerProps extends InstrumentPickerActions {
 }
 
 const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
-  value = 'Choose instrument',
+  value = '',
   onToggle,
   className
 }) => (
   <div className={className} onClick={onToggle}>
     <span>{value}</span>&nbsp;
-    <FAIcon name="angle-down" />
+    {value && <FAIcon name="angle-down" />}
   </div>
 );
 
@@ -26,7 +26,7 @@ const StyledInstrumentSelect = styled(InstrumentSelect)`
   cursor: pointer;
   height: 100%;
   padding: ${rem(5)} ${rem(15)};
-
+  min-width: ${rem(100)};
   & > span {
     font-size: 1rem;
   }

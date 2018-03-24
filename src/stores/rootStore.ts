@@ -5,6 +5,7 @@ import {
   ChartApi,
   OrderApi,
   OrderBookApi,
+  PriceApi,
   TradeApi,
   WampApi,
   WatchlistApi
@@ -24,6 +25,7 @@ import {
   OrderBookStore,
   OrderListStore,
   OrderStore,
+  PriceStore,
   ReferenceStore,
   SettingsStore,
   TradeStore,
@@ -50,6 +52,7 @@ class RootStore {
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
+  readonly priceStore: PriceStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -75,6 +78,7 @@ class RootStore {
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
+      this.priceStore = new PriceStore(this, new PriceApi());
     }
   }
 
@@ -85,6 +89,7 @@ class RootStore {
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
       this.tradeStore.setWs(ws);
+      this.priceStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
         .forEach((x: any) => {
@@ -135,6 +140,7 @@ class RootStore {
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
+        this.priceStore.setWs(ws);
         instruments.forEach(x => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(
