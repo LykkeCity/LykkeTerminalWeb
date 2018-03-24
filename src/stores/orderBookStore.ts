@@ -100,6 +100,11 @@ class OrderBookStore extends BaseStore {
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
+  @computed
+  get spread() {
+    return this.bestAsk() - this.bestBid();
+  }
+
   @action
   nextSpan = () => {
     if (this.spanMultiplierIdx < this.maxMultiplierIdx) {

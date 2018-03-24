@@ -44,6 +44,7 @@ const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
               label: x,
               value: x
             }))}
+            isActiveMarked={true}
             activeValue={value}
             click={handleClick}
           />

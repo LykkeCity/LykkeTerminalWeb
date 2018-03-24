@@ -109,25 +109,42 @@ export const StyledMidPrice = styled.td`
   min-height: 24px;
   color: ${colors.white};
   font-family: 'Akrobat';
-  font-size: ${rem(fonts.extraLarge)};
-  font-weight: bold;
   padding: 1rem 0 !important;
   position: relative;
-
-  & > div {
-    background: ${colors.darkGraphite};
-    position: absolute;
-    top: 0;
-    left: -1rem;
-    right: -1rem;
-    bottom: 0;
-    z-index: 999;
-  }
 
   &:hover {
     cursor: pointer;
   }
 ` as any;
+
+export const MidOverlay = styled.div`
+  background: ${colors.darkGraphite};
+  position: absolute;
+  top: 0;
+  left: -1rem;
+  right: -1rem;
+  bottom: 0;
+  z-index: 999;
+`;
+
+export const MidFigures = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  strong {
+    font-size: ${rem(fonts.extraLarge)};
+    font-weight: bold;
+  }
+
+  small {
+    text-align: right;
+    font-size: ${rem(fonts.large)};
+    span {
+      opacity: 0.4;
+      font-size: ${rem(fonts.normal)};
+    }
+  }
+`;
 
 export const StyledOrderRow = styled.tr`
   border-bottom: solid 1px rgba(0, 0, 0, 0.08);
