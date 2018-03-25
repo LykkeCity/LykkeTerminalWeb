@@ -1,5 +1,5 @@
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
-import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
+// import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {InstrumentModel} from '../models/index';
 import {BaseStore, RootStore} from './index';
 
@@ -39,7 +39,8 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
-    const widget = new (window as any).TradingView.widget({
+    // tslint:disable-next-line:no-unused-expression
+    new (window as any).TradingView.widget({
       autosize: true,
       // fullscreen: true,
       symbol: instrument.name,
@@ -91,33 +92,33 @@ class ChartStore extends BaseStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
-    chartContainerExists.style.display = 'none';
-    if (this.rootStore.authStore.isAuth) {
-      widget.onChartReady(() => {
-        this.load()
-          .then((res: any) => {
-            if (res && res.Data) {
-              const settings = JSON.parse(res.Data);
-              widget.load(settings);
-            }
-            chartContainerExists.style.display = 'block';
-          })
-          .catch(err => {
-            if (err.status === 404) {
-              widget.load(CHART_DEFAULT_SETTINGS);
-            }
-            chartContainerExists.style.display = 'block';
-          });
-        widget.subscribe('onAutoSaveNeeded', () => {
-          widget.save(this.save);
-        });
-      });
-    } else {
-      widget.onChartReady(() => {
-        widget.load(CHART_DEFAULT_SETTINGS);
-        chartContainerExists.style.display = 'block';
-      });
-    }
+    // chartContainerExists.style.display = 'none';
+    // if (this.rootStore.authStore.isAuth) {
+    //   widget.onChartReady(() => {
+    //     this.load()
+    //       .then((res: any) => {
+    //         if (res && res.Data) {
+    //           const settings = JSON.parse(res.Data);
+    //           widget.load(settings);
+    //         }
+    //         chartContainerExists.style.display = 'block';
+    //       })
+    //       .catch(err => {
+    //         if (err.status === 404) {
+    //           widget.load(CHART_DEFAULT_SETTINGS);
+    //         }
+    //         chartContainerExists.style.display = 'block';
+    //       });
+    //     widget.subscribe('onAutoSaveNeeded', () => {
+    //       widget.save(this.save);
+    //     });
+    //   });
+    // } else {
+    //   widget.onChartReady(() => {
+    //     widget.load(CHART_DEFAULT_SETTINGS);
+    //     chartContainerExists.style.display = 'block';
+    //   });
+    // }
   };
 
   save = (settings: any) => {
