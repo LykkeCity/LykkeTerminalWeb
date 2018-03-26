@@ -84,7 +84,9 @@ export const connectLimitOrders = (
           order.connectedLimitOrders = [];
         }
         order.orderVolume = (order.orderVolume || 0) + limitOrder.volume;
-        order.connectedLimitOrders.push(limitOrder.id);
+        order.connectedLimitOrders = order.connectedLimitOrders.concat(
+          limitOrder.id
+        );
       }
     });
   });

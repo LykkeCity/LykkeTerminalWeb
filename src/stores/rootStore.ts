@@ -5,12 +5,14 @@ import {
   ChartApi,
   OrderApi,
   OrderBookApi,
+  PriceApi,
   TradeApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
+import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
@@ -24,6 +26,7 @@ import {
   OrderBookStore,
   OrderListStore,
   OrderStore,
+  PriceStore,
   ReferenceStore,
   SettingsStore,
   TradeStore,
@@ -51,6 +54,7 @@ class RootStore {
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
+  readonly priceStore: PriceStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -77,10 +81,11 @@ class RootStore {
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
+      this.priceStore = new PriceStore(this, new PriceApi());
     }
   }
 
-  startPublicMode = (defaultInstrument: any) => {
+  startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
@@ -88,11 +93,16 @@ class RootStore {
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
       this.tradeStore.setWs(ws);
+      this.priceStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
-        .forEach((x: any) =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        .forEach((x: any) => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            this.referenceStore.onCandle
+          );
+        });
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
@@ -135,9 +145,14 @@ class RootStore {
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
-        instruments.forEach(x =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        this.priceStore.setWs(ws);
+        instruments.forEach(x => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            this.referenceStore.onCandle
+          );
+        });
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );

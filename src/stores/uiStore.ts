@@ -15,6 +15,7 @@ class UiStore extends BaseStore {
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
+  @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   stateFns: any = [];
   initPriceUpdate: any;
@@ -43,6 +44,13 @@ class UiStore extends BaseStore {
           )();
 
           this.stateFns.forEach((f: any) => f && f(instrument));
+
+          const {
+            fetchDailyCandle,
+            subscribeToDailyCandle,
+            reset: resetPriceStore
+          } = this.rootStore.priceStore;
+          fns.seq(resetPriceStore, fetchDailyCandle, subscribeToDailyCandle)();
         }
       }
     );
@@ -55,6 +63,10 @@ class UiStore extends BaseStore {
   @action
   readonly toggleAssetsSelect = () =>
     (this.showAssetsSelect = !this.showAssetsSelect);
+
+  @action
+  readonly toggleInstrumentSelection = () =>
+    (this.showInstrumentSelection = !this.showInstrumentSelection);
 
   @action
   readonly toggleOrdersSelect = () =>
