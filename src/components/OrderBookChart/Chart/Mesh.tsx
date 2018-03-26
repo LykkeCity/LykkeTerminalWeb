@@ -32,8 +32,8 @@ class Mesh extends React.Component<ChartProps> {
     const labels = [];
     const amount = (this.width - this.startVertical) / this.stepVertical;
 
-    const minimum = this.props.bids[0].price;
-    const maximum = this.props.asks[this.props.asks.length - 1].price;
+    const minimum = this.props.bids[this.props.bids.length - 1].price;
+    const maximum = this.props.asks[0].price;
 
     const step = (maximum - minimum) / amount;
     for (let i = 0; i < amount; i++) {

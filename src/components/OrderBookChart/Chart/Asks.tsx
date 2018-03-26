@@ -4,28 +4,50 @@ import {Line, Rect} from 'react-konva';
 
 import {Order} from '../../../models';
 
-import {OrdersProps} from './Models';
+import {ChartProps} from './Models';
 
-class Asks extends React.Component<OrdersProps> {
+class Asks extends React.Component<ChartProps> {
   asks: Order[];
+  bids: Order[];
+  mid: number;
   graphics: any = [];
 
   width = 1080;
   height = 500;
 
-  lineColor = '#ab00ff';
-  blockColor = 'rgba(171, 0, 255, 0.2)';
-  blockStrokeColor = 'rgba(171, 0, 255, 0.05)';
+  lineColor = '#ffae2c';
+  blockColor = 'rgba(255, 174, 44, 0.15)';
+  blockStrokeColor = 'rgba(255, 174, 44, 0.001)';
   strokeWidth = 3;
 
-  midX = this.width / 2 - Math.round(this.strokeWidth / 2);
+  midX = this.width / 2 + Math.round(this.strokeWidth / 2);
   midY = this.height;
 
   stepLength: number;
   coef: number;
 
-  constructor(props: OrdersProps) {
+  constructor(props: ChartProps) {
     super(props);
+  }
+
+  showMessage(ask: Order, index: number) {
+    // tslint:disable-next-line:no-console
+    console.log(`${index}: ${ask.price}`);
+  }
+
+  calculateStepLength(ask: Order, index: number) {
+    const prevPrice = this.asks[index - 1]
+      ? this.asks[index - 1].price
+      : this.mid;
+    return (
+      (ask.price - prevPrice) *
+      this.midX /
+      (this.asks[this.asks.length - 1].price - this.mid)
+    );
+  }
+
+  calculateStepHeight(ask: Order) {
+    return this.coef * Math.ceil(ask.depth);
   }
 
   drawAsks = () => {
@@ -34,15 +56,17 @@ class Asks extends React.Component<OrdersProps> {
     let newX = this.midX;
     let newY = this.midY;
     this.asks.forEach((ask, index) => {
-      newX -= this.stepLength;
-      newY = this.midY - this.coef * Math.ceil(ask.depth);
-      newY > 0 ? (newY = newY) : (newY = this.strokeWidth);
+      newX += this.calculateStepLength(ask, index);
+      newY = this.midY - this.calculateStepHeight(ask);
+      newY > this.strokeWidth ? (newY = newY) : (newY = this.strokeWidth);
       this.graphics.push(
         <Line
           points={[currentX, currentY, currentX, newY, newX, newY]}
           closed={false}
           stroke={this.lineColor}
           strokeWidth={this.strokeWidth}
+          // tslint:disable-next-line:jsx-no-lambda
+          onMouseOver={() => this.showMessage(ask, index)}
         />
       );
       this.graphics.push(
@@ -53,7 +77,8 @@ class Asks extends React.Component<OrdersProps> {
           height={this.midY - newY}
           stroke={this.blockStrokeColor}
           fill={this.blockColor}
-          opacity={0.2}
+          // tslint:disable-next-line:jsx-no-lambda
+          onMouseOver={() => this.showMessage(ask, index)}
         />
       );
       currentX = newX;
@@ -61,15 +86,34 @@ class Asks extends React.Component<OrdersProps> {
     });
   };
 
-  initialize() {
+  calculateCoef() {
+    const maxDepth = Math.max(
+      this.asks[this.asks.length - 1].depth,
+      this.bids[this.bids.length - 1].depth
+    );
+    if (this.asks[this.asks.length - 1]) {
+      this.coef = this.height / (maxDepth + 5);
+    } else {
+      this.coef = 1;
+    }
+  }
+
+  initilaize() {
     this.graphics = [];
-    this.asks = this.props.orders.reverse();
-    this.stepLength = this.midX / this.asks.length;
-    this.coef = this.height / this.asks[this.asks.length - 1].depth;
+    this.asks = this.props.asks.reverse();
+    this.bids = this.props.bids;
+    this.mid = parseFloat(this.props.mid);
+    this.calculateCoef();
+    // tslint:disable-next-line:no-console
+    console.log(this.asks);
+    // tslint:disable-next-line:no-console
+    console.log(this.bids);
+    // tslint:disable-next-line:no-console
+    console.log(this.mid);
   }
 
   render() {
-    this.initialize();
+    this.initilaize();
     this.drawAsks();
     return this.graphics;
   }

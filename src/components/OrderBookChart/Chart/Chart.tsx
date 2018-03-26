@@ -32,8 +32,16 @@ class Chart extends React.Component<ChartProps> {
             bids={this.props.bids}
             mid={this.props.mid}
           />
-          <Asks orders={this.props.asks} />
-          <Bids orders={this.props.bids} />
+          <Asks
+            asks={this.props.asks}
+            bids={this.props.bids}
+            mid={this.props.mid}
+          />
+          <Bids
+            asks={this.props.asks}
+            bids={this.props.bids}
+            mid={this.props.mid}
+          />
         </Layer>
       </Stage>
     );
