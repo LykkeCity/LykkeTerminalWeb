@@ -2,7 +2,7 @@ import {rem} from 'polished';
 import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
 import styled from '../styled';
-import {Table} from '../Table/index';
+import TableScrolled from '../Table/TableScrolled';
 import {TradingWalletItem} from './';
 
 const Total = styled.tr`
@@ -27,7 +27,7 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   baseAsset: {accuracy, name},
   total
 }) => (
-  <Table>
+  <TableScrolled>
     <thead>
       <tr>
         <th>Assets</th>
@@ -51,7 +51,7 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
         />
       ))}
     </tbody>
-  </Table>
+  </TableScrolled>
 );
 
 export default WalletBalanceList;

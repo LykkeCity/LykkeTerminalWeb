@@ -3,20 +3,25 @@ import styled from 'styled-components';
 import {MyWalletsProps, MyWalletsState} from './index';
 import WalletNames from './WalletNames';
 
-const StyledMyWalletsLeft = styled.div`
-  width: 288px;
-  height: 264px;
-  border-radius: 2px;
-  background-color: #2d2d2d;
-  padding: 10px;
+const StyledMyWalletsContainer = styled.div`
+  display: flex;
+  width: 100%;
 `;
 
-const StyledWalletNames = styled.div`
+const StyledMyWalletsLeftContainer = styled.div`
   width: 288px;
   height: 264px;
   border-radius: 2px;
   background-color: #2d2d2d;
+  padding: 9px;
 `;
+
+const StyledWalletsRightContainer = styled.div`
+  width: 100%;
+  height: 264px;
+`;
+
+const StyledWalletNames = styled.div``;
 
 class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
   private wallets: string[];
@@ -42,18 +47,19 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
       ? this.props.children[this.state.indexOfWallet]
       : null;
     return (
-      <div>
-        <StyledMyWalletsLeft>
+      <StyledMyWalletsContainer>
+        <StyledMyWalletsLeftContainer>
           <StyledWalletNames>
             <WalletNames
               selectedIndex={this.state.indexOfWallet}
               wallets={this.wallets}
               onChangeWallet={this.changeWallet}
             />
+            {/*  <ManageWalletLink> Manage wallets at account</ManageWalletLink>*/}
           </StyledWalletNames>
-        </StyledMyWalletsLeft>
-        <div>{child}</div>
-      </div>
+        </StyledMyWalletsLeftContainer>
+        <StyledWalletsRightContainer>{child}</StyledWalletsRightContainer>
+      </StyledMyWalletsContainer>
     );
   }
 }

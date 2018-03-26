@@ -8,6 +8,7 @@ const StyledWalletNameButtonSelected = styled.div`
   border-radius: 2px;
   background-color: #3c3c3c;
   padding: 10px;
+  cursor: pointer;
 `;
 const StyledWalletNameButton = styled.div`
   width: 272px;
@@ -16,6 +17,7 @@ const StyledWalletNameButton = styled.div`
   border-radius: 2px;
   background-color: #3c3c3c;
   padding: 10px;
+  cursor: pointer;
 `;
 const InnerContainerButton = styled.div`
   display: flex;
