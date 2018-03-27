@@ -2,18 +2,22 @@ import * as React from 'react';
 
 import {Line, Text} from 'react-konva';
 
+import {Order} from '../../../models';
+
 import {ChartProps} from './Models';
 
 import chart from './chartConstants';
 
 class Mesh extends React.Component<ChartProps> {
-  lines: any = [];
+  asks: Order[];
+  bids: Order[];
+  mesh: any = [];
 
   width = 1080;
-  height = 510;
+  height = 500;
 
-  stepVertical = this.width / 8;
-  stepHorizontal = this.height / 22;
+  stepVertical = this.width / chart.mesh.verticalLinesAmount;
+  stepHorizontal = this.height / chart.mesh.horizontalLinesAmount;
 
   startVertical = this.stepVertical / 2;
   startHorizontal = this.stepHorizontal / 2;
@@ -22,43 +26,37 @@ class Mesh extends React.Component<ChartProps> {
     super(props);
   }
 
-  generateHorizontalLabels = () => {
-    const labels = [];
-    const amount = (this.height - this.startHorizontal) / this.stepHorizontal;
-
-    const maximum =
-      Math.max(
-        this.props.asks[0].depth,
-        this.props.bids[this.props.bids.length - 1].depth
-      ) + 5;
-    const minimum = 0;
-
-    const step = (maximum - minimum) / amount;
-
-    for (let i = 0; i < amount; i++) {
-      labels.push((minimum + step * i).toFixed(2));
-    }
-
-    return labels.reverse();
-  };
-
   generateVerticalLabels = () => {
     const labels = [];
-    const amount = (this.width - this.startVertical) / this.stepVertical + 1;
+    if (this.asks.length > 0 && this.bids.length > 0) {
+      const minimum = 0;
+      const maximum = this.asks[0].price;
 
-    const minimum = 0;
-    const maximum = this.props.asks[0].price;
-
-    const step = (maximum - minimum) / amount;
-    for (let i = 0; i < amount; i++) {
-      labels.push((minimum + step * (i + 1)).toFixed(3));
+      const step = (maximum - minimum) / chart.mesh.verticalLinesAmount;
+      for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
+        labels.push((minimum + step * (i + 1)).toFixed(3));
+      }
     }
-
     return labels;
   };
 
+  generateHorizontalLabels = () => {
+    const labels = [];
+    if (this.asks.length > 0 && this.bids.length > 0) {
+      const maximum =
+        Math.max(this.asks[0].depth, this.bids[this.bids.length - 1].depth) + 5;
+      const minimum = 0;
+
+      const step = (maximum - minimum) / chart.mesh.horizontalLinesAmount;
+      for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
+        labels.push((minimum + step * i).toFixed(2));
+      }
+    }
+    return labels.reverse();
+  };
+
   drawMid = () => {
-    this.lines.push(
+    this.mesh.push(
       <Line
         points={[this.width / 2, 0, this.width / 2, this.height]}
         closed={true}
@@ -68,15 +66,13 @@ class Mesh extends React.Component<ChartProps> {
     );
   };
 
-  drawVertical = () => {
-    const labels = this.generateVerticalLabels();
-
+  drawVerticalLines = () => {
     for (
       let startX = this.startVertical, index = 0;
       startX < this.width;
       startX += this.stepVertical, index++
     ) {
-      this.lines.push(
+      this.mesh.push(
         <Line
           points={[startX, 0, startX, this.height]}
           closed={true}
@@ -86,28 +82,38 @@ class Mesh extends React.Component<ChartProps> {
           opacity={0.6}
         />
       );
-      this.lines.push(
-        <Text
-          x={startX - 35}
-          y={this.height + 15}
-          fill={chart.mesh.color}
-          fontFamily={chart.mesh.fontFamily}
-          fontSize={chart.mesh.verticalFontSize}
-          text={`${labels[index].toString()} USD`}
-        />
-      );
     }
   };
 
-  drawHorizontal = () => {
-    const labels = this.generateHorizontalLabels();
+  drawVerticalLabels = () => {
+    const labels = this.generateVerticalLabels();
+    if (labels) {
+      for (
+        let startX = this.startVertical, index = 0;
+        startX < this.width;
+        startX += this.stepVertical, index++
+      ) {
+        this.mesh.push(
+          <Text
+            x={startX - 35}
+            y={this.height + 15}
+            fill={chart.mesh.color}
+            fontFamily={chart.mesh.fontFamily}
+            fontSize={chart.mesh.verticalFontSize}
+            text={`${labels[index].toString()} USD`}
+          />
+        );
+      }
+    }
+  };
 
+  drawHorizontalLines = () => {
     for (
       let startY = this.startHorizontal, index = 0;
       startY < this.height;
       startY += this.stepHorizontal, index++
     ) {
-      this.lines.push(
+      this.mesh.push(
         <Line
           points={[0, startY, this.width, startY]}
           closed={true}
@@ -117,26 +123,53 @@ class Mesh extends React.Component<ChartProps> {
           opacity={0.6}
         />
       );
-      this.lines.push(
-        <Text
-          x={this.width + 10}
-          y={startY - chart.mesh.horizontalFontSize / 2}
-          fill={chart.mesh.color}
-          fontFamily={chart.mesh.fontFamily}
-          fontSize={chart.mesh.horizontalFontSize}
-          text={`${labels[index].toString()}`}
-        />
-      );
     }
   };
 
-  render() {
-    this.lines = [];
-    this.drawMid();
-    this.drawHorizontal();
-    this.drawVertical();
+  drawHorizontalLabels = () => {
+    const labels = this.generateHorizontalLabels();
+    if (labels) {
+      for (
+        let startY = this.startHorizontal, index = 0;
+        startY < this.height;
+        startY += this.stepHorizontal, index++
+      ) {
+        this.mesh.push(
+          <Text
+            x={this.width + 10}
+            y={startY - chart.mesh.horizontalFontSize / 2}
+            fill={chart.mesh.color}
+            fontFamily={chart.mesh.fontFamily}
+            fontSize={chart.mesh.horizontalFontSize}
+            text={`${labels[index].toString()}`}
+          />
+        );
+      }
+    }
+  };
 
-    return this.lines;
+  initilaize() {
+    this.mesh = [];
+    this.asks = this.props.asks;
+    this.bids = this.props.bids;
+  }
+
+  renderMesh = () => {
+    this.drawMid();
+    this.drawHorizontalLines();
+    this.drawVerticalLines();
+  };
+
+  renderLabels = () => {
+    this.drawHorizontalLabels();
+    this.drawVerticalLabels();
+  };
+
+  render() {
+    this.initilaize();
+    this.renderMesh();
+    this.renderLabels();
+    return this.mesh;
   }
 }
 

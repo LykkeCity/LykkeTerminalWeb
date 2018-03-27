@@ -6,7 +6,10 @@ const chart = {
     opacity: 0.6,
     verticalFontSize: 14,
     horizontalFontSize: 12,
-    fontFamily: 'Proxima Nova'
+    fontFamily: 'Proxima Nova',
+
+    verticalLinesAmount: 8,
+    horizontalLinesAmount: 20
   },
   asks: {
     lineColor: '#ffae2c',
