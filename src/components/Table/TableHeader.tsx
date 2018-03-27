@@ -9,7 +9,7 @@ interface InstrumentListHeaderProps {
   sortByParam: string;
 }
 
-const InstrumentListHeader: React.SFC<InstrumentListHeaderProps> = ({
+const TableHeader: React.SFC<InstrumentListHeaderProps> = ({
   onSort,
   sortByParam,
   currentSortDirection,
@@ -32,4 +32,4 @@ const InstrumentListHeader: React.SFC<InstrumentListHeaderProps> = ({
   );
 };
 
-export default InstrumentListHeader;
+export default TableHeader;

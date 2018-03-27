@@ -1,33 +1,22 @@
-import {prop, sortBy} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import styled from '../styled';
+import {sortData, TableSortState} from '../Table';
 import {
   InstrumentListHeader,
   InstrumentListItem,
   InstrumentListProps
 } from './index';
-
-interface InstrumentListState {
-  data: any[];
-  sortBy: string;
-  sortDirection: string;
-}
-
-const Header = styled.div`
-  display: flex;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-`;
+import {Header} from './styles';
 
 class InstrumentList extends React.Component<
   InstrumentListProps,
-  InstrumentListState
+  TableSortState
 > {
   constructor(props: InstrumentListProps) {
     super(props);
     this.state = {
       data: this.props.instruments,
-      sortBy: '',
+      sortByParam: '',
       sortDirection: 'ASC'
     };
   }
@@ -43,26 +32,14 @@ class InstrumentList extends React.Component<
   }
 
   sort = (sortByParam: string, sortDirectionDefault: string) => {
-    const sort = sortBy(prop(sortByParam));
-    const sortDirection =
-      this.state.sortBy === sortByParam
-        ? this.state.sortDirection === 'ASC' ? 'DESC' : 'ASC'
-        : sortDirectionDefault;
-    const data = (() => {
-      switch (sortDirection) {
-        default:
-        case 'ASC':
-          return sort(this.props.instruments);
-        case 'DESC':
-          return sort(this.props.instruments).reverse();
-      }
-    })();
-
-    return this.setState({
-      data,
-      sortBy: sortByParam,
-      sortDirection
-    });
+    this.setState(
+      sortData(
+        this.props.instruments,
+        sortByParam,
+        sortDirectionDefault,
+        this.state
+      )
+    );
   };
 
   render() {
@@ -71,38 +48,38 @@ class InstrumentList extends React.Component<
         <Header>
           <InstrumentListHeader
             currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
+            currentSortByParam={this.state.sortByParam}
             sortByParam={'name'}
-            sort={this.sort}
+            onSort={this.sort}
           >
             Asset pair
           </InstrumentListHeader>
 
           <InstrumentListHeader
             currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
+            currentSortByParam={this.state.sortByParam}
             sortByParam={'price'}
-            sort={this.sort}
+            onSort={this.sort}
           >
             Price
           </InstrumentListHeader>
 
           <InstrumentListHeader
-            currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
             className={'right-align'}
+            currentSortDirection={this.state.sortDirection}
+            currentSortByParam={this.state.sortByParam}
             sortByParam={'change24h'}
-            sort={this.sort}
+            onSort={this.sort}
           >
             24h Change
           </InstrumentListHeader>
 
           <InstrumentListHeader
-            currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
             className={'right-align'}
+            currentSortDirection={this.state.sortDirection}
+            currentSortByParam={this.state.sortByParam}
             sortByParam={'volume'}
-            sort={this.sort}
+            onSort={this.sort}
           >
             Volume
           </InstrumentListHeader>
