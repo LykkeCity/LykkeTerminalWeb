@@ -68,7 +68,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   handleChangeInstrument = (instrument: InstrumentModel) => {
     const priceAccuracy = pathOr(2, ['accuracy'], instrument);
     const asset = this.props.getAssetById(
-      pathOr('', ['name'], instrument).split('/')[0]
+      pathOr('', ['baseAsset', 'id'], instrument)
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
     this.setState({
