@@ -5,24 +5,6 @@ import {Table} from '../Table/index';
 import {BalanceListItem} from './';
 import {BalanceListProps} from './';
 
-const ManageWalletLink = styled.a`
-  cursor: pointer;
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-  min-width: 250px;
-  min-height: 48px;
-  border-radius: 4px;
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: ${rem(16)};
-  font-weight: bold;
-  line-height: 1;
-  text-align: center;
-  margin-top: ${rem(24)};
-`;
-
 const Total = styled.tr`
   background: rgba(0, 0, 0, 0.1);
 
@@ -64,12 +46,6 @@ const BalanceList: React.SFC<BalanceListProps> = ({
         ))}
       </tbody>
     </Table>
-    <ManageWalletLink
-      href={process.env.REACT_APP_WEBWALLET_URL}
-      target="_blank"
-    >
-      Manage wallets in Account
-    </ManageWalletLink>
   </React.Fragment>
 );
 

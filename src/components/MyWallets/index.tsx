@@ -1,22 +1,13 @@
-// ///////////////////////////////MyWallets/////////////////////////////////
-export interface MyWalletsProps {
-  name?: string;
-}
-export interface MyWalletsState {
-  indexOfWallet: number;
-}
+import {connect} from '../connect';
+import MyWallets from './MyWallets';
 
-export {default as MyWallets} from './MyWallets';
+const connectedMyWallets = connect(
+  ({balanceListStore: {tradingWalletTotal: total}}) => ({
+    total
+  }),
+  MyWallets
+);
 
-// ///////////////////////////////MyWalletNames/////////////////////////////////
-export interface WalletNamesProps {
-  wallets: string[];
-  onChangeWallet: any;
-  selectedIndex: number;
-}
-
-// ///////////////////////////////WalletName/////////////////////////////////
-export interface WalletNameProps {
-  name: string;
-  selectedIndex: boolean;
-}
+export {connectedMyWallets as MyWallets};
+export {default as MyWalletNameList} from './MyWallets';
+export {default as MyWalletName} from './Name';

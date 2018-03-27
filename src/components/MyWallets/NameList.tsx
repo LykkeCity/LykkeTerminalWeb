@@ -1,8 +1,13 @@
 import * as React from 'react';
-import {WalletNamesProps} from './index';
-import WalletName from './WalletName';
+import Name from './Name';
 
-const WalletNames: React.SFC<WalletNamesProps> = ({
+interface WalletNamesProps {
+  wallets: string[];
+  onChangeWallet: any;
+  selectedIndex: number;
+}
+
+const NameList: React.SFC<WalletNamesProps> = ({
   wallets,
   onChangeWallet,
   selectedIndex
@@ -12,7 +17,7 @@ const WalletNames: React.SFC<WalletNamesProps> = ({
       {wallets.map((name, index) => {
         return (
           <div key={index} onClick={onChangeWallet(index)}>
-            <WalletName name={name} selectedIndex={index === selectedIndex} />
+            <Name name={name} selectedIndex={index === selectedIndex} />
           </div>
         );
       })}
@@ -20,4 +25,4 @@ const WalletNames: React.SFC<WalletNamesProps> = ({
   );
 };
 
-export default WalletNames;
+export default NameList;
