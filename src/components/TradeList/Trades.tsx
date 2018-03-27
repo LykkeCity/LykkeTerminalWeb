@@ -1,47 +1,32 @@
-import {observer} from 'mobx-react';
 import * as React from 'react';
-import {
-  InstrumentModel,
-  TradeFilter as TradeFilterModel,
-  TradeModel
-} from '../../models/index';
-import * as TradeFilterFns from '../../models/tradeFilter';
+import {TradeFilter as TradeFilterModel, TradeModel} from '../../models/index';
 import {HBar} from '../Bar';
 import {TradeFilter, TradeList} from './index';
 import {StyledLoadMore, StyledLoadMoreButton, TradeListToolbar} from './styles';
 
 interface TradesProps {
-  trades?: TradeModel[];
-  needToLoadMore?: boolean;
-  fetchPart: any;
-  authorized?: true;
-  selectedInstrument: InstrumentModel;
+  trades: TradeModel[];
+  fetchNextTrades: any;
+  shouldFetchMore?: boolean;
   currentFilter: TradeFilterModel;
   onFilter: (filter: string) => void;
 }
 
 const Trades: React.SFC<TradesProps> = ({
   trades = [],
-  needToLoadMore,
-  fetchPart,
-  selectedInstrument,
-  currentFilter,
-  onFilter
+  shouldFetchMore,
+  fetchNextTrades
 }) => {
   return (
     <React.Fragment>
       <TradeListToolbar>
-        <TradeFilter
-          value={currentFilter}
-          options={TradeFilterFns.toOptions()}
-          onFilter={onFilter}
-        />
+        <TradeFilter />
       </TradeListToolbar>
       <HBar />
       <TradeList />
-      {needToLoadMore && (
+      {shouldFetchMore && (
         <StyledLoadMore>
-          <StyledLoadMoreButton onClick={fetchPart}>
+          <StyledLoadMoreButton onClick={fetchNextTrades}>
             Load more...
           </StyledLoadMoreButton>
         </StyledLoadMore>
@@ -50,4 +35,4 @@ const Trades: React.SFC<TradesProps> = ({
   );
 };
 
-export default observer(Trades);
+export default Trades;

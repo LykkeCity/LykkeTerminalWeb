@@ -23,13 +23,16 @@ export class RestApi {
       .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
       .json();
 
-  protected getWithQuery = (url: string, query: {[key: string]: any}) =>
+  protected getWithQuery = <T = any>(
+    url: string,
+    query: {[key: string]: any}
+  ) =>
     this.wretcher()
       .url(url)
       .query(query)
       .get()
       .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
-      .json();
+      .json<T>();
 
   protected getPublic = (url: string) =>
     this.publicWretcher()

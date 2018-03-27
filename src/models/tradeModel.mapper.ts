@@ -46,11 +46,6 @@ export const mapToEffectivePrice = (
     : precisionFloor(effectivePrice, accuracy);
 };
 
-export const fromRestToTradeList = (
-  dto: any[],
-  instruments: InstrumentModel[]
-) => aggregateTradesByTimestamp(dto, instruments);
-
 export const aggregateTradesByTimestamp = (
   trades: any[],
   instruments: InstrumentModel[]
@@ -64,7 +59,7 @@ export const aggregateTradesByTimestamp = (
 
     const instrument = instruments.find(x => x.id === curr.AssetPair);
 
-    if (instrument) {
+    if (instrument && twinnedTrades.length !== 1) {
       acc.push({
         ...fromRestToTrade(instrument.baseAsset.id, twinnedTrades),
         instrument
@@ -81,8 +76,8 @@ export const fromRestToTrade = (baseAssetId: string, trades: any[]) => {
   const {Id, AssetPair, Price, Amount, DateTime, Type} = tradesByBaseAsset[0];
 
   const fee = trades
-    .filter((t: any) => t.FeeTypeDto !== FeeType.Unknown)
-    .map(feeValueFromRestTradeDto)
+    .filter(t => t.FeeType !== FeeType.Unknown)
+    .map(feeValueFromRest)
     .reduce(add, 0);
 
   return new TradeModel({
@@ -181,9 +176,5 @@ export const fromWampToPublicTrade = ({
 export const feeAssetFromSide = (instrument: InstrumentModel, side: string) =>
   side === Side.Buy ? instrument.baseAsset : instrument.quoteAsset;
 
-const feeValueFromRestTradeDto = ({
-  FeeSize,
-  FeeType: FeeTypeDto,
-  Amount
-}: any) =>
+const feeValueFromRest = ({FeeSize, FeeType: FeeTypeDto, Amount}: any) =>
   FeeSize * (FeeTypeDto === FeeType.Absolute ? 1 : Math.abs(Amount) / 100);

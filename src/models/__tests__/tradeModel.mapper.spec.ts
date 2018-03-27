@@ -487,7 +487,20 @@ describe('trade model mapper', () => {
       );
     });
 
-    describe('toSingleTrade', () => {
+    it('should skip single not-paired trades', () => {
+      const trades = [
+        ...dto,
+        {
+          Id: '201803271023_69dfd912-23da-4baa-9e6d-addba6d9574c',
+          DateTime: '2018-03-29T10:23:30.074Z'
+        }
+      ];
+
+      expect(aggregateTradesByTimestamp(trades, instruments)).toHaveLength(1);
+      expect(aggregateTradesByTimestamp(trades, instruments)[0].fee).toBe(1.47);
+    });
+
+    describe('fromRestToTrade', () => {
       expect([fromRestToTrade('BTC', dto)]).toHaveLength(1);
     });
   });

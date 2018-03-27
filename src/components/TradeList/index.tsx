@@ -11,9 +11,9 @@ import TradeListItem from './TradeListItem';
 import Trades from './Trades';
 
 const ConnectedTrades = connect(
-  ({tradeStore: {fetchPartTrade, needToLoadMore}, authStore: {isAuth}}) => ({
-    fetchPart: fetchPartTrade,
-    needToLoadMore,
+  ({tradeStore: {fetchNextTrades, shouldFetchMore}, authStore: {isAuth}}) => ({
+    fetchNextTrades,
+    shouldFetchMore,
     isAuth
   }),
   withAuth(Trades)
