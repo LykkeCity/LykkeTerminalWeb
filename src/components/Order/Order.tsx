@@ -126,12 +126,12 @@ class Order extends React.Component<OrderProps, OrderState> {
   applyOrder = (
     action: string,
     quantity: string,
-    baseName: string,
+    baseId: string,
     price: string
   ) => {
     const orderType = this.state.isMarketActive ? MARKET : LIMIT;
     const body: any = {
-      AssetId: baseName,
+      AssetId: baseId,
       AssetPairId: this.props.currency,
       OrderAction: action,
       Volume: parseFloat(quantity)
@@ -169,7 +169,12 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
-      return this.applyOrder(action, currentQuantity, baseName, currentPrice);
+      return this.applyOrder(
+        action,
+        currentQuantity,
+        this.props.baseId,
+        currentPrice
+      ); // TODO baseId should be passed from component for inverted case
     }
     const messageSuffix = this.state.isMarketActive
       ? 'at the market price'
@@ -177,7 +182,13 @@ class Order extends React.Component<OrderProps, OrderState> {
     const message = `${action} ${currentQuantity} ${baseName} ${messageSuffix}`;
     this.props.addModal(
       message,
-      () => this.applyOrder(action, currentQuantity, baseName, currentPrice),
+      () =>
+        this.applyOrder(
+          action,
+          currentQuantity,
+          this.props.baseId,
+          currentPrice
+        ), // TODO baseId should be passed from component for inverted case
       this.cancelOrder,
       Types.Confirm
     );
@@ -229,14 +240,14 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetBalance,
       quoteAssetBalance,
       accuracy: {quantityAccuracy, priceAccuracy},
-      baseName,
-      quoteName
+      baseId,
+      quoteId
     } = this.props;
     const {isLimitActive, isSellActive, isMarketActive} = this.state;
 
     const tempObj = await this.props.handlePercentageChange({
       balance: this.state.isSellActive ? baseAssetBalance : quoteAssetBalance,
-      baseName,
+      baseId,
       index,
       isInverted,
       isLimitActive,
@@ -245,7 +256,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteName
+      quoteId
     });
 
     this.setState(tempObj);

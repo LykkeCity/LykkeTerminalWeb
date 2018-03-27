@@ -28,7 +28,9 @@ export interface OrderProps {
   currency: string;
   placeOrder: any;
   baseName: string;
+  baseId: string;
   quoteName: string;
+  quoteId: string;
   stateFns: any[];
   getAssetById: any;
   onArrowClick: any;
@@ -196,11 +198,12 @@ const ConnectedOrder = connect(
     },
     addModal,
     ask: bestAsk(),
+    baseId: pathOr('', ['baseAsset', 'id'], instrument),
     get baseName() {
-      return pathOr('', ['baseAsset', 'id'], instrument);
+      return pathOr('', ['baseAsset', 'name'], instrument);
     },
     get quoteName() {
-      return pathOr('', ['quoteAsset', 'id'], instrument);
+      return pathOr('', ['quoteAsset', 'name'], instrument);
     },
     bid: bestBid(),
     convertPartiallyBalance,
@@ -213,6 +216,7 @@ const ConnectedOrder = connect(
     onArrowClick,
     onValueChange,
     placeOrder,
+    quoteId: pathOr('', ['quoteAsset', 'id'], instrument),
     resetPercentage,
     stateFns,
     updateDepthFn,
