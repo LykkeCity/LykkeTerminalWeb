@@ -17,3 +17,4 @@ export {OrderType, OrderInputs} from './orderType';
 export {default as OperationType} from './operationType';
 export {default as OrderBookDisplayType} from './orderBookDisplayType';
 export {default as TradeFilter} from './tradeFilter';
+export {default as FeeType} from './feeType';

@@ -90,6 +90,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
               }}
               items={this.getOptions()}
               click={this.handleChange()}
+              needScroll={true}
             />
           </ClickOutside>
         ) : null}

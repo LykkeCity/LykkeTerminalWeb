@@ -21,11 +21,11 @@ export const PublicTradeList: React.SFC<PublicTradeListProps> = ({
     {
       Cell: (props: any) => (
         <TradeListCell side={props.original.side}>
-          {formattedNumber(props.original.quantity)}
+          {formattedNumber(props.original.volume)}
         </TradeListCell>
       ),
       Header: 'Trade size',
-      accessor: 'quantity',
+      accessor: 'volume',
       className: 'left-align no-border',
       headerClassName: 'left-align header no-border',
       minWidth: 90
