@@ -77,8 +77,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       priceAccuracy: pathOr(2, ['accuracy'], currentInstrument),
       quantityAccuracy: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument)
     };
-    this.baseName = currentInstrument.name.split('/')[0];
-    this.quoteName = currentInstrument.name.split('/')[1];
+    this.baseName = currentInstrument.baseAsset.id;
+    this.quoteName = currentInstrument.quoteAsset.id;
     this.action = modal.config.side.toLowerCase();
     this.currency = currentInstrument.id;
     this.isSellActive = this.action === Side.Sell.toLowerCase();
