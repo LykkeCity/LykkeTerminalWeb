@@ -197,12 +197,10 @@ const ConnectedOrder = connect(
     addModal,
     ask: bestAsk(),
     get baseName() {
-      const name = pathOr('', ['name'], instrument);
-      return name && name.split('/')[0];
+      return pathOr('', ['baseAsset', 'id'], instrument);
     },
     get quoteName() {
-      const name = pathOr('', ['name'], instrument);
-      return name && name.split('/')[1];
+      return pathOr('', ['quoteAsset', 'id'], instrument);
     },
     bid: bestBid(),
     convertPartiallyBalance,
@@ -222,14 +220,14 @@ const ConnectedOrder = connect(
     updatePriceFn,
     get baseAssetBalance() {
       const asset = getBalance.find((a: AssetBalanceModel) => {
-        const baseAssetName = pathOr('', ['name'], instrument).split('/')[0];
+        const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
         return a.id === baseAssetName;
       });
       return asset && asset.available;
     },
     get quoteAssetBalance() {
       const asset = getBalance.find((a: AssetBalanceModel) => {
-        const quoteAssetName = pathOr('', ['name'], instrument).split('/')[1];
+        const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
         return a.id === quoteAssetName;
       });
       return asset && asset.available;
