@@ -3,11 +3,15 @@ import {connect} from '../connect';
 import MyWallets from './MyWallets';
 
 const connectedMyWallets = connect(
-  ({balanceListStore: {tradingWalletTotal: total}, referenceStore}) => ({
+  ({
+    balanceListStore: {totalBalance: total, tradingWalletTotal: totalTrading},
+    referenceStore
+  }) => ({
     baseAsset:
       referenceStore.getAssetById(referenceStore.baseAssetId) ||
       new AssetModel({}),
-    total
+    total,
+    totalTrading
   }),
   MyWallets
 );

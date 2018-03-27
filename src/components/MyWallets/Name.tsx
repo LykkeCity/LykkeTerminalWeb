@@ -10,13 +10,24 @@ import {
 interface WalletNameProps {
   name: string;
   selectedIndex: boolean;
+  baseAssetName: string;
+  wallets?: number;
+  accuracy: number;
 }
 
-const Name: React.SFC<WalletNameProps> = ({name, selectedIndex}) => {
+const Name: React.SFC<WalletNameProps> = ({
+  name,
+  selectedIndex,
+  baseAssetName,
+  wallets,
+  accuracy
+}) => {
   const content = (
     <InnerContainerButton>
       <StyledName>{name}</StyledName>
-      <CostOfWallet>{5000 + 'PTC'}</CostOfWallet>
+      <CostOfWallet>
+        {(wallets ? wallets.toFixed(accuracy) : 0) + ' ' + baseAssetName}
+      </CostOfWallet>
     </InnerContainerButton>
   );
   if (selectedIndex) {

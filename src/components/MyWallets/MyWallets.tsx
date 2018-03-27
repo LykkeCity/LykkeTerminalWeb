@@ -7,6 +7,7 @@ import TotalBalance from './TotalBalance';
 interface MyWalletsProps {
   name?: string;
   total: number;
+  totalTrading: number;
   baseAsset: AssetModel;
 }
 
@@ -21,7 +22,7 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
     this.state = {
       indexOfWallet: 0
     };
-    this.wallets = ['WalletBalanceList', 'BalanceList'];
+    this.wallets = ['Trading wallet', 'All wallets'];
     this.changeWallet = this.changeWallet.bind(this);
   }
 
@@ -44,6 +45,10 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
             selectedIndex={this.state.indexOfWallet}
             wallets={this.wallets}
             onChangeWallet={this.changeWallet}
+            total={this.props.total}
+            baseAssetName={this.props.baseAsset.name}
+            accuracy={this.props.baseAsset.accuracy}
+            tradingWalletBalance={this.props.totalTrading}
           />
           <TotalBalance
             total={this.props.total}
