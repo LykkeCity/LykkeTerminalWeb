@@ -19,7 +19,8 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
     <thead>
       <tr>
         <th>Assets</th>
-        <th>&nbsp;</th>
+        <th>P&L</th>
+        <th>Base currency</th>
         <th>Balance</th>
       </tr>
     </thead>

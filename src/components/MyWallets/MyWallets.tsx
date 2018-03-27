@@ -1,13 +1,7 @@
 import * as React from 'react';
 import {AssetModel} from '../../models';
 import NameList from './NameList';
-import {
-  Container,
-  LeftContainer,
-  Link,
-  NamesContainer,
-  RightContainer
-} from './styled';
+import {Container, LeftContainer, Link, RightContainer} from './styled';
 import TotalBalance from './TotalBalance';
 
 interface MyWalletsProps {
@@ -46,23 +40,19 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
     return (
       <Container>
         <LeftContainer>
-          <NamesContainer>
-            <NameList
-              selectedIndex={this.state.indexOfWallet}
-              wallets={this.wallets}
-              onChangeWallet={this.changeWallet}
-            />
-
-            <TotalBalance
-              total={this.props.total}
-              accuracy={this.props.baseAsset.accuracy}
-              name={this.props.baseAsset.name}
-            />
-
-            <Link href={process.env.REACT_APP_WEBWALLET_URL} target="_blank">
-              Manage Wallets in Account
-            </Link>
-          </NamesContainer>
+          <NameList
+            selectedIndex={this.state.indexOfWallet}
+            wallets={this.wallets}
+            onChangeWallet={this.changeWallet}
+          />
+          <TotalBalance
+            total={this.props.total}
+            accuracy={this.props.baseAsset.accuracy}
+            name={this.props.baseAsset.name}
+          />
+          <Link href={process.env.REACT_APP_WEBWALLET_URL} target="_blank">
+            Manage Wallets in Account
+          </Link>
         </LeftContainer>
         <RightContainer>{child}</RightContainer>
       </Container>

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Name from './Name';
+import {Br, NamesContainer} from './styled';
 
 interface WalletNamesProps {
   wallets: string[];
@@ -13,15 +14,16 @@ const NameList: React.SFC<WalletNamesProps> = ({
   selectedIndex
 }) => {
   return (
-    <div>
+    <NamesContainer>
       {wallets.map((name, index) => {
         return (
           <div key={index} onClick={onChangeWallet(index)}>
             <Name name={name} selectedIndex={index === selectedIndex} />
+            <Br />
           </div>
         );
       })}
-    </div>
+    </NamesContainer>
   );
 };
 

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import rem from 'polished/lib/helpers/rem';
+import styled from 'styled-components';
 
 // ...................MyWallets...................
 export const Container = styled.div`
@@ -8,6 +8,9 @@ export const Container = styled.div`
 `;
 
 export const LeftContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   width: 288px;
   height: 264px;
   border-radius: 2px;
@@ -37,15 +40,49 @@ export const Link = styled.a`
   font-weight: bold;
   line-height: 1;
   text-align: center;
-  margin-top: ${rem(24)};
+  margin-top: auto;
 `;
-
+export const Br = styled.div`
+  width: 272px;
+  height: 1px;
+  opacity: 0.4;
+  background-color: rgba(0, 0, 0, 0.2);
+`;
 // ...................TotalBalance...................
 export const TotalContainer = styled.div`
-  display: block;
-  padding-left: 62px;
-  padding-right: 67px;
-  padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 62px;
+  margin-right: 67px;
+  margin-top: 20px;
+`;
+export const TotalPrice = styled.div`
+  width: 159px;
+  height: 24px;
+  font-family: Akrobat;
+  font-size: 22px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+`;
+export const NameOfTotal = styled.div`
+  width: 71px;
+  height: 15px;
+  opacity: 0.4;
+  font-family: ProximaNova;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
 `;
 
 // ...................Name...................
@@ -60,9 +97,7 @@ export const ButtonSelected = styled.div`
 export const Button = styled.div`
   width: 272px;
   height: 32px;
-  opacity: 0.5;
   border-radius: 2px;
-  background-color: #3c3c3c;
   padding: 10px;
   cursor: pointer;
 `;
@@ -81,7 +116,6 @@ export const StyledName = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: #f5f6f7;
-  color: var(--pale-grey);
 `;
 export const CostOfWallet = styled.div`
   width: 91px;

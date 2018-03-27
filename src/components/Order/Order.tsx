@@ -353,7 +353,6 @@ class Order extends React.Component<OrderProps, OrderState> {
             buttonMessage={`${capitalize(action)} ${quantityValue} ${baseName}`}
           />
         )}
-
         {isMarketActive && (
           <OrderMarket
             quantityAccuracy={quantityAccuracy}

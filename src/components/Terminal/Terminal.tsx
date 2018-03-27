@@ -3,7 +3,6 @@ import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import additionalActions from '../../constants/additionalActions';
 import paths from '../../constants/paths';
 import keys from '../../constants/storageKeys';
-import tabs from '../../constants/tabs';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {BalanceList} from '../BalanceList';
@@ -20,6 +19,7 @@ import {TabbedTile, Tile} from '../Tile';
 import {PublicTradeList, TradeList} from '../TradeList';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
+import {LearnMore} from './styled';
 
 const Shell = styled.div`
   background: rgba(0, 0, 0, 0.2);
@@ -32,10 +32,12 @@ const Shell = styled.div`
 const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
-    <Tile title="Account" tabs={tabs.walletBalance} authorize={true}>
-      <WalletBalanceList />
-      <BalanceList />
-    </Tile>
+    <div>
+      <LearnMore>
+        You order may execute as a maker order or taker order.{' '}
+        <span>Learn more</span>
+      </LearnMore>
+    </div>
   ),
   c: (
     <Tile title="Chart">
@@ -81,7 +83,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
       direction: 'column' as MosaicDirection,
       first: 'wl',
       second: 'acc',
-      splitPercentage: 60
+      splitPercentage: 95
     },
     second: {
       direction: 'row' as MosaicDirection,
@@ -89,7 +91,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         direction: 'column' as MosaicDirection,
         first: 'c',
         second: 'ord',
-        splitPercentage: 70
+        splitPercentage: 65
       },
       second: {
         direction: 'column' as MosaicDirection,

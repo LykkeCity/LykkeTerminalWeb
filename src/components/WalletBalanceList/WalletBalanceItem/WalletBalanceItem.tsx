@@ -18,6 +18,11 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   <tr key={id}>
     <td>{name}</td>
     <td>
+      <WalletBalanceNumber num={balance} accuracy={accuracy}>
+        &nbsp;{name}
+      </WalletBalanceNumber>
+    </td>
+    <td>
       <WalletBalanceNumber
         num={balanceInBaseAsset}
         accuracy={baseAsset.accuracy}
