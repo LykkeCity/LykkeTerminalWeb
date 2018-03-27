@@ -1,8 +1,10 @@
 import {observer} from 'mobx-react';
+import {compose} from 'rambda';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
+import withLoader from '../Loader/withLoader';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
@@ -21,9 +23,13 @@ const ConnectedTrades = connect(
 
 const ConnectedTradeList = connect<TradeListProps>(
   ({tradeStore: {getAllTrades}}) => ({
-    trades: getAllTrades
+    trades: getAllTrades,
+    loading: getAllTrades.length === 0
   }),
-  withStyledScroll({height: 'calc(100% - 85px)'})(TradeList)
+  compose(
+    withStyledScroll({height: 'calc(100% - 85px)'}),
+    withLoader<TradeListProps>(p => p.trades.length === 0)
+  )(TradeList)
 );
 
 const ObservedTradeListItem = observer(TradeListItem);

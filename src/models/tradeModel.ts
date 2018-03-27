@@ -11,7 +11,7 @@ class TradeModel {
   price: number;
   oppositeVolume: number;
   orderType: OrderType;
-  fee?: number;
+  fee: number;
   instrument?: InstrumentModel;
 
   constructor(trade: Partial<TradeModel>) {

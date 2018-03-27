@@ -1,8 +1,6 @@
 import {OrderType, TradeModel} from '../../models/index';
 import {RootStore, TradeStore} from '../index';
 
-// tslint:disable:object-literal-sort-keys
-
 describe('trade store', () => {
   let tradeStore: TradeStore;
   const api: any = {
@@ -105,13 +103,13 @@ describe('trade store', () => {
           symbol: 'LKKUSD',
           volume: 1,
           timestamp: Date.now().toString(),
-          // tslint:disable-next-line:object-literal-sort-keys
           side: 'Buy',
           tradeId: 't1',
           id: '1',
           price: 1,
           oppositeVolume: 1,
-          orderType: OrderType.Market
+          orderType: OrderType.Market,
+          fee: 0
         }
       ]);
       expect(tradeStore.getPublicTrades).toHaveLength(1);
