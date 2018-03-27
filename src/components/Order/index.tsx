@@ -189,7 +189,7 @@ const ConnectedOrder = connect(
       priceAccuracy: pathOr(2, ['accuracy'], instrument),
       get quantityAccuracy() {
         const asset = referenceStore.getAssetById(
-          pathOr('', ['name'], instrument).split('/')[0]
+          pathOr('', ['baseAsset', 'id'], instrument)
         );
         return asset ? asset.accuracy : 2;
       }
