@@ -1,6 +1,11 @@
 import {InstrumentModel, OrderType} from '..';
 import SideDirection from '../sideDirection';
-import {fromWampToTrade, mapToEffectivePrice} from '../tradeModel.mapper';
+import {
+  aggregateTradesByTimestamp,
+  fromRestToTrade,
+  fromWampToTrade,
+  mapToEffectivePrice
+} from '../tradeModel.mapper';
 
 describe('trade model mapper', () => {
   describe('mapToEffectivePrice', () => {
@@ -396,10 +401,94 @@ describe('trade model mapper', () => {
           accuracy: 3
         }
       ] as InstrumentModel[]);
-      expect(trade.quantity).toBe(3.50000002);
+      expect(trade.volume).toBe(3.50000002);
       expect(trade.price).toBe(10215.749);
-      expect(trade.oppositeQuantity).toBe(35755.12);
+      expect(trade.oppositeVolume).toBe(35755.12);
       expect(trade.orderType).toBe(OrderType.Market);
+    });
+  });
+
+  describe('map from rest', () => {
+    const dto = [
+      {
+        Id: '201803271023_91be5d0e-e3e0-4291-a777-28a236693757',
+        DateTime: '2018-03-27T10:23:30.074Z',
+        Type: 'Trade',
+        State: 'Finished',
+        Amount: 8.61,
+        Asset: 'USD',
+        AssetPair: 'BTCUSD',
+        Price: 7832.819,
+        FeeSize: 1.47,
+        FeeType: 'Absolute'
+      },
+      {
+        Id: '201803271023_69dfd912-23da-4baa-9e6d-addba6d9574c',
+        DateTime: '2018-03-27T10:23:30.074Z',
+        Type: 'Trade',
+        State: 'Finished',
+        Amount: -0.0011,
+        Asset: 'BTC',
+        AssetPair: 'BTCUSD',
+        Price: 7832.819,
+        FeeSize: 0,
+        FeeType: 'Unknown'
+      }
+    ];
+
+    const dtoRelative = [
+      {
+        Id: '201803271023_91be5d0e-e3e0-4291-a777-28a236693757',
+        DateTime: '2018-03-27T10:23:30.074Z',
+        Type: 'Trade',
+        State: 'Finished',
+        Amount: -8.61,
+        Asset: 'USD',
+        AssetPair: 'BTCUSD',
+        Price: 7832.819,
+        FeeSize: 0,
+        FeeType: 'Unknown'
+      },
+      {
+        Id: '201803271023_69dfd912-23da-4baa-9e6d-addba6d9574c',
+        DateTime: '2018-03-27T10:23:30.074Z',
+        Type: 'Trade',
+        State: 'Finished',
+        Amount: 1,
+        Asset: 'BTC',
+        AssetPair: 'BTCUSD',
+        Price: 7832.819,
+        FeeSize: 5,
+        FeeType: 'Relative'
+      }
+    ];
+
+    const instruments = [
+      {
+        id: 'BTCUSD',
+        baseAsset: {
+          id: 'BTC'
+        },
+        quoteAsset: {
+          id: 'USD'
+        },
+        accuracy: 3
+      }
+    ] as InstrumentModel[];
+
+    it('should aggregate twinned trades into one', () => {
+      expect(aggregateTradesByTimestamp(dto, instruments)).toHaveLength(1);
+    });
+
+    it('should calculate fee', () => {
+      expect(aggregateTradesByTimestamp(dto, instruments)[0].fee).toBe(1.47);
+      expect(aggregateTradesByTimestamp(dtoRelative, instruments)[0].fee).toBe(
+        0.05
+      );
+    });
+
+    describe('toSingleTrade', () => {
+      expect([fromRestToTrade('BTC', dto)]).toHaveLength(1);
     });
   });
 });

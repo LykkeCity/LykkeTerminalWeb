@@ -17,6 +17,9 @@ const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
 class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
 
+  @observable.shallow private trades: TradeModel[] = [];
+  @observable.shallow private publicTrades: TradeModel[] = [];
+
   @computed
   get getAllTrades() {
     return sortByDate(this.trades);
@@ -37,16 +40,6 @@ class TradeStore extends BaseStore {
     return this.rootStore.uiStore.selectedInstrument;
   }
 
-  @computed
-  get filteredTrades() {
-    return this.filter === TradeFilter.CurrentAsset
-      ? this.getAllTrades.filter(t => t.symbol === this.selectedInstrument!.id)
-      : this.getAllTrades;
-  }
-
-  @observable.shallow private trades: TradeModel[] = [];
-  @observable.shallow private publicTrades: TradeModel[] = [];
-
   private subscriptions: Set<ISubscription> = new Set();
 
   private skip: number = TradeQuantity.Skip;
@@ -59,7 +52,10 @@ class TradeStore extends BaseStore {
 
   @action
   setFilter = (filter: TradeFilter) => {
+    this.trades = [];
+    this.skip = 0;
     this.filter = filter;
+    this.fetchTrades();
   };
 
   @action
@@ -73,23 +69,26 @@ class TradeStore extends BaseStore {
   };
 
   fetchTrades = async () => {
-    if (!this.selectedInstrument) {
-      return;
+    if (this.selectedInstrument) {
+      const instrument =
+        this.filter === TradeFilter.CurrentAsset
+          ? this.selectedInstrument
+          : undefined;
+      const resp = await this.api.fetchTrades(instrument, this.skip, this.take);
+      runInAction(() => {
+        this.addTrades(
+          map.fromRestToTradeList(
+            resp,
+            this.rootStore.referenceStore.getInstruments()
+          )
+        );
+      });
     }
-    const resp = await this.api.fetchTrades(
-      this.selectedInstrument,
-      this.skip,
-      this.take
-    );
-    runInAction(() => {
-      this.trades = [];
-      this.addTrades(
-        map.fromRestToTradeList(
-          resp,
-          this.selectedInstrument!.quoteAsset.accuracy
-        )
-      );
-    });
+  };
+
+  fetchPartTrade = async () => {
+    this.skip = nextSkip(this.skip, this.take, this.skipWamp);
+    this.fetchTrades();
   };
 
   fetchPublicTrades = async () => {
@@ -109,6 +108,26 @@ class TradeStore extends BaseStore {
     ws.subscribe(topics.trade, this.onTrades);
   };
 
+  onTrades = async (args: any[]) => {
+    const mappedTrades = map.fromWampToTrade(
+      args[0],
+      this.rootStore.referenceStore.getInstruments()
+    );
+
+    this.skipWamp += 2;
+
+    this.addTrades([mappedTrades]);
+
+    const executedOrderIds: string[] = uniq(
+      args[0].map((t: any) => ({
+        id: t.OrderId,
+        volume: t.Volume
+      }))
+    );
+
+    this.rootStore.orderStore.executeOrder(executedOrderIds);
+  };
+
   subscribeToPublicTrades = async () => {
     this.subscriptions.add(
       await this.getWs().subscribe(
@@ -124,46 +143,6 @@ class TradeStore extends BaseStore {
     );
     await Promise.all(subscriptions);
     this.subscriptions.clear();
-  };
-
-  fetchPartTrade = async () => {
-    if (this.selectedInstrument) {
-      const {accuracy} = this.selectedInstrument.quoteAsset;
-      this.skip = nextSkip(this.skip, this.take, this.skipWamp);
-      const resp = await this.api.fetchTrades(
-        this.selectedInstrument,
-        this.skip,
-        this.take
-      );
-      const trades = map.fromRestToTradeList(resp, accuracy);
-      runInAction(() => {
-        this.addTrades(trades);
-      });
-    }
-  };
-
-  onTrades = async (args: any[]) => {
-    this.take += this.skip;
-    this.skip = TradeQuantity.Skip;
-
-    this.addTrades([
-      map.fromWampToTrade(
-        args[0],
-        this.rootStore.referenceStore.getInstruments()
-      )
-    ]);
-
-    this.skip = this.take - TradeQuantity.Take;
-    this.take = TradeQuantity.Take;
-    const executedOrderIds: string[] = uniq(
-      args[0].map((t: any) => ({
-        id: t.OrderId,
-        volume: t.Volume
-      }))
-    );
-
-    this.skipWamp += args[0].length;
-    this.rootStore.orderStore.executeOrder(executedOrderIds);
   };
 
   onPublicTrades = (args: any[]) => {

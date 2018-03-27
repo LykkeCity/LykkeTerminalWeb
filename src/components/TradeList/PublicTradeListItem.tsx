@@ -8,14 +8,14 @@ export interface PublicTradeListItemProps extends TradeModel {
 }
 
 export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
-  quantity,
+  volume,
   price,
   side,
   timestamp,
   className
 }) => (
   <tr className={className}>
-    <td>{quantity}</td>
+    <td>{volume}</td>
     <td>{price}</td>
     <td>{side}</td>
     <td>{format(timestamp, 'HH:mm:ss')}</td>

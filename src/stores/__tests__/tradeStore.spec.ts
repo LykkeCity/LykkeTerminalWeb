@@ -85,14 +85,14 @@ describe('trade store', () => {
         new TradeModel({
           side: 'Buy',
           symbol: 'LKKUSD',
-          quantity: 1,
+          volume: 1,
           timestamp: new Date().toLocaleString()
         })
       ]);
       const trade = tradeStore.getAllTrades[0];
       expect(trade.side).toBeDefined();
       expect(trade.symbol).toBeDefined();
-      expect(trade.quantity).toBeDefined();
+      expect(trade.volume).toBeDefined();
       expect(trade.timestamp).toBeDefined();
     });
   });
@@ -103,16 +103,14 @@ describe('trade store', () => {
         {
           asset: '',
           symbol: 'LKKUSD',
-          quantity: 1,
+          volume: 1,
           timestamp: Date.now().toString(),
           // tslint:disable-next-line:object-literal-sort-keys
           side: 'Buy',
           tradeId: 't1',
           id: '1',
           price: 1,
-          oppositeQuantity: 1,
-          sellVolume: 1,
-          buyVolume: 1,
+          oppositeVolume: 1,
           orderType: OrderType.Market
         }
       ]);

@@ -3,13 +3,6 @@ import {HistoryApi} from './index';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
-const filterByType = ({Type}: any) =>
-  Type === OperationType.Trade || Type === OperationType.LimitTrade;
-
-// const filterByInstrument = (instrument: InstrumentModel) => ({
-//   AssetPair
-// }: any) => AssetPair === instrument.id;
-
 export interface TradeApi {
   fetchTrades: (
     instrument: InstrumentModel,
@@ -25,16 +18,23 @@ export interface TradeApi {
 
 export class RestTradeApi extends RestApi implements TradeApi {
   fetchTrades = async (
-    instrument: InstrumentModel,
+    instrument: InstrumentModel | undefined,
     skip: number,
     take: number
   ) => {
-    const resp = await HistoryApi.fetchHistory({
-      assetId: instrument.baseAsset.id,
+    const respTrades = (await HistoryApi.fetchHistory({
+      assetPairId: (instrument && instrument.id) || '',
       skip,
-      take
-    });
-    return resp.filter(filterByType);
+      take,
+      operationType: OperationType.Trade
+    })) as any[];
+    const respLimitTrades = (await HistoryApi.fetchHistory({
+      assetPairId: (instrument && instrument.id) || '',
+      skip,
+      take,
+      operationType: OperationType.LimitTrade
+    })) as any[];
+    return [...respTrades, ...respLimitTrades];
   };
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>

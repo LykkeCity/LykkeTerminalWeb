@@ -39,7 +39,7 @@ const Trades: React.SFC<TradesProps> = ({
       </TradeListToolbar>
       <HBar />
       <TradeList />
-      {true && (
+      {needToLoadMore && (
         <StyledLoadMore>
           <StyledLoadMoreButton onClick={fetchPart}>
             Load more...

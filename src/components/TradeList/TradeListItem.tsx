@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
-import styled, {colorFromSide} from '../styled';
+import {feeAssetFromSide} from '../../models/tradeModel.mapper';
+import {TradeRow} from './styles';
 
 interface TradeListItemProps extends TradeModel {
   className?: string;
@@ -10,27 +11,30 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   price,
   side,
   symbol,
-  quantity,
-  oppositeQuantity,
+  volume,
+  oppositeVolume,
   orderType,
   fee,
   timestamp,
-  className
+  className,
+  instrument
 }) => (
-  <tr className={className}>
+  <TradeRow className={className} side={side}>
     <td>{symbol}</td>
     <td>{side}</td>
-    <td>{quantity}</td>
+    <td>
+      {volume} {instrument!.baseAsset.name}
+    </td>
     <td>{price}</td>
-    <td>{oppositeQuantity}</td>
+    <td>
+      {oppositeVolume} {instrument!.quoteAsset.name}
+    </td>
     <td>{orderType}</td>
-    <td>{fee}</td>
+    <td>
+      {fee} {feeAssetFromSide(instrument!, side).name}
+    </td>
     <td>{new Date(timestamp).toLocaleString()}</td>
-  </tr>
+  </TradeRow>
 );
 
-const StyledTradeListItem = styled(TradeListItem)`
-  ${p => colorFromSide(p)};
-`;
-
-export default StyledTradeListItem;
+export default TradeListItem;
