@@ -72,8 +72,8 @@ class UiOrderStore extends BaseStore {
       quantityAccuracy,
       priceAccuracy,
       isInverted,
-      baseName,
-      quoteName,
+      baseId,
+      quoteId,
       percentage,
       index
     } = config;
@@ -102,8 +102,8 @@ class UiOrderStore extends BaseStore {
         } else {
           const convertedBalance = await this.rootStore.orderStore.convertPartiallyBalance(
             balance,
-            baseName,
-            quoteName
+            baseId,
+            quoteId
           );
           quantityValue = this.getPartlyValue(
             value,
@@ -117,8 +117,8 @@ class UiOrderStore extends BaseStore {
         } else {
           const convertedBalance = await this.rootStore.orderStore.convertPartiallyBalance(
             balance,
-            quoteName,
-            baseName
+            quoteId,
+            baseId
           );
           quantityValue = this.getPartlyValue(
             value,

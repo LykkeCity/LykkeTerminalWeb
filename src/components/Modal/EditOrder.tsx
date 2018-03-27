@@ -56,6 +56,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private accuracy: {priceAccuracy: number; quantityAccuracy: number};
   private baseName: string = '';
   private quoteName: string = '';
+  private baseId: string = '';
+  private quoteId: string = '';
   private currency: string = '';
   private isSellActive: boolean;
   private balance: number = 0;
@@ -77,15 +79,17 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       priceAccuracy: pathOr(2, ['accuracy'], currentInstrument),
       quantityAccuracy: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument)
     };
-    this.baseName = currentInstrument.baseAsset.id;
-    this.quoteName = currentInstrument.quoteAsset.id;
+    this.baseName = currentInstrument.baseAsset.name;
+    this.quoteName = currentInstrument.quoteAsset.name;
+    this.baseId = currentInstrument.baseAsset.id;
+    this.quoteId = currentInstrument.quoteAsset.id;
     this.action = modal.config.side.toLowerCase();
     this.currency = currentInstrument.id;
     this.isSellActive = this.action === Side.Sell.toLowerCase();
 
-    const assetName = this.isSellActive ? this.baseName : this.quoteName;
+    const assetId = this.isSellActive ? this.baseId : this.quoteId;
     const asset = this.props.getBalance.find((a: AssetBalanceModel) => {
-      return a.id === assetName;
+      return a.id === assetId;
     });
     const reserved = this.isSellActive
       ? modal.config.volume
@@ -94,22 +98,18 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   }
 
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
-    const {
-      accuracy: {quantityAccuracy, priceAccuracy},
-      baseName,
-      quoteName
-    } = this;
+    const {accuracy: {quantityAccuracy, priceAccuracy}, baseId, quoteId} = this;
 
     const tempObj = await this.props.handlePercentageChange({
       balance: this.balance,
-      baseName,
+      baseId,
       index,
       isInverted,
       isSellActive: this.isSellActive,
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteName
+      quoteId
     });
 
     this.setState(tempObj);
@@ -162,7 +162,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   handleEditOrder = () => {
     this.toggleDisableBtn(true);
     const body: any = {
-      AssetId: this.baseName,
+      AssetId: this.baseId,
       AssetPairId: this.currency,
       OrderAction: this.action,
       Price: parseFloat(this.state.priceValue),
