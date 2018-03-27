@@ -1,83 +1,101 @@
-import {format} from 'date-fns';
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
 import {InstrumentModel, TradeModel} from '../../models/index';
-import {ReactStyledTable} from '../Table/index';
-import {TradeListCell} from './index';
+import {sortData, Table, TableHeader, TableSortState} from '../Table';
+import {PublicTradeListItem} from './index';
 
 interface PublicTradeListProps {
   trades: TradeModel[];
   selectedInstrument: InstrumentModel;
 }
 
-export const PublicTradeList: React.SFC<PublicTradeListProps> = ({
-  trades = [],
-  selectedInstrument
-}) => {
-  const columns = [
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.quantity}
-        </TradeListCell>
-      ),
-      Header: 'Trade size',
-      accessor: 'quantity',
-      className: 'left-align no-border',
-      headerClassName: 'left-align header no-border',
-      minWidth: 90
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {props.original.price}
-        </TradeListCell>
-      ),
-      Header: () =>
-        `Price (${pathOr('', ['quoteAsset', 'name'], selectedInstrument)})`,
-      accessor: 'price',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 75
-    },
-    {
-      Cell: (row: any) => (
-        <TradeListCell side={row.value}>{row.value}</TradeListCell>
-      ),
-      Header: 'Side',
-      accessor: 'side',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 40,
-      resizable: false
-    },
-    {
-      Cell: (props: any) => (
-        <TradeListCell side={props.original.side}>
-          {format(props.original.timestamp, 'HH:mm:ss')}
-        </TradeListCell>
-      ),
-      Header: 'Time',
-      accessor: 'timestamp',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 60
-    }
-  ];
+class PublicTradeList extends React.Component<
+  PublicTradeListProps,
+  TableSortState
+> {
+  constructor(props: PublicTradeListProps) {
+    super(props);
+    this.state = {
+      data: this.props.trades,
+      sortByParam: '',
+      sortDirection: 'ASC'
+    };
+  }
 
-  return (
-    <ReactStyledTable>
-      <ReactTable
-        data={trades}
-        columns={columns}
-        className={'no-border table'}
-        showPagination={false}
-        pageSize={trades.length}
-      />
-    </ReactStyledTable>
-  );
-};
+  componentWillReceiveProps(args: any) {
+    this.setState({
+      data: args.trades
+    });
+  }
+
+  sort = (sortByParam: string, sortDirectionDefault: string) => {
+    this.setState(
+      sortData(this.props.trades, sortByParam, sortDirectionDefault, this.state)
+    );
+  };
+
+  render() {
+    return (
+      <Table>
+        <thead>
+          <tr>
+            <th>
+              <TableHeader
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'quantity'}
+                onSort={this.sort}
+              >
+                Trade size
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'price'}
+                onSort={this.sort}
+              >
+                Price ({pathOr(
+                  '',
+                  ['quoteAsset', 'name'],
+                  this.props.selectedInstrument
+                )})
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'side'}
+                onSort={this.sort}
+              >
+                Side
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'timestamp'}
+                onSort={this.sort}
+              >
+                Time
+              </TableHeader>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.data.map(trade => (
+            <PublicTradeListItem key={trade.id} {...trade} />
+          ))}
+        </tbody>
+      </Table>
+    );
+  }
+}
 
 export default PublicTradeList;

@@ -1,33 +1,17 @@
-import {prop, sortBy} from 'rambda';
 import * as React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
-import styled from '../styled';
-import {
-  InstrumentListHeader,
-  InstrumentListItem,
-  InstrumentListProps
-} from './index';
-
-interface InstrumentListState {
-  data: any[];
-  sortBy: string;
-  sortDirection: string;
-}
-
-const Header = styled.div`
-  display: flex;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-`;
+import {sortData, TableHeader, TableSortState} from '../Table';
+import {InstrumentListItem, InstrumentListProps} from './index';
+import {InstrumentTable} from './styles';
 
 class InstrumentList extends React.Component<
   InstrumentListProps,
-  InstrumentListState
+  TableSortState
 > {
   constructor(props: InstrumentListProps) {
     super(props);
     this.state = {
       data: this.props.instruments,
-      sortBy: '',
+      sortByParam: '',
       sortDirection: 'ASC'
     };
   }
@@ -43,83 +27,77 @@ class InstrumentList extends React.Component<
   }
 
   sort = (sortByParam: string, sortDirectionDefault: string) => {
-    const sort = sortBy(prop(sortByParam));
-    const sortDirection =
-      this.state.sortBy === sortByParam
-        ? this.state.sortDirection === 'ASC' ? 'DESC' : 'ASC'
-        : sortDirectionDefault;
-    const data = (() => {
-      switch (sortDirection) {
-        default:
-        case 'ASC':
-          return sort(this.props.instruments);
-        case 'DESC':
-          return sort(this.props.instruments).reverse();
-      }
-    })();
-
-    return this.setState({
-      data,
-      sortBy: sortByParam,
-      sortDirection
-    });
+    this.setState(
+      sortData(
+        this.props.instruments,
+        sortByParam,
+        sortDirectionDefault,
+        this.state
+      )
+    );
   };
 
   render() {
     return (
-      <div>
-        <Header>
-          <InstrumentListHeader
-            currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
-            sortByParam={'name'}
-            sort={this.sort}
-          >
-            Asset pair
-          </InstrumentListHeader>
-
-          <InstrumentListHeader
-            currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
-            sortByParam={'price'}
-            sort={this.sort}
-          >
-            Price
-          </InstrumentListHeader>
-
-          <InstrumentListHeader
-            currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
-            className={'right-align'}
-            sortByParam={'change24h'}
-            sort={this.sort}
-          >
-            24h Change
-          </InstrumentListHeader>
-
-          <InstrumentListHeader
-            currentSortDirection={this.state.sortDirection}
-            currentSortByParam={this.state.sortBy}
-            className={'right-align'}
-            sortByParam={'volume'}
-            sort={this.sort}
-          >
-            Volume
-          </InstrumentListHeader>
-        </Header>
-
-        <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={525}>
-          {this.state.data.map(x => (
+      <InstrumentTable>
+        <thead>
+          <tr>
+            <th>
+              <TableHeader
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'name'}
+                onSort={this.sort}
+              >
+                Asset pair
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'price'}
+                onSort={this.sort}
+              >
+                Price
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'change24h'}
+                onSort={this.sort}
+              >
+                24h Change
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'volume'}
+                onSort={this.sort}
+              >
+                Volume
+              </TableHeader>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.data.map(instrument => (
             <InstrumentListItem
-              key={x.id}
+              key={instrument.id}
               baseAsset={this.props.baseAsset}
-              instrument={x}
               onPick={this.props.onPick}
-              inactive={this.props.currentInstrumentId !== x.id}
+              inactive={this.props.currentInstrumentId !== instrument.id}
+              instrument={instrument}
             />
           ))}
-        </Scrollbars>
-      </div>
+        </tbody>
+      </InstrumentTable>
     );
   }
 }

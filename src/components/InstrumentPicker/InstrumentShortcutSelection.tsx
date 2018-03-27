@@ -1,37 +1,13 @@
-import {rem} from 'polished';
 import * as React from 'react';
-import styled from 'styled-components';
+import ReactTooltip from 'react-tooltip';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
 import {InstrumentShortcutSelectionProps} from './index';
-
-const StyledShortcutSelection = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding: ${rem(16)} 0;
-  margin-left: ${rem(8)};
-  text-align: left;
-  color: rgb(245, 246, 247);
-
-  &:after {
-    content: '';
-    margin: 0 10px;
-    border-left: 2px solid transparent;
-    border-right: 2px solid transparent;
-    border-top: 4px solid #f5f6f7;
-  }
-
-  &.active {
-    color: #0388ef;
-    box-shadow: inset 0 -3px 0 0 #0388ef;
-  }
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  height: 100%;
-`;
+import {
+  ShortcutSelection,
+  ShortcutSelectionWrapper,
+  TruncatedText
+} from './styles';
 
 const InstrumentShortcutSelection: React.SFC<
   InstrumentShortcutSelectionProps
@@ -45,17 +21,18 @@ const InstrumentShortcutSelection: React.SFC<
   const handleChange = (value: string, index: number) => () => {
     toggleShortcuts(value, index);
   };
-
   const currentOption = shortcuts.find(item => item.index === selectedShortcut);
 
   return (
-    <Wrapper>
-      <StyledShortcutSelection
+    <ShortcutSelectionWrapper>
+      <ShortcutSelection
         className={currentOption ? 'active' : ''}
         onClick={onToggleInstrumentSelection}
       >
-        {currentOption ? currentOption.label : 'Other'}
-      </StyledShortcutSelection>
+        <TruncatedText data-tip={currentOption ? currentOption.label : 'Other'}>
+          {currentOption ? currentOption.label : 'Other'}
+        </TruncatedText>
+      </ShortcutSelection>
       {showInstrumentSelection && (
         <ClickOutside
           onClickOutside={
@@ -77,7 +54,8 @@ const InstrumentShortcutSelection: React.SFC<
           />
         </ClickOutside>
       )}
-    </Wrapper>
+      <ReactTooltip effect={'solid'} />
+    </ShortcutSelectionWrapper>
   );
 };
 

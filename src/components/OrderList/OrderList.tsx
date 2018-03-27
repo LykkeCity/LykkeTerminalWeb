@@ -1,116 +1,123 @@
 import * as React from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
-import {OrderModel, Side} from '../../models';
-import {
-  formattedDateTime,
-  formattedNumber
-} from '../../utils/localFormatted/localFormatted';
-import {Icon} from '../Icon/index';
-import {ReactStyledTable} from '../Table';
+import {OrderListItem} from '.';
+import {OrderModel} from '../../models';
+import {sortData, Table, TableHeader, TableSortState} from '../Table';
 
 interface OrderListProps {
   orders: OrderModel[];
-  onEditOrder: (order: OrderModel) => void;
+  onEditOrder: (order: OrderModel) => (id: string) => void;
   onCancelOrder?: (id: string) => void;
 }
 
-const OrderList: React.SFC<OrderListProps> = ({
-  orders,
-  onEditOrder,
-  onCancelOrder
-}) => {
-  const columns = [
-    {
-      Header: 'Asset pair',
-      accessor: 'symbol',
-      className: 'left-align no-border',
-      headerClassName: 'left-align header no-border',
-      minWidth: 65
-    },
-    {
-      Cell: (props: any) => (
-        // tslint:disable-next-line:jsx-no-lambda
-        <span onClick={() => onCancelOrder!(props.original.id)}>
-          <Icon name="cross" />
-        </span>
-      ),
-      Header: 'Cancel order',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 55
-    },
-    {
-      Header: 'OrderID',
-      accessor: 'id',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 280
-    },
-    {
-      Cell: (props: any) => {
-        const colorSide =
-          props.original.side === Side.Buy ? '#fb8f01' : '#d070ff';
-        return <span style={{color: colorSide}}>{props.original.side}</span>;
-      },
-      Header: 'Side',
-      accessor: 'side',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 40
-    },
-    {
-      Cell: (row: any) => <span>{formattedNumber(row.value)}</span>,
-      Header: 'Volume',
-      accessor: 'volume',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 60
-    },
-    {
-      Cell: (row: any) => <span>{formattedNumber(row.value)}</span>,
-      Header: 'Price',
-      accessor: 'price',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 45
-    },
-    {
-      Cell: (row: any) => {
-        return <span>{formattedDateTime(new Date(row.value))}</span>;
-      },
-      Header: 'Created Date',
-      accessor: 'createdAt',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 155
-    },
-    {
-      Cell: (props: any) => (
-        // tslint:disable-next-line:jsx-no-lambda
-        <span onClick={() => onEditOrder(props.original)}>
-          <Icon name="pencil" />
-        </span>
-      ),
-      Header: 'Edit',
-      className: 'right-align no-border',
-      headerClassName: 'right-align header no-border',
-      minWidth: 40,
-      resizable: false
-    }
-  ];
+class OrderList extends React.Component<OrderListProps, TableSortState> {
+  constructor(props: OrderListProps) {
+    super(props);
+    this.state = {
+      data: this.props.orders,
+      sortByParam: '',
+      sortDirection: 'ASC'
+    };
+  }
 
-  return (
-    <ReactStyledTable>
-      <ReactTable
-        data={orders}
-        columns={columns}
-        className={'no-border table'}
-        showPagination={false}
-        pageSize={orders.length}
-      />
-    </ReactStyledTable>
-  );
-};
+  componentWillReceiveProps(args: any) {
+    this.setState({
+      data: args.orders
+    });
+  }
+
+  sort = (sortByParam: string, sortDirectionDefault: string) => {
+    this.setState(
+      sortData(this.props.orders, sortByParam, sortDirectionDefault, this.state)
+    );
+  };
+
+  render() {
+    return (
+      <Table>
+        <thead>
+          <tr>
+            <th>
+              <TableHeader
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'symbol'}
+                onSort={this.sort}
+              >
+                Asset pair
+              </TableHeader>
+            </th>
+            <th>Cancel order</th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'id'}
+                onSort={this.sort}
+              >
+                OrderID
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'side'}
+                onSort={this.sort}
+              >
+                Side
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'volume'}
+                onSort={this.sort}
+              >
+                Volume
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'price'}
+                onSort={this.sort}
+              >
+                Price
+              </TableHeader>
+            </th>
+            <th>
+              <TableHeader
+                className={'right-align'}
+                currentSortDirection={this.state.sortDirection}
+                currentSortByParam={this.state.sortByParam}
+                sortByParam={'createdAt'}
+                onSort={this.sort}
+              >
+                Created Date
+              </TableHeader>
+            </th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.data.map(order => (
+            <OrderListItem
+              key={order.id}
+              cancelOrder={this.props.onCancelOrder}
+              onEdit={this.props.onEditOrder(order)}
+              {...order}
+            />
+          ))}
+        </tbody>
+      </Table>
+    );
+  }
+}
 
 export default OrderList;
