@@ -129,5 +129,5 @@ export const CostOfWallet = styled.div`
   letter-spacing: normal;
   text-align: right;
   color: #f5f6f7;
-  color: var(--pale-grey);
+  margin-left: auto;
 `;
