@@ -6,24 +6,19 @@ import {Order} from '../../../models';
 
 import {ChartProps} from './Models';
 
+import chart from './chartConstants';
+
 class Asks extends React.Component<ChartProps> {
+  graphics: any = [];
+  width: number = 1080;
+  height: number = 500;
   asks: Order[];
   bids: Order[];
   mid: number;
-  graphics: any = [];
 
-  width = 1080;
-  height = 500;
-
-  lineColor = '#ffae2c';
-  blockColor = 'rgba(255, 174, 44, 0.15)';
-  blockStrokeColor = 'rgba(255, 174, 44, 0.001)';
-  strokeWidth = 3;
-
-  midX = this.width / 2 + Math.round(this.strokeWidth / 2);
+  midX = this.width / 2 + Math.round(chart.strokeWidth / 2);
   midY = this.height;
 
-  stepLength: number;
   coef: number;
 
   constructor(props: ChartProps) {
@@ -58,13 +53,12 @@ class Asks extends React.Component<ChartProps> {
     this.asks.forEach((ask, index) => {
       newX += this.calculateStepLength(ask, index);
       newY = this.midY - this.calculateStepHeight(ask);
-      newY > this.strokeWidth ? (newY = newY) : (newY = this.strokeWidth);
       this.graphics.push(
         <Line
           points={[currentX, currentY, currentX, newY, newX, newY]}
           closed={false}
-          stroke={this.lineColor}
-          strokeWidth={this.strokeWidth}
+          stroke={chart.asks.lineColor}
+          strokeWidth={chart.strokeWidth}
           // tslint:disable-next-line:jsx-no-lambda
           onMouseOver={() => this.showMessage(ask, index)}
         />
@@ -75,8 +69,8 @@ class Asks extends React.Component<ChartProps> {
           y={newY}
           width={currentX - newX}
           height={this.midY - newY}
-          stroke={this.blockStrokeColor}
-          fill={this.blockColor}
+          stroke={chart.asks.fillStrokeColor}
+          fill={chart.asks.fillColor}
           // tslint:disable-next-line:jsx-no-lambda
           onMouseOver={() => this.showMessage(ask, index)}
         />
@@ -87,14 +81,14 @@ class Asks extends React.Component<ChartProps> {
   };
 
   calculateCoef() {
-    const maxDepth = Math.max(
-      this.asks[this.asks.length - 1].depth,
-      this.bids[this.bids.length - 1].depth
-    );
-    if (this.asks[this.asks.length - 1]) {
-      this.coef = this.height / (maxDepth + 5);
+    if (this.asks[this.asks.length - 1] && this.asks[this.asks.length - 1]) {
+      const maxDepth = Math.max(
+        this.asks[this.asks.length - 1].depth,
+        this.bids[this.bids.length - 1].depth
+      );
+      return this.height / (maxDepth + 5);
     } else {
-      this.coef = 1;
+      return 1;
     }
   }
 
@@ -103,7 +97,7 @@ class Asks extends React.Component<ChartProps> {
     this.asks = this.props.asks.reverse();
     this.bids = this.props.bids;
     this.mid = parseFloat(this.props.mid);
-    this.calculateCoef();
+    this.coef = this.calculateCoef();
   }
 
   render() {

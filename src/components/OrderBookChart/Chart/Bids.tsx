@@ -6,24 +6,19 @@ import {Order} from '../../../models';
 
 import {ChartProps} from './Models';
 
+import chart from './chartConstants';
+
 class Bids extends React.Component<ChartProps> {
+  graphics: any = [];
+  width: number = 1080;
+  height: number = 500;
   asks: Order[];
   bids: Order[];
   mid: number;
-  graphics: any = [];
 
-  width = 1080;
-  height = 500;
-
-  lineColor = '#ab00ff';
-  blockColor = 'rgba(171, 0, 255, 0.2)';
-  blockStrokeColor = 'rgba(171, 0, 255, 0.05)';
-  strokeWidth = 3;
-
-  midX = this.width / 2 - Math.round(this.strokeWidth / 2);
+  midX = this.width / 2 - Math.round(chart.strokeWidth / 2);
   midY = this.height;
 
-  stepLength: number;
   coef: number;
 
   constructor(props: ChartProps) {
@@ -58,13 +53,14 @@ class Bids extends React.Component<ChartProps> {
     this.bids.forEach((bid, index) => {
       newX = currentX - this.calculateStepLength(bid, index);
       newY = this.midY - this.calculateStepHeight(bid);
-      newY > this.strokeWidth ? (newY = newY) : (newY = this.strokeWidth);
+      // tslint:disable-next-line:no-console
+      console.log(`${index}: ${bid.price}`);
       this.graphics.push(
         <Line
           points={[currentX, currentY, currentX, newY, newX, newY]}
           closed={false}
-          stroke={this.lineColor}
-          strokeWidth={this.strokeWidth}
+          stroke={chart.bids.lineColor}
+          strokeWidth={chart.strokeWidth}
           // tslint:disable-next-line:jsx-no-lambda
           onMouseOver={() => this.showMessage(bid, index)}
         />
@@ -75,9 +71,8 @@ class Bids extends React.Component<ChartProps> {
           y={newY}
           width={currentX - newX}
           height={this.midY - newY}
-          stroke={this.blockStrokeColor}
-          fill={this.blockColor}
-          opacity={0.2}
+          stroke={chart.bids.fillStrokeColor}
+          fill={chart.bids.fillColor}
           // tslint:disable-next-line:jsx-no-lambda
           onMouseOver={() => this.showMessage(bid, index)}
         />
@@ -88,14 +83,14 @@ class Bids extends React.Component<ChartProps> {
   };
 
   calculateCoef() {
-    const maxDepth = Math.max(
-      this.asks[this.asks.length - 1].depth,
-      this.bids[this.bids.length - 1].depth
-    );
-    if (this.asks[this.asks.length - 1]) {
-      this.coef = this.height / (maxDepth + 5);
+    if (this.asks[this.asks.length - 1] && this.asks[this.asks.length - 1]) {
+      const maxDepth = Math.max(
+        this.asks[this.asks.length - 1].depth,
+        this.bids[this.bids.length - 1].depth
+      );
+      return this.height / (maxDepth + 5);
     } else {
-      this.coef = 1;
+      return 1;
     }
   }
 
@@ -104,7 +99,7 @@ class Bids extends React.Component<ChartProps> {
     this.asks = this.props.asks;
     this.bids = this.props.bids;
     this.mid = parseFloat(this.props.mid);
-    this.calculateCoef();
+    this.coef = this.calculateCoef();
   }
 
   render() {

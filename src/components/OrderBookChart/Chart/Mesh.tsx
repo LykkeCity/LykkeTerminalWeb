@@ -4,23 +4,16 @@ import {Line, Text} from 'react-konva';
 
 import {ChartProps} from './Models';
 
+import chart from './chartConstants';
+
 class Mesh extends React.Component<ChartProps> {
   lines: any = [];
 
   width = 1080;
   height = 510;
 
-  color = '#8c94a0';
-  dash = [1, 3];
-  strikeWidth = 1;
-
-  verticalFontSize = 14;
-  horizontalFontSize = 12;
-  fontFamily = 'Proxima Nova';
-  fontColor = '#8c94a0';
-
   stepVertical = this.width / 8;
-  stepHorizontal = 40;
+  stepHorizontal = this.height / 22;
 
   startVertical = this.stepVertical / 2;
   startHorizontal = this.stepHorizontal / 2;
@@ -43,7 +36,7 @@ class Mesh extends React.Component<ChartProps> {
     const step = (maximum - minimum) / amount;
 
     for (let i = 0; i < amount; i++) {
-      labels.push((minimum + step * i).toFixed(3));
+      labels.push((minimum + step * i).toFixed(2));
     }
 
     return labels.reverse();
@@ -51,14 +44,14 @@ class Mesh extends React.Component<ChartProps> {
 
   generateVerticalLabels = () => {
     const labels = [];
-    const amount = (this.width - this.startVertical) / this.stepVertical;
+    const amount = (this.width - this.startVertical) / this.stepVertical + 1;
 
-    const minimum = this.props.bids[this.props.bids.length - 1].price;
+    const minimum = 0;
     const maximum = this.props.asks[0].price;
 
     const step = (maximum - minimum) / amount;
     for (let i = 0; i < amount; i++) {
-      labels.push((minimum + step * i).toFixed(3));
+      labels.push((minimum + step * (i + 1)).toFixed(3));
     }
 
     return labels;
@@ -69,8 +62,8 @@ class Mesh extends React.Component<ChartProps> {
       <Line
         points={[this.width / 2, 0, this.width / 2, this.height]}
         closed={true}
-        stroke={this.color}
-        strokeWidth={this.strikeWidth}
+        stroke={chart.mesh.color}
+        strokeWidth={chart.mesh.strikeWidth}
       />
     );
   };
@@ -87,9 +80,9 @@ class Mesh extends React.Component<ChartProps> {
         <Line
           points={[startX, 0, startX, this.height]}
           closed={true}
-          stroke={this.color}
-          strokeWidth={this.strikeWidth}
-          dash={this.dash}
+          stroke={chart.mesh.color}
+          strokeWidth={chart.mesh.strikeWidth}
+          dash={chart.mesh.dash}
           opacity={0.6}
         />
       );
@@ -97,9 +90,9 @@ class Mesh extends React.Component<ChartProps> {
         <Text
           x={startX - 35}
           y={this.height + 15}
-          fill={this.fontColor}
-          fontFamily={this.fontFamily}
-          fontSize={this.verticalFontSize}
+          fill={chart.mesh.color}
+          fontFamily={chart.mesh.fontFamily}
+          fontSize={chart.mesh.verticalFontSize}
           text={`${labels[index].toString()} USD`}
         />
       );
@@ -118,19 +111,19 @@ class Mesh extends React.Component<ChartProps> {
         <Line
           points={[0, startY, this.width, startY]}
           closed={true}
-          stroke={this.color}
-          strokeWidth={this.strikeWidth}
-          dash={this.dash}
+          stroke={chart.mesh.color}
+          strokeWidth={chart.mesh.strikeWidth}
+          dash={chart.mesh.dash}
           opacity={0.6}
         />
       );
       this.lines.push(
         <Text
           x={this.width + 10}
-          y={startY - this.horizontalFontSize / 2}
-          fill={this.fontColor}
-          fontFamily={this.fontFamily}
-          fontSize={this.horizontalFontSize}
+          y={startY - chart.mesh.horizontalFontSize / 2}
+          fill={chart.mesh.color}
+          fontFamily={chart.mesh.fontFamily}
+          fontSize={chart.mesh.horizontalFontSize}
           text={`${labels[index].toString()}`}
         />
       );

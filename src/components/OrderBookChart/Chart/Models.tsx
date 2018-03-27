@@ -5,7 +5,3 @@ export interface ChartProps {
   bids: Order[];
   mid: string;
 }
-
-export interface OrdersProps {
-  orders: Order[];
-}
