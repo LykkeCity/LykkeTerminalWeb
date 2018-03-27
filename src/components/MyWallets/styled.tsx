@@ -40,7 +40,13 @@ export const Link = styled.a`
   margin-top: ${rem(24)};
 `;
 
-// ...................MyWallets...................
+// ...................TotalBalance...................
+export const TotalContainer = styled.div`
+  display: block;
+  padding-left: 62px;
+  padding-right: 67px;
+  padding-top: 4px;
+`;
 
 // ...................Name...................
 export const ButtonSelected = styled.div`

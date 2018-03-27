@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {AssetModel} from '../../models';
 import NameList from './NameList';
 import {
   Container,
@@ -7,10 +8,12 @@ import {
   NamesContainer,
   RightContainer
 } from './styled';
+import TotalBalance from './TotalBalance';
 
 interface MyWalletsProps {
   name?: string;
   total: number;
+  baseAsset: AssetModel;
 }
 
 export interface MyWalletsState {
@@ -49,7 +52,13 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
               wallets={this.wallets}
               onChangeWallet={this.changeWallet}
             />
-            <div>Total: {this.props.total}</div>
+
+            <TotalBalance
+              total={this.props.total}
+              accuracy={this.props.baseAsset.accuracy}
+              name={this.props.baseAsset.name}
+            />
+
             <Link href={process.env.REACT_APP_WEBWALLET_URL} target="_blank">
               Manage Wallets in Account
             </Link>
