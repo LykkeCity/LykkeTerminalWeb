@@ -104,12 +104,6 @@ class Asks extends React.Component<ChartProps> {
     this.bids = this.props.bids;
     this.mid = parseFloat(this.props.mid);
     this.calculateCoef();
-    // tslint:disable-next-line:no-console
-    console.log(this.asks);
-    // tslint:disable-next-line:no-console
-    console.log(this.bids);
-    // tslint:disable-next-line:no-console
-    console.log(this.mid);
   }
 
   render() {

@@ -14,7 +14,8 @@ class Mesh extends React.Component<ChartProps> {
   dash = [1, 3];
   strikeWidth = 1;
 
-  fontSize = 14;
+  verticalFontSize = 14;
+  horizontalFontSize = 12;
   fontFamily = 'Proxima Nova';
   fontColor = '#8c94a0';
 
@@ -27,6 +28,26 @@ class Mesh extends React.Component<ChartProps> {
   constructor(props: ChartProps) {
     super(props);
   }
+
+  generateHorizontalLabels = () => {
+    const labels = [];
+    const amount = (this.height - this.startHorizontal) / this.stepHorizontal;
+
+    const maximum =
+      Math.max(
+        this.props.asks[0].depth,
+        this.props.bids[this.props.bids.length - 1].depth
+      ) + 5;
+    const minimum = 0;
+
+    const step = (maximum - minimum) / amount;
+
+    for (let i = 0; i < amount; i++) {
+      labels.push((minimum + step * i).toFixed(3));
+    }
+
+    return labels.reverse();
+  };
 
   generateVerticalLabels = () => {
     const labels = [];
@@ -78,7 +99,7 @@ class Mesh extends React.Component<ChartProps> {
           y={this.height + 15}
           fill={this.fontColor}
           fontFamily={this.fontFamily}
-          fontSize={this.fontSize}
+          fontSize={this.verticalFontSize}
           text={`${labels[index].toString()} USD`}
         />
       );
@@ -86,10 +107,12 @@ class Mesh extends React.Component<ChartProps> {
   };
 
   drawHorizontal = () => {
+    const labels = this.generateHorizontalLabels();
+
     for (
-      let startY = this.startHorizontal;
+      let startY = this.startHorizontal, index = 0;
       startY < this.height;
-      startY += this.stepHorizontal
+      startY += this.stepHorizontal, index++
     ) {
       this.lines.push(
         <Line
@@ -99,6 +122,16 @@ class Mesh extends React.Component<ChartProps> {
           strokeWidth={this.strikeWidth}
           dash={this.dash}
           opacity={0.6}
+        />
+      );
+      this.lines.push(
+        <Text
+          x={this.width + 10}
+          y={startY - this.horizontalFontSize / 2}
+          fill={this.fontColor}
+          fontFamily={this.fontFamily}
+          fontSize={this.horizontalFontSize}
+          text={`${labels[index].toString()}`}
         />
       );
     }
