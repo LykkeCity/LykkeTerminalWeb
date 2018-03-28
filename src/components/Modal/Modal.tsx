@@ -3,11 +3,13 @@ import ModalModel from '../../models/modalModel';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
 import {EditOrder, ModalProps} from './index';
+import QRModal from './QRModal';
 
 const Modals = {
   Confirm: ConfirmModal,
   EditOrder,
-  Expired: ExpiredModal
+  Expired: ExpiredModal,
+  QR: QRModal
 };
 
 class Modal extends React.Component<ModalProps> {

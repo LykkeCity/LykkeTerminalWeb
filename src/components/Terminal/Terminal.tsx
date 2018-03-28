@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
-import keys from '../../constants/storageKeys';
+import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
@@ -12,6 +12,7 @@ import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {Orders} from '../OrderList';
+import {SessionNotificationComponent} from '../Session';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
 import {TradeLog, Trades} from '../TradeList';
@@ -150,6 +151,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
             <Modal modals={this.props.rootStore.modalStore.modals} />
           </div>
         ) : null}
+        {this.props.rootStore.uiStore.showSessionNotification && (
+          <SessionNotificationComponent />
+        )}
         <Header history={this.props.history} />
         <Mosaic
           renderTile={this.handleRenderTile}

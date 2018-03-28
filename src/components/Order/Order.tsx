@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import {Percentage} from '../../constants/ordersPercentage';
-import keys from '../../constants/storageKeys';
+import {keys} from '../../models';
 import {OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
