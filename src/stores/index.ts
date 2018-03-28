@@ -14,5 +14,6 @@ export {default as ModalStore} from './modalStore';
 export {default as NotificationStore} from './notificationStore';
 export {default as SettingsStore} from './settingsStore';
 export {default as UiOrderStore} from './uiOrderStore';
+export {default as SessionStore} from './sessionStore';
 export {default as PriceStore} from './priceStore';
 export {default as MarketStore} from './marketStore';
