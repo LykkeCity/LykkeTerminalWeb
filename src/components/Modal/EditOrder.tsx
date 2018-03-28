@@ -42,7 +42,7 @@ const StyledActionTitle = styled.div.attrs({
   letter-spacing: ${rem(1.5)};
 ` as any;
 
-const StyledTitle = styled.div`
+const ModalTitle = styled.div`
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(24)};
   font-weight: bold;
@@ -228,7 +228,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           <StyledActionTitle isSell={this.action === Side.Sell.toLowerCase()}>
             {this.action}
           </StyledActionTitle>
-          <StyledTitle>Edit Limit Order</StyledTitle>
+          <ModalTitle>Edit Limit Order</ModalTitle>
         </ModalHeader>
         <EditOrderForm
           action={this.action}

@@ -1,4 +1,4 @@
-import levels from '../../constants/notificationLevels';
+import {levels} from '../../models';
 import messages from '../../constants/notificationMessages';
 import NotificationModel from '../../models/notificationModel';
 import {NotificationStore, RootStore} from '../index';

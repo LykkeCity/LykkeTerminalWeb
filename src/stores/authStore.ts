@@ -1,8 +1,8 @@
 import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import keys from '../constants/storageKeys';
+import {levels} from '../models';
+import {keys} from '../models';
 import {RandomString, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 

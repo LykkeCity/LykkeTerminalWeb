@@ -5,6 +5,11 @@ const ModalMessages = {
     body:
       'Your session has expired. Please, confirm your session with your phone',
     title: 'Please, confirm your session'
+  },
+  qr: {
+    body: 'Please, confirm your trade session with the phone',
+    button: 'Continue in view mode',
+    title: 'Please, confirm your session'
   }
 };
 
