@@ -8,6 +8,7 @@ describe('root store', () => {
     rootStore = new RootStore();
     rootStore.priceStore.fetchDailyCandle = rootStore.priceStore.subscribeToDailyCandle = rootStore.priceStore.unsubscribeFromDailyCandle = jest.fn();
     rootStore.authStore.reset = jest.fn();
+    rootStore.tradeStore.unsubscribeFromPublicTrades = jest.fn();
   });
 
   describe('reset stores', () => {
