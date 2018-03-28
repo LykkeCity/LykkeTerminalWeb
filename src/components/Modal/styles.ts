@@ -46,7 +46,12 @@ export const Modal = styled.div`
   background-color: #3c3c3c;
   border: solid 1px rgba(0, 0, 0, 0.2);
   z-index: 30;
-  min-width: 360px;
+  min-width: ${rem(360)};
+`;
+
+export const SessionQRConfirm = styled(Modal)`
+  width: ${rem(300)};
+  box-sizing: border-box;
 `;
 
 export const Button = styled.button`
@@ -114,5 +119,51 @@ export const ModalTitle = styled.div`
 
 export const SessionExpiredImage = styled.div`
   background: url('assets/images/session_confirm.png') no-repeat center;
-  height: 200px;
+  height: ${rem(200)};
 `;
+
+export const QRBody = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: ${rem(41)};
+  margin-bottom: ${rem(64)};
+`;
+
+export const EditModal = styled.div.attrs({
+  style: (props: any) => ({
+    borderTop: `${rem(6)} solid ${props.isSell ? '#ab00ff' : '#fb8f01'}`
+  })
+})`
+  border-radius: ${rem(6)};
+  font-family: Proxima Nova;
+  position: absolute;
+  padding: ${rem(20)} ${rem(24)};
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  background-color: #3c3c3c;
+  border: solid 1px rgba(0, 0, 0, 0.2);
+  z-index: 31;
+  width: ${rem(360)};
+  font-size: ${rem(14)};
+` as any;
+
+export const EditTitle = styled.div`
+  font-family: 'Akrobat', sans-serif;
+  font-size: ${rem(24)};
+  font-weight: bold;
+  line-height: 0.67;
+  margin-top: ${rem(12)};
+  margin-bottom: ${rem(12)};
+`;
+
+export const EditActionTitle = styled.div.attrs({
+  style: (props: any) => ({
+    color: props.isSell ? '#d070ff' : '#fb8f01'
+  })
+})`
+  text-transform: uppercase;
+  font-size: ${rem(12)};
+  letter-spacing: ${rem(1.5)};
+` as any;

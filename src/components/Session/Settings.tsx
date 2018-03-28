@@ -2,10 +2,12 @@ import * as React from 'react';
 import ChoosableItem from '../ChoosableItem/ChoosableItem';
 import CloseButton from '../CloseButton/CloseButton';
 // tslint:disable-next-line:ordered-imports
-import {Body, CloseBtnPosition, SessionSettings} from './styles';
-
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
+import {
+  Body,
+  CloseBtnPosition,
+  SessionDurations,
+  SessionSettings
+} from './styles';
 
 const sessionDuration = [1, 5, 15, 30];
 
@@ -23,8 +25,8 @@ const Settings: React.SFC<SettingsProps> = ({onSettingsClose}) => {
         top={CloseBtnPosition.top}
         right={CloseBtnPosition.right}
       />
-      <Body>Change the duration of session</Body>
-      <Flex>
+      <Body>Change the duration of sessions</Body>
+      <SessionDurations>
         {sessionDuration.map((item: number) => (
           <ChoosableItem
             value={item}
@@ -37,7 +39,7 @@ const Settings: React.SFC<SettingsProps> = ({onSettingsClose}) => {
             }}
           />
         ))}
-      </Flex>
+      </SessionDurations>
     </SessionSettings>
   );
 };

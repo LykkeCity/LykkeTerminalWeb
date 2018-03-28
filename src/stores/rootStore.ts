@@ -5,6 +5,7 @@ import {
   ChartApi,
   OrderApi,
   OrderBookApi,
+  SessionApi,
   PriceApi,
   TradeApi,
   WampApi,
@@ -31,6 +32,7 @@ import {
   OrderStore,
   PriceStore,
   ReferenceStore,
+  SessionStore,
   SettingsStore,
   TradeStore,
   UiOrderStore,
@@ -56,6 +58,7 @@ class RootStore {
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
+  readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
 
@@ -83,6 +86,7 @@ class RootStore {
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
+      this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
     }
