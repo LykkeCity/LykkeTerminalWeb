@@ -85,4 +85,14 @@ export const InstrumentTable = styled(Table)`
   td:nth-child(2) {
     text-align: left;
   }
+
+  tbody {
+    tr {
+      border-top: 1px solid ${colors.graphiteBorder};
+      border-bottom: 1px solid ${colors.graphiteBorder};
+    }
+    tr:hover {
+      background-color: ${colors.darkGraphite};
+    }
+  }
 `;
