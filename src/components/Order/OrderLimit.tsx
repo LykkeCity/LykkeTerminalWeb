@@ -40,9 +40,9 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   priceAccuracy,
   percents,
   onHandlePercentageChange,
-  baseName,
+  baseAssetName,
   buttonMessage,
-  quoteName,
+  quoteAssetName,
   isSell,
   amount,
   isDisable,
@@ -55,10 +55,10 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <StyledInputControl>
         <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
           <StyledActionTitle>
-            {isEditForm ? 'Volume' : `${action} ${baseName}`}
+            {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </StyledActionTitle>
           <StyledAvailable>
-            {balance} {isSell ? baseName : quoteName} available
+            {balance} {isSell ? baseAssetName : quoteAssetName} available
           </StyledAvailable>
         </Flex>
         <NumberInput
@@ -80,7 +80,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       </Flex>
       <StyledInputControl style={{borderBottom: '1px solid #333'}}>
         <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
-          <StyledTitle>Price ({quoteName})</StyledTitle>
+          <StyledTitle>Price ({quoteAssetName})</StyledTitle>
         </Flex>
         <NumberInput
           value={price}
@@ -92,7 +92,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <StyledTotal>
         <StyledTitle>Total</StyledTitle>
         <StyledAvailable>
-          {amount} {quoteName}
+          {amount} {quoteAssetName}
         </StyledAvailable>
       </StyledTotal>
 
@@ -121,7 +121,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
 
 export default withFormik<OrderLimitProps, {}>({
   handleSubmit: (values: any, {props}) => {
-    const {action, baseName, quoteName} = props;
-    props.onSubmit(action, baseName, quoteName);
+    const {action, baseAssetName, quoteAssetName} = props;
+    props.onSubmit(action, baseAssetName, quoteAssetName);
   }
 })(OrderLimit);
