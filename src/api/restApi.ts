@@ -1,6 +1,6 @@
 import wretch from 'wretch';
 import {WretcherError} from 'wretch/dist/resolver';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import RootStore from '../stores/rootStore';
 import {StorageUtils} from '../utils/index';
 

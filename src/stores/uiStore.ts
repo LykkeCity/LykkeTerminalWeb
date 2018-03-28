@@ -1,10 +1,10 @@
 import {action, observable, reaction} from 'mobx';
-import keys from '../constants/storageKeys';
 import {
   InstrumentModel,
   OrderBookDisplayType,
   TradeFilter
 } from '../models/index';
+import {keys} from '../models';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -22,6 +22,7 @@ class UiStore extends BaseStore {
   @observable showInstrumentPerformanceData = false;
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
+  @observable showSessionNotification: boolean = true;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
 
   stateFns: any = [];
@@ -117,6 +118,10 @@ class UiStore extends BaseStore {
   @action
   toggleInstrumentPicker = () =>
     (this.showInstrumentPicker = !this.showInstrumentPicker);
+
+  @action
+  toggleSessionNotification = (value: boolean) =>
+    (this.showSessionNotification = value);
 
   @action
   toggleInstrumentPerformanceData = (show: boolean) =>

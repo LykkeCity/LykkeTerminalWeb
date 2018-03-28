@@ -3,12 +3,14 @@ import ModalModel from '../../models/modalModel';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
 import {EditOrder, ModalProps} from './index';
+import QRModal from './QRModal';
 import KycModal from './KycModal';
 
 const Modals = {
   Confirm: ConfirmModal,
   EditOrder,
   Expired: ExpiredModal,
+  QR: QRModal,
   MissedKyc: KycModal
 };
 

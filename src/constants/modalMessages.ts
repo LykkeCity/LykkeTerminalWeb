@@ -6,6 +6,11 @@ const ModalMessages = {
       'Your session has expired. Please, confirm your session with your phone',
     title: 'Please, confirm your session'
   },
+  qr: {
+    body: 'Please, confirm your trade session with the phone',
+    button: 'Continue in view mode',
+    title: 'Please, confirm your session'
+  },
   missedKyc: {
     body: `To offer you the advanced range of services we need you to confirm your
     identity and pass KYC (Know Your Customer) procedure. You can pass the

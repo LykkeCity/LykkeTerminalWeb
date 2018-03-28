@@ -13,7 +13,9 @@ import {
 import * as topics from '../api/topics';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import keys from '../constants/storageKeys';
+import ModalMessages from '../constants/modalMessages';
+import {keys} from '../models';
+import Types from '../models/modals';
 import {PriceType} from '../models/index';
 import {StorageUtils} from '../utils/index';
 import {
@@ -124,6 +126,14 @@ class RootStore {
     if (!this.authStore.isAuth) {
       return this.startPublicMode(defaultInstrument);
     }
+
+    this.modalStore.addModal(
+      ModalMessages.qr,
+      // tslint:disable-next-line:no-empty
+      () => {},
+      this.authStore.signOut,
+      Types.QR
+    );
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
