@@ -8,15 +8,15 @@ export const ShortcutSelection = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  width: 100%;
+  width: calc(100% - ${rem(16)});
   padding: ${rem(16)} 0;
-  margin-left: ${rem(8)};
+  margin: 0 ${rem(8)};
   text-align: left;
   color: ${colors.lightGrey};
 
   &:after {
     content: '';
-    margin: 0 10px;
+    margin-left: 10px;
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;
     border-top: 4px solid ${colors.lightGrey};
@@ -35,6 +35,7 @@ export const ShortcutSelectionWrapper = styled.div`
 `;
 
 export const ShortcutList = styled(Flex)`
+  min-width: 410px;
   overflow: hidden;
   flex-wrap: nowrap;
   font-size: 14px;
@@ -44,7 +45,7 @@ export const OtherShortcuts = styled.div`
   display: flex;
   align-items: center;
   width: 70px;
-  margin-right: ${rem(4)};
+  margin-right: ${rem(8)};
 
   &:hover {
     cursor: pointer;
@@ -63,6 +64,10 @@ export const Shortcut = styled(OtherShortcuts)`
   &.active {
     color: ${colors.white};
     box-shadow: inset 0 -3px 0 0 ${colors.blue};
+  }
+
+  &:not(:first-child) {
+    justify-content: center;
   }
 `;
 
@@ -84,5 +89,15 @@ export const InstrumentTable = styled(Table)`
 
   td:nth-child(2) {
     text-align: left;
+  }
+
+  tbody {
+    tr {
+      border-top: 1px solid ${colors.graphiteBorder};
+      border-bottom: 1px solid ${colors.graphiteBorder};
+    }
+    tr:hover {
+      background-color: ${colors.darkGraphite};
+    }
   }
 `;
