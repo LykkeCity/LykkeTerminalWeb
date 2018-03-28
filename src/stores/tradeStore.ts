@@ -70,7 +70,9 @@ class TradeStore extends BaseStore {
 
   @action
   addPublicTrades = (trades: TradeModel[]) => {
-    this.publicTrades = this.publicTrades.concat(trades);
+    this.publicTrades = this.publicTrades.concat(
+      trades.map(t => ({...t, instrument: this.selectedInstrument!}))
+    );
   };
 
   @action
@@ -122,7 +124,7 @@ class TradeStore extends BaseStore {
         TradeQuantity.Take
       );
       runInAction(() => {
-        this.publicTrades = resp.map(map.fromRestToPublicTrade);
+        this.addPublicTrades(resp.map(map.fromRestToPublicTrade));
       });
     }
   };

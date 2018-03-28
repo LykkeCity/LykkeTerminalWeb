@@ -13,7 +13,7 @@ import OrderBook from '../OrderBook';
 import {Orders} from '../OrderList';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
-import {PublicTradeList, Trades} from '../TradeList';
+import {TradeLog, Trades} from '../TradeList';
 import {TerminalProps} from './index';
 
 const Shell = styled.div`
@@ -38,7 +38,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ),
   e: (
     <Tile title="Trade log">
-      <PublicTradeList />
+      <TradeLog />
     </Tile>
   ),
   ob: (

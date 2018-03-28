@@ -4,7 +4,7 @@ import {feeAssetFromSide} from '../../models/tradeModel.mapper';
 import {Cell} from '../Table/styles';
 import {SideCell} from './styles';
 
-const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
+export const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
   num.toLocaleString(undefined, {
     maximumFractionDigits: accuracy
   });
