@@ -107,7 +107,7 @@ class OrderMarket extends React.Component<
   };
 
   render() {
-    const {baseName, quoteName} = this.props;
+    const {baseAssetName, quoteAssetName} = this.props;
     this.previousPropsAction = this.props.action;
     const {quantityAccuracy, priceAccuracy, quantity} = this.props;
     const currentAccuracy = this.isInverted ? priceAccuracy : quantityAccuracy;
@@ -119,11 +119,12 @@ class OrderMarket extends React.Component<
             <div>
               <Flex justify="space-between">
                 <StyledActionTitle>
-                  {this.state.action} {!this.isInverted ? baseName : quoteName}
+                  {this.state.action}{' '}
+                  {!this.isInverted ? baseAssetName : quoteAssetName}
                 </StyledActionTitle>
                 <StyledAvailable>
                   {this.props.balance}{' '}
-                  {this.props.isSell ? baseName : quoteName} available
+                  {this.props.isSell ? baseAssetName : quoteAssetName} available
                 </StyledAvailable>
               </Flex>
             </div>
@@ -143,7 +144,7 @@ class OrderMarket extends React.Component<
             {/*{this.state.action === orderAction.sell.action*/}
             {/*? orderAction.buy.action*/}
             {/*: orderAction.sell.action}{' '}*/}
-            {/*{this.isInverted ? baseName : quoteName}*/}
+            {/*{this.isInverted ? baseAssetName : quoteAssetName}*/}
             {/*</StyledInvertedTitle>*/}
             {/*</Flex>*/}
           </Flex>
@@ -165,7 +166,7 @@ class OrderMarket extends React.Component<
             isDisable={this.props.isDisable}
             type={'submit'}
             message={`${capitalize(this.state.action)} ${quantity} ${
-              !this.isInverted ? baseName : quoteName
+              !this.isInverted ? baseAssetName : quoteAssetName
             }`}
           />
         </StyledOrderButton>
@@ -191,16 +192,16 @@ export default withFormik<OrderMarketProps, {}>({
   handleSubmit: (values: any, {props}) => {
     const {
       action,
-      baseName,
-      quoteName,
+      baseAssetName,
+      quoteAssetName,
       quantityAccuracy,
       priceAccuracy
     } = props;
     const {invertedAction, isInverted} = values;
     props.onSubmit(
       invertedAction || action,
-      isInverted ? quoteName : baseName,
-      isInverted ? baseName : quoteName,
+      isInverted ? quoteAssetName : baseAssetName,
+      isInverted ? baseAssetName : quoteAssetName,
       isInverted ? priceAccuracy : quantityAccuracy
     );
   }
