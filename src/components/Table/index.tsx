@@ -7,3 +7,4 @@ export interface TableSortState {
 export * from './styles';
 export {sortData} from './sortFn';
 export {default as TableHeader} from './TableHeader';
+export {default as Table} from './Table';

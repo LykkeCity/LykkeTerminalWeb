@@ -70,7 +70,7 @@ export const aggregateTradesByTimestamp = (
   }, []);
 
 export const fromRestToTrade = (baseAssetId: string, trades: any[]) => {
-  const tradesByBaseAsset = trades.filter((x: any) => x.Asset === baseAssetId);
+  const tradesByBaseAsset = trades.filter(x => x.Asset === baseAssetId);
   const tradesByQuoteAsset = without(tradesByBaseAsset, trades);
 
   const {Id, AssetPair, Price, Amount, DateTime, Type} = tradesByBaseAsset[0];

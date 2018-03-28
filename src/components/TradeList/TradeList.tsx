@@ -1,136 +1,35 @@
 import * as React from 'react';
 import {TradeListItem} from '.';
 import {TradeModel} from '../../models';
-import {sortData, Table, TableHeader, TableSortState} from '../Table';
+import {LoaderProps} from '../Loader/withLoader';
+import {Table} from '../Table';
+import {StyledLoadMore, StyledLoadMoreButton} from './styles';
 
-export interface TradeListProps {
+export interface TradeListProps extends LoaderProps {
   trades: TradeModel[];
+  fetchNextTrades?: any;
+  shouldFetchMore?: boolean;
 }
 
-class TradeList extends React.Component<TradeListProps, TableSortState> {
-  constructor(props: TradeListProps) {
-    super(props);
-    this.state = {
-      data: this.props.trades,
-      sortByParam: '',
-      sortDirection: 'ASC'
-    };
-  }
-
-  componentWillReceiveProps(args: any) {
-    this.setState({
-      data: args.trades
-    });
-  }
-
-  sort = (sortByParam: string, sortDirectionDefault: string) => {
-    this.setState(
-      sortData(this.props.trades, sortByParam, sortDirectionDefault, this.state)
-    );
-  };
-
-  render() {
-    return (
-      <Table>
-        <thead>
-          <tr>
-            <th>
-              <TableHeader
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'symbol'}
-                onSort={this.sort}
-              >
-                Asset pair
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'side'}
-                onSort={this.sort}
-              >
-                Side
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'quantity'}
-                onSort={this.sort}
-              >
-                Volume
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'price'}
-                onSort={this.sort}
-              >
-                Price
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'oppositeQuantity'}
-                onSort={this.sort}
-              >
-                Opposite volume
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'orderType'}
-                onSort={this.sort}
-              >
-                Order type
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'fee'}
-                onSort={this.sort}
-              >
-                Fee
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'timestamp'}
-                onSort={this.sort}
-              >
-                Time
-              </TableHeader>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.data.map(trade => (
-            <TradeListItem key={trade.id} {...trade} />
-          ))}
-        </tbody>
-      </Table>
-    );
-  }
-}
+const TradeList: React.SFC<TradeListProps> = ({
+  trades = [],
+  fetchNextTrades,
+  shouldFetchMore
+}) => (
+  <React.Fragment>
+    <Table>
+      <tbody>
+        {trades.map(trade => <TradeListItem key={trade.id} {...trade} />)}
+      </tbody>
+    </Table>
+    {shouldFetchMore && (
+      <StyledLoadMore>
+        <StyledLoadMoreButton onClick={fetchNextTrades}>
+          Load more...
+        </StyledLoadMoreButton>
+      </StyledLoadMore>
+    )}
+  </React.Fragment>
+);
 
 export default TradeList;

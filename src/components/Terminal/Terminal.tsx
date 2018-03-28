@@ -14,7 +14,7 @@ import OrderBook from '../OrderBook';
 import {Orders} from '../OrderList';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
-import {PublicTradeList, Trades} from '../TradeList';
+import {TradeLog, Trades} from '../TradeList';
 import {TerminalProps} from './index';
 
 const MAX_LEFT_PADDING = 20;
@@ -51,7 +51,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ),
   [TradeListWidget]: (
     <Tile title="Trade log">
-      <PublicTradeList />
+      <TradeLog />
     </Tile>
   ),
   [OrderBookWidget]: (
