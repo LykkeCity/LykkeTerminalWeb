@@ -35,6 +35,7 @@ describe('trade store', () => {
     );
 
     tradeStore = new TradeStore(new RootStore(), api);
+    tradeStore.unsubscribeFromPublicTrades = jest.fn();
   });
 
   describe('state', () => {
