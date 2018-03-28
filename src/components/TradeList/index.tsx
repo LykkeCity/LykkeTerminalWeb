@@ -13,22 +13,29 @@ import TradeListItem from './TradeListItem';
 import Trades from './Trades';
 
 const ConnectedTrades = connect(
-  ({tradeStore: {fetchNextTrades, shouldFetchMore}, authStore: {isAuth}}) => ({
-    fetchNextTrades,
-    shouldFetchMore,
+  ({authStore: {isAuth}}) => ({
     isAuth
   }),
   withAuth(Trades)
 );
 
 const ConnectedTradeList = connect<TradeListProps>(
-  ({tradeStore: {getAllTrades}}) => ({
+  ({
+    tradeStore: {
+      getAllTrades,
+      hasPendingItems,
+      shouldFetchMore,
+      fetchNextTrades
+    }
+  }) => ({
     trades: getAllTrades,
-    loading: getAllTrades.length === 0
+    loading: hasPendingItems,
+    fetchNextTrades,
+    shouldFetchMore
   }),
   compose(
-    withStyledScroll({height: 'calc(100% - 85px)'}),
-    withLoader<TradeListProps>(p => p.trades.length === 0)
+    withLoader<TradeListProps>(p => p.loading!),
+    withStyledScroll({height: 'calc(100% - 85px)'})
   )(TradeList)
 );
 

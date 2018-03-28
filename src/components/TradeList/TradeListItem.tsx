@@ -1,12 +1,24 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
-import {TradeRow} from './styles';
+import {Cell} from '../Table/styles';
+import {SideCell} from './styles';
 
 const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
   num.toLocaleString(undefined, {
     maximumFractionDigits: accuracy
   });
+
+const withTitle = (Component: React.ComponentType<any>) => ({
+  children,
+  ...rest
+}: any) => (
+  <Component title={React.Children.toArray(children).join('')} {...rest}>
+    {children}
+  </Component>
+);
+
+const TitledCell = withTitle(Cell);
 
 interface TradeListItemProps extends TradeModel {
   className?: string;
@@ -31,23 +43,25 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   } = instrument!;
   const feeAsset = feeAssetFromSide(instrument!, side);
   return (
-    <TradeRow className={className} side={side}>
-      <td>{symbol}</td>
-      <td>{side}</td>
-      <td>
+    <tr>
+      <Cell w={70}>{instrument!.displayName}</Cell>
+      <SideCell w={50} side={side}>
+        {side}
+      </SideCell>
+      <TitledCell>
         {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)} {baseAssetName}
-      </td>
-      <td>{toLocaleStringWithAccuracy(price, accuracy)}</td>
-      <td>
+      </TitledCell>
+      <TitledCell>{toLocaleStringWithAccuracy(price, accuracy)}</TitledCell>
+      <TitledCell>
         {toLocaleStringWithAccuracy(oppositeVolume, quoteAssetAccuracy)}{' '}
         {quoteAssetName}
-      </td>
-      <td>{orderType}</td>
-      <td>
+      </TitledCell>
+      <Cell w={90}>{orderType}</Cell>
+      <TitledCell>
         {toLocaleStringWithAccuracy(fee, feeAsset.accuracy)} {feeAsset.name}
-      </td>
-      <td>{new Date(timestamp).toLocaleString()}</td>
-    </TradeRow>
+      </TitledCell>
+      <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>
+    </tr>
   );
 };
 

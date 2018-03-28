@@ -16,7 +16,8 @@ const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
 
 class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
-  @observable shouldFetchMore = true;
+  @observable shouldFetchMore = false;
+  @observable hasPendingItems: boolean = false;
 
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
@@ -75,12 +76,14 @@ class TradeStore extends BaseStore {
   @action
   setFilter = (filter: TradeFilter) => {
     this.filter = filter;
+    this.shouldFetchMore = false;
     this.resetTrades();
     this.fetchTrades();
   };
 
   fetchTrades = async () => {
     if (this.selectedInstrument) {
+      this.hasPendingItems = true;
       const trades = await this.api.fetchTrades(
         this.instrumentIdByFilter,
         this.skip,
@@ -91,6 +94,7 @@ class TradeStore extends BaseStore {
         this.skip,
         TradeQuantity.Take
       );
+      this.hasPendingItems = false;
       runInAction(() => {
         this.addTrades(
           map.aggregateTradesByTimestamp(

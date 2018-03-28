@@ -4,6 +4,7 @@ import styled from '../styled';
 const Table = styled.table`
   width: 100%;
   margin-bottom: ${rem(10)};
+  table-layout: fixed;
   tr {
     line-height: 1;
   }
