@@ -32,14 +32,14 @@ class UiStore extends BaseStore {
           subscribe(this.getWs());
 
           const {
+            resetPublicTrades,
             fetchPublicTrades,
-            subscribeToPublicTrades,
-            unsubscribeFromPublicTrades
+            subscribeToPublicTrades
           } = this.rootStore.tradeStore;
 
           fns.seq(
+            resetPublicTrades,
             fetchPublicTrades,
-            unsubscribeFromPublicTrades,
             subscribeToPublicTrades
           )();
 
