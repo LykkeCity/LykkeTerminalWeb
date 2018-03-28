@@ -66,8 +66,8 @@ const StyledInputNumberComponent = styled.div`
 // TODO should be deleted after design updating
 const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
   const {onChange, onArrowClick, price, quantity, amount, assetName} = props;
+  const quoteAssetName = assetName.split('/')[1];
 
-  const quoteName = assetName.split('/')[1];
   return (
     <StyledOrderOptions>
       <StyledTitle>Quantity</StyledTitle>
@@ -92,7 +92,7 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
           />
         </StyledInputNumberComponent>
         <StyledAmount>
-          Total: {amount} {quoteName}
+          Total: {amount} {quoteAssetName}
         </StyledAmount>
       </StyledOptions>
     </StyledOrderOptions>
