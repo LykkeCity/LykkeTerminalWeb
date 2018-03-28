@@ -17,27 +17,13 @@ const TableScrolled = styled.table`
     &::-webkit-scrollbar {
       width: 6px;
       height: 128px;
-      opacity: 0.2;
-      border-radius: 100px;
-      background-color: #8c94a0;
-      background-color: var(--cool-grey);
     }
     &::-webkit-scrollbar-thumb {
-      border-width: 1px 1px 1px 2px;
-      border-color: #777;
-      background-color: #8c94a0;
+      border-radius: 100px;
+      background-color: #464849;
     }
     &::-webkit-scrollbar-thumb:hover {
-      border-width: 1px 1px 1px 2px;
-      border-color: #555;
-      background-color: #777;
-    }
-    &::-webkit-scrollbar-track {
-      border-width: 0;
-    }
-    &::-webkit-scrollbar-track:hover {
-      border-left: solid 1px #aaa;
-      background-color: #eee;
+      background-color: #8c94a0;
     }
   }
   tbody tr {
