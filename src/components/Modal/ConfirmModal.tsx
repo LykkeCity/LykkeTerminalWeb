@@ -3,7 +3,6 @@ import {keys} from '../../models';
 import ModalModel from '../../models/modalModel';
 import {StorageUtils} from '../../utils/index';
 import CustomCheckbox from '../CustomCheckbox/CustomCheckbox';
-import {ConfirmModalProps} from './index';
 import ModalHeader from './ModalHeader/ModalHeader';
 import {
   ApplyButton,
@@ -12,6 +11,10 @@ import {
   ModalContent,
   ModalReminder
 } from './styles';
+
+interface ConfirmModalProps {
+  modal: ModalModel;
+}
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 

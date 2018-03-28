@@ -1,55 +1,36 @@
-import rem from 'polished/lib/helpers/rem';
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import styled from 'styled-components';
 import {Percentage} from '../../constants/ordersPercentage';
-import {AssetBalanceModel, OrderInputs} from '../../models';
+import {AssetBalanceModel, OrderInputs, OrderModel} from '../../models';
+import ModalModel from '../../models/modalModel';
 import Side from '../../models/side';
 import EditOrderForm from '../Order/EditOrderForm/EditOrderForm';
-import {EditOrderProps, EditOrderState} from './index';
 import ModalHeader from './ModalHeader/ModalHeader';
+import {EditActionTitle, EditModal, EditTitle} from './styles';
 
 const percentage = Percentage.map((i: any) => {
   return {...i};
 });
 
-const StyledEditModal = styled.div.attrs({
-  style: (props: any) => ({
-    borderTop: `${rem(6)} solid ${props.isSell ? '#ab00ff' : '#fb8f01'}`
-  })
-})`
-  border-radius: ${rem(6)};
-  font-family: Proxima Nova;
-  position: absolute;
-  padding: ${rem(20)} ${rem(24)};
-  top: 50%;
-  left: 50%;
-  transform: translateY(-50%) translateX(-50%);
-  background-color: #3c3c3c;
-  border: solid 1px rgba(0, 0, 0, 0.2);
-  z-index: 31;
-  width: ${rem(360)};
-  font-size: ${rem(14)};
-` as any;
+interface EditOrderProps {
+  modal: ModalModel;
+  orders: OrderModel[];
+  getInstrumentById: any;
+  onArrowClick: any;
+  onValueChange: any;
+  fixedAmount: any;
+  editOrder: any;
+  resetPercentage: any;
+  handlePercentageChange: any;
+  getBalance: any;
+}
 
-const StyledActionTitle = styled.div.attrs({
-  style: (props: any) => ({
-    color: props.isSell ? '#d070ff' : '#fb8f01'
-  })
-})`
-  text-transform: uppercase;
-  font-size: ${rem(12)};
-  letter-spacing: ${rem(1.5)};
-` as any;
-
-const ModalTitle = styled.div`
-  font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(24)};
-  font-weight: bold;
-  line-height: 0.67;
-  margin-top: ${rem(12)};
-  margin-bottom: ${rem(12)};
-`;
+interface EditOrderState {
+  pendingOrder: boolean;
+  priceValue: string;
+  quantityValue: string;
+  percents: any[];
+}
 
 class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private readonly action: string;
@@ -223,12 +204,12 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
         quantityAccuracy
       );
     return (
-      <StyledEditModal isSell={this.action === Side.Sell.toLowerCase()}>
+      <EditModal isSell={this.action === Side.Sell.toLowerCase()}>
         <ModalHeader onClick={this.handleCancel}>
-          <StyledActionTitle isSell={this.action === Side.Sell.toLowerCase()}>
+          <EditActionTitle isSell={this.action === Side.Sell.toLowerCase()}>
             {this.action}
-          </StyledActionTitle>
-          <ModalTitle>Edit Limit Order</ModalTitle>
+          </EditActionTitle>
+          <EditTitle>Edit Limit Order</EditTitle>
         </ModalHeader>
         <EditOrderForm
           action={this.action}
@@ -254,7 +235,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           buttonMessage={'Modify'}
           isEditForm={true}
         />
-      </StyledEditModal>
+      </EditModal>
     );
   }
 }
