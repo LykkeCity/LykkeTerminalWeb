@@ -27,10 +27,10 @@ export interface OrderProps {
   accuracy: any;
   currency: string;
   placeOrder: any;
-  baseName: string;
-  baseId: string;
-  quoteName: string;
-  quoteId: string;
+  baseAssetName: string;
+  baseAssetId: string;
+  quoteAssetName: string;
+  quoteAssetId: string;
   stateFns: any[];
   getAssetById: any;
   onArrowClick: any;
@@ -92,8 +92,8 @@ export interface OrderFormProps {
 
 export interface OrderBasicFormProps {
   action: string;
-  baseName: string;
-  quoteName: string;
+  baseAssetName: string;
+  quoteAssetName: string;
   balance: number;
   isDisable: boolean;
   isSell: boolean;
@@ -198,11 +198,11 @@ const ConnectedOrder = connect(
     },
     addModal,
     ask: bestAsk(),
-    baseId: pathOr('', ['baseAsset', 'id'], instrument),
-    get baseName() {
+    baseAssetId: pathOr('', ['baseAsset', 'id'], instrument),
+    get baseAssetName() {
       return pathOr('', ['baseAsset', 'name'], instrument);
     },
-    get quoteName() {
+    get quoteAssetName() {
       return pathOr('', ['quoteAsset', 'name'], instrument);
     },
     bid: bestBid(),
@@ -216,7 +216,7 @@ const ConnectedOrder = connect(
     onArrowClick,
     onValueChange,
     placeOrder,
-    quoteId: pathOr('', ['quoteAsset', 'id'], instrument),
+    quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
     resetPercentage,
     stateFns,
     updateDepthFn,

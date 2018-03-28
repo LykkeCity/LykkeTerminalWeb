@@ -97,15 +97,15 @@ class OrderStore extends BaseStore {
 
   convertPartiallyBalance = async (
     balance: number,
-    baseName: string,
-    quoteName: string
+    baseAssetName: string,
+    quoteAssetName: string
   ) => {
     return await MarketService.convertAsset(
       {
         Amount: balance,
-        AssetId: baseName
+        AssetId: baseAssetName
       },
-      quoteName
+      quoteAssetName
     );
   };
 
