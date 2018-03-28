@@ -19,8 +19,11 @@ export const colorFromSide = (sideOrProps: any) => css`
 `;
 
 export const colors = {
+  blue: '#0388ef',
   darkGraphite: 'rgba(0, 0, 0, 0.2)',
   lightGraphite: 'rgb(51, 51, 51)',
+  lightGrey: 'rgba(245, 246, 247, 0.4)',
+  graphiteBorder: 'rgba(0, 0, 0, 0.1)',
   white: 'rgb(245, 246, 247)'
 };
 

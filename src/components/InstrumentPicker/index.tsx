@@ -1,6 +1,8 @@
 import {pathOr} from 'rambda';
 import {AssetModel, InstrumentModel} from '../../models/index';
 import {connect} from '../connect';
+import {withStyledScroll} from '../CustomScrollbar/withScroll';
+import InstrumentList from './InstrumentList';
 import InstrumentPicker from './InstrumentPicker';
 
 export interface InstrumentPickerActions {
@@ -82,9 +84,11 @@ const connectedInstrumentPicker = connect(
   InstrumentPicker
 );
 
+const ScrolledInstrumentList = withStyledScroll({height: 'calc(100% - 40px)'})(
+  InstrumentList
+);
+
 export {connectedInstrumentPicker as InstrumentPicker};
-export {default as InstrumentField} from './InstrumentField';
-export {default as InstrumentListHeader} from './InstrumentListHeader';
 export {default as InstrumentListItem} from './InstrumentListItem';
 export {default as InstrumentSelect} from './InstrumentSelect';
 export {default as InstrumentPopover} from './InstrumentPopover';
@@ -92,5 +96,5 @@ export {default as InstrumentSearch} from './InstrumentSearch';
 export {
   default as InstrumentShortcutSelection
 } from './InstrumentShortcutSelection';
-export {default as InstrumentList} from './InstrumentList';
+export {ScrolledInstrumentList as InstrumentList};
 export {default as InstrumentListNumber} from './InstrumentListNumber';

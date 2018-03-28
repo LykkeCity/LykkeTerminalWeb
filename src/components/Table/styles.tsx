@@ -1,7 +1,7 @@
 import {rem} from 'polished';
-import styled from '../styled';
+import styled, {colors} from '../styled';
 
-const Table = styled.table`
+export const Table = styled.table`
   width: 100%;
   margin-bottom: ${rem(10)};
   tr {
@@ -10,13 +10,21 @@ const Table = styled.table`
   thead {
     border-bottom: solid 1px #292929;
   }
-  th {
+  th,
+  td {
     text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  th {
+    position: relative;
     padding: ${rem(7)};
     font-size: ${rem(14)};
     font-weight: normal;
     line-height: 1.14;
-    color: #8c94a0;
+    color: ${colors.lightGrey};
+
     &:first-child {
       text-align: left;
       padding-left: 0;
@@ -28,11 +36,6 @@ const Table = styled.table`
   }
   td {
     padding: ${rem(8)} ${rem(8)};
-    text-align: right;
-
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
     /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
 
     &:first-child {
@@ -48,4 +51,24 @@ const Table = styled.table`
   }
 `;
 
-export default Table;
+export const TableHeaderItem = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${colors.lightGrey};
+
+  &.right-align {
+    justify-content: flex-end;
+  }
+  &:after {
+    content: '';
+    margin-left: ${rem(10)};
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+  }
+  &.ASC:after {
+    border-bottom: 4px solid ${colors.lightGrey};
+  }
+  &.DESC:after {
+    border-top: 4px solid ${colors.lightGrey};
+  }
+`;

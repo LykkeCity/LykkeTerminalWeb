@@ -16,9 +16,9 @@ const Blotter: React.SFC<OrdersProps> = ({
   cancelOrder,
   addModal
 }) => {
-  const handleEditOrder = (order: any) => {
+  const handleEditOrder = (order: any) => (id: string) => {
     addModal(
-      order.id,
+      id,
       // tslint:disable-next-line:no-empty
       () => {},
       // tslint:disable-next-line:no-empty

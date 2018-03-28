@@ -56,7 +56,6 @@ const ObservedPublicTradeListItem = observer(PublicTradeListItem);
 export {ConnectedTrades as Trades};
 export {ConnectedTradeList as TradeList};
 export {ConnectedPublicTradeList as PublicTradeList};
-export {ConnectedTradeFilter as TradeFilter};
 export {ObservedTradeListItem as TradeListItem};
 export {ObservedPublicTradeListItem as PublicTradeListItem};
-export {default as TradeListCell} from './TradeListCell';
+export {ConnectedTradeFilter as TradeFilter};

@@ -1,2 +1,9 @@
-export {default as Table} from './Table';
-export {default as ReactStyledTable} from './ReactTable';
+export interface TableSortState {
+  data: any[];
+  sortByParam: string;
+  sortDirection: string;
+}
+
+export * from './styles';
+export {sortData} from './sortFn';
+export {default as TableHeader} from './TableHeader';
