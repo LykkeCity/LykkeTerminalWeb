@@ -167,9 +167,15 @@ class TradeStore extends BaseStore {
   };
 
   @action
+  resetPublicTrades = () => {
+    this.publicTrades = [];
+    this.unsubscribeFromPublicTrades();
+  };
+
+  @action
   reset = () => {
     this.resetTrades();
-    this.publicTrades = [];
+    this.resetPublicTrades();
   };
 }
 
