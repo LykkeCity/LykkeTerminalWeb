@@ -10,6 +10,7 @@ interface SessionNotificationState {
 interface SessionNotificationProps {
   isSessionNotesShown: boolean;
   closeSessionNotification: () => {};
+  showQR: () => {};
 }
 
 class SessionNotificationComponent extends React.Component<
@@ -37,12 +38,11 @@ class SessionNotificationComponent extends React.Component<
 
   handleNotificationClose = () => {
     this.props.closeSessionNotification();
-    this.setState({
-      isSettingsShown: false
-    });
   };
 
   handleExtendingSession = () => {
+    // tslint:disable-next-line:no-console
+    this.handleNotificationClose();
     // tslint:disable-next-line:no-console
     console.log('extend session');
   };
@@ -55,6 +55,7 @@ class SessionNotificationComponent extends React.Component<
           onExtendingSession={this.handleExtendingSession}
           onNotificationClose={this.handleNotificationClose}
           isSessionNotesShown={this.props.isSessionNotesShown}
+          showQR={this.props.showQR}
         />
         {this.state.isSettingsShown && (
           <Settings onSettingsClose={this.handleSettingsClose} />

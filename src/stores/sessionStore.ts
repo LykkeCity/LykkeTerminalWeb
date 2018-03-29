@@ -35,7 +35,7 @@ class SessionStore extends BaseStore {
     const currentDate = new Date().getTime();
     this.api
       .loadSessionNoteShown()
-      .then(resp => {
+      .then((resp: any) => {
         const noteLastSeen = resp.Data;
         const timeDiff = Math.abs(currentDate - noteLastSeen);
         const diffDays = Math.ceil(timeDiff / (1000 * 60));
@@ -47,6 +47,7 @@ class SessionStore extends BaseStore {
       })
       .catch(() => {
         this.saveSessionNoteShownDate(currentDate);
+        this.isSessionNotesShown = true;
         this.isSessionNotificationShown = true;
       });
   };

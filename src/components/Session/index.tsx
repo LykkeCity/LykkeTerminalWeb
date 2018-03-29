@@ -2,9 +2,12 @@ import {connect} from '../connect';
 import SessionNotificationComponent from './SessionNotification';
 
 const ConnectedSessionNotification = connect(
-  ({sessionStore: {getSessionNotesShown, closeSessionNotification}}) => ({
+  ({
+    sessionStore: {getSessionNotesShown, closeSessionNotification, showQR}
+  }) => ({
     isSessionNotesShown: getSessionNotesShown(),
-    closeSessionNotification
+    closeSessionNotification,
+    showQR
   }),
   SessionNotificationComponent
 );
