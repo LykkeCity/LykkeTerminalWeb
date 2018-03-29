@@ -18,6 +18,7 @@ interface NotificationProps {
   onSettings: any;
   onExtendingSession: any;
   onNotificationClose: any;
+  isSessionNotesShown: boolean;
 }
 
 interface NotificationState {
@@ -53,9 +54,11 @@ class Notification extends React.Component<
         <Body>
           Session will be expired in
           <Timer>&nbsp;00:59&nbsp;</Timer>
-          <NoteMark onClick={this.handleToggleNotes}>?</NoteMark>
+          {!this.props.isSessionNotesShown && (
+            <NoteMark onClick={this.handleToggleNotes}>?</NoteMark>
+          )}
         </Body>
-        {this.state.isNoteShown && (
+        {(this.props.isSessionNotesShown || this.state.isNoteShown) && (
           <Note>
             To ensure that no ones your account while you are away, your session
             will be closed automatically if you don't click on "Continue" or

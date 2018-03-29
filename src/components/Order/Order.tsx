@@ -360,11 +360,6 @@ class Order extends React.Component<OrderProps, OrderState> {
             isActive={isMarketActive}
             click={this.handleActionChoiceClick(MARKET)}
           />
-          {/*<OrderChoiceButton*/}
-          {/*title={STOP_LIMIT}*/}
-          {/*isActive={this.state.isStopLimitActive}*/}
-          {/*click={this.handleActionChoiceClick(STOP_LIMIT)}*/}
-          {/*/>*/}
         </StyledMarkets>
 
         <StyledActions>
@@ -431,15 +426,6 @@ class Order extends React.Component<OrderProps, OrderState> {
             onInvert={this.handleInvert}
           />
         )}
-
-        {/*{this.state.isStopLimitActive && (*/}
-        {/*<OrderStopLimit*/}
-        {/*/>*/}
-        {/*)}*/}
-
-        {/*<StyledNote>*/}
-        {/*Your order may execute as a maker order or taker order.*/}
-        {/*</StyledNote>*/}
       </div>
     );
   }
