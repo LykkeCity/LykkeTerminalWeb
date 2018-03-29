@@ -78,7 +78,6 @@ class TradeStore extends BaseStore {
   @action
   setFilter = (filter: TradeFilter) => {
     this.filter = filter;
-    this.shouldFetchMore = false;
     this.resetTrades();
     this.fetchTrades();
   };
@@ -164,6 +163,7 @@ class TradeStore extends BaseStore {
     this.trades = [];
     this.skip = 0;
     this.receivedFromWamp = 0;
+    this.shouldFetchMore = false;
   };
 
   @action
