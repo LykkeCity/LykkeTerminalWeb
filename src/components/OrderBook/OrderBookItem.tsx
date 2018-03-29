@@ -23,6 +23,7 @@ interface OrderBookItemProps extends Order {
   orderVolume: number;
   connectedLimitOrders: string[];
   showMyOrders: any;
+  scrollComponent?: any;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -40,7 +41,8 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   onPriceClick,
   onDepthClick,
   onOrderClick,
-  showMyOrders
+  showMyOrders,
+  scrollComponent
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
   const ownOrders = connectedLimitOrders.length > 0;
@@ -49,7 +51,9 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
       // tslint:disable-next-line:jsx-no-lambda
       onMouseEnter={e =>
         showMyOrders({
-          position: {top: e.clientY - 130},
+          position: {
+            top: e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62
+          },
           orders: connectedLimitOrders,
           volume: orderVolume,
           onCancel: onOrderClick
@@ -57,7 +61,9 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
       }
     >
       <StyledPrice onClick={onPriceClick(+currentPrice)}>
-        {currentPrice}
+        {(+currentPrice).toLocaleString(undefined, {
+          maximumFractionDigits: priceAccuracy
+        })}
       </StyledPrice>
       <StyledVolume side={side}>
         <div onClick={onDepthClick(+currentPrice, depth)}>
@@ -66,10 +72,16 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
             side={side}
             volume={normalizeVolume(valueToShow, minValue, maxValue)}
           />
-          {valueToShow.toFixed(volumeAccuracy)}
+          {valueToShow.toLocaleString(undefined, {
+            maximumFractionDigits: volumeAccuracy
+          })}
         </div>
       </StyledVolume>
-      <StyledValue>{(valueToShow * price).toFixed(priceAccuracy)}</StyledValue>
+      <StyledValue>
+        {(valueToShow * price).toLocaleString(undefined, {
+          maximumFractionDigits: priceAccuracy
+        })}
+      </StyledValue>
     </StyledOrderRow>
   );
 };

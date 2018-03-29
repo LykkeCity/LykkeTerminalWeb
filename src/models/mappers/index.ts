@@ -108,6 +108,7 @@ export const mapToLimitOrder = ({
   OrderAction,
   Voume,
   Volume,
+  RemainingVolume,
   Price,
   AssetPairId
 }: any) =>
@@ -117,7 +118,8 @@ export const mapToLimitOrder = ({
     price: Number(Price),
     side: OrderAction,
     symbol: AssetPairId,
-    volume: Volume || Voume
+    volume: Volume || Voume,
+    remainingVolume: RemainingVolume
   });
 
 export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly, Order}: any) =>
