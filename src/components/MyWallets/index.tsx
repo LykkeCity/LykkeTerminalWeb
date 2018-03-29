@@ -1,33 +1,29 @@
 import {AssetModel} from '../../models';
 import {connect} from '../connect';
-import MyWallets from './MyWallets';
+import MyWallets, {MyWalletsProps} from './MyWallets';
 
-const connectedMyWallets = connect(
+const ConnectedMyWallets = connect<MyWalletsProps>(
   ({
     balanceListStore: {
-      setNewCurrentWallet: setNewCurrentWallet,
+      selectWallet,
       getCurrentWallet: currentWallet,
-      getBalances: balances,
+      getWalletsWithPositiveBalances: wallets,
       totalBalance: total,
       tradingWalletTotal: totalTrading
     },
-    referenceStore: {getAssetById: getAssetById},
-    referenceStore
+    referenceStore: {getAssetById, baseAssetId}
   }) => ({
-    setNewCurrentWallet,
+    onSelectWallet: selectWallet,
     currentWallet,
-    balances,
-    baseAsset:
-      referenceStore.getAssetById(referenceStore.baseAssetId) ||
-      new AssetModel({}),
+    wallets,
+    baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
     total,
-    totalTrading,
-    getAssetById
+    totalTrading
   }),
   MyWallets
 );
 
-export {connectedMyWallets as MyWallets};
+export {ConnectedMyWallets as MyWallets};
 export {default as TotalBalance} from './TotalBalance';
 export {default as MyWalletNameList} from './MyWallets';
 export {default as MyWalletName} from './Name';

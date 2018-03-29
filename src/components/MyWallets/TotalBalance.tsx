@@ -1,20 +1,24 @@
 import * as React from 'react';
-import {NameOfTotal, TotalContainer, TotalPrice} from './styled';
+import {Total, TotalAmount, TotalLabel} from './styles';
 
-interface TotalBalance {
+interface TotalBalanceProps {
   total: number;
   accuracy?: number;
   name?: string;
 }
 
-const TotalBalance: React.SFC<TotalBalance> = ({total, accuracy, name}) => {
-  return (
-    <TotalContainer>
-      <TotalPrice>
-        {total.toFixed(accuracy)} {name}
-      </TotalPrice>
-      <NameOfTotal>Total Balance</NameOfTotal>
-    </TotalContainer>
-  );
-};
+const TotalBalance: React.SFC<TotalBalanceProps> = ({
+  total,
+  accuracy,
+  name
+}) => (
+  <Total>
+    <TotalAmount>
+      {total.toLocaleString(undefined, {maximumFractionDigits: accuracy})}{' '}
+      {name}
+    </TotalAmount>
+    <TotalLabel>Total Balance</TotalLabel>
+  </Total>
+);
+
 export default TotalBalance;

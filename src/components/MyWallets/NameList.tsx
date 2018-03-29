@@ -1,45 +1,39 @@
 import * as React from 'react';
+import {WalletModel} from '../../models';
 import Name from './Name';
-import {Br, NamesContainer} from './styled';
+import {Br, WalletNames} from './styles';
 
 interface WalletNamesProps {
-  wallets: string[];
+  wallets: WalletModel[];
   onChangeWallet: any;
   selectedIndex: number;
-  total: number;
   baseAssetName: string;
   accuracy: number;
-  tradingWalletBalance?: number;
-  totalList: number[];
 }
 
 const NameList: React.SFC<WalletNamesProps> = ({
   wallets,
   onChangeWallet,
   selectedIndex,
-  total,
   baseAssetName,
-  accuracy,
-  tradingWalletBalance,
-  totalList
+  accuracy
 }) => {
+  const handleChangeWallet = (idx: number) => () => onChangeWallet(idx);
   return (
-    <NamesContainer>
-      {wallets.map((name, index) => {
-        return (
-          <div key={index} onClick={onChangeWallet(index)}>
-            <Name
-              name={name}
-              selectedIndex={index === selectedIndex}
-              baseAssetName={baseAssetName}
-              accuracy={accuracy}
-              wallets={totalList[index]}
-            />
-            <Br />
-          </div>
-        );
-      })}
-    </NamesContainer>
+    <WalletNames>
+      {wallets.map((wallet, index) => (
+        <div key={index} onClick={handleChangeWallet(index)}>
+          <Name
+            name={wallet.name}
+            selectedIndex={index === selectedIndex}
+            baseAssetName={baseAssetName}
+            accuracy={accuracy}
+            totalBalance={wallet.totalBalance}
+          />
+          <Br />
+        </div>
+      ))}
+    </WalletNames>
   );
 };
 

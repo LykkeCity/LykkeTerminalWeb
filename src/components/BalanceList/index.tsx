@@ -20,7 +20,10 @@ export interface BalanceListItemProps {
 
 const ConnectedBalanceList = connect(
   ({
-    balanceListStore: {getBalances: balances, totalBalance: total},
+    balanceListStore: {
+      getWalletsWithPositiveBalances: balances,
+      totalBalance: total
+    },
     referenceStore: {getAssetById, baseAssetId}
   }) => ({
     accuracy: pathOr(0, ['accuracy'], getAssetById(baseAssetId)),

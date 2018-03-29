@@ -1,87 +1,70 @@
 import * as React from 'react';
-import {walletNames} from '../../constants/walletNames';
 import {AssetModel} from '../../models';
 import {WalletBalanceList} from '../WalletBalanceList/';
 import NameList from './NameList';
-import {Container, LeftContainer, Link, RightContainer} from './styled';
+import {
+  ManageWalletsLink,
+  MyWalletsContainer,
+  WalletBalances,
+  WalletOverview
+} from './styles';
 import TotalBalance from './TotalBalance';
 
-interface MyWalletsProps {
+export interface MyWalletsProps {
+  wallets: any[];
+  currentWallet: number;
+  onSelectWallet: any;
   total: number;
   totalTrading: number;
   baseAsset: AssetModel;
-  balances: any[];
-  currentWallet: number;
-  setNewCurrentWallet: any;
 }
 
-export interface MyWalletsState {
-  indexOfWallet: number;
+interface MyWalletsState {
+  index: number;
 }
 
 class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
-  private wallets: string[];
-  constructor(props: MyWalletsProps) {
-    super(props);
-    this.state = {
-      indexOfWallet: 0
-    };
-    this.wallets = [...walletNames];
-    this.changeWallet = this.changeWallet.bind(this);
-  }
+  state = {
+    index: 0
+  };
 
-  changeWallet(index: any) {
-    return (e: any) => {
-      this.setState(
-        {
-          indexOfWallet: index
-        },
-        () => {
-          this.props.setNewCurrentWallet(index);
-        }
-      );
-    };
-  }
+  handleChangeWallet = (index: any) => {
+    this.setState({index}, () => {
+      this.props.onSelectWallet(index);
+    });
+  };
 
   render() {
+    const {wallets, baseAsset, total} = this.props;
     return (
-      <Container>
-        <LeftContainer>
+      <MyWalletsContainer>
+        <WalletOverview>
           <NameList
-            selectedIndex={this.state.indexOfWallet}
-            wallets={this.wallets}
-            onChangeWallet={this.changeWallet}
-            total={
-              this.props.balances[this.state.indexOfWallet]
-                ? this.props.balances[this.state.indexOfWallet].totalBalance
-                : 0
-            }
-            baseAssetName={this.props.baseAsset.name}
-            accuracy={this.props.baseAsset.accuracy}
-            tradingWalletBalance={this.props.totalTrading}
-            totalList={
-              this.props.balances
-                ? this.props.balances.map(a => a.totalBalance)
-                : []
-            }
+            selectedIndex={this.state.index}
+            wallets={wallets}
+            onChangeWallet={this.handleChangeWallet}
+            baseAssetName={baseAsset.name}
+            accuracy={baseAsset.accuracy}
           />
           <TotalBalance
-            total={this.props.total}
-            accuracy={this.props.baseAsset.accuracy}
-            name={this.props.baseAsset.name}
+            total={total}
+            accuracy={baseAsset.accuracy}
+            name={baseAsset.name}
           />
-          <Link href={process.env.REACT_APP_WEBWALLET_URL} target="_blank">
+          <ManageWalletsLink
+            href={process.env.REACT_APP_WEBWALLET_URL}
+            target="_blank"
+          >
             Manage Wallets
-          </Link>
-        </LeftContainer>
+          </ManageWalletsLink>
+        </WalletOverview>
 
-        <RightContainer>
-          <WalletBalanceList
-            wallet={this.props.balances[this.state.indexOfWallet]}
-          />
-        </RightContainer>
-      </Container>
+        <WalletBalances>
+          <WalletBalanceList wallet={this.props.wallets[this.state.index]} />
+        </WalletBalances>
+      </MyWalletsContainer>
     );
   }
 }
+
 export default MyWallets;

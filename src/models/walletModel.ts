@@ -3,7 +3,7 @@ import MarketService from '../services/marketService';
 import ReferenceStore from '../stores/referenceStore';
 
 export default class WalletModel {
-  symbol: string;
+  name: string;
   balances: any[];
   id: string;
   profitAndLoss: number = 0;
@@ -11,7 +11,7 @@ export default class WalletModel {
   type: string;
 
   constructor(wallet: any) {
-    this.symbol = wallet.Name;
+    this.name = wallet.Name;
     this.id = wallet.Id;
     this.balances = wallet.Balances;
     this.type = wallet.Type;

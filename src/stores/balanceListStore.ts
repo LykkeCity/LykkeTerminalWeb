@@ -12,12 +12,10 @@ const baseAssetStorage = StorageUtils(storageKeys.baseAsset);
 
 class BalanceListStore extends BaseStore {
   @computed
-  get getBalances() {
-    return (
-      this.walletList
-        //  .filter(b => b.totalBalance > 0)
-        .sort((a, b) => b.totalBalance - a.totalBalance)
-    );
+  get getWalletsWithPositiveBalances() {
+    return this.walletList
+      .filter(b => b.totalBalance > 0)
+      .sort((a, b) => b.totalBalance - a.totalBalance);
   }
 
   @computed
@@ -98,7 +96,7 @@ class BalanceListStore extends BaseStore {
     await this.updateTradingWallet();
   };
 
-  setNewCurrentWallet = async (index: number) => {
+  selectWallet = async (index: number) => {
     this.currentWallet = index;
   };
 

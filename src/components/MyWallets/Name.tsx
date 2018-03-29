@@ -1,17 +1,17 @@
 import * as React from 'react';
 import {
-  Button,
-  ButtonSelected,
-  CostOfWallet,
-  InnerContainerButton,
-  StyledName
-} from './styled';
+  WalletItem,
+  WalletItemContainer,
+  WalletItemSelected,
+  WalletName,
+  WalletTotalBalance
+} from './styles';
 
 interface WalletNameProps {
   name: string;
   selectedIndex: boolean;
   baseAssetName: string;
-  wallets?: number;
+  totalBalance?: number;
   accuracy: number;
 }
 
@@ -19,21 +19,26 @@ const Name: React.SFC<WalletNameProps> = ({
   name,
   selectedIndex,
   baseAssetName,
-  wallets,
+  totalBalance,
   accuracy
 }) => {
   const content = (
-    <InnerContainerButton>
-      <StyledName>{name}</StyledName>
-      <CostOfWallet>
-        {(wallets ? wallets.toFixed(accuracy) : 0) + ' ' + baseAssetName}
-      </CostOfWallet>
-    </InnerContainerButton>
+    <WalletItemContainer>
+      <WalletName>{name}</WalletName>
+      <WalletTotalBalance>
+        {totalBalance &&
+          totalBalance.toLocaleString(undefined, {
+            maximumFractionDigits: accuracy
+          }) +
+            ' ' +
+            baseAssetName}
+      </WalletTotalBalance>
+    </WalletItemContainer>
   );
   if (selectedIndex) {
-    return <ButtonSelected>{content}</ButtonSelected>;
+    return <WalletItemSelected>{content}</WalletItemSelected>;
   } else {
-    return <Button>{content}</Button>;
+    return <WalletItem>{content}</WalletItem>;
   }
 };
 

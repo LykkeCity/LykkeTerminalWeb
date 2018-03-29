@@ -4,7 +4,10 @@ import BalanceInfo from './BalanceInfo';
 const ConnectedBalanceInfo = connect(
   ({
     referenceStore,
-    balanceListStore: {getBalances: balances, getCurrentWallet},
+    balanceListStore: {
+      getWalletsWithPositiveBalances: balances,
+      getCurrentWallet
+    },
     uiStore
   }) => ({
     referenceStore,
