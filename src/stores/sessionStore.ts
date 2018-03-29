@@ -6,6 +6,7 @@ import Types from '../models/modals';
 import {BaseStore, RootStore} from './index';
 
 const SESSION_NOTE_HIDDEN_DURATION = 1;
+const SESSION_REMAINS = 10;
 
 class SessionStore extends BaseStore {
   @computed
@@ -13,9 +14,16 @@ class SessionStore extends BaseStore {
     return this.isSessionNotificationShown;
   }
 
-  private currentSessionString: string = '';
+  @computed
+  get sessionRemain() {
+    return this.sessionRemains;
+  }
+
   @observable private isSessionNotificationShown: boolean = false;
+  @observable private sessionRemains: number = SESSION_REMAINS;
+  private currentSessionString: string = '';
   private isSessionNotesShown: boolean = false;
+  private intervalId: any;
 
   constructor(store: RootStore, private readonly api: SessionApi) {
     super(store);
@@ -44,11 +52,13 @@ class SessionStore extends BaseStore {
           this.isSessionNotesShown = true;
         }
         this.isSessionNotificationShown = true;
+        this.runSessionRemains();
       })
       .catch(() => {
         this.saveSessionNoteShownDate(currentDate);
         this.isSessionNotesShown = true;
         this.isSessionNotificationShown = true;
+        this.runSessionRemains();
       });
   };
 
@@ -73,6 +83,24 @@ class SessionStore extends BaseStore {
 
   clearSessionString = () => {
     this.currentSessionString = '';
+  };
+
+  runSessionRemains = () => {
+    this.intervalId = setInterval(() => {
+      if (this.sessionRemains < 1) {
+        this.stopSessionRemains();
+        this.showQR();
+        this.closeSessionNotification();
+        return;
+      }
+      this.sessionRemains = this.sessionRemains - 1;
+    }, 1000);
+  };
+
+  stopSessionRemains = () => {
+    clearInterval(this.intervalId);
+    this.intervalId = null;
+    this.sessionRemains = SESSION_REMAINS;
   };
 
   reset = () => {

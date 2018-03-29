@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Notification from './Notification';
+import {Notification} from './';
 import Settings from './Settings';
 import {SessionNotificationBlock} from './styles';
 
@@ -10,7 +10,6 @@ interface SessionNotificationState {
 interface SessionNotificationProps {
   isSessionNotesShown: boolean;
   closeSessionNotification: () => {};
-  showQR: () => {};
 }
 
 class SessionNotificationComponent extends React.Component<
@@ -55,7 +54,6 @@ class SessionNotificationComponent extends React.Component<
           onExtendingSession={this.handleExtendingSession}
           onNotificationClose={this.handleNotificationClose}
           isSessionNotesShown={this.props.isSessionNotesShown}
-          showQR={this.props.showQR}
         />
         {this.state.isSettingsShown && (
           <Settings onSettingsClose={this.handleSettingsClose} />
