@@ -5,7 +5,6 @@ import paths from '../../constants/paths';
 import keys from '../../constants/storageKeys';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
-import {BalanceList} from '../BalanceList';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
@@ -17,7 +16,6 @@ import {OrderList} from '../OrderList';
 import styled from '../styled';
 import {TabbedTile, Tile} from '../Tile';
 import {PublicTradeList, TradeList} from '../TradeList';
-import {WalletBalanceList} from '../WalletBalanceList';
 import {TerminalProps} from './index';
 import {LearnMore} from './styled';
 
@@ -60,10 +58,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
       authorize={true}
       additionalControls={additionalActions.orders}
     >
-      <MyWallets>
-        <WalletBalanceList />
-        <BalanceList />
-      </MyWallets>
+      <MyWallets />
       <OrderList />
       <TradeList />
     </TabbedTile>

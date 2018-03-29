@@ -1,39 +1,46 @@
 import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
+import WalletModel from '../../models/walletModel';
 import TableScrolled from '../Table/TableScrolled';
 import {TradingWalletItem} from './';
 
-export interface WalletBalanceListProps {
+interface WalletBalanceListProps {
   assets: AssetBalanceModel[];
   baseAsset: AssetModel;
-  total: number;
+  wallet: WalletModel;
+  getAssetById: any;
 }
 
 const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   assets = [],
   baseAsset,
   baseAsset: {accuracy, name},
-  total
-}) => (
-  <TableScrolled>
-    <thead>
-      <tr>
-        <th>Assets</th>
-        <th />
-        <th>Base currency</th>
-        <th>Balance</th>
-      </tr>
-    </thead>
-    <tbody>
-      {assets.map(assetBalance => (
-        <TradingWalletItem
-          key={assetBalance.id}
-          assetBalance={assetBalance}
-          baseAsset={baseAsset}
-        />
-      ))}
-    </tbody>
-  </TableScrolled>
-);
+  wallet,
+  getAssetById
+}) => {
+  return (
+    <TableScrolled>
+      <thead>
+        <tr>
+          <th>Assets</th>
+          <th />
+          <th>Base currency</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        {wallet &&
+          wallet.balances.map((assetBalance, index) => (
+            <TradingWalletItem
+              key={index}
+              baseAsset={baseAsset}
+              balance={wallet ? wallet.balances[index] : null}
+              asset={getAssetById(wallet.balances[index].AssetId)}
+            />
+          ))}
+      </tbody>
+    </TableScrolled>
+  );
+};
 
 export default WalletBalanceList;

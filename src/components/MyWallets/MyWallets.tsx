@@ -1,14 +1,18 @@
 import * as React from 'react';
+import {walletNames} from '../../constants/walletNames';
 import {AssetModel} from '../../models';
+import {WalletBalanceList} from '../WalletBalanceList/';
 import NameList from './NameList';
 import {Container, LeftContainer, Link, RightContainer} from './styled';
 import TotalBalance from './TotalBalance';
 
 interface MyWalletsProps {
-  name?: string;
   total: number;
   totalTrading: number;
   baseAsset: AssetModel;
+  balances: any[];
+  currentWallet: number;
+  setNewCurrentWallet: any;
 }
 
 export interface MyWalletsState {
@@ -22,22 +26,24 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
     this.state = {
       indexOfWallet: 0
     };
-    this.wallets = ['Trading wallet', 'All wallets'];
+    this.wallets = [...walletNames];
     this.changeWallet = this.changeWallet.bind(this);
   }
 
   changeWallet(index: any) {
     return (e: any) => {
-      this.setState({
-        indexOfWallet: index
-      });
+      this.setState(
+        {
+          indexOfWallet: index
+        },
+        () => {
+          this.props.setNewCurrentWallet(index);
+        }
+      );
     };
   }
 
   render() {
-    const child = this.props.children
-      ? this.props.children[this.state.indexOfWallet]
-      : null;
     return (
       <Container>
         <LeftContainer>
@@ -56,10 +62,15 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
             name={this.props.baseAsset.name}
           />
           <Link href={process.env.REACT_APP_WEBWALLET_URL} target="_blank">
-            Manage Wallets in Account
+            Manage Wallets
           </Link>
         </LeftContainer>
-        <RightContainer>{child}</RightContainer>
+
+        <RightContainer>
+          <WalletBalanceList
+            wallet={this.props.balances[this.state.indexOfWallet]}
+          />
+        </RightContainer>
       </Container>
     );
   }

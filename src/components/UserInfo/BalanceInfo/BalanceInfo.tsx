@@ -2,9 +2,9 @@ import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
-import {ReferenceStore, UiStore} from '../../stores';
-import ClickOutside from '../ClickOutside/ClickOutside';
-import CustomSelect from '../Select/CustomSelect';
+import {ReferenceStore, UiStore} from '../../../stores/index';
+import ClickOutside from '../../ClickOutside/ClickOutside';
+import CustomSelect from '../../Select/CustomSelect';
 import {BalanceInfoProps} from './index';
 
 const StyledBalanceInfo = styled.div`

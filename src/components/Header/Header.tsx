@@ -1,11 +1,12 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import {BalanceInfo} from '../BalanceInfo';
 import {Icon} from '../Icon/index';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import {SettingsModal} from '../Settings';
 import styled from '../styled';
+import {BalanceInfo} from '../UserInfo/BalanceInfo';
+import {CurrentWallet} from '../UserInfo/CurrentWallet/';
 import {HeaderProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -89,6 +90,11 @@ const Header: React.SFC<HeaderProps> = ({
 
         <Box ml="auto" is="menu">
           <Flex align="center">
+            {authStore.isAuth ? (
+              <HeaderItem>
+                <CurrentWallet />
+              </HeaderItem>
+            ) : null}
             {authStore.isAuth ? (
               <HeaderItem>
                 <BalanceInfo />

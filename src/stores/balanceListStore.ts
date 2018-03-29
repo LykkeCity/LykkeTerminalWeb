@@ -38,9 +38,15 @@ class BalanceListStore extends BaseStore {
     return this.tradingTotal;
   }
 
+  @computed
+  get getCurrentWallet() {
+    return this.currentWallet;
+  }
+
   @observable.shallow private walletList: WalletModel[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
   @observable private tradingTotal: number = 0;
+  @observable private currentWallet: number = 0;
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -90,6 +96,10 @@ class BalanceListStore extends BaseStore {
     await this.updateTradingWallet();
   };
 
+  setNewCurrentWallet = async (index: number) => {
+    this.currentWallet = index;
+  };
+
   updateWithAssets = async (ids: string[]) => {
     const promises: any = [];
     const {getAssetById, fetchAssetById} = this.rootStore.referenceStore;
@@ -130,7 +140,6 @@ class BalanceListStore extends BaseStore {
       return a;
     });
     this.tradingTotal = updatedBalances.map(b => b.Balance).reduce(add, 0);
-
     const balanceInBaseAssetExists = this.tradingAssets.some(a =>
       this.eqToBaseAssetId(a, baseAssetId!)
     );

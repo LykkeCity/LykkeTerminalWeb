@@ -4,14 +4,25 @@ import MyWallets from './MyWallets';
 
 const connectedMyWallets = connect(
   ({
-    balanceListStore: {totalBalance: total, tradingWalletTotal: totalTrading},
+    balanceListStore: {
+      setNewCurrentWallet: setNewCurrentWallet,
+      getCurrentWallet: currentWallet,
+      getBalances: balances,
+      totalBalance: total,
+      tradingWalletTotal: totalTrading
+    },
+    referenceStore: {getAssetById: getAssetById},
     referenceStore
   }) => ({
+    setNewCurrentWallet,
+    currentWallet,
+    balances,
     baseAsset:
       referenceStore.getAssetById(referenceStore.baseAssetId) ||
       new AssetModel({}),
     total,
-    totalTrading
+    totalTrading,
+    getAssetById
   }),
   MyWallets
 );
