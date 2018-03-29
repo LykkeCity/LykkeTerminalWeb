@@ -2,7 +2,7 @@ import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
 import WalletModel from '../../models/walletModel';
 import TableScrolled from '../Table/TableScrolled';
-import {TradingWalletItem} from './';
+import {WalletBalanceItem} from './';
 
 interface WalletBalanceListProps {
   assets: AssetBalanceModel[];
@@ -31,10 +31,10 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
       <tbody>
         {wallet &&
           wallet.balances.map((assetBalance, index) => (
-            <TradingWalletItem
+            <WalletBalanceItem
               key={index}
               baseAsset={baseAsset}
-              balance={wallet ? wallet.balances[index] : null}
+              balance={wallet.balances[index]}
               asset={getAssetById(wallet.balances[index].AssetId)}
             />
           ))}

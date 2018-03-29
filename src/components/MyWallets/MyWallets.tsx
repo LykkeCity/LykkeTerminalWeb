@@ -51,10 +51,19 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
             selectedIndex={this.state.indexOfWallet}
             wallets={this.wallets}
             onChangeWallet={this.changeWallet}
-            total={this.props.total}
+            total={
+              this.props.balances[this.state.indexOfWallet]
+                ? this.props.balances[this.state.indexOfWallet].totalBalance
+                : 0
+            }
             baseAssetName={this.props.baseAsset.name}
             accuracy={this.props.baseAsset.accuracy}
             tradingWalletBalance={this.props.totalTrading}
+            totalList={
+              this.props.balances
+                ? this.props.balances.map(a => a.totalBalance)
+                : []
+            }
           />
           <TotalBalance
             total={this.props.total}

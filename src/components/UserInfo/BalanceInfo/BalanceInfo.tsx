@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import {ReferenceStore, UiStore} from '../../../stores/index';
 import ClickOutside from '../../ClickOutside/ClickOutside';
 import CustomSelect from '../../Select/CustomSelect';
-import {BalanceInfoProps} from './index';
 
 const StyledBalanceInfo = styled.div`
   text-align: right;
@@ -42,6 +41,13 @@ const StyledBalanceLabel = styled.div`
   font-size: 0.7rem;
 `;
 
+interface BalanceInfoProps {
+  balances: any[];
+  getCurrentWallet: any;
+  referenceStore: ReferenceStore;
+  uiStore: UiStore;
+}
+
 class BalanceInfo extends React.Component<BalanceInfoProps> {
   private readonly referenceStore: ReferenceStore = this.props.referenceStore;
   private readonly uiStore: UiStore = this.props.uiStore;
@@ -70,9 +76,10 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
     return (
       <StyledBalanceInfo>
         <StyledBalanceValue>
-          {this.props.totalBalance.toFixed(
-            this.referenceStore.getBaseAssetAccuracy
-          )}
+          {(this.props.balances[this.props.getCurrentWallet]
+            ? this.props.balances[this.props.getCurrentWallet].totalBalance
+            : 0
+          ).toFixed(this.referenceStore.getBaseAssetAccuracy)}
         </StyledBalanceValue>
         <StyledButton onClick={this.handleClick} id="baseAssetBtn">
           {pathOr('', ['getBaseAsset', 'name'], this.referenceStore)}

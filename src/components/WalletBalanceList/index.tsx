@@ -20,5 +20,5 @@ const ConnectedWalletBalanceList = connect(
 
 export {ConnectedWalletBalanceList as WalletBalanceList};
 export {
-  default as TradingWalletItem
+  default as WalletBalanceItem
 } from './WalletBalanceItem/WalletBalanceItem';

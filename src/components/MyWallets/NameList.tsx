@@ -10,6 +10,7 @@ interface WalletNamesProps {
   baseAssetName: string;
   accuracy: number;
   tradingWalletBalance?: number;
+  totalList: number[];
 }
 
 const NameList: React.SFC<WalletNamesProps> = ({
@@ -19,7 +20,8 @@ const NameList: React.SFC<WalletNamesProps> = ({
   total,
   baseAssetName,
   accuracy,
-  tradingWalletBalance
+  tradingWalletBalance,
+  totalList
 }) => {
   return (
     <NamesContainer>
@@ -31,11 +33,7 @@ const NameList: React.SFC<WalletNamesProps> = ({
               selectedIndex={index === selectedIndex}
               baseAssetName={baseAssetName}
               accuracy={accuracy}
-              wallets={
-                name === 'Trading wallet'
-                  ? tradingWalletBalance ? tradingWalletBalance : 0
-                  : total
-              }
+              wallets={totalList[index]}
             />
             <Br />
           </div>

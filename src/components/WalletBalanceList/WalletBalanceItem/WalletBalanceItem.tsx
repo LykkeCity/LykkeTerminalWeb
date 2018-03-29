@@ -8,34 +8,44 @@ interface WalletBalanceItemProps {
   baseAsset: AssetModel;
   asset: AssetModel;
 }
-const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
-  balance,
-  baseAsset,
-  asset
-}) => {
-  return (
-    <tr>
-      <td>{balance ? balance.AssetId : baseAsset.name}</td>
-      <td />
-      <td>
-        <WalletBalanceNumber
-          num={balance ? balance.Balance : 0}
-          accuracy={baseAsset.accuracy}
-          color={'rgba(245, 246, 247, 0.4)'}
-        >
-          &nbsp;{baseAsset.name}
-        </WalletBalanceNumber>
-      </td>
-      <td>
-        <WalletBalanceNumber
-          num={balance ? balance.Balance : 0}
-          accuracy={asset.accuracy}
-        >
-          &nbsp;{name}
-        </WalletBalanceNumber>
-      </td>
-    </tr>
-  );
-};
+
+interface WalletBalanceItemState {
+  convertedBalance: number;
+}
+
+class WalletBalanceItem extends React.Component<
+  WalletBalanceItemProps,
+  WalletBalanceItemState
+> {
+  constructor(props: any) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <tr>
+        <td>{this.props.balance.AssetId}</td>
+        <td />
+        <td>
+          <WalletBalanceNumber
+            num={this.props.balance.balanceInBaseAsset}
+            accuracy={this.props.baseAsset.accuracy}
+            color={'rgba(245, 246, 247, 0.4)'}
+          >
+            &nbsp;{this.props.baseAsset.name}
+          </WalletBalanceNumber>
+        </td>
+        <td>
+          <WalletBalanceNumber
+            num={this.props.balance.Balance}
+            accuracy={this.props.asset.accuracy}
+          >
+            &nbsp;{this.props.asset.name}
+          </WalletBalanceNumber>
+        </td>
+      </tr>
+    );
+  }
+}
 
 export default observer(WalletBalanceItem);

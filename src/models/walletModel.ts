@@ -38,5 +38,13 @@ export default class WalletModel {
     ]
       .map(b => b.Balance)
       .reduce(add, 0);
+    const convertedBalances = await MarketService.convert(
+      this.balances,
+      baseAssetId
+    );
+    this.balances = this.balances.map((b, index) => {
+      b.balanceInBaseAsset = convertedBalances[index].Balance;
+      return b;
+    });
   };
 }

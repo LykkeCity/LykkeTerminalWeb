@@ -13,9 +13,11 @@ const baseAssetStorage = StorageUtils(storageKeys.baseAsset);
 class BalanceListStore extends BaseStore {
   @computed
   get getBalances() {
-    return this.walletList
-      .filter(b => b.totalBalance > 0)
-      .sort((a, b) => b.totalBalance - a.totalBalance);
+    return (
+      this.walletList
+        //  .filter(b => b.totalBalance > 0)
+        .sort((a, b) => b.totalBalance - a.totalBalance)
+    );
   }
 
   @computed
