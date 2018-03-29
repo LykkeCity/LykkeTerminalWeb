@@ -148,7 +148,7 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
         <Mosaic
           renderTile={this.handleRenderTile}
           onChange={this.handleChangeLayout}
-          resize={{minimumPaneSizePercentage: 20}}
+          resize={{minimumPaneSizePercentage: 25}}
           value={this.state.initialValue}
         />
       </Shell>
