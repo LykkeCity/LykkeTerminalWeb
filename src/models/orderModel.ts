@@ -5,6 +5,7 @@ class OrderModel {
   symbol: string;
   side: Side;
   volume: number;
+  remainingVolume: number;
   price: number;
   createdAt: Date;
   id: string;

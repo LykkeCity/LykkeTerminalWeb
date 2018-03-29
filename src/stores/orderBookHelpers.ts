@@ -70,7 +70,7 @@ export const aggregateOrders = (
 
 export const connectLimitOrders = (
   orders: Order[],
-  limitOrders: Array<Pick<Order, 'side' | 'price' | 'volume' | 'id'>>,
+  limitOrders: any[],
   span: number,
   isAsk: boolean
 ) => {
@@ -83,7 +83,8 @@ export const connectLimitOrders = (
         if (!order.connectedLimitOrders) {
           order.connectedLimitOrders = [];
         }
-        order.orderVolume = (order.orderVolume || 0) + limitOrder.volume;
+        order.orderVolume =
+          (order.orderVolume || 0) + limitOrder.remainingVolume;
         order.connectedLimitOrders = order.connectedLimitOrders.concat(
           limitOrder.id
         );

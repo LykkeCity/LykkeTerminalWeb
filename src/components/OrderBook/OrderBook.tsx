@@ -9,6 +9,8 @@ import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
 import {minOrMaxFromList} from '../../utils/math';
 import {HBar, VBar} from '../Bar';
+import ClickOutside from '../ClickOutside/ClickOutside';
+import {FAIcon} from '../Icon/Icon';
 import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
@@ -31,12 +33,25 @@ const confirmStorage = StorageUtils(keys.confirmReminder); // TODO: refactor to 
 const mapToDisplayType = (displayType: OrderBookDisplayType) => (o: Order) =>
   o[displayType.toLowerCase()];
 
+const formatNumber = (
+  num: number | string,
+  accuracy: number,
+  options?: object
+) =>
+  (isFinite(Number(num)) &&
+    Number(num).toLocaleString(undefined, {
+      maximumFractionDigits: accuracy,
+      ...options
+    })) ||
+  '--';
+
 interface OrderBookProps {
   addModal: any;
   asks: Order[];
   bids: Order[];
   mid: string;
   spread: number;
+  spreadRelative: number;
   priceAccuracy: number;
   volumeAccuracy: number;
   updatePrice: any;
@@ -47,6 +62,7 @@ interface OrderBookProps {
   onNextSpan: () => void;
   onPrevSpan: () => void;
   showMyOrders: any;
+  lastTradePrice: number;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -123,13 +139,14 @@ class OrderBook extends React.Component<OrderBookProps> {
       bids,
       asks,
       mid,
-      spread,
+      spreadRelative,
       priceAccuracy,
       volumeAccuracy,
       span,
       onNextSpan,
       onPrevSpan,
-      showMyOrders
+      showMyOrders,
+      lastTradePrice
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
@@ -145,9 +162,14 @@ class OrderBook extends React.Component<OrderBookProps> {
       <StyledWrapper>
         <StyledBar>
           <StyledGrouping>
-            Grouping: <button onClick={onPrevSpan}>-</button>
-            <strong>{span}</strong>
-            <button onClick={onNextSpan}>+</button>
+            Grouping:{' '}
+            <button onClick={onPrevSpan}>
+              <FAIcon name="minus" />
+            </button>
+            <div>{span}</div>
+            <button onClick={onNextSpan}>
+              <FAIcon name="plus" />
+            </button>
           </StyledGrouping>
           <VBar />
           <OrderBookSwitch
@@ -190,6 +212,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   onOrderClick={this.handleCancelOrder}
                   showMyOrders={showMyOrders}
                   {...order}
+                  scrollComponent={this.scrollComponent}
                 />
               ))}
             </StyledSellOrders>
@@ -201,10 +224,17 @@ class OrderBook extends React.Component<OrderBookProps> {
                 >
                   <MidFigures>
                     <strong>
-                      {Number.isFinite(parseFloat(mid)) ? mid : ''}
+                      {formatNumber(lastTradePrice, priceAccuracy)}
                     </strong>
                     <small>
-                      {spread.toFixed(priceAccuracy)}
+                      {formatNumber(mid, priceAccuracy)}
+                      <br />
+                      <span>Mid price</span>
+                    </small>
+                    <small>
+                      {formatNumber(spreadRelative, priceAccuracy, {
+                        style: 'percent'
+                      })}
                       <br />
                       <span>Spread</span>
                     </small>
@@ -226,13 +256,23 @@ class OrderBook extends React.Component<OrderBookProps> {
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
                   showMyOrders={showMyOrders}
+                  scrollComponent={this.scrollComponent}
                   {...order}
                 />
               ))}
             </StyledBuyOrders>
           </StyledOrders>
         </Scrollbars>
-        <MyOrders />
+        <ClickOutside
+          // tslint:disable-next-line:jsx-no-lambda
+          onClickOutside={() =>
+            showMyOrders({
+              orders: []
+            })
+          }
+        >
+          <MyOrders />
+        </ClickOutside>
       </StyledWrapper>
     );
   }
