@@ -5,11 +5,14 @@ import {Line} from 'react-konva';
 import {Order} from '../../../models';
 
 import {ChartProps} from './Models';
+import Pointer from './Pointer';
 
 import chart from './chartConstants';
 
 class Bids extends React.Component<ChartProps> {
-  graphics: any = [];
+  graphics: any[] = [];
+  points: number[] = [];
+
   width: number = 1080;
   height: number = 500;
   asks: Order[];
@@ -23,11 +26,6 @@ class Bids extends React.Component<ChartProps> {
 
   constructor(props: ChartProps) {
     super(props);
-  }
-
-  showMessage(ask: Order, index: number) {
-    // tslint:disable-next-line:no-console
-    console.log(`${index}: ${ask.price}`);
   }
 
   calculateStepLength(bid: Order, index: number) {
@@ -58,11 +56,11 @@ class Bids extends React.Component<ChartProps> {
       currentX = newX;
       currentY = newY;
     });
-    return points;
+    this.points = points;
   };
 
   drawBids = () => {
-    let points = this.generatePoints();
+    let points = this.points;
     this.graphics.push(
       <Line
         points={points}
@@ -74,6 +72,17 @@ class Bids extends React.Component<ChartProps> {
     points = points.concat([0, this.height]);
     this.graphics.push(
       <Line points={points} closed={true} fill={chart.bids.fillColor} />
+    );
+  };
+
+  drawPointerPadding = () => {
+    this.graphics.push(
+      <Pointer
+        side={'bids'}
+        points={this.points}
+        borders={[0, this.midY, this.midX, 0]}
+        color={chart.bids.lineColor}
+      />
     );
   };
 
@@ -99,7 +108,9 @@ class Bids extends React.Component<ChartProps> {
 
   render() {
     this.initialize();
+    this.generatePoints();
     this.drawBids();
+    this.drawPointerPadding();
     return this.graphics;
   }
 }

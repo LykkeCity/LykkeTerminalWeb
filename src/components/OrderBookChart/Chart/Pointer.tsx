@@ -5,6 +5,7 @@ import {Circle, Line} from 'react-konva';
 import chart from './chartConstants';
 
 interface PointerProps {
+  side: string;
   points: number[];
   borders: number[];
   color: string;
@@ -32,12 +33,19 @@ class Pointer extends React.Component<PointerProps> {
       return index % 2 === 0;
     });
 
-    const yIndex =
-      xPoints.findIndex(value => {
+    let xIndex = 0;
+
+    if (this.props.side === 'asks') {
+      xIndex = xPoints.findIndex(value => {
         return value > mouseX;
-      }) *
-        2 +
-      1;
+      });
+    } else {
+      xIndex = xPoints.findIndex(value => {
+        return value < mouseX;
+      });
+    }
+
+    const yIndex = xIndex * 2 + 1;
 
     return this.points[yIndex];
   };
@@ -56,8 +64,8 @@ class Pointer extends React.Component<PointerProps> {
   };
 
   handleMouseLeave = (event: any) => {
-    this.mouseX = -1;
-    this.calcY = -1;
+    this.mouseX = -chart.pointer.circleRadius;
+    this.calcY = -chart.pointer.circleRadius;
     this.forceUpdate();
   };
 
@@ -89,7 +97,6 @@ class Pointer extends React.Component<PointerProps> {
           this.borders[1]
         ]}
         closed={true}
-        // tslint:disable-next-line:jsx-no-lambda
         onMouseMove={this.handleMouseMove}
         onMouseOver={this.handleMouseMove}
         onMouseLeave={this.handleMouseLeave}

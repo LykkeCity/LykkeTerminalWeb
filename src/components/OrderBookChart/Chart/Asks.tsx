@@ -10,7 +10,7 @@ import Pointer from './Pointer';
 import chart from './chartConstants';
 
 class Asks extends React.Component<ChartProps> {
-  graphics: any = [];
+  graphics: any[] = [];
   points: number[] = [];
 
   width: number = 1080;
@@ -78,6 +78,7 @@ class Asks extends React.Component<ChartProps> {
   drawPointerPadding = () => {
     this.graphics.push(
       <Pointer
+        side={'asks'}
         points={this.points}
         borders={[this.midX, this.midY, this.width, 0]}
         color={chart.asks.lineColor}
@@ -110,8 +111,6 @@ class Asks extends React.Component<ChartProps> {
     this.generatePoints();
     this.drawAsks();
     this.drawPointerPadding();
-    // tslint:disable-next-line:no-console
-    console.log(this.graphics);
     return this.graphics;
   }
 }
