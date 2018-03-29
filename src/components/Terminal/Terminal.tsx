@@ -150,7 +150,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
             <Modal modals={this.props.rootStore.modalStore.modals} />
           </div>
         ) : null}
-        {this.props.rootStore.uiStore.showSessionNotification && (
+        {this.props.rootStore.sessionStore.sessionNotificationShown && (
           <SessionNotificationComponent />
         )}
         <Header history={this.props.history} />

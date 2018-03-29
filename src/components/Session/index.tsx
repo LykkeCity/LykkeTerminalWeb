@@ -2,8 +2,9 @@ import {connect} from '../connect';
 import SessionNotificationComponent from './SessionNotification';
 
 const ConnectedSessionNotification = connect(
-  ({uiStore: {toggleSessionNotification}}) => ({
-    toggleSessionNotification
+  ({sessionStore: {getSessionNotesShown, closeSessionNotification}}) => ({
+    isSessionNotesShown: getSessionNotesShown(),
+    closeSessionNotification
   }),
   SessionNotificationComponent
 );

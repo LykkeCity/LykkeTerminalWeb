@@ -98,12 +98,6 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         </StyledTotalAmount>
       </StyledTotal>
 
-      {/*{isEditForm && (*/}
-      {/*<StyledNote>*/}
-      {/*Your order may execute as a maker order or taker order.*/}
-      {/*</StyledNote>*/}
-      {/*)}*/}
-
       <StyledOrderButton>
         <OrderButton
           isDisable={isDisable}

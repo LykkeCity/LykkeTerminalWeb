@@ -27,8 +27,9 @@ const Settings: React.SFC<SettingsProps> = ({onSettingsClose}) => {
       />
       <Body>Change the duration of sessions</Body>
       <SessionDurations>
-        {sessionDuration.map((item: number) => (
+        {sessionDuration.map((item: number, index: number) => (
           <ChoosableItem
+            key={index}
             value={item}
             description={DURATION_VALUE}
             isActive={false}
