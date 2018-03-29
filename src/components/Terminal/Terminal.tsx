@@ -74,12 +74,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private unlisten: any;
   private initialValue: any = {
     direction: 'row' as MosaicDirection,
-    first: {
-      direction: 'column' as MosaicDirection,
-      first: 'wl',
-      second: 'acc',
-      splitPercentage: 95
-    },
+    first: 'wl',
     second: {
       direction: 'row' as MosaicDirection,
       first: {
