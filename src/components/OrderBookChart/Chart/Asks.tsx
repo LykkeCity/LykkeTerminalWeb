@@ -1,15 +1,18 @@
 import * as React from 'react';
 
-import {Line, Rect} from 'react-konva';
+import {Line} from 'react-konva';
 
 import {Order} from '../../../models';
 
 import {ChartProps} from './Models';
+import Pointer from './Pointer';
 
 import chart from './chartConstants';
 
 class Asks extends React.Component<ChartProps> {
   graphics: any = [];
+  points: number[] = [];
+
   width: number = 1080;
   height: number = 500;
   asks: Order[];
@@ -23,11 +26,6 @@ class Asks extends React.Component<ChartProps> {
 
   constructor(props: ChartProps) {
     super(props);
-  }
-
-  showMessage(ask: Order, index: number) {
-    // tslint:disable-next-line:no-console
-    console.log(`${index}: ${ask.price}`);
   }
 
   calculateStepLength(ask: Order, index: number) {
@@ -45,39 +43,40 @@ class Asks extends React.Component<ChartProps> {
     return this.coef * Math.ceil(ask.depth);
   }
 
-  drawAsks = () => {
+  generatePoints = () => {
     let currentX = this.midX;
     let currentY = this.midY;
     let newX = this.midX;
     let newY = this.midY;
+    const points = [currentX, currentY];
     this.asks.forEach((ask, index) => {
-      newX += this.calculateStepLength(ask, index);
+      newX = currentX + this.calculateStepLength(ask, index);
       newY = this.midY - this.calculateStepHeight(ask);
-      this.graphics.push(
-        <Line
-          points={[currentX, currentY, currentX, newY, newX, newY]}
-          closed={false}
-          stroke={chart.asks.lineColor}
-          strokeWidth={chart.strokeWidth}
-          // tslint:disable-next-line:jsx-no-lambda
-          onMouseOver={() => this.showMessage(ask, index)}
-        />
-      );
-      this.graphics.push(
-        <Rect
-          x={newX}
-          y={newY}
-          width={currentX - newX}
-          height={this.midY - newY}
-          stroke={chart.asks.fillStrokeColor}
-          fill={chart.asks.fillColor}
-          // tslint:disable-next-line:jsx-no-lambda
-          onMouseOver={() => this.showMessage(ask, index)}
-        />
-      );
+      points.push(currentX, newY, newX, newY);
       currentX = newX;
       currentY = newY;
     });
+    this.points = points;
+  };
+
+  drawAsks = () => {
+    let points = this.points;
+    this.graphics.push(
+      <Line
+        points={points}
+        closed={false}
+        stroke={chart.asks.lineColor}
+        strokeWidth={chart.strokeWidth}
+      />
+    );
+    points = points.concat([this.width, this.height]);
+    this.graphics.push(
+      <Line points={points} closed={true} fill={chart.asks.fillColor} />
+    );
+  };
+
+  drawPointerPadding = () => {
+    this.graphics.push(<Pointer points={this.points} />);
   };
 
   calculateCoef() {
@@ -102,7 +101,11 @@ class Asks extends React.Component<ChartProps> {
 
   render() {
     this.initilaize();
+    this.generatePoints();
     this.drawAsks();
+    this.drawPointerPadding();
+    // tslint:disable-next-line:no-console
+    console.log(this.graphics);
     return this.graphics;
   }
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Line, Rect} from 'react-konva';
+import {Line} from 'react-konva';
 
 import {Order} from '../../../models';
 
@@ -45,41 +45,36 @@ class Bids extends React.Component<ChartProps> {
     return this.coef * Math.ceil(bid.depth);
   }
 
-  drawBids = () => {
+  generatePoints = () => {
     let currentX = this.midX;
     let currentY = this.midY;
     let newX = this.midX;
     let newY = this.midY;
+    const points = [currentX, currentY];
     this.bids.forEach((bid, index) => {
       newX = currentX - this.calculateStepLength(bid, index);
       newY = this.midY - this.calculateStepHeight(bid);
-      // tslint:disable-next-line:no-console
-      console.log(`${index}: ${bid.price}`);
-      this.graphics.push(
-        <Line
-          points={[currentX, currentY, currentX, newY, newX, newY]}
-          closed={false}
-          stroke={chart.bids.lineColor}
-          strokeWidth={chart.strokeWidth}
-          // tslint:disable-next-line:jsx-no-lambda
-          onMouseOver={() => this.showMessage(bid, index)}
-        />
-      );
-      this.graphics.push(
-        <Rect
-          x={newX}
-          y={newY}
-          width={currentX - newX}
-          height={this.midY - newY}
-          stroke={chart.bids.fillStrokeColor}
-          fill={chart.bids.fillColor}
-          // tslint:disable-next-line:jsx-no-lambda
-          onMouseOver={() => this.showMessage(bid, index)}
-        />
-      );
+      points.push(currentX, newY, newX, newY);
       currentX = newX;
       currentY = newY;
     });
+    return points;
+  };
+
+  drawBids = () => {
+    let points = this.generatePoints();
+    this.graphics.push(
+      <Line
+        points={points}
+        closed={false}
+        stroke={chart.bids.lineColor}
+        strokeWidth={chart.strokeWidth}
+      />
+    );
+    points = points.concat([0, this.height]);
+    this.graphics.push(
+      <Line points={points} closed={true} fill={chart.bids.fillColor} />
+    );
   };
 
   calculateCoef() {
