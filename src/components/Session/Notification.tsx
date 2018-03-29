@@ -19,22 +19,57 @@ interface NotificationProps {
   onExtendingSession: any;
   onNotificationClose: any;
   isSessionNotesShown: boolean;
+  showQR: () => {};
 }
 
 interface NotificationState {
   isNoteShown: boolean;
+  seconds: number;
 }
 
 class Notification extends React.Component<
   NotificationProps,
   NotificationState
 > {
+  private intervalId: any;
+
   constructor(props: NotificationProps) {
     super(props);
     this.state = {
-      isNoteShown: false
+      isNoteShown: false,
+      seconds: 10
     };
   }
+
+  componentDidMount() {
+    this.runTimeout();
+  }
+
+  componentWillUnmount() {
+    this.stopTimeout();
+  }
+
+  runTimeout = () => {
+    this.intervalId = setInterval(() => {
+      if (this.state.seconds < 0) {
+        return;
+      }
+      if (this.state.seconds < 1) {
+        this.stopTimeout();
+        this.props.showQR();
+        this.props.onNotificationClose();
+        return;
+      }
+      this.setState({
+        seconds: this.state.seconds - 1
+      });
+    }, 1000);
+  };
+
+  stopTimeout = () => {
+    clearInterval(this.intervalId);
+    this.intervalId = null;
+  };
 
   handleToggleNotes = () => {
     this.setState({
@@ -43,6 +78,7 @@ class Notification extends React.Component<
   };
 
   render() {
+    const {seconds} = this.state;
     return (
       <SessionNotification>
         <CloseButton
@@ -53,7 +89,7 @@ class Notification extends React.Component<
         <Title>Attention</Title>
         <Body>
           Session will be expired in
-          <Timer>&nbsp;00:59&nbsp;</Timer>
+          <Timer>&nbsp;00:{seconds < 10 ? `0${seconds}` : seconds}&nbsp;</Timer>
           {!this.props.isSessionNotesShown && (
             <NoteMark onClick={this.handleToggleNotes}>?</NoteMark>
           )}
