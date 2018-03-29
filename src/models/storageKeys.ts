@@ -6,7 +6,8 @@ enum keys {
   notificationId = 'lwt-notificationId',
   selectedInstrument = 'selected-instrument',
   state = 'lwt-state',
-  token = 'lwt-token'
+  token = 'lwt-token',
+  sessionNote = 'lwt-sessionNote-test'
 }
 
 export default keys;

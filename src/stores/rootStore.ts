@@ -128,13 +128,7 @@ class RootStore {
       return this.startPublicMode(defaultInstrument);
     }
 
-    this.modalStore.addModal(
-      ModalMessages.qr,
-      // tslint:disable-next-line:no-empty
-      () => {},
-      this.authStore.signOut,
-      Types.QR
-    );
+    await this.sessionStore.showQR();
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();

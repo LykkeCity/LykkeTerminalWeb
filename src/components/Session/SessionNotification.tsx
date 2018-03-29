@@ -8,7 +8,8 @@ interface SessionNotificationState {
 }
 
 interface SessionNotificationProps {
-  toggleSessionNotification: (value: boolean) => {};
+  isSessionNotesShown: boolean;
+  closeSessionNotification: () => {};
 }
 
 class SessionNotificationComponent extends React.Component<
@@ -35,7 +36,7 @@ class SessionNotificationComponent extends React.Component<
   };
 
   handleNotificationClose = () => {
-    this.props.toggleSessionNotification(false);
+    this.props.closeSessionNotification();
     this.setState({
       isSettingsShown: false
     });
@@ -53,6 +54,7 @@ class SessionNotificationComponent extends React.Component<
           onSettings={this.handleSettings}
           onExtendingSession={this.handleExtendingSession}
           onNotificationClose={this.handleNotificationClose}
+          isSessionNotesShown={this.props.isSessionNotesShown}
         />
         {this.state.isSettingsShown && (
           <Settings onSettingsClose={this.handleSettingsClose} />
