@@ -22,7 +22,9 @@ const chart = {
     fillStrokeColor: 'rgba(171, 0, 255, 0.001)'
   },
   pointer: {
-    dash: [3, 3]
+    dash: [3, 3],
+    circleRadius: 4,
+    circleStrokeColor: '#333333'
   },
 
   strokeWidth: 2,

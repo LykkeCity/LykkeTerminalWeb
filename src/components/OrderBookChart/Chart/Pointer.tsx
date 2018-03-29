@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Line} from 'react-konva';
+import {Circle, Line} from 'react-konva';
 
 import chart from './chartConstants';
 
@@ -69,6 +69,13 @@ class Pointer extends React.Component<PointerProps> {
         stroke={this.props.color}
         strokeWidth={chart.strokeWidth}
         dash={chart.pointer.dash}
+      />,
+      <Circle
+        x={this.mouseX}
+        y={this.calcY}
+        fill={this.props.color}
+        stroke={chart.pointer.circleStrokeColor}
+        radius={chart.pointer.circleRadius}
       />,
       <Line
         points={[
