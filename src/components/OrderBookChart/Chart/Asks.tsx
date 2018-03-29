@@ -80,6 +80,7 @@ class Asks extends React.Component<ChartProps> {
       <Pointer
         points={this.points}
         borders={[this.midX, this.midY, this.width, 0]}
+        color={chart.asks.lineColor}
       />
     );
   };

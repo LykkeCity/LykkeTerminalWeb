@@ -21,6 +21,9 @@ const chart = {
     fillColor: 'rgba(171, 0, 255, 0.2)',
     fillStrokeColor: 'rgba(171, 0, 255, 0.001)'
   },
+  pointer: {
+    dash: [3, 3]
+  },
 
   strokeWidth: 2,
   fillOpacity: 0.2

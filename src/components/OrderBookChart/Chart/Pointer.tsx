@@ -7,6 +7,7 @@ import chart from './chartConstants';
 interface PointerProps {
   points: number[];
   borders: number[];
+  color: string;
 }
 
 class Pointer extends React.Component<PointerProps> {
@@ -47,8 +48,11 @@ class Pointer extends React.Component<PointerProps> {
   };
 
   handleMouseMove = (event: any) => {
-    this.mouseX = event.target.getStage().getPointerPosition().x;
-    this.forceUpdate();
+    const mouseX = event.target.getStage().getPointerPosition().x;
+    if (Math.ceil(this.mouseX) !== Math.ceil(mouseX)) {
+      this.mouseX = event.target.getStage().getPointerPosition().x;
+      this.forceUpdate();
+    }
   };
 
   handleMouseLeave = (event: any) => {
@@ -60,27 +64,28 @@ class Pointer extends React.Component<PointerProps> {
   drawPointer = () => {
     this.graphics.push(
       <Line
+        points={this.line}
+        closed={false}
+        stroke={this.props.color}
+        strokeWidth={chart.strokeWidth}
+        dash={chart.pointer.dash}
+      />,
+      <Line
         points={[
           this.borders[0],
           this.borders[1],
           this.borders[0],
-          0,
-          this.width,
-          0,
-          this.width,
-          this.height
+          this.borders[3],
+          this.borders[2],
+          this.borders[3],
+          this.borders[2],
+          this.borders[1]
         ]}
         closed={true}
         // tslint:disable-next-line:jsx-no-lambda
         onMouseMove={this.handleMouseMove}
         onMouseOver={this.handleMouseMove}
         onMouseLeave={this.handleMouseLeave}
-      />,
-      <Line
-        points={this.line}
-        closed={false}
-        stroke={'#ff0000'}
-        strokeWidth={chart.strokeWidth}
       />
     );
   };
