@@ -13,7 +13,7 @@ const ConnectedOrderBook = connect(
       asks,
       bids,
       mid,
-      spread,
+      spreadRelative,
       seedSpan,
       span,
       nextSpan,
@@ -21,7 +21,8 @@ const ConnectedOrderBook = connect(
       showMyOrders
     },
     uiStore: {selectedInstrument, stateFns},
-    orderStore: {cancelOrder, updatePrice, updatePriceAndDepth}
+    orderStore: {cancelOrder, updatePrice, updatePriceAndDepth},
+    priceStore: {lastTradePrice}
   }) => {
     const volumeAccuracy = pathOr(
       0,
@@ -36,7 +37,7 @@ const ConnectedOrderBook = connect(
       bids,
       cancelOrder,
       mid: midPrice,
-      spread,
+      spreadRelative,
       volumeAccuracy,
       priceAccuracy,
       updatePrice,
@@ -45,7 +46,8 @@ const ConnectedOrderBook = connect(
       span,
       onNextSpan: nextSpan,
       onPrevSpan: prevSpan,
-      showMyOrders
+      showMyOrders,
+      lastTradePrice
     };
   },
   OrderBook

@@ -36,6 +36,4 @@ const MyOrders: React.SFC<MyOrdersProps> = ({
   </MyOrdersPopover>
 );
 
-MyOrders.displayName = 'MyOrders';
-
 export default MyOrders;
