@@ -23,6 +23,7 @@ export const WalletNames = styled.div``;
 export const WalletBalances = styled.div`
   width: 100%;
   height: 100%;
+  margin-left: ${rem(8)};
 `;
 
 export const ManageWalletsLink = styled.a`
