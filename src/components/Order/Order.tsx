@@ -367,7 +367,6 @@ class Order extends React.Component<OrderProps, OrderState> {
             )} ${quantityValue} ${baseAssetName}`}
           />
         )}
-
         {isMarketActive && (
           <OrderMarket
             quantityAccuracy={quantityAccuracy}

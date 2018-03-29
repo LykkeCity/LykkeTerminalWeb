@@ -13,13 +13,15 @@ describe('balanceList store', () => {
 
   describe('state', () => {
     it('balanceLists should be defined after instantiation', () => {
-      expect(balanceListStore.getBalances).toBeDefined();
-      expect(balanceListStore.getBalances).not.toBeNull();
+      expect(balanceListStore.getWalletsWithPositiveBalances).toBeDefined();
+      expect(balanceListStore.getWalletsWithPositiveBalances).not.toBeNull();
     });
 
     it('balanceLists should be an empty array by default', () => {
-      expect(balanceListStore.getBalances instanceof Array).toBeTruthy();
-      expect(balanceListStore.getBalances.length).toBe(0);
+      expect(
+        balanceListStore.getWalletsWithPositiveBalances instanceof Array
+      ).toBeTruthy();
+      expect(balanceListStore.getWalletsWithPositiveBalances.length).toBe(0);
     });
 
     it('tradingAssets should be defined after instantiation', () => {

@@ -55,7 +55,9 @@ class ReferenceStore extends BaseStore {
 
   getAssets = () => this.assets;
 
-  getAssetById = (id: string) => this.assets.find(a => a.id === id);
+  getAssetById = (id: string) => {
+    return this.assets.find(a => a.id === id);
+  };
 
   @action
   addAsset = (asset: AssetModel) => (this.assets = [...this.assets, asset]);

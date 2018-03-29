@@ -3,11 +3,11 @@ import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
 import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
-import {Account} from '../Account';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
+import {MyWallets} from '../MyWallets/';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
@@ -41,7 +41,7 @@ const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   [AccountWidget]: (
     <Tile title="Account">
-      <Account />
+      <div>&nbsp;</div>
     </Tile>
   ),
   [ChartWidget]: (
@@ -60,7 +60,8 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile tabs={['Orders', 'Trades']}>
+    <TabbedTile tabs={['My wallets', 'Orders', 'Trades']}>
+      <MyWallets />
       <Orders />
       <Trades />
     </TabbedTile>
@@ -75,25 +76,20 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
   private initialValue: any = {
     direction: 'row' as MosaicDirection,
-    first: {
-      direction: 'column' as MosaicDirection,
-      first: OrderWidget,
-      second: AccountWidget,
-      splitPercentage: 60
-    },
+    first: OrderWidget,
     second: {
       direction: 'row' as MosaicDirection,
       first: {
         direction: 'column' as MosaicDirection,
         first: ChartWidget,
         second: OrderListWidget,
-        splitPercentage: 70
+        splitPercentage: 62
       },
       second: {
         direction: 'column' as MosaicDirection,
         first: OrderBookWidget,
         second: TradeListWidget,
-        splitPercentage: 70
+        splitPercentage: 62
       },
       splitPercentage: MAX_RIGHT_PADDING
     },

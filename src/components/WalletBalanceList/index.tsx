@@ -1,28 +1,25 @@
-import {AssetBalanceModel, AssetModel} from '../../models/index';
+import {observer} from 'mobx-react';
+import {AssetModel} from '../../models/index';
 import {connect} from '../connect';
 import {withScroll} from '../CustomScrollbar';
+import WalletBalanceItem from './WalletBalanceItem';
 import WalletBalanceList from './WalletBalanceList';
-
-export interface WalletBalanceItemProps {
-  assetBalance: AssetBalanceModel;
-  baseAsset: AssetModel;
-}
 
 const ConnectedWalletBalanceList = connect(
   ({
     balanceListStore: {tradingWalletAssets: assets, tradingWalletTotal: total},
-    referenceStore
+    referenceStore,
+    referenceStore: {getAssetById, baseAssetId}
   }) => ({
     assets,
-    baseAsset:
-      referenceStore.getAssetById(referenceStore.baseAssetId) ||
-      new AssetModel({}),
-    total
+    baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
+    total,
+    getAssetById
   }),
   withScroll(WalletBalanceList)
 );
 
+const ObservedWalletBalanceItem = observer(WalletBalanceItem);
+
 export {ConnectedWalletBalanceList as WalletBalanceList};
-export {
-  default as TradingWalletItem
-} from './WalletBalanceItem/WalletBalanceItem';
+export {ObservedWalletBalanceItem as WalletBalanceItem};

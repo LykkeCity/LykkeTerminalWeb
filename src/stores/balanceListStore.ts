@@ -12,7 +12,7 @@ const baseAssetStorage = StorageUtils(storageKeys.baseAsset);
 
 class BalanceListStore extends BaseStore {
   @computed
-  get getBalances() {
+  get getWalletsWithPositiveBalances() {
     return this.walletList
       .filter(b => b.totalBalance > 0)
       .sort((a, b) => b.totalBalance - a.totalBalance);
@@ -38,9 +38,25 @@ class BalanceListStore extends BaseStore {
     return this.tradingTotal;
   }
 
+  @computed
+  get getCurrentWallet() {
+    return this.currentWallet;
+  }
+
+  @computed
+  get getCurrentWalletModel() {
+    return this.currentWalletModel;
+  }
+
   @observable.shallow private walletList: WalletModel[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
   @observable private tradingTotal: number = 0;
+  @observable private currentWallet: number = 0;
+
+  @computed
+  private get currentWalletModel() {
+    return this.getWalletsWithPositiveBalances[this.currentWallet];
+  }
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -90,6 +106,10 @@ class BalanceListStore extends BaseStore {
     await this.updateTradingWallet();
   };
 
+  selectWallet = async (index: number) => {
+    this.currentWallet = index;
+  };
+
   updateWithAssets = async (ids: string[]) => {
     const promises: any = [];
     const {getAssetById, fetchAssetById} = this.rootStore.referenceStore;
@@ -130,7 +150,6 @@ class BalanceListStore extends BaseStore {
       return a;
     });
     this.tradingTotal = updatedBalances.map(b => b.Balance).reduce(add, 0);
-
     const balanceInBaseAssetExists = this.tradingAssets.some(a =>
       this.eqToBaseAssetId(a, baseAssetId!)
     );
