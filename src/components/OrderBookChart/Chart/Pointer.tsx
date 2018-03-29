@@ -6,13 +6,17 @@ import chart from './chartConstants';
 
 interface PointerProps {
   points: number[];
+  borders: number[];
 }
 
 class Pointer extends React.Component<PointerProps> {
   calcY: number;
   mouseX: number;
+
   graphics: any = [];
+
   points: number[] = [];
+  borders: number[] = [];
   width: number = 1080;
   height: number = 500;
 
@@ -38,12 +42,12 @@ class Pointer extends React.Component<PointerProps> {
   };
 
   updateLine = () => {
+    this.calcY = this.calculateCurrentY(this.mouseX);
     this.line = [this.mouseX, this.calcY, this.mouseX, this.height];
   };
 
   handleMouseMove = (event: any) => {
     this.mouseX = event.target.getStage().getPointerPosition().x;
-    this.calcY = this.calculateCurrentY(this.mouseX);
     this.forceUpdate();
   };
 
@@ -54,10 +58,18 @@ class Pointer extends React.Component<PointerProps> {
   };
 
   drawPointer = () => {
-    const points = this.points.concat([this.width, this.height]);
     this.graphics.push(
       <Line
-        points={points}
+        points={[
+          this.borders[0],
+          this.borders[1],
+          this.borders[0],
+          0,
+          this.width,
+          0,
+          this.width,
+          this.height
+        ]}
         closed={true}
         // tslint:disable-next-line:jsx-no-lambda
         onMouseMove={this.handleMouseMove}
@@ -75,6 +87,7 @@ class Pointer extends React.Component<PointerProps> {
 
   initialize = () => {
     this.graphics = [];
+    this.borders = this.props.borders;
     this.points = this.props.points;
   };
 

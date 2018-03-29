@@ -76,7 +76,12 @@ class Asks extends React.Component<ChartProps> {
   };
 
   drawPointerPadding = () => {
-    this.graphics.push(<Pointer points={this.points} />);
+    this.graphics.push(
+      <Pointer
+        points={this.points}
+        borders={[this.midX, this.midY, this.width, 0]}
+      />
+    );
   };
 
   calculateCoef() {
