@@ -1,12 +1,18 @@
 import * as React from 'react';
-import {walletNames} from '../../../constants/walletNames';
+import {WalletModel} from '../../../models';
+import {CurrentWalletName, StyledCurrentWallet} from './styles';
 
-interface CurrentWalletProps {
-  currentWallet: number;
+export interface CurrentWalletProps {
+  wallet: WalletModel;
 }
-export const CurrentWallet: React.SFC<CurrentWalletProps> = ({
-  currentWallet
-}) => {
-  return <div>Current Wallet: {walletNames[currentWallet]}</div>;
-};
+
+const CurrentWallet: React.SFC<CurrentWalletProps> = ({wallet}) =>
+  (wallet && (
+    <StyledCurrentWallet>
+      <CurrentWalletName>{wallet.name}</CurrentWalletName>
+      <small>Current Wallet</small>
+    </StyledCurrentWallet>
+  )) ||
+  null;
+
 export default CurrentWallet;

@@ -1,11 +1,17 @@
+import {observer} from 'mobx-react';
+import {RootStore} from '../../../stores';
 import {connect} from '../../connect';
-import CurrentWallet from './CurrentWallet';
+import CurrentWallet, {CurrentWalletProps} from './CurrentWallet';
 
-const connectedCurrentWallet = connect(
-  ({balanceListStore: {getCurrentWallet: currentWallet}}) => ({
-    currentWallet
-  }),
-  CurrentWallet
+const mapStoreToProps = ({
+  balanceListStore: {getCurrentWalletModel}
+}: RootStore) => ({
+  wallet: getCurrentWalletModel
+});
+
+const ConnectedCurrentWallet = connect<CurrentWalletProps>(
+  mapStoreToProps,
+  observer(CurrentWallet)
 );
 
-export {connectedCurrentWallet as CurrentWallet};
+export {ConnectedCurrentWallet as CurrentWallet};

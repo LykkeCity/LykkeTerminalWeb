@@ -68,6 +68,7 @@ export const TotalAmount = styled.div`
 export const TotalLabel = styled.div`
   opacity: 0.4;
   font-size: ${rem(12)};
+  margin-top: ${rem(2)};
 `;
 
 // ...................Name...................

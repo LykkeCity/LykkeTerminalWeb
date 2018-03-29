@@ -92,12 +92,10 @@ const Header: React.SFC<HeaderProps> = ({
           <Flex align="center">
             {authStore.isAuth ? (
               <HeaderItem>
-                <CurrentWallet />
-              </HeaderItem>
-            ) : null}
-            {authStore.isAuth ? (
-              <HeaderItem>
-                <BalanceInfo />
+                <Flex>
+                  <CurrentWallet />
+                  <BalanceInfo />
+                </Flex>
               </HeaderItem>
             ) : null}
             {authStore.isAuth ? (

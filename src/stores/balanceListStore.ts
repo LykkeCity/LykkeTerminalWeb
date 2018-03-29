@@ -43,10 +43,20 @@ class BalanceListStore extends BaseStore {
     return this.currentWallet;
   }
 
+  @computed
+  get getCurrentWalletModel() {
+    return this.currentWalletModel;
+  }
+
   @observable.shallow private walletList: WalletModel[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
   @observable private tradingTotal: number = 0;
   @observable private currentWallet: number = 0;
+
+  @computed
+  private get currentWalletModel() {
+    return this.getWalletsWithPositiveBalances[this.currentWallet];
+  }
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
