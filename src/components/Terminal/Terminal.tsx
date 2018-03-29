@@ -173,7 +173,7 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
           // tslint:disable-next-line:jsx-no-lambda
           renderTile={(id, path) => ELEMENT_MAP[id]}
           onChange={this.handleChange}
-          resize={{minimumPaneSizePercentage: 20}}
+          resize={{minimumPaneSizePercentage: 25}}
           value={this.state.initialValue}
         />
       </Shell>
