@@ -6,19 +6,15 @@ const ConnectedMyWallets = connect<MyWalletsProps>(
   ({
     balanceListStore: {
       selectWallet,
-      getCurrentWallet: currentWallet,
       getWalletsWithPositiveBalances: wallets,
-      totalBalance: total,
-      tradingWalletTotal: totalTrading
+      totalBalance: total
     },
     referenceStore: {getAssetById, baseAssetId}
   }) => ({
     onSelectWallet: selectWallet,
-    currentWallet,
     wallets,
     baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
-    total,
-    totalTrading
+    total
   }),
   MyWallets
 );

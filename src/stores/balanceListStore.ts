@@ -39,24 +39,16 @@ class BalanceListStore extends BaseStore {
   }
 
   @computed
-  get getCurrentWallet() {
-    return this.currentWallet;
-  }
-
-  @computed
   get getCurrentWalletModel() {
-    return this.currentWalletModel;
+    return this.currentWallet
+      ? this.currentWallet
+      : this.getWalletsWithPositiveBalances[0];
   }
 
   @observable.shallow private walletList: WalletModel[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
   @observable private tradingTotal: number = 0;
-  @observable private currentWallet: number = 0;
-
-  @computed
-  private get currentWalletModel() {
-    return this.getWalletsWithPositiveBalances[this.currentWallet];
-  }
+  @observable private currentWallet: WalletModel;
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -80,7 +72,7 @@ class BalanceListStore extends BaseStore {
 
   updateBalance = async (walletList: WalletModel[] = this.walletList) => {
     const promises = walletList.map(balanceList =>
-      balanceList.updateTotalBalance(this.rootStore.referenceStore)
+      balanceList.update(this.rootStore.referenceStore)
     );
     await Promise.all(promises);
     this.walletList = [...walletList];
@@ -107,7 +99,7 @@ class BalanceListStore extends BaseStore {
   };
 
   selectWallet = async (index: number) => {
-    this.currentWallet = index;
+    this.currentWallet = this.getWalletsWithPositiveBalances[index];
   };
 
   updateWithAssets = async (ids: string[]) => {

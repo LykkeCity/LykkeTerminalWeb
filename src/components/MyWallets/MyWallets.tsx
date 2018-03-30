@@ -12,10 +12,8 @@ import TotalBalance from './TotalBalance';
 
 export interface MyWalletsProps {
   wallets: any[];
-  currentWallet: number;
   onSelectWallet: any;
   total: number;
-  totalTrading: number;
   baseAsset: AssetModel;
 }
 
