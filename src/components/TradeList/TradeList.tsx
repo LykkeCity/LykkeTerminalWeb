@@ -1,43 +1,35 @@
-import {curry, pathOr} from 'rambda';
 import * as React from 'react';
 import {TradeListItem} from '.';
-import {InstrumentModel, TradeModel} from '../../models';
+import {TradeModel} from '../../models';
+import {LoaderProps} from '../Loader/withLoader';
 import {Table} from '../Table';
+import {StyledLoadMore, StyledLoadMoreButton} from './styles';
 
-const assetFromInstrument = (instrument: InstrumentModel, assetType: string) =>
-  pathOr('', [assetType, 'name'], instrument);
-
-export interface TradeListProps {
+export interface TradeListProps extends LoaderProps {
   trades: TradeModel[];
-  selectedInstrument: InstrumentModel | null;
+  fetchNextTrades?: any;
+  shouldFetchMore?: boolean;
 }
 
 const TradeList: React.SFC<TradeListProps> = ({
   trades = [],
-  selectedInstrument
-}) => {
-  const assetFromSelectedInstrument = curry(assetFromInstrument)(
-    selectedInstrument!
-  );
-  return (
+  fetchNextTrades,
+  shouldFetchMore
+}) => (
+  <React.Fragment>
     <Table>
-      <thead>
-        <tr>
-          <th>Asset pair</th>
-          <th>Side</th>
-          <th>Volume ({assetFromSelectedInstrument('baseAsset')})</th>
-          <th>Price</th>
-          <th>Volume ({assetFromSelectedInstrument('quoteAsset')})</th>
-          <th>Order type</th>
-          <th>Fee</th>
-          <th>Time</th>
-        </tr>
-      </thead>
       <tbody>
         {trades.map(trade => <TradeListItem key={trade.id} {...trade} />)}
       </tbody>
     </Table>
-  );
-};
+    {shouldFetchMore && (
+      <StyledLoadMore>
+        <StyledLoadMoreButton onClick={fetchNextTrades}>
+          Load more...
+        </StyledLoadMoreButton>
+      </StyledLoadMore>
+    )}
+  </React.Fragment>
+);
 
 export default TradeList;

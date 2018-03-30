@@ -1,8 +1,11 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+
 import {OrderInputs} from '../../models';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
+
 import {OrderFormProps} from './index';
 
 const StyledOrderOptions = styled.div`
@@ -63,7 +66,6 @@ const StyledInputNumberComponent = styled.div`
 // TODO should be deleted after design updating
 const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
   const {onChange, onArrowClick, price, quantity, amount, assetName} = props;
-
   const quoteAssetName = assetName.split('/')[1];
 
   return (
@@ -72,7 +74,7 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
       <StyledOptions>
         <StyledInputNumberComponent>
           <NumberInput
-            value={quantity}
+            value={formattedNumber(quantity)}
             id={OrderInputs.Quantity}
             onChange={onChange()}
             onArrowClick={onArrowClick()}

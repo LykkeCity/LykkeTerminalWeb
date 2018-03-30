@@ -2,6 +2,11 @@ import {pathOr} from 'rambda';
 import {MarketApi} from '../api/';
 import {Side} from '../models';
 
+interface ConvertFrom {
+  Amount: number;
+  AssetId: string;
+}
+
 export default class MarketService {
   static convert = async (assets: any[], assetId: string) => {
     const convertedQuotes = await MarketApi.convert({
@@ -19,7 +24,7 @@ export default class MarketService {
     }));
   };
 
-  static convertAsset = async (convertForm: any, convertTo: string) => {
+  static convertAsset = async (convertForm: ConvertFrom, convertTo: string) => {
     const resp = await MarketApi.convert({
       AssetsFrom: [convertForm],
       BaseAssetId: convertTo,

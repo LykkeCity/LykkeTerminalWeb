@@ -13,10 +13,17 @@ import {
 
 describe('orderBook store', () => {
   const rootStore = new RootStore(true);
-  rootStore.orderBookStore.fetchAll = jest.fn();
-  rootStore.orderBookStore.reset = jest.fn();
-  rootStore.orderBookStore.subscribe = jest.fn();
-  rootStore.tradeStore.fetchPublicTrades = rootStore.tradeStore.subscribeToPublicTrades = rootStore.tradeStore.unsubscribeFromPublicTrades = jest.fn();
+
+  const orderBookStore = rootStore.orderBookStore;
+  orderBookStore.fetchAll = jest.fn();
+  orderBookStore.reset = jest.fn();
+  orderBookStore.subscribe = jest.fn();
+
+  const tradeStore = rootStore.tradeStore;
+  tradeStore.fetchPublicTrades = tradeStore.subscribeToPublicTrades = tradeStore.unsubscribeFromPublicTrades = tradeStore.resetTrades = tradeStore.fetchTrades = jest.fn();
+
+  rootStore.priceStore.fetchDailyCandle = rootStore.priceStore.subscribeToDailyCandle = rootStore.priceStore.unsubscribeFromDailyCandle = jest.fn();
+
   rootStore.uiStore.selectedInstrument = new InstrumentModel({
     baseAsset: new AssetModel({name: 'BTC'}),
     id: 'BTCUSD',
@@ -31,17 +38,17 @@ describe('orderBook store', () => {
       {
         id: '0',
         price: 1,
-        volume: 0.0001,
+        remainingVolume: 0.0001,
         side: Side.Buy
       },
       {
         id: '1',
         price: 1,
-        volume: 0.0001,
+        remainingVolume: 0.0001,
         side: Side.Buy
       }
     ];
-    const ownVolume = limitOrders.map(x => x.volume).reduce(add, 0);
+    const ownVolume = limitOrders.map(x => x.remainingVolume).reduce(add, 0);
 
     const orders = [
       {price: 1, volume: 1},

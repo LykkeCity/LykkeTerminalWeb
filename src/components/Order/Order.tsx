@@ -71,6 +71,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       pathOr('', ['baseAsset', 'id'], instrument)
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
+
     this.setState({
       priceValue: this.props.mid.toFixed(priceAccuracy),
       quantityValue: parseFloat('0').toFixed(quantityAccuracy)
@@ -366,7 +367,6 @@ class Order extends React.Component<OrderProps, OrderState> {
             )} ${quantityValue} ${baseAssetName}`}
           />
         )}
-
         {isMarketActive && (
           <OrderMarket
             quantityAccuracy={quantityAccuracy}

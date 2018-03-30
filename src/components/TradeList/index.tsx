@@ -1,34 +1,43 @@
-import {observer} from 'mobx-react';
+import {compose} from 'rambda';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
-// import {withScroll} from '../CustomScrollbar';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
+import withLoader from '../Loader/withLoader';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
 import TradeList, {TradeListProps} from './TradeList';
 import TradeListItem from './TradeListItem';
+import TradeLog from './TradeLog';
 import Trades from './Trades';
 
 const ConnectedTrades = connect(
-  ({tradeStore: {fetchPartTrade, needToLoadMore}, authStore: {isAuth}}) => ({
-    fetchPart: fetchPartTrade,
-    needToLoadMore,
+  ({authStore: {isAuth}}) => ({
     isAuth
   }),
   withAuth(Trades)
 );
 
 const ConnectedTradeList = connect<TradeListProps>(
-  ({tradeStore: {filteredTrades}, uiStore: {selectedInstrument}}) => ({
-    trades: filteredTrades,
-    selectedInstrument
+  ({
+    tradeStore: {
+      getAllTrades,
+      hasPendingItems,
+      shouldFetchMore,
+      fetchNextTrades
+    }
+  }) => ({
+    trades: getAllTrades,
+    loading: hasPendingItems,
+    fetchNextTrades,
+    shouldFetchMore
   }),
-  withStyledScroll({height: 'calc(100% - 85px)'})(TradeList)
+  compose(
+    withLoader<TradeListProps>(p => p.loading!),
+    withStyledScroll({height: 'calc(100% - 85px)'})
+  )(TradeList)
 );
-
-const ObservedTradeListItem = observer(TradeListItem);
 
 const ConnectedTradeFilter = connect<TradeFilterProps>(
   ({tradeStore: {filter, setFilter}}) => ({
@@ -44,14 +53,20 @@ const ConnectedPublicTradeList = connect(
     trades: getPublicTrades,
     selectedInstrument
   }),
-  withStyledScroll({height: '100%'})(PublicTradeList)
+  withStyledScroll({height: 'calc(100% - 40px)'})(PublicTradeList)
 );
 
-const ObservedPublicTradeListItem = observer(PublicTradeListItem);
+const ConnectedTradeLog = connect(
+  ({uiStore: {selectedInstrument}}) => ({
+    selectedInstrument
+  }),
+  TradeLog
+);
 
 export {ConnectedTrades as Trades};
 export {ConnectedTradeList as TradeList};
 export {ConnectedPublicTradeList as PublicTradeList};
-export {ObservedTradeListItem as TradeListItem};
-export {ObservedPublicTradeListItem as PublicTradeListItem};
+export {TradeListItem};
+export {PublicTradeListItem};
 export {ConnectedTradeFilter as TradeFilter};
+export {ConnectedTradeLog as TradeLog};

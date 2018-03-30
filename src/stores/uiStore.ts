@@ -1,6 +1,6 @@
 import {action, observable, reaction} from 'mobx';
 import keys from '../constants/storageKeys';
-import {InstrumentModel} from '../models/index';
+import {InstrumentModel, TradeFilter} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -15,6 +15,7 @@ class UiStore extends BaseStore {
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
+  @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   stateFns: any = [];
   initPriceUpdate: any;
@@ -31,18 +32,31 @@ class UiStore extends BaseStore {
           subscribe(this.getWs());
 
           const {
+            resetTrades,
+            fetchTrades,
+            resetPublicTrades,
             fetchPublicTrades,
-            subscribeToPublicTrades,
-            unsubscribeFromPublicTrades
+            subscribeToPublicTrades
           } = this.rootStore.tradeStore;
 
+          if (this.rootStore.tradeStore.filter === TradeFilter.CurrentAsset) {
+            fns.seq(resetTrades, fetchTrades)();
+          }
+
           fns.seq(
+            resetPublicTrades,
             fetchPublicTrades,
-            unsubscribeFromPublicTrades,
             subscribeToPublicTrades
           )();
 
           this.stateFns.forEach((f: any) => f && f(instrument));
+
+          const {
+            fetchDailyCandle,
+            subscribeToDailyCandle,
+            reset: resetPriceStore
+          } = this.rootStore.priceStore;
+          fns.seq(resetPriceStore, fetchDailyCandle, subscribeToDailyCandle)();
         }
       }
     );
@@ -55,6 +69,10 @@ class UiStore extends BaseStore {
   @action
   readonly toggleAssetsSelect = () =>
     (this.showAssetsSelect = !this.showAssetsSelect);
+
+  @action
+  readonly toggleInstrumentSelection = () =>
+    (this.showInstrumentSelection = !this.showInstrumentSelection);
 
   @action
   readonly toggleOrdersSelect = () =>

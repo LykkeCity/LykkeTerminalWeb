@@ -1,21 +1,15 @@
 import {rem} from 'polished';
 import {Side} from '../../models';
-import styled from '../styled';
+import styled, {colors, dims, fonts, padding} from '../styled';
+import {Table} from '../Table';
 
-const colorBySide = (side: Side) =>
-  side === Side.Sell ? '#d070ff' : '#ffae2c';
-
-const volumeColorBySide = (side: Side) =>
-  side === Side.Sell ? '#ab00ff' : '#fb8f01';
-
-const alignBySide = (side: Side) => (side === Side.Sell ? 'right' : 'left');
+const colorBySide = (side: Side) => (side === Side.Buy ? '#d070ff' : '#ffae2c');
 
 const marginBySide = (side: Side) =>
   side === Side.Sell ? 'marginLeft' : 'marginRight';
 
 export const StyledWrapper = styled.div`
-  height: calc(100% - 50px);
-  margin-right: -0.9375rem;
+  height: 100%;
 `;
 
 export const StyledBar = styled.div`
@@ -39,7 +33,7 @@ export const StyledGrouping = styled.div`
     border: none;
     color: rgb(216, 216, 216);
     opacity: 0.4;
-    font-size: 1.4rem;
+    font-size: ${rem(fonts.normal)};
     font-weight: bold;
     cursor: pointer;
     outline: none;
@@ -54,55 +48,14 @@ export const StyledGrouping = styled.div`
     }
   }
 
-  strong {
+  div {
     font-weight: 600;
-    min-width: ${rem(52)};
+    min-width: ${rem(55)};
+    margin: 0 ${rem(12)};
     display: inline-block;
     text-align: center;
   }
 `;
-
-export const StyledHead = styled.thead`
-  display: block;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  background: #333;
-  z-index: 1;
-`;
-
-export const StyledRow = styled.tr`
-  display: flex;
-  justify-content: space-evenly;
-`;
-
-export const StyledSellOrders = styled.tbody`
-  display: block;
-  margin: 34px 0.9375rem 0 0;
-`;
-
-export const StyledBuyOrders = styled(StyledSellOrders)`
-  margin: 0 0.9375rem 0 0;
-`;
-
-export const StyledMidPrice = styled.tbody`
-  display: flex;
-  justify-content: center;
-  margin: 0 0.9375rem 0 0;
-  background: rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-export const StyledHeader = styled.th.attrs({
-  style: (props: any) => ({
-    textAlign: props.align
-  })
-})`
-  flex-grow: 1;
-` as any;
 
 export const StyledSwitch = styled.div`
   color: #ffffff;
@@ -127,58 +80,130 @@ export const StyledSwitch = styled.div`
   }
 `;
 
-export const StyledCommonCell = styled.td`
-  flex-grow: 1;
+export const StyledHeader = Table.extend`
+  margin: ${rem(dims.padding[1])} 0 ${rem(dims.padding[0])};
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
 `;
 
-export const StyledVolumeCell = StyledCommonCell.extend.attrs({
-  style: (props: any) => ({
-    color: colorBySide(props.side),
-    textAlign: alignBySide(props.side)
-  })
-})`
+export const StyledHeaderRow = styled.tr`
+  th {
+    padding: 0;
+  }
+  th:first-child {
+    padding-left: 1rem !important;
+  }
+  th:last-child {
+    padding-right: 1rem !important;
+  }
+`;
+
+export const StyledHeaderCell = styled.th`
+  text-align: ${(p: any) => p.align} !important;
+  width: 33%;
+` as any;
+
+export const StyledOrders = Table.extend`
+  td:first-child {
+    padding-left: 1rem !important;
+  }
+  td:last-child {
+    padding-right: 1rem !important;
+  }
+`;
+
+export const StyledSellOrders = styled.tbody``;
+
+export const StyledBuyOrders = styled.tbody``;
+
+export const StyledMidPrice = styled.td`
+  min-height: 24px;
+  color: ${colors.white};
+  padding: 1rem 0 !important;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+` as any;
+
+export const MidOverlay = styled.div`
+  background: ${colors.darkGraphite};
+  position: absolute;
+  top: 0;
+  left: -1rem;
+  right: -1rem;
+  bottom: 0;
+  z-index: 1;
+`;
+
+export const MidFigures = styled.div`
+  display: flex;
+  position: relative;
+  z-index: 2;
+
+  strong {
+    font-family: 'Akrobat';
+    font-size: ${rem(fonts.extraLarge)};
+    font-weight: bold;
+  }
+
+  small {
+    text-align: right;
+    font-size: ${rem(fonts.normal)};
+    margin-left: auto;
+    span {
+      opacity: 0.4;
+      font-size: ${rem(12)};
+    }
+    &:last-child {
+      margin-left: 30px;
+    }
+  }
+`;
+
+export const StyledOrderRow = styled.tr`
+  border-bottom: solid 1px rgba(0, 0, 0, 0.08);
+
+  & > td {
+    text-align: left;
+    width: 33%;
+  }
+
+  &:hover {
+    background-color: ${colors.darkGraphite};
+    cursor: pointer;
+  }
+`;
+
+export const StyledPrice = styled.td`
+  text-align: left;
+`;
+
+export const StyledVolume = styled.td`
+  color: ${(p: any) => colorBySide(p.side)};
+  text-align: left;
   position: relative;
   min-width: 80px !important;
   width: 33%;
 ` as any;
 
-export const StyledVolumeValue = styled.div.attrs({
+export const StyledVolumeOverlay = styled.div.attrs({
   style: (props: any) => ({
-    background: volumeColorBySide(props.side)
+    background: colorBySide(props.side),
+    width: `${props.volume}%`,
+    left: '0%'
   })
 })`
   position: absolute;
   top: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #ffffff;
   height: 100%;
-  padding: 0 7px;
-
-  &::before {
-    position: absolute;
-    content: '';
-    width: 0;
-    height: 0;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-  }
+  opacity: 0.15;
+  border-radius: 2px;
 ` as any;
 
-export const StyledAskVolume = styled(StyledVolumeValue)`
-  right: 5px;
-  &::before {
-    border-left: 5px solid #fb8f01;
-    right: -4px;
-  }
-`;
-
-export const StyledBidVolume = styled(StyledVolumeValue)`
-  &::before {
-    border-right: 5px solid #ab00ff;
-    left: -4px;
-  }
+export const StyledValue = styled.td`
+  text-align: right !important;
 `;
 
 export const StyledCloseOrders = styled.div.attrs({
@@ -189,35 +214,71 @@ export const StyledCloseOrders = styled.div.attrs({
   cursor: pointer;
 ` as any;
 
-export const StyledMidCell = styled(StyledCommonCell)`
-  width: 33%;
-  text-align: center !important;
-`;
-
-export const StyledVolumeOverlay = styled.div.attrs({
-  style: (props: any) => ({
-    background: colorBySide(props.side),
-    width: `${props.volume}%`,
-    [alignBySide(props.side)]: '0%'
-  })
-})`
+export const MyOrdersPopover = styled.div`
   position: absolute;
-  top: 0;
-  height: 100%;
-  opacity: 0.1;
+  top: ${(p: any) => p.position.top}px;
+  right: 100%;
+  z-index: 999;
+  min-width: ${rem(180)};
+  background-color: rgb(60, 60, 60);
+  border: solid 1px ${colors.darkGraphite};
+  box-shadow: 0 10px 10px 0 ${colors.darkGraphite};
+  padding: ${padding(dims.padding[1])};
+  font-size: ${rem(fonts.normal)};
+  text-align: center;
+  visibility: ${(p: any) => (p.show ? 'visible' : 'hidden')};
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 45%;
+    right: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid rgb(60, 60, 60);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  }
 ` as any;
 
-export const StyledOrderRow = styled.tr`
-  display: flex;
-  align-items: center;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.08);
+export const MyOrdersCount = styled.h4`
+  color: ${colors.white};
+  font-family: 'Akrobat', sans-serif;
+  font-size: ${rem(fonts.extraLarge)};
+  font-weight: bold;
+  line-height: 0.67;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  margin-bottom: ${rem(20)};
+`;
 
-  & > td {
-    border-bottom: none;
-  }
+export const MyOrdersVolume = styled.div`
+  color: ${colors.white};
+  text-align: center;
+  margin-bottom: ${rem(20)};
 
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-    cursor: pointer;
+  small {
+    opacity: 0.4;
   }
 `;
+
+export const MyOrdersCancelButton = styled.button`
+  background: transparent;
+  border-radius: 4px;
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  color: ${colors.white};
+  font-size: ${rem(fonts.normal)};
+  padding: ${padding(...dims.padding)};
+  cursor: pointer;
+  outline: none;
+`;
+
+export const MyOrdersIndicator = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 2px;
+  background: ${(p: any) => colorBySide(p.side)};
+` as any;

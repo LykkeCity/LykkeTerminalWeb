@@ -1,41 +1,13 @@
-import {rem} from 'polished';
 import * as React from 'react';
-import styled from 'styled-components';
-import {InstrumentShortcutsProps} from './index';
-
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
-
-const StyledShortcutList = styled(Flex)`
-  width: 200px;
-  overflow: hidden;
-  flex-wrap: wrap;
-  height: 22px;
-`;
-
-const StyledShortcut = styled.div`
-  padding: ${rem(4)} ${rem(8)};
-  border-left: 1px solid rgba(0, 0, 0, 0.2);
-
-  &:first-child {
-    margin-left: 0px;
-    border-left: none;
-  }
-
-  &:last-child {
-    margin-right: ${rem(4)};
-  }
-
-  &.active {
-    color: #0388ef;
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
+import ReactTooltip from 'react-tooltip';
+import {InstrumentShortcutSelection, InstrumentShortcutsProps} from './index';
+import {OtherShortcuts, Shortcut, ShortcutList, TruncatedText} from './styles';
 
 class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
+  private primeShortcuts: any[];
+  private otherShortcuts: any[];
+  private shortcutsNum: number = 4;
+
   constructor(props: InstrumentShortcutsProps) {
     super(props);
   }
@@ -44,19 +16,57 @@ class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
     this.props.changeValue(value, index);
   };
 
+  handleShortcutSelection = (value: string, index: number) => {
+    this.props.changeValue(value, index);
+
+    if (this.props.showInstrumentSelection) {
+      setTimeout(this.props.onToggleInstrumentSelection);
+    }
+  };
+
+  sortShorcuts = () => {
+    const shortcuts = [...this.props.shortcuts];
+
+    this.primeShortcuts = shortcuts.splice(0, this.shortcutsNum);
+
+    if (this.props.shortcuts.length > this.shortcutsNum) {
+      this.otherShortcuts = shortcuts.map((shortcut, index) => ({
+        index: this.shortcutsNum + index,
+        label: shortcut,
+        value: shortcut
+      }));
+    }
+  };
+
   render() {
+    this.sortShorcuts();
+
     return (
-      <StyledShortcutList>
-        {this.props.shortcuts.map((shortcut: string, index: number) => (
-          <StyledShortcut
+      <ShortcutList>
+        {this.primeShortcuts.map((shortcut: string, index: number) => (
+          <Shortcut
             className={this.props.shortcutActiveIndex === index ? 'active' : ''}
             key={`shortcutid_${index}`}
             onClick={this.handleClick(shortcut, index)}
           >
-            {shortcut}
-          </StyledShortcut>
+            <TruncatedText data-tip={shortcut}>{shortcut}</TruncatedText>
+          </Shortcut>
         ))}
-      </StyledShortcutList>
+        {this.otherShortcuts && (
+          <OtherShortcuts>
+            <InstrumentShortcutSelection
+              toggleShortcuts={this.handleShortcutSelection}
+              onToggleInstrumentSelection={
+                this.props.onToggleInstrumentSelection
+              }
+              selectedShortcut={this.props.shortcutActiveIndex!}
+              shortcuts={this.otherShortcuts}
+              showInstrumentSelection={this.props.showInstrumentSelection}
+            />
+          </OtherShortcuts>
+        )}
+        <ReactTooltip effect={'solid'} />
+      </ShortcutList>
     );
   }
 }

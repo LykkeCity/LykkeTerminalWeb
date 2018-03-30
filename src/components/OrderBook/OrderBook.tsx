@@ -8,18 +8,22 @@ import {Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
 import {minOrMaxFromList} from '../../utils/math';
-import Bar, {VBar} from '../Bar/Bar';
-import {Table} from '../Table/index';
-import {OrderBookItem} from './';
+import {HBar, VBar} from '../Bar';
+import ClickOutside from '../ClickOutside/ClickOutside';
+import {FAIcon} from '../Icon/Icon';
+import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
+  MidFigures,
+  MidOverlay,
   StyledBar,
   StyledBuyOrders,
   StyledGrouping,
-  StyledHead,
   StyledHeader,
+  StyledHeaderCell,
+  StyledHeaderRow,
   StyledMidPrice,
-  StyledRow,
+  StyledOrders,
   StyledSellOrders,
   StyledWrapper
 } from './styles';
@@ -29,11 +33,25 @@ const confirmStorage = StorageUtils(keys.confirmReminder); // TODO: refactor to 
 const mapToDisplayType = (displayType: OrderBookDisplayType) => (o: Order) =>
   o[displayType.toLowerCase()];
 
+const formatNumber = (
+  num: number | string,
+  accuracy: number,
+  options?: object
+) =>
+  (isFinite(Number(num)) &&
+    Number(num).toLocaleString(undefined, {
+      maximumFractionDigits: accuracy,
+      ...options
+    })) ||
+  '--';
+
 interface OrderBookProps {
   addModal: any;
   asks: Order[];
   bids: Order[];
   mid: string;
+  spread: number;
+  spreadRelative: number;
   priceAccuracy: number;
   volumeAccuracy: number;
   updatePrice: any;
@@ -43,6 +61,8 @@ interface OrderBookProps {
   span: number;
   onNextSpan: () => void;
   onPrevSpan: () => void;
+  showMyOrders: any;
+  lastTradePrice: number;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -102,6 +122,8 @@ class OrderBook extends React.Component<OrderBookProps> {
       return this.cancelOrders(connectedLimitOrders);
     }
 
+    this.props.showMyOrders({orders: []});
+
     const message = ModalMessages.cancelOrder(connectedLimitOrders);
     this.props.addModal(
       message,
@@ -117,11 +139,14 @@ class OrderBook extends React.Component<OrderBookProps> {
       bids,
       asks,
       mid,
+      spreadRelative,
       priceAccuracy,
       volumeAccuracy,
       span,
       onNextSpan,
-      onPrevSpan
+      onPrevSpan,
+      showMyOrders,
+      lastTradePrice
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
@@ -137,9 +162,14 @@ class OrderBook extends React.Component<OrderBookProps> {
       <StyledWrapper>
         <StyledBar>
           <StyledGrouping>
-            Grouping: <button onClick={onPrevSpan}>-</button>
-            <strong>{span}</strong>
-            <button onClick={onNextSpan}>+</button>
+            Grouping:{' '}
+            <button onClick={onPrevSpan}>
+              <FAIcon name="minus" />
+            </button>
+            <div>{span}</div>
+            <button onClick={onNextSpan}>
+              <FAIcon name="plus" />
+            </button>
           </StyledGrouping>
           <VBar />
           <OrderBookSwitch
@@ -147,59 +177,102 @@ class OrderBook extends React.Component<OrderBookProps> {
             onChange={this.handleChange}
           />
         </StyledBar>
-        <Bar />
-        <Table>
-          <StyledHead>
-            <StyledRow>
-              <StyledHeader align="right">Buy</StyledHeader>
-              <StyledHeader align="center">Price</StyledHeader>
-              <StyledHeader align="left">Sell</StyledHeader>
-            </StyledRow>
-          </StyledHead>
-        </Table>
-        <Scrollbars autoHide={true} ref={this.refHandlers.scrollComponent}>
-          <Table>
+        <HBar />
+        <StyledHeader>
+          <tbody>
+            <StyledHeaderRow>
+              <StyledHeaderCell align="left">Price</StyledHeaderCell>
+              <StyledHeaderCell align="left">Volume</StyledHeaderCell>
+              <StyledHeaderCell align="right">Value</StyledHeaderCell>
+            </StyledHeaderRow>
+          </tbody>
+        </StyledHeader>
+        <HBar />
+        <Scrollbars
+          autoHide={true}
+          style={{
+            width: 'calc(100% + 2rem)',
+            marginLeft: '-1rem',
+            height: 'calc(100% - 5.2rem)'
+          }}
+          ref={this.refHandlers.scrollComponent}
+        >
+          <StyledOrders>
             <StyledSellOrders>
               {asks.map((order, idx) => (
                 <OrderBookItem
-                  maxValue={maxAskValue}
-                  minValue={minAskValue}
                   key={idx}
                   valueToShow={withCurrentType(order)}
+                  maxValue={maxAskValue}
+                  minValue={minAskValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  showMyOrders={showMyOrders}
                   {...order}
+                  scrollComponent={this.scrollComponent}
                 />
               ))}
             </StyledSellOrders>
-            <StyledMidPrice innerRef={this.refHandlers.midPrice}>
+            <tbody ref={this.refHandlers.midPrice}>
               <tr>
-                <td onClick={this.handleUpdatePrice(Number(mid))}>
-                  {Number.isNaN(Number.parseFloat(mid)) ? '' : mid}
-                </td>
+                <StyledMidPrice
+                  onClick={this.handleUpdatePrice(Number(mid))}
+                  colSpan={3}
+                >
+                  <MidFigures>
+                    <strong>
+                      {formatNumber(lastTradePrice, priceAccuracy)}
+                    </strong>
+                    <small>
+                      {formatNumber(mid, priceAccuracy)}
+                      <br />
+                      <span>Mid price</span>
+                    </small>
+                    <small>
+                      {formatNumber(spreadRelative, priceAccuracy, {
+                        style: 'percent'
+                      })}
+                      <br />
+                      <span>Spread</span>
+                    </small>
+                  </MidFigures>
+                  <MidOverlay />
+                </StyledMidPrice>
               </tr>
-            </StyledMidPrice>
+            </tbody>
             <StyledBuyOrders>
               {bids.map((order, idx) => (
                 <OrderBookItem
-                  maxValue={maxBidValue}
-                  minValue={minBidValue}
                   key={idx}
                   valueToShow={withCurrentType(order)}
+                  maxValue={maxBidValue}
+                  minValue={minBidValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
                   onDepthClick={this.handleUpdatePriceAndDepth}
                   onOrderClick={this.handleCancelOrder}
+                  showMyOrders={showMyOrders}
+                  scrollComponent={this.scrollComponent}
                   {...order}
                 />
               ))}
             </StyledBuyOrders>
-          </Table>
+          </StyledOrders>
         </Scrollbars>
+        <ClickOutside
+          // tslint:disable-next-line:jsx-no-lambda
+          onClickOutside={() =>
+            showMyOrders({
+              orders: []
+            })
+          }
+        >
+          <MyOrders />
+        </ClickOutside>
       </StyledWrapper>
     );
   }

@@ -2,10 +2,11 @@ import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
-import {ReferenceStore, UiStore} from '../../stores';
-import ClickOutside from '../ClickOutside/ClickOutside';
-import CustomSelect from '../Select/CustomSelect';
-import {BalanceInfoProps} from './index';
+import WalletModel from '../../../models/walletModel';
+import {ReferenceStore, UiStore} from '../../../stores/index';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
+import ClickOutside from '../../ClickOutside/ClickOutside';
+import CustomSelect from '../../Select/CustomSelect';
 
 const StyledBalanceInfo = styled.div`
   text-align: right;
@@ -42,6 +43,12 @@ const StyledBalanceLabel = styled.div`
   font-size: 0.7rem;
 `;
 
+interface BalanceInfoProps {
+  getCurrentWalletModel: WalletModel;
+  referenceStore: ReferenceStore;
+  uiStore: UiStore;
+}
+
 class BalanceInfo extends React.Component<BalanceInfoProps> {
   private readonly referenceStore: ReferenceStore = this.props.referenceStore;
   private readonly uiStore: UiStore = this.props.uiStore;
@@ -70,7 +77,10 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
     return (
       <StyledBalanceInfo>
         <StyledBalanceValue>
-          {this.props.totalBalance.toFixed(
+          {formattedNumber(
+            this.props.getCurrentWalletModel
+              ? this.props.getCurrentWalletModel.totalBalance
+              : 0,
             this.referenceStore.getBaseAssetAccuracy
           )}
         </StyledBalanceValue>
@@ -88,6 +98,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
               }}
               items={this.getOptions()}
               click={this.handleChange()}
+              needScroll={true}
             />
           </ClickOutside>
         ) : null}

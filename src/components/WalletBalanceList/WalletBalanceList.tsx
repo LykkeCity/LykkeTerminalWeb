@@ -1,55 +1,42 @@
-import {rem} from 'polished';
 import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
-import styled from '../styled';
-import {Table} from '../Table/index';
-import {TradingWalletItem} from './';
+import WalletModel from '../../models/walletModel';
+import {Table} from '../Table';
+import {WalletBalanceItem} from './';
 
-const Total = styled.tr`
-  background: rgba(0, 0, 0, 0.1);
-
-  td {
-    font-weight: bold !important;
-    padding-top: ${rem(12)};
-    padding-bottom: ${rem(12)};
-  }
-`;
-
-export interface WalletBalanceListProps {
+interface WalletBalanceListProps {
   assets: AssetBalanceModel[];
   baseAsset: AssetModel;
-  total: number;
+  wallet: WalletModel;
+  getAssetById: any;
 }
 
 const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   assets = [],
   baseAsset,
   baseAsset: {accuracy, name},
-  total
+  wallet,
+  getAssetById
 }) => (
   <Table>
     <thead>
       <tr>
         <th>Assets</th>
-        <th>&nbsp;</th>
+        <th />
+        <th>Base currency</th>
         <th>Balance</th>
       </tr>
     </thead>
     <tbody>
-      <Total>
-        <td>Total</td>
-        <td>&nbsp;</td>
-        <td>
-          {total.toFixed(accuracy)} {name}
-        </td>
-      </Total>
-      {assets.map(assetBalance => (
-        <TradingWalletItem
-          key={assetBalance.id}
-          assetBalance={assetBalance}
-          baseAsset={baseAsset}
-        />
-      ))}
+      {wallet &&
+        wallet.balances.map((assetBalance, index) => (
+          <WalletBalanceItem
+            key={index}
+            baseAsset={baseAsset}
+            balance={wallet.balances[index]}
+            asset={getAssetById(wallet.balances[index].AssetId)}
+          />
+        ))}
     </tbody>
   </Table>
 );

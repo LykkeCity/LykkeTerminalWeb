@@ -1,70 +1,58 @@
 import {observer} from 'mobx-react';
-import {rem} from 'polished';
 import * as React from 'react';
-import {Dir} from '../../models';
-import {InstrumentModel} from '../../models/index';
-import styled from '../styled';
-import {InstrumentField, InstrumentPickerActions} from './index';
-
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
+import {AssetModel, InstrumentModel} from '../../models/index';
+import {InstrumentListNumber, InstrumentPickerActions} from './index';
 
 interface InstrumentListItemProps extends InstrumentPickerActions {
+  baseAsset: AssetModel;
   instrument: InstrumentModel;
   inactive: boolean;
 }
 
-const StyledInstrumentItem = styled(Flex)`
-  margin-top: 10px;
-  justify-content: space-between;
-  &.inactive:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-    cursor: pointer;
+const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
+  ({baseAsset, instrument, onPick, inactive}) => {
+    const percentageAccuracy = 3;
+    const click = () => inactive && onPick && onPick(instrument);
+
+    return (
+      <tr onClick={click} className={inactive ? 'inactive' : ''}>
+        <td>{instrument.displayName}</td>
+        <td>
+          <InstrumentListNumber
+            num={instrument.price}
+            accuracy={instrument.accuracy}
+          />
+        </td>
+        {/*<td>*/}
+        {/*<InstrumentListNumber*/}
+        {/*num={instrument.priceInBase}*/}
+        {/*accuracy={baseAsset.accuracy}*/}
+        {/*color={'rgba(245, 246, 247, 0.4)'}*/}
+        {/*>*/}
+        {/*&nbsp;{baseAsset.name}*/}
+        {/*</InstrumentListNumber>*/}
+        {/*</td>*/}
+        <td>
+          <InstrumentListNumber
+            num={instrument.change24h}
+            accuracy={percentageAccuracy}
+            dynamics={instrument.change24h >= 0 ? 'up' : 'down'}
+            preSign={instrument.change24h >= 0 ? '+' : ''}
+          >
+            %
+          </InstrumentListNumber>
+        </td>
+        <td>
+          <InstrumentListNumber
+            num={instrument.volume}
+            accuracy={instrument.quoteAsset.accuracy}
+          >
+            &nbsp;{instrument.quoteAsset.name}
+          </InstrumentListNumber>
+        </td>
+      </tr>
+    );
   }
-`;
-
-const StyledInstrumentField = styled(InstrumentField)`
-  padding: ${rem(10)};
-  text-align: left;
-`;
-
-const StyledInstrumentName = StyledInstrumentField.extend`
-  min-width: ${rem(150)};
-`;
-
-const StyledInstrumentPrice = StyledInstrumentField.extend`
-  color: ${p => (p.dir === Dir.Up ? '#13b72a' : '#ff3e2e')};
-  text-align: right;
-  min-width: ${rem(100)};
-`;
-
-interface InstrumentPriceProps {
-  instrument: InstrumentModel;
-  dir: Dir;
-}
-
-const InstrumentPrice: React.SFC<InstrumentPriceProps> = observer(
-  ({instrument: {price = 0, accuracy}, dir}) => (
-    <StyledInstrumentPrice dir={dir}>
-      {price.toFixed(accuracy)}
-    </StyledInstrumentPrice>
-  )
-);
-
-const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
-  instrument,
-  instrument: {dir = Dir.Up, displayName},
-  onPick,
-  inactive
-}) => (
-  <StyledInstrumentItem
-    // tslint:disable-next-line:jsx-no-lambda
-    onClick={() => inactive && onPick && onPick(instrument)}
-    className={inactive ? 'inactive' : ''}
-  >
-    <StyledInstrumentName>{displayName}</StyledInstrumentName>
-    <InstrumentPrice instrument={instrument} dir={dir} />
-  </StyledInstrumentItem>
 );
 
 export default InstrumentListItem;

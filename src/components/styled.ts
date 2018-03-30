@@ -19,14 +19,18 @@ export const colorFromSide = (sideOrProps: any) => css`
 `;
 
 export const colors = {
+  blue: '#0388ef',
   darkGraphite: 'rgba(0, 0, 0, 0.2)',
   lightGraphite: 'rgb(51, 51, 51)',
+  lightGrey: 'rgba(245, 246, 247, 0.4)',
+  graphiteBorder: 'rgba(0, 0, 0, 0.1)',
   white: 'rgb(245, 246, 247)'
 };
 
 export const fonts = {
   normal: 14,
-  large: 16
+  large: 16,
+  extraLarge: 24
 };
 
 export const dims = {
@@ -47,6 +51,11 @@ export const iconCss = css`
     }
   }
 `;
+
+export const greyButton = {
+  borderColor: 'rgba(140, 148, 160, 0.4)',
+  borderRadius: '4px'
+};
 
 export {css, injectGlobal, keyframes, ThemeProvider};
 export default styled;
