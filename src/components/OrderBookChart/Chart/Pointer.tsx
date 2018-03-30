@@ -18,6 +18,7 @@ class Pointer extends React.Component<PointerProps> {
   graphics: any = [];
 
   points: number[] = [];
+  modal: number[] = [];
   borders: number[] = [];
   width: number = 1080;
   height: number = 500;
@@ -26,6 +27,23 @@ class Pointer extends React.Component<PointerProps> {
 
   constructor(props: PointerProps) {
     super(props);
+  }
+
+  generateModal() {
+    this.modal = [];
+    const leftX =
+      this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.widthBeforeArrow;
+    const rightX = leftX + chart.modal.width;
+    const bottomY =
+      this.calcY - chart.modal.shiftFromBall - chart.modal.arrowHeight;
+    const topY = bottomY - chart.modal.height;
+    this.modal.push(this.mouseX, this.calcY - chart.modal.shiftFromBall);
+    this.modal.push(this.mouseX - chart.modal.arrowWidth / 2, bottomY);
+    this.modal.push(leftX, bottomY);
+    this.modal.push(leftX, topY);
+    this.modal.push(rightX, topY);
+    this.modal.push(rightX, bottomY);
+    this.modal.push(this.mouseX + chart.modal.arrowWidth / 2, bottomY);
   }
 
   calculateCurrentY = (mouseX: number) => {
@@ -72,6 +90,13 @@ class Pointer extends React.Component<PointerProps> {
   drawPointer = () => {
     this.graphics.push(
       <Line
+        points={this.modal}
+        closed={true}
+        stroke={chart.modal.strokeColor}
+        strokeWidth={chart.modal.strokeWidth}
+        fill={chart.modal.fillColor}
+      />,
+      <Line
         points={this.line}
         closed={false}
         stroke={this.props.color}
@@ -113,6 +138,7 @@ class Pointer extends React.Component<PointerProps> {
   render() {
     this.initialize();
     this.updateLine();
+    this.generateModal();
     this.drawPointer();
     return this.graphics;
   }

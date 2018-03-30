@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import Konva from 'konva';
-import {Layer, Stage} from 'react-konva';
+import {FastLayer, Layer, Stage} from 'react-konva';
 
 import Asks from './Asks';
 import Bids from './Bids';
@@ -17,21 +16,17 @@ class Chart extends React.Component<ChartProps> {
     super(props);
   }
 
-  handleClick = () => {
-    this.setState({
-      color: Konva.Util.getRandomColor()
-    });
-  };
-
   render() {
     return (
       <Stage width={this.width} height={this.height}>
-        <Layer clearBeforeDraw={true}>
+        <FastLayer clearBeforeDraw={true}>
           <Mesh
             asks={this.props.asks}
             bids={this.props.bids}
             mid={this.props.mid}
           />
+        </FastLayer>
+        <Layer>
           <Asks
             asks={this.props.asks}
             bids={this.props.bids}

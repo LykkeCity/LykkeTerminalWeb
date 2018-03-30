@@ -26,6 +26,17 @@ const chart = {
     circleRadius: 4,
     circleStrokeColor: '#333333'
   },
+  modal: {
+    width: 350,
+    widthBeforeArrow: 300,
+    height: 112.4,
+    shiftFromBall: 10,
+    arrowWidth: 12,
+    arrowHeight: 10,
+    fillColor: '#3c3c3c',
+    strokeColor: 'rgba(0, 0, 0, 0.2)',
+    strokeWidth: 1
+  },
 
   strokeWidth: 2,
   fillOpacity: 0.2
