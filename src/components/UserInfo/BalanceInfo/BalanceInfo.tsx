@@ -2,6 +2,7 @@ import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import * as React from 'react';
 import styled from 'styled-components';
+import WalletModel from '../../../models/walletModel';
 import {ReferenceStore, UiStore} from '../../../stores/index';
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import ClickOutside from '../../ClickOutside/ClickOutside';
@@ -43,8 +44,7 @@ const StyledBalanceLabel = styled.div`
 `;
 
 interface BalanceInfoProps {
-  balances: any[];
-  getCurrentWallet: any;
+  getCurrentWalletModel: WalletModel;
   referenceStore: ReferenceStore;
   uiStore: UiStore;
 }
@@ -78,8 +78,8 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
       <StyledBalanceInfo>
         <StyledBalanceValue>
           {formattedNumber(
-            this.props.balances[this.props.getCurrentWallet]
-              ? this.props.balances[this.props.getCurrentWallet].totalBalance
+            this.props.getCurrentWalletModel
+              ? this.props.getCurrentWalletModel.totalBalance
               : 0,
             this.referenceStore.getBaseAssetAccuracy
           )}
