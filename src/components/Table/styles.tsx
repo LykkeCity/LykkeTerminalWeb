@@ -7,9 +7,6 @@ export const Table = styled.table`
   tr {
     line-height: 1;
   }
-  thead {
-    border-bottom: solid 1px #292929;
-  }
   th,
   td {
     text-align: right;
@@ -19,7 +16,9 @@ export const Table = styled.table`
   }
   th {
     position: relative;
-    padding: ${rem(7)};
+    height: 30px;
+    margin: 0;
+    padding: 0;
     font-size: ${rem(14)};
     font-weight: normal;
     line-height: 1.14;
@@ -28,10 +27,22 @@ export const Table = styled.table`
     &:first-child {
       text-align: left;
       padding-left: 0;
+
+      > div {
+        margin-left: 0;
+      }
     }
     &:last-child {
       text-align: right;
       padding-right: 0;
+    }
+
+    > div {
+      position: fixed;
+      height: inherit;
+      padding-top: ${rem(6)};
+      margin-top: -${rem(17)};
+      border-bottom: 1px solid #292929;
     }
   }
   td {
@@ -51,7 +62,7 @@ export const Table = styled.table`
   }
 `;
 
-export const TableHeaderItem = styled.div`
+export const TableHeaderItemDiv = styled.div`
   display: flex;
   align-items: center;
   color: ${colors.lightGrey};

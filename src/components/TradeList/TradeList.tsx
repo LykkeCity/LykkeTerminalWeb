@@ -38,99 +38,35 @@ class TradeList extends React.Component<TradeListProps, TableSortState> {
     const assetFromSelectedInstrument = curry(assetFromInstrument)(
       this.props.selectedInstrument!
     );
+    const headers: any[] = [
+      {key: 'symbol', value: 'Asset pair'},
+      {className: 'right-align', key: 'side', value: 'Side'},
+      {
+        className: 'right-align',
+        key: 'quantity',
+        value: `Volume (${assetFromSelectedInstrument('baseAsset')})`
+      },
+      {className: 'right-align', key: 'price', value: 'Price'},
+      {
+        className: 'right-align',
+        key: 'oppositeQuantity',
+        value: `Volume (${assetFromSelectedInstrument('quoteAsset')})`
+      },
+      {className: 'right-align', key: 'orderType', value: 'Order type'},
+      {className: 'right-align', key: 'fee', value: 'Fee'},
+      {className: 'right-align', key: 'timestamp', value: 'Time'}
+    ];
 
     return (
       <Table>
         <thead>
-          <tr>
-            <th>
-              <TableHeader
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'symbol'}
-                onSort={this.sort}
-              >
-                Asset pair
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'side'}
-                onSort={this.sort}
-              >
-                Side
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'quantity'}
-                onSort={this.sort}
-              >
-                Volume ({assetFromSelectedInstrument('baseAsset')})
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'price'}
-                onSort={this.sort}
-              >
-                Price
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'oppositeQuantity'}
-                onSort={this.sort}
-              >
-                Volume ({assetFromSelectedInstrument('quoteAsset')})
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'orderType'}
-                onSort={this.sort}
-              >
-                Order type
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'fee'}
-                onSort={this.sort}
-              >
-                Fee
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'timestamp'}
-                onSort={this.sort}
-              >
-                Time
-              </TableHeader>
-            </th>
-          </tr>
+          <TableHeader
+            backgroundColor={'rgb(51, 51, 51)'}
+            currentSortDirection={this.state.sortDirection}
+            currentSortByParam={this.state.sortByParam}
+            headers={headers}
+            onSort={this.sort}
+          />
         </thead>
         <tbody>
           {this.state.data.map(trade => (

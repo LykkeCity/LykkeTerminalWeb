@@ -7,6 +7,13 @@ class InstrumentList extends React.Component<
   InstrumentListProps,
   TableSortState
 > {
+  private headers: any[] = [
+    {key: 'name', value: 'Asset pair'},
+    {key: 'price', value: 'Price'},
+    {className: 'right-align', key: 'change24h', value: '24h Change'},
+    {className: 'right-align', key: 'volume', value: 'Volume'}
+  ];
+
   constructor(props: InstrumentListProps) {
     super(props);
     this.state = {
@@ -41,50 +48,13 @@ class InstrumentList extends React.Component<
     return (
       <InstrumentTable>
         <thead>
-          <tr>
-            <th>
-              <TableHeader
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'name'}
-                onSort={this.sort}
-              >
-                Asset pair
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'price'}
-                onSort={this.sort}
-              >
-                Price
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'change24h'}
-                onSort={this.sort}
-              >
-                24h Change
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'volume'}
-                onSort={this.sort}
-              >
-                Volume
-              </TableHeader>
-            </th>
-          </tr>
+          <TableHeader
+            backgroundColor={'rgb(60, 60, 60)'}
+            currentSortDirection={this.state.sortDirection}
+            currentSortByParam={this.state.sortByParam}
+            headers={this.headers}
+            onSort={this.sort}
+          />
         </thead>
         <tbody>
           {this.state.data.map(instrument => (

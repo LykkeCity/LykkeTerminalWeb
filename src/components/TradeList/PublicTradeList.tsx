@@ -35,58 +35,31 @@ class PublicTradeList extends React.Component<
   };
 
   render() {
+    const headers: any[] = [
+      {key: 'quantity', value: 'Trade size'},
+      {
+        className: 'right-align',
+        key: 'price',
+        value: `Price (${pathOr(
+          '',
+          ['quoteAsset', 'name'],
+          this.props.selectedInstrument
+        )})`
+      },
+      {className: 'right-align', key: 'side', value: 'Side'},
+      {className: 'right-align', key: 'timestamp', value: 'Time'}
+    ];
+
     return (
       <Table>
         <thead>
-          <tr>
-            <th>
-              <TableHeader
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'quantity'}
-                onSort={this.sort}
-              >
-                Trade size
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'price'}
-                onSort={this.sort}
-              >
-                Price ({pathOr(
-                  '',
-                  ['quoteAsset', 'name'],
-                  this.props.selectedInstrument
-                )})
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'side'}
-                onSort={this.sort}
-              >
-                Side
-              </TableHeader>
-            </th>
-            <th>
-              <TableHeader
-                className={'right-align'}
-                currentSortDirection={this.state.sortDirection}
-                currentSortByParam={this.state.sortByParam}
-                sortByParam={'timestamp'}
-                onSort={this.sort}
-              >
-                Time
-              </TableHeader>
-            </th>
-          </tr>
+          <TableHeader
+            backgroundColor={'rgb(51, 51, 51)'}
+            currentSortDirection={this.state.sortDirection}
+            currentSortByParam={this.state.sortByParam}
+            headers={headers}
+            onSort={this.sort}
+          />
         </thead>
         <tbody>
           {this.state.data.map(trade => (

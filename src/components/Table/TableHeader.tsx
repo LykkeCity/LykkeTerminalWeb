@@ -1,35 +1,64 @@
 import * as React from 'react';
-import {TableHeaderItem} from './styles';
+import ReactResizeDetector from 'react-resize-detector';
+import {TableHeaderItem} from '.';
 
-interface InstrumentListHeaderProps {
-  className?: string;
+interface TableHeaderProps {
+  backgroundColor?: string;
   currentSortDirection: string;
   currentSortByParam: string;
+  headers: any[];
   onSort: any;
-  sortByParam: string;
 }
 
-const TableHeader: React.SFC<InstrumentListHeaderProps> = ({
-  onSort,
-  sortByParam,
-  currentSortDirection,
-  currentSortByParam,
-  className,
-  children
-}) => {
-  const handleSortList = () => onSort(sortByParam, currentSortDirection);
+interface TableHeaderState {
+  widthArr: number[];
+}
 
-  return (
-    <TableHeaderItem
-      className={`
-        ${className}
-        ${currentSortByParam === sortByParam ? currentSortDirection : ''}
-      `}
-      onClick={handleSortList}
-    >
-      {children}
-    </TableHeaderItem>
-  );
-};
+class TableHeader extends React.Component<TableHeaderProps, TableHeaderState> {
+  constructor(props: TableHeaderProps) {
+    super(props);
+    this.state = {
+      widthArr: []
+    };
+  }
+
+  onResize = (width: number, index: number) => {
+    const widthArr = [...this.state.widthArr];
+    widthArr[index] = width;
+
+    this.setState({
+      widthArr
+    });
+  };
+
+  render() {
+    return (
+      <tr>
+        {this.props.headers.map((header, index) => (
+          <th key={index}>
+            <TableHeaderItem
+              className={header.className}
+              currentSortDirection={this.props.currentSortDirection}
+              currentSortByParam={this.props.currentSortByParam}
+              sortByParam={header.key}
+              style={{
+                backgroundColor: this.props.backgroundColor,
+                width: this.state.widthArr[index]
+              }}
+              onSort={this.props.onSort}
+            >
+              {header.value}
+            </TableHeaderItem>
+            <ReactResizeDetector
+              handleWidth={true}
+              // tslint:disable-next-line:jsx-no-lambda
+              onResize={width => this.onResize(width, index)}
+            />
+          </th>
+        ))}
+      </tr>
+    );
+  }
+}
 
 export default TableHeader;

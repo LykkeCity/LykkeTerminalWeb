@@ -80,24 +80,40 @@ export const TruncatedText = styled.p`
 
 export const InstrumentTable = styled(Table)`
   width: calc(100% - ${rem(8 * 2)});
-  margin: ${rem(8)};
+  margin: 0 ${rem(8)};
 
-  th,
-  td {
-    padding: ${rem(12)};
+  th {
+    > div {
+      padding-left: ${rem(12)};
+    }
+
+    &:first-child {
+      > div {
+        padding-left: 0;
+      }
+    }
   }
 
-  td:nth-child(2) {
-    text-align: left;
+  td {
+    padding: ${rem(12)};
+
+    &:nth-child(2) {
+      text-align: left;
+    }
   }
 
   tbody {
     tr {
       border-top: 1px solid ${colors.graphiteBorder};
       border-bottom: 1px solid ${colors.graphiteBorder};
-    }
-    tr:hover {
-      background-color: ${colors.darkGraphite};
+
+      &:first-child {
+        border-top: none;
+      }
+
+      &:hover {
+        background-color: ${colors.darkGraphite};
+      }
     }
   }
 `;
