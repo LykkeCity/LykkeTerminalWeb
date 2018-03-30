@@ -99,16 +99,14 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
   constructor(props: TerminalProps) {
     super(props);
 
-    this.state = {
-      initialValue: this.initialValue
-    };
-  }
-
-  componentWillMount() {
     const layout = layoutStorage.get();
     if (layout) {
       this.initialValue = JSON.parse(layout);
     }
+
+    this.state = {
+      initialValue: this.initialValue
+    };
   }
 
   componentDidMount() {
