@@ -43,7 +43,11 @@ export default class WalletModel {
       baseAssetId
     );
     this.balances = this.balances.map((b, index) => {
-      b.balanceInBaseAsset = convertedBalances[index].Balance;
+      if (b.AssetId === baseAssetId) {
+        b.balanceInBaseAsset = b.Balance;
+      } else {
+        b.balanceInBaseAsset = convertedBalances[index].Balance;
+      }
       return b;
     });
   };
