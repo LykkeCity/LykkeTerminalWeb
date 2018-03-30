@@ -130,6 +130,7 @@ class ChartStore extends BaseStore {
   load = () => this.api.load();
 
   resetToDefault = () => {
+    this.api.reset();
     if (this.widget) {
       this.widget.load(CHART_DEFAULT_SETTINGS);
     }
