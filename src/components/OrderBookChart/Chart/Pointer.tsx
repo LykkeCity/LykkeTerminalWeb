@@ -109,33 +109,10 @@ class Pointer extends React.Component<PointerProps> {
   drawPointer = () => {
     this.graphics.push(
       <Line
-        points={this.modal}
-        closed={true}
-        stroke={chart.modal.strokeColor}
-        strokeWidth={chart.modal.strokeWidth}
-        fill={chart.modal.fillColor}
-      />,
-      <Line
         points={this.points}
         closed={false}
         stroke={this.props.color}
         strokeWidth={chart.strokeWidth}
-      />,
-      <Text
-        text="TEST"
-        fontSize={chart.modal.title.fontSize}
-        fontFamily={chart.modal.title.fontFamily}
-        fontStyle={chart.modal.title.fontStyle}
-        fill={chart.modal.title.fontColor}
-        x={this.titleX}
-        y={this.titleY}
-      />,
-      <Line
-        points={this.modalLine}
-        closed={true}
-        stroke={this.props.color}
-        strokeWidth={chart.strokeWidth}
-        dash={chart.pointer.dash}
       />,
       <Circle
         x={this.mouseX}
@@ -159,6 +136,29 @@ class Pointer extends React.Component<PointerProps> {
         onMouseMove={this.handleMouseMove}
         onMouseOver={this.handleMouseMove}
         onMouseLeave={this.handleMouseLeave}
+      />,
+      <Line
+        points={this.modal}
+        closed={true}
+        stroke={chart.modal.strokeColor}
+        strokeWidth={chart.modal.strokeWidth}
+        fill={chart.modal.fillColor}
+      />,
+      <Text
+        text="TEST"
+        fontSize={chart.modal.title.fontSize}
+        fontFamily={chart.modal.title.fontFamily}
+        fontStyle={chart.modal.title.fontStyle}
+        fill={chart.modal.title.fontColor}
+        x={this.titleX}
+        y={this.titleY}
+      />,
+      <Line
+        points={this.modalLine}
+        closed={true}
+        stroke={this.props.color}
+        strokeWidth={chart.strokeWidth}
+        dash={chart.pointer.dash}
       />
     );
   };
