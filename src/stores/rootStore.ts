@@ -136,7 +136,6 @@ class RootStore {
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
-        this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
         return Promise.resolve();
