@@ -35,7 +35,15 @@ const chart = {
     arrowHeight: 10,
     fillColor: '#3c3c3c',
     strokeColor: 'rgba(0, 0, 0, 0.2)',
-    strokeWidth: 1
+    strokeWidth: 1,
+
+    title: {
+      fontFamily: 'Akrobat',
+      fontSize: 24,
+      fontStyle: 'bold',
+      fontColor: '#f5f6f7'
+    },
+    marginLeft: 16
   },
 
   strokeWidth: 2,

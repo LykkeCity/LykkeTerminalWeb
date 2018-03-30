@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Circle, Line} from 'react-konva';
+import {Circle, Line, Text} from 'react-konva';
 
 import chart from './chartConstants';
 
@@ -18,15 +18,34 @@ class Pointer extends React.Component<PointerProps> {
   graphics: any = [];
 
   points: number[] = [];
-  modal: number[] = [];
-  borders: number[] = [];
+
   width: number = 1080;
   height: number = 500;
 
+  borders: number[] = [];
   line: number[] = [0, 0, 0, this.height];
+  modal: number[] = [];
+  titleX: number;
+  titleY: number;
+  modalLine: number[] = [];
 
   constructor(props: PointerProps) {
     super(props);
+  }
+
+  generateModalText(): any {
+    this.titleX =
+      this.mouseX -
+      chart.modal.arrowWidth / 2 -
+      chart.modal.widthBeforeArrow +
+      chart.modal.marginLeft;
+    this.titleY = this.calcY - chart.modal.arrowHeight - chart.modal.height;
+    this.modalLine = [
+      this.titleX,
+      this.titleY + 32,
+      this.titleX + (chart.modal.width - chart.modal.marginLeft * 2),
+      this.titleY + 32
+    ];
   }
 
   generateModal() {
@@ -97,8 +116,23 @@ class Pointer extends React.Component<PointerProps> {
         fill={chart.modal.fillColor}
       />,
       <Line
-        points={this.line}
+        points={this.points}
         closed={false}
+        stroke={this.props.color}
+        strokeWidth={chart.strokeWidth}
+      />,
+      <Text
+        text="TEST"
+        fontSize={chart.modal.title.fontSize}
+        fontFamily={chart.modal.title.fontFamily}
+        fontStyle={chart.modal.title.fontStyle}
+        fill={chart.modal.title.fontColor}
+        x={this.titleX}
+        y={this.titleY}
+      />,
+      <Line
+        points={this.modalLine}
+        closed={true}
         stroke={this.props.color}
         strokeWidth={chart.strokeWidth}
         dash={chart.pointer.dash}
@@ -139,6 +173,7 @@ class Pointer extends React.Component<PointerProps> {
     this.initialize();
     this.updateLine();
     this.generateModal();
+    this.generateModalText();
     this.drawPointer();
     return this.graphics;
   }
