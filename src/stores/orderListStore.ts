@@ -61,6 +61,27 @@ class OrderListStore extends BaseStore {
   };
 
   @action
+  addOrder = (order: any) => {
+    this.orders.push(mappers.mapToLimitOrder(order));
+  };
+
+  @action
+  deleteOrder = (orderId: string) => {
+    this.orders.some((existedOrder: OrderModel, index: number) => {
+      if (existedOrder.id === orderId) {
+        this.orders.splice(index, 1);
+        return true;
+      }
+      return false;
+    });
+  };
+
+  @action
+  updateOrder = (limit: OrderModel, dto: any) => {
+    limit.volume = limit.volume - dto.Volume;
+  };
+
+  @action
   updateOrders = (orders: OrderModel[]) => {
     this.orders = orders;
   };
