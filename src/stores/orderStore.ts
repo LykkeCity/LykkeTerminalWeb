@@ -106,6 +106,7 @@ class OrderStore extends BaseStore {
     ws.subscribe(topics.orders, this.onOrders);
   };
 
+
   onOrders = (args: any) => {
     const order = args[0][0];
     switch (order.Status) {
