@@ -8,7 +8,6 @@ interface OrderListProps {
   onEditOrder: (order: OrderModel) => (id: string) => void;
   onCancelOrder?: (id: string) => void;
 }
-
 class OrderList extends React.Component<OrderListProps, TableSortState> {
   constructor(props: OrderListProps) {
     super(props);
@@ -34,13 +33,13 @@ class OrderList extends React.Component<OrderListProps, TableSortState> {
   render() {
     const headers: any[] = [
       {key: 'symbol', value: 'Asset pair'},
-      {className: 'right-align', key: '', value: 'Cancel order'},
+      {sortDisabled: true, key: '', value: 'Cancel order'},
       {className: 'right-align', key: 'id', value: 'OrderID'},
       {className: 'right-align', key: 'side', value: 'Side'},
       {className: 'right-align', key: 'volume', value: 'Volume'},
       {className: 'right-align', key: 'price', value: 'Price'},
       {className: 'right-align', key: 'createdAt', value: 'Created Date'},
-      {className: 'right-align', key: '', value: 'Edit'}
+      {className: 'right-align', sortDisabled: true, key: '', value: 'Edit'}
     ];
 
     return (

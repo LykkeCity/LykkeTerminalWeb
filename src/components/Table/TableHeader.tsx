@@ -41,6 +41,7 @@ class TableHeader extends React.Component<TableHeaderProps, TableHeaderState> {
               currentSortDirection={this.props.currentSortDirection}
               currentSortByParam={this.props.currentSortByParam}
               sortByParam={header.key}
+              sortDisabled={header.sortDisabled}
               style={{
                 backgroundColor: this.props.backgroundColor,
                 width: this.state.widthArr[index]

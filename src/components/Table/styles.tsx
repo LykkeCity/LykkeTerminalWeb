@@ -9,6 +9,7 @@ export const Table = styled.table`
   }
   th,
   td {
+    min-width: 50px;
     text-align: right;
     overflow: hidden;
     white-space: nowrap;
@@ -43,6 +44,12 @@ export const Table = styled.table`
       padding-top: ${rem(6)};
       margin-top: -${rem(17)};
       border-bottom: 1px solid #292929;
+
+      > p {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
   }
   td {
@@ -70,16 +77,18 @@ export const TableHeaderItemDiv = styled.div`
   &.right-align {
     justify-content: flex-end;
   }
-  &:after {
-    content: '';
-    margin-left: ${rem(10)};
-    border-left: 2px solid transparent;
-    border-right: 2px solid transparent;
-  }
-  &.ASC:after {
-    border-bottom: 4px solid ${colors.lightGrey};
-  }
-  &.DESC:after {
-    border-top: 4px solid ${colors.lightGrey};
+  &:not(.disabled) {
+    &:after {
+      content: '';
+      margin-left: ${rem(10)};
+      border-left: 2px solid transparent;
+      border-right: 2px solid transparent;
+    }
+    &.ASC:after {
+      border-bottom: 4px solid ${colors.lightGrey};
+    }
+    &.DESC:after {
+      border-top: 4px solid ${colors.lightGrey};
+    }
   }
 `;

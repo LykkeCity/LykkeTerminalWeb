@@ -1,4 +1,5 @@
 import * as React from 'react';
+import ReactTooltip from 'react-tooltip';
 import {TableHeaderItemDiv} from './styles';
 
 interface TableHeaderItemProps {
@@ -7,11 +8,13 @@ interface TableHeaderItemProps {
   currentSortByParam: string;
   onSort: any;
   sortByParam: string;
+  sortDisabled?: boolean;
   style?: any;
 }
 
 const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
   onSort,
+  sortDisabled,
   sortByParam,
   currentSortDirection,
   currentSortByParam,
@@ -19,18 +22,26 @@ const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
   children,
   style
 }) => {
-  const handleSortList = () => onSort(sortByParam, currentSortDirection);
+  const handleSortList = () => {
+    if (sortDisabled) {
+      return;
+    }
+    onSort(sortByParam, currentSortDirection);
+  };
 
   return (
     <TableHeaderItemDiv
       className={`
         ${className}
         ${currentSortByParam === sortByParam ? currentSortDirection : ''}
+        ${sortDisabled ? 'disabled' : ''}
       `}
       onClick={handleSortList}
       style={style}
     >
-      {children}
+      <p data-tip={children}>{children}</p>
+
+      <ReactTooltip effect={'solid'} />
     </TableHeaderItemDiv>
   );
 };
