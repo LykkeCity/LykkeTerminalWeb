@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {OrderModel} from '../../models/index';
 import Types from '../../models/modals';
 import {HBar} from '../Bar';
 import {Table} from '../Table';
@@ -9,15 +8,10 @@ import {CancelAllOrders, ToggleOrders} from './OrderListAdditional';
 import OrderListToolbar from './OrderListToolbar';
 
 interface OrdersProps extends OrderActions {
-  orders: OrderModel[];
   addModal: any;
 }
 
-const Blotter: React.SFC<OrdersProps> = ({
-  orders = [],
-  cancelOrder,
-  addModal
-}) => {
+const Blotter: React.SFC<OrdersProps> = ({cancelOrder, addModal}) => {
   const handleEditOrder = (order: any) => (id: string) => {
     addModal(
       id,
@@ -46,16 +40,12 @@ const Blotter: React.SFC<OrdersProps> = ({
             <HeaderCell w={OrderCellWidth.Side}>Side</HeaderCell>
             <th>Volume</th>
             <th>Price</th>
-            <th>Created Date</th>
+            <HeaderCell w={OrderCellWidth.CreatedDate}>Created Date</HeaderCell>
             <th>Edit</th>
           </tr>
         </thead>
       </Table>
-      <OrderList
-        orders={orders}
-        onEditOrder={handleEditOrder}
-        onCancelOrder={cancelOrder}
-      />
+      <OrderList onEditOrder={handleEditOrder} onCancelOrder={cancelOrder} />
     </React.Fragment>
   );
 };

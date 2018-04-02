@@ -1,9 +1,10 @@
 import * as React from 'react';
 import {OrderListItem} from '.';
 import {OrderModel} from '../../models';
+import {LoaderProps} from '../Loader/withLoader';
 import {Table} from '../Table';
 
-interface OrderListProps {
+export interface OrderListProps extends LoaderProps {
   orders: OrderModel[];
   onEditOrder: (order: OrderModel) => (id: string) => void;
   onCancelOrder?: (id: string) => void;
