@@ -37,7 +37,8 @@ class OrderListStore extends BaseStore {
     return this.selectedOrder;
   }
 
-  @observable private orders: OrderModel[] = [];
+  @observable hasPendingOrders: boolean = false;
+  @observable.shallow private orders: OrderModel[] = [];
   @observable
   private selectedOrder: string = OrdersDefaultSelection.CurrentAsset;
 
@@ -54,10 +55,10 @@ class OrderListStore extends BaseStore {
   }
 
   fetchAll = async () => {
+    this.hasPendingOrders = true;
     const dto = await this.api.fetchAll();
-
-    this.updateOrders(dto.map(mappers.mapToLimitOrder));
-    this.rootStore.orderBookStore.fetchAll();
+    this.orders = dto.map(mappers.mapToLimitOrder);
+    this.hasPendingOrders = false;
   };
 
   @action
@@ -82,11 +83,6 @@ class OrderListStore extends BaseStore {
     order!.volume = dto.RemainingVolume;
   };
 
-  @action
-  updateOrders = (orders: OrderModel[]) => {
-    this.orders = orders;
-  };
-
   filterOrders = (orders: OrderModel[], instrument?: InstrumentModel) => {
     const {selectedInstrument} = this.rootStore.uiStore;
     if (selectedInstrument || instrument) {
@@ -100,11 +96,6 @@ class OrderListStore extends BaseStore {
   toggleOrders = (option: string) => {
     this.selectedOrder = option;
     this.rootStore.uiStore.toggleOrdersSelect();
-  };
-
-  @action
-  addOrders = (orders: OrderModel[]) => {
-    this.orders.push(...orders);
   };
 
   reset = () => {
