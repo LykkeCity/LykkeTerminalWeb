@@ -3,7 +3,7 @@ import {rem} from 'polished';
 import * as React from 'react';
 import {Dir} from '../../models';
 import {InstrumentModel} from '../../models/index';
-import styled from '../styled';
+import styled, {colors} from '../styled';
 import {InstrumentField, InstrumentPickerActions} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -17,11 +17,15 @@ interface InstrumentListItemProps extends InstrumentPickerActions {
 const StyledInstrumentItem = styled(Flex)`
   margin-top: 10px;
   justify-content: space-between;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+
+  &.active {
+    background-color: ${colors.darkGraphite};
   }
   &.inactive:hover {
     cursor: pointer;
+  }
+  &:hover {
+    background-color: ${colors.darkGraphite};
   }
 `;
 
@@ -62,7 +66,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
   <StyledInstrumentItem
     // tslint:disable-next-line:jsx-no-lambda
     onClick={() => inactive && onPick && onPick(instrument)}
-    className={inactive ? 'inactive' : ''}
+    className={inactive ? 'inactive' : 'active'}
   >
     <StyledInstrumentName>{displayName}</StyledInstrumentName>
     <InstrumentPrice instrument={instrument} dir={dir} />

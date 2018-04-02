@@ -1,46 +1,10 @@
-import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import styled from 'styled-components';
 import {ReferenceStore, UiStore} from '../../stores';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
 import {BalanceInfoProps} from './index';
-
-const StyledBalanceInfo = styled.div`
-  text-align: right;
-  padding-right: ${rem(15)};
-`;
-
-const StyledBalanceValue = styled.span`
-  color: #f5f6f7;
-  font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(16)};
-  font-weight: bold;
-  line-height: 1;
-  text-align: left;
-`;
-
-const StyledButton = styled.button`
-  background: none;
-  border: none;
-  font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(16)};
-  font-weight: bold;
-  line-height: 1;
-  text-align: right;
-  color: #0388ef;
-  padding-right: 0;
-  outline: none;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const StyledBalanceLabel = styled.div`
-  color: #8c94a0;
-  font-size: 0.7rem;
-`;
+import {BalanceInfoDiv, BalanceLabel, BalanceValue, Button} from './styles';
 
 class BalanceInfo extends React.Component<BalanceInfoProps> {
   private readonly referenceStore: ReferenceStore = this.props.referenceStore;
@@ -68,15 +32,15 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
 
   render() {
     return (
-      <StyledBalanceInfo>
-        <StyledBalanceValue>
+      <BalanceInfoDiv>
+        <BalanceValue>
           {this.props.totalBalance.toFixed(
             this.referenceStore.getBaseAssetAccuracy
           )}
-        </StyledBalanceValue>
-        <StyledButton onClick={this.handleClick} id="baseAssetBtn">
+        </BalanceValue>
+        <Button onClick={this.handleClick} id="baseAssetBtn">
           {pathOr('', ['getBaseAsset', 'name'], this.referenceStore)}
-        </StyledButton>
+        </Button>
         {this.uiStore.showAssetsSelect ? (
           <ClickOutside onClickOutside={this.uiStore.toggleAssetsSelect}>
             <CustomSelect
@@ -89,13 +53,17 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
               items={this.getOptions()}
               click={this.handleChange()}
               needScroll={true}
+              isActiveMarked={true}
+              activeValue={pathOr(
+                '',
+                ['getBaseAsset', 'id'],
+                this.referenceStore
+              )}
             />
           </ClickOutside>
         ) : null}
-        <StyledBalanceLabel className={'balance-total'}>
-          Total Balance
-        </StyledBalanceLabel>
-      </StyledBalanceInfo>
+        <BalanceLabel className={'balance-total'}>Total Balance</BalanceLabel>
+      </BalanceInfoDiv>
     );
   }
 }
