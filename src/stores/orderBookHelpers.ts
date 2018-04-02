@@ -16,8 +16,10 @@ export const priceBetween = (min: number, max: number) => (
   x: Pick<Order, 'price'>
 ) => x.price >= min && x.price < max;
 
-export const floorInt = (num: number, span: number, isAsk: boolean) =>
-  num % span > 0 ? (isAsk ? num + (span - num % span) : num - num % span) : num;
+export const closestPrice = (num: number, span: number, isAsk: boolean) =>
+  num % span > Number.EPSILON
+    ? isAsk ? num + (span - num % span) : num - num % span
+    : num;
 
 export const groupOrdersByPrice = (orders: Order[]) => {
   sortBy(o => o.price, orders);
@@ -61,7 +63,7 @@ export const aggregateOrders = (
   const newOrders = [];
   for (const order of orders) {
     const newOrder = {...order};
-    newOrder.price = floorInt(order.price, span, isAsk);
+    newOrder.price = closestPrice(order.price, span, isAsk);
     newOrders.push(newOrder);
   }
 
@@ -79,7 +81,7 @@ export const connectLimitOrders = (
       return;
     }
     orders.forEach((order, idx) => {
-      if (order.price === floorInt(limitOrder.price, span, isAsk)) {
+      if (order.price === closestPrice(limitOrder.price, span, isAsk)) {
         if (!order.connectedLimitOrders) {
           order.connectedLimitOrders = [];
         }
