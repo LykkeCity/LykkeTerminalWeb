@@ -68,6 +68,8 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
   const {onChange, onArrowClick, price, quantity, amount, assetName} = props;
   const quoteAssetName = assetName.split('/')[1];
 
+  const quoteAssetName = assetName.split('/')[1];
+
   return (
     <StyledOrderOptions>
       <StyledTitle>Quantity</StyledTitle>

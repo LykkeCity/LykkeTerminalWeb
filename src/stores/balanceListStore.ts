@@ -12,7 +12,7 @@ const baseAssetStorage = StorageUtils(storageKeys.baseAsset);
 
 class BalanceListStore extends BaseStore {
   @computed
-  get getWalletsWithPositiveBalances() {
+  get getBalances() {
     return this.walletList
       .filter(b => b.totalBalance > 0)
       .sort((a, b) => b.totalBalance - a.totalBalance);
@@ -38,17 +38,9 @@ class BalanceListStore extends BaseStore {
     return this.tradingTotal;
   }
 
-  @computed
-  get getCurrentWalletModel() {
-    return this.currentWallet
-      ? this.currentWallet
-      : this.getWalletsWithPositiveBalances[0];
-  }
-
   @observable.shallow private walletList: WalletModel[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
   @observable private tradingTotal: number = 0;
-  @observable private currentWallet: WalletModel;
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -72,7 +64,7 @@ class BalanceListStore extends BaseStore {
 
   updateBalance = async (walletList: WalletModel[] = this.walletList) => {
     const promises = walletList.map(balanceList =>
-      balanceList.update(this.rootStore.referenceStore)
+      balanceList.updateTotalBalance(this.rootStore.referenceStore)
     );
     await Promise.all(promises);
     this.walletList = [...walletList];
@@ -98,10 +90,6 @@ class BalanceListStore extends BaseStore {
     await this.updateTradingWallet();
   };
 
-  selectWallet = async (index: number) => {
-    this.currentWallet = this.getWalletsWithPositiveBalances[index];
-  };
-
   updateWithAssets = async (ids: string[]) => {
     const promises: any = [];
     const {getAssetById, fetchAssetById} = this.rootStore.referenceStore;
@@ -122,38 +110,20 @@ class BalanceListStore extends BaseStore {
   };
 
   updateTradingWallet = async () => {
-    const assets = this.tradingAssets.map(asset => ({
-      AssetId: asset.id,
-      Balance: asset.balance
-    }));
     const baseAssetId = baseAssetStorage.get();
 
-    const updatedBalances: any[] = await MarketService.convert(
-      assets,
-      baseAssetId!
-    );
     this.tradingAssets = this.tradingAssets.map(a => {
-      const balanceInBaseAsset = pathOr(
-        0,
-        ['Balance'],
-        updatedBalances.find(b => b.FromAssetId === a.id)
+      a.balanceInBaseAsset = MarketService.convert(
+        a.balance,
+        a.id,
+        baseAssetId!,
+        this.rootStore.referenceStore.getInstrumentById
       );
-      a.balanceInBaseAsset = balanceInBaseAsset;
       return a;
     });
-    this.tradingTotal = updatedBalances.map(b => b.Balance).reduce(add, 0);
-    const balanceInBaseAssetExists = this.tradingAssets.some(a =>
-      this.eqToBaseAssetId(a, baseAssetId!)
-    );
-    if (balanceInBaseAssetExists) {
-      const balancesInBaseAsset = this.tradingAssets.filter(a =>
-        this.eqToBaseAssetId(a, baseAssetId!)
-      );
-      balancesInBaseAsset.forEach(b => (b.balanceInBaseAsset = b.balance));
-      this.tradingTotal += balancesInBaseAsset
-        .map(a => a.balance)
-        .reduce(add, 0);
-    }
+    this.tradingTotal = this.tradingAssets
+      .map(b => b.balanceInBaseAsset)
+      .reduce(add, 0);
   };
 
   subscribe = (session: any) => {
@@ -172,9 +142,6 @@ class BalanceListStore extends BaseStore {
   private getTradingWallet = (walletList: WalletModel[]) => {
     return walletList.find(b => b.type === keys.trading)!;
   };
-
-  private eqToBaseAssetId = (a: AssetBalanceModel, baseAssetId: string) =>
-    a.id === baseAssetId;
 }
 
 export default BalanceListStore;

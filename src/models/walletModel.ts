@@ -1,8 +1,9 @@
+import {add} from 'rambda';
 import MarketService from '../services/marketService';
 import ReferenceStore from '../stores/referenceStore';
 
 export default class WalletModel {
-  name: string;
+  symbol: string;
   balances: any[];
   id: string;
   profitAndLoss: number = 0;
@@ -10,28 +11,24 @@ export default class WalletModel {
   type: string;
 
   constructor(wallet: any) {
-    this.name = wallet.Name;
+    this.symbol = wallet.Name;
     this.id = wallet.Id;
     this.balances = wallet.Balances;
     this.type = wallet.Type;
   }
 
-  update = async (referenceStore: ReferenceStore) => {
+  updateTotalBalance = async (referenceStore: ReferenceStore) => {
     const baseAssetId = referenceStore.baseAssetId;
 
-    const convertedBalances = await MarketService.convert(
-      this.balances,
-      baseAssetId
-    );
-    this.totalBalance = 0;
-    this.balances = this.balances.map((b, index) => {
-      if (b.AssetId === baseAssetId) {
-        b.balanceInBaseAsset = b.Balance;
-      } else {
-        b.balanceInBaseAsset = convertedBalances[index].Balance;
-      }
-      this.totalBalance += b.balanceInBaseAsset;
-      return b;
-    });
+    this.totalBalance = this.balances
+      .map(b =>
+        MarketService.convert(
+          b.Balance,
+          b.AssetId,
+          baseAssetId,
+          referenceStore.getInstrumentById
+        )
+      )
+      .reduce(add, 0);
   };
 }
