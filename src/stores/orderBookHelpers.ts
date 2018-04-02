@@ -1,3 +1,4 @@
+import {Big} from 'big.js';
 import {multiply, sortBy, take} from 'rambda';
 import {Order, Side} from '../models';
 
@@ -16,10 +17,10 @@ export const priceBetween = (min: number, max: number) => (
   x: Pick<Order, 'price'>
 ) => x.price >= min && x.price < max;
 
-export const closestPrice = (num: number, span: number, isAsk: boolean) =>
-  num % span > Math.pow(10, -10)
-    ? isAsk ? num + (span - num % span) : num - num % span
-    : num;
+export const closestPrice = (num: number, span: number, isAsk: boolean) => {
+  const mod = Big(num).mod(span);
+  return mod.eq(0) ? num : isAsk ? num + (span - num % span) : num - num % span;
+};
 
 export const groupOrdersByPrice = (orders: Order[]) => {
   sortBy(o => o.price, orders);
