@@ -1,13 +1,12 @@
 import * as React from 'react';
-import {Order, Side} from '../../models/index';
+import {Order} from '../../models/index';
 import {normalizeVolume} from '../../utils';
 import {
-  StyledAskVolume,
-  StyledBidVolume,
-  StyledCloseOrders,
-  StyledMidCell,
+  MyOrdersIndicator,
   StyledOrderRow,
-  StyledVolumeCell,
+  StyledPrice,
+  StyledValue,
+  StyledVolume,
   StyledVolumeOverlay
 } from './styles';
 
@@ -23,6 +22,8 @@ interface OrderBookItemProps extends Order {
   depth: number;
   orderVolume: number;
   connectedLimitOrders: string[];
+  showMyOrders: any;
+  scrollComponent?: any;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -39,62 +40,48 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   depth,
   onPriceClick,
   onDepthClick,
-  onOrderClick
+  onOrderClick,
+  showMyOrders,
+  scrollComponent
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
+  const ownOrders = connectedLimitOrders.length > 0;
   return (
-    <StyledOrderRow>
-      <StyledVolumeCell side={side}>
-        {side === Side.Sell ? (
-          <div onClick={onDepthClick(+currentPrice, depth)}>
-            <StyledVolumeOverlay
-              side={side}
-              volume={normalizeVolume(valueToShow, minValue, maxValue)}
-            />
-            {valueToShow.toFixed(volumeAccuracy)}
-          </div>
-        ) : (
-          !!orderVolume &&
-          side === Side.Buy && (
-            <StyledAskVolume side={side}>
-              <StyledCloseOrders
-                side={side}
-                onClick={onOrderClick(connectedLimitOrders)}
-              >
-                &times;
-              </StyledCloseOrders>
-              <div>{orderVolume}</div>
-            </StyledAskVolume>
-          )
-        )}
-      </StyledVolumeCell>
-      <StyledMidCell onClick={onPriceClick(+currentPrice)}>
-        {currentPrice}
-      </StyledMidCell>
-      <StyledVolumeCell side={side}>
-        {side === Side.Buy ? (
-          <div onClick={onDepthClick(+currentPrice, depth)}>
-            <StyledVolumeOverlay
-              side={side}
-              volume={normalizeVolume(valueToShow, minValue, maxValue)}
-            />
-            {valueToShow.toFixed(volumeAccuracy)}
-          </div>
-        ) : (
-          !!orderVolume &&
-          side === Side.Sell && (
-            <StyledBidVolume side={side}>
-              <div>{orderVolume}</div>
-              <StyledCloseOrders
-                side={side}
-                onClick={onOrderClick(connectedLimitOrders)}
-              >
-                &times;
-              </StyledCloseOrders>
-            </StyledBidVolume>
-          )
-        )}
-      </StyledVolumeCell>
+    <StyledOrderRow
+      // tslint:disable-next-line:jsx-no-lambda
+      onMouseEnter={e =>
+        showMyOrders({
+          position: {
+            top: e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62
+          },
+          orders: connectedLimitOrders,
+          volume: orderVolume,
+          onCancel: onOrderClick
+        })
+      }
+    >
+      <StyledPrice onClick={onPriceClick(+currentPrice)}>
+        {(+currentPrice).toLocaleString(undefined, {
+          maximumFractionDigits: priceAccuracy
+        })}
+      </StyledPrice>
+      <StyledVolume side={side}>
+        <div onClick={onDepthClick(+currentPrice, depth)}>
+          {ownOrders && <MyOrdersIndicator side={side} />}
+          <StyledVolumeOverlay
+            side={side}
+            volume={normalizeVolume(valueToShow, minValue, maxValue)}
+          />
+          {valueToShow.toLocaleString(undefined, {
+            maximumFractionDigits: volumeAccuracy
+          })}
+        </div>
+      </StyledVolume>
+      <StyledValue>
+        {(valueToShow * price).toLocaleString(undefined, {
+          maximumFractionDigits: priceAccuracy
+        })}
+      </StyledValue>
     </StyledOrderRow>
   );
 };

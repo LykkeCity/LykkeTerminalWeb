@@ -45,3 +45,6 @@ export const normalizeVolume = (
 export const nextSkip = (skip: number, take: number, skipWamp: number) => {
   return skip + take + skipWamp;
 };
+
+export const plural = (w: string, count: number) =>
+  count > 1 ? w.concat('s') : w;

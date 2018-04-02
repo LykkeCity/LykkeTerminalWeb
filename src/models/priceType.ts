@@ -1,7 +1,8 @@
 enum PriceType {
   Bid = 'bid',
   Ask = 'ask',
-  Mid = 'mid'
+  Mid = 'mid',
+  Trade = 'trades'
 }
 
 export default PriceType;

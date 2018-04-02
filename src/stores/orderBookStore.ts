@@ -14,6 +14,7 @@ import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
+import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
@@ -24,6 +25,14 @@ const sortByPrice = sortBy(x => x.price);
 class OrderBookStore extends BaseStore {
   @observable rawBids: Order[] = [];
   @observable rawAsks: Order[] = [];
+
+  @observable
+  myOrders = {
+    position: {top: 0, left: 0},
+    orders: [],
+    volume: 0,
+    onCancel: undefined
+  };
 
   spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
   @observable spanMultiplierIdx = 0;
@@ -53,7 +62,13 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get span() {
-    return this.seedSpan * this.spanMultiplier;
+    if (this.rootStore.uiStore.selectedInstrument) {
+      return precisionFloor(
+        this.seedSpan * this.spanMultiplier,
+        this.rootStore.uiStore.selectedInstrument.accuracy
+      );
+    }
+    return 0;
   }
 
   private subscriptions: Set<ISubscription> = new Set();
@@ -92,6 +107,16 @@ class OrderBookStore extends BaseStore {
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
+  @computed
+  get spread() {
+    return this.bestAsk() - this.bestBid();
+  }
+
+  @computed
+  get spreadRelative() {
+    return (this.bestAsk() - this.bestBid()) / this.bestAsk();
+  }
+
   @action
   nextSpan = () => {
     if (this.spanMultiplierIdx < this.maxMultiplierIdx) {
@@ -104,6 +129,11 @@ class OrderBookStore extends BaseStore {
     if (this.spanMultiplierIdx > 0) {
       this.spanMultiplierIdx--;
     }
+  };
+
+  @action
+  showMyOrders = (myOrders: any) => {
+    Object.assign(this.myOrders, myOrders);
   };
 
   fetchAll = async () => {
