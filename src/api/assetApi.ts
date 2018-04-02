@@ -29,6 +29,7 @@ export class MockAssetApi implements AssetApi {
   fetchAll = () => Promise.resolve<any[]>([]);
   fetchAssetById = () => Promise.resolve<any[]>([]);
   fetchBaseAsset = () => Promise.resolve<any[]>([]);
+  fetchAvailableAssets = () => Promise.resolve<any[]>([]);
   fetchAssetCategories = () => Promise.resolve<any[]>([]);
   fetchAssetInstruments = () => Promise.resolve<any[]>([]);
   setBaseAsset = () => Promise.resolve<any[]>([]);

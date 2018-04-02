@@ -4,7 +4,6 @@ import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
-import MarketService from '../services/marketService';
 import ErrorParser from '../utils/errorParser';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
@@ -93,20 +92,6 @@ class OrderStore extends BaseStore {
       )
     );
     this.updateOrders();
-  };
-
-  convertPartiallyBalance = async (
-    balance: number,
-    baseAssetName: string,
-    quoteAssetName: string
-  ) => {
-    return await MarketService.convertAsset(
-      {
-        Amount: balance,
-        AssetId: baseAssetName
-      },
-      quoteAssetName
-    );
   };
 
   executeOrder = (orders: any[]) => {
