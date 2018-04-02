@@ -1,6 +1,6 @@
 import {action, observable, reaction} from 'mobx';
 import keys from '../constants/storageKeys';
-import {InstrumentModel} from '../models/index';
+import {InstrumentModel, TradeFilter} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -31,14 +31,20 @@ class UiStore extends BaseStore {
           subscribe(this.getWs());
 
           const {
+            resetTrades,
+            fetchTrades,
+            resetPublicTrades,
             fetchPublicTrades,
-            subscribeToPublicTrades,
-            unsubscribeFromPublicTrades
+            subscribeToPublicTrades
           } = this.rootStore.tradeStore;
 
+          if (this.rootStore.tradeStore.filter === TradeFilter.CurrentAsset) {
+            fns.seq(resetTrades, fetchTrades)();
+          }
+
           fns.seq(
+            resetPublicTrades,
             fetchPublicTrades,
-            unsubscribeFromPublicTrades,
             subscribeToPublicTrades
           )();
 

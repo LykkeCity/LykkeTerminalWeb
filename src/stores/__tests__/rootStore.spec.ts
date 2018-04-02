@@ -7,6 +7,7 @@ describe('root store', () => {
   beforeEach(() => {
     rootStore = new RootStore();
     rootStore.authStore.reset = jest.fn();
+    rootStore.tradeStore.unsubscribeFromPublicTrades = jest.fn();
   });
 
   describe('reset stores', () => {

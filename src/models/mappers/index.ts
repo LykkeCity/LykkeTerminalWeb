@@ -7,13 +7,9 @@ import {
   Interval,
   OrderModel,
   OrderType,
-  Side,
-  TradeModel
+  Side
 } from '../index';
-import SideDirection from '../sideDirection';
 import WatchlistModel from '../watchlistModel';
-
-// tslint:disable:object-literal-sort-keys
 
 export const mapToOrder = (dto: any) => ({
   id: dto.Id,
@@ -122,36 +118,6 @@ export const mapToLimitOrder = ({
     side: OrderAction,
     symbol: AssetPairId,
     volume: Volume || Voume
-  });
-
-export const mapToTradeFromWamp = ({
-  Asset,
-  Volume,
-  Direction,
-  OrderType: orderType,
-  DateTime,
-  TradeId
-}: any) => {
-  const side = Direction === SideDirection.Buy ? Side.Buy : Side.Sell;
-  return new TradeModel({
-    quantity: Direction === SideDirection.Buy ? Volume : Volume * -1,
-    side,
-    asset: Asset,
-    timestamp: DateTime,
-    tradeId: TradeId,
-    id: `${TradeId}${Asset}-${side}`,
-    orderType: mapHistoryTypeToOrderType(orderType)
-  });
-};
-
-export const mapToTradeFromRest = ({Asset, Amount, DateTime, Id}: any) =>
-  new TradeModel({
-    id: Id,
-    quantity: Amount,
-    asset: Asset,
-    timestamp: DateTime,
-    tradeId: Id,
-    side: Amount >= 0 ? Side.Buy : Side.Sell
   });
 
 export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly, Order}: any) =>
