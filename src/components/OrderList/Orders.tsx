@@ -2,7 +2,9 @@ import * as React from 'react';
 import {OrderModel} from '../../models/index';
 import Types from '../../models/modals';
 import {HBar} from '../Bar';
-import {OrderActions, OrderList} from './';
+import {Table} from '../Table';
+import {HeaderCell} from '../Table/styles';
+import {OrderActions, OrderCellWidth, OrderList} from './';
 import {CancelAllOrders, ToggleOrders} from './OrderListAdditional';
 import OrderListToolbar from './OrderListToolbar';
 
@@ -35,6 +37,20 @@ const Blotter: React.SFC<OrdersProps> = ({
         <CancelAllOrders />
       </OrderListToolbar>
       <HBar />
+      <Table>
+        <thead>
+          <tr>
+            <HeaderCell w={OrderCellWidth.Symbol}>Asset pair</HeaderCell>
+            <HeaderCell w={OrderCellWidth.CancelOrder}>Cancel order</HeaderCell>
+            <HeaderCell w={OrderCellWidth.Id}>OrderID</HeaderCell>
+            <HeaderCell w={OrderCellWidth.Side}>Side</HeaderCell>
+            <th>Volume</th>
+            <th>Price</th>
+            <th>Created Date</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+      </Table>
       <OrderList
         orders={orders}
         onEditOrder={handleEditOrder}

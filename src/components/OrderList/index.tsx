@@ -4,6 +4,13 @@ import {withScroll} from '../CustomScrollbar';
 import OrderList from './OrderList';
 import Orders from './Orders';
 
+export const OrderCellWidth = {
+  Symbol: 70,
+  CancelOrder: 100,
+  Id: 300,
+  Side: 50
+};
+
 export interface OrderActions {
   cancelOrder?: (id: string) => void;
 }
