@@ -67,11 +67,6 @@ class OrderListStore extends BaseStore {
   };
 
   @action
-  addOrder = (order: any) => {
-    this.orders.push(mappers.mapToLimitOrder(order));
-  };
-
-  @action
   deleteOrder = (orderId: string) => {
     this.orders.some((existedOrder: OrderModel, index: number) => {
       if (existedOrder.id === orderId) {
