@@ -14,30 +14,20 @@ const OrderList: React.SFC<OrderListProps> = ({
   onEditOrder,
   onCancelOrder
 }) => (
-  <Table>
-    <thead>
-      <tr>
-        <th>Asset pair</th>
-        <th>Cancel order</th>
-        <th>OrderID</th>
-        <th>Side</th>
-        <th>Volume</th>
-        <th>Price</th>
-        <th>Created Date</th>
-        <th>Edit</th>
-      </tr>
-    </thead>
-    <tbody>
-      {orders.map(order => (
-        <OrderListItem
-          key={order.id}
-          cancelOrder={onCancelOrder}
-          onEdit={onEditOrder(order)}
-          {...order}
-        />
-      ))}
-    </tbody>
-  </Table>
+  <React.Fragment>
+    <Table>
+      <tbody>
+        {orders.map(order => (
+          <OrderListItem
+            key={order.id}
+            cancelOrder={onCancelOrder}
+            onEdit={onEditOrder(order)}
+            {...order}
+          />
+        ))}
+      </tbody>
+    </Table>
+  </React.Fragment>
 );
 
 export default OrderList;

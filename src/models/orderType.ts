@@ -12,7 +12,9 @@ enum OrderInputs {
 enum OrderBookType {
   Cancelled = 'Cancelled',
   Matched = 'Matched',
-  Placed = 'InOrderBook'
+  Placed = 'InOrderBook',
+  Processing = 'Processing',
+  Rejected = 'Rejected'
 }
 
 export {OrderType, OrderInputs, OrderBookType};
