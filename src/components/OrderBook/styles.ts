@@ -116,16 +116,12 @@ export const StyledSellOrders = styled.tbody``;
 
 export const StyledBuyOrders = styled.tbody``;
 
-export const StyledMidPrice = styled.td`
+export const MidRow = styled.td`
   min-height: 24px;
   color: ${colors.white};
   padding: 1rem 0 !important;
   position: relative;
-
-  &:hover {
-    cursor: pointer;
-  }
-` as any;
+`;
 
 export const MidOverlay = styled.div`
   background: ${colors.darkGraphite};
@@ -142,24 +138,39 @@ export const MidFigures = styled.div`
   position: relative;
   z-index: 2;
 
-  strong {
-    font-family: 'Akrobat';
-    font-size: ${rem(fonts.extraLarge)};
-    font-weight: bold;
-  }
-
   small {
     text-align: right;
     font-size: ${rem(fonts.normal)};
     margin-left: auto;
-    span {
-      opacity: 0.4;
-      font-size: ${rem(12)};
-    }
-    &:last-child {
-      margin-left: 30px;
-    }
   }
+`;
+
+export const LastTradePrice = styled.div`
+  font-family: 'Akrobat';
+  font-size: ${rem(fonts.extraLarge)};
+  font-weight: bold;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const MidPrice = styled.div`
+  text-align: right;
+  font-size: ${rem(fonts.normal)};
+  margin-left: auto;
+
+  & > span:hover {
+    cursor: pointer;
+  }
+
+  small {
+    opacity: 0.4;
+    font-size: ${rem(12)};
+  }
+`;
+
+export const Spread = MidPrice.extend`
+  margin-left: 30px;
 `;
 
 export const StyledOrderRow = styled.tr`

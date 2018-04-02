@@ -17,7 +17,7 @@ export const priceBetween = (min: number, max: number) => (
 ) => x.price >= min && x.price < max;
 
 export const closestPrice = (num: number, span: number, isAsk: boolean) =>
-  num % span > Number.EPSILON
+  num % span > Math.pow(10, -10)
     ? isAsk ? num + (span - num % span) : num - num % span
     : num;
 
