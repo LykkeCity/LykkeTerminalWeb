@@ -16,7 +16,7 @@ class InstrumentList extends React.Component<InstrumentListProps> {
   render() {
     return (
       <StyledInstruments>
-        <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={560}>
+        <Scrollbars autoHide={true} autoHeight={true} autoHeightMax={540}>
           {this.props.instruments.map(x => (
             <InstrumentListItem
               key={x.id}

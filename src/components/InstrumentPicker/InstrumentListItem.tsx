@@ -17,8 +17,10 @@ interface InstrumentListItemProps extends InstrumentPickerActions {
 const StyledInstrumentItem = styled(Flex)`
   margin-top: 10px;
   justify-content: space-between;
-  &.inactive:hover {
+  &:hover {
     background-color: rgba(0, 0, 0, 0.2);
+  }
+  &.inactive:hover {
     cursor: pointer;
   }
 `;
