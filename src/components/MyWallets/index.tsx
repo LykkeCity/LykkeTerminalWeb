@@ -1,4 +1,5 @@
 import {AssetModel} from '../../models';
+import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import MyWallets, {MyWalletsProps} from './MyWallets';
 
@@ -9,14 +10,16 @@ const ConnectedMyWallets = connect<MyWalletsProps>(
       getWalletsWithPositiveBalances: wallets,
       totalBalance: total
     },
-    referenceStore: {getAssetById, baseAssetId}
+    referenceStore: {getAssetById, baseAssetId},
+    authStore: {isAuth}
   }) => ({
     onSelectWallet: selectWallet,
     wallets,
     baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
-    total
+    total,
+    isAuth
   }),
-  MyWallets
+  withAuth(MyWallets)
 );
 
 export {ConnectedMyWallets as MyWallets};
