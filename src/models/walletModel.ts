@@ -1,4 +1,4 @@
-import {add, without} from 'rambda';
+import {add} from 'rambda';
 import MarketService from '../services/marketService';
 import ReferenceStore from '../stores/referenceStore';
 
@@ -20,23 +20,15 @@ export default class WalletModel {
   updateTotalBalance = async (referenceStore: ReferenceStore) => {
     const baseAssetId = referenceStore.baseAssetId;
 
-    const balancesInBaseAsset = this.balances.filter(
-      balance => balance.AssetId === baseAssetId
-    );
-    let balancesNotInBaseAsset = without(balancesInBaseAsset, this.balances);
-
-    if (balancesNotInBaseAsset.length > 0) {
-      balancesNotInBaseAsset = await MarketService.convert(
-        balancesNotInBaseAsset,
-        baseAssetId
-      );
-    }
-
-    this.totalBalance = await [
-      ...balancesInBaseAsset,
-      ...balancesNotInBaseAsset
-    ]
-      .map(b => b.Balance)
+    this.totalBalance = this.balances
+      .map(b =>
+        MarketService.convert(
+          b.Balance,
+          b.AssetId,
+          baseAssetId,
+          referenceStore.getInstrumentById
+        )
+      )
       .reduce(add, 0);
   };
 }

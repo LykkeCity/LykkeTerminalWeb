@@ -41,7 +41,6 @@ export interface OrderProps {
   initPriceFn: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
-  convertPartiallyBalance: any;
   mid: number;
   handlePercentageChange: any;
   updatePercentageState: any;
@@ -169,12 +168,7 @@ const ConnectedOrder = connect(
     balanceListStore: {availableBalance: getBalance},
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
-    orderStore: {
-      placeOrder,
-      updatePriceFn,
-      updateDepthFn,
-      convertPartiallyBalance
-    },
+    orderStore: {placeOrder, updatePriceFn, updateDepthFn},
     uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
     referenceStore,
     uiOrderStore: {
@@ -206,7 +200,6 @@ const ConnectedOrder = connect(
       return pathOr('', ['quoteAsset', 'name'], instrument);
     },
     bid: bestBid(),
-    convertPartiallyBalance,
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
     getAssetById: referenceStore.getAssetById,
