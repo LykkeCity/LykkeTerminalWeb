@@ -110,7 +110,8 @@ export const mapToLimitOrder = ({
   Volume,
   RemainingVolume,
   Price,
-  AssetPairId
+  AssetPairId,
+  RemainingVolume
 }: any) =>
   new OrderModel({
     createdAt: new Date(CreateDateTime),

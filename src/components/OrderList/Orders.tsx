@@ -39,6 +39,7 @@ const Blotter: React.SFC<OrdersProps> = ({cancelOrder, addModal}) => {
             <HeaderCell w={OrderCellWidth.Id}>OrderID</HeaderCell>
             <HeaderCell w={OrderCellWidth.Side}>Side</HeaderCell>
             <th>Volume</th>
+            <th>Filled</th>
             <th>Price</th>
             <HeaderCell w={OrderCellWidth.CreatedDate}>Created Date</HeaderCell>
             <th>Edit</th>
