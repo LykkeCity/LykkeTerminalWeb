@@ -43,6 +43,18 @@ const chart = {
       fontStyle: 'bold',
       fontColor: '#f5f6f7'
     },
+    label: {
+      fontFamily: 'Proxima Nova',
+      fontSize: 14,
+      fontStyle: 'normal',
+      fontColor: 'rgba(234, 237, 239, 0.4)'
+    },
+    number: {
+      fontFamily: 'Proxima Nova',
+      fontSize: 16,
+      fontStyle: 'bold',
+      fontColor: '#ffffff'
+    },
     marginLeft: 16
   },
 

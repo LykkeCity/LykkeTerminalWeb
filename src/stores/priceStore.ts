@@ -1,7 +1,7 @@
 import {ISubscription} from 'autobahn';
 import {endOfToday, startOfToday} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
-import {last} from 'rambda';
+// import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
 import * as topics from '../api/topics';
@@ -40,14 +40,13 @@ class PriceStore extends BaseStore {
       'day'
     );
     runInAction(() => {
-      const {open, high, low, close, volume} = map.mapToBarFromRest(
-        last(resp.History)
-      );
-      this.dailyOpen = open;
-      this.dailyHigh = high;
-      this.dailyLow = low;
-      this.lastTradePrice = close;
-      this.dailyVolume = volume;
+      // tslint:disable-next-line:no-console
+      console.log(resp.History);
+      this.dailyOpen = 1;
+      this.dailyHigh = 1;
+      this.dailyLow = 1;
+      this.lastTradePrice = 1;
+      this.dailyVolume = 1;
     });
   };
 

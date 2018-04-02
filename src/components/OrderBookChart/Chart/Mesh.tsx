@@ -45,7 +45,7 @@ class Mesh extends React.Component<ChartProps> {
     if (this.asks.length > 0 && this.bids.length > 0) {
       const maximum =
         Math.max(this.asks[0].depth, this.bids[this.bids.length - 1].depth) +
-        25;
+        250;
       const minimum = 0;
 
       const step = (maximum - minimum) / chart.mesh.horizontalLinesAmount;

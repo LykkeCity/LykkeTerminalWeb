@@ -78,6 +78,7 @@ class Bids extends React.Component<ChartProps> {
   drawPointerPadding = () => {
     this.graphics.push(
       <Pointer
+        orders={this.bids.reverse()}
         side={'bids'}
         points={this.points}
         borders={[0, this.midY, this.midX, 0]}
@@ -92,7 +93,7 @@ class Bids extends React.Component<ChartProps> {
         this.asks[this.asks.length - 1].depth,
         this.bids[this.bids.length - 1].depth
       );
-      return this.height / (maxDepth + 25);
+      return this.height / (maxDepth + 250);
     } else {
       return 1;
     }
