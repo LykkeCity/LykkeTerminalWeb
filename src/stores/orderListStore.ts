@@ -77,8 +77,9 @@ class OrderListStore extends BaseStore {
   };
 
   @action
-  updateOrder = (limit: OrderModel, dto: any) => {
-    limit.volume = limit.volume - dto.Volume;
+  updateOrder = (dto: any) => {
+    const order = this.orders.find((o: OrderModel) => o.id === dto.Id);
+    order!.volume = dto.RemainingVolume;
   };
 
   @action

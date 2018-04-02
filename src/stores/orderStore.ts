@@ -113,19 +113,14 @@ class OrderStore extends BaseStore {
         this.orderCancelledSuccessfully(order.Id);
         break;
       case OrderBookType.Matched:
-        this.rootStore.orderListStore.limitOrders.forEach(limit => {
-          const match = limit.id === order.Id;
-
-          if (match) {
-            if (limit.volume === order.volume) {
-              this.rootStore.orderListStore.deleteOrder(order.Id);
-              this.orderClosedSuccessfully(order.Id);
-            } else {
-              this.rootStore.orderListStore.updateOrder(limit, order);
-              this.orderPartiallyClosedSuccessfully(order.Id, order.Volume);
-            }
-          }
-        });
+        this.rootStore.orderListStore.deleteOrder(order.Id);
+        this.orderClosedSuccessfully(order.Id);
+        break;
+      case OrderBookType.Processing:
+        this.rootStore.orderListStore.updateOrder(order);
+        this.orderPartiallyClosedSuccessfully(order.Id, order.Volume);
+        break;
+      case OrderBookType.Rejected:
         break;
       case OrderBookType.Placed:
         this.rootStore.orderListStore.addOrder(order);
