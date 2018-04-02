@@ -144,6 +144,7 @@ class RootStore {
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
         this.priceStore.setWs(ws);
+        this.orderListStore.setWs(ws);
         instruments.forEach(x => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(
@@ -155,6 +156,7 @@ class RootStore {
           this.checkDefaultInstrument(defaultInstrument)
         );
         this.tradeStore.subscribe(ws);
+        this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
 
         return Promise.resolve();

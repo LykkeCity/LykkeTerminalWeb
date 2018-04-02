@@ -1,5 +1,11 @@
 import MarketService from '../services/marketService';
-import {StringHelpers} from '../utils/index';
+import {
+  getPostDecimalsLength,
+  isOnlyNumbers,
+  substringLast,
+  substringMinus,
+  substringZero
+} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 
 class UiOrderStore extends BaseStore {
@@ -39,14 +45,14 @@ class UiOrderStore extends BaseStore {
   }) => {
     let {value} = options;
     const {field, accuracy} = options;
-    if (!StringHelpers.isOnlyNumbers(value)) {
+    if (!isOnlyNumbers(value)) {
       return;
     }
-    value = StringHelpers.substringZero(value);
-    value = StringHelpers.substringMinus(value);
+    value = substringZero(value);
+    value = substringMinus(value);
 
-    if (StringHelpers.getPostDecimalsLength(value) > accuracy) {
-      value = StringHelpers.substringLast(value);
+    if (getPostDecimalsLength(value) > accuracy) {
+      value = substringLast(value);
     }
     value = value === '' ? '0' : value;
 

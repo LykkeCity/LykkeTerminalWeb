@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
+import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {SideCell} from './styles';
-import {toLocaleStringWithAccuracy} from './TradeListItem';
 
 // tslint:disable-next-line:no-empty-interface
 export interface PublicTradeListItemProps extends TradeModel {}
