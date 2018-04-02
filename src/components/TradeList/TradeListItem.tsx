@@ -1,13 +1,9 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
+import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Cell} from '../Table/styles';
 import {SideCell} from './styles';
-
-export const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
-  num.toLocaleString(undefined, {
-    maximumFractionDigits: accuracy
-  });
 
 const withTitle = (Component: React.ComponentType<any>) => ({
   children,

@@ -7,7 +7,7 @@ import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderBookType} from '../models/orderType';
 import MarketService from '../services/marketService';
-import ErrorParser from '../utils/errorParser';
+import {getErrorMessage} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
@@ -119,7 +119,7 @@ class OrderStore extends BaseStore {
         break;
       case OrderBookType.Processing:
         this.rootStore.orderListStore.updateOrder(order);
-        this.orderPartiallyClosedSuccessfully(order.Id, order.Volume);
+        this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
         break;
       case OrderBookType.Rejected:
         this.handleOrderError(order.RejectReason);
@@ -189,7 +189,7 @@ class OrderStore extends BaseStore {
   private handleOrderError = (message: string) => {
     this.notificationStore.addNotification(
       levels.error,
-      `${ErrorParser.getMessage(message)}`
+      `${getErrorMessage(message)}`
     );
   };
 }
