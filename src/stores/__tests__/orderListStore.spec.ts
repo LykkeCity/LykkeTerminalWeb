@@ -16,7 +16,8 @@ describe('orderList store', () => {
     OrderAction: 'Buy',
     Price: 1,
     Status: 'InOrderBook',
-    Volume: 0.0001
+    Volume: 0.0001,
+    RemainingVolume: 0
   };
 
   beforeEach(() => {
@@ -58,9 +59,13 @@ describe('orderList store', () => {
         Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
         RemainingVolume: 0.00005
       };
-      expect(orderListStore.allOrders[0].volume).not.toBe(dto.RemainingVolume);
+      expect(orderListStore.allOrders[0].remainingVolume).not.toBe(
+        dto.RemainingVolume
+      );
       orderListStore.updateOrder(dto);
-      expect(orderListStore.allOrders[0].volume).toEqual(dto.RemainingVolume);
+      expect(orderListStore.allOrders[0].remainingVolume).toEqual(
+        dto.RemainingVolume
+      );
     });
   });
 

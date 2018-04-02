@@ -10,6 +10,7 @@ class OrderModel {
   createdAt: Date;
   id: string;
   cancelOrder?: (id: string) => void;
+  remainingVolume: number;
 
   constructor(order: Partial<OrderModel>) {
     extendObservable(this, order);
