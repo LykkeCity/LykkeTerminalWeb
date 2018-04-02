@@ -14,15 +14,18 @@ import {FAIcon} from '../Icon/Icon';
 import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
+  LastTradePrice,
   MidFigures,
   MidOverlay,
+  MidPrice,
+  MidRow,
+  Spread,
   StyledBar,
   StyledBuyOrders,
   StyledGrouping,
   StyledHeader,
   StyledHeaderCell,
   StyledHeaderRow,
-  StyledMidPrice,
   StyledOrders,
   StyledSellOrders,
   StyledWrapper
@@ -218,29 +221,32 @@ class OrderBook extends React.Component<OrderBookProps> {
             </StyledSellOrders>
             <tbody ref={this.refHandlers.midPrice}>
               <tr>
-                <StyledMidPrice
-                  onClick={this.handleUpdatePrice(Number(mid))}
-                  colSpan={3}
-                >
+                <MidRow colSpan={3}>
                   <MidFigures>
-                    <strong>
-                      {formatNumber(lastTradePrice, priceAccuracy)}
-                    </strong>
-                    <small>
-                      {formatNumber(mid, priceAccuracy)}
-                      <br />
-                      <span>Mid price</span>
-                    </small>
-                    <small>
+                    <LastTradePrice>
+                      <span
+                        onClick={this.handleUpdatePrice(Number(lastTradePrice))}
+                      >
+                        {formatNumber(lastTradePrice, priceAccuracy)}
+                      </span>
+                    </LastTradePrice>
+                    <MidPrice>
+                      <span onClick={this.handleUpdatePrice(Number(mid))}>
+                        {formatNumber(mid, priceAccuracy)}
+                        <br />
+                        <small>Mid price</small>
+                      </span>
+                    </MidPrice>
+                    <Spread>
                       {formatNumber(spreadRelative, priceAccuracy, {
                         style: 'percent'
                       })}
                       <br />
-                      <span>Spread</span>
-                    </small>
+                      <small>Spread</small>
+                    </Spread>
                   </MidFigures>
                   <MidOverlay />
-                </StyledMidPrice>
+                </MidRow>
               </tr>
             </tbody>
             <StyledBuyOrders>

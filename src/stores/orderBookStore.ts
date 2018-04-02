@@ -100,10 +100,10 @@ class OrderBookStore extends BaseStore {
   }
 
   bestBid = () =>
-    this.bids.length && last(sortBy(x => x.price, this.rawBids)).price;
+    this.rawBids.length && last(sortBy(x => x.price, this.rawBids)).price;
 
   bestAsk = () =>
-    this.asks.length && head(sortBy(x => x.price, this.rawAsks)).price;
+    this.rawAsks.length && head(sortBy(x => x.price, this.rawAsks)).price;
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
