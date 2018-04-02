@@ -14,7 +14,7 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   asset
 }) => (
   <tr>
-    <td>{balance.AssetId}</td>
+    <td>{asset.name}</td>
     <td />
     <td>
       <WalletBalanceNumber
