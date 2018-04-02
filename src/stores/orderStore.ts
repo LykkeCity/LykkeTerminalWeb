@@ -121,6 +121,7 @@ class OrderStore extends BaseStore {
         this.orderPartiallyClosedSuccessfully(order.Id, order.Volume);
         break;
       case OrderBookType.Rejected:
+        this.handleOrderError(order.RejectReason);
         break;
       case OrderBookType.Placed:
         this.rootStore.orderListStore.addOrder(order);
@@ -181,18 +182,14 @@ class OrderStore extends BaseStore {
       );
       return;
     }
-
-    let message;
-    try {
-      message =
-        JSON.parse(error.message).ME || JSON.parse(error.message).message;
-      message = ErrorParser.getMessage(message);
-    } catch (e) {
-      message = !!error.message.length ? error.message : messages.defaultError;
-    }
-    this.notificationStore.addNotification(levels.error, `${message}`);
-
     return Promise.reject(error);
+  };
+
+  private handleOrderError = (message: string) => {
+    this.notificationStore.addNotification(
+      levels.error,
+      `${ErrorParser.getMessage(message)}`
+    );
   };
 }
 
