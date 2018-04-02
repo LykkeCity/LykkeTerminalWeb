@@ -27,8 +27,10 @@ export interface OrderProps {
   accuracy: any;
   currency: string;
   placeOrder: any;
-  baseName: string;
-  quoteName: string;
+  baseAssetName: string;
+  baseAssetId: string;
+  quoteAssetName: string;
+  quoteAssetId: string;
   stateFns: any[];
   getAssetById: any;
   onArrowClick: any;
@@ -90,8 +92,8 @@ export interface OrderFormProps {
 
 export interface OrderBasicFormProps {
   action: string;
-  baseName: string;
-  quoteName: string;
+  baseAssetName: string;
+  quoteAssetName: string;
   balance: number;
   isDisable: boolean;
   isSell: boolean;
@@ -189,20 +191,19 @@ const ConnectedOrder = connect(
       priceAccuracy: pathOr(2, ['accuracy'], instrument),
       get quantityAccuracy() {
         const asset = referenceStore.getAssetById(
-          pathOr('', ['name'], instrument).split('/')[0]
+          pathOr('', ['baseAsset', 'id'], instrument)
         );
         return asset ? asset.accuracy : 2;
       }
     },
     addModal,
     ask: bestAsk(),
-    get baseName() {
-      const name = pathOr('', ['name'], instrument);
-      return name && name.split('/')[0];
+    baseAssetId: pathOr('', ['baseAsset', 'id'], instrument),
+    get baseAssetName() {
+      return pathOr('', ['baseAsset', 'name'], instrument);
     },
-    get quoteName() {
-      const name = pathOr('', ['name'], instrument);
-      return name && name.split('/')[1];
+    get quoteAssetName() {
+      return pathOr('', ['quoteAsset', 'name'], instrument);
     },
     bid: bestBid(),
     convertPartiallyBalance,
@@ -215,6 +216,7 @@ const ConnectedOrder = connect(
     onArrowClick,
     onValueChange,
     placeOrder,
+    quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
     resetPercentage,
     stateFns,
     updateDepthFn,
@@ -222,14 +224,14 @@ const ConnectedOrder = connect(
     updatePriceFn,
     get baseAssetBalance() {
       const asset = getBalance.find((a: AssetBalanceModel) => {
-        const baseAssetName = pathOr('', ['name'], instrument).split('/')[0];
+        const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
         return a.id === baseAssetName;
       });
       return asset && asset.available;
     },
     get quoteAssetBalance() {
       const asset = getBalance.find((a: AssetBalanceModel) => {
-        const quoteAssetName = pathOr('', ['name'], instrument).split('/')[1];
+        const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
         return a.id === quoteAssetName;
       });
       return asset && asset.available;

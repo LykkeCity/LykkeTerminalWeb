@@ -67,7 +67,8 @@ const StyledInputNumberComponent = styled.div`
 const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
   const {onChange, onArrowClick, price, quantity, amount, assetName} = props;
 
-  const quoteName = assetName.split('/')[1];
+  const quoteAssetName = assetName.split('/')[1];
+
   return (
     <StyledOrderOptions>
       <StyledTitle>Quantity</StyledTitle>
@@ -92,7 +93,7 @@ const OrderInput: React.SFC<OrderFormProps> = (props: OrderFormProps) => {
           />
         </StyledInputNumberComponent>
         <StyledAmount>
-          Total: {amount} {quoteName}
+          Total: {amount} {quoteAssetName}
         </StyledAmount>
       </StyledOptions>
     </StyledOrderOptions>

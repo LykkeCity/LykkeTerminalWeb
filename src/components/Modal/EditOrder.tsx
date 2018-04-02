@@ -54,8 +54,10 @@ const StyledTitle = styled.div`
 class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private action: string;
   private accuracy: {priceAccuracy: number; quantityAccuracy: number};
-  private baseName: string = '';
-  private quoteName: string = '';
+  private baseAssetName: string = '';
+  private quoteAssetName: string = '';
+  private baseAssetId: string = '';
+  private quoteAssetId: string = '';
   private currency: string = '';
   private isSellActive: boolean;
   private balance: number = 0;
@@ -77,15 +79,17 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       priceAccuracy: pathOr(2, ['accuracy'], currentInstrument),
       quantityAccuracy: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument)
     };
-    this.baseName = currentInstrument.name.split('/')[0];
-    this.quoteName = currentInstrument.name.split('/')[1];
+    this.baseAssetName = currentInstrument.baseAsset.name;
+    this.quoteAssetName = currentInstrument.quoteAsset.name;
+    this.baseAssetId = currentInstrument.baseAsset.id;
+    this.quoteAssetId = currentInstrument.quoteAsset.id;
     this.action = modal.config.side.toLowerCase();
     this.currency = currentInstrument.id;
     this.isSellActive = this.action === Side.Sell.toLowerCase();
 
-    const assetName = this.isSellActive ? this.baseName : this.quoteName;
+    const assetId = this.isSellActive ? this.baseAssetId : this.quoteAssetId;
     const asset = this.props.getBalance.find((a: AssetBalanceModel) => {
-      return a.id === assetName;
+      return a.id === assetId;
     });
     const reserved = this.isSellActive
       ? modal.config.volume
@@ -96,20 +100,20 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
     const {
       accuracy: {quantityAccuracy, priceAccuracy},
-      baseName,
-      quoteName
+      baseAssetId,
+      quoteAssetId
     } = this;
 
     const tempObj = await this.props.handlePercentageChange({
       balance: this.balance,
-      baseName,
+      baseAssetId,
       index,
       isInverted,
       isSellActive: this.isSellActive,
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteName
+      quoteAssetId
     });
 
     this.setState(tempObj);
@@ -162,7 +166,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   handleEditOrder = () => {
     this.toggleDisableBtn(true);
     const body: any = {
-      AssetId: this.baseName,
+      AssetId: this.baseAssetId,
       AssetPairId: this.currency,
       OrderAction: this.action,
       Price: parseFloat(this.state.priceValue),
@@ -204,8 +208,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           onArrowClick={this.onArrowClick}
           percents={this.state.percents}
           onHandlePercentageChange={this.handlePercentageChange}
-          baseName={this.baseName}
-          quoteName={this.quoteName}
+          baseAssetName={this.baseAssetName}
+          quoteAssetName={this.quoteAssetName}
           isSell={this.isSellActive}
           isDisable={this.isDisable()}
           amount={this.props.fixedAmount(

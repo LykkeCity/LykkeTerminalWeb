@@ -68,7 +68,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   handleChangeInstrument = (instrument: InstrumentModel) => {
     const priceAccuracy = pathOr(2, ['accuracy'], instrument);
     const asset = this.props.getAssetById(
-      pathOr('', ['name'], instrument).split('/')[0]
+      pathOr('', ['baseAsset', 'id'], instrument)
     );
     const quantityAccuracy = asset ? asset.accuracy : 2;
 
@@ -127,12 +127,12 @@ class Order extends React.Component<OrderProps, OrderState> {
   applyOrder = (
     action: string,
     quantity: string,
-    baseName: string,
+    baseAssetId: string,
     price: string
   ) => {
     const orderType = this.state.isMarketActive ? MARKET : LIMIT;
     const body: any = {
-      AssetId: baseName,
+      AssetId: baseAssetId,
       AssetPairId: this.props.currency,
       OrderAction: action,
       Volume: parseFloat(quantity)
@@ -154,8 +154,8 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   handleButtonClick = (
     action: string,
-    baseName: string,
-    quoteName: string,
+    baseAssetName: string,
+    quoteAssetName: string,
     accuracy?: number
   ) => {
     this.disableButton(true);
@@ -170,15 +170,26 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
-      return this.applyOrder(action, currentQuantity, baseName, currentPrice);
+      return this.applyOrder(
+        action,
+        currentQuantity,
+        this.props.baseAssetId,
+        currentPrice
+      ); // TODO baseAssetId should be passed from component for inverted case
     }
     const messageSuffix = this.state.isMarketActive
       ? 'at the market price'
-      : `at the price of ${currentPrice} ${quoteName}`;
-    const message = `${action} ${currentQuantity} ${baseName} ${messageSuffix}`;
+      : `at the price of ${currentPrice} ${quoteAssetName}`;
+    const message = `${action} ${currentQuantity} ${baseAssetName} ${messageSuffix}`;
     this.props.addModal(
       message,
-      () => this.applyOrder(action, currentQuantity, baseName, currentPrice),
+      () =>
+        this.applyOrder(
+          action,
+          currentQuantity,
+          this.props.baseAssetId,
+          currentPrice
+        ), // TODO baseAssetId should be passed from component for inverted case
       this.cancelOrder,
       Types.Confirm
     );
@@ -230,14 +241,14 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetBalance,
       quoteAssetBalance,
       accuracy: {quantityAccuracy, priceAccuracy},
-      baseName,
-      quoteName
+      baseAssetId,
+      quoteAssetId
     } = this.props;
     const {isLimitActive, isSellActive, isMarketActive} = this.state;
 
     const tempObj = await this.props.handlePercentageChange({
       balance: this.state.isSellActive ? baseAssetBalance : quoteAssetBalance,
-      baseName,
+      baseAssetId,
       index,
       isInverted,
       isLimitActive,
@@ -246,7 +257,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteName
+      quoteAssetId
     });
 
     this.setState(tempObj);
@@ -275,8 +286,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetBalance,
       quoteAssetBalance,
       accuracy: {quantityAccuracy, priceAccuracy},
-      baseName,
-      quoteName,
+      baseAssetName,
+      quoteAssetName,
       fixedAmount,
       bid,
       ask,
@@ -344,14 +355,16 @@ class Order extends React.Component<OrderProps, OrderState> {
             onArrowClick={this.onArrowClick}
             percents={percents}
             onHandlePercentageChange={this.handlePercentageChange}
-            baseName={baseName}
-            quoteName={quoteName}
+            baseAssetName={baseAssetName}
+            quoteAssetName={quoteAssetName}
             isSell={isSellActive}
             amount={fixedAmount(currentPrice, quantityValue, priceAccuracy)}
             isDisable={this.isLimitDisable()}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
-            buttonMessage={`${capitalize(action)} ${quantityValue} ${baseName}`}
+            buttonMessage={`${capitalize(
+              action
+            )} ${quantityValue} ${baseAssetName}`}
           />
         )}
 
@@ -360,8 +373,8 @@ class Order extends React.Component<OrderProps, OrderState> {
             quantityAccuracy={quantityAccuracy}
             action={action}
             quantity={quantityValue}
-            baseName={baseName}
-            quoteName={quoteName}
+            baseAssetName={baseAssetName}
+            quoteAssetName={quoteAssetName}
             percents={percents}
             onHandlePercentageChange={this.handlePercentageChange}
             onChange={this.onChange}
