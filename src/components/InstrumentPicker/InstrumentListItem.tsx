@@ -19,13 +19,17 @@ const StyledInstrumentItem = styled(Flex)`
   justify-content: space-between;
 
   &.active {
-    background-color: ${colors.darkGraphite};
+    background-color: ${colors.blue};
+
+    > div {
+      color: ${colors.white}!important;
+    }
   }
   &.inactive:hover {
     cursor: pointer;
   }
-  &:hover {
-    background-color: ${colors.darkGraphite};
+  &:not(.active):hover {
+    background-color: rgba(0, 0, 0, 0.2);
   }
 `;
 
