@@ -93,7 +93,7 @@ class Bids extends React.Component<ChartProps> {
         this.asks[this.asks.length - 1].depth,
         this.bids[this.bids.length - 1].depth
       );
-      return this.height / (maxDepth + 250);
+      return this.height / (maxDepth + maxDepth / 2);
     } else {
       return 1;
     }

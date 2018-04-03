@@ -43,9 +43,11 @@ class Mesh extends React.Component<ChartProps> {
   generateHorizontalLabels = () => {
     const labels = [];
     if (this.asks.length > 0 && this.bids.length > 0) {
-      const maximum =
-        Math.max(this.asks[0].depth, this.bids[this.bids.length - 1].depth) +
-        250;
+      const maxDepth = Math.max(
+        this.asks[0].depth,
+        this.bids[this.bids.length - 1].depth
+      );
+      const maximum = maxDepth + maxDepth / 2;
       const minimum = 0;
 
       const step = (maximum - minimum) / chart.mesh.horizontalLinesAmount;
