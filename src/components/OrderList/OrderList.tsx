@@ -3,7 +3,6 @@ import * as React from 'react';
 import {OrderListItem} from '.';
 import {OrderModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
-import {sortData, Table, TableHeader, TableSortState} from '../Table';
 import {Table} from '../Table';
 
 export interface OrderListProps extends LoaderProps {
