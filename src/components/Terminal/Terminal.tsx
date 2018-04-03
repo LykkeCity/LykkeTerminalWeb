@@ -74,7 +74,6 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 };
 
 class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
-  private unlisten: any;
   private initialValue: any = {
     direction: 'row' as MosaicDirection,
     first: {
