@@ -175,7 +175,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // title text
         <Text
-          text={`${price.toFixed(3)} ${this.props.baseAsset}`}
+          text={`${price.toFixed(3)} ${this.props.quoteAsset}`}
           fontSize={chart.modal.title.fontSize}
           fontFamily={chart.modal.title.fontFamily}
           fontStyle={chart.modal.title.fontStyle}
