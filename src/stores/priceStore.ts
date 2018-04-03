@@ -39,16 +39,18 @@ class PriceStore extends BaseStore {
       endOfToday(),
       'day'
     );
-    runInAction(() => {
-      const {open, high, low, close, volume} = map.mapToBarFromRest(
-        last(resp.History)
-      );
-      this.dailyOpen = open;
-      this.dailyHigh = high;
-      this.dailyLow = low;
-      this.lastTradePrice = close;
-      this.dailyVolume = volume;
-    });
+    if (resp.History && resp.History.length > 0) {
+      runInAction(() => {
+        const {open, high, low, close, volume} = map.mapToBarFromRest(
+          last(resp.History)
+        );
+        this.dailyOpen = open;
+        this.dailyHigh = high;
+        this.dailyLow = low;
+        this.lastTradePrice = close;
+        this.dailyVolume = volume;
+      });
+    }
   };
 
   subscribeToDailyCandle = async () => {
