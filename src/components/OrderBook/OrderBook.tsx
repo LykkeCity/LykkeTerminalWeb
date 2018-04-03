@@ -11,6 +11,7 @@ import {minOrMaxFromList} from '../../utils/math';
 import {HBar, VBar} from '../Bar';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import {FAIcon} from '../Icon/Icon';
+import {LoaderProps} from '../Loader/withLoader';
 import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
@@ -48,7 +49,7 @@ const formatNumber = (
     })) ||
   '--';
 
-interface OrderBookProps {
+export interface OrderBookProps extends LoaderProps {
   addModal: any;
   asks: Order[];
   bids: Order[];
@@ -135,6 +136,7 @@ class OrderBook extends React.Component<OrderBookProps> {
       () => {},
       Types.Confirm
     );
+    this.props.showMyOrders({orders: []});
   };
 
   render() {
@@ -149,17 +151,16 @@ class OrderBook extends React.Component<OrderBookProps> {
       onNextSpan,
       onPrevSpan,
       showMyOrders,
-      lastTradePrice
+      lastTradePrice,
+      loading
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
-    const fromBids = curry(minOrMaxFromList)(bids.map(withCurrentType));
-    const maxBidValue = fromBids('max');
-    const minBidValue = fromBids('min');
-
-    const fromAsks = curry(minOrMaxFromList)(asks.map(withCurrentType));
-    const maxAskValue = fromAsks('max');
-    const minAskValue = fromAsks('min');
+    const fromOrders = curry(minOrMaxFromList)(
+      [...bids, ...asks].map(withCurrentType)
+    );
+    const maxValue = fromOrders('max');
+    const minValue = fromOrders('min');
 
     return (
       <StyledWrapper>
@@ -169,7 +170,11 @@ class OrderBook extends React.Component<OrderBookProps> {
             <button onClick={onPrevSpan}>
               <FAIcon name="minus" />
             </button>
-            <div>{span}</div>
+            <div>
+              {span.toLocaleString(undefined, {
+                maximumFractionDigits: priceAccuracy
+              })}
+            </div>
             <button onClick={onNextSpan}>
               <FAIcon name="plus" />
             </button>
@@ -206,8 +211,8 @@ class OrderBook extends React.Component<OrderBookProps> {
                 <OrderBookItem
                   key={idx}
                   valueToShow={withCurrentType(order)}
-                  maxValue={maxAskValue}
-                  minValue={minAskValue}
+                  maxValue={maxValue}
+                  minValue={minValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}
@@ -221,32 +226,36 @@ class OrderBook extends React.Component<OrderBookProps> {
             </StyledSellOrders>
             <tbody ref={this.refHandlers.midPrice}>
               <tr>
-                <MidRow colSpan={3}>
-                  <MidFigures>
-                    <LastTradePrice>
-                      <span
-                        onClick={this.handleUpdatePrice(Number(lastTradePrice))}
-                      >
-                        {formatNumber(lastTradePrice, priceAccuracy)}
-                      </span>
-                    </LastTradePrice>
-                    <MidPrice>
-                      <span onClick={this.handleUpdatePrice(Number(mid))}>
-                        {formatNumber(mid, priceAccuracy)}
+                {loading || (
+                  <MidRow colSpan={3}>
+                    <MidFigures>
+                      <LastTradePrice>
+                        <span
+                          onClick={this.handleUpdatePrice(
+                            Number(lastTradePrice)
+                          )}
+                        >
+                          {formatNumber(lastTradePrice, priceAccuracy)}
+                        </span>
+                      </LastTradePrice>
+                      <MidPrice>
+                        <span onClick={this.handleUpdatePrice(Number(mid))}>
+                          {formatNumber(mid, priceAccuracy)}
+                          <br />
+                          <small>Mid price</small>
+                        </span>
+                      </MidPrice>
+                      <Spread>
+                        {formatNumber(spreadRelative, priceAccuracy, {
+                          style: 'percent'
+                        })}
                         <br />
-                        <small>Mid price</small>
-                      </span>
-                    </MidPrice>
-                    <Spread>
-                      {formatNumber(spreadRelative, priceAccuracy, {
-                        style: 'percent'
-                      })}
-                      <br />
-                      <small>Spread</small>
-                    </Spread>
-                  </MidFigures>
-                  <MidOverlay />
-                </MidRow>
+                        <small>Spread</small>
+                      </Spread>
+                    </MidFigures>
+                    <MidOverlay />
+                  </MidRow>
+                )}
               </tr>
             </tbody>
             <StyledBuyOrders>
@@ -254,8 +263,8 @@ class OrderBook extends React.Component<OrderBookProps> {
                 <OrderBookItem
                   key={idx}
                   valueToShow={withCurrentType(order)}
-                  maxValue={maxBidValue}
-                  minValue={minBidValue}
+                  maxValue={maxValue}
+                  minValue={minValue}
                   priceAccuracy={priceAccuracy}
                   volumeAccuracy={volumeAccuracy}
                   onPriceClick={this.handleUpdatePrice}

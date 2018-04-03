@@ -1,8 +1,9 @@
 import {observer} from 'mobx-react';
-import {pathOr} from 'rambda';
+import {compose, pathOr} from 'rambda';
 import {connect} from '../connect';
+import withLoader from '../Loader/withLoader';
 import MyOrders, {MyOrdersProps} from './MyOrders';
-import OrderBook from './OrderBook';
+import OrderBook, {OrderBookProps} from './OrderBook';
 import OrderBookItem from './OrderBookItem';
 
 // tslint:disable:object-literal-sort-keys
@@ -18,7 +19,8 @@ const ConnectedOrderBook = connect(
       span,
       nextSpan,
       prevSpan,
-      showMyOrders
+      showMyOrders,
+      hasPendingItems
     },
     uiStore: {selectedInstrument, stateFns},
     orderStore: {cancelOrder, updatePrice, updatePriceAndDepth},
@@ -47,17 +49,19 @@ const ConnectedOrderBook = connect(
       onNextSpan: nextSpan,
       onPrevSpan: prevSpan,
       showMyOrders,
-      lastTradePrice
+      lastTradePrice,
+      loading: hasPendingItems
     };
   },
-  OrderBook
+  compose(withLoader((p: OrderBookProps) => p.loading!), observer)(OrderBook)
 );
 
 const ConnectedOrderBookItem = observer(OrderBookItem);
 
 const ConnectedMyOrders = connect<MyOrdersProps>(
-  ({orderBookStore: {myOrders}}) => ({
-    ...myOrders
+  ({orderBookStore: {myOrders}, uiStore: {selectedInstrument}}) => ({
+    ...myOrders,
+    accuracy: pathOr(0, ['baseAsset', 'accuracy'], selectedInstrument)
   }),
   MyOrders
 );

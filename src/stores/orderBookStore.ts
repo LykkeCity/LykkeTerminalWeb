@@ -34,6 +34,8 @@ class OrderBookStore extends BaseStore {
     onCancel: undefined
   };
 
+  @observable hasPendingItems: boolean = true;
+
   spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
   @observable spanMultiplierIdx = 0;
 
@@ -139,7 +141,9 @@ class OrderBookStore extends BaseStore {
   fetchAll = async () => {
     const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
     if (selectedInstrument) {
+      this.hasPendingItems = true;
       const orders = await this.api.fetchAll(toLower(selectedInstrument.id));
+      this.hasPendingItems = false;
       runInAction(() => {
         orders.forEach((levels: any) => this.onUpdate([levels]));
         if (this.isInitFetch && initPriceUpdate) {

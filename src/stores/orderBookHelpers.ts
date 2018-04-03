@@ -19,7 +19,10 @@ export const priceBetween = (min: number, max: number) => (
 
 export const closestPrice = (num: number, span: number, isAsk: boolean) => {
   const mod = Big(num).mod(span);
-  return mod.eq(0) ? num : isAsk ? num + (span - num % span) : num - num % span;
+  const price = mod.eq(0)
+    ? num
+    : isAsk ? Big(num).plus(Big(span).minus(mod)) : Big(num).minus(mod);
+  return Number(price);
 };
 
 export const groupOrdersByPrice = (orders: Order[]) => {
