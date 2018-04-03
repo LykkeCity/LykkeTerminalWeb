@@ -1,4 +1,4 @@
-import {add, reject, without} from 'rambda';
+import {add, reject, uniq, without} from 'rambda';
 import {FeeType, InstrumentModel, Side, TradeModel} from '.';
 import {precisionCeil, precisionFloor} from '../utils/math';
 import {mapHistoryTypeToOrderType} from './mappers';
@@ -11,7 +11,8 @@ interface TradeValue {
   price: number;
 }
 
-const withVolume = (x: TradeValue) => x.volume === 0 || x.oppositeVolume === 0;
+const hasEmptyVolume = (x: TradeValue) =>
+  x.volume === 0 || x.oppositeVolume === 0;
 
 export const mapToEffectivePrice = (
   trades: TradeValue[] = [],
@@ -23,7 +24,7 @@ export const mapToEffectivePrice = (
     return undefined;
   }
 
-  const tradesWithVolumes = reject(withVolume, trades);
+  const tradesWithVolumes = reject(hasEmptyVolume, trades);
   const volumeSum = tradesWithVolumes.map(x => x.volume).reduce(add, 0);
   const oppositeVolumeSum = tradesWithVolumes
     .map(x => x.oppositeVolume)
@@ -56,8 +57,18 @@ export const aggregateTradesByTimestamp = (
       return acc;
     }
     const twinnedTrades = trades.filter(x => x.DateTime === curr.DateTime);
+    const assetIds = uniq(twinnedTrades.map(x => x.Asset));
 
-    const instrument = instruments.find(x => x.id === curr.AssetPair);
+    if (assetIds.length < 2) {
+      return acc;
+    }
+
+    const instrument = instruments.find(
+      x =>
+        x.id === curr.AssetPair ||
+        ((x.baseAsset.id === assetIds[0] && x.quoteAsset.id === assetIds[1]) ||
+          (x.baseAsset.id === assetIds[1] && x.quoteAsset.id === assetIds[1]))
+    );
 
     if (instrument && twinnedTrades.length !== 1) {
       const mappedTrade = fromRestToTrade(
