@@ -90,7 +90,7 @@ class Mesh extends React.Component<ChartProps> {
 
   drawVerticalLabels = () => {
     const labels = this.generateVerticalLabels();
-    if (labels) {
+    if (labels.length > 0) {
       for (
         let startX = this.startVertical, index = 0;
         startX < this.width;
@@ -103,7 +103,7 @@ class Mesh extends React.Component<ChartProps> {
             fill={chart.mesh.color}
             fontFamily={chart.mesh.fontFamily}
             fontSize={chart.mesh.verticalFontSize}
-            text={`${labels[index].toString()} USD`}
+            text={`${labels[index]} ${this.props.quoteAsset}`}
           />
         );
       }
@@ -131,7 +131,7 @@ class Mesh extends React.Component<ChartProps> {
 
   drawHorizontalLabels = () => {
     const labels = this.generateHorizontalLabels();
-    if (labels) {
+    if (labels.length > 0) {
       for (
         let startY = this.startHorizontal, index = 0;
         startY < this.height;
@@ -144,7 +144,7 @@ class Mesh extends React.Component<ChartProps> {
             fill={chart.mesh.color}
             fontFamily={chart.mesh.fontFamily}
             fontSize={chart.mesh.horizontalFontSize}
-            text={`${labels[index].toString()}`}
+            text={`${labels[index]}`}
           />
         );
       }

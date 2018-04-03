@@ -17,25 +17,33 @@ class Chart extends React.Component<ChartProps> {
   }
 
   render() {
+    const {asks, bids, mid, baseAsset, quoteAsset} = this.props;
+
     return (
       <Stage width={this.width} height={this.height}>
         <FastLayer clearBeforeDraw={true}>
           <Mesh
-            asks={this.props.asks}
-            bids={this.props.bids}
-            mid={this.props.mid}
+            asks={asks}
+            bids={bids}
+            mid={mid}
+            baseAsset={baseAsset}
+            quoteAsset={quoteAsset}
           />
         </FastLayer>
         <Layer>
           <Asks
-            asks={this.props.asks}
-            bids={this.props.bids}
-            mid={this.props.mid}
+            asks={asks}
+            bids={bids}
+            mid={mid}
+            baseAsset={baseAsset}
+            quoteAsset={quoteAsset}
           />
           <Bids
-            asks={this.props.asks}
-            bids={this.props.bids}
-            mid={this.props.mid}
+            asks={asks}
+            bids={bids}
+            mid={mid}
+            baseAsset={baseAsset}
+            quoteAsset={quoteAsset}
           />
         </Layer>
       </Stage>

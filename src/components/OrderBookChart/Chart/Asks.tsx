@@ -78,6 +78,8 @@ class Asks extends React.Component<ChartProps> {
   drawPointerPadding = () => {
     this.graphics.push(
       <Pointer
+        baseAsset={this.props.baseAsset}
+        quoteAsset={this.props.quoteAsset}
         orders={this.asks}
         side={'asks'}
         points={this.points}

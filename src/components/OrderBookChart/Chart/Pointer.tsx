@@ -1,18 +1,11 @@
 import * as React from 'react';
 
-import {Order} from '../../../models';
-
 import {Circle, Line, Text} from 'react-konva';
 
-import chart from './chartConstants';
+import {Order} from '../../../models';
+import {PointerProps} from './Models';
 
-interface PointerProps {
-  orders: Order[];
-  side: string;
-  points: number[];
-  borders: number[];
-  color: string;
-}
+import chart from './chartConstants';
 
 class Pointer extends React.Component<PointerProps> {
   calcY: number = -chart.modal.height;
@@ -131,108 +124,113 @@ class Pointer extends React.Component<PointerProps> {
   };
 
   drawPointer = () => {
-    this.graphics.push(
-      // invisible borders under a chart
-      <Line
-        points={[
-          this.borders[0],
-          this.borders[1],
-          this.borders[0],
-          this.borders[3],
-          this.borders[2],
-          this.borders[3],
-          this.borders[2],
-          this.borders[1]
-        ]}
-        closed={true}
-        onMouseMove={this.handleMouseMove}
-        onMouseOver={this.handleMouseMove}
-        onMouseLeave={this.handleMouseLeave}
-      />,
-      // ball
-      <Circle
-        x={this.mouseX}
-        y={this.calcY}
-        fill={this.props.color}
-        stroke={chart.pointer.circleStrokeColor}
-        radius={chart.pointer.circleRadius}
-      />,
-      // dashed line under the ball
-      <Line
-        points={this.line}
-        closed={false}
-        stroke={this.props.color}
-        strokeWidth={chart.strokeWidth}
-        dash={chart.pointer.dash}
-      />,
-      // modal window
-      <Line
-        points={this.modal}
-        closed={true}
-        stroke={chart.modal.strokeColor}
-        strokeWidth={chart.modal.strokeWidth}
-        fill={chart.modal.fillColor}
-      />,
-      // title text
-      <Text
-        text={`${this.orders[this.orderIndex].price.toFixed(3)}`}
-        fontSize={chart.modal.title.fontSize}
-        fontFamily={chart.modal.title.fontFamily}
-        fontStyle={chart.modal.title.fontStyle}
-        fill={chart.modal.title.fontColor}
-        x={this.titleX}
-        y={this.titleY}
-      />,
-      // line under the title
-      <Line
-        points={this.modalLine}
-        closed={true}
-        stroke={this.props.color}
-        strokeWidth={chart.strokeWidth}
-        dash={chart.pointer.dash}
-      />,
-      // labels
-      <Text
-        text="Can be sold"
-        fontSize={chart.modal.label.fontSize}
-        fontFamily={chart.modal.label.fontFamily}
-        fontStyle={chart.modal.label.fontStyle}
-        fill={chart.modal.label.fontColor}
-        x={this.soldX}
-        y={this.labelsY}
-      />,
-      <Text
-        text="For a total of"
-        fontSize={chart.modal.label.fontSize}
-        fontFamily={chart.modal.label.fontFamily}
-        fontStyle={chart.modal.label.fontStyle}
-        fill={chart.modal.label.fontColor}
-        x={this.totalX}
-        y={this.labelsY}
-      />,
-      // numbers
-      <Text
-        text={`${this.orders[this.orderIndex].depth.toFixed(8)}`}
-        fontSize={chart.modal.number.fontSize}
-        fontFamily={chart.modal.number.fontFamily}
-        fontStyle={chart.modal.number.fontStyle}
-        fill={chart.modal.number.fontColor}
-        x={this.soldX}
-        y={this.numbersY}
-      />,
-      <Text
-        text={`${(
-          this.orders[this.orderIndex].depth *
-          this.orders[this.orderIndex].price
-        ).toFixed(8)}`}
-        fontSize={chart.modal.number.fontSize}
-        fontFamily={chart.modal.number.fontFamily}
-        fontStyle={chart.modal.number.fontStyle}
-        fill={chart.modal.number.fontColor}
-        x={this.totalX}
-        y={this.numbersY}
-      />
-    );
+    let price = 0;
+    let depth = 0;
+
+    if (this.orders.length > 0) {
+      price = this.orders[this.orderIndex].price;
+      depth = this.orders[this.orderIndex].depth;
+
+      this.graphics.push(
+        // invisible borders under a chart
+        <Line
+          points={[
+            this.borders[0],
+            this.borders[1],
+            this.borders[0],
+            this.borders[3],
+            this.borders[2],
+            this.borders[3],
+            this.borders[2],
+            this.borders[1]
+          ]}
+          closed={true}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
+        />,
+        // ball
+        <Circle
+          x={this.mouseX}
+          y={this.calcY}
+          fill={this.props.color}
+          stroke={chart.pointer.circleStrokeColor}
+          radius={chart.pointer.circleRadius}
+        />,
+        // dashed line under the ball
+        <Line
+          points={this.line}
+          closed={false}
+          stroke={this.props.color}
+          strokeWidth={chart.strokeWidth}
+          dash={chart.pointer.dash}
+        />,
+        // modal window
+        <Line
+          points={this.modal}
+          closed={true}
+          stroke={chart.modal.strokeColor}
+          strokeWidth={chart.modal.strokeWidth}
+          fill={chart.modal.fillColor}
+        />,
+        // title text
+        <Text
+          text={`${price.toFixed(3)}`}
+          fontSize={chart.modal.title.fontSize}
+          fontFamily={chart.modal.title.fontFamily}
+          fontStyle={chart.modal.title.fontStyle}
+          fill={chart.modal.title.fontColor}
+          x={this.titleX}
+          y={this.titleY}
+        />,
+        // line under the title
+        <Line
+          points={this.modalLine}
+          closed={true}
+          stroke={this.props.color}
+          strokeWidth={chart.strokeWidth}
+          dash={chart.pointer.dash}
+        />,
+        // labels
+        <Text
+          text="Can be sold"
+          fontSize={chart.modal.label.fontSize}
+          fontFamily={chart.modal.label.fontFamily}
+          fontStyle={chart.modal.label.fontStyle}
+          fill={chart.modal.label.fontColor}
+          x={this.soldX}
+          y={this.labelsY}
+        />,
+        <Text
+          text="For a total of"
+          fontSize={chart.modal.label.fontSize}
+          fontFamily={chart.modal.label.fontFamily}
+          fontStyle={chart.modal.label.fontStyle}
+          fill={chart.modal.label.fontColor}
+          x={this.totalX}
+          y={this.labelsY}
+        />,
+        // numbers
+        <Text
+          text={`${depth.toFixed(8)}`}
+          fontSize={chart.modal.number.fontSize}
+          fontFamily={chart.modal.number.fontFamily}
+          fontStyle={chart.modal.number.fontStyle}
+          fill={chart.modal.number.fontColor}
+          x={this.soldX}
+          y={this.numbersY}
+        />,
+        <Text
+          text={`${(depth * price).toFixed(8)}`}
+          fontSize={chart.modal.number.fontSize}
+          fontFamily={chart.modal.number.fontFamily}
+          fontStyle={chart.modal.number.fontStyle}
+          fill={chart.modal.number.fontColor}
+          x={this.totalX}
+          y={this.numbersY}
+        />
+      );
+    }
   };
 
   initialize = () => {

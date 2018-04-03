@@ -7,10 +7,15 @@ const ConnectedChart = connect(
   ({orderBookChartStore: {asks, bids, mid}, uiStore: {selectedInstrument}}) => {
     const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
     const midPrice = mid().toFixed(priceAccuracy);
+
+    const baseAsset = selectedInstrument!.baseAsset.name;
+    const quoteAsset = selectedInstrument!.quoteAsset.name;
     return {
       asks,
       bids,
-      mid: midPrice
+      mid: midPrice,
+      baseAsset,
+      quoteAsset
     };
   },
   Chart

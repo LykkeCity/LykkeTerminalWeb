@@ -78,6 +78,8 @@ class Bids extends React.Component<ChartProps> {
   drawPointerPadding = () => {
     this.graphics.push(
       <Pointer
+        baseAsset={this.props.baseAsset}
+        quoteAsset={this.props.quoteAsset}
         orders={this.bids.reverse()}
         side={'bids'}
         points={this.points}
