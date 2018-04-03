@@ -156,6 +156,9 @@ class Pointer extends React.Component<PointerProps> {
           fill={this.props.color}
           stroke={chart.pointer.circleStrokeColor}
           radius={chart.pointer.circleRadius}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         // dashed line under the ball
         <Line
@@ -164,6 +167,9 @@ class Pointer extends React.Component<PointerProps> {
           stroke={this.props.color}
           strokeWidth={chart.strokeWidth}
           dash={chart.pointer.dash}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         // modal window
         <Line
@@ -172,6 +178,9 @@ class Pointer extends React.Component<PointerProps> {
           stroke={chart.modal.strokeColor}
           strokeWidth={chart.modal.strokeWidth}
           fill={chart.modal.fillColor}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         // title text
         <Text
@@ -182,6 +191,9 @@ class Pointer extends React.Component<PointerProps> {
           fill={chart.modal.title.fontColor}
           x={this.titleX}
           y={this.titleY}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         // line under the title
         <Line
@@ -190,6 +202,9 @@ class Pointer extends React.Component<PointerProps> {
           stroke={this.props.color}
           strokeWidth={chart.strokeWidth}
           dash={chart.pointer.dash}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         // labels
         <Text
@@ -200,6 +215,9 @@ class Pointer extends React.Component<PointerProps> {
           fill={chart.modal.label.fontColor}
           x={this.soldX}
           y={this.labelsY}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         <Text
           text="For a total of"
@@ -209,6 +227,9 @@ class Pointer extends React.Component<PointerProps> {
           fill={chart.modal.label.fontColor}
           x={this.totalX}
           y={this.labelsY}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         // numbers
         <Text
@@ -219,6 +240,9 @@ class Pointer extends React.Component<PointerProps> {
           fill={chart.modal.number.fontColor}
           x={this.soldX}
           y={this.numbersY}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />,
         <Text
           text={`${(depth * price).toFixed(8)} ${this.props.quoteAsset}`}
@@ -228,6 +252,9 @@ class Pointer extends React.Component<PointerProps> {
           fill={chart.modal.number.fontColor}
           x={this.totalX}
           y={this.numbersY}
+          onMouseMove={this.handleMouseMove}
+          onMouseOver={this.handleMouseMove}
+          onMouseLeave={this.handleMouseLeave}
         />
       );
     }
