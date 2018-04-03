@@ -94,33 +94,6 @@ class ChartStore extends BaseStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
-    chartContainerExists.style.display = 'none';
-    if (this.rootStore.authStore.isAuth) {
-      this.widget.onChartReady(() => {
-        this.load()
-          .then((res: any) => {
-            if (res && res.Data) {
-              const settings = JSON.parse(res.Data);
-              this.widget.load(settings);
-            }
-            chartContainerExists.style.display = 'block';
-          })
-          .catch(err => {
-            if (err.status === 404) {
-              this.widget.load(CHART_DEFAULT_SETTINGS);
-            }
-            chartContainerExists.style.display = 'block';
-          });
-        this.widget.subscribe('onAutoSaveNeeded', () => {
-          this.widget.save(this.save);
-        });
-      });
-    } else {
-      this.widget.onChartReady(() => {
-        this.widget.load(CHART_DEFAULT_SETTINGS);
-        chartContainerExists.style.display = 'block';
-      });
-    }
   };
 
   save = (settings: any) => {
