@@ -60,10 +60,16 @@ export const aggregateTradesByTimestamp = (
     const instrument = instruments.find(x => x.id === curr.AssetPair);
 
     if (instrument && twinnedTrades.length !== 1) {
-      acc.push({
-        ...fromRestToTrade(instrument.baseAsset.id, twinnedTrades),
-        instrument
-      });
+      const mappedTrade = fromRestToTrade(
+        instrument.baseAsset.id,
+        twinnedTrades
+      );
+      if (mappedTrade) {
+        acc.push({
+          ...mappedTrade,
+          instrument
+        });
+      }
     }
 
     return acc;
@@ -73,25 +79,28 @@ export const fromRestToTrade = (baseAssetId: string, trades: any[]) => {
   const tradesByBaseAsset = trades.filter(x => x.Asset === baseAssetId);
   const tradesByQuoteAsset = without(tradesByBaseAsset, trades);
 
-  const {Id, AssetPair, Price, Amount, DateTime, Type} = tradesByBaseAsset[0];
+  if (tradesByBaseAsset.length > 0) {
+    const {Id, AssetPair, Price, Amount, DateTime, Type} = tradesByBaseAsset[0];
 
-  const fee = trades
-    .filter(t => t.FeeType !== FeeType.Unknown)
-    .map(feeValueFromRest)
-    .reduce(add, 0);
+    const fee = trades
+      .filter(t => t.FeeType !== FeeType.Unknown)
+      .map(feeValueFromRest)
+      .reduce(add, 0);
 
-  return new TradeModel({
-    id: Id,
-    price: Price,
-    volume: Math.abs(Amount),
-    side: Amount > 0 ? Side.Buy : Side.Sell,
-    symbol: AssetPair,
-    timestamp: DateTime,
-    tradeId: Id,
-    oppositeVolume: Math.abs(tradesByQuoteAsset[0].Amount),
-    orderType: mapHistoryTypeToOrderType(Type),
-    fee
-  });
+    return new TradeModel({
+      id: Id,
+      price: Price,
+      volume: Math.abs(Amount),
+      side: Amount > 0 ? Side.Buy : Side.Sell,
+      symbol: AssetPair,
+      timestamp: DateTime,
+      tradeId: Id,
+      oppositeVolume: Math.abs(tradesByQuoteAsset[0].Amount),
+      orderType: mapHistoryTypeToOrderType(Type),
+      fee
+    });
+  }
+  return null;
 };
 
 export const fromWampToTrade = (dto: any[], instruments: InstrumentModel[]) => {
