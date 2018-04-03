@@ -53,21 +53,9 @@ class OrderStore extends BaseStore {
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        return (
-          this.api
-            .placeMarket(body)
-            // tslint:disable-next-line:no-empty
-            .then(() => {}, this.orderPlacedUnsuccessfully)
-            .then(() => Promise.resolve())
-        );
+        return this.api.placeMarket(body).then(() => Promise.resolve());
       case OrderType.Limit:
-        return (
-          this.api
-            .placeLimit(body)
-            // tslint:disable-next-line:no-empty
-            .then(() => {}, this.orderPlacedUnsuccessfully)
-            .then(() => Promise.resolve())
-        );
+        return this.api.placeLimit(body).then(() => Promise.resolve());
     }
   };
 
