@@ -1,6 +1,5 @@
 import * as React from 'react';
-import ReactResizeDetector from 'react-resize-detector';
-import {TableHeaderItem} from '.';
+import {Table, TableHeaderItem} from '.';
 
 interface TableHeaderProps {
   backgroundColor?: string;
@@ -10,56 +9,37 @@ interface TableHeaderProps {
   onSort: any;
 }
 
-interface TableHeaderState {
-  widthArr: number[];
-}
-
-class TableHeader extends React.Component<TableHeaderProps, TableHeaderState> {
-  constructor(props: TableHeaderProps) {
-    super(props);
-    this.state = {
-      widthArr: []
-    };
-  }
-
-  onResize = (width: number, index: number) => {
-    const widthArr = [...this.state.widthArr];
-    widthArr[index] = width;
-
-    this.setState({
-      widthArr
-    });
-  };
-
-  render() {
-    return (
-      <tr>
-        {this.props.headers.map((header, index) => (
-          <th key={index}>
+const TableHeader: React.SFC<TableHeaderProps> = ({
+  backgroundColor,
+  currentSortDirection,
+  currentSortByParam,
+  headers,
+  onSort
+}) => {
+  return (
+    <Table>
+      <thead>
+        <tr>
+          {headers.map((header, index) => (
             <TableHeaderItem
+              key={index}
               className={header.className}
-              currentSortDirection={this.props.currentSortDirection}
-              currentSortByParam={this.props.currentSortByParam}
+              currentSortDirection={currentSortDirection}
+              currentSortByParam={currentSortByParam}
               sortByParam={header.key}
               sortDisabled={header.sortDisabled}
               style={{
-                backgroundColor: this.props.backgroundColor,
-                width: this.state.widthArr[index]
+                backgroundColor
               }}
-              onSort={this.props.onSort}
+              onSort={onSort}
             >
               {header.value}
             </TableHeaderItem>
-            <ReactResizeDetector
-              handleWidth={true}
-              // tslint:disable-next-line:jsx-no-lambda
-              onResize={width => this.onResize(width, index)}
-            />
-          </th>
-        ))}
-      </tr>
-    );
-  }
-}
+          ))}
+        </tr>
+      </thead>
+    </Table>
+  );
+};
 
 export default TableHeader;

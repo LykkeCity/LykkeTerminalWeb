@@ -1,6 +1,42 @@
 import {rem} from 'polished';
 import styled, {colors} from '../styled';
 
+interface CellProps {
+  w?: string | number;
+}
+
+const width = (w: string | number | undefined) =>
+  (w && (w.toString().endsWith('%') ? w : rem(w))) || 'inherit';
+
+export const Cell = styled.td`
+  width: ${(p: CellProps) => width(p.w)};
+` as any;
+
+export const HeaderCell = styled.th`
+  width: ${(p: CellProps) => width(p.w)};
+` as any;
+
+export const TableHeaderItem = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${colors.lightGrey};
+  &.right-align {
+    justify-content: flex-end;
+  }
+  &:after {
+    content: '';
+    margin-left: ${rem(10)};
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+  }
+  &.ASC:after {
+    border-bottom: 4px solid ${colors.lightGrey};
+  }
+  &.DESC:after {
+    border-top: 4px solid ${colors.lightGrey};
+  }
+`;
+
 export const Table = styled.table`
   width: 100%;
   margin-bottom: ${rem(10)};
@@ -28,28 +64,16 @@ export const Table = styled.table`
     &:first-child {
       text-align: left;
       padding-left: 0;
-
-      > div {
-        margin-left: 0;
-      }
     }
     &:last-child {
       text-align: right;
       padding-right: 0;
     }
 
-    > div {
-      position: fixed;
-      height: inherit;
-      padding-top: ${rem(6)};
-      margin-top: -${rem(17)};
-      border-bottom: 1px solid #292929;
-
-      > p {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
+    > p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
   td {
@@ -69,7 +93,7 @@ export const Table = styled.table`
   }
 `;
 
-export const TableHeaderItemDiv = styled.div`
+export const TableHeaderItemEl = styled.th`
   display: flex;
   align-items: center;
   color: ${colors.lightGrey};

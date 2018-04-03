@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
-import {TableHeaderItemDiv} from './styles';
+import {TableHeaderItemEl} from './styles';
 
 interface TableHeaderItemProps {
   className?: string;
@@ -30,7 +30,7 @@ const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
   };
 
   return (
-    <TableHeaderItemDiv
+    <TableHeaderItemEl
       className={`
         ${className}
         ${currentSortByParam === sortByParam ? currentSortDirection : ''}
@@ -42,7 +42,7 @@ const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
       <p data-tip={children}>{children}</p>
 
       <ReactTooltip effect={'solid'} />
-    </TableHeaderItemDiv>
+    </TableHeaderItemEl>
   );
 };
 

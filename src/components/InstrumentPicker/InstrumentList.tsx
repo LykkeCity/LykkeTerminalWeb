@@ -57,7 +57,7 @@ class InstrumentList extends React.Component<
           />
         </thead>
         <tbody>
-          {this.state.data.map(instrument => (
+          {this.state.data.map((instrument: any) => (
             <InstrumentListItem
               key={instrument.id}
               baseAsset={this.props.baseAsset}
