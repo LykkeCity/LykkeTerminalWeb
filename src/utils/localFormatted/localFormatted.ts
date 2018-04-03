@@ -11,12 +11,14 @@ export function formattedNumber(value: any, accuracy?: number): string {
   const result = new Intl.NumberFormat(locale).format(value);
 
   if (!accuracy) {
-    return result;
+    return result.replace(/[.,]?0+$/, '');
   } else {
     return new Intl.NumberFormat(locale, {
       minimumFractionDigits: accuracy,
       maximumFractionDigits: accuracy
-    }).format(value);
+    })
+      .format(value)
+      .replace(/[.,]?0+$/, '');
   }
 }
 

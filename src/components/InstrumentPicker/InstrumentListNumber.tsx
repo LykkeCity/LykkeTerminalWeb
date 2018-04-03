@@ -1,5 +1,6 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import styled from '../styled';
 
 const StyledNumber = styled.div.attrs({})`
@@ -46,7 +47,7 @@ const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
     return (
       <StyledNumber color={color} className={dynamics}>
         {preSign}
-        {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
+        {formattedNumber(num, accuracy)}
         {children}
         {dynamics ? <div className={'arrow ' + dynamics} /> : ''}
       </StyledNumber>
