@@ -12,12 +12,14 @@ export interface MyOrdersProps {
   position: any;
   orders: any[];
   volume: number;
+  accuracy: number;
   onCancel?: (orders: any[]) => () => void;
 }
 
 const MyOrders: React.SFC<MyOrdersProps> = ({
   orders,
   volume,
+  accuracy,
   onCancel,
   ...popoverProps
 }) => (
@@ -26,7 +28,11 @@ const MyOrders: React.SFC<MyOrdersProps> = ({
       {join(' ', [orders.length, plural('order', orders.length)])}
     </MyOrdersCount>
     <MyOrdersVolume>
-      <div>{volume}</div>
+      <div>
+        {volume.toLocaleString(undefined, {
+          maximumFractionDigits: accuracy
+        })}
+      </div>
       <small>Total volume</small>
     </MyOrdersVolume>
     {/* tslint:disable-next-line:jsx-no-lambda */}

@@ -38,7 +38,10 @@ class UiStore extends BaseStore {
             subscribeToPublicTrades
           } = this.rootStore.tradeStore;
 
-          if (this.rootStore.tradeStore.filter === TradeFilter.CurrentAsset) {
+          if (
+            this.rootStore.tradeStore.filter === TradeFilter.CurrentAsset &&
+            this.rootStore.authStore.isAuth
+          ) {
             fns.seq(resetTrades, fetchTrades)();
           }
 
