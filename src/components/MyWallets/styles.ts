@@ -64,6 +64,11 @@ export const TotalAmount = styled.div`
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(24)};
   font-weight: bold;
+  width: 159px;
+  height: 24px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export const TotalLabel = styled.div`
@@ -89,9 +94,36 @@ export const WalletItemContainer = styled.div`
 `;
 
 export const WalletName = styled.div`
+  width: 90px;
+  height: 17px;
+  font-family: ProximaNova;
+  font-size: 14px;
   font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+  color: #f5f6f7;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export const WalletTotalBalance = styled.div`
   margin-left: auto;
+  width: 91px;
+  height: 17px;
+  font-family: ProximaNova;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: right;
+  color: #f5f6f7;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;

@@ -11,14 +11,17 @@ const TotalBalance: React.SFC<TotalBalanceProps> = ({
   total,
   accuracy,
   name
-}) => (
-  <Total>
-    <TotalAmount>
-      {total.toLocaleString(undefined, {maximumFractionDigits: accuracy})}{' '}
-      {name}
-    </TotalAmount>
-    <TotalLabel>Total Balance</TotalLabel>
-  </Total>
-);
+}) => {
+  const totalWithName =
+    total.toLocaleString(undefined, {maximumFractionDigits: accuracy}) +
+    ' ' +
+    name;
+  return (
+    <Total>
+      <TotalAmount title={totalWithName}>{totalWithName}</TotalAmount>
+      <TotalLabel>Total Balance</TotalLabel>
+    </Total>
+  );
+};
 
 export default TotalBalance;

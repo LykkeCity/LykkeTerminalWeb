@@ -22,16 +22,18 @@ const Name: React.SFC<WalletNameProps> = ({
   totalBalance,
   accuracy
 }) => {
+  const totalBalanceWithLocale =
+    totalBalance &&
+    totalBalance.toLocaleString(undefined, {
+      maximumFractionDigits: accuracy
+    }) +
+      ' ' +
+      baseAssetName;
   const content = (
     <WalletItemContainer>
-      <WalletName>{name}</WalletName>
-      <WalletTotalBalance>
-        {totalBalance &&
-          totalBalance.toLocaleString(undefined, {
-            maximumFractionDigits: accuracy
-          }) +
-            ' ' +
-            baseAssetName}
+      <WalletName title={name}>{name}</WalletName>
+      <WalletTotalBalance title={totalBalanceWithLocale + ''}>
+        {totalBalanceWithLocale}
       </WalletTotalBalance>
     </WalletItemContainer>
   );

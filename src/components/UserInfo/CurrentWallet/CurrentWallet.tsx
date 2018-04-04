@@ -9,7 +9,7 @@ export interface CurrentWalletProps {
 const CurrentWallet: React.SFC<CurrentWalletProps> = ({wallet}) =>
   (wallet && (
     <StyledCurrentWallet>
-      <CurrentWalletName>{wallet.name}</CurrentWalletName>
+      <CurrentWalletName title={wallet.name}>{wallet.name}</CurrentWalletName>
       <small>Current Wallet</small>
     </StyledCurrentWallet>
   )) ||
