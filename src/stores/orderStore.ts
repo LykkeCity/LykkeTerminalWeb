@@ -195,7 +195,7 @@ class OrderStore extends BaseStore {
       }
     }
 
-    this.notificationStore.addNotification(levels.error, '${message}');
+    this.notificationStore.addNotification(levels.error, `${message}`);
   };
 }
 
