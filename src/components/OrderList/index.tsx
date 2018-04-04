@@ -12,7 +12,8 @@ export const OrderCellWidth = {
   CancelOrder: 70,
   Id: 300,
   Side: 50,
-  CreatedDate: 150
+  CreatedDate: 200,
+  Edit: 30
 };
 
 export interface OrderActions {
