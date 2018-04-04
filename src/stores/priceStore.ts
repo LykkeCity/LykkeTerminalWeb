@@ -1,5 +1,5 @@
 import {ISubscription} from 'autobahn';
-import {endOfToday, startOfToday} from 'date-fns';
+import {addMinutes, startOfToday, startOfTomorrow} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
 import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
@@ -7,6 +7,8 @@ import {PriceApi} from '../api';
 import * as topics from '../api/topics';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
+
+const toUtc = (d: () => Date) => addMinutes(d(), d().getTimezoneOffset());
 
 class PriceStore extends BaseStore {
   priceApi: any;
@@ -35,8 +37,8 @@ class PriceStore extends BaseStore {
   fetchDailyCandle = async () => {
     const resp = await this.api.fetchCandles(
       this.selectedInstrument!.id,
-      startOfToday(),
-      endOfToday(),
+      toUtc(startOfToday),
+      toUtc(startOfTomorrow),
       'day'
     );
     if (resp.History && resp.History.length > 0) {

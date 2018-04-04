@@ -57,7 +57,7 @@ export const mapToChartSymbol = ({
   minmov: 1,
   pricescale: Math.pow(10, accuracy),
   session: '24x7',
-  timezone: 'Europe/Istanbul',
+  timezone: 'Europe/Zurich',
   supported_resolutions: ChartStore.config.supported_resolutions,
   has_intraday: true,
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
