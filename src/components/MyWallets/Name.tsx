@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {
   WalletItem,
   WalletItemContainer,
@@ -27,11 +28,7 @@ const Name: React.SFC<WalletNameProps> = ({
       <WalletName>{name}</WalletName>
       <WalletTotalBalance>
         {totalBalance &&
-          totalBalance.toLocaleString(undefined, {
-            maximumFractionDigits: accuracy
-          }) +
-            ' ' +
-            baseAssetName}
+          formattedNumber(totalBalance, accuracy) + ' ' + baseAssetName}
       </WalletTotalBalance>
     </WalletItemContainer>
   );

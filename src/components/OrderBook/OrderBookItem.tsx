@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Order} from '../../models/index';
 import {normalizeVolume} from '../../utils';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {
   MyOrdersIndicator,
   StyledOrderRow,
@@ -72,9 +73,7 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
             side={side}
             volume={normalizeVolume(valueToShow, minValue, maxValue)}
           />
-          {valueToShow.toLocaleString(undefined, {
-            maximumFractionDigits: volumeAccuracy
-          })}
+          {formattedNumber(valueToShow, volumeAccuracy)}
         </div>
       </StyledVolume>
       <StyledValue>

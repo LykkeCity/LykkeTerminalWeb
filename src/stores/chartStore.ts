@@ -2,6 +2,7 @@ import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {InstrumentModel} from '../models/index';
 import {BaseStore, RootStore} from './index';
+// import {locale} from '../utils/localFormatted/localFormatted';
 
 // tslint:disable:object-literal-sort-keys
 
@@ -73,6 +74,7 @@ class ChartStore extends BaseStore {
         'timeframes_toolbar'
       ],
       overrides: {
+        locale: 'en',
         'paneProperties.background': '#333333',
         'paneProperties.vertGridProperties.color': 'rgba(140, 148, 160, 0.6)',
         'paneProperties.vertGridProperties.style': LINESTYLE_DOTTED,

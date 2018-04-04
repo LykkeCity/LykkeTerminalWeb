@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
-import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Cell} from '../Table/styles';
 import {SideCell} from './styles';
 
@@ -45,16 +45,15 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
         {side}
       </SideCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)} {baseAssetName}
+        {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
-      <TitledCell>{toLocaleStringWithAccuracy(price, accuracy)}</TitledCell>
+      <TitledCell>{formattedNumber(price, accuracy)}</TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(oppositeVolume, quoteAssetAccuracy)}{' '}
-        {quoteAssetName}
+        {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
       </TitledCell>
       <Cell w={90}>{orderType}</Cell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(fee, feeAsset.accuracy)} {feeAsset.name}
+        {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
       </TitledCell>
       <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>
     </tr>

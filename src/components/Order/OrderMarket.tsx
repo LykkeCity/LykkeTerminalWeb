@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {
   OrderMarketProps,
@@ -132,7 +133,7 @@ class OrderMarket extends React.Component<
           <Flex>
             <StyledInputControl style={{width: '100%'}}>
               <NumberInput
-                value={quantity}
+                value={formattedNumber(quantity)}
                 id={OrderInputs.Quantity}
                 onChange={this.props.onChange(currentAccuracy)}
                 onArrowClick={this.props.onArrowClick(currentAccuracy)}

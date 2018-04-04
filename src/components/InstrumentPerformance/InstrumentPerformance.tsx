@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {HeaderItem} from '../Header/Header';
 import {
   InstrumentPerformanceFigureLabel,
@@ -40,7 +41,9 @@ const InstrumentPerformanceFigure: React.SFC<
     <StyledInstrumentPerformanceFigure>
       <InstrumentPerformanceFigureValue color={color}>
         {Number.isFinite(value)
-          ? valueFormatter ? valueFormatter(value) : value.toFixed(accuracy)
+          ? valueFormatter
+            ? formattedNumber(valueFormatter(value))
+            : formattedNumber(value, accuracy)
           : '---'}
       </InstrumentPerformanceFigureValue>
       <InstrumentPerformanceFigureLabel>

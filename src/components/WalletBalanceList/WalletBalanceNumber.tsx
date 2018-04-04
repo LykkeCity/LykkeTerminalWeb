@@ -1,5 +1,6 @@
 import {rgb} from 'polished';
 import * as React from 'react';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import styled from '../styled';
 
 const StyledNumber = styled.span`
@@ -23,7 +24,7 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   children
 }) => (
   <StyledNumber color={color}>
-    {num.toLocaleString(undefined, {maximumFractionDigits: accuracy})}
+    {formattedNumber(num, accuracy)}
     {children}
   </StyledNumber>
 );

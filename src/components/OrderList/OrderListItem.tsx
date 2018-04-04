@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
 import {OrderModel, Side} from '../../models';
-import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
 import {OrderActions, OrderCellWidth} from './index';
@@ -18,7 +18,7 @@ const getFilled = (
   remainingVolume: number,
   accuracy: number
 ) => {
-  return toLocaleStringWithAccuracy(volume - remainingVolume, accuracy);
+  return formattedNumber(volume - remainingVolume, accuracy);
 };
 
 const getFilledPercent = (
@@ -28,7 +28,7 @@ const getFilledPercent = (
 ) => {
   return volume - remainingVolume === 0
     ? 0
-    : toLocaleStringWithAccuracy(remainingVolume / volume * 100, accuracy);
+    : formattedNumber(remainingVolume / volume * 100, accuracy);
 };
 
 const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
-import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {SideCell} from './styles';
 
 // tslint:disable-next-line:no-empty-interface
@@ -14,10 +14,8 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   timestamp
 }) => (
   <tr>
-    <td>
-      {toLocaleStringWithAccuracy(volume, instrument!.baseAsset.accuracy)}
-    </td>
-    <td>{toLocaleStringWithAccuracy(price, instrument!.accuracy)}</td>
+    <td>{formattedNumber(volume, instrument!.baseAsset.accuracy)}</td>
+    <td>{formattedNumber(price, instrument!.accuracy)}</td>
     <SideCell w={50} side={side}>
       {side}
     </SideCell>

@@ -34,8 +34,3 @@ export const getErrorMessage = (message: string) =>
     .split(/(?=[A-Z])/)
     .join(' ')
     .toLowerCase();
-
-export const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
-  num.toLocaleString(undefined, {
-    maximumFractionDigits: accuracy
-  });

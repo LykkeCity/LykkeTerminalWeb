@@ -1,6 +1,7 @@
 import {join} from 'rambda';
 import * as React from 'react';
 import {plural} from '../../utils';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {
   MyOrdersCancelButton,
   MyOrdersCount,
@@ -26,7 +27,7 @@ const MyOrders: React.SFC<MyOrdersProps> = ({
       {join(' ', [orders.length, plural('order', orders.length)])}
     </MyOrdersCount>
     <MyOrdersVolume>
-      <div>{volume}</div>
+      <div>{formattedNumber(volume)}</div>
       <small>Total volume</small>
     </MyOrdersVolume>
     {/* tslint:disable-next-line:jsx-no-lambda */}

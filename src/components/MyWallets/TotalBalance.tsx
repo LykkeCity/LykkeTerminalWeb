@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Total, TotalAmount, TotalLabel} from './styles';
 
 interface TotalBalanceProps {
@@ -14,8 +15,7 @@ const TotalBalance: React.SFC<TotalBalanceProps> = ({
 }) => (
   <Total>
     <TotalAmount>
-      {total.toLocaleString(undefined, {maximumFractionDigits: accuracy})}{' '}
-      {name}
+      {formattedNumber(total, accuracy)} {name}
     </TotalAmount>
     <TotalLabel>Total Balance</TotalLabel>
   </Total>

@@ -3,6 +3,7 @@ import rem from 'polished/lib/helpers/rem';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrderInputs} from '../../models';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {
   OrderLimitProps,
@@ -58,7 +59,8 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
             {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </StyledActionTitle>
           <StyledAvailable>
-            {balance} {isSell ? baseAssetName : quoteAssetName} available
+            {formattedNumber(balance)} {isSell ? baseAssetName : quoteAssetName}{' '}
+            available
           </StyledAvailable>
         </Flex>
         <NumberInput
@@ -92,7 +94,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <StyledTotal>
         <StyledTitle>Total</StyledTitle>
         <StyledAvailable>
-          {amount} {quoteAssetName}
+          {formattedNumber(amount)} {quoteAssetName}
         </StyledAvailable>
       </StyledTotal>
 
@@ -101,7 +103,6 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       {/*Your order may execute as a maker order or taker order.*/}
       {/*</StyledNote>*/}
       {/*)}*/}
-
       <StyledOrderButton>
         <OrderButton
           isDisable={isDisable}

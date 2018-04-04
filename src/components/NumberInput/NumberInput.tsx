@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 
 const StyledInput = styled.input`
   background-color: transparent;
@@ -66,7 +67,7 @@ const NumberInput: React.SFC<NumberInput> = ({
       <StyledInput
         id={id}
         type="text"
-        value={value}
+        value={formattedNumber(value)}
         onChange={onChange(id)}
         // tslint:disable-next-line:jsx-no-lambda
         onKeyDown={e => {
