@@ -97,7 +97,7 @@ class ChartDataFeed {
       topics.candle(
         MarketType.Spot,
         this.instrument.id,
-        PriceType.Bid,
+        PriceType.Trade,
         mappers.mapChartResolutionToWampInterval(resolution)
       ),
       (args: any[]) => {
