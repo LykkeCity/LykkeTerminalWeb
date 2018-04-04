@@ -190,10 +190,12 @@ class OrderStore extends BaseStore {
       message = getRestErrorMessage(message);
     } catch (e) {
       message = !!error.message.length ? error.message : messages.defaultError;
+      if (JSON.parse(message).BackupDone.length) {
+        message = JSON.parse(message).BackupDone[0];
+      }
     }
-    this.notificationStore.addNotification(levels.error, `${message}`);
 
-    return Promise.reject(error);
+    this.notificationStore.addNotification(levels.error, '${message}');
   };
 }
 
