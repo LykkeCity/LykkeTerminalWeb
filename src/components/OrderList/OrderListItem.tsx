@@ -64,12 +64,12 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
         </td>
         <td>{price}</td>
         <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
-        <td>
+        <Cell w={OrderCellWidth.Edit}>
           {/* tslint:disable-next-line:jsx-no-lambda */}
           <span onClick={() => onEdit(id)}>
             <Icon name="pencil" />
           </span>
-        </td>
+        </Cell>
       </tr>
     );
   }
