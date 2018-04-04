@@ -28,7 +28,9 @@ export default class WalletModel {
       if (b.AssetId === baseAssetId) {
         b.balanceInBaseAsset = b.Balance;
       } else {
-        b.balanceInBaseAsset = convertedBalances[index].Balance;
+        b.balanceInBaseAsset = convertedBalances[index]
+          ? convertedBalances[index].Balance
+          : 0;
       }
       this.totalBalance += b.balanceInBaseAsset;
       return b;
