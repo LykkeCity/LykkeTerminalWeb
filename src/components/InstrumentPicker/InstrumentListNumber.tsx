@@ -1,55 +1,30 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
-import styled from '../styled';
-
-const StyledNumber = styled.div.attrs({})`
-  color: ${(p: any) => p.color};
-  span {
-    color: #f5f6f7;
-  }
-  &.up {
-    color: #13b72a;
-  }
-  &.down {
-    color: #ff3e2e;
-  }
-  .arrow {
-    display: inline-block;
-    margin-left: 8px;
-    vertical-align: middle;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    &.up {
-      border-bottom: 8px solid #13b72a;
-    }
-    &.down {
-      border-top: 8px solid #ff3e2e;
-    }
-  }
-`;
+import {InstrumentNumber} from './styles';
 
 interface InstrumentListNumberProps {
   num: number;
   accuracy: number;
+  active?: boolean;
   color?: string;
   dynamics?: string;
   preSign?: string;
 }
 
 const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
-  ({num, accuracy, color = '#ffffff', children, dynamics, preSign}) => {
+  ({num, accuracy, color, active, children, dynamics, preSign}) => {
     if (num === undefined || num === null) {
       return null;
     }
     return (
-      <StyledNumber color={color} className={dynamics}>
+      <InstrumentNumber
+        color={color || ''}
+        className={`${active ? 'active' : ''} ${dynamics}`}
+      >
         {preSign}
         {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
         {children}
-        {dynamics ? <div className={'arrow ' + dynamics} /> : ''}
-      </StyledNumber>
+      </InstrumentNumber>
     );
   }
 );

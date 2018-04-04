@@ -2,9 +2,8 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import {InstrumentModel, TradeModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
-import {sortData, Table, TableHeader, TableSortState} from '../Table';
-import {HeaderCell} from '../Table/styles';
-import {PublicTradeList} from './';
+import {sortData, TableHeader, TableSortState} from '../Table';
+import {PublicTradeList, PublicTradesCellWidth} from './';
 
 export interface TradeLogProps extends LoaderProps {
   selectedInstrument: InstrumentModel;
@@ -34,24 +33,34 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
   };
 
   render() {
+    const headers: any[] = [
+      {key: 'volume', value: 'Trade size'},
+      {
+        className: 'right-align',
+        key: 'price',
+        value: `Price (${pathOr(
+          '',
+          ['quoteAsset', 'name'],
+          this.props.selectedInstrument
+        )})`
+      },
+      {
+        className: 'right-align',
+        key: 'side',
+        value: 'Side',
+        width: PublicTradesCellWidth.Side
+      },
+      {className: 'right-align', key: 'timestamp', value: 'Time'}
+    ];
+
     return (
       <React.Fragment>
-        <Table>
-          <thead>
-            <tr>
-              <th>Trade size</th>
-              <th>
-                Price ({pathOr(
-                  '',
-                  ['quoteAsset', 'name'],
-                  this.props.selectedInstrument
-                )})
-              </th>
-              <HeaderCell w={50}>Side</HeaderCell>
-              <th>Time</th>
-            </tr>
-          </thead>
-        </Table>
+        <TableHeader
+          currentSortDirection={this.state.sortDirection}
+          currentSortByParam={this.state.sortByParam}
+          headers={headers}
+          onSort={this.sort}
+        />
         <PublicTradeList trades={this.state.data} />
       </React.Fragment>
     );

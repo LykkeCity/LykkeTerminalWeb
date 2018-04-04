@@ -35,7 +35,8 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   & > i.icon {
     display: inline-block;
-    width: 10%;
+    margin-left: 4%;
+    width: 8%;
     text-align: center;
   }
   & > input {
@@ -43,8 +44,8 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
     border: solid 2px transparent;
     border-radius: 4px;
     color: rgba(245, 246, 247, 0.4);
-    padding: ${rem(10)};
-    width: 90%;
+    padding: ${rem(6)};
+    width: 88%;
     font-size: 14px;
     &:focus {
       border: solid 2px rgb(3, 136, 239);

@@ -15,7 +15,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
     const click = () => inactive && onPick && onPick(instrument);
 
     return (
-      <tr onClick={click} className={inactive ? 'inactive' : ''}>
+      <tr onClick={click} className={inactive ? 'inactive' : 'active'}>
         <td>{instrument.displayName}</td>
         <td>
           <InstrumentListNumber
@@ -38,6 +38,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
             accuracy={percentageAccuracy}
             dynamics={instrument.change24h >= 0 ? 'up' : 'down'}
             preSign={instrument.change24h >= 0 ? '+' : ''}
+            active={!inactive}
           >
             %
           </InstrumentListNumber>

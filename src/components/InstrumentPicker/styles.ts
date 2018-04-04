@@ -8,15 +8,14 @@ export const ShortcutSelection = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  width: calc(100% - ${rem(16)});
-  padding: ${rem(16)} 0;
-  margin: 0 ${rem(8)};
+  width: 100%;
+  margin-left: ${rem(8)};
   text-align: left;
   color: ${colors.lightGrey};
 
   &:after {
     content: '';
-    margin-left: 10px;
+    margin: 0 10px;
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;
     border-top: 4px solid ${colors.lightGrey};
@@ -35,7 +34,6 @@ export const ShortcutSelectionWrapper = styled.div`
 `;
 
 export const ShortcutList = styled(Flex)`
-  min-width: 410px;
   overflow: hidden;
   flex-wrap: nowrap;
   font-size: 14px;
@@ -45,7 +43,7 @@ export const OtherShortcuts = styled.div`
   display: flex;
   align-items: center;
   width: 70px;
-  margin-right: ${rem(8)};
+  margin-right: ${rem(4)};
 
   &:hover {
     cursor: pointer;
@@ -55,63 +53,92 @@ export const OtherShortcuts = styled.div`
 export const Shortcut = styled(OtherShortcuts)`
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 70px;
   min-width: 0;
   margin: 0 ${rem(8)};
-  padding: ${rem(16)} 0;
   color: ${colors.lightGrey};
 
-  &.active {
+  &.active p {
     color: ${colors.white};
     box-shadow: inset 0 -3px 0 0 ${colors.blue};
-  }
-
-  &:not(:first-child) {
-    justify-content: center;
   }
 `;
 
 export const TruncatedText = styled.p`
   margin: 0;
+  padding: ${rem(16)} 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
 
-export const InstrumentTable = styled(Table)`
-  width: calc(100% - ${rem(8 * 2)});
-  margin: 0 ${rem(8)};
+export const InstrumentNumber = styled.div.attrs({})`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: ${(p: any) => p.color};
 
-  th {
-    > div {
-      padding-left: ${rem(12)};
-    }
-
-    &:first-child {
-      > div {
-        padding-left: 0;
-      }
+  &.up {
+    color: ${colors.green};
+  }
+  &.down {
+    color: ${colors.red};
+  }
+  &.up,
+  &.down {
+    &:after {
+      content: '';
+      margin-left: 5px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
     }
   }
+  &.up:after {
+    border-bottom: 7px solid ${colors.green};
+  }
+  &.down:after {
+    border-top: 7px solid ${colors.red};
+  }
 
+  &.active {
+    &.up,
+    &.down {
+      color: ${colors.white};
+    }
+    &.up:after {
+      border-bottom: 7px solid ${colors.white};
+    }
+    &.down:after {
+      border-top: 7px solid ${colors.white};
+    }
+  }
+`;
+
+export const InstrumentTableEl = styled(Table)`
+  th,
   td {
-    padding: ${rem(12)};
+    padding: ${rem(10)} ${rem(12)};
 
-    &:nth-child(2) {
-      text-align: left;
+    &:first-child {
+      padding-left: ${rem(8)};
+    }
+    &:nth-child(2) > div {
+      justify-content: flex-start;
     }
   }
 
   tbody {
     tr {
-      border-top: 1px solid ${colors.graphiteBorder};
       border-bottom: 1px solid ${colors.graphiteBorder};
 
-      &:first-child {
-        border-top: none;
+      &.active {
+        background-color: ${colors.blue};
       }
-
-      &:hover {
+      &.inactive:hover {
+        cursor: pointer;
+      }
+      &:not(.active):hover {
         background-color: ${colors.darkGraphite};
       }
     }

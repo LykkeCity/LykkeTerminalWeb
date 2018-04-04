@@ -12,23 +12,26 @@ import TradeListItem from './TradeListItem';
 import TradeLog from './TradeLog';
 import Trades from './Trades';
 
+export const TradesCellWidth = {
+  Symbol: 70,
+  Side: 70,
+  OrderType: 100
+};
+
+export const PublicTradesCellWidth = {
+  Side: 60
+};
+
 const ConnectedTrades = connect(
-  ({authStore: {isAuth}}) => ({
-    isAuth
+  ({authStore: {isAuth}, tradeStore: {getAllTrades}}) => ({
+    isAuth,
+    trades: getAllTrades
   }),
   withAuth(Trades)
 );
 
 const ConnectedTradeList = connect<TradeListProps>(
-  ({
-    tradeStore: {
-      getAllTrades,
-      hasPendingItems,
-      shouldFetchMore,
-      fetchNextTrades
-    }
-  }) => ({
-    trades: getAllTrades,
+  ({tradeStore: {hasPendingItems, shouldFetchMore, fetchNextTrades}}) => ({
     loading: hasPendingItems,
     fetchNextTrades,
     shouldFetchMore

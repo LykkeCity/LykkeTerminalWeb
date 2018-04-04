@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {Table, TableHeaderItem} from '.';
+import {HeaderCell, Table, TableHeaderItem} from '.';
 
 interface TableHeaderProps {
-  backgroundColor?: string;
+  className?: string;
   currentSortDirection: string;
   currentSortByParam: string;
   headers: any[];
@@ -10,31 +10,29 @@ interface TableHeaderProps {
 }
 
 const TableHeader: React.SFC<TableHeaderProps> = ({
-  backgroundColor,
+  className,
   currentSortDirection,
   currentSortByParam,
   headers,
   onSort
 }) => {
   return (
-    <Table>
+    <Table className={`header ${className || ''}`}>
       <thead>
         <tr>
           {headers.map((header, index) => (
-            <TableHeaderItem
-              key={index}
-              className={header.className}
-              currentSortDirection={currentSortDirection}
-              currentSortByParam={currentSortByParam}
-              sortByParam={header.key}
-              sortDisabled={header.sortDisabled}
-              style={{
-                backgroundColor
-              }}
-              onSort={onSort}
-            >
-              {header.value}
-            </TableHeaderItem>
+            <HeaderCell w={header.width} key={index}>
+              <TableHeaderItem
+                className={header.className}
+                currentSortDirection={currentSortDirection}
+                currentSortByParam={currentSortByParam}
+                sortByParam={header.key}
+                sortDisabled={header.sortDisabled}
+                onSort={onSort}
+              >
+                {header.value}
+              </TableHeaderItem>
+            </HeaderCell>
           ))}
         </tr>
       </thead>
