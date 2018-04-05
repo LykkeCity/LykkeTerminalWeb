@@ -96,6 +96,13 @@ export const Table = styled.table`
 
       th {
         padding: ${rem(8)};
+
+        &:first-child {
+          padding: ${rem(8)} ${rem(24)} ${rem(8)} 0;
+        }
+        &:not(:first-child) {
+          padding: ${rem(8)} ${rem(12)};
+        }
       }
     }
   }

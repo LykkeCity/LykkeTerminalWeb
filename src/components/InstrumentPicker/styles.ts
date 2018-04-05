@@ -4,6 +4,16 @@ import {Table} from '../Table';
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
+export const SearchWrap = styled(Flex)`
+  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+`;
+
+export const ShortcutSelectionWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+`;
+
 export const ShortcutSelection = styled.div`
   display: flex;
   align-items: center;
@@ -27,12 +37,6 @@ export const ShortcutSelection = styled.div`
   }
 `;
 
-export const ShortcutSelectionWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-`;
-
 export const ShortcutList = styled(Flex)`
   overflow: hidden;
   flex-wrap: nowrap;
@@ -51,17 +55,18 @@ export const OtherShortcuts = styled.div`
 `;
 
 export const Shortcut = styled(OtherShortcuts)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70px;
   min-width: 0;
   margin: 0 ${rem(8)};
   color: ${colors.lightGrey};
+  justify-content: center;
 
   &.active p {
     color: ${colors.white};
     box-shadow: inset 0 -3px 0 0 ${colors.blue};
+  }
+  &:first-child {
+    margin: 0 ${rem(8)} 0 0;
+    justify-content: flex-start;
   }
 `;
 

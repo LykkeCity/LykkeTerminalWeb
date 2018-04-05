@@ -22,7 +22,7 @@ const StyledInstrumentPopover = styled(InstrumentPopover)`
   box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
   border: solid 1px rgba(0, 0, 0, 0.2);
   position: absolute;
-  padding: ${rem(10)};
+  padding: ${rem(8)} ${rem(16)};
   z-index: 999;
   transition: all 0.3s ease;
   width: 700px;
