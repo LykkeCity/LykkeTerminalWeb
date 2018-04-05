@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import {AssetModel} from '../../models';
 import {WalletBalanceList} from '../WalletBalanceList/';
 import NameList from './NameList';
@@ -37,13 +38,15 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
     return (
       <MyWalletsContainer>
         <WalletOverview>
-          <NameList
-            selectedIndex={this.state.index}
-            wallets={wallets}
-            onChangeWallet={this.handleChangeWallet}
-            baseAssetName={baseAsset.name}
-            accuracy={baseAsset.accuracy}
-          />
+          <Scrollbars style={{height: 33 * 3, width: 288}}>
+            <NameList
+              selectedIndex={this.state.index}
+              wallets={wallets.slice(0, 3)}
+              onChangeWallet={this.handleChangeWallet}
+              baseAssetName={baseAsset.name}
+              accuracy={baseAsset.accuracy}
+            />
+          </Scrollbars>
           <TotalBalance
             total={total}
             accuracy={baseAsset.accuracy}

@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  WalletItem,
-  WalletItemContainer,
-  WalletItemSelected,
-  WalletName,
-  WalletTotalBalance
-} from './styles';
+import {WalletItemContainer, WalletName, WalletTotalBalance} from './styles';
 
 interface WalletNameProps {
   name: string;
@@ -29,19 +23,17 @@ const Name: React.SFC<WalletNameProps> = ({
     }) +
       ' ' +
       baseAssetName;
-  const content = (
-    <WalletItemContainer>
+
+  return (
+    <WalletItemContainer
+      className={selectedIndex ? 'selected-wallet-name' : ''}
+    >
       <WalletName title={name}>{name}</WalletName>
       <WalletTotalBalance title={totalBalanceWithLocale + ''}>
         {totalBalanceWithLocale}
       </WalletTotalBalance>
     </WalletItemContainer>
   );
-  if (selectedIndex) {
-    return <WalletItemSelected>{content}</WalletItemSelected>;
-  } else {
-    return <WalletItem>{content}</WalletItem>;
-  }
 };
 
 export default Name;

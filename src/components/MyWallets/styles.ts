@@ -50,47 +50,19 @@ export const Br = styled.div`
   background-color: rgba(0, 0, 0, 0.2);
 `;
 
-// ...................TotalBalance...................
-export const Total = styled.div`
-  color: ${rgb(255, 255, 255)};
+// ...................Names...................
+export const WalletItemContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: ${rem(10)};
-`;
-
-export const TotalAmount = styled.div`
-  font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(24)};
-  font-weight: bold;
-  width: 159px;
-  height: 24px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-`;
-
-export const TotalLabel = styled.div`
-  opacity: 0.4;
-  font-size: ${rem(12)};
-  margin-top: ${rem(2)};
-`;
-
-// ...................Name...................
-export const WalletItem = styled.div`
   border-radius: 2px;
   color: ${rgb(245, 246, 247)};
   cursor: pointer;
   padding: ${rem(10)};
-`;
+  width: 272px;
+  height: 32px;
 
-export const WalletItemSelected = WalletItem.extend`
-  background-color: ${rgb(60, 60, 60)};
-`;
-
-export const WalletItemContainer = styled.div`
-  display: flex;
+  &.selected-wallet-name {
+    background-color: ${rgb(60, 60, 60)};
+  }
 `;
 
 export const WalletName = styled.div`
@@ -126,4 +98,31 @@ export const WalletTotalBalance = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+`;
+
+// ...................TotalBalance...................
+export const Total = styled.div`
+  color: ${rgb(255, 255, 255)};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+export const TotalAmount = styled.div`
+  font-family: 'Akrobat', sans-serif;
+  font-size: ${rem(24)};
+  font-weight: bold;
+  width: 159px;
+  height: 24px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+export const TotalLabel = styled.div`
+  opacity: 0.4;
+  font-size: ${rem(12)};
+  margin-top: ${rem(2)};
 `;
