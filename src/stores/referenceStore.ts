@@ -212,10 +212,12 @@ class ReferenceStore extends BaseStore {
 
   fetchRates = async () => {
     const resp = await this.api.fetchRates();
-    resp.AssetPairRates.forEach(({AssetPair, BidPrice}: any) => {
+    resp.AssetPairRates.forEach(({AssetPair, BidPrice, AskPrice}: any) => {
       const instrument = this.getInstrumentById(AssetPair);
       if (instrument) {
         instrument.price = BidPrice;
+        instrument.bid = BidPrice;
+        instrument.ask = AskPrice;
       }
     });
   };
@@ -237,6 +239,15 @@ class ReferenceStore extends BaseStore {
     const instrument = this.getInstrumentById(id);
     if (instrument && instrument.id) {
       instrument.updatePrice(price);
+      instrument.updateBid(price); // TODO: improve domain model design
+    }
+  };
+
+  onQuoteAsk = (args: any) => {
+    const {a: id, p: price} = args[0];
+    const instrument = this.getInstrumentById(id);
+    if (instrument && instrument.id) {
+      instrument.updateAsk(price);
     }
   };
 

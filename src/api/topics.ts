@@ -13,6 +13,9 @@ export const candle = (
 export const quote = (symbol: string) =>
   `quote.spot.${symbol.toLowerCase()}.bid`;
 
+export const quoteAsk = (symbol: string) =>
+  `quote.spot.${symbol.toLowerCase()}.ask`;
+
 export const trades = `trades`;
 
 export const publicTrade = (symbol: string) =>

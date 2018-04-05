@@ -139,9 +139,10 @@ class RootStore {
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
         this.priceStore.setWs(ws);
-        instruments.forEach(x =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        instruments.forEach(x => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+        });
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
