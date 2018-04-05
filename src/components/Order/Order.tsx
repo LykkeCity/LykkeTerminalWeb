@@ -244,9 +244,16 @@ class Order extends React.Component<OrderProps, OrderState> {
       quoteAssetId
     } = this.props;
     const {isLimitActive, isSellActive, isMarketActive} = this.state;
+    const balance = this.state.isSellActive
+      ? baseAssetBalance
+      : quoteAssetBalance;
+
+    if (!balance) {
+      return;
+    }
 
     const tempObj = await this.props.handlePercentageChange({
-      balance: this.state.isSellActive ? baseAssetBalance : quoteAssetBalance,
+      balance,
       baseAssetId,
       index,
       isInverted,

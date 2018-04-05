@@ -104,6 +104,10 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       quoteAssetId
     } = this;
 
+    if (!this.balance) {
+      return;
+    }
+
     const tempObj = await this.props.handlePercentageChange({
       balance: this.balance,
       baseAssetId,

@@ -75,6 +75,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
             key={index}
             onClick={onHandlePercentageChange(index)}
             isActive={item.isActive}
+            isDisabled={!balance}
           />
         ))}
       </Flex>

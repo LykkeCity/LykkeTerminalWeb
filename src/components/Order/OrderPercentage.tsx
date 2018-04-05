@@ -6,9 +6,14 @@ interface OrderPercentageProps {
   percent: number;
   isActive: boolean;
   onClick: any;
+  isDisabled: boolean;
 }
 
-const StyledPercent = styled.div`
+const StyledPercent = styled.div.attrs({
+  style: (props: any) => ({
+    opacity: `${props.disabled ? 0.5 : 1}`
+  })
+})`
   color: #f5f6f7;
   display: flex;
   justify-content: center;
@@ -59,15 +64,20 @@ const StyledPercent = styled.div`
       border-left: 1px solid transparent;
     }
   }
-`;
+` as any;
 
 const OrderPercentage: React.SFC<OrderPercentageProps> = ({
   percent,
   isActive,
-  onClick
+  onClick,
+  isDisabled
 }) => {
   return (
-    <StyledPercent className={isActive ? 'active' : ''} onClick={onClick}>
+    <StyledPercent
+      disabled={isDisabled}
+      className={isActive ? 'active' : ''}
+      onClick={onClick}
+    >
       <div>{percent}%</div>
     </StyledPercent>
   );
