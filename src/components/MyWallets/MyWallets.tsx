@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
 import {AssetModel} from '../../models';
 import {WalletBalanceList} from '../WalletBalanceList/';
 import NameList from './NameList';
@@ -10,6 +9,7 @@ import {
   WalletOverview
 } from './styles';
 import TotalBalance from './TotalBalance';
+import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
 
 export interface MyWalletsProps {
   wallets: any[];
@@ -38,15 +38,15 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
     return (
       <MyWalletsContainer>
         <WalletOverview>
-          <Scrollbars style={{height: 33 * 3, width: 288}}>
+          <CustomScrollbar styles={{width: 272, height: 33 * 3}}>
             <NameList
               selectedIndex={this.state.index}
-              wallets={wallets.slice(0, 3)}
+              wallets={wallets}
               onChangeWallet={this.handleChangeWallet}
               baseAssetName={baseAsset.name}
               accuracy={baseAsset.accuracy}
             />
-          </Scrollbars>
+          </CustomScrollbar>
           <TotalBalance
             total={total}
             accuracy={baseAsset.accuracy}
@@ -59,7 +59,6 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
             Manage Wallets
           </ManageWalletsLink>
         </WalletOverview>
-
         <WalletBalances>
           <WalletBalanceList wallet={this.props.wallets[this.state.index]} />
         </WalletBalances>
