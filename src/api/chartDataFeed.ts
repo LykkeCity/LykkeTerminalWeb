@@ -1,9 +1,51 @@
+import {
+  addDays,
+  addHours,
+  addMinutes,
+  addMonths,
+  addSeconds,
+  addWeeks
+} from 'date-fns';
 import {uniq} from 'rambda';
 import * as topics from '../api/topics';
-import {InstrumentModel, MarketType, PriceType} from '../models/index';
+import {
+  InstrumentModel,
+  Interval,
+  MarketType,
+  PriceType
+} from '../models/index';
 import * as mappers from '../models/mappers/index';
 import {dateFns} from '../utils/index';
 import {PriceApi} from './index';
+
+const addTick = (d: Date, interval: Interval) => {
+  switch (interval) {
+    case 'sec':
+      return addSeconds(d, 1);
+    case 'minute':
+      return addMinutes(d, 1);
+    case 'min5':
+      return addMinutes(d, 5);
+    case 'min15':
+      return addMinutes(d, 15);
+    case 'min30':
+      return addMinutes(d, 30);
+    case 'hour':
+      return addHours(d, 1);
+    case 'hour4':
+      return addHours(d, 4);
+    case 'hour6':
+      return addHours(d, 6);
+    case 'hour12':
+      return addHours(d, 12);
+    case 'day':
+      return addDays(d, 1);
+    case 'week':
+      return addWeeks(d, 1);
+    case 'month':
+      return addMonths(d, 1);
+  }
+};
 
 class ChartDataFeed {
   constructor(
@@ -45,12 +87,13 @@ class ChartDataFeed {
     firstDataRequest: any
   ) => {
     const timePeriods = dateFns.splitter(from * 1000, to * 1000, resolution);
+    const interval = mappers.mapChartResolutionToWampInterval(resolution);
     const promises = timePeriods!.map(period =>
       this.priceApi.fetchCandles(
         this.instrument.id,
-        new Date(period.from),
-        firstDataRequest ? new Date() : new Date(period.to),
-        mappers.mapChartResolutionToWampInterval(resolution)
+        addTick(new Date(from * 1000), interval),
+        addTick(firstDataRequest ? new Date() : new Date(to * 1000), interval),
+        interval
       )
     );
 
