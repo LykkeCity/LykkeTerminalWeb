@@ -1,7 +1,5 @@
-import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import {Percentage} from '../../constants/ordersPercentage';
 import {keys} from '../../models';
@@ -10,11 +8,11 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
-import {OrderProps, OrderState} from './index';
-import OrderActionButton from './OrderActionButton';
-import OrderChoiceButton from './OrderChoiceButton';
+import ActionChoiceButton from './ActionChoiceButton';
+import MarketChoiceButton from './MarketChoiceButton';
 import OrderLimit from './OrderLimit';
 import OrderMarket from './OrderMarket';
+import {Actions, Markets} from './styles';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
@@ -26,17 +24,42 @@ const MARKET = OrderType.Market;
 const LIMIT = OrderType.Limit;
 const STOP_LIMIT = OrderType.StopLimit;
 
-const StyledMarkets = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: ${rem(16)};
-  border-bottom: 1px solid #2d2d2d;
-`;
+interface OrderState {
+  isMarketActive: boolean;
+  isLimitActive: boolean;
+  isStopLimitActive: boolean;
+  isSellActive: boolean;
+  quantityValue: string;
+  pendingOrder: boolean;
+  priceValue: string;
+  percents: any[];
+}
 
-const StyledActions = StyledMarkets.extend`
-  justify-content: center;
-  border-bottom: none;
-`;
+interface OrderProps {
+  addModal: any;
+  ask: number;
+  bid: number;
+  accuracy: any;
+  currency: string;
+  placeOrder: any;
+  baseName: string;
+  quoteName: string;
+  stateFns: any[];
+  getAssetById: any;
+  onArrowClick: any;
+  onValueChange: any;
+  fixedAmount: any;
+  updatePriceFn: any;
+  updateDepthFn: any;
+  initPriceFn: any;
+  baseAssetBalance: any;
+  quoteAssetBalance: any;
+  convertPartiallyBalance: any;
+  mid: number;
+  handlePercentageChange: any;
+  updatePercentageState: any;
+  resetPercentage: any;
+}
 
 class Order extends React.Component<OrderProps, OrderState> {
   constructor(props: OrderProps) {
@@ -349,31 +372,31 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     return (
       <div>
-        <StyledMarkets>
-          <OrderChoiceButton
+        <Markets>
+          <MarketChoiceButton
             title={LIMIT}
             isActive={isLimitActive}
             click={this.handleActionChoiceClick(LIMIT)}
           />
-          <OrderChoiceButton
+          <MarketChoiceButton
             title={MARKET}
             isActive={isMarketActive}
             click={this.handleActionChoiceClick(MARKET)}
           />
-        </StyledMarkets>
+        </Markets>
 
-        <StyledActions>
-          <OrderActionButton
+        <Actions>
+          <ActionChoiceButton
             title={orderAction.sell.action}
             click={this.handleActionClick(orderAction.sell.action)}
             isActive={isSellActive}
           />
-          <OrderActionButton
+          <ActionChoiceButton
             title={orderAction.buy.action}
             click={this.handleActionClick(orderAction.buy.action)}
             isActive={!isSellActive}
           />
-        </StyledActions>
+        </Actions>
 
         {isLimitActive && (
           <OrderLimit
