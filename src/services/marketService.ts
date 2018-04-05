@@ -7,7 +7,7 @@ class MarketService {
   init = (insturments: InstrumentModel[], assets: AssetModel[]) => {
     const {g, d, u} = this.initData(insturments);
     for (const asset of assets) {
-      this.result[asset.id] = this.buildDeikstra(asset.id, g, {...d}, {...u});
+      this.result[asset.id] = this.buildDijkstra(asset.id, g, {...d}, {...u});
     }
     this.graph = g;
   };
@@ -77,7 +77,7 @@ class MarketService {
         g[baseAssetId] = {};
       }
       g[baseAssetId][quoteAssetId] = {
-        weight: 1,
+        weight: this.getWeight(instrument),
         pair: instrument.id,
         straight: true
       };
@@ -86,7 +86,7 @@ class MarketService {
         g[quoteAssetId] = {};
       }
       g[quoteAssetId][baseAssetId] = {
-        weight: 1,
+        weight: this.getWeight(instrument),
         pair: instrument.id,
         straight: false
       };
@@ -96,11 +96,30 @@ class MarketService {
       u[baseAssetId] = false;
       u[quoteAssetId] = false;
     }
-
     return {g, d, u};
   };
 
-  private buildDeikstra = (start: string, g: any, d: any, u: any) => {
+  private getWeight(instrument: InstrumentModel) {
+    if (
+      instrument.baseAsset.id === 'BTC' ||
+      instrument.quoteAsset.id === 'BTC'
+    ) {
+      return 1;
+    } else if (
+      instrument.baseAsset.id === 'ETH' ||
+      instrument.quoteAsset.id === 'ETH'
+    ) {
+      return 1;
+    } else if (
+      instrument.baseAsset.id === 'USD' ||
+      instrument.quoteAsset.id === 'USD'
+    ) {
+      return 1;
+    }
+    return 10;
+  }
+
+  private buildDijkstra = (start: string, g: any, d: any, u: any) => {
     d[start] = 0;
     const keys = Object.keys(g);
     const result = {};
