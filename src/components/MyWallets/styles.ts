@@ -32,6 +32,7 @@ export const ManageWalletsLink = styled.a`
   cursor: pointer;
   color: ${rgb(245, 246, 247)};
   font-size: ${rem(14)};
+  font-family: 'ProximaNova', sans-serif;
   text-align: center;
   text-decoration: none;
   display: flex;
@@ -68,7 +69,7 @@ export const WalletItemContainer = styled.div`
 export const WalletName = styled.div`
   width: 90px;
   height: 17px;
-  font-family: ProximaNova;
+  font-family: 'ProximaNova', sans-serif;
   font-size: 14px;
   font-weight: 600;
   font-style: normal;
@@ -86,7 +87,7 @@ export const WalletTotalBalance = styled.div`
   margin-left: auto;
   width: 91px;
   height: 17px;
-  font-family: ProximaNova;
+  font-family: 'ProximaNova', sans-serif;
   font-size: 14px;
   font-weight: normal;
   font-style: normal;
@@ -116,9 +117,10 @@ export const TotalAmount = styled.div`
   font-weight: bold;
   width: 159px;
   height: 24px;
-  white-space: nowrap;
   text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
+  text-align: center;
 `;
 
 export const TotalLabel = styled.div`

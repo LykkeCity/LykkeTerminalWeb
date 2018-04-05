@@ -19,7 +19,7 @@ const StyledButton = styled.button.attrs({
   color: #ffffff;
   outline: none;
   border: none;
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: 'ProximaNova', sans-serif;
   background-color: #0388ef;
   border: solid 1px #0388ef;
 

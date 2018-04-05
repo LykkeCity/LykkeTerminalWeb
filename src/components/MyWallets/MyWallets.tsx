@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {AssetModel} from '../../models';
+import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
 import {WalletBalanceList} from '../WalletBalanceList/';
 import NameList from './NameList';
 import {
@@ -9,7 +10,6 @@ import {
   WalletOverview
 } from './styles';
 import TotalBalance from './TotalBalance';
-import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
 
 export interface MyWalletsProps {
   wallets: any[];
