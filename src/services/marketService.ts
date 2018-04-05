@@ -55,9 +55,9 @@ class MarketService {
         return 0;
       }
       if (straight) {
-        output *= instrument.price;
+        output *= instrument.bid;
       } else {
-        output *= 1 / instrument.price;
+        output *= 1 / instrument.ask;
       }
     }
 
