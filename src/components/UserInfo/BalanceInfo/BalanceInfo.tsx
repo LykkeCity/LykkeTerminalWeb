@@ -14,11 +14,11 @@ const StyledBalanceInfo = styled.div`
 `;
 
 const StyledBalanceValue = styled.span`
+  height: 16px;
   color: #f5f6f7;
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(16)};
   font-weight: bold;
-  line-height: 1;
   text-align: left;
 `;
 
@@ -40,7 +40,7 @@ const StyledButton = styled.button`
 
 const StyledBalanceLabel = styled.div`
   color: #8c94a0;
-  font-size: 0.7rem;
+  font-size: ${rem(12)};
 `;
 
 interface BalanceInfoProps {

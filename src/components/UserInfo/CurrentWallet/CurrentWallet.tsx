@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {WalletModel} from '../../../models';
-import {CurrentWalletName, StyledCurrentWallet} from './styles';
+import {StyledCurrentWallet} from './styles';
 
 export interface CurrentWalletProps {
   wallet: WalletModel;
@@ -9,7 +9,7 @@ export interface CurrentWalletProps {
 const CurrentWallet: React.SFC<CurrentWalletProps> = ({wallet}) =>
   (wallet && (
     <StyledCurrentWallet>
-      <CurrentWalletName title={wallet.name}>{wallet.name}</CurrentWalletName>
+      <span title={wallet.name}>{wallet.name}</span>
       <small>Current Wallet</small>
     </StyledCurrentWallet>
   )) ||
