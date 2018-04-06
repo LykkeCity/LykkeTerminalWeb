@@ -30,20 +30,6 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
         </WalletBalanceNumber>
       </td>
     </tr>
-  )) || (
-    <tr>
-      <td />
-      <td />
-      <td>
-        <WalletBalanceNumber
-          num={balance.balanceInBaseAsset}
-          accuracy={baseAsset.accuracy}
-          color={'rgba(245, 246, 247, 0.4)'}
-        >
-          &nbsp;{baseAsset.name}
-        </WalletBalanceNumber>
-      </td>
-      <td />
-    </tr>
-  );
+  )) ||
+  null;
 export default WalletBalanceItem;
