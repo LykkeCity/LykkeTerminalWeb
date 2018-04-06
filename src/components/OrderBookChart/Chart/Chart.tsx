@@ -11,13 +11,11 @@ import {ChartProps} from './Models';
 import chart from './chartConstants';
 
 class Chart extends React.Component<ChartProps> {
-  width: number;
-  height: number;
+  width: number = chart.width;
+  height: number = chart.height;
 
   constructor(props: ChartProps) {
     super(props);
-    this.width = chart.width;
-    this.height = chart.height;
   }
 
   render() {

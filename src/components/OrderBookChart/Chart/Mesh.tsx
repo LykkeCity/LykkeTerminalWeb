@@ -13,8 +13,8 @@ class Mesh extends React.Component<ChartProps> {
   bids: Order[];
   mesh: any = [];
 
-  width = 1080;
-  height = 500;
+  width: number = chart.width - chart.labelsWidth;
+  height: number = chart.height - chart.labelsHeight;
 
   stepVertical = this.width / chart.mesh.verticalLinesAmount;
   stepHorizontal = this.height / chart.mesh.horizontalLinesAmount;

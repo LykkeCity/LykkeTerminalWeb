@@ -13,8 +13,9 @@ class Asks extends React.Component<ChartProps> {
   graphics: any[] = [];
   points: number[] = [];
 
-  width: number = 1080;
-  height: number = 500;
+  width: number = chart.width - chart.labelsWidth;
+  height: number = chart.height - chart.labelsHeight;
+
   asks: Order[];
   bids: Order[];
   mid: number;
