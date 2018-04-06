@@ -59,7 +59,10 @@ const chart = {
   },
 
   strokeWidth: 2,
-  fillOpacity: 0.2
+  fillOpacity: 0.2,
+
+  width: 1125,
+  height: 549
 };
 
 export default chart;

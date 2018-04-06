@@ -8,12 +8,16 @@ import Mesh from './Mesh';
 
 import {ChartProps} from './Models';
 
+import chart from './chartConstants';
+
 class Chart extends React.Component<ChartProps> {
-  width = 1125;
-  height = 549;
+  width: number;
+  height: number;
 
   constructor(props: ChartProps) {
     super(props);
+    this.width = chart.width;
+    this.height = chart.height;
   }
 
   render() {

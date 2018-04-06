@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Order} from '../../models';
 import {VBar} from '../Bar/Bar';
+import {FAIcon} from '../Icon/Icon';
 import {StyledBar, StyledGrouping, StyledWrapper} from '../OrderBook/styles';
 import Chart from './Chart/index';
 
@@ -34,9 +35,16 @@ class OrderBookChart extends React.Component<OrderBookChartProps> {
       <StyledWrapper>
         <StyledBar>
           <StyledGrouping>
-            Grouping: <button onClick={onPrevSpan}>-</button>
-            <strong>{span}</strong>
-            <button onClick={onNextSpan}>+</button>
+            Grouping:
+            <button onClick={onPrevSpan}>
+              <FAIcon name="minus" />
+            </button>
+            <div>
+              <strong>{span}</strong>
+            </div>
+            <button onClick={onNextSpan}>
+              <FAIcon name="plus" />
+            </button>
           </StyledGrouping>
           <VBar />
           Mid price:&nbsp;<span>{mid}</span>
