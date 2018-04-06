@@ -1,10 +1,11 @@
 import {
-  getErrorMessage,
   getPostDecimalsLength,
+  getWampErrorMessage,
   isOnlyNumbers,
   substringLast,
   substringMinus,
-  substringZero
+  substringZero,
+  getRestErrorMessage
 } from './string';
 
 describe('string utils', () => {
@@ -60,8 +61,15 @@ describe('string utils', () => {
 
   it('should return splitted string', () => {
     const message = 'ReservedVolumeHigherThanBalance';
-    expect(getErrorMessage(message)).toBe(
+    expect(getWampErrorMessage(message)).toBe(
       'reserved volume higher than balance'
+    );
+  });
+
+  it('shoud return string from rest error object', () => {
+    const restMessage = {id: ['Value to small', 'Please, try again']};
+    expect(getRestErrorMessage(restMessage)).toBe(
+      'Value to small. Please, try again'
     );
   });
 });

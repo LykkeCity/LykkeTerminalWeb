@@ -29,11 +29,14 @@ export const isOnlyNumbers = (str: any) => {
   return !isNaN(str - parseFloat(str));
 };
 
-export const getErrorMessage = (message: string) =>
+export const getWampErrorMessage = (message: string) =>
   message
     .split(/(?=[A-Z])/)
     .join(' ')
     .toLowerCase();
+
+export const getRestErrorMessage = (message: any) =>
+  (Object as any).values(message)[0].join('. ');
 
 export const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
   num.toLocaleString(undefined, {
