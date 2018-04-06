@@ -56,7 +56,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
         </Cell>
         <td>{volume}</td>
         <td>
-          {getFilled(volume, remainingVolume, accuracy)}({getFilledPercent(
+          {getFilled(volume, remainingVolume, accuracy)} ({getFilledPercent(
             volume,
             remainingVolume,
             accuracy

@@ -21,14 +21,14 @@ export const ShortcutSelection = styled.div`
   width: 100%;
   margin-left: ${rem(8)};
   text-align: left;
-  color: ${colors.lightGrey};
+  color: ${colors.coolGrey};
 
   &:after {
     content: '';
     margin: 0 10px;
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;
-    border-top: 4px solid ${colors.lightGrey};
+    border-top: 4px solid ${colors.coolGrey};
   }
 
   &.active {
@@ -57,7 +57,7 @@ export const OtherShortcuts = styled.div`
 export const Shortcut = styled(OtherShortcuts)`
   min-width: 0;
   margin: 0 ${rem(8)};
-  color: ${colors.lightGrey};
+  color: ${colors.coolGrey};
   justify-content: center;
 
   &.active p {
@@ -105,19 +105,6 @@ export const InstrumentNumber = styled.div.attrs({})`
   &.down:after {
     border-top: 7px solid ${colors.red};
   }
-
-  &.active {
-    &.up,
-    &.down {
-      color: ${colors.white};
-    }
-    &.up:after {
-      border-bottom: 7px solid ${colors.white};
-    }
-    &.down:after {
-      border-top: 7px solid ${colors.white};
-    }
-  }
 `;
 
 export const InstrumentTableEl = styled(Table)`
@@ -131,6 +118,9 @@ export const InstrumentTableEl = styled(Table)`
     &:nth-child(2) > div {
       justify-content: flex-start;
     }
+    &:last-child {
+      padding-right: ${rem(8)};
+    }
   }
 
   tbody {
@@ -138,7 +128,7 @@ export const InstrumentTableEl = styled(Table)`
       border-bottom: 1px solid ${colors.graphiteBorder};
 
       &.active {
-        background-color: ${colors.blue};
+        background-color: ${colors.darkGraphite};
       }
       &.inactive:hover {
         cursor: pointer;
