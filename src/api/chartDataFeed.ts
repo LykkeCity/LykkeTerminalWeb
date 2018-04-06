@@ -91,7 +91,7 @@ class ChartDataFeed {
     const promises = timePeriods!.map(period =>
       this.priceApi.fetchCandles(
         this.instrument.id,
-        addTick(new Date(from * 1000), interval),
+        new Date(from * 1000),
         addTick(firstDataRequest ? new Date() : new Date(to * 1000), interval),
         interval
       )
