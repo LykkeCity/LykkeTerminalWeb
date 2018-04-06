@@ -1,31 +1,28 @@
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
-import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import styled, {colorFromSide} from '../styled';
+import {SideCell} from './styles';
+import {toLocaleStringWithAccuracy} from './TradeListItem';
 
-export interface PublicTradeListItemProps extends TradeModel {
-  className?: string;
-}
+// tslint:disable-next-line:no-empty-interface
+export interface PublicTradeListItemProps extends TradeModel {}
 
 export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
-  quantity,
+  volume,
   price,
   side,
-  timestamp,
-  className
+  instrument,
+  timestamp
 }) => (
-  <tr className={className}>
-    <td>{formattedNumber(quantity)}</td>
-    <td>{formattedNumber(price)}</td>
-    <td>{side}</td>
+  <tr>
+    <td>
+      {toLocaleStringWithAccuracy(volume, instrument!.baseAsset.accuracy)}
+    </td>
+    <td>{toLocaleStringWithAccuracy(price, instrument!.accuracy)}</td>
+    <SideCell w={50} side={side}>
+      {side}
+    </SideCell>
     <td>{new Date(timestamp).toLocaleTimeString()}</td>
   </tr>
 );
 
-PublicTradeListItem.displayName = 'PublicTradeListItem';
-
-const StyledPublicTradeListItem = styled(PublicTradeListItem)`
-  ${p => colorFromSide(p)};
-`;
-
-export default StyledPublicTradeListItem;
+export default PublicTradeListItem;

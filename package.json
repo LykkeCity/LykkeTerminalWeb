@@ -10,6 +10,7 @@
     "@types/react-virtualized": "^9.7.13",
     "@types/yup": "^0.24.0",
     "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
+    "big.js": "^5.0.3",
     "date-fns": "^1.29.0",
     "formik": "^0.10.5",
     "grid-styled": "^2.0.0-11",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@types/autobahn": "^0.9.38",
+    "@types/big.js": "^4.0.3",
     "@types/jest": "^21.1.10",
     "@types/node": "^8.5.8",
     "@types/prop-types": "^15.5.2",

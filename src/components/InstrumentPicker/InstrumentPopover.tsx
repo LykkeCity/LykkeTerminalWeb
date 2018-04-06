@@ -26,7 +26,7 @@ const StyledInstrumentPopover = styled(InstrumentPopover)`
   z-index: 999;
   transition: all 0.3s ease;
   min-width: 270px;
-  max-height: 630px;
+  max-height: 620px;
   top: 40px;
 `;
 

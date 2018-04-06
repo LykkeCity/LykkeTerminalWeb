@@ -1,12 +1,14 @@
 import {ISubscription} from 'autobahn';
-import {endOfToday, startOfToday} from 'date-fns';
+import {addMinutes, startOfToday, startOfTomorrow} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
-// import {last} from 'rambda';
+import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
 import * as topics from '../api/topics';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
+
+const toUtc = (d: () => Date) => addMinutes(d(), d().getTimezoneOffset());
 
 class PriceStore extends BaseStore {
   priceApi: any;
@@ -35,19 +37,22 @@ class PriceStore extends BaseStore {
   fetchDailyCandle = async () => {
     const resp = await this.api.fetchCandles(
       this.selectedInstrument!.id,
-      startOfToday(),
-      endOfToday(),
+      toUtc(startOfToday),
+      toUtc(startOfTomorrow),
       'day'
     );
-    runInAction(() => {
-      // tslint:disable-next-line:no-console
-      console.log(resp.History);
-      this.dailyOpen = 1;
-      this.dailyHigh = 1;
-      this.dailyLow = 1;
-      this.lastTradePrice = 1;
-      this.dailyVolume = 1;
-    });
+    if (resp.History && resp.History.length > 0) {
+      runInAction(() => {
+        const {open, high, low, close, volume} = map.mapToBarFromRest(
+          last(resp.History)
+        );
+        this.dailyOpen = open;
+        this.dailyHigh = high;
+        this.dailyLow = low;
+        this.lastTradePrice = close;
+        this.dailyVolume = volume;
+      });
+    }
   };
 
   subscribeToDailyCandle = async () => {

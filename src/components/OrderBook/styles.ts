@@ -3,8 +3,7 @@ import {Side} from '../../models';
 import styled, {colors, dims, fonts, padding} from '../styled';
 import {Table} from '../Table';
 
-const colorBySide = (side: Side) =>
-  side === Side.Sell ? '#d070ff' : '#ffae2c';
+const colorBySide = (side: Side) => (side === Side.Buy ? '#d070ff' : '#ffae2c');
 
 const marginBySide = (side: Side) =>
   side === Side.Sell ? 'marginLeft' : 'marginRight';
@@ -34,7 +33,7 @@ export const StyledGrouping = styled.div`
     border: none;
     color: rgb(216, 216, 216);
     opacity: 0.4;
-    font-size: 1.4rem;
+    font-size: ${rem(fonts.normal)};
     font-weight: bold;
     cursor: pointer;
     outline: none;
@@ -49,9 +48,10 @@ export const StyledGrouping = styled.div`
     }
   }
 
-  strong {
+  div {
     font-weight: 600;
-    min-width: ${rem(52)};
+    min-width: ${rem(55)};
+    margin: 0 ${rem(12)};
     display: inline-block;
     text-align: center;
   }
@@ -82,13 +82,24 @@ export const StyledSwitch = styled.div`
 
 export const StyledHeader = Table.extend`
   margin: ${rem(dims.padding[1])} 0 ${rem(dims.padding[0])};
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
 `;
 
-export const StyledHeaderRow = styled.tr``;
+export const StyledHeaderRow = styled.tr`
+  th {
+    padding: 0;
+  }
+  th:first-child {
+    padding-left: 1rem !important;
+  }
+  th:last-child {
+    padding-right: 1rem !important;
+  }
+`;
 
 export const StyledHeaderCell = styled.th`
   text-align: ${(p: any) => p.align} !important;
-  padding: 0 !important;
   width: 33%;
 ` as any;
 
@@ -105,17 +116,12 @@ export const StyledSellOrders = styled.tbody``;
 
 export const StyledBuyOrders = styled.tbody``;
 
-export const StyledMidPrice = styled.td`
+export const MidRow = styled.td`
   min-height: 24px;
   color: ${colors.white};
-  font-family: 'Akrobat';
   padding: 1rem 0 !important;
   position: relative;
-
-  &:hover {
-    cursor: pointer;
-  }
-` as any;
+`;
 
 export const MidOverlay = styled.div`
   background: ${colors.darkGraphite};
@@ -124,26 +130,47 @@ export const MidOverlay = styled.div`
   left: -1rem;
   right: -1rem;
   bottom: 0;
-  z-index: 999;
+  z-index: 1;
 `;
 
 export const MidFigures = styled.div`
   display: flex;
-  justify-content: space-between;
-
-  strong {
-    font-size: ${rem(fonts.extraLarge)};
-    font-weight: bold;
-  }
+  position: relative;
+  z-index: 2;
 
   small {
     text-align: right;
-    font-size: ${rem(fonts.large)};
-    span {
-      opacity: 0.4;
-      font-size: ${rem(fonts.normal)};
-    }
+    font-size: ${rem(fonts.normal)};
+    margin-left: auto;
   }
+`;
+
+export const LastTradePrice = styled.div`
+  font-family: 'Akrobat';
+  font-size: ${rem(fonts.extraLarge)};
+  font-weight: bold;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const MidPrice = styled.div`
+  text-align: right;
+  font-size: ${rem(fonts.normal)};
+  margin-left: auto;
+
+  & > span:hover {
+    cursor: pointer;
+  }
+
+  small {
+    opacity: 0.4;
+    font-size: ${rem(12)};
+  }
+`;
+
+export const Spread = MidPrice.extend`
+  margin-left: 30px;
 `;
 
 export const StyledOrderRow = styled.tr`

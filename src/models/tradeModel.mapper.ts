@@ -1,6 +1,6 @@
-import {add, reject} from 'rambda';
-import {InstrumentModel, Side, TradeModel} from '.';
-import {precisionCeil, precisionFloor, precisionRound} from '../utils/math';
+import {add, reject, uniq, without} from 'rambda';
+import {FeeType, InstrumentModel, Side, TradeModel} from '.';
+import {precisionCeil, precisionFloor} from '../utils/math';
 import {mapHistoryTypeToOrderType} from './mappers';
 import SideDirection from './sideDirection';
 
@@ -11,7 +11,8 @@ interface TradeValue {
   price: number;
 }
 
-const withVolume = (x: TradeValue) => x.volume === 0 || x.oppositeVolume === 0;
+const hasEmptyVolume = (x: TradeValue) =>
+  x.volume === 0 || x.oppositeVolume === 0;
 
 export const mapToEffectivePrice = (
   trades: TradeValue[] = [],
@@ -23,7 +24,7 @@ export const mapToEffectivePrice = (
     return undefined;
   }
 
-  const tradesWithVolumes = reject(withVolume, trades);
+  const tradesWithVolumes = reject(hasEmptyVolume, trades);
   const volumeSum = tradesWithVolumes.map(x => x.volume).reduce(add, 0);
   const oppositeVolumeSum = tradesWithVolumes
     .map(x => x.oppositeVolume)
@@ -46,22 +47,72 @@ export const mapToEffectivePrice = (
     : precisionFloor(effectivePrice, accuracy);
 };
 
-export const fromRestToTradeList = (dto: any[], accuracy: number) =>
-  dto.map(
-    ({Id, AssetPair, Price, Amount, DateTime, Type, FeeSize}: any) =>
-      new TradeModel({
-        id: Id,
-        price: Price,
-        quantity: Math.abs(Amount),
-        side: Amount > 0 ? Side.Buy : Side.Sell,
-        symbol: AssetPair,
-        timestamp: DateTime,
-        tradeId: Id,
-        oppositeQuantity: Math.abs(precisionRound(Amount * Price, accuracy)),
-        orderType: mapHistoryTypeToOrderType(Type),
-        fee: FeeSize
-      })
-  );
+export const aggregateTradesByTimestamp = (
+  trades: any[],
+  instruments: InstrumentModel[]
+) =>
+  trades.reduce((acc: any[], curr: any) => {
+    const tradesByDate = acc.filter(x => x.timestamp === curr.DateTime);
+    if (tradesByDate.length > 0) {
+      return acc;
+    }
+    const twinnedTrades = trades.filter(x => x.DateTime === curr.DateTime);
+    const assetIds = uniq(twinnedTrades.map(x => x.Asset));
+
+    if (assetIds.length < 2) {
+      return acc;
+    }
+
+    const instrument = instruments.find(
+      x =>
+        x.id === curr.AssetPair ||
+        ((x.baseAsset.id === assetIds[0] && x.quoteAsset.id === assetIds[1]) ||
+          (x.baseAsset.id === assetIds[1] && x.quoteAsset.id === assetIds[1]))
+    );
+
+    if (instrument && twinnedTrades.length !== 1) {
+      const mappedTrade = fromRestToTrade(
+        instrument.baseAsset.id,
+        twinnedTrades
+      );
+      if (mappedTrade) {
+        acc.push({
+          ...mappedTrade,
+          instrument
+        });
+      }
+    }
+
+    return acc;
+  }, []);
+
+export const fromRestToTrade = (baseAssetId: string, trades: any[]) => {
+  const tradesByBaseAsset = trades.filter(x => x.Asset === baseAssetId);
+  const tradesByQuoteAsset = without(tradesByBaseAsset, trades);
+
+  if (tradesByBaseAsset.length > 0) {
+    const {Id, AssetPair, Price, Amount, DateTime, Type} = tradesByBaseAsset[0];
+
+    const fee = trades
+      .filter(t => t.FeeType !== FeeType.Unknown)
+      .map(feeValueFromRest)
+      .reduce(add, 0);
+
+    return new TradeModel({
+      id: Id,
+      price: Price,
+      volume: Math.abs(Amount),
+      side: Amount > 0 ? Side.Buy : Side.Sell,
+      symbol: AssetPair,
+      timestamp: DateTime,
+      tradeId: Id,
+      oppositeVolume: Math.abs(tradesByQuoteAsset[0].Amount),
+      orderType: mapHistoryTypeToOrderType(Type),
+      fee
+    });
+  }
+  return null;
+};
 
 export const fromWampToTrade = (dto: any[], instruments: InstrumentModel[]) => {
   const instrument = instruments.find(
@@ -85,19 +136,26 @@ export const fromWampToTrade = (dto: any[], instruments: InstrumentModel[]) => {
     instrument!.accuracy,
     Direction
   );
+
+  const fee = dto
+    .filter(t => t.Fee)
+    .map(t => t.Fee.Volume)
+    .reduce(add, 0);
+
   return new TradeModel({
     id: TradeId,
     price: effectivePrice,
-    quantity: Math.abs(tradesByBaseAsset.map(t => t.Volume).reduce(add)),
+    volume: Math.abs(tradesByBaseAsset.map(t => t.Volume).reduce(add)),
     side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
-    symbol: instrument!.id,
+    symbol: instrument!.displayName,
     timestamp: DateTime,
     tradeId: TradeId,
-    oppositeQuantity: Math.abs(
+    oppositeVolume: Math.abs(
       tradesByBaseAsset.map(t => t.OppositeVolume).reduce(add)
     ),
     orderType: mapHistoryTypeToOrderType(OrderType),
-    fee: tradesByBaseAsset.map(t => t.Fee && t.Fee.Volume).reduce(add, 0)
+    instrument: instrument!,
+    fee
   });
 };
 
@@ -111,7 +169,7 @@ export const fromRestToPublicTrade = ({
 }: any) =>
   new TradeModel({
     id,
-    quantity: volume,
+    volume,
     symbol: assetPairId,
     price,
     side: Side[action],
@@ -128,9 +186,15 @@ export const fromWampToPublicTrade = ({
 }: any) =>
   new TradeModel({
     id: Id,
-    quantity: Volume,
+    volume: Volume,
     symbol: AssetPairId,
     price: Price,
     side: Side[Action],
     timestamp: DateTime
   });
+
+export const feeAssetFromSide = (instrument: InstrumentModel, side: string) =>
+  side === Side.Buy ? instrument.baseAsset : instrument.quoteAsset;
+
+const feeValueFromRest = ({FeeSize, FeeType: FeeTypeDto, Amount}: any) =>
+  FeeSize * (FeeTypeDto === FeeType.Absolute ? 1 : Math.abs(Amount) / 100);

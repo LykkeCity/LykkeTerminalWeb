@@ -146,17 +146,12 @@ class RootStore {
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
         this.priceStore.setWs(ws);
-        instruments.forEach(x => {
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          ws.subscribe(
-            topics.candle('spot', x.id, PriceType.Bid, 'day'),
-            this.referenceStore.onCandle
-          );
-        });
+        instruments.forEach(x =>
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
+        );
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
-        this.tradeStore.fetchTrades();
         this.tradeStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
 

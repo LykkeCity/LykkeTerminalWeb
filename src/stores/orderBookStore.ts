@@ -14,6 +14,7 @@ import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
+import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
@@ -32,6 +33,8 @@ class OrderBookStore extends BaseStore {
     volume: 0,
     onCancel: undefined
   };
+
+  @observable hasPendingItems: boolean = true;
 
   spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
   @observable spanMultiplierIdx = 0;
@@ -61,7 +64,13 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get span() {
-    return this.seedSpan * this.spanMultiplier;
+    if (this.rootStore.uiStore.selectedInstrument) {
+      return precisionFloor(
+        this.seedSpan * this.spanMultiplier,
+        this.rootStore.uiStore.selectedInstrument.accuracy
+      );
+    }
+    return 0;
   }
 
   private subscriptions: Set<ISubscription> = new Set();
@@ -93,16 +102,21 @@ class OrderBookStore extends BaseStore {
   }
 
   bestBid = () =>
-    this.bids.length && last(sortBy(x => x.price, this.rawBids)).price;
+    this.rawBids.length && last(sortBy(x => x.price, this.rawBids)).price;
 
   bestAsk = () =>
-    this.asks.length && head(sortBy(x => x.price, this.rawAsks)).price;
+    this.rawAsks.length && head(sortBy(x => x.price, this.rawAsks)).price;
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
   @computed
   get spread() {
     return this.bestAsk() - this.bestBid();
+  }
+
+  @computed
+  get spreadRelative() {
+    return (this.bestAsk() - this.bestBid()) / this.bestAsk();
   }
 
   @action
@@ -127,7 +141,9 @@ class OrderBookStore extends BaseStore {
   fetchAll = async () => {
     const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
     if (selectedInstrument) {
+      this.hasPendingItems = true;
       const orders = await this.api.fetchAll(toLower(selectedInstrument.id));
+      this.hasPendingItems = false;
       runInAction(() => {
         orders.forEach((levels: any) => this.onUpdate([levels]));
         if (this.isInitFetch && initPriceUpdate) {

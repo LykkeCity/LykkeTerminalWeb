@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
+import {withStyledScroll} from '../CustomScrollbar';
 import {css} from '../styled';
 
 const StyledSelect = styled.div`
@@ -47,6 +47,7 @@ interface CustomSelectProps {
   styles?: any;
   isActiveMarked?: boolean;
   activeValue?: string;
+  needScroll?: boolean;
 }
 
 const CustomSelect: React.SFC<CustomSelectProps> = ({
@@ -54,25 +55,27 @@ const CustomSelect: React.SFC<CustomSelectProps> = ({
   click,
   styles,
   isActiveMarked = false,
-  activeValue
+  activeValue,
+  needScroll = false
 }) => {
+  const EnhancedList = needScroll
+    ? withStyledScroll({height: '100%'})(StyledList)
+    : StyledList;
   return (
     <StyledSelect style={styles}>
-      <CustomScrollbar styles={{height: '100%'}}>
-        <StyledList>
-          {items.map((item: any) => {
-            return (
-              <StyledItem
-                key={item.value}
-                onClick={click(item.value, item.index)}
-                isActive={isActiveMarked && activeValue === item.value}
-              >
-                {item.label}
-              </StyledItem>
-            );
-          })}
-        </StyledList>
-      </CustomScrollbar>
+      <EnhancedList>
+        {items.map((item: any) => {
+          return (
+            <StyledItem
+              key={item.value}
+              onClick={click(item.value)}
+              isActive={isActiveMarked && activeValue === item.value}
+            >
+              {item.label}
+            </StyledItem>
+          );
+        })}
+      </EnhancedList>
     </StyledSelect>
   );
 };

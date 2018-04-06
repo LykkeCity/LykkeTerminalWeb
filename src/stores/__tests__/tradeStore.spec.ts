@@ -1,8 +1,6 @@
 import {OrderType, TradeModel} from '../../models/index';
 import {RootStore, TradeStore} from '../index';
 
-// tslint:disable:object-literal-sort-keys
-
 describe('trade store', () => {
   let tradeStore: TradeStore;
   const api: any = {
@@ -37,6 +35,7 @@ describe('trade store', () => {
     );
 
     tradeStore = new TradeStore(new RootStore(), api);
+    tradeStore.unsubscribeFromPublicTrades = jest.fn();
   });
 
   describe('state', () => {
@@ -85,14 +84,14 @@ describe('trade store', () => {
         new TradeModel({
           side: 'Buy',
           symbol: 'LKKUSD',
-          quantity: 1,
+          volume: 1,
           timestamp: new Date().toLocaleString()
         })
       ]);
       const trade = tradeStore.getAllTrades[0];
       expect(trade.side).toBeDefined();
       expect(trade.symbol).toBeDefined();
-      expect(trade.quantity).toBeDefined();
+      expect(trade.volume).toBeDefined();
       expect(trade.timestamp).toBeDefined();
     });
   });
@@ -103,17 +102,15 @@ describe('trade store', () => {
         {
           asset: '',
           symbol: 'LKKUSD',
-          quantity: 1,
+          volume: 1,
           timestamp: Date.now().toString(),
-          // tslint:disable-next-line:object-literal-sort-keys
           side: 'Buy',
           tradeId: 't1',
           id: '1',
           price: 1,
-          oppositeQuantity: 1,
-          sellVolume: 1,
-          buyVolume: 1,
-          orderType: OrderType.Market
+          oppositeVolume: 1,
+          orderType: OrderType.Market,
+          fee: 0
         }
       ]);
       expect(tradeStore.getPublicTrades).toHaveLength(1);

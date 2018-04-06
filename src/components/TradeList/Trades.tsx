@@ -1,53 +1,47 @@
-import {observer} from 'mobx-react';
 import * as React from 'react';
-import {
-  InstrumentModel,
-  TradeFilter as TradeFilterModel,
-  TradeModel
-} from '../../models/index';
-import * as TradeFilterFns from '../../models/tradeFilter';
+import {TradeFilter as TradeFilterModel, TradeModel} from '../../models/index';
 import {HBar} from '../Bar';
+import {Table} from '../Table';
+import {HeaderCell} from '../Table/styles';
 import {TradeFilter, TradeList} from './index';
-import {StyledLoadMore, StyledLoadMoreButton, TradeListToolbar} from './styles';
+import {TradeListToolbar, TradeRow} from './styles';
 
 interface TradesProps {
-  trades?: TradeModel[];
-  needToLoadMore?: boolean;
-  fetchPart: any;
-  authorized?: true;
-  selectedInstrument: InstrumentModel;
+  trades: TradeModel[];
+  fetchNextTrades: any;
+  shouldFetchMore?: boolean;
   currentFilter: TradeFilterModel;
   onFilter: (filter: string) => void;
 }
 
 const Trades: React.SFC<TradesProps> = ({
   trades = [],
-  needToLoadMore,
-  fetchPart,
-  selectedInstrument,
-  currentFilter,
-  onFilter
+  shouldFetchMore,
+  fetchNextTrades
 }) => {
   return (
     <React.Fragment>
       <TradeListToolbar>
-        <TradeFilter
-          value={currentFilter}
-          options={TradeFilterFns.toOptions()}
-          onFilter={onFilter}
-        />
+        <TradeFilter />
       </TradeListToolbar>
       <HBar />
+      <Table>
+        <thead>
+          <TradeRow>
+            <HeaderCell w={70}>Asset pair</HeaderCell>
+            <HeaderCell w={50}>Side</HeaderCell>
+            <th>Volume</th>
+            <th>Price</th>
+            <th>Opposite volume</th>
+            <HeaderCell w={90}>Order type</HeaderCell>
+            <th>Fee</th>
+            <HeaderCell>Time</HeaderCell>
+          </TradeRow>
+        </thead>
+      </Table>
       <TradeList />
-      {true && (
-        <StyledLoadMore>
-          <StyledLoadMoreButton onClick={fetchPart}>
-            Load more...
-          </StyledLoadMoreButton>
-        </StyledLoadMore>
-      )}
     </React.Fragment>
   );
 };
 
-export default observer(Trades);
+export default Trades;
