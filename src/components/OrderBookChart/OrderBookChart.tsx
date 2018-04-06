@@ -39,13 +39,11 @@ class OrderBookChart extends React.Component<OrderBookChartProps> {
             <button onClick={onNextSpan}>+</button>
           </StyledGrouping>
           <VBar />
-          <StyledGrouping>
-            Mid price:&nbsp;<span>{mid}</span>
-            <VBar />
-            Spread:&nbsp;<span>{spread}</span>&nbsp;%
-            <VBar />
-            Last Trade Price:&nbsp;<span>{lastTradePrice}</span>
-          </StyledGrouping>
+          Mid price:&nbsp;<span>{mid}</span>
+          <VBar />
+          Spread:&nbsp;<span>{spread}</span>&nbsp;%
+          <VBar />
+          Last Trade Price:&nbsp;<span>{lastTradePrice}</span>
         </StyledBar>
         <StyledWrapper>
           <Chart />
