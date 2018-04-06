@@ -7,7 +7,7 @@ import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderBookType} from '../models/orderType';
 import MarketService from '../services/marketService';
-import {getErrorMessage} from '../utils/string';
+import {getRestErrorMessage} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
@@ -54,9 +54,21 @@ class OrderStore extends BaseStore {
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        return this.api.placeMarket(body).then(() => Promise.resolve());
+        return (
+          this.api
+            .placeMarket(body)
+            // tslint:disable-next-line:no-empty
+            .then(() => {}, this.orderPlacedUnsuccessfully)
+            .then(() => Promise.resolve())
+        );
       case OrderType.Limit:
-        return this.api.placeLimit(body).then(() => Promise.resolve());
+        return (
+          this.api
+            .placeLimit(body)
+            // tslint:disable-next-line:no-empty
+            .then(() => {}, this.orderPlacedUnsuccessfully)
+            .then(() => Promise.resolve())
+        );
     }
   };
 
@@ -108,9 +120,6 @@ class OrderStore extends BaseStore {
       case OrderBookType.Processing:
         this.rootStore.orderListStore.updateOrder(order);
         this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
-        break;
-      case OrderBookType.Rejected:
-        this.handleOrderError(order.RejectReason);
         break;
       case OrderBookType.Placed:
         this.rootStore.orderListStore.addOrder(order);
@@ -171,14 +180,17 @@ class OrderStore extends BaseStore {
       );
       return;
     }
-    return Promise.reject(error);
-  };
 
-  private handleOrderError = (message: string) => {
-    this.notificationStore.addNotification(
-      levels.error,
-      `${getErrorMessage(message)}`
-    );
+    let message;
+    try {
+      message = JSON.parse(error.message).ME || JSON.parse(error.message);
+      message = getRestErrorMessage(message);
+    } catch (e) {
+      message = !!error.message.length ? error.message : messages.defaultError;
+    }
+    this.notificationStore.addNotification(levels.error, `${message}`);
+
+    return Promise.reject(error);
   };
 }
 
