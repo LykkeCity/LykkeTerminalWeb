@@ -15,12 +15,12 @@ import Trades from './Trades';
 
 export const TradesCellWidth = {
   Symbol: 80,
-  Side: 50,
+  Side: 60,
   OrderType: 90
 };
 
 export const PublicTradesCellWidth = {
-  Side: 50
+  Side: 60
 };
 
 const ConnectedTrades = connect(

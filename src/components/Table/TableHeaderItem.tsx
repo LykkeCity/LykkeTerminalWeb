@@ -1,4 +1,6 @@
 import * as React from 'react';
+import ReactTooltip from 'react-tooltip';
+import {TruncatedText} from '../Table/styles';
 import {TableHeaderItemEl} from './styles';
 
 interface TableHeaderItemProps {
@@ -35,7 +37,9 @@ const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
         ${currentSortByParam === sortByParam ? currentSortDirection : ''}
       `}
     >
-      {children}
+      <TruncatedText data-tip={children}>{children}</TruncatedText>
+
+      <ReactTooltip effect={'solid'} />
     </TableHeaderItemEl>
   );
 };

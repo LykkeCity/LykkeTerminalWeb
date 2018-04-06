@@ -1,6 +1,6 @@
 import {rem} from 'polished';
 import styled, {colors} from '../styled';
-import {Table} from '../Table';
+import {Table, TruncatedText} from '../Table';
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
@@ -70,12 +70,8 @@ export const Shortcut = styled(OtherShortcuts)`
   }
 `;
 
-export const TruncatedText = styled.p`
-  margin: 0;
+export const ShortcutTruncatedText = styled(TruncatedText)`
   padding: ${rem(16)} 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 `;
 
 export const InstrumentNumber = styled.div.attrs({})`

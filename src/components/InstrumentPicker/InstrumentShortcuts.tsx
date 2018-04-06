@@ -1,7 +1,12 @@
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
 import {InstrumentShortcutSelection, InstrumentShortcutsProps} from './index';
-import {OtherShortcuts, Shortcut, ShortcutList, TruncatedText} from './styles';
+import {
+  OtherShortcuts,
+  Shortcut,
+  ShortcutList,
+  ShortcutTruncatedText
+} from './styles';
 
 class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
   private primeShortcuts: any[];
@@ -49,7 +54,9 @@ class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
             key={`shortcutid_${index}`}
             onClick={this.handleClick(shortcut, index)}
           >
-            <TruncatedText data-tip={shortcut}>{shortcut}</TruncatedText>
+            <ShortcutTruncatedText data-tip={shortcut}>
+              {shortcut}
+            </ShortcutTruncatedText>
           </Shortcut>
         ))}
         {this.otherShortcuts && (

@@ -6,7 +6,7 @@ import {InstrumentShortcutSelectionProps} from './index';
 import {
   ShortcutSelection,
   ShortcutSelectionWrapper,
-  TruncatedText
+  ShortcutTruncatedText
 } from './styles';
 
 const InstrumentShortcutSelection: React.SFC<
@@ -29,9 +29,11 @@ const InstrumentShortcutSelection: React.SFC<
         className={currentOption ? 'active' : ''}
         onClick={onToggleInstrumentSelection}
       >
-        <TruncatedText data-tip={currentOption ? currentOption.label : 'Other'}>
+        <ShortcutTruncatedText
+          data-tip={currentOption ? currentOption.label : 'Other'}
+        >
           {currentOption ? currentOption.label : 'Other'}
-        </TruncatedText>
+        </ShortcutTruncatedText>
       </ShortcutSelection>
       {showInstrumentSelection && (
         <ClickOutside
