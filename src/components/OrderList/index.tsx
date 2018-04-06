@@ -3,6 +3,7 @@ import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar';
 import withLoader from '../Loader/withLoader';
+import {tableScrollMargin} from '../styled';
 import OrderList from './OrderList';
 import {OrderListProps} from './OrderList';
 import Orders from './Orders';
@@ -45,7 +46,10 @@ const ConnectedOrderList = connect<OrderListProps>(
   }),
   compose(
     withLoader<OrderListProps>(p => p.loading!),
-    withStyledScroll({height: 'calc(100% - 85px)'})
+    withStyledScroll({
+      width: `calc(100% + ${tableScrollMargin})`,
+      height: 'calc(100% - 85px)'
+    })
   )(OrderList)
 );
 

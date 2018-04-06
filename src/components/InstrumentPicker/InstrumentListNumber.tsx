@@ -5,7 +5,6 @@ import {InstrumentNumber} from './styles';
 interface InstrumentListNumberProps {
   num: number;
   accuracy: number;
-  active?: boolean;
   color?: string;
   dynamics?: string;
   preSign?: string;
@@ -17,10 +16,7 @@ const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
       return null;
     }
     return (
-      <InstrumentNumber
-        color={color || ''}
-        className={`${active ? 'active' : ''} ${dynamics}`}
-      >
+      <InstrumentNumber color={color || ''} className={dynamics || ''}>
         {preSign}
         {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
         {children}

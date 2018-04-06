@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {PublicTradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {SideCell} from './styles';
@@ -18,7 +19,7 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
       {toLocaleStringWithAccuracy(volume, instrument!.baseAsset.accuracy)}
     </td>
     <td>{toLocaleStringWithAccuracy(price, instrument!.accuracy)}</td>
-    <SideCell w={50} side={side}>
+    <SideCell w={PublicTradesCellWidth.Side} side={side}>
       {side}
     </SideCell>
     <td>{new Date(timestamp).toLocaleTimeString()}</td>

@@ -2,6 +2,7 @@ import {pathOr} from 'rambda';
 import {AssetModel, InstrumentModel} from '../../models/index';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
+import {tableScrollMargin} from '../styled';
 import InstrumentPicker from './InstrumentPicker';
 import InstrumentTable from './InstrumentTable';
 
@@ -84,9 +85,10 @@ const connectedInstrumentPicker = connect(
   InstrumentPicker
 );
 
-const ScrolledInstrumentTable = withStyledScroll({height: 'calc(100% - 80px)'})(
-  InstrumentTable
-);
+const ScrolledInstrumentTable = withStyledScroll({
+  width: `calc(100% + ${tableScrollMargin})`,
+  height: 'calc(100% - 80px)'
+})(InstrumentTable);
 
 export {connectedInstrumentPicker as InstrumentPicker};
 export {ScrolledInstrumentTable as InstrumentTable};

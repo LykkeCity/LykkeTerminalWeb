@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors} from '../styled';
+import styled, {colors, tableScrollMargin} from '../styled';
 
 interface CellProps {
   w?: string | number;
@@ -20,7 +20,7 @@ export const TableHeaderItemEl = styled.p`
   display: flex;
   align-items: center;
   margin: 0;
-  color: ${colors.lightGrey};
+  color: ${colors.coolGrey};
 
   &.right-align {
     justify-content: flex-end;
@@ -29,23 +29,25 @@ export const TableHeaderItemEl = styled.p`
     cursor: pointer;
 
     &:after {
+      display: none;
       content: '';
       margin-left: ${rem(10)};
       border-left: 3px solid transparent;
       border-right: 3px solid transparent;
     }
     &.ASC:after {
-      border-bottom: 5px solid ${colors.lightGrey};
+      display: block;
+      border-bottom: 5px solid ${colors.coolGrey};
     }
     &.DESC:after {
-      border-top: 5px solid ${colors.lightGrey};
+      display: block;
+      border-top: 5px solid ${colors.coolGrey};
     }
   }
 `;
 
 export const Table = styled.table`
-  width: 100%;
-  margin-bottom: ${rem(10)};
+  width: calc(100% - ${tableScrollMargin});
   table-layout: fixed;
   tr {
     line-height: 1;
@@ -86,22 +88,28 @@ export const Table = styled.table`
       text-align: left;
       padding-left: 0;
     }
+    &:last-child {
+      padding-right: 0;
+    }
   }
 
   &.header {
+    width: 100%;
     margin: 0;
 
     &.instruments {
       margin: ${rem(8)} 0 0;
 
       th {
-        padding: ${rem(8)};
-
         &:first-child {
           padding: ${rem(8)} ${rem(24)} ${rem(8)} 0;
         }
         &:not(:first-child) {
           padding: ${rem(8)} ${rem(12)};
+        }
+
+        * {
+          color: ${colors.coolGrey};
         }
       }
     }

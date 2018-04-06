@@ -4,6 +4,7 @@ import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import withLoader from '../Loader/withLoader';
+import {tableScrollMargin} from '../styled';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
@@ -13,13 +14,13 @@ import TradeLog from './TradeLog';
 import Trades from './Trades';
 
 export const TradesCellWidth = {
-  Symbol: 70,
-  Side: 70,
-  OrderType: 100
+  Symbol: 80,
+  Side: 50,
+  OrderType: 90
 };
 
 export const PublicTradesCellWidth = {
-  Side: 60
+  Side: 50
 };
 
 const ConnectedTrades = connect(
@@ -38,7 +39,10 @@ const ConnectedTradeList = connect<TradeListProps>(
   }),
   compose(
     withLoader<TradeListProps>(p => p.loading!),
-    withStyledScroll({height: 'calc(100% - 85px)'})
+    withStyledScroll({
+      width: `calc(100% + ${tableScrollMargin})`,
+      height: 'calc(100% - 85px)'
+    })
   )(TradeList)
 );
 
@@ -52,6 +56,7 @@ const ConnectedTradeFilter = connect<TradeFilterProps>(
 );
 
 const ConnectedPublicTradeList = withStyledScroll({
+  width: `calc(100% + ${tableScrollMargin})`,
   height: 'calc(100% - 40px)'
 })(PublicTradeList);
 

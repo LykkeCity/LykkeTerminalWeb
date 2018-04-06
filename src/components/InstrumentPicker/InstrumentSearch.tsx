@@ -1,7 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {Icon} from '../Icon/index';
-import styled from '../styled';
+import styled, {colors} from '../styled';
 import {InstrumentPickerActions} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -19,7 +19,7 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
   change
 }) => (
   <Box className={className}>
-    <Icon color={`rgba(245, 246, 247, 0.4)`} name={`search`} />
+    <Icon color={colors.coolGrey} name={`search`} />
     <input
       value={inputValue}
       type="search"
@@ -43,12 +43,16 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
     background-color: #3c3c3c;
     border: solid 2px transparent;
     border-radius: 4px;
-    color: rgba(245, 246, 247, 0.4);
+    color: ${colors.coolGrey};
     padding: ${rem(6)};
     width: 88%;
     font-size: 14px;
+
     &:focus {
       border: solid 2px rgb(3, 136, 239);
+    }
+    &::placeholder {
+      color: ${colors.coolGrey};
     }
   }
 `;
