@@ -187,42 +187,37 @@ class OrderStore extends BaseStore {
   };
 
   private orderPlacedUnsuccessfully = (error: any) => {
-    const needConfirmation =
-      error.status === 400 &&
-      error.message &&
-      JSON.parse(error.message).Confirmation;
+    const messageObject = JSON.parse(error.message);
+    if (messageObject) {
+      const key = Object.keys(messageObject)[0];
 
-    const kycIsMissing =
-      error.status === 400 &&
-      error.message &&
-      JSON.parse(error.message).AssetKycNeeded;
-
-    if (needConfirmation) {
-      this.modalStore.addModal(
-        ModalMessages.expired,
-        null,
-        null,
-        Types.Expired
-      );
-      return;
+      if (error.status === 400) {
+        switch (key) {
+          case 'Confirmation': {
+            this.modalStore.addModal(
+              ModalMessages.expired,
+              null,
+              null,
+              Types.Expired
+            );
+            return;
+          }
+          case 'AssetKycNeeded': {
+            this.modalStore.addModal(null, null, null, Types.MissedKyc);
+            return;
+          }
+          default:
+            {
+              const message = messageObject[key];
+              this.notificationStore.addNotification(
+                levels.error,
+                `${message}`
+              );
+            }
+            break;
+        }
+      }
     }
-
-    if (kycIsMissing) {
-      this.modalStore.addModal(null, null, null, Types.MissedKyc);
-      return;
-    }
-
-    let message;
-    try {
-      message =
-        JSON.parse(error.message).ME || JSON.parse(error.message).message;
-      message = ErrorParser.getMessage(message);
-    } catch (e) {
-      message = !!error.message.length ? error.message : messages.defaultError;
-      console.log(message);
-      message = this.createReadableMessage(message);
-    }
-    this.notificationStore.addNotification(levels.error, `${message}`);
   };
 
   private orderEditedSuccessfully = () => {
@@ -230,15 +225,6 @@ class OrderStore extends BaseStore {
       levels.success,
       messages.editOrderSuccess
     );
-  };
-
-  private createReadableMessage = (message: string) => {
-    const messageObject = JSON.parse(message);
-    if (messageObject) {
-      const key = Object.keys(messageObject)[0];
-      message = messageObject[key];
-    }
-    return message;
   };
 }
 
