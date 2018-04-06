@@ -157,6 +157,10 @@ const StyledAvailable = styled.div`
   padding-top: ${rem(1)};
   color: #8c94a0;
   font-size: ${rem(15)};
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledNote = styled.div`

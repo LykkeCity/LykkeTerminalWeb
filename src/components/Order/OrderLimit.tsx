@@ -57,7 +57,9 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           <StyledActionTitle>
             {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </StyledActionTitle>
-          <StyledAvailable>
+          <StyledAvailable
+            onClick={onHandlePercentageChange(percents.length - 1)}
+          >
             {balance} {isSell ? baseAssetName : quoteAssetName} available
           </StyledAvailable>
         </Flex>
