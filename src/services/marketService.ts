@@ -103,13 +103,13 @@ class MarketService {
     const assets = [instrument.baseAsset.id, instrument.quoteAsset.id];
 
     if (assets.indexOf('BTC') !== -1) {
-      return 3;
-    } else if (assets.indexOf('ETH') !== -1) {
       return 4;
-    } else if (assets.indexOf('USD') !== -1) {
+    } else if (assets.indexOf('ETH') !== -1) {
       return 5;
+    } else if (assets.indexOf('USD') !== -1) {
+      return 6;
     }
-    return 10;
+    return 7;
   }
 
   private buildDijkstra = (start: string, g: any, d: any, u: any) => {
