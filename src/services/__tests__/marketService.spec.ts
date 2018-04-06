@@ -7,19 +7,22 @@ describe('market service', () => {
       id: 'BTCUSD',
       baseAsset: new AssetModel({id: 'BTC'}),
       quoteAsset: new AssetModel({id: 'USD'}),
-      price: 9500
+      bid: 9500,
+      ask: 9600
     }),
     new InstrumentModel({
       id: 'USDRUB',
       baseAsset: new AssetModel({id: 'USD'}),
       quoteAsset: new AssetModel({id: 'RUB'}),
-      price: 55
+      bid: 55,
+      ask: 58
     }),
     new InstrumentModel({
       id: 'LKKUSD',
       baseAsset: new AssetModel({id: 'LKK'}),
       quoteAsset: new AssetModel({id: 'USD'}),
-      price: 0.05
+      bid: 0.05,
+      ask: 0.06
     })
   ];
 
@@ -67,10 +70,10 @@ describe('market service', () => {
       expect(resultBtcRub).toBe(1.5 * 9500 * 55);
 
       const resultLkkBtc = MarketService.convert(20000, 'LKK', 'BTC', find);
-      expect(resultLkkBtc).toBe(20000 * 0.05 * (1 / 9500));
+      expect(resultLkkBtc).toBe(20000 * 0.05 * (1 / 9600));
 
       const resultRubLkk = MarketService.convert(10000, 'RUB', 'LKK', find);
-      expect(resultRubLkk).toBe(10000 * (1 / 55) * (1 / 0.05));
+      expect(resultRubLkk).toBe(10000 * (1 / 58) * (1 / 0.06));
     });
   });
 });

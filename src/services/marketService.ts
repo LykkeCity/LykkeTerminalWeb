@@ -51,7 +51,7 @@ class MarketService {
       }
       const {pair, straight} = secondAssetData;
       const instrument = getInstrumentById(pair);
-      if (!instrument || !instrument.price) {
+      if (!instrument || !instrument.bid || !instrument.ask) {
         return 0;
       }
       if (straight) {
@@ -100,21 +100,14 @@ class MarketService {
   };
 
   private getWeight(instrument: InstrumentModel) {
-    if (
-      instrument.baseAsset.id === 'BTC' ||
-      instrument.quoteAsset.id === 'BTC'
-    ) {
-      return 1;
-    } else if (
-      instrument.baseAsset.id === 'ETH' ||
-      instrument.quoteAsset.id === 'ETH'
-    ) {
-      return 1;
-    } else if (
-      instrument.baseAsset.id === 'USD' ||
-      instrument.quoteAsset.id === 'USD'
-    ) {
-      return 1;
+    const assets = [instrument.baseAsset.id, instrument.quoteAsset.id];
+
+    if (assets.indexOf('BTC') !== -1) {
+      return 3;
+    } else if (assets.indexOf('ETH') !== -1) {
+      return 4;
+    } else if (assets.indexOf('USD') !== -1) {
+      return 5;
     }
     return 10;
   }
