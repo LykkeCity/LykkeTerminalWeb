@@ -180,7 +180,11 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   };
 
   isDisable = () => {
-    return !+this.state.priceValue || !+this.state.quantityValue;
+    return (
+      !+this.state.priceValue ||
+      !+this.state.quantityValue ||
+      this.state.pendingOrder
+    );
   };
 
   handleCancel = () => {
