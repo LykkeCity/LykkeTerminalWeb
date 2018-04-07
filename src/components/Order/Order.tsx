@@ -235,7 +235,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState(tempObj);
   };
 
-  handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
+  handlePercentageChange = (index?: number) => async (isInverted?: boolean) => {
     const {
       baseAssetBalance,
       quoteAssetBalance,
