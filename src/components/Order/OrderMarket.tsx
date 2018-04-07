@@ -102,7 +102,7 @@ class OrderMarket extends React.Component<
     this.props.onReset();
   };
 
-  handlePercentageChange = (index: number) => () => {
+  handlePercentageChange = (index?: number) => () => {
     this.props.onHandlePercentageChange(index)(this.isInverted);
   };
 
@@ -122,7 +122,7 @@ class OrderMarket extends React.Component<
                   {this.state.action}{' '}
                   {!this.isInverted ? baseAssetName : quoteAssetName}
                 </StyledActionTitle>
-                <StyledAvailable>
+                <StyledAvailable onClick={this.handlePercentageChange()}>
                   {this.props.balance}{' '}
                   {this.props.isSell ? baseAssetName : quoteAssetName} available
                 </StyledAvailable>

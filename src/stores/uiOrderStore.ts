@@ -2,6 +2,8 @@ import MarketService from '../services/marketService';
 import {StringHelpers} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
+const ALL_AVAILABLE = 100;
+
 class UiOrderStore extends BaseStore {
   constructor(store: RootStore) {
     super(store);
@@ -87,6 +89,8 @@ class UiOrderStore extends BaseStore {
         item.isActive = false;
       }
     });
+
+    value = value || ALL_AVAILABLE;
 
     let quantityValue: any;
     let priceValue: any;

@@ -235,7 +235,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState(tempObj);
   };
 
-  handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
+  handlePercentageChange = (index?: number) => async (isInverted?: boolean) => {
     const {
       baseAssetBalance,
       quoteAssetBalance,
@@ -270,11 +270,15 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   isLimitDisable = () => {
-    return !+this.state.priceValue || !+this.state.quantityValue;
+    return (
+      !+this.state.priceValue ||
+      !+this.state.quantityValue ||
+      this.state.pendingOrder
+    );
   };
 
   isMarketDisable = () => {
-    return !+this.state.quantityValue;
+    return !+this.state.quantityValue || this.state.pendingOrder;
   };
 
   reset = () => {
