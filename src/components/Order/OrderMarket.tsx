@@ -156,6 +156,7 @@ class OrderMarket extends React.Component<
                   key={index}
                   onClick={this.handlePercentageChange(index)}
                   isActive={item.isActive}
+                  isDisabled={!this.props.balance}
                 />
               ))}
             </Flex>
