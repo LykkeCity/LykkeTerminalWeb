@@ -13,6 +13,7 @@ import {
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
 import Watchlists from '../models/watchlists';
+import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
@@ -123,6 +124,8 @@ class RootStore {
       }, reject => Promise.resolve)
       .then(async () => {
         const instruments = this.referenceStore.getInstruments();
+        const assets = this.referenceStore.getAssets();
+        MarketService.init(instruments, assets);
 
         const ws = new WampApi();
         await ws.connect(
@@ -136,9 +139,10 @@ class RootStore {
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
         this.priceStore.setWs(ws);
-        instruments.forEach(x =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        instruments.forEach(x => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+        });
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
@@ -155,6 +159,7 @@ class RootStore {
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());
+    MarketService.reset();
   };
 
   private checkDefaultInstrument = (defaultInstrument: any) =>

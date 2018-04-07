@@ -12,6 +12,8 @@ class InstrumentModel {
   invertedAccuracy: number;
 
   @observable price: number;
+  @observable bid: number;
+  @observable ask: number;
   @observable change: number;
 
   @observable dir: Dir;
@@ -35,6 +37,16 @@ class InstrumentModel {
       this.dir = this.change > 0 ? Dir.Up : Dir.Down;
       this.price = nextPrice;
     }
+  };
+
+  @action
+  updateBid = (nextPrice: number) => {
+    this.bid = nextPrice;
+  };
+
+  @action
+  updateAsk = (nextPrice: number) => {
+    this.ask = nextPrice;
   };
 }
 

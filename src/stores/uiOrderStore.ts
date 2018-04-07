@@ -1,3 +1,4 @@
+import MarketService from '../services/marketService';
 import {StringHelpers} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -100,10 +101,11 @@ class UiOrderStore extends BaseStore {
         if (!isInverted) {
           quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
         } else {
-          const convertedBalance = await this.rootStore.orderStore.convertPartiallyBalance(
+          const convertedBalance = MarketService.convert(
             balance,
             baseAssetId,
-            quoteAssetId
+            quoteAssetId,
+            this.rootStore.referenceStore.getInstrumentById
           );
           quantityValue = this.getPartlyValue(
             value,
@@ -115,10 +117,11 @@ class UiOrderStore extends BaseStore {
         if (isInverted) {
           quantityValue = this.getPartlyValue(value, balance, priceAccuracy);
         } else {
-          const convertedBalance = await this.rootStore.orderStore.convertPartiallyBalance(
+          const convertedBalance = MarketService.convert(
             balance,
             quoteAssetId,
-            baseAssetId
+            baseAssetId,
+            this.rootStore.referenceStore.getInstrumentById
           );
           quantityValue = this.getPartlyValue(
             value,
