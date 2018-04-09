@@ -19,15 +19,24 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
     <td>{name}</td>
     <td>
       <WalletBalanceNumber
-        num={balanceInBaseAsset}
-        accuracy={baseAsset.accuracy}
+        num={
+          balanceInBaseAsset
+            ? balanceInBaseAsset.toLocaleString(undefined, {
+                maximumFractionDigits: baseAsset.accuracy
+              })
+            : ''
+        }
         color={'rgba(245, 246, 247, 0.4)'}
       >
         &nbsp;{baseAsset.name}
       </WalletBalanceNumber>
     </td>
     <td>
-      <WalletBalanceNumber num={balance} accuracy={accuracy}>
+      <WalletBalanceNumber
+        num={balance.toLocaleString(undefined, {
+          maximumFractionDigits: accuracy
+        })}
+      >
         &nbsp;{name}
       </WalletBalanceNumber>
     </td>
