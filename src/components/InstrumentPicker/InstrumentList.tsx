@@ -38,7 +38,7 @@ class InstrumentList extends React.Component<
 
   render() {
     const headers = [
-      {key: 'name', value: 'Asset pair'},
+      {key: 'displayName', value: 'Asset pair'},
       {key: 'price', value: 'Price'},
       {className: 'right-align', key: 'change24h', value: '24h Change'},
       {className: 'right-align', key: 'volume', value: 'Volume'}

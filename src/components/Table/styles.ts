@@ -16,17 +16,15 @@ export const HeaderCell = styled.th`
   width: ${(p: CellProps) => width(p.w)};
 ` as any;
 
-export const TruncatedText = styled.p`
-  margin: 0;
+export const TruncatedText = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
 
-export const TableHeaderItemEl = styled.p`
+export const TableHeaderItemEl = styled.div`
   display: flex;
   align-items: center;
-  margin: 0;
   color: ${colors.coolGrey};
 
   &.right-align {

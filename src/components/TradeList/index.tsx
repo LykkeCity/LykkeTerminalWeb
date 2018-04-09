@@ -14,9 +14,9 @@ import TradeLog from './TradeLog';
 import Trades from './Trades';
 
 export const TradesCellWidth = {
-  Symbol: 80,
-  Side: 60,
-  OrderType: 90
+  Symbol: 100,
+  Side: 70,
+  OrderType: 110
 };
 
 export const PublicTradesCellWidth = {

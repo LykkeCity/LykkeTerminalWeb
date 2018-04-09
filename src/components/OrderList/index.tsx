@@ -9,10 +9,11 @@ import {OrderListProps} from './OrderList';
 import Orders from './Orders';
 
 export const OrderCellWidth = {
-  Symbol: 80,
+  Symbol: 100,
   CancelOrder: 70,
-  Id: 300,
-  Side: 60,
+  Id: 320,
+  Side: 70,
+  Filled: 100,
   CreatedDate: 200,
   Edit: 40
 };
