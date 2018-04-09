@@ -78,7 +78,8 @@ class UiOrderStore extends BaseStore {
       baseAssetId,
       quoteAssetId,
       percentage,
-      index
+      index,
+      currentPrice
     } = config;
     let value: number = 0;
     percentage.forEach((item: any, i: number) => {
@@ -93,12 +94,16 @@ class UiOrderStore extends BaseStore {
     value = value || ALL_AVAILABLE;
 
     let quantityValue: any;
-    let priceValue: any;
     if (isLimitActive) {
       if (isSellActive) {
         quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
       } else if (!isSellActive) {
-        priceValue = this.getPartlyValue(value, balance, priceAccuracy);
+        const convertedBalance = balance / currentPrice;
+        quantityValue = this.getPartlyValue(
+          value,
+          convertedBalance,
+          quantityAccuracy
+        );
       }
     } else if (isMarketActive) {
       if (isSellActive) {
@@ -136,9 +141,6 @@ class UiOrderStore extends BaseStore {
       }
     }
     const tempObj: any = {};
-    if (priceValue) {
-      tempObj.priceValue = priceValue;
-    }
     if (quantityValue) {
       tempObj.quantityValue = quantityValue;
     }
