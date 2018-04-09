@@ -9,14 +9,12 @@ const StyledNumber = styled.div.attrs({})`
 `;
 
 interface WalletBalanceNumberProps {
-  num: number;
-  accuracy: number;
+  num: string;
   color?: string;
 }
 
 const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   num,
-  accuracy,
   color = '#ffffff',
   children
 }) => {
@@ -25,7 +23,7 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   }
   return (
     <StyledNumber color={color}>
-      {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
+      {num}
       {children}
     </StyledNumber>
   );
