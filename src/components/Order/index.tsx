@@ -152,11 +152,13 @@ const StyledActionTitle = styled.div`
   }
 `;
 
-const StyledAvailable = styled.div`
+const StyledTotalAmount = styled.div`
   padding-top: ${rem(1)};
   color: #8c94a0;
   font-size: ${rem(15)};
+`;
 
+const StyledAvailable = styled(StyledTotalAmount)`
   &:hover {
     cursor: pointer;
   }
@@ -245,5 +247,6 @@ export {
   StyledOrderButton,
   StyledReset,
   StyledAvailable,
-  StyledNote
+  StyledNote,
+  StyledTotalAmount
 };

@@ -10,7 +10,8 @@ import {
   StyledAvailable,
   StyledInputControl,
   StyledOrderButton,
-  StyledReset
+  StyledReset,
+  StyledTotalAmount
 } from './index';
 import OrderButton from './OrderButton';
 import OrderPercentage from './OrderPercentage';
@@ -92,9 +93,9 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       </StyledInputControl>
       <StyledTotal>
         <StyledTitle>Total</StyledTitle>
-        <StyledAvailable>
+        <StyledTotalAmount>
           {amount} {quoteAssetName}
-        </StyledAvailable>
+        </StyledTotalAmount>
       </StyledTotal>
 
       {/*{isEditForm && (*/}
