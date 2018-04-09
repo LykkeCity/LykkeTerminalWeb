@@ -1,7 +1,8 @@
 enum Types {
   Confirm = 'Confirm',
   Expired = 'Expired',
-  EditOrder = 'EditOrder'
+  EditOrder = 'EditOrder',
+  MissedKyc = 'MissedKyc'
 }
 
 export default Types;

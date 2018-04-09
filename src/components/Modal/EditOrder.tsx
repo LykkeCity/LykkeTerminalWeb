@@ -117,7 +117,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteAssetId
+      quoteAssetId,
+      currentPrice: this.state.priceValue
     });
 
     this.setState(tempObj);
@@ -184,7 +185,11 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   };
 
   isDisable = () => {
-    return !+this.state.priceValue || !+this.state.quantityValue;
+    return (
+      !+this.state.priceValue ||
+      !+this.state.quantityValue ||
+      this.state.pendingOrder
+    );
   };
 
   handleCancel = () => {

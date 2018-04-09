@@ -243,7 +243,12 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetId,
       quoteAssetId
     } = this.props;
-    const {isLimitActive, isSellActive, isMarketActive} = this.state;
+    const {
+      isLimitActive,
+      isSellActive,
+      isMarketActive,
+      priceValue
+    } = this.state;
     const balance = this.state.isSellActive
       ? baseAssetBalance
       : quoteAssetBalance;
@@ -263,7 +268,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteAssetId
+      quoteAssetId,
+      currentPrice: priceValue
     });
 
     this.setState(tempObj);

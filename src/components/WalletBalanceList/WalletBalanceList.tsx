@@ -40,7 +40,9 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
         <td>Total</td>
         <td>&nbsp;</td>
         <td>
-          {total.toFixed(accuracy)} {name}
+          {total.toLocaleString(undefined, {
+            maximumFractionDigits: accuracy
+          })}&nbsp;{name}
         </td>
       </Total>
       {assets.map(assetBalance => (
