@@ -40,7 +40,11 @@ const InstrumentPerformanceFigure: React.SFC<
     <StyledInstrumentPerformanceFigure>
       <InstrumentPerformanceFigureValue color={color}>
         {Number.isFinite(value)
-          ? valueFormatter ? valueFormatter(value) : value.toFixed(accuracy)
+          ? valueFormatter
+            ? valueFormatter(value)
+            : value.toLocaleString(undefined, {
+                maximumFractionDigits: accuracy
+              })
           : '---'}
       </InstrumentPerformanceFigureValue>
       <InstrumentPerformanceFigureLabel>

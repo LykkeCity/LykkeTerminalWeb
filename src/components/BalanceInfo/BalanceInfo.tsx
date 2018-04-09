@@ -34,9 +34,9 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
     return (
       <BalanceInfoDiv>
         <BalanceValue>
-          {this.props.totalBalance.toFixed(
-            this.referenceStore.getBaseAssetAccuracy
-          )}
+          {this.props.totalBalance.toLocaleString(undefined, {
+            maximumFractionDigits: this.referenceStore.getBaseAssetAccuracy
+          })}
         </BalanceValue>
         <Button onClick={this.handleClick} id="baseAssetBtn">
           {pathOr('', ['getBaseAsset', 'name'], this.referenceStore)}
