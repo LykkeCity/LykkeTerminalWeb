@@ -22,13 +22,12 @@ const StyledInstrumentPopover = styled(InstrumentPopover)`
   box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
   border: solid 1px rgba(0, 0, 0, 0.2);
   position: absolute;
-  padding: ${rem(10)} ${rem(5)};
+  padding: ${rem(8)} ${rem(16)};
   z-index: 999;
   transition: all 0.3s ease;
-  min-width: 270px;
-  max-height: 620px;
-  top: 40px;
-  left: 10px;
+  width: 700px;
+  height: 360px;
+  top: 5px;
 `;
 
 export default StyledInstrumentPopover;

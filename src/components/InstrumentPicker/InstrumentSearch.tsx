@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import styled from '../styled';
+import {Icon} from '../Icon/index';
+import styled, {colors} from '../styled';
 import {InstrumentPickerActions} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -18,10 +19,11 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
   change
 }) => (
   <Box className={className}>
+    <Icon color={colors.coolGrey} name={`search`} />
     <input
       value={inputValue}
       type="search"
-      placeholder="Search instrument..."
+      placeholder="Type to search instrument..."
       // tslint:disable-next-line:jsx-no-lambda
       onChange={e => change(e.currentTarget.value)}
     />
@@ -29,15 +31,28 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
 );
 
 const StyledInstrumentSearch = styled(InstrumentSearch)`
+  width: 250px;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+  & > i.icon {
+    display: inline-block;
+    margin-left: 4%;
+    width: 8%;
+    text-align: center;
+  }
   & > input {
-    background-color: rgb(51, 51, 51);
+    background-color: #3c3c3c;
+    border: solid 2px transparent;
     border-radius: 4px;
-    border: solid 2px #333;
-    color: #f5f6f7;
-    padding: ${rem(10)};
-    width: 100%;
-    &:active {
+    color: ${colors.coolGrey};
+    padding: ${rem(6)};
+    width: 88%;
+    font-size: 14px;
+
+    &:focus {
       border: solid 2px rgb(3, 136, 239);
+    }
+    &::placeholder {
+      color: ${colors.coolGrey};
     }
   }
 `;

@@ -1,15 +1,25 @@
+import {compose} from 'rambda';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar';
+import {withStyledScroll} from '../CustomScrollbar';
+import withLoader from '../Loader/withLoader';
+import {tableScrollMargin} from '../styled';
 import OrderList from './OrderList';
+import {OrderListProps} from './OrderList';
 import Orders from './Orders';
+
+export const OrderCellWidth = {
+  Symbol: 100,
+  CancelOrder: 70,
+  Id: 320,
+  Side: 70,
+  Filled: 100,
+  CreatedDate: 200,
+  Edit: 40
+};
 
 export interface OrderActions {
   cancelOrder?: (id: string) => void;
-}
-
-export interface OrderListProps {
-  onEdit: any;
 }
 
 const ConnectedOrders = connect(
@@ -21,17 +31,27 @@ const ConnectedOrders = connect(
   }) => ({
     addModal,
     cancelOrder,
-    orders,
-    isAuth
+    isAuth,
+    orders
   }),
   withAuth(Orders)
 );
 
-const ConnectedOrderList = connect(
-  ({orderListStore: {limitOrders: orders}}) => ({
-    orders
+const ConnectedOrderList = connect<OrderListProps>(
+  ({
+    orderListStore: {hasPendingOrders},
+    referenceStore: {getInstrumentById}
+  }) => ({
+    loading: hasPendingOrders,
+    getInstrumentById
   }),
-  withScroll(OrderList)
+  compose(
+    withLoader<OrderListProps>(p => p.loading!),
+    withStyledScroll({
+      width: `calc(100% + ${tableScrollMargin})`,
+      height: 'calc(100% - 85px)'
+    })
+  )(OrderList)
 );
 
 export {ConnectedOrders as Orders};
