@@ -1,6 +1,7 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
 import {WalletBalanceItemProps} from '../';
+import {Cell} from '../../Table/styles';
 import WalletBalanceNumber from './WalletBalanceNumber';
 
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
@@ -16,27 +17,18 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   baseAsset
 }) => (
   <tr key={id}>
-    <td>{name}</td>
+    <Cell w={60}>{name}</Cell>
     <td>
       <WalletBalanceNumber
-        num={
-          balanceInBaseAsset
-            ? balanceInBaseAsset.toLocaleString(undefined, {
-                maximumFractionDigits: baseAsset.accuracy
-              })
-            : ''
-        }
+        num={balanceInBaseAsset}
+        accuracy={baseAsset.accuracy}
         color={'rgba(245, 246, 247, 0.4)'}
       >
         &nbsp;{baseAsset.name}
       </WalletBalanceNumber>
     </td>
     <td>
-      <WalletBalanceNumber
-        num={balance.toLocaleString(undefined, {
-          maximumFractionDigits: accuracy
-        })}
-      >
+      <WalletBalanceNumber num={balance} accuracy={accuracy}>
         &nbsp;{name}
       </WalletBalanceNumber>
     </td>
