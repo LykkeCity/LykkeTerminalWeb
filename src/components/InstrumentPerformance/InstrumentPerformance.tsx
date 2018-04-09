@@ -11,9 +11,7 @@ const colorFromChange = (change: number) =>
   Number.isFinite(change) ? (change > 0 ? '#13b72a' : '#ff3e2e') : undefined;
 
 const mapToPercentageWithAccuracy = (acc: number) => (val: number) =>
-  Math.abs(val)
-    .toFixed(acc)
-    .concat('%');
+  val.toFixed(acc).concat('%');
 
 export interface InstrumentPerformanceProps {
   lastPrice: number;
@@ -59,9 +57,7 @@ const InstrumentPerformance: React.SFC<InstrumentPerformanceProps> = ({
   instrumentAccuracy = 2,
   baseAssetAccuracy = 2
 }) => {
-  const mapToPercentageWithInstrumentAccuracy = mapToPercentageWithAccuracy(
-    instrumentAccuracy
-  );
+  const mapToPercentageWithInstrumentAccuracy = mapToPercentageWithAccuracy(2);
   return (
     <StyledInstrumentPerformance>
       <InstrumentPerformanceFigure
@@ -71,7 +67,7 @@ const InstrumentPerformance: React.SFC<InstrumentPerformanceProps> = ({
       />
       <InstrumentPerformanceFigure
         label="Change (24h)"
-        value={Math.abs(change)}
+        value={change}
         valueFormatter={mapToPercentageWithInstrumentAccuracy}
         color={colorFromChange(change)}
         accuracy={instrumentAccuracy}
