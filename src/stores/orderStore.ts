@@ -4,7 +4,6 @@ import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
-import MarketService from '../services/marketService';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
