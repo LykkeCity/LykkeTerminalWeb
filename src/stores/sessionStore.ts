@@ -21,7 +21,7 @@ class SessionStore extends BaseStore {
 
   @observable private isSessionNotificationShown: boolean = false;
   @observable private sessionRemains: number = SESSION_REMAINS;
-  private currentSessionString: string = '';
+  private currentQrId: string = '';
   private isSessionNotesShown: boolean = false;
   private intervalId: any;
 
@@ -37,6 +37,12 @@ class SessionStore extends BaseStore {
       this.showSessionNotification,
       Types.QR
     );
+    // setInterval(() => {
+    //   this.api.getQRConfirmation(this.currentQrId)
+    //     .then((res: any) => {
+    //       console.log(res);
+    //     })
+    // }, 5000)
   };
 
   showSessionNotification = async () => {
@@ -76,13 +82,13 @@ class SessionStore extends BaseStore {
     return this.isSessionNotesShown;
   };
 
-  getSessionString = () => {
-    this.currentSessionString = uuid.v4();
-    return this.currentSessionString;
+  getQrId = () => {
+    this.currentQrId = uuid.v4();
+    return this.currentQrId;
   };
 
-  clearSessionString = () => {
-    this.currentSessionString = '';
+  clearQrId = () => {
+    this.currentQrId = '';
   };
 
   runSessionRemains = () => {
@@ -104,7 +110,7 @@ class SessionStore extends BaseStore {
   };
 
   reset = () => {
-    this.currentSessionString = '';
+    this.currentQrId = '';
   };
 }
 

@@ -37,6 +37,7 @@ const ConnectedOrder = connect(
       handlePercentageChange,
       updatePercentageState,
       resetPercentage,
+      setActivePercentage,
       isLimitInvalid,
       isMarketInvalid
     },
@@ -69,6 +70,7 @@ const ConnectedOrder = connect(
     isMarketInvalid,
     getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
+    setActivePercentage,
     initPriceFn,
     mid: mid(),
     onArrowClick,

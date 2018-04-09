@@ -13,6 +13,7 @@ const ConnectedEditOrderModal = connect(
       fixedAmount,
       resetPercentage,
       handlePercentageChange,
+      setActivePercentage,
       isLimitInvalid
     },
     orderStore: {editOrder}
@@ -26,14 +27,15 @@ const ConnectedEditOrderModal = connect(
     onValueChange,
     orders,
     resetPercentage,
+    setActivePercentage,
     isLimitInvalid
   }),
   EditOrder
 );
 
 const ConnectedQRModal = connect(
-  ({sessionStore: {getSessionString}}) => ({
-    sessionString: getSessionString()
+  ({sessionStore: {getQrId}}) => ({
+    qrId: getQrId()
   }),
   QRModal
 );
