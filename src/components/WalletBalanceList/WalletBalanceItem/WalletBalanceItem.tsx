@@ -1,9 +1,11 @@
-import {observer} from 'mobx-react';
 import * as React from 'react';
-import {WalletBalanceItemProps} from '../';
-import {Cell} from '../../Table/styles';
+import {AssetModel} from '../../../models';
 import WalletBalanceNumber from './WalletBalanceNumber';
-
+interface WalletBalanceItemProps {
+  balance: any;
+  baseAsset: AssetModel;
+  asset: AssetModel;
+}
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   assetBalance: {
     id,
