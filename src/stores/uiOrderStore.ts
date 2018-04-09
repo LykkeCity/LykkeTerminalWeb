@@ -1,5 +1,11 @@
 import MarketService from '../services/marketService';
-import {StringHelpers} from '../utils/index';
+import {
+  getPostDecimalsLength,
+  isOnlyNumbers,
+  substringLast,
+  substringMinus,
+  substringZero
+} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 
 const ALL_AVAILABLE = 100;
@@ -41,14 +47,14 @@ class UiOrderStore extends BaseStore {
   }) => {
     let {value} = options;
     const {field, accuracy} = options;
-    if (!StringHelpers.isOnlyNumbers(value)) {
+    if (!isOnlyNumbers(value)) {
       return;
     }
-    value = StringHelpers.substringZero(value);
-    value = StringHelpers.substringMinus(value);
+    value = substringZero(value);
+    value = substringMinus(value);
 
-    if (StringHelpers.getPostDecimalsLength(value) > accuracy) {
-      value = StringHelpers.substringLast(value);
+    if (getPostDecimalsLength(value) > accuracy) {
+      value = substringLast(value);
     }
     value = value === '' ? '0' : value;
 
@@ -78,7 +84,8 @@ class UiOrderStore extends BaseStore {
       baseAssetId,
       quoteAssetId,
       percentage,
-      index
+      index,
+      currentPrice
     } = config;
     let value: number = 0;
     percentage.forEach((item: any, i: number) => {
@@ -93,12 +100,16 @@ class UiOrderStore extends BaseStore {
     value = value || ALL_AVAILABLE;
 
     let quantityValue: any;
-    let priceValue: any;
     if (isLimitActive) {
       if (isSellActive) {
         quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
       } else if (!isSellActive) {
-        priceValue = this.getPartlyValue(value, balance, priceAccuracy);
+        const convertedBalance = balance / currentPrice;
+        quantityValue = this.getPartlyValue(
+          value,
+          convertedBalance,
+          quantityAccuracy
+        );
       }
     } else if (isMarketActive) {
       if (isSellActive) {
@@ -136,9 +147,6 @@ class UiOrderStore extends BaseStore {
       }
     }
     const tempObj: any = {};
-    if (priceValue) {
-      tempObj.priceValue = priceValue;
-    }
     if (quantityValue) {
       tempObj.quantityValue = quantityValue;
     }
