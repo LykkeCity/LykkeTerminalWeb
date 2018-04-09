@@ -49,10 +49,10 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   ord: (
-    <TabbedTile tabs={['My Wallets', 'Orders', 'Trades']}>
-      <MyWallets />
+    <TabbedTile tabs={['Orders', 'Trades', 'My Wallets']}>
       <Orders />
       <Trades />
+      <MyWallets />
     </TabbedTile>
   ),
   wl: (
