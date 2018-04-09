@@ -1,5 +1,5 @@
 import {ISubscription} from 'autobahn';
-import {addDays} from 'date-fns';
+import {addDays, addMonths} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
 import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
@@ -39,6 +39,21 @@ class PriceStore extends BaseStore {
     super(store);
   }
 
+  fetchLastPrice = async () => {
+    const resp = await this.api.fetchCandles(
+      this.selectedInstrument!.id,
+      toUtc(addMonths(new Date(), -12)),
+      toUtc(addMonths(new Date(), 1)),
+      'month'
+    );
+    if (resp.History && resp.History.length > 0) {
+      runInAction(() => {
+        const {close} = map.mapToBarFromRest(last(resp.History));
+        this.lastTradePrice = close;
+      });
+    }
+  };
+
   fetchDailyCandle = async () => {
     const resp = await this.api.fetchCandles(
       this.selectedInstrument!.id,
@@ -48,13 +63,12 @@ class PriceStore extends BaseStore {
     );
     if (resp.History && resp.History.length > 0) {
       runInAction(() => {
-        const {open, high, low, close, volume} = map.mapToBarFromRest(
+        const {open, high, low, volume} = map.mapToBarFromRest(
           last(resp.History)
         );
         this.dailyOpen = open;
         this.dailyHigh = high;
         this.dailyLow = low;
-        this.lastTradePrice = close;
         this.dailyVolume = volume;
       });
     }
