@@ -11,10 +11,10 @@ import {
 
 interface QRModalProps {
   modal: ModalModel;
-  sessionString: string;
+  qrId: string;
 }
 
-const QRModal: React.SFC<QRModalProps> = ({modal, sessionString}) => {
+const QRModal: React.SFC<QRModalProps> = ({modal, qrId}) => {
   const handleContinue = () => {
     modal.cancelAction();
     modal.close();
@@ -25,7 +25,7 @@ const QRModal: React.SFC<QRModalProps> = ({modal, sessionString}) => {
       <ModalTitle>{modal.message.title}</ModalTitle>
       <ModalBody>{modal.message.body}</ModalBody>
       <QRBody>
-        <QRCode size={128} value={sessionString} />
+        <QRCode size={128} value={qrId} />
       </QRBody>
       <QRButton onClick={handleContinue}>{modal.message.button}</QRButton>
     </SessionQRConfirm>

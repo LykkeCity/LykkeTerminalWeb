@@ -57,6 +57,10 @@ interface OrderProps {
   convertPartiallyBalance: any;
   mid: number;
   handlePercentageChange: any;
+  setActivePercentage: (
+    percentage: any[],
+    index?: number
+  ) => {value: number; updatedPercentage: any[]};
   updatePercentageState: any;
   resetPercentage: any;
 }
@@ -280,6 +284,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       return;
     }
 
+    const {updatedPercentage, value} = this.props.setActivePercentage(
+      percentage,
+      index
+    );
+
     const tempObj = await this.props.handlePercentageChange({
       balance,
       baseAssetId,
@@ -288,12 +297,14 @@ class Order extends React.Component<OrderProps, OrderState> {
       isLimitActive,
       isMarketActive,
       isSellActive,
-      percentage,
       priceAccuracy,
       quantityAccuracy,
       quoteAssetId,
+      value,
       currentPrice: priceValue
     });
+
+    tempObj.percents = updatedPercentage;
 
     this.setState(tempObj);
   };

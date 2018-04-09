@@ -22,6 +22,10 @@ interface EditOrderProps {
   editOrder: any;
   resetPercentage: any;
   handlePercentageChange: any;
+  setActivePercentage: (
+    percentage: any[],
+    index?: number
+  ) => {value: number; updatedPercentage: any[]};
   getBalance: any;
 }
 
@@ -103,18 +107,25 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       return;
     }
 
+    const {updatedPercentage, value} = this.props.setActivePercentage(
+      percentage,
+      index
+    );
+
     const tempObj = await this.props.handlePercentageChange({
       balance: this.balance,
       baseAssetId,
       index,
       isInverted,
       isSellActive: this.isSellActive,
-      percentage,
+      value,
       priceAccuracy,
       quantityAccuracy,
       quoteAssetId,
       currentPrice: this.state.priceValue
     });
+
+    tempObj.percents = updatedPercentage;
 
     this.setState(tempObj);
   };
