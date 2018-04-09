@@ -13,6 +13,8 @@ const colorFromChange = (change: number) =>
 const mapToPercentageWithAccuracy = (acc: number) => (val: number) =>
   val.toFixed(acc).concat('%');
 
+const mapToPercentage = mapToPercentageWithAccuracy(2);
+
 export interface InstrumentPerformanceProps {
   lastPrice: number;
   change: number;
@@ -37,9 +39,13 @@ const InstrumentPerformanceFigure: React.SFC<
   <HeaderItem>
     <StyledInstrumentPerformanceFigure>
       <InstrumentPerformanceFigureValue color={color}>
-        {Number.isFinite(value)
-          ? valueFormatter ? valueFormatter(value) : value.toFixed(accuracy)
-          : '---'}
+        {value && Number.isFinite(value)
+          ? valueFormatter
+            ? valueFormatter(value)
+            : value.toLocaleString(undefined, {
+                maximumFractionDigits: accuracy
+              })
+          : '--'}
       </InstrumentPerformanceFigureValue>
       <InstrumentPerformanceFigureLabel>
         {label}
@@ -56,39 +62,36 @@ const InstrumentPerformance: React.SFC<InstrumentPerformanceProps> = ({
   volume,
   instrumentAccuracy = 2,
   baseAssetAccuracy = 2
-}) => {
-  const mapToPercentageWithInstrumentAccuracy = mapToPercentageWithAccuracy(2);
-  return (
-    <StyledInstrumentPerformance>
-      <InstrumentPerformanceFigure
-        label="Last price"
-        value={lastPrice}
-        accuracy={instrumentAccuracy}
-      />
-      <InstrumentPerformanceFigure
-        label="Change (24h)"
-        value={change}
-        valueFormatter={mapToPercentageWithInstrumentAccuracy}
-        color={colorFromChange(change)}
-        accuracy={instrumentAccuracy}
-      />
-      <InstrumentPerformanceFigure
-        label="High (24h)"
-        value={high}
-        accuracy={instrumentAccuracy}
-      />
-      <InstrumentPerformanceFigure
-        label="Low (24h)"
-        value={low}
-        accuracy={instrumentAccuracy}
-      />
-      <InstrumentPerformanceFigure
-        label="Volume (24h)"
-        value={volume}
-        accuracy={baseAssetAccuracy}
-      />
-    </StyledInstrumentPerformance>
-  );
-};
+}) => (
+  <StyledInstrumentPerformance>
+    <InstrumentPerformanceFigure
+      label="Last price"
+      value={lastPrice}
+      accuracy={instrumentAccuracy}
+    />
+    <InstrumentPerformanceFigure
+      label="Change (24h)"
+      value={change}
+      valueFormatter={mapToPercentage}
+      color={colorFromChange(change)}
+      accuracy={instrumentAccuracy}
+    />
+    <InstrumentPerformanceFigure
+      label="High (24h)"
+      value={high}
+      accuracy={instrumentAccuracy}
+    />
+    <InstrumentPerformanceFigure
+      label="Low (24h)"
+      value={low}
+      accuracy={instrumentAccuracy}
+    />
+    <InstrumentPerformanceFigure
+      label="Volume (24h)"
+      value={volume}
+      accuracy={baseAssetAccuracy}
+    />
+  </StyledInstrumentPerformance>
+);
 
 export default InstrumentPerformance;
