@@ -38,11 +38,8 @@ const ConnectedOrders = connect(
 );
 
 const ConnectedOrderList = connect<OrderListProps>(
-  ({
-    orderListStore: {hasPendingOrders},
-    referenceStore: {getInstrumentById}
-  }) => ({
-    loading: hasPendingOrders,
+  ({referenceStore: {getInstrumentById}}) => ({
+    loading: false,
     getInstrumentById
   }),
   compose(

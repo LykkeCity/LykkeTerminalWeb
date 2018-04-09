@@ -32,3 +32,8 @@ class StringHelpers {
 }
 
 export default StringHelpers;
+
+export const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
+  num.toLocaleString(undefined, {
+    maximumFractionDigits: accuracy
+  });
