@@ -25,7 +25,9 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   }
   return (
     <StyledNumber color={color}>
-      {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
+      {num.toLocaleString(undefined, {
+        maximumFractionDigits: accuracy
+      })}
       {children}
     </StyledNumber>
   );

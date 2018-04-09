@@ -3,6 +3,7 @@ import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../models/index';
 import styled from '../styled';
 import {Table} from '../Table/index';
+import {Cell, HeaderCell} from '../Table/styles';
 import {TradingWalletItem} from './';
 
 const Total = styled.tr`
@@ -30,17 +31,19 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   <Table>
     <thead>
       <tr>
-        <th>Assets</th>
+        <HeaderCell w={60}>Assets</HeaderCell>
         <th>&nbsp;</th>
         <th>Balance</th>
       </tr>
     </thead>
     <tbody>
       <Total>
-        <td>Total</td>
+        <Cell w={60}>Total</Cell>
         <td>&nbsp;</td>
         <td>
-          {total.toFixed(accuracy)} {name}
+          {total.toLocaleString(undefined, {
+            maximumFractionDigits: accuracy
+          })}&nbsp;{name}
         </td>
       </Total>
       {assets.map(assetBalance => (

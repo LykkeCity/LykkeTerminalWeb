@@ -6,9 +6,20 @@ const StyledBalanceNumber = styled.div`
   font-weight: bold;
 `;
 
-const BalanceNumber: React.SFC<{num: string}> = ({num, children}) => (
+interface BalanceNumberProps {
+  num: number;
+  accuracy: number;
+}
+
+const BalanceNumber: React.SFC<BalanceNumberProps> = ({
+  num,
+  accuracy,
+  children
+}) => (
   <StyledBalanceNumber>
-    {num}
+    {num.toLocaleString(undefined, {
+      maximumFractionDigits: accuracy
+    })}
     {children}
   </StyledBalanceNumber>
 );
