@@ -9,12 +9,14 @@ const StyledNumber = styled.div.attrs({})`
 `;
 
 interface WalletBalanceNumberProps {
-  num: string;
+  num: number;
+  accuracy: number;
   color?: string;
 }
 
 const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   num,
+  accuracy,
   color = '#ffffff',
   children
 }) => {
@@ -23,7 +25,9 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   }
   return (
     <StyledNumber color={color}>
-      {num}
+      {num.toLocaleString(undefined, {
+        maximumFractionDigits: accuracy
+      })}
       {children}
     </StyledNumber>
   );
