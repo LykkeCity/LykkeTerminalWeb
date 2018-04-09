@@ -8,7 +8,9 @@ import {
 } from './styles';
 
 const colorFromChange = (change: number) =>
-  Number.isFinite(change) ? (change > 0 ? '#13b72a' : '#ff3e2e') : undefined;
+  Number.isFinite(change)
+    ? change === 0 ? undefined : change > 0 ? '#13b72a' : '#ff3e2e'
+    : undefined;
 
 const mapToPercentageWithAccuracy = (acc: number) => (val: number) =>
   val.toFixed(acc).concat('%');

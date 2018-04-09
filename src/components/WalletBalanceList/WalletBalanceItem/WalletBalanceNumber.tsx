@@ -1,8 +1,11 @@
 import * as React from 'react';
 import styled from '../../styled';
 
-const StyledNumber = styled.div.attrs({})`
+const StyledNumber = styled.div`
   color: ${(p: any) => p.color};
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   span {
     color: #f5f6f7;
   }
@@ -23,11 +26,12 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   if (num === undefined || num === null) {
     return null;
   }
+  const formatterNum = num.toLocaleString(undefined, {
+    maximumFractionDigits: accuracy
+  });
   return (
-    <StyledNumber color={color}>
-      {num.toLocaleString(undefined, {
-        maximumFractionDigits: accuracy
-      })}
+    <StyledNumber color={color} title={formatterNum}>
+      {formatterNum}
       {children}
     </StyledNumber>
   );
