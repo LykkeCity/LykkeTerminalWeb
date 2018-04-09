@@ -9,6 +9,7 @@ import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
+import {MyWallets} from '../MyWallets';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
@@ -61,9 +62,10 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile tabs={['Orders', 'Trades']}>
+    <TabbedTile tabs={['Orders', 'Trades', 'My wallets']}>
       <Orders />
       <Trades />
+      <MyWallets />
     </TabbedTile>
   ),
   [OrderWidget]: (
@@ -76,19 +78,14 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
   private initialValue: any = {
     direction: 'row' as MosaicDirection,
-    first: {
-      direction: 'column' as MosaicDirection,
-      first: OrderWidget,
-      second: AccountWidget,
-      splitPercentage: 60
-    },
+    first: OrderWidget,
     second: {
       direction: 'row' as MosaicDirection,
       first: {
         direction: 'column' as MosaicDirection,
         first: ChartWidget,
         second: OrderListWidget,
-        splitPercentage: 70
+        splitPercentage: 66
       },
       second: {
         direction: 'column' as MosaicDirection,

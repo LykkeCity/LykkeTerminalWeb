@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import styled from '../../styled';
 
 const StyledNumber = styled.div.attrs({})`
@@ -11,19 +12,21 @@ const StyledNumber = styled.div.attrs({})`
 interface WalletBalanceNumberProps {
   num: string;
   color?: string;
+  accuracy: number;
 }
 
 const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   num,
   color = '#ffffff',
-  children
+  children,
+  accuracy
 }) => {
   if (num === undefined || num === null) {
     return null;
   }
   return (
     <StyledNumber color={color}>
-      {num}
+      {formattedNumber(num)}
       {children}
     </StyledNumber>
   );

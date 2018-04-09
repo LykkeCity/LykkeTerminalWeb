@@ -1,5 +1,5 @@
-import {ReferenceStore, UiStore} from '../../stores';
-import {connect} from '../connect';
+import {ReferenceStore, UiStore} from '../../../stores/index';
+import {connect} from '../../connect';
 import BalanceInfo from './BalanceInfo';
 
 export interface BalanceInfoProps {
