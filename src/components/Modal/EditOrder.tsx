@@ -117,7 +117,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteAssetId
+      quoteAssetId,
+      currentPrice: this.state.priceValue
     });
 
     this.setState(tempObj);
