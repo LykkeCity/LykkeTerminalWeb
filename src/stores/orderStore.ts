@@ -6,7 +6,6 @@ import messages from '../constants/notificationMessages';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderBookType} from '../models/orderType';
-import MarketService from '../services/marketService';
 import {getRestErrorMessage} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
@@ -86,20 +85,6 @@ class OrderStore extends BaseStore {
     this.rootStore.orderListStore.limitOrders.forEach((order: OrderModel) => {
       this.api.cancelOrder(order.id);
     });
-  };
-
-  convertPartiallyBalance = async (
-    balance: number,
-    baseAssetName: string,
-    quoteAssetName: string
-  ) => {
-    return await MarketService.convertAsset(
-      {
-        Amount: balance,
-        AssetId: baseAssetName
-      },
-      quoteAssetName
-    );
   };
 
   subscribe = (ws: any) => {
