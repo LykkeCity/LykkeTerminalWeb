@@ -2,11 +2,19 @@ import {computed, observable} from 'mobx';
 import uuid from 'uuid';
 import {SessionApi} from '../api';
 import ModalMessages from '../constants/modalMessages';
+import {keys as storageKeys} from '../models';
 import Types from '../models/modals';
+import {StorageUtils} from '../utils/';
 import {BaseStore, RootStore} from './index';
 
 const SESSION_NOTE_HIDDEN_DURATION = 1;
 const SESSION_REMAINS = 10;
+const SESSION_WARNING_REMAINING = 60000; // 1 minute
+
+const SESSION_POLLING = 10000; // 10 seconds
+
+const sessionKickoffStorage = StorageUtils(storageKeys.sessionKickoff);
+const sessionExpirationStorage = StorageUtils(storageKeys.sessionExpiration);
 
 class SessionStore extends BaseStore {
   @computed
@@ -23,29 +31,45 @@ class SessionStore extends BaseStore {
   @observable private sessionRemains: number = SESSION_REMAINS;
   private currentQrId: string = '';
   private isSessionNotesShown: boolean = false;
-  private intervalId: any;
+  private sessionRemainIntervalId: any;
+  private sessionPollingIntervalId: any;
+  private sessionLastConfirmed: any = new Date(
+    sessionKickoffStorage.get()!
+  ).getTime();
 
   constructor(store: RootStore, private readonly api: SessionApi) {
     super(store);
   }
 
+  fetchQrId = async () => {
+    // const resp = await this.api.getQRConfirmation();
+    // console.log(resp);
+  };
+
   showQR = async () => {
-    this.rootStore.modalStore.addModal(
+    const QRModal = this.rootStore.modalStore.addModal(
       ModalMessages.qr,
       // tslint:disable-next-line:no-empty
       () => {},
       this.showSessionNotification,
       Types.QR
     );
-    // setInterval(() => {
-    //   this.api.getQRConfirmation(this.currentQrId)
-    //     .then((res: any) => {
-    //       console.log(res);
-    //     })
-    // }, 5000)
+
+    const pollingSessionTimerId = setInterval(() => {
+      this.api.getSessionStatusMock().then((res: any) => {
+        const {enabled, ttl} = res.terminal;
+        if (enabled) {
+          QRModal.close();
+          clearInterval(pollingSessionTimerId);
+          sessionKickoffStorage.set(new Date());
+          sessionExpirationStorage.set(ttl);
+          this.runPollingSession();
+        }
+      });
+    }, 5000);
   };
 
-  showSessionNotification = async () => {
+  showSessionNotification = async (sessionRemains: number) => {
     const currentDate = new Date().getTime();
     this.api
       .loadSessionNoteShown()
@@ -58,13 +82,13 @@ class SessionStore extends BaseStore {
           this.isSessionNotesShown = true;
         }
         this.isSessionNotificationShown = true;
-        this.runSessionRemains();
+        this.runSessionRemains(sessionRemains);
       })
       .catch(() => {
         this.saveSessionNoteShownDate(currentDate);
         this.isSessionNotesShown = true;
         this.isSessionNotificationShown = true;
-        this.runSessionRemains();
+        this.runSessionRemains(sessionRemains);
       });
   };
 
@@ -87,26 +111,52 @@ class SessionStore extends BaseStore {
     return this.currentQrId;
   };
 
-  clearQrId = () => {
-    this.currentQrId = '';
-  };
-
-  runSessionRemains = () => {
-    this.intervalId = setInterval(() => {
-      if (this.sessionRemains < 1) {
+  runSessionRemains = (sessionRemains: number) => {
+    let secondsRemains = Math.round(sessionRemains / 1000);
+    this.sessionRemainIntervalId = setInterval(() => {
+      if (secondsRemains < 1) {
         this.stopSessionRemains();
         this.showQR();
         this.closeSessionNotification();
         return;
       }
-      this.sessionRemains = this.sessionRemains - 1;
+      secondsRemains = secondsRemains - 1;
     }, 1000);
   };
 
   stopSessionRemains = () => {
-    clearInterval(this.intervalId);
-    this.intervalId = null;
+    clearInterval(this.sessionRemainIntervalId);
+    this.sessionRemainIntervalId = null;
     this.sessionRemains = SESSION_REMAINS;
+  };
+
+  runPollingSession = () => {
+    this.sessionPollingIntervalId = setInterval(() => {
+      const currentTime = new Date().getTime();
+      const sessionRemains = currentTime - this.sessionLastConfirmed;
+      if (sessionRemains <= SESSION_WARNING_REMAINING) {
+        this.showSessionNotification(sessionRemains);
+        this.stopPollingSession();
+      }
+    }, SESSION_POLLING);
+  };
+
+  stopPollingSession = () => {
+    clearInterval(this.sessionPollingIntervalId);
+    this.sessionPollingIntervalId = null;
+  };
+
+  isSessionExpires = () => {
+    const expiresIn = sessionExpirationStorage.get();
+    const currentTime = new Date();
+    if (
+      currentTime.getTime() - new Date(this.sessionLastConfirmed!).getTime() >
+      +expiresIn!
+    ) {
+      return true;
+    }
+    this.runPollingSession();
+    return false;
   };
 
   reset = () => {
