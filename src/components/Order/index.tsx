@@ -24,7 +24,12 @@ export interface OrderProps {
   addModal: any;
   ask: number;
   bid: number;
-  accuracy: any;
+  accuracy: {
+    priceAccuracy: number;
+    quantityAccuracy: number;
+    baseAssetAccuracy: number;
+    quoteAssetAccuracy: number;
+  };
   currency: string;
   placeOrder: any;
   baseAssetName: string;
@@ -194,7 +199,9 @@ const ConnectedOrder = connect(
           pathOr('', ['baseAsset', 'id'], instrument)
         );
         return asset ? asset.accuracy : 2;
-      }
+      },
+      baseAssetAccuracy: pathOr(2, ['baseAsset', 'accuracy'], instrument),
+      quoteAssetAccuracy: pathOr(2, ['quoteAsset', 'accuracy'], instrument)
     },
     addModal,
     ask: bestAsk(),
