@@ -13,14 +13,8 @@ class Mesh extends React.Component<ChartProps> {
   bids: Order[];
   mesh: any = [];
 
-  width: number = chart.width - chart.labelsWidth;
-  height: number = chart.height - chart.labelsHeight;
-
-  stepVertical = this.width / chart.mesh.verticalLinesAmount;
-  stepHorizontal = this.height / chart.mesh.horizontalLinesAmount;
-
-  startVertical = this.stepVertical / 2;
-  startHorizontal = this.stepHorizontal / 2;
+  width: number;
+  height: number;
 
   constructor(props: ChartProps) {
     super(props);
@@ -70,10 +64,12 @@ class Mesh extends React.Component<ChartProps> {
   };
 
   drawVerticalLines = () => {
+    const stepVertical = this.width / chart.mesh.verticalLinesAmount;
+    const startVertical = stepVertical / 2;
     for (
-      let startX = this.startVertical, index = 0;
+      let startX = startVertical, index = 0;
       startX < this.width;
-      startX += this.stepVertical, index++
+      startX += stepVertical, index++
     ) {
       this.mesh.push(
         <Line
@@ -89,12 +85,14 @@ class Mesh extends React.Component<ChartProps> {
   };
 
   drawVerticalLabels = () => {
+    const stepVertical = this.width / chart.mesh.verticalLinesAmount;
+    const startVertical = stepVertical / 2;
     const labels = this.generateVerticalLabels();
     if (labels.length > 0) {
       for (
-        let startX = this.startVertical, index = 0;
+        let startX = startVertical, index = 0;
         startX < this.width;
-        startX += this.stepVertical, index++
+        startX += stepVertical, index++
       ) {
         this.mesh.push(
           <Text
@@ -111,10 +109,12 @@ class Mesh extends React.Component<ChartProps> {
   };
 
   drawHorizontalLines = () => {
+    const stepHorizontal = this.height / chart.mesh.horizontalLinesAmount;
+    const startHorizontal = stepHorizontal / 2;
     for (
-      let startY = this.startHorizontal, index = 0;
+      let startY = startHorizontal, index = 0;
       startY < this.height;
-      startY += this.stepHorizontal, index++
+      startY += stepHorizontal, index++
     ) {
       this.mesh.push(
         <Line
@@ -130,12 +130,14 @@ class Mesh extends React.Component<ChartProps> {
   };
 
   drawHorizontalLabels = () => {
+    const stepHorizontal = this.height / chart.mesh.horizontalLinesAmount;
+    const startHorizontal = stepHorizontal / 2;
     const labels = this.generateHorizontalLabels();
     if (labels.length > 0) {
       for (
-        let startY = this.startHorizontal, index = 0;
+        let startY = startHorizontal, index = 0;
         startY < this.height;
-        startY += this.stepHorizontal, index++
+        startY += stepHorizontal, index++
       ) {
         this.mesh.push(
           <Text
@@ -153,6 +155,8 @@ class Mesh extends React.Component<ChartProps> {
 
   initilaize() {
     this.mesh = [];
+    this.width = this.props.width;
+    this.height = this.props.height;
     this.asks = this.props.asks;
     this.bids = this.props.bids;
   }

@@ -8,8 +8,8 @@ import {PointerProps} from './Models';
 import chart from './chartConstants';
 
 class Pointer extends React.Component<PointerProps> {
-  calcY: number = -chart.modal.height;
-  mouseX: number = -chart.modal.width;
+  calcY: number = -this.props.height;
+  mouseX: number = -this.props.width;
 
   orders: Order[];
   orderIndex: number = 0;
@@ -17,8 +17,8 @@ class Pointer extends React.Component<PointerProps> {
   graphics: any = [];
   points: number[] = [];
 
-  width: number = 1080;
-  height: number = 500;
+  width: number = this.props.width;
+  height: number = this.props.height;
 
   borders: number[] = [];
   line: number[] = [0, 0, 0, this.height];

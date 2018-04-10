@@ -6,6 +6,8 @@ export interface ChartProps {
   mid: string;
   baseAsset: AssetModel;
   quoteAsset: AssetModel;
+  width: number;
+  height: number;
 }
 
 export interface PointerProps {
@@ -16,4 +18,6 @@ export interface PointerProps {
   color: string;
   baseAsset: AssetModel;
   quoteAsset: AssetModel;
+  width: number;
+  height: number;
 }

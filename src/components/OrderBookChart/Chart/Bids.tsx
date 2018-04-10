@@ -13,15 +13,15 @@ class Bids extends React.Component<ChartProps> {
   graphics: any[] = [];
   points: number[] = [];
 
-  width: number = chart.width - chart.labelsWidth;
-  height: number = chart.height - chart.labelsHeight;
+  width: number = 1;
+  height: number = 1;
 
   asks: Order[];
   bids: Order[];
   mid: number;
 
-  midX = this.width / 2 - Math.round(chart.strokeWidth / 2);
-  midY = this.height;
+  midX: number;
+  midY: number;
 
   coef: number;
 
@@ -61,18 +61,20 @@ class Bids extends React.Component<ChartProps> {
   };
 
   drawBids = () => {
-    let points = this.points;
     this.graphics.push(
       <Line
-        points={points}
+        points={this.points}
         closed={false}
         stroke={chart.bids.lineColor}
         strokeWidth={chart.strokeWidth}
       />
     );
-    points = points.concat([0, this.height]);
     this.graphics.push(
-      <Line points={points} closed={true} fill={chart.bids.fillColor} />
+      <Line
+        points={this.points.concat([0, this.midY, this.midX, this.midY])}
+        closed={true}
+        fill={chart.bids.fillColor}
+      />
     );
   };
 
@@ -86,6 +88,8 @@ class Bids extends React.Component<ChartProps> {
         points={this.points}
         borders={[0, this.midY, this.midX, 0]}
         color={chart.bids.lineColor}
+        width={this.props.width}
+        height={this.props.height}
       />
     );
   };
@@ -104,6 +108,10 @@ class Bids extends React.Component<ChartProps> {
 
   initialize() {
     this.graphics = [];
+    this.width = this.props.width;
+    this.height = this.props.height;
+    this.midX = this.width / 2 - Math.round(chart.strokeWidth / 2);
+    this.midY = this.height;
     this.asks = this.props.asks;
     this.bids = this.props.bids;
     this.mid = parseFloat(this.props.mid);

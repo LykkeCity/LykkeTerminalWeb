@@ -15,8 +15,9 @@ import {ChartProps} from './Models';
 import chart from './chartConstants';
 
 class Chart extends React.Component<ChartProps> {
-  @observable width: number;
-  @observable height: number;
+  oldWidth: number;
+  @observable width: number = -1;
+  @observable height: number = -1;
 
   constructor(props: ChartProps) {
     super(props);
@@ -31,8 +32,9 @@ class Chart extends React.Component<ChartProps> {
         bounds
         // tslint:disable-next-line:jsx-no-lambda
         onResize={contentRect => {
-          this.width = contentRect.bounds!.width;
+          this.width = Math.ceil(contentRect.bounds!.width);
           this.height = chart.height;
+          this.forceUpdate();
         }}
       >
         {({measureRef}) => (
@@ -45,6 +47,8 @@ class Chart extends React.Component<ChartProps> {
                   mid={mid}
                   baseAsset={baseAsset}
                   quoteAsset={quoteAsset}
+                  width={this.width - chart.labelsWidth}
+                  height={this.height - chart.labelsHeight}
                 />
               </FastLayer>
               <Layer>
@@ -54,6 +58,8 @@ class Chart extends React.Component<ChartProps> {
                   mid={mid}
                   baseAsset={baseAsset}
                   quoteAsset={quoteAsset}
+                  width={this.width - chart.labelsWidth}
+                  height={this.height - chart.labelsHeight}
                 />
                 <Bids
                   asks={asks}
@@ -61,6 +67,8 @@ class Chart extends React.Component<ChartProps> {
                   mid={mid}
                   baseAsset={baseAsset}
                   quoteAsset={quoteAsset}
+                  width={this.width - chart.labelsWidth}
+                  height={this.height - chart.labelsHeight}
                 />
               </Layer>
             </Stage>
