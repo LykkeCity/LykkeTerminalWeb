@@ -1,8 +1,5 @@
-import MarketService from '../services/marketService';
 import {StringHelpers} from '../utils/index';
 import {BaseStore, RootStore} from './index';
-
-const ALL_AVAILABLE = 100;
 
 class UiOrderStore extends BaseStore {
   constructor(store: RootStore) {
@@ -90,8 +87,6 @@ class UiOrderStore extends BaseStore {
       }
     });
 
-    value = value || ALL_AVAILABLE;
-
     let quantityValue: any;
     let priceValue: any;
     if (isLimitActive) {
@@ -105,7 +100,7 @@ class UiOrderStore extends BaseStore {
         if (!isInverted) {
           quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
         } else {
-          const convertedBalance = MarketService.convert(
+          const convertedBalance = this.rootStore.marketStore.convert(
             balance,
             baseAssetId,
             quoteAssetId,
@@ -121,7 +116,7 @@ class UiOrderStore extends BaseStore {
         if (isInverted) {
           quantityValue = this.getPartlyValue(value, balance, priceAccuracy);
         } else {
-          const convertedBalance = MarketService.convert(
+          const convertedBalance = this.rootStore.marketStore.convert(
             balance,
             quoteAssetId,
             baseAssetId,

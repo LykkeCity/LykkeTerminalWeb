@@ -13,13 +13,13 @@ import {
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
 import Watchlists from '../models/watchlists';
-import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
   BalanceListStore,
   BaseStore,
   ChartStore,
+  MarketStore,
   ModalStore,
   NotificationStore,
   OrderBookStore,
@@ -53,6 +53,7 @@ class RootStore {
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
   readonly priceStore: PriceStore;
+  readonly marketStore: MarketStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -79,10 +80,11 @@ class RootStore {
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
       this.priceStore = new PriceStore(this, new PriceApi());
+      this.marketStore = new MarketStore(this);
     }
   }
 
-  startPublicMode = (defaultInstrument: any) => {
+  startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
@@ -125,7 +127,7 @@ class RootStore {
       .then(async () => {
         const instruments = this.referenceStore.getInstruments();
         const assets = this.referenceStore.getAssets();
-        MarketService.init(instruments, assets);
+        this.marketStore.init(instruments, assets);
 
         const ws = new WampApi();
         await ws.connect(
@@ -148,6 +150,7 @@ class RootStore {
         );
         this.tradeStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
+
         return Promise.resolve();
       })
       .catch(() => {
@@ -159,7 +162,6 @@ class RootStore {
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());
-    MarketService.reset();
   };
 
   private checkDefaultInstrument = (defaultInstrument: any) =>

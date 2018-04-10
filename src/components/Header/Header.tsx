@@ -1,6 +1,5 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import {BalanceInfo} from '../BalanceInfo';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import {Icon} from '../Icon/index';
 import {InstrumentPerformance} from '../InstrumentPerformance';
@@ -8,6 +7,8 @@ import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import {SettingsModal} from '../Settings';
 import styled from '../styled';
+import {BalanceInfo} from '../UserInfo/BalanceInfo';
+import {CurrentWallet} from '../UserInfo/CurrentWallet';
 import {HeaderProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -99,7 +100,10 @@ const Header: React.SFC<HeaderProps> = ({
           <Flex align="center">
             {authStore.isAuth ? (
               <HeaderItem>
-                <BalanceInfo />
+                <Flex>
+                  <CurrentWallet />
+                  <BalanceInfo />
+                </Flex>
               </HeaderItem>
             ) : null}
             {authStore.isAuth ? (
