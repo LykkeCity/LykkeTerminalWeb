@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {TradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
@@ -40,8 +41,8 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   const feeAsset = feeAssetFromSide(instrument!, side);
   return (
     <tr>
-      <Cell w={70}>{instrument!.displayName}</Cell>
-      <SideCell w={50} side={side}>
+      <Cell w={TradesCellWidth.Symbol}>{instrument!.displayName}</Cell>
+      <SideCell w={TradesCellWidth.Side} side={side}>
         {side}
       </SideCell>
       <TitledCell>
@@ -52,7 +53,7 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
         {toLocaleStringWithAccuracy(oppositeVolume, quoteAssetAccuracy)}{' '}
         {quoteAssetName}
       </TitledCell>
-      <Cell w={90}>{orderType}</Cell>
+      <Cell w={TradesCellWidth.OrderType}>{orderType}</Cell>
       <TitledCell>
         {toLocaleStringWithAccuracy(fee, feeAsset.accuracy)} {feeAsset.name}
       </TitledCell>

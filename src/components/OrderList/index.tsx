@@ -3,17 +3,19 @@ import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar';
 import withLoader from '../Loader/withLoader';
+import {tableScrollMargin} from '../styled';
 import OrderList from './OrderList';
 import {OrderListProps} from './OrderList';
 import Orders from './Orders';
 
 export const OrderCellWidth = {
-  Symbol: 70,
+  Symbol: 100,
   CancelOrder: 70,
-  Id: 300,
-  Side: 50,
+  Id: 320,
+  Side: 70,
+  Filled: 100,
   CreatedDate: 200,
-  Edit: 30
+  Edit: 40
 };
 
 export interface OrderActions {
@@ -22,29 +24,33 @@ export interface OrderActions {
 
 const ConnectedOrders = connect(
   ({
+    orderListStore: {limitOrders: orders},
     orderStore: {cancelOrder},
     modalStore: {addModal},
     authStore: {isAuth}
   }) => ({
     addModal,
     cancelOrder,
-    isAuth
+    isAuth,
+    orders
   }),
   withAuth(Orders)
 );
 
 const ConnectedOrderList = connect<OrderListProps>(
   ({
-    orderListStore: {limitOrders: orders, hasPendingOrders},
+    orderListStore: {hasPendingOrders},
     referenceStore: {getInstrumentById}
   }) => ({
-    orders,
     loading: hasPendingOrders,
     getInstrumentById
   }),
   compose(
     withLoader<OrderListProps>(p => p.loading!),
-    withStyledScroll({height: 'calc(100% - 85px)'})
+    withStyledScroll({
+      width: `calc(100% + ${tableScrollMargin})`,
+      height: 'calc(100% - 85px)'
+    })
   )(OrderList)
 );
 
