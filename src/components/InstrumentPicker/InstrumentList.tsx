@@ -41,6 +41,7 @@ class InstrumentList extends React.Component<
       {key: 'displayName', value: 'Asset pair'},
       {key: 'price', value: 'Price'},
       {className: 'right-align', key: 'change24h', value: '24h Change'},
+      {sortDisabled: true, className: 'right-align', key: '', value: ''},
       {className: 'right-align', key: 'volume', value: 'Volume'}
     ];
 

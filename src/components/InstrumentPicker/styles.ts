@@ -60,7 +60,7 @@ export const Shortcut = styled(OtherShortcuts)`
   color: ${colors.coolGrey};
   justify-content: center;
 
-  &.active p {
+  &.active > * {
     color: ${colors.white};
     box-shadow: inset 0 -3px 0 0 ${colors.blue};
   }
