@@ -179,6 +179,7 @@ class OrderStore extends BaseStore {
         }
       }
     }
+    return Promise.reject(error);
   };
 }
 

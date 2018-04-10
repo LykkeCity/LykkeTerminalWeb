@@ -80,6 +80,10 @@ class OrderListStore extends BaseStore {
   @action
   updateOrder = (dto: any) => {
     const order = this.orders.find((o: OrderModel) => o.id === dto.Id);
+    if (!order) {
+      this.addOrder(dto);
+      return;
+    }
     order!.remainingVolume = dto.RemainingVolume;
     order!.volume = dto.Volume;
   };
