@@ -128,7 +128,10 @@ class RootStore {
       return this.startPublicMode(defaultInstrument);
     }
 
-    await this.sessionStore.showQR();
+    // await this.sessionStore.fetchQrId();
+    if (this.sessionStore.isSessionExpires()) {
+      await this.sessionStore.showQR();
+    }
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
