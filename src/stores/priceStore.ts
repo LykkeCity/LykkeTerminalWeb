@@ -7,6 +7,7 @@ import {PriceApi} from '../api';
 import * as topics from '../api/topics';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
+import MarketService from '../services/marketService';
 
 const toUtc = (date: Date) => {
   const y = date.getUTCFullYear();
@@ -56,6 +57,16 @@ class PriceStore extends BaseStore {
         this.dailyLow = low;
         this.lastTradePrice = close;
         this.dailyVolume = volume;
+
+        this.selectedInstrument!.updateFromCandle(open, close, volume);
+        this.selectedInstrument!.updateVolumeInBase(
+          MarketService.convert(
+            volume,
+            this.selectedInstrument!.baseAsset.id,
+            this.rootStore.referenceStore.baseAssetId,
+            this.rootStore.referenceStore.getInstrumentById
+          )
+        );
       });
     }
   };

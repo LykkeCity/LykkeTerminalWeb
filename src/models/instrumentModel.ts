@@ -13,7 +13,7 @@ class InstrumentModel {
   @observable price: number;
   @observable bid: number;
   @observable ask: number;
-  @observable priceInBase: number = 0;
+  @observable volumeInBase: number = 0;
   @observable change24h: number = 0;
   @observable volume: number = 0;
 
@@ -47,9 +47,9 @@ class InstrumentModel {
   };
 
   @action
-  updatePriceInBase = (nextPriceInBase: number) => {
-    if (this.priceInBase !== nextPriceInBase) {
-      this.priceInBase = nextPriceInBase;
+  updateVolumeInBase = (nextVolumeInBase: number) => {
+    if (this.volumeInBase !== nextVolumeInBase) {
+      this.volumeInBase = nextVolumeInBase;
     }
   };
 

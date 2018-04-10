@@ -96,7 +96,7 @@ class RootStore {
         .forEach((x: any) => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(
-            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            topics.candle('spot', x.id, PriceType.Trade, 'day'),
             this.referenceStore.onCandle
           );
         });
@@ -147,10 +147,11 @@ class RootStore {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
           ws.subscribe(
-            topics.candle('spot', x.id, PriceType.Bid, 'day'),
+            topics.candle('spot', x.id, PriceType.Trade, 'day'),
             this.referenceStore.onCandle
           );
         });
+
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );

@@ -1,6 +1,7 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
 import {AssetModel, InstrumentModel} from '../../models/index';
+import {colors} from '../styled';
 import {InstrumentListNumber, InstrumentPickerActions} from './index';
 
 interface InstrumentListItemProps extends InstrumentPickerActions {
@@ -11,7 +12,7 @@ interface InstrumentListItemProps extends InstrumentPickerActions {
 
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
   ({baseAsset, instrument, onPick, inactive}) => {
-    const percentageAccuracy = 3;
+    const percentageAccuracy = 2;
     const click = () => inactive && onPick && onPick(instrument);
 
     return (
@@ -23,15 +24,6 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
             accuracy={instrument.accuracy}
           />
         </td>
-        {/*<td>*/}
-        {/*<InstrumentListNumber*/}
-        {/*num={instrument.priceInBase}*/}
-        {/*accuracy={baseAsset.accuracy}*/}
-        {/*color={'rgba(245, 246, 247, 0.4)'}*/}
-        {/*>*/}
-        {/*&nbsp;{baseAsset.name}*/}
-        {/*</InstrumentListNumber>*/}
-        {/*</td>*/}
         <td>
           <InstrumentListNumber
             num={instrument.change24h}
@@ -45,9 +37,18 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>
           <InstrumentListNumber
             num={instrument.volume}
-            accuracy={instrument.quoteAsset.accuracy}
+            accuracy={instrument.baseAsset.accuracy}
           >
-            &nbsp;{instrument.quoteAsset.name}
+            &nbsp;{instrument.baseAsset.name}
+          </InstrumentListNumber>
+        </td>
+        <td>
+          <InstrumentListNumber
+            num={instrument.volumeInBase}
+            accuracy={baseAsset.accuracy}
+            color={colors.lightGrey}
+          >
+            &nbsp;{baseAsset.name}
           </InstrumentListNumber>
         </td>
       </tr>
