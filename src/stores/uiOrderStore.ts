@@ -1,3 +1,4 @@
+import MarketService from '../services/marketService';
 import {
   getPostDecimalsLength,
   isOnlyNumbers,
@@ -5,7 +6,6 @@ import {
   substringMinus,
   substringZero
 } from '../utils/string';
-import MarketService from '../services/marketService';
 import {BaseStore, RootStore} from './index';
 
 const ALL_AVAILABLE = 100;
