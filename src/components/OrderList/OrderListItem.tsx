@@ -55,13 +55,13 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
           {side}
         </Cell>
         <td>{volume}</td>
-        <td>
+        <Cell w={OrderCellWidth.Filled}>
           {getFilled(volume, remainingVolume, accuracy)} ({getFilledPercent(
             volume,
             remainingVolume,
             accuracy
           )}%)
-        </td>
+        </Cell>
         <td>{price}</td>
         <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
         <Cell w={OrderCellWidth.Edit}>

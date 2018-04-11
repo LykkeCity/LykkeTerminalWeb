@@ -8,12 +8,13 @@ import {OrderListProps} from './OrderList';
 import Orders from './Orders';
 
 export const OrderCellWidth = {
-  Symbol: 70,
+  Symbol: 100,
   CancelOrder: 70,
-  Id: 300,
-  Side: 50,
+  Id: 320,
+  Side: 70,
+  Filled: 100,
   CreatedDate: 200,
-  Edit: 30
+  Edit: 40
 };
 
 export interface OrderActions {
