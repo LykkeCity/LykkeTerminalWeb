@@ -1,10 +1,8 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
-import tabs from '../../constants/tabs';
 import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
-import {Account} from '../Account';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
@@ -31,7 +29,6 @@ const Shell = styled.div`
 `;
 
 const {
-  AccountWidget,
   ChartWidget,
   OrderWidget,
   OrderBookWidget,
@@ -41,11 +38,6 @@ const {
 
 const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
-  [AccountWidget]: (
-    <Tile title="Account" tabs={tabs.walletBalance} authorize={true}>
-      <Account />
-    </Tile>
-  ),
   [ChartWidget]: (
     <Tile title="Chart">
       <Chart />

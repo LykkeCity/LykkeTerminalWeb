@@ -97,13 +97,18 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.isSellActive = this.action === Side.Sell.toLowerCase();
 
     const assetId = this.isSellActive ? this.baseAssetId : this.quoteAssetId;
-    const asset = this.props.getBalance.find((a: AssetBalanceModel) => {
-      return a.id === assetId;
-    });
+    const asset: AssetBalanceModel = this.props.getBalance.find(
+      (b: AssetBalanceModel) => {
+        return b.id === assetId;
+      }
+    );
     const reserved = this.isSellActive
       ? modal.config.volume
       : modal.config.price;
-    this.balance = (asset.available + reserved).toFixed(asset.accuracy);
+    const assetAccuracy = this.isSellActive
+      ? this.accuracy.quantityAccuracy
+      : pathOr(2, ['quoteAsset', 'accuracy'], currentInstrument);
+    this.balance = (asset.balance + reserved).toFixed(assetAccuracy);
   }
 
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {

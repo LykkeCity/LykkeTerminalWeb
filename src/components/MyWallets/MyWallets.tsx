@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react/custom';
 import * as React from 'react';
 import {AssetModel} from '../../models';
 import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
@@ -60,11 +61,13 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
           </ManageWalletsLink>
         </WalletOverview>
         <WalletBalances>
-          <WalletBalanceList wallet={this.props.wallets[this.state.index]} />
+          {!!this.props.wallets.length && (
+            <WalletBalanceList wallet={this.props.wallets[this.state.index]} />
+          )}
         </WalletBalances>
       </MyWalletsContainer>
     );
   }
 }
 
-export default MyWallets;
+export default observer(MyWallets);

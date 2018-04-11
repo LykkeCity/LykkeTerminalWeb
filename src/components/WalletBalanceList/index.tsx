@@ -6,14 +6,8 @@ import WalletBalanceItem from './WalletBalanceItem/WalletBalanceItem';
 import WalletBalanceList from './WalletBalanceList';
 
 const ConnectedWalletBalanceList = connect(
-  ({
-    balanceListStore: {tradingWalletAssets: assets, tradingWalletTotal: total},
-    referenceStore,
-    referenceStore: {getAssetById, baseAssetId}
-  }) => ({
-    assets,
+  ({referenceStore: {getAssetById, baseAssetId}}) => ({
     baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
-    total,
     getAssetById
   }),
   withScroll(WalletBalanceList)

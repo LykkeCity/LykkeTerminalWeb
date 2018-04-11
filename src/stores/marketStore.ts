@@ -1,39 +1,20 @@
-import {pathOr} from 'rambda';
-import {MarketApi} from '../api/';
 import {AssetModel, InstrumentModel} from '../models';
-import {Side} from '../models';
+import {BaseStore, RootStore} from './index';
 
-class MarketService {
+class MarketStore extends BaseStore {
   private result: any = {};
   private graph: any = {};
+
+  constructor(store: RootStore) {
+    super(store);
+  }
 
   init = (insturments: InstrumentModel[], assets: AssetModel[]) => {
     const {g, d, u} = this.initData(insturments);
     for (const asset of assets) {
-      this.result[asset.id] = this.buildDijkstra(asset.id, g, {...d}, {...u});
+      this.result[asset.id] = this.buildDeikstra(asset.id, g, {...d}, {...u});
     }
     this.graph = g;
-  };
-
-  reset = () => {
-    this.result = {};
-    this.graph = {};
-  };
-
-  convertList = async (assets: any[], assetId: string) => {
-    const convertedQuotes = await MarketApi.convert({
-      AssetsFrom: assets.map((asset: any) => ({
-        Amount: asset.Balance,
-        AssetId: asset.AssetId
-      })),
-      BaseAssetId: assetId,
-      OrderAction: Side.Sell
-    });
-    return convertedQuotes.Converted.map((converted: any) => ({
-      AssetId: pathOr(null, ['To', 'AssetId'], converted),
-      Balance: pathOr(0, ['To', 'Amount'], converted),
-      FromAssetId: pathOr(null, ['From', 'AssetId'], converted)
-    }));
   };
 
   convert = (
@@ -70,17 +51,21 @@ class MarketService {
       }
       const {pair, straight} = secondAssetData;
       const instrument = getInstrumentById(pair);
-      if (!instrument || !instrument.bid || !instrument.ask) {
+      if (!instrument || !instrument.price) {
         return 0;
       }
       if (straight) {
-        output *= instrument.bid;
+        output *= instrument.price;
       } else {
-        output *= 1 / instrument.ask;
+        output *= 1 / instrument.price;
       }
     }
-
     return output;
+  };
+
+  reset = () => {
+    this.result = {};
+    this.graph = {};
   };
 
   private initData = (instruments: InstrumentModel[]) => {
@@ -96,7 +81,7 @@ class MarketService {
         g[baseAssetId] = {};
       }
       g[baseAssetId][quoteAssetId] = {
-        weight: this.getWeight(instrument),
+        weight: 1,
         pair: instrument.id,
         straight: true
       };
@@ -105,7 +90,7 @@ class MarketService {
         g[quoteAssetId] = {};
       }
       g[quoteAssetId][baseAssetId] = {
-        weight: this.getWeight(instrument),
+        weight: 1,
         pair: instrument.id,
         straight: false
       };
@@ -115,23 +100,11 @@ class MarketService {
       u[baseAssetId] = false;
       u[quoteAssetId] = false;
     }
+
     return {g, d, u};
   };
 
-  private getWeight(instrument: InstrumentModel) {
-    const assets = [instrument.baseAsset.id, instrument.quoteAsset.id];
-
-    if (assets.indexOf('BTC') !== -1) {
-      return 4;
-    } else if (assets.indexOf('ETH') !== -1) {
-      return 5;
-    } else if (assets.indexOf('USD') !== -1) {
-      return 6;
-    }
-    return 7;
-  }
-
-  private buildDijkstra = (start: string, g: any, d: any, u: any) => {
+  private buildDeikstra = (start: string, g: any, d: any, u: any) => {
     d[start] = 0;
     const keys = Object.keys(g);
     const result = {};
@@ -162,4 +135,4 @@ class MarketService {
   };
 }
 
-export default new MarketService();
+export default MarketStore;

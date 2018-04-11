@@ -7,17 +7,16 @@ interface WalletBalanceItemProps {
   asset: AssetModel;
 }
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
-  balance,
+  balance: {balance, balanceInBaseAsset},
   baseAsset,
   asset
 }) =>
   (asset && (
     <tr>
       <td>{asset.name}</td>
-      <td />
       <td>
         <WalletBalanceNumber
-          num={balance.balanceInBaseAsset}
+          num={balanceInBaseAsset}
           accuracy={baseAsset.accuracy}
           color={'rgba(245, 246, 247, 0.4)'}
         >
@@ -25,7 +24,7 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
         </WalletBalanceNumber>
       </td>
       <td>
-        <WalletBalanceNumber num={balance.Balance} accuracy={asset.accuracy}>
+        <WalletBalanceNumber num={balance} accuracy={asset.accuracy}>
           &nbsp;{asset.name}
         </WalletBalanceNumber>
       </td>

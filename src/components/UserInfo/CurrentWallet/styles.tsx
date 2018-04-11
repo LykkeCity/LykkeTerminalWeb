@@ -12,7 +12,7 @@ export const StyledCurrentWallet = styled.div`
     font-size: ${rem(16)};
     font-weight: bold;
     text-transform: uppercase;
-    width: 102px;
+    width: ${rem(150)};
     height: 16px;
     white-space: nowrap;
     text-overflow: ellipsis;

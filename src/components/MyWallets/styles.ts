@@ -68,8 +68,8 @@ export const WalletItemContainer = styled.div`
 `;
 
 export const WalletName = styled.div`
-  width: ${rem(89)};
   height: ${rem(17)};
+  width: 50%;
   font-family: 'ProximaNova', sans-serif;
   font-size: ${rem(14)};
   font-weight: 600;
@@ -86,7 +86,7 @@ export const WalletName = styled.div`
 
 export const WalletTotalBalance = styled.div`
   margin-left: auto;
-  width: ${rem(91)};
+  width: 50%;
   height: ${rem(17)};
   font-family: 'ProximaNova', sans-serif;
   font-size: ${rem(14)};
