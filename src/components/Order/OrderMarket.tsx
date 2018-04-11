@@ -107,7 +107,7 @@ class OrderMarket extends React.Component<
   };
 
   render() {
-    const {baseAssetName, quoteAssetName} = this.props;
+    const {baseAssetName, quoteAssetName, fixedToLocaleString} = this.props;
     this.previousPropsAction = this.props.action;
     const {quantityAccuracy, priceAccuracy, quantity} = this.props;
     const currentAccuracy = this.isInverted ? priceAccuracy : quantityAccuracy;
@@ -166,9 +166,10 @@ class OrderMarket extends React.Component<
           <OrderButton
             isDisable={this.props.isDisable}
             type={'submit'}
-            message={`${capitalize(this.state.action)} ${quantity} ${
-              !this.isInverted ? baseAssetName : quoteAssetName
-            }`}
+            message={`${capitalize(this.state.action)} ${fixedToLocaleString(
+              parseFloat(quantity),
+              currentAccuracy
+            )} ${!this.isInverted ? baseAssetName : quoteAssetName}`}
           />
         </StyledOrderButton>
         <StyledReset justify={'center'}>

@@ -103,7 +103,9 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     const reserved = this.isSellActive
       ? modal.config.volume
       : modal.config.price;
-    this.balance = (asset.available + reserved).toFixed(asset.accuracy);
+    this.balance = (asset.available + reserved).toLocaleString(undefined, {
+      maximumFractionDigits: asset.accuracy
+    });
   }
 
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
