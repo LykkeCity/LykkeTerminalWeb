@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
 import {StorageUtils} from '../../utils/index';
-import {Account} from '../Account';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
@@ -28,11 +27,6 @@ const Shell = styled.div`
 const layoutStorage = StorageUtils(keys.layout);
 const MIN_PANE_SIZE_PERCENTAGE = 25;
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
-  acc: (
-    <Tile title="Account">
-      <Account />
-    </Tile>
-  ),
   c: (
     <Tile title="Chart">
       <Chart />

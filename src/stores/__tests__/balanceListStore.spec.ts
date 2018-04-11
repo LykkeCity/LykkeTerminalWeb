@@ -13,8 +13,8 @@ describe('balanceList store', () => {
 
   describe('state', () => {
     it('balanceLists should be defined after instantiation', () => {
-      expect(balanceListStore.getBalances).toBeDefined();
-      expect(balanceListStore.getBalances).not.toBeNull();
+      expect(balanceListStore.getWalletsWithPositiveBalances).toBeDefined();
+      expect(balanceListStore.getWalletsWithPositiveBalances).not.toBeNull();
     });
 
     it('balanceLists should be an empty array by default', () => {

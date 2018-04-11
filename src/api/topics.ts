@@ -21,4 +21,6 @@ export const trades = `trades`;
 export const publicTrade = (symbol: string) =>
   `trades.spot.${symbol.toLowerCase()}`;
 
+export const balances = `balances`;
+
 export const orders = `orders.spot`;

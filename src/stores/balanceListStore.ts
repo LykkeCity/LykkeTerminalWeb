@@ -1,6 +1,7 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {add, find, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
+import * as topics from '../api/topics';
 import tradingWalletKeys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, WalletModel} from '../models';
 import {BaseStore, RootStore} from './index';
@@ -97,11 +98,20 @@ class BalanceListStore extends BaseStore {
   };
 
   subscribe = (session: any) => {
-    session.subscribe(`balances`, this.onUpdateBalance);
+    session.subscribe(topics.balances, this.onUpdateBalance);
   };
 
-  onUpdateBalance = async () => {
-    this.fetchAll();
+  onUpdateBalance = async (args: any) => {
+    const dto = args[0];
+    const {id, a, b, r} = dto;
+    const wallet = this.walletList.find((w: WalletModel) => w.id === id);
+    const balance = wallet!.balances.find(
+      (bc: AssetBalanceModel) => bc.id === a
+    )!;
+    balance.balance = b;
+    balance.reserved = r;
+
+    this.updateWalletBalances();
   };
 
   reset = () => {

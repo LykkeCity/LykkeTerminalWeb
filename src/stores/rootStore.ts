@@ -87,7 +87,7 @@ class RootStore {
     }
   }
 
-  startPublicMode = (defaultInstrument: any) => {
+  startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
@@ -163,6 +163,7 @@ class RootStore {
         this.tradeStore.subscribe(ws);
         this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
+
         return Promise.resolve();
       })
       .catch(e => {
