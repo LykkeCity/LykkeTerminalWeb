@@ -1,21 +1,17 @@
 import * as React from 'react';
-import {OrderModel} from '../../models/index';
 import Types from '../../models/modals';
 import {HBar} from '../Bar';
-import {OrderActions, OrderList} from './';
+import {Table} from '../Table';
+import {HeaderCell} from '../Table/styles';
+import {OrderActions, OrderCellWidth, OrderList} from './';
 import {CancelAllOrders, ToggleOrders} from './OrderListAdditional';
 import OrderListToolbar from './OrderListToolbar';
 
 interface OrdersProps extends OrderActions {
-  orders: OrderModel[];
   addModal: any;
 }
 
-const Blotter: React.SFC<OrdersProps> = ({
-  orders = [],
-  cancelOrder,
-  addModal
-}) => {
+const Blotter: React.SFC<OrdersProps> = ({cancelOrder, addModal}) => {
   const handleEditOrder = (order: any) => (id: string) => {
     addModal(
       id,
@@ -35,11 +31,22 @@ const Blotter: React.SFC<OrdersProps> = ({
         <CancelAllOrders />
       </OrderListToolbar>
       <HBar />
-      <OrderList
-        orders={orders}
-        onEditOrder={handleEditOrder}
-        onCancelOrder={cancelOrder}
-      />
+      <Table>
+        <thead>
+          <tr>
+            <HeaderCell w={OrderCellWidth.Symbol}>Asset pair</HeaderCell>
+            <HeaderCell w={OrderCellWidth.CancelOrder}>Cancel order</HeaderCell>
+            <HeaderCell w={OrderCellWidth.Id}>OrderID</HeaderCell>
+            <HeaderCell w={OrderCellWidth.Side}>Side</HeaderCell>
+            <th>Volume</th>
+            <HeaderCell w={OrderCellWidth.Filled}>Filled</HeaderCell>
+            <th>Price</th>
+            <HeaderCell w={OrderCellWidth.CreatedDate}>Created Date</HeaderCell>
+            <HeaderCell w={OrderCellWidth.Edit}>Edit</HeaderCell>
+          </tr>
+        </thead>
+      </Table>
+      <OrderList onEditOrder={handleEditOrder} onCancelOrder={cancelOrder} />
     </React.Fragment>
   );
 };
