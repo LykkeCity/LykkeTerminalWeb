@@ -25,23 +25,25 @@ export interface InstrumentPerformanceProps {
   volume: number;
   instrumentAccuracy: number;
   baseAssetAccuracy: number;
+  showPerformance: boolean;
 }
 
 interface InstrumentPerformanceFigureProps {
   label: string;
   value: number;
   accuracy: number;
+  show: boolean;
   color?: string;
   valueFormatter?: (value: number | string) => string;
 }
 
 const InstrumentPerformanceFigure: React.SFC<
   InstrumentPerformanceFigureProps
-> = ({label = '', value, accuracy, color, valueFormatter}) => (
+> = ({label = '', value, accuracy, color, valueFormatter, show}) => (
   <HeaderItem>
     <StyledInstrumentPerformanceFigure>
       <InstrumentPerformanceFigureValue color={color}>
-        {value && Number.isFinite(value)
+        {show && value && Number.isFinite(value)
           ? valueFormatter
             ? valueFormatter(value)
             : value.toLocaleString(undefined, {
@@ -63,13 +65,15 @@ const InstrumentPerformance: React.SFC<InstrumentPerformanceProps> = ({
   low,
   volume,
   instrumentAccuracy = 2,
-  baseAssetAccuracy = 2
+  baseAssetAccuracy = 2,
+  showPerformance
 }) => (
   <StyledInstrumentPerformance>
     <InstrumentPerformanceFigure
       label="Last price"
       value={lastPrice}
       accuracy={instrumentAccuracy}
+      show={showPerformance}
     />
     <InstrumentPerformanceFigure
       label="Change (24h)"
@@ -77,21 +81,25 @@ const InstrumentPerformance: React.SFC<InstrumentPerformanceProps> = ({
       valueFormatter={mapToPercentage}
       color={colorFromChange(change)}
       accuracy={instrumentAccuracy}
+      show={showPerformance}
     />
     <InstrumentPerformanceFigure
       label="High (24h)"
       value={high}
       accuracy={instrumentAccuracy}
+      show={showPerformance}
     />
     <InstrumentPerformanceFigure
       label="Low (24h)"
       value={low}
       accuracy={instrumentAccuracy}
+      show={showPerformance}
     />
     <InstrumentPerformanceFigure
       label="Volume (24h)"
       value={volume}
       accuracy={baseAssetAccuracy}
+      show={showPerformance}
     />
   </StyledInstrumentPerformance>
 );
