@@ -1,6 +1,6 @@
 import {pathOr} from 'rambda';
 import {connect} from '../../connect';
-import Chart from './Chart';
+import ChartWrapper from './ChartWrapper';
 
 // tslint:disable:object-literal-sort-keys
 const ConnectedChart = connect(
@@ -18,8 +18,8 @@ const ConnectedChart = connect(
       quoteAsset
     };
   },
-  Chart
+  ChartWrapper
 );
 
 export default ConnectedChart;
-export {default as Chart} from './Chart';
+export {default as ChartWrapper} from './ChartWrapper';
