@@ -41,6 +41,7 @@ export interface OrderProps {
   onArrowClick: any;
   onValueChange: any;
   fixedAmount: any;
+  fixedToLocaleString: any;
   updatePriceFn: any;
   updateDepthFn: any;
   initPriceFn: any;
@@ -119,6 +120,7 @@ export interface OrderMarketState {
 export interface OrderMarketProps extends OrderBasicFormProps {
   onResetPercentage: any;
   onInvert: any;
+  fixedToLocaleString: any;
 }
 
 export interface OrderLimitProps extends OrderBasicFormProps {
@@ -186,6 +188,7 @@ const ConnectedOrder = connect(
       onArrowClick,
       onValueChange,
       fixedAmount,
+      fixedToLocaleString,
       handlePercentageChange,
       updatePercentageState,
       resetPercentage
@@ -215,6 +218,7 @@ const ConnectedOrder = connect(
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
+    fixedToLocaleString,
     getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
     initPriceFn,
