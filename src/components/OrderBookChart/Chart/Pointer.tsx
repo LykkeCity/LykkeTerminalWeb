@@ -249,7 +249,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // numbers
         <Text
-          text={`${depth.toFixed(8)} ${this.props.baseAsset}`}
+          text={`${depth.toFixed(6)} ${this.props.baseAsset}`}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}
           fontStyle={chart.modal.number.fontStyle}
@@ -261,7 +261,7 @@ class Pointer extends React.Component<PointerProps> {
           onMouseLeave={this.handleMouseLeave}
         />,
         <Text
-          text={`${(depth * price).toFixed(8)} ${this.props.quoteAsset}`}
+          text={`${(depth * price).toFixed(6)} ${this.props.quoteAsset}`}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}
           fontStyle={chart.modal.number.fontStyle}

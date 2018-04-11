@@ -28,12 +28,8 @@ class ChartWrapper extends React.Component<ChartProps> {
       <Measure
         // tslint:disable-next-line:jsx-boolean-value
         client
-        // tslint:disable-next-line:jsx-boolean-value
-        scroll
         // tslint:disable-next-line:jsx-no-lambda
         onResize={contentRect => {
-          // tslint:disable-next-line:no-console
-          console.log(contentRect.scroll);
           this.width = Math.ceil(contentRect.client!.width);
           this.height = chart.height;
           this.forceUpdate();
