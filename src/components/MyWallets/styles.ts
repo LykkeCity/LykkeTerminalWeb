@@ -18,31 +18,14 @@ export const WalletOverview = styled.div`
   padding: ${rem(8)};
 `;
 
-export const WalletNames = styled.div``;
+export const WalletNames = styled.div`
+  overflow: hidden;
+`;
 
 export const WalletBalances = styled.div`
   width: 100%;
   height: 100%;
   margin-left: ${rem(8)};
-`;
-
-export const ManageWalletsLink = styled.a`
-  border-radius: 4px;
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  cursor: pointer;
-  color: ${rgb(245, 246, 247)};
-  font-size: ${rem(14)};
-  font-family: 'ProximaNova', sans-serif;
-  font-weight: normal;
-  text-align: center;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: ${rem(250)};
-  min-height: ${rem(32)};
-  margin-top: auto;
-  padding: ${rem(8)} 0;
 `;
 
 export const Br = styled.div`
@@ -102,14 +85,19 @@ export const WalletTotalBalance = styled.div`
   overflow: hidden;
 `;
 
-// ...................TotalBalance...................
+// ...................BottomInfo...................
+
+export const BottomInfo = styled.div`
+  margin-top: auto;
+`;
+
 export const Total = styled.div`
+  margin-top: ${rem(15)};
   color: ${rgb(255, 255, 255)};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 15px;
 `;
 
 export const TotalAmount = styled.div`
@@ -125,7 +113,28 @@ export const TotalAmount = styled.div`
 `;
 
 export const TotalLabel = styled.div`
+  width: 71px;
+  height: 15px;
   opacity: 0.4;
   font-size: ${rem(12)};
   margin-top: ${rem(2)};
+`;
+
+export const ManageWalletsLink = styled.a`
+  border-radius: 4px;
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  cursor: pointer;
+  color: ${rgb(245, 246, 247)};
+  font-size: ${rem(14)};
+  font-family: 'ProximaNova', sans-serif;
+  font-weight: normal;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: ${rem(250)};
+  min-height: ${rem(32)};
+  padding: ${rem(8)} 0;
+  margin-top: ${rem(78)};
 `;
