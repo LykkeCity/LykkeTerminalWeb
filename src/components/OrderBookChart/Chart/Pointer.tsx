@@ -38,11 +38,20 @@ class Pointer extends React.Component<PointerProps> {
   }
 
   generateModalText(): any {
-    this.titleX =
-      this.mouseX -
-      chart.modal.arrowWidth / 2 -
-      chart.modal.widthBeforeArrow +
-      chart.modal.marginLeft;
+    if (this.props.side === 'asks') {
+      this.titleX =
+        this.mouseX -
+        chart.modal.arrowWidth / 2 -
+        chart.modal.longBeforeArrow +
+        chart.modal.marginLeft;
+    } else {
+      this.titleX =
+        this.mouseX -
+        chart.modal.arrowWidth / 2 -
+        chart.modal.shortBeforeArrow +
+        chart.modal.marginLeft;
+    }
+
     this.titleY = this.calcY - chart.modal.arrowHeight - chart.modal.height;
 
     this.modalLine = [
@@ -60,12 +69,19 @@ class Pointer extends React.Component<PointerProps> {
 
   generateModal() {
     this.modal = [];
-    const leftX =
-      this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.widthBeforeArrow;
+    let leftX;
+    if (this.props.side === 'asks') {
+      leftX =
+        this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.longBeforeArrow;
+    } else {
+      leftX =
+        this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.shortBeforeArrow;
+    }
     const rightX = leftX + chart.modal.width;
     const bottomY =
       this.calcY - chart.modal.shiftFromBall - chart.modal.arrowHeight;
     const topY = bottomY - chart.modal.height;
+
     this.modal.push(this.mouseX, this.calcY - chart.modal.shiftFromBall);
     this.modal.push(this.mouseX - chart.modal.arrowWidth / 2, bottomY);
     this.modal.push(leftX, bottomY);
