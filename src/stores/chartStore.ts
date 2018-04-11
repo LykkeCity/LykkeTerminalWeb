@@ -69,6 +69,7 @@ class ChartStore extends BaseStore {
         'remove_library_container_border',
         'header_undo_redo',
         'header_interval_dialog_button',
+        'save_chart_properties_to_local_storage',
         'show_interval_dialog_on_keypress',
         'timeframes_toolbar'
       ],
