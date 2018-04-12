@@ -107,6 +107,18 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
 
   componentDidMount() {
     this.props.rootStore.start();
+    this.removeTransparentDivAfterResize();
+  }
+
+  removeTransparentDivAfterResize() {
+    const mosaicSplit = document.getElementsByClassName(
+      'mosaic-split -column'
+    )[0];
+    if (mosaicSplit) {
+      mosaicSplit.addEventListener('mouseup', () => {
+        document.getElementById('transparentDiv')!.style.display = 'none';
+      });
+    }
   }
 
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
@@ -122,6 +134,7 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
       initialValue: args
     });
     layoutStorage.set(JSON.stringify(args));
+    document.getElementById('transparentDiv')!.style.display = 'block';
   };
 
   render() {
