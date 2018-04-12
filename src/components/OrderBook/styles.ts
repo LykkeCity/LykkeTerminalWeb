@@ -5,21 +5,18 @@ import {Table} from '../Table';
 
 const colorBySide = (side: Side) => (side === Side.Buy ? '#d070ff' : '#ffae2c');
 
-const marginBySide = (side: Side) =>
-  side === Side.Sell ? 'marginLeft' : 'marginRight';
-
 export const StyledWrapper = styled.div`
   height: 100%;
 `;
 
 export const StyledBar = styled.div`
-  display: flex;
-  align-items: center;
+  color: ${colors.white};
   font-size: ${rem(14)};
   font-weight: normal;
   text-align: left;
-  color: rgb(245, 246, 247);
   margin: ${rem(12)} 0;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledGrouping = styled.div`
@@ -58,7 +55,7 @@ export const StyledGrouping = styled.div`
 `;
 
 export const StyledSwitch = styled.div`
-  color: #ffffff;
+  color: ${colors.white};
   display: flex;
   align-items: center;
 
@@ -70,7 +67,7 @@ export const StyledSwitch = styled.div`
       content: '';
       width: 0;
       height: 0;
-      border-top: 4px solid rgba(245, 246, 247, 0.4);
+      border-top: 4px solid ${colors.lightGrey};
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
       position: relative;
@@ -103,7 +100,10 @@ export const StyledHeaderCell = styled.th`
   width: 33%;
 ` as any;
 
-export const StyledOrders = Table.extend`
+export const StyledOrders = styled.div``;
+
+export const Levels = Table.extend`
+  margin-bottom: 0;
   td:first-child {
     padding-left: 1rem !important;
   }
@@ -112,31 +112,13 @@ export const StyledOrders = Table.extend`
   }
 `;
 
-export const StyledSellOrders = styled.tbody``;
-
-export const StyledBuyOrders = styled.tbody``;
-
-export const MidRow = styled.td`
-  min-height: 24px;
-  color: ${colors.white};
-  padding: 1rem 0 !important;
-  position: relative;
-`;
-
-export const MidOverlay = styled.div`
-  background: ${colors.darkGraphite};
-  position: absolute;
-  top: 0;
-  left: -1rem;
-  right: -1rem;
-  bottom: 0;
-  z-index: 1;
-`;
-
 export const MidFigures = styled.div`
   display: flex;
-  position: relative;
-  z-index: 2;
+  position: sticky;
+  top: 0;
+  bottom: 0;
+  padding: 1rem;
+  z-index: 1;
 
   small {
     text-align: right;
@@ -173,6 +155,21 @@ export const Spread = MidPrice.extend`
   margin-left: 30px;
 `;
 
+export const MidOverlay = styled.div`
+  background: ${colors.darkGraphite};
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+`;
+
+export const MidOverlayBackground = MidOverlay.extend`
+  background: ${colors.lightGraphite};
+  z-index: -2;
+`;
+
 export const StyledOrderRow = styled.tr`
   border-bottom: solid 1px rgba(0, 0, 0, 0.08);
 
@@ -188,8 +185,9 @@ export const StyledOrderRow = styled.tr`
 `;
 
 export const StyledPrice = styled.td`
+  color: ${(p: any) => colorBySide(p.side)}!important;
   text-align: left;
-`;
+` as any;
 
 export const StyledVolume = styled.td`
   color: ${(p: any) => colorBySide(p.side)};
@@ -216,14 +214,6 @@ export const StyledVolumeOverlay = styled.div.attrs({
 export const StyledValue = styled.td`
   text-align: right !important;
 `;
-
-export const StyledCloseOrders = styled.div.attrs({
-  style: (props: any) => ({
-    [marginBySide(props.side)]: '5px'
-  })
-})`
-  cursor: pointer;
-` as any;
 
 export const MyOrdersPopover = styled.div`
   position: absolute;
