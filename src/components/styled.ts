@@ -1,4 +1,4 @@
-import {lighten, rem} from 'polished';
+import {lighten, rem, rgb} from 'polished';
 import * as styledComponents from 'styled-components';
 import {ThemedStyledComponentsModule} from 'styled-components';
 import {Side} from '../models/index';
@@ -24,7 +24,9 @@ export const colors = {
   lightGraphite: 'rgb(51, 51, 51)',
   lightGrey: 'rgba(245, 246, 247, 0.4)',
   graphiteBorder: 'rgba(0, 0, 0, 0.1)',
-  white: 'rgb(245, 246, 247)'
+  white: 'rgb(245, 246, 247)',
+  green: rgb(70, 235, 106),
+  red: rgb(255, 97, 97)
 };
 
 export const fonts = {
