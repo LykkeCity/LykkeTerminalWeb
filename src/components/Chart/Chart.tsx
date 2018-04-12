@@ -1,14 +1,14 @@
 import * as React from 'react';
-import styled from '../styled';
-
-const StyledChart = styled.div`
-  height: 100%;
-`;
+import {ChartContainer, ChartWrapper, TransparentDiv} from './styles';
 
 class Chart extends React.Component {
   render() {
-    return <StyledChart id="tv_chart_container" />;
+    return (
+      <ChartWrapper>
+        <ChartContainer id="tv_chart_container" />
+        <TransparentDiv id="transparentDiv" />
+      </ChartWrapper>
+    );
   }
 }
-
 export default Chart;

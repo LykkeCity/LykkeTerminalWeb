@@ -100,12 +100,25 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   componentDidMount() {
     this.props.rootStore.start();
+    this.removeTransparentDivAfterResize();
+  }
+
+  removeTransparentDivAfterResize() {
+    const mosaicSplit = document.getElementsByClassName(
+      'mosaic-split -column'
+    )[0];
+    if (mosaicSplit) {
+      mosaicSplit.addEventListener('mouseup', () => {
+        document.getElementById('transparentDiv')!.style.display = 'none';
+      });
+    }
   }
 
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
   handleChangeLayout = (args: any) => {
     layoutStorage.set(JSON.stringify(args));
+    document.getElementById('transparentDiv')!.style.display = 'block';
   };
 
   render() {
