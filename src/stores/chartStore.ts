@@ -1,6 +1,8 @@
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
+import {timeZones} from '../constants/chartTimezones';
 import {InstrumentModel} from '../models/index';
+import {dateFns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 // tslint:disable:object-literal-sort-keys
@@ -41,6 +43,9 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
+
+    const timezone = dateFns.getTimeZone(timeZones);
+
     // tslint:disable-next-line:no-unused-expression
     this.widget = new (window as any).TradingView.widget({
       autosize: true,
@@ -69,9 +74,10 @@ class ChartStore extends BaseStore {
         'remove_library_container_border',
         'header_undo_redo',
         'header_interval_dialog_button',
-        'save_chart_properties_to_local_storage',
         'show_interval_dialog_on_keypress',
-        'timeframes_toolbar'
+        'timeframes_toolbar',
+        'use_localstorage_for_settings',
+        'save_chart_properties_to_local_storage'
       ],
       overrides: {
         'paneProperties.background': '#333333',
@@ -91,7 +97,9 @@ class ChartStore extends BaseStore {
           'rgba(140, 148, 160, 0.4)',
         'mainSeriesProperties.candleStyle.wickDownColor':
           'rgba(140, 148, 160, 0.4)',
-        'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false
+        'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
+
+        timezone
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });

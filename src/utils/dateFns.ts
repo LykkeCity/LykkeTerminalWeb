@@ -67,3 +67,14 @@ export const splitter = (from: number, to: number, resolution: string) => {
 
   return timePeriods;
 };
+
+export const getTimeZone = (zones: any[]) => {
+  const gmt = new Date().toString().match(/([-\+][0-9]+)\s/)![1];
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  return (
+    zones.find((z: any) => z.zone === zone) ||
+    zones.find((z: any) => z.gmt === gmt) ||
+    'Etc/UTC'
+  );
+};
