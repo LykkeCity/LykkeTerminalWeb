@@ -28,8 +28,8 @@ export const colors = {
   lightGrey: 'rgba(245, 246, 247, 0.4)',
   graphiteBorder: 'rgba(0, 0, 0, 0.1)',
   white: 'rgb(245, 246, 247)',
-  green: rgb(70, 235, 106),
-  red: rgb(255, 97, 97)
+  buy: rgb(70, 235, 106),
+  sell: rgb(255, 97, 97)
 };
 
 export const fonts = {
