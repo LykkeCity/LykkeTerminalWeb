@@ -25,6 +25,7 @@ const Shell = styled.div`
 `;
 
 const layoutStorage = StorageUtils(keys.layout);
+const MIN_PANE_SIZE_PERCENTAGE = 25;
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
     <Tile title="Account">
@@ -100,12 +101,35 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   componentDidMount() {
     this.props.rootStore.start();
+    this.handlerMouseUpTransparentDiv();
+  }
+
+  handlerMouseUpTransparentDiv() {
+    const mosaicSplit = document.getElementsByClassName(
+      'mosaic-split -column'
+    )[0];
+    if (mosaicSplit) {
+      mosaicSplit.addEventListener('mouseup', () => {
+        this.removeTransparentDivAfterResize();
+      });
+    }
+  }
+
+  removeTransparentDivAfterResize() {
+    document.getElementById('transparentDiv')!.style.display = 'none';
   }
 
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
-  handleChangeLayout = (args: any) => {
-    layoutStorage.set(JSON.stringify(args));
+  handleChange = (args: any) => {
+    if (
+      args.second.first.splitPercentage <= MIN_PANE_SIZE_PERCENTAGE ||
+      args.second.first.splitPercentage >= 100 - MIN_PANE_SIZE_PERCENTAGE
+    ) {
+      this.removeTransparentDivAfterResize();
+    } else {
+      document.getElementById('transparentDiv')!.style.display = 'block';
+    }
   };
 
   render() {
@@ -121,8 +145,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
         <Header history={this.props.history} />
         <Mosaic
           renderTile={this.handleRenderTile}
-          onChange={this.handleChangeLayout}
-          resize={{minimumPaneSizePercentage: 20}}
+          onChange={this.handleChange}
+          resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
           initialValue={this.initialValue}
         />
       </Shell>
