@@ -190,7 +190,7 @@ class Chart extends React.Component<ChartProps> {
     this.midXBids = this.width / 2 - Math.round(chart.strokeWidth / 2);
     this.midY = this.height;
     this.asks = this.props.asks.reverse();
-    this.bids = this.props.bids;
+    this.bids = this.props.bids.reverse();
     this.mid = parseFloat(this.props.mid);
     this.coef = this.calculateCoef();
   }
