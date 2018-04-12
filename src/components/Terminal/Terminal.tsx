@@ -11,6 +11,7 @@ import {MyWallets} from '../MyWallets';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
+import OrderBookChart from '../OrderBookChart';
 import {Orders} from '../OrderList';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
@@ -39,9 +40,10 @@ const {
 const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   [ChartWidget]: (
-    <Tile title="Chart">
+    <TabbedTile tabs={['Price chart', 'Orderbook chart']} authorize={false}>
       <Chart />
-    </Tile>
+      <OrderBookChart />
+    </TabbedTile>
   ),
   [TradeListWidget]: (
     <Tile title="Trade log">
