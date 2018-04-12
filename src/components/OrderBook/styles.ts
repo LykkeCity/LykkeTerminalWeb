@@ -4,7 +4,7 @@ import styled, {colors, dims, fonts, padding} from '../styled';
 import {Table} from '../Table';
 
 const colorBySide = (side: Side) =>
-  side === Side.Buy ? colors.green : colors.red;
+  side === Side.Buy ? colors.buy : colors.sell;
 
 export const StyledWrapper = styled.div`
   height: 100%;
