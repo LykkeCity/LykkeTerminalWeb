@@ -10,6 +10,19 @@ import {
   StyledVolumeOverlay
 } from './styles';
 
+const diff = (num1: string, num2: string) => {
+  if (num1 === num2) {
+    return {sim: '', diff: num1};
+  }
+  let i = 0;
+  let res = '';
+  while (num1[i] === num2[i] && i < num1.length) {
+    res += num1[i];
+    i++;
+  }
+  return {sim: res, diff: num1.substr(i)};
+};
+
 interface OrderBookItemProps extends Order {
   priceAccuracy: number;
   volumeAccuracy: number;
@@ -24,6 +37,7 @@ interface OrderBookItemProps extends Order {
   connectedLimitOrders: string[];
   showMyOrders: any;
   scrollComponent?: any;
+  prevPrice: number;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -42,10 +56,19 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   onDepthClick,
   onOrderClick,
   showMyOrders,
-  scrollComponent
+  scrollComponent,
+  prevPrice
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
   const ownOrders = connectedLimitOrders.length > 0;
+  const diffInPrice = diff(
+    (+currentPrice).toLocaleString(undefined, {
+      maximumFractionDigits: priceAccuracy
+    }),
+    prevPrice.toLocaleString(undefined, {
+      maximumFractionDigits: priceAccuracy
+    })
+  );
   return (
     <StyledOrderRow
       // tslint:disable-next-line:jsx-no-lambda
@@ -60,10 +83,9 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
         })
       }
     >
-      <StyledPrice onClick={onPriceClick(+currentPrice)}>
-        {(+currentPrice).toLocaleString(undefined, {
-          maximumFractionDigits: priceAccuracy
-        })}
+      <StyledPrice side={side} onClick={onPriceClick(+currentPrice)}>
+        <span style={{opacity: 0.4}}>{diffInPrice.sim}</span>
+        <span>{diffInPrice.diff}</span>
       </StyledPrice>
       <StyledVolume side={side}>
         <div onClick={onDepthClick(+currentPrice, depth)}>

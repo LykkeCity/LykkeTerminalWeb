@@ -1,10 +1,10 @@
 import {observer} from 'mobx-react/custom';
 import * as React from 'react';
 import {AssetModel} from '../../models';
-import CustomScrollbar from '../CustomScrollbar/CustomScrollbar';
 import {WalletBalanceList} from '../WalletBalanceList/';
 import NameList from './NameList';
 import {
+  BottomInfo,
   ManageWalletsLink,
   MyWalletsContainer,
   WalletBalances,
@@ -39,26 +39,26 @@ class MyWallets extends React.Component<MyWalletsProps, MyWalletsState> {
     return (
       <MyWalletsContainer>
         <WalletOverview>
-          <CustomScrollbar styles={{width: 272, height: 33 * 3}}>
-            <NameList
-              selectedIndex={this.state.index}
-              wallets={wallets}
-              onChangeWallet={this.handleChangeWallet}
-              baseAssetName={baseAsset.name}
-              accuracy={baseAsset.accuracy}
-            />
-          </CustomScrollbar>
-          <TotalBalance
-            total={total}
+          <NameList
+            selectedIndex={this.state.index}
+            wallets={wallets}
+            onChangeWallet={this.handleChangeWallet}
+            baseAssetName={baseAsset.name}
             accuracy={baseAsset.accuracy}
-            name={baseAsset.name}
           />
-          <ManageWalletsLink
-            href={process.env.REACT_APP_WEBWALLET_URL}
-            target="_blank"
-          >
-            Manage Wallets
-          </ManageWalletsLink>
+          <BottomInfo>
+            <TotalBalance
+              total={total}
+              accuracy={baseAsset.accuracy}
+              name={baseAsset.name}
+            />
+            <ManageWalletsLink
+              href={process.env.REACT_APP_WEBWALLET_URL}
+              target="_blank"
+            >
+              Manage Wallets
+            </ManageWalletsLink>
+          </BottomInfo>
         </WalletOverview>
         <WalletBalances>
           {!!this.props.wallets.length && (
