@@ -30,6 +30,9 @@ export const TableHeaderItemEl = styled.div`
   &.right-align {
     justify-content: flex-end;
   }
+  &.center-align {
+    justify-content: center;
+  }
   &:not(.disabled) {
     cursor: pointer;
 

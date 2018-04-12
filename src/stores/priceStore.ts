@@ -1,5 +1,5 @@
 import {ISubscription} from 'autobahn';
-import {addDays} from 'date-fns';
+import {addDays, addMonths} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
 import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
@@ -7,7 +7,6 @@ import {PriceApi} from '../api';
 import * as topics from '../api/topics';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
-import MarketService from '../services/marketService';
 
 const toUtc = (date: Date) => {
   const y = date.getUTCFullYear();
@@ -40,6 +39,21 @@ class PriceStore extends BaseStore {
     super(store);
   }
 
+  fetchLastPrice = async () => {
+    const resp = await this.api.fetchCandles(
+      this.selectedInstrument!.id,
+      toUtc(addMonths(new Date(), -12)),
+      toUtc(addMonths(new Date(), 1)),
+      'month'
+    );
+    if (resp.History && resp.History.length > 0) {
+      runInAction(() => {
+        const {close} = map.mapToBarFromRest(last(resp.History));
+        this.lastTradePrice = close;
+      });
+    }
+  };
+
   fetchDailyCandle = async () => {
     const resp = await this.api.fetchCandles(
       this.selectedInstrument!.id,
@@ -55,12 +69,11 @@ class PriceStore extends BaseStore {
         this.dailyOpen = open;
         this.dailyHigh = high;
         this.dailyLow = low;
-        this.lastTradePrice = close;
         this.dailyVolume = volume;
 
         this.selectedInstrument!.updateFromCandle(open, close, volume);
         this.selectedInstrument!.updateVolumeInBase(
-          MarketService.convert(
+          this.rootStore.marketStore.convert(
             volume,
             this.selectedInstrument!.baseAsset.id,
             this.rootStore.referenceStore.baseAssetId,

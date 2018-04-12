@@ -51,8 +51,9 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
       {key: 'symbol', value: 'Asset pair', width: OrderCellWidth.Symbol},
       {
         sortDisabled: true,
+        className: 'center-align',
         key: '',
-        value: 'Cancel order',
+        value: 'Close',
         width: OrderCellWidth.CancelOrder
       },
       {

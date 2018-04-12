@@ -8,7 +8,6 @@ import {
   SearchString
 } from '../models';
 import * as mappers from '../models/mappers';
-import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -239,7 +238,7 @@ class ReferenceStore extends BaseStore {
   updateInstruments = () => {
     this.getInstruments().forEach(instrument =>
       instrument.updateVolumeInBase(
-        MarketService.convert(
+        this.rootStore.marketStore.convert(
           instrument.volume,
           instrument.baseAsset.id,
           this.baseAssetId,
@@ -273,7 +272,7 @@ class ReferenceStore extends BaseStore {
     if (instrument && instrument.id) {
       instrument.updateFromCandle(openPrice, closePrice, volume);
       instrument.updateVolumeInBase(
-        MarketService.convert(
+        this.rootStore.marketStore.convert(
           volume,
           instrument.baseAsset.id,
           this.baseAssetId,
