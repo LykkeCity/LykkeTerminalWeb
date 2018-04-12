@@ -12,6 +12,10 @@ export const LINESTYLE_DASHED = 2;
 export const LINESTYLE_SOLID = 0;
 export const LINESTYLE_LARGE_DASHED = 3;
 
+const timezone = dateFns.getTimeZone(timeZones);
+const defaultSettings = CHART_DEFAULT_SETTINGS;
+defaultSettings.charts[0].timezone = timezone;
+
 class ChartStore extends BaseStore {
   static readonly config = {
     supports_search: false,
@@ -43,8 +47,6 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
-
-    const timezone = dateFns.getTimeZone(timeZones);
 
     // tslint:disable-next-line:no-unused-expression
     this.widget = new (window as any).TradingView.widget({
@@ -110,13 +112,15 @@ class ChartStore extends BaseStore {
           .then((res: any) => {
             if (res && res.Data) {
               const settings = JSON.parse(res.Data);
+              settings.charts[0].timezone = timezone;
+
               this.widget.load(settings);
             }
             chartContainerExists.style.display = 'block';
           })
           .catch(err => {
             if (err.status === 404) {
-              this.widget.load(CHART_DEFAULT_SETTINGS);
+              this.widget.load(defaultSettings);
             }
             chartContainerExists.style.display = 'block';
           });
@@ -126,7 +130,7 @@ class ChartStore extends BaseStore {
       });
     } else {
       this.widget.onChartReady(() => {
-        this.widget.load(CHART_DEFAULT_SETTINGS);
+        this.widget.load(defaultSettings);
         chartContainerExists.style.display = 'block';
       });
     }
@@ -140,7 +144,7 @@ class ChartStore extends BaseStore {
 
   resetToDefault = () => {
     if (this.widget) {
-      this.widget.load(CHART_DEFAULT_SETTINGS);
+      this.widget.load(defaultSettings);
     }
   };
 

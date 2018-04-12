@@ -72,9 +72,12 @@ export const getTimeZone = (zones: any[]) => {
   const gmt = new Date().toString().match(/([-\+][0-9]+)\s/)![1];
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  return (
+  let timezone =
     zones.find((z: any) => z.zone === zone) ||
     zones.find((z: any) => z.gmt === gmt) ||
-    'Etc/UTC'
-  );
+    'Etc/UTC';
+
+  timezone = typeof timezone === 'string' ? timezone : timezone.zone;
+
+  return timezone;
 };
