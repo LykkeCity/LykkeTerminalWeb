@@ -5,6 +5,7 @@ export {default as TradeStore} from './tradeStore';
 export {default as BalanceListStore} from './balanceListStore';
 export {default as OrderListStore} from './orderListStore';
 export {default as OrderBookStore} from './orderBookStore';
+export {default as OrderBookChartStore} from './orderBookChartStore';
 export {default as UiStore} from './uiStore';
 export {default as ChartStore} from './chartStore';
 export {default as ReferenceStore} from './referenceStore';
