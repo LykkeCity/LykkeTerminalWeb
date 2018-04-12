@@ -3,7 +3,8 @@ import {Side} from '../../models';
 import styled, {colors, dims, fonts, padding} from '../styled';
 import {Table} from '../Table';
 
-const colorBySide = (side: Side) => (side === Side.Buy ? '#d070ff' : '#ffae2c');
+const colorBySide = (side: Side) =>
+  side === Side.Buy ? colors.green : colors.red;
 
 export const StyledWrapper = styled.div`
   height: 100%;
