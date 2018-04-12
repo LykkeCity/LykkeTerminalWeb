@@ -10,6 +10,7 @@ import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
+import OrderBookChart from '../OrderBookChart';
 import {Orders} from '../OrderList';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
@@ -32,9 +33,10 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   c: (
-    <Tile title="Chart">
+    <TabbedTile tabs={['Price chart', 'Orderbook chart']} authorize={false}>
       <Chart />
-    </Tile>
+      <OrderBookChart />
+    </TabbedTile>
   ),
   e: (
     <Tile title="Trade log">
