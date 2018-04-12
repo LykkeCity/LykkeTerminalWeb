@@ -25,5 +25,5 @@ export const TransparentDiv = styled.div`
   height: 100%;
   position: absolute;
   top: 0;
-  display: block;
+  display: none;
 `;

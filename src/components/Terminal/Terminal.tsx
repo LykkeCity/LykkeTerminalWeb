@@ -20,6 +20,7 @@ import {TerminalProps} from './index';
 
 const MAX_LEFT_PADDING = 20;
 const MAX_RIGHT_PADDING = 75;
+const MIN_PANE_SIZE_PERCENTAGE = 25;
 
 const Shell = styled.div`
   background: ${colors.darkGraphite};
@@ -107,18 +108,22 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
 
   componentDidMount() {
     this.props.rootStore.start();
-    this.removeTransparentDivAfterResize();
+    this.handlerMouseUpTransparentDiv();
   }
 
-  removeTransparentDivAfterResize() {
+  handlerMouseUpTransparentDiv() {
     const mosaicSplit = document.getElementsByClassName(
       'mosaic-split -column'
     )[0];
     if (mosaicSplit) {
       mosaicSplit.addEventListener('mouseup', () => {
-        document.getElementById('transparentDiv')!.style.display = 'none';
+        this.removeTransparentDivAfterResize();
       });
     }
+  }
+
+  removeTransparentDivAfterResize() {
+    document.getElementById('transparentDiv')!.style.display = 'none';
   }
 
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
@@ -129,12 +134,19 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
     } else if (args.second.splitPercentage < MAX_RIGHT_PADDING) {
       args.second.splitPercentage = MAX_RIGHT_PADDING;
     }
+    if (
+      args.second.first.splitPercentage <= MIN_PANE_SIZE_PERCENTAGE ||
+      args.second.first.splitPercentage >= 100 - MIN_PANE_SIZE_PERCENTAGE
+    ) {
+      this.removeTransparentDivAfterResize();
+    } else {
+      document.getElementById('transparentDiv')!.style.display = 'block';
+    }
 
     this.setState({
       initialValue: args
     });
     layoutStorage.set(JSON.stringify(args));
-    document.getElementById('transparentDiv')!.style.display = 'block';
   };
 
   render() {
@@ -151,7 +163,7 @@ class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
         <Mosaic
           renderTile={this.handleRenderTile}
           onChange={this.handleChange}
-          resize={{minimumPaneSizePercentage: 25}}
+          resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
           value={this.state.initialValue}
         />
       </Shell>
