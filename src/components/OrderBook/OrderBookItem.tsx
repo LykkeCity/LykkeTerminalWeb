@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Order} from '../../models/index';
+import {Order, Side} from '../../models/index';
 import {normalizeVolume} from '../../utils';
 import {
   MyOrdersIndicator,
@@ -37,6 +37,7 @@ interface OrderBookItemProps extends Order {
   connectedLimitOrders: string[];
   showMyOrders: any;
   scrollComponent?: any;
+  askLevel?: any;
   prevPrice: number;
   isAuth?: boolean;
 }
@@ -59,7 +60,8 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   showMyOrders,
   scrollComponent,
   prevPrice,
-  isAuth = false
+  isAuth = false,
+  askLevel
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
   const diffInPrice = diff(
@@ -71,22 +73,21 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
     })
   );
   const ownOrders = connectedLimitOrders.length > 0;
+
+  const handleHover = (e: React.MouseEvent<any>) => {
+    const top = e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62;
+    showMyOrders({
+      position: {
+        top: side === Side.Sell ? top : top + askLevel.offsetHeight + 63
+      },
+      orders: connectedLimitOrders,
+      volume: orderVolume,
+      onCancel: onOrderClick
+    });
+  };
+
   return (
-    <StyledOrderRow
-      // tslint:disable-next-line:jsx-no-lambda
-      onMouseEnter={(e: any) =>
-        showMyOrders({
-          position: {
-            // top: e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62
-            top: e.clientY - 110
-          },
-          orders: connectedLimitOrders,
-          volume: orderVolume,
-          onCancel: onOrderClick
-        })
-      }
-      isAuth={isAuth}
-    >
+    <StyledOrderRow onMouseEnter={handleHover} isAuth={isAuth}>
       <StyledPrice side={side} onClick={onPriceClick(+currentPrice)}>
         <span style={{opacity: 0.4}}>{diffInPrice.sim}</span>
         <span>{diffInPrice.diff}</span>

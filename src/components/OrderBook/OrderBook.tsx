@@ -75,7 +75,7 @@ class OrderBook extends React.Component<OrderBookProps> {
 
   componentDidUpdate() {
     let offset = 0;
-    const scrollHeight = this.askLevel.scrollHeight; // this.scrollComponent.getScrollHeight();
+    const scrollHeight = this.askLevel.scrollHeight;
     const clientHeight = this.scrollComponent.getClientHeight();
     if (this.shouldScroll && clientHeight / 2 < scrollHeight) {
       this.scrollComponent.scrollToTop();
@@ -127,7 +127,7 @@ class OrderBook extends React.Component<OrderBookProps> {
     const stickToTop =
       this.scrollComponent.getScrollTop() > this.askLevel.scrollHeight;
     const stickToBottom =
-      this.askLevel.scrollHeight - this.scrollComponent.getScrollTop() + 30 >
+      this.askLevel.scrollHeight - this.scrollComponent.getScrollTop() + 62 >
       this.scrollComponent.getClientHeight();
     this.shouldScroll = !stickToTop && !stickToBottom;
   };
@@ -275,6 +275,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                     onOrderClick={this.handleCancelOrder}
                     showMyOrders={showMyOrders}
                     scrollComponent={this.scrollComponent}
+                    askLevel={this.askLevel}
                     prevPrice={idx === 0 ? order.price : bids[idx - 1].price}
                     isAuth={isAuth}
                     {...order}
