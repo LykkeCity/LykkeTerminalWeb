@@ -7,6 +7,8 @@ import {PriceApi} from '../api';
 import * as topics from '../api/topics';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
+import levels from '../constants/notificationLevels';
+import messages from '../constants/notificationMessages';
 
 const toUtc = (date: Date) => {
   const y = date.getUTCFullYear();
@@ -40,18 +42,29 @@ class PriceStore extends BaseStore {
   }
 
   fetchLastPrice = async () => {
-    const resp = await this.api.fetchCandles(
-      this.selectedInstrument!.id,
-      toUtc(addMonths(new Date(), -12)),
-      toUtc(addMonths(new Date(), 1)),
-      'month'
-    );
-    if (resp.History && resp.History.length > 0) {
-      runInAction(() => {
-        const {close} = map.mapToBarFromRest(last(resp.History));
-        this.lastTradePrice = close;
+    return this.api
+      .fetchCandles(
+        this.selectedInstrument!.id,
+        toUtc(addMonths(new Date(), -12)),
+        toUtc(addMonths(new Date(), 1)),
+        'month'
+      )
+      .then((resp: any) => {
+        if (resp.History && resp.History.length > 0) {
+          runInAction(() => {
+            const {close} = map.mapToBarFromRest(last(resp.History));
+            this.lastTradePrice = close;
+          });
+        }
+      })
+      .catch((e: any) => {
+        // tslint:disable:no-console
+        console.error(e);
+        this.rootStore.notificationStore.addNotification(
+          levels.error,
+          messages.pairNotConfigured(this.selectedInstrument!.id)
+        );
       });
-    }
   };
 
   fetchDailyCandle = async () => {

@@ -1,22 +1,16 @@
 import {ISubscription} from 'autobahn';
 import {action, computed, observable, runInAction} from 'mobx';
-import {
-  compose,
-  curry,
-  head,
-  last,
-  map,
-  reverse,
-  sortBy,
-  toLower
-} from 'rambda';
+import {compose, curry, head, last, map, reverse, sortBy} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
+import levels from '../constants/notificationLevels';
+import messages from '../constants/notificationMessages';
 import {Order, Side} from '../models/index';
 import * as mappers from '../models/mappers';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
+import UiStore from './uiStore';
 
 // help tsc to infer correct type
 const headArr: <T = Order>(l: T[]) => T = head;
@@ -142,15 +136,32 @@ class OrderBookStore extends BaseStore {
     const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
     if (selectedInstrument) {
       this.hasPendingItems = true;
-      const orders = await this.api.fetchAll(toLower(selectedInstrument.id));
-      this.hasPendingItems = false;
-      runInAction(() => {
-        orders.forEach((levels: any) => this.onUpdate([levels]));
-        if (this.isInitFetch && initPriceUpdate) {
-          initPriceUpdate(this.bestBid(), selectedInstrument);
-          this.isInitFetch = false;
-        }
-      });
+      return this.api
+        .fetchAll(selectedInstrument.id)
+        .then((orders: any[]) => {
+          this.hasPendingItems = false;
+          runInAction(() => {
+            orders.forEach((orderLevels: any) => this.onUpdate([orderLevels]));
+            if (this.isInitFetch && initPriceUpdate) {
+              initPriceUpdate(this.bestBid(), selectedInstrument);
+              this.isInitFetch = false;
+            }
+          });
+        })
+        .catch((e: any) => {
+          // tslint:disable:no-console
+          console.error(e);
+          this.rootStore.notificationStore.addNotification(
+            levels.error,
+            messages.pairNotFound(selectedInstrument!.id)
+          );
+          this.rootStore.uiStore.selectInstrument(
+            this.rootStore.referenceStore.getInstrumentById(
+              UiStore.DEFAULT_INSTRUMENT
+            )
+          );
+          return Promise.reject(e);
+        });
     }
   };
 
