@@ -23,7 +23,8 @@ const ConnectedOrderBook = connect(
     },
     uiStore: {selectedInstrument},
     orderStore: {cancelOrder, updatePrice, updatePriceAndDepth},
-    priceStore: {lastTradePrice}
+    priceStore: {lastTradePrice},
+    authStore: {isAuth}
   }) => {
     const volumeAccuracy = pathOr(
       0,
@@ -48,7 +49,8 @@ const ConnectedOrderBook = connect(
       onPrevSpan: prevSpan,
       showMyOrders,
       lastTradePrice,
-      loading: hasPendingItems
+      loading: hasPendingItems,
+      isAuth
     };
   },
   compose(withLoader((p: OrderBookProps) => p.loading!), observer)(OrderBook)

@@ -6,21 +6,9 @@ import {
   InstrumentModel,
   Interval,
   OrderModel,
-  OrderType,
-  Side
+  OrderType
 } from '../index';
 import WatchlistModel from '../watchlistModel';
-
-export const mapToOrder = (dto: any) => ({
-  id: dto.Id,
-  price: dto.Price,
-  side: dto.IsBuy ? Side.Sell : Side.Buy,
-  timestamp: dto.DateTime,
-  volume: dto.Volume,
-  depth: 0,
-  orderVolume: 0,
-  connectedLimitOrders: []
-});
 
 export const mapToBarFromRest = ({
   DateTime,

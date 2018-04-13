@@ -30,6 +30,7 @@ export const colors = {
 };
 
 export const fonts = {
+  small: 12,
   normal: 14,
   large: 16,
   extraLarge: 24

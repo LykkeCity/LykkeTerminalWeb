@@ -25,9 +25,6 @@ import {
   StyledBar,
   StyledGrouping,
   StyledHeader,
-  StyledHeaderCell,
-  StyledHeaderRow,
-  StyledOrders,
   StyledWrapper
 } from './styles';
 
@@ -66,6 +63,7 @@ export interface OrderBookProps extends LoaderProps {
   onPrevSpan: () => void;
   showMyOrders: any;
   lastTradePrice: number;
+  isAuth: boolean;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -73,31 +71,17 @@ class OrderBook extends React.Component<OrderBookProps> {
 
   private scrollComponent: any;
   private askLevel: any;
+  private shouldScroll = true;
 
-  componentWillReceiveProps(nextProps: OrderBookProps) {
-    // if (this.props.loading !== nextProps.loading) {
-    this.scrollComponent.scrollToTop();
-    let middle = 0;
-    // setTimeout(() => {
-    if (
-      this.askLevel.clientHeight <
-      this.scrollComponent.getClientHeight() / 2
-    ) {
-      return;
-    } else if (
-      this.askLevel.clientHeight < this.scrollComponent.getClientHeight()
-    ) {
-      middle =
-        (this.askLevel.clientHeight - this.scrollComponent.getClientHeight()) /
-        2;
-    } else {
-      middle =
-        this.askLevel.clientHeight / 2 +
-        this.scrollComponent.getClientHeight() / 2;
+  componentDidUpdate() {
+    let offset = 0;
+    const scrollHeight = this.askLevel.scrollHeight; // this.scrollComponent.getScrollHeight();
+    const clientHeight = this.scrollComponent.getClientHeight();
+    if (this.shouldScroll && clientHeight / 2 < scrollHeight) {
+      this.scrollComponent.scrollToTop();
+      offset = scrollHeight - clientHeight / 2 + 30;
+      this.scrollComponent.scrollTop(offset);
     }
-    this.scrollComponent.scrollTop(middle);
-    // }, 300);
-    // }
   }
 
   handleChangeDisplayType = (displayType: OrderBookDisplayType) => {
@@ -109,11 +93,15 @@ class OrderBook extends React.Component<OrderBookProps> {
   };
 
   handleUpdatePriceAndDepth = (price: number, depth: number) => () => {
-    this.props.updatePriceAndDepth(price, depth);
+    if (this.props.isAuth) {
+      this.props.updatePriceAndDepth(price, depth);
+    }
   };
 
   handleUpdatePrice = (price: number) => () => {
-    this.props.updatePrice(price);
+    if (this.props.isAuth) {
+      this.props.updatePrice(price);
+    }
   };
 
   handleCancelOrder = (connectedLimitOrders: string[]) => () => {
@@ -135,8 +123,13 @@ class OrderBook extends React.Component<OrderBookProps> {
     this.props.showMyOrders({orders: []});
   };
 
-  handleScrollFrame = (values: any) => {
-    // console.log(values);
+  handleStopScroll = () => {
+    const stickToTop =
+      this.scrollComponent.getScrollTop() > this.askLevel.scrollHeight;
+    const stickToBottom =
+      this.askLevel.scrollHeight - this.scrollComponent.getScrollTop() + 30 >
+      this.scrollComponent.getClientHeight();
+    this.shouldScroll = !stickToTop && !stickToBottom;
   };
 
   render() {
@@ -152,7 +145,8 @@ class OrderBook extends React.Component<OrderBookProps> {
       onPrevSpan,
       showMyOrders,
       lastTradePrice,
-      loading
+      loading,
+      isAuth
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
@@ -188,11 +182,11 @@ class OrderBook extends React.Component<OrderBookProps> {
         <HBar />
         <StyledHeader>
           <tbody>
-            <StyledHeaderRow>
-              <StyledHeaderCell align="left">Price</StyledHeaderCell>
-              <StyledHeaderCell align="left">Volume</StyledHeaderCell>
-              <StyledHeaderCell align="right">Value</StyledHeaderCell>
-            </StyledHeaderRow>
+            <tr>
+              <th>Price</th>
+              <th>Volume</th>
+              <th>Value</th>
+            </tr>
           </tbody>
         </StyledHeader>
         <HBar />
@@ -204,9 +198,12 @@ class OrderBook extends React.Component<OrderBookProps> {
             height: 'calc(100% - 5.2rem)'
           }}
           ref={el => (this.scrollComponent = el)}
-          onScrollFrame={this.handleScrollFrame}
+          // tslint:disable-next-line:jsx-no-lambda
+          onScrollStart={() => (this.shouldScroll = false)}
+          // tslint:disable-next-line:jsx-no-lambda
+          onScrollStop={this.handleStopScroll}
         >
-          <StyledOrders>
+          <div>
             {/* tslint:disable-next-line:jsx-no-lambda */}
             <Levels innerRef={(el: any) => (this.askLevel = el)}>
               <tbody>
@@ -223,7 +220,12 @@ class OrderBook extends React.Component<OrderBookProps> {
                     onOrderClick={this.handleCancelOrder}
                     showMyOrders={showMyOrders}
                     scrollComponent={this.scrollComponent}
-                    prevPrice={idx === 0 ? order.price : asks[idx - 1].price}
+                    prevPrice={
+                      idx === asks.length - 1
+                        ? order.price
+                        : asks[idx + 1].price
+                    }
+                    isAuth={isAuth}
                     {...order}
                   />
                 ))}
@@ -232,14 +234,14 @@ class OrderBook extends React.Component<OrderBookProps> {
             {loading || (
               <React.Fragment>
                 <MidFigures>
-                  <LastTradePrice>
+                  <LastTradePrice isAuth={isAuth}>
                     <span
                       onClick={this.handleUpdatePrice(Number(lastTradePrice))}
                     >
                       {formatNumber(lastTradePrice, priceAccuracy)}
                     </span>
                   </LastTradePrice>
-                  <MidPrice>
+                  <MidPrice isAuth={isAuth}>
                     <span onClick={this.handleUpdatePrice(Number(mid))}>
                       {formatNumber(mid, priceAccuracy)}
                       <br />
@@ -274,12 +276,13 @@ class OrderBook extends React.Component<OrderBookProps> {
                     showMyOrders={showMyOrders}
                     scrollComponent={this.scrollComponent}
                     prevPrice={idx === 0 ? order.price : bids[idx - 1].price}
+                    isAuth={isAuth}
                     {...order}
                   />
                 ))}
               </tbody>
             </Levels>
-          </StyledOrders>
+          </div>
         </Scrollbars>
         <ClickOutside
           // tslint:disable-next-line:jsx-no-lambda
