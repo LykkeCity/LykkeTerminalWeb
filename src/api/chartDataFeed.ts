@@ -103,7 +103,11 @@ class ChartDataFeed {
           resp.reduce((prev, current) => prev.concat(current.History), [])
         );
 
-        const bars = resp.map(mappers.mapToBarFromRest);
+        let bars = resp.map(mappers.mapToBarFromRest);
+
+        bars = bars.filter(x => {
+          return x.volume !== 0;
+        });
 
         if (bars.length > 0) {
           // tslint:disable-next-line:no-unused-expression
