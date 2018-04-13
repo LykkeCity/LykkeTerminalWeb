@@ -24,18 +24,20 @@ export const StyledGrouping = styled.div`
   display: flex;
   align-items: center;
   min-height: 24px;
-  padding-left: 2px;
 
   button {
-    background: none;
+    background: rgb(39, 39, 39);
     border: none;
-    color: rgb(216, 216, 216);
-    opacity: 0.4;
-    font-size: ${rem(fonts.normal)};
-    font-weight: bold;
+    border-radius: 4px;
+    color: ${colors.white};
+    font-size: ${rem(fonts.small)};
+    font-weight: normal;
+    opacity: 0.88;
     cursor: pointer;
     outline: none;
     padding: 0;
+    height: 24px;
+    width: 24px;
 
     &:first-child {
       margin-left: ${rem(17)};
@@ -47,7 +49,6 @@ export const StyledGrouping = styled.div`
   }
 
   div {
-    font-weight: 600;
     min-width: ${rem(55)};
     margin: 0 ${rem(12)};
     display: inline-block;
@@ -80,28 +81,21 @@ export const StyledSwitch = styled.div`
 
 export const StyledHeader = Table.extend`
   margin: ${rem(dims.padding[1])} 0 ${rem(dims.padding[0])};
-  width: calc(100% + 2rem);
   margin-left: -1rem;
-`;
-
-export const StyledHeaderRow = styled.tr`
+  width: calc(100% + 2rem);
   th {
     padding: 0;
+    text-align: left;
+    width: 33%;
   }
   th:first-child {
     padding-left: 1rem !important;
   }
   th:last-child {
     padding-right: 1rem !important;
+    text-align: right;
   }
 `;
-
-export const StyledHeaderCell = styled.th`
-  text-align: ${(p: any) => p.align} !important;
-  width: 33%;
-` as any;
-
-export const StyledOrders = styled.div``;
 
 export const Levels = Table.extend`
   margin-bottom: 0;
@@ -120,26 +114,28 @@ export const MidFigures = styled.div`
   bottom: 0;
   padding: 1rem;
   z-index: 1;
+  font-weight: bold;
 
   small {
-    text-align: right;
+    font-family: 'ProximaNova';
     font-size: ${rem(fonts.normal)};
+    font-weight: normal;
+    text-align: right;
     margin-left: auto;
   }
 `;
 
 export const LastTradePrice = styled.div`
-  font-family: 'Akrobat';
+  cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
+  font-family: 'Akrobat', sans-serif;
   font-size: ${rem(fonts.extraLarge)};
-  font-weight: bold;
-  &:hover {
-    cursor: pointer;
-  }
-`;
+` as any;
 
 export const MidPrice = styled.div`
+  cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
+  font-family: 'Akrobat', sans-serif;
+  font-size: ${rem(fonts.large)};
   text-align: right;
-  font-size: ${rem(fonts.normal)};
   margin-left: auto;
 
   & > span:hover {
@@ -148,11 +144,13 @@ export const MidPrice = styled.div`
 
   small {
     opacity: 0.4;
-    font-size: ${rem(12)};
+    font-size: ${fonts.small};
   }
-`;
+` as any;
 
 export const Spread = MidPrice.extend`
+  font-family: 'Akrobat', sans-serif;
+  font-size: ${rem(fonts.large)};
   margin-left: 30px;
 `;
 
@@ -181,9 +179,9 @@ export const StyledOrderRow = styled.tr`
 
   &:hover {
     background-color: ${colors.darkGraphite};
-    cursor: pointer;
+    cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
   }
-`;
+` as any;
 
 export const StyledPrice = styled.td`
   color: ${(p: any) => colorBySide(p.side)}!important;
@@ -199,17 +197,17 @@ export const StyledVolume = styled.td`
 ` as any;
 
 export const StyledVolumeOverlay = styled.div.attrs({
-  style: (props: any) => ({
-    background: colorBySide(props.side),
-    width: `${props.volume}%`,
-    left: '0%'
+  style: ({side, volume}: any) => ({
+    background: colorBySide(side),
+    width: volume + '%'
   })
 })`
-  position: absolute;
-  top: 0;
-  height: 100%;
-  opacity: 0.15;
   border-radius: 2px;
+  opacity: 0.16;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
 ` as any;
 
 export const StyledValue = styled.td`
