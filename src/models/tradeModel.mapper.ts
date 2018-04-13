@@ -4,6 +4,8 @@ import {precisionCeil, precisionFloor} from '../utils/math';
 import {mapHistoryTypeToOrderType} from './mappers';
 import SideDirection from './sideDirection';
 
+// TODO: move it to the mappers directory
+
 interface TradeValue {
   volume: number;
   oppositeVolume: number;

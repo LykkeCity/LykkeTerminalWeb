@@ -38,6 +38,7 @@ interface OrderBookItemProps extends Order {
   showMyOrders: any;
   scrollComponent?: any;
   prevPrice: number;
+  isAuth?: boolean;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -57,31 +58,34 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   onOrderClick,
   showMyOrders,
   scrollComponent,
-  prevPrice
+  prevPrice,
+  isAuth = false
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
-  const ownOrders = connectedLimitOrders.length > 0;
   const diffInPrice = diff(
-    (+currentPrice).toLocaleString(undefined, {
+    price.toLocaleString(undefined, {
       maximumFractionDigits: priceAccuracy
     }),
     prevPrice.toLocaleString(undefined, {
       maximumFractionDigits: priceAccuracy
     })
   );
+  const ownOrders = connectedLimitOrders.length > 0;
   return (
     <StyledOrderRow
       // tslint:disable-next-line:jsx-no-lambda
-      onMouseEnter={e =>
+      onMouseEnter={(e: any) =>
         showMyOrders({
           position: {
-            top: e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62
+            // top: e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62
+            top: e.clientY - 110
           },
           orders: connectedLimitOrders,
           volume: orderVolume,
           onCancel: onOrderClick
         })
       }
+      isAuth={isAuth}
     >
       <StyledPrice side={side} onClick={onPriceClick(+currentPrice)}>
         <span style={{opacity: 0.4}}>{diffInPrice.sim}</span>
