@@ -159,12 +159,14 @@ class Order extends React.Component<OrderProps, OrderState> {
   ) => {
     this.disableButton(true);
     const {quantityValue, priceValue} = this.state;
-    const currentPrice = parseFloat(priceValue).toFixed(
-      this.props.accuracy.priceAccuracy
-    );
+    const currentPrice = parseFloat(priceValue).toLocaleString(undefined, {
+      maximumFractionDigits: this.props.accuracy.priceAccuracy
+    });
 
     const currentQuantity = accuracy
-      ? parseFloat(quantityValue).toFixed(accuracy)
+      ? parseFloat(quantityValue).toLocaleString(undefined, {
+          maximumFractionDigits: accuracy
+        })
       : quantityValue;
 
     const isConfirm = confirmStorage.get() as string;
@@ -243,7 +245,12 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetId,
       quoteAssetId
     } = this.props;
-    const {isLimitActive, isSellActive, isMarketActive} = this.state;
+    const {
+      isLimitActive,
+      isSellActive,
+      isMarketActive,
+      priceValue
+    } = this.state;
     const balance = this.state.isSellActive
       ? baseAssetBalance
       : quoteAssetBalance;
@@ -263,7 +270,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteAssetId
+      quoteAssetId,
+      currentPrice: priceValue
     });
 
     this.setState(tempObj);
@@ -295,10 +303,16 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {
       baseAssetBalance,
       quoteAssetBalance,
-      accuracy: {quantityAccuracy, priceAccuracy},
+      accuracy: {
+        quantityAccuracy,
+        priceAccuracy,
+        quoteAssetAccuracy,
+        baseAssetAccuracy
+      },
       baseAssetName,
       quoteAssetName,
       fixedAmount,
+      fixedToLocaleString,
       bid,
       ask,
       resetPercentage
@@ -318,7 +332,9 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     const available = isSellActive ? baseAssetBalance : quoteAssetBalance;
 
-    const balanceAccuracy = isSellActive ? quantityAccuracy : priceAccuracy;
+    const balanceAccuracy = isSellActive
+      ? baseAssetAccuracy
+      : quoteAssetAccuracy;
 
     return (
       <div>
@@ -368,13 +384,20 @@ class Order extends React.Component<OrderProps, OrderState> {
             baseAssetName={baseAssetName}
             quoteAssetName={quoteAssetName}
             isSell={isSellActive}
-            amount={fixedAmount(currentPrice, quantityValue, priceAccuracy)}
+            amount={fixedAmount(
+              currentPrice,
+              quantityValue,
+              quoteAssetAccuracy
+            )}
             isDisable={this.isLimitDisable()}
             onReset={this.reset}
-            balance={available && available.toFixed(balanceAccuracy)}
-            buttonMessage={`${capitalize(
-              action
-            )} ${quantityValue} ${baseAssetName}`}
+            balance={
+              available && fixedToLocaleString(available, balanceAccuracy)
+            }
+            buttonMessage={`${capitalize(action)} ${fixedToLocaleString(
+              parseFloat(quantityValue),
+              quantityAccuracy
+            )} ${baseAssetName}`}
           />
         )}
 
@@ -392,12 +415,15 @@ class Order extends React.Component<OrderProps, OrderState> {
             onReset={this.reset}
             isDisable={this.isMarketDisable()}
             onSubmit={this.handleButtonClick}
-            balance={available && available.toFixed(balanceAccuracy)}
+            balance={
+              available && fixedToLocaleString(available, balanceAccuracy)
+            }
             isSell={isSellActive}
             // tslint:disable-next-line:jsx-no-lambda
             onResetPercentage={() => resetPercentage(percentage)}
             priceAccuracy={priceAccuracy}
             onInvert={this.handleInvert}
+            fixedToLocaleString={fixedToLocaleString}
           />
         )}
 

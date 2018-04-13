@@ -6,7 +6,6 @@ import MyOrders, {MyOrdersProps} from './MyOrders';
 import OrderBook, {OrderBookProps} from './OrderBook';
 import OrderBookItem from './OrderBookItem';
 
-// tslint:disable:object-literal-sort-keys
 const ConnectedOrderBook = connect(
   ({
     modalStore: {addModal},
@@ -22,9 +21,10 @@ const ConnectedOrderBook = connect(
       showMyOrders,
       hasPendingItems
     },
-    uiStore: {selectedInstrument, stateFns},
+    uiStore: {selectedInstrument},
     orderStore: {cancelOrder, updatePrice, updatePriceAndDepth},
-    priceStore: {lastTradePrice}
+    priceStore: {lastTradePrice},
+    authStore: {isAuth}
   }) => {
     const volumeAccuracy = pathOr(
       0,
@@ -44,13 +44,13 @@ const ConnectedOrderBook = connect(
       priceAccuracy,
       updatePrice,
       updatePriceAndDepth,
-      stateFns,
       span,
       onNextSpan: nextSpan,
       onPrevSpan: prevSpan,
       showMyOrders,
       lastTradePrice,
-      loading: hasPendingItems
+      loading: hasPendingItems,
+      isAuth
     };
   },
   compose(withLoader((p: OrderBookProps) => p.loading!), observer)(OrderBook)

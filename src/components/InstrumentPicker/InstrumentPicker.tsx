@@ -1,6 +1,4 @@
-import {rem} from 'polished';
 import * as React from 'react';
-import styled from 'styled-components';
 import Watchlists from '../../models/watchlists';
 import {
   InstrumentList,
@@ -11,14 +9,7 @@ import {
   InstrumentSelect
 } from './index';
 import InstrumentShortcuts from './InstrumentShortcuts';
-
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
-
-const StyledSearchWrap = styled(Flex)`
-  padding-bottom: ${rem(10)};
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
-`;
+import {SearchWrap} from './styles';
 
 class InstrumentPicker extends React.Component<
   InstrumentPickerProps,
@@ -66,18 +57,23 @@ class InstrumentPicker extends React.Component<
         <InstrumentSelect {...this.props} />
         {this.props.show ? (
           <InstrumentPopover onToggle={this.props.onToggle}>
-            <StyledSearchWrap align={'center'} justify={'space-between'}>
+            <SearchWrap align={'center'} justify={'space-between'}>
               <InstrumentShortcuts
                 changeValue={this.changeWallet}
+                onToggleInstrumentSelection={
+                  this.props.onToggleInstrumentSelection
+                }
                 shortcutActiveIndex={this.state.activeShortcut}
                 shortcuts={this.props.watchlistNames}
+                showInstrumentSelection={this.props.showInstrumentSelection}
               />
               <InstrumentSearch
                 inputValue={this.state.searchValue}
                 change={this.changeValue}
               />
-            </StyledSearchWrap>
+            </SearchWrap>
             <InstrumentList
+              baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}
               instruments={this.props.instruments}
               onPick={this.props.onPick}

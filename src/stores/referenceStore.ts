@@ -226,12 +226,21 @@ class ReferenceStore extends BaseStore {
     baseAssetStorage.set(assetId);
     this.baseAsset = assetId;
     this.api.setBaseAsset({BaseAsssetId: assetId});
-    const {
-      updateBalance,
-      updateTradingWallet
-    } = this.rootStore.balanceListStore;
-    updateBalance();
-    updateTradingWallet();
+    this.updateInstruments();
+    this.rootStore.balanceListStore.updateWalletBalances();
+  };
+
+  updateInstruments = () => {
+    this.getInstruments().forEach(instrument =>
+      instrument.updateVolumeInBase(
+        this.rootStore.marketStore.convert(
+          instrument.volume,
+          instrument.baseAsset.id,
+          this.baseAssetId,
+          this.getInstrumentById
+        )
+      )
+    );
   };
 
   onQuote = (args: any) => {
@@ -248,6 +257,23 @@ class ReferenceStore extends BaseStore {
     const instrument = this.getInstrumentById(id);
     if (instrument && instrument.id) {
       instrument.updateAsk(price);
+    }
+  };
+
+  onCandle = async (args: any) => {
+    const {a: id, o: openPrice, c: closePrice, v: volume} = args[0];
+    const instrument = this.getInstrumentById(id);
+
+    if (instrument && instrument.id) {
+      instrument.updateFromCandle(openPrice, closePrice, volume);
+      instrument.updateVolumeInBase(
+        this.rootStore.marketStore.convert(
+          volume,
+          instrument.baseAsset.id,
+          this.baseAssetId,
+          this.getInstrumentById
+        )
+      );
     }
   };
 

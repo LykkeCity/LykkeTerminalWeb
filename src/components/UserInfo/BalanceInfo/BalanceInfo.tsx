@@ -1,8 +1,8 @@
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import {ReferenceStore, UiStore} from '../../stores';
-import ClickOutside from '../ClickOutside/ClickOutside';
-import CustomSelect from '../Select/CustomSelect';
+import {ReferenceStore, UiStore} from '../../../stores/index';
+import ClickOutside from '../../ClickOutside/ClickOutside';
+import CustomSelect from '../../Select/CustomSelect';
 import {BalanceInfoProps} from './index';
 import {BalanceInfoDiv, BalanceLabel, BalanceValue, Button} from './styles';
 

@@ -16,19 +16,15 @@ import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
   LastTradePrice,
+  Levels,
   MidFigures,
   MidOverlay,
+  MidOverlayBackground,
   MidPrice,
-  MidRow,
   Spread,
   StyledBar,
-  StyledBuyOrders,
   StyledGrouping,
   StyledHeader,
-  StyledHeaderCell,
-  StyledHeaderRow,
-  StyledOrders,
-  StyledSellOrders,
   StyledWrapper
 } from './styles';
 
@@ -67,30 +63,28 @@ export interface OrderBookProps extends LoaderProps {
   onPrevSpan: () => void;
   showMyOrders: any;
   lastTradePrice: number;
+  isAuth: boolean;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
   @observable displayType = OrderBookDisplayType.Volume;
+
   private scrollComponent: any;
-  private midPrice: any;
+  private askLevel: any;
+  private shouldScroll = true;
 
-  private refHandlers = {
-    midPrice: (ref: any) => (this.midPrice = ref),
-    scrollComponent: (ref: any) => (this.scrollComponent = ref)
-  };
-  private isScrollSet: boolean = false;
-
-  constructor(props: OrderBookProps) {
-    super(props);
-
-    this.props.stateFns.push(this.clearScroll);
+  componentDidUpdate() {
+    let offset = 0;
+    const scrollHeight = this.askLevel.scrollHeight; // this.scrollComponent.getScrollHeight();
+    const clientHeight = this.scrollComponent.getClientHeight();
+    if (this.shouldScroll && clientHeight / 2 < scrollHeight) {
+      this.scrollComponent.scrollToTop();
+      offset = scrollHeight - clientHeight / 2 + 30;
+      this.scrollComponent.scrollTop(offset);
+    }
   }
 
-  clearScroll = () => {
-    this.isScrollSet = false;
-  };
-
-  handleChange = (displayType: OrderBookDisplayType) => {
+  handleChangeDisplayType = (displayType: OrderBookDisplayType) => {
     this.displayType = displayType;
   };
 
@@ -98,26 +92,16 @@ class OrderBook extends React.Component<OrderBookProps> {
     connectedOrders.forEach(id => this.props.cancelOrder(id));
   };
 
-  componentDidUpdate() {
-    if (this.isScrollSet) {
-      return;
-    }
-
-    const scroll =
-      this.midPrice.offsetTop - this.scrollComponent.container.offsetHeight / 2;
-    this.scrollComponent.scrollTop(scroll);
-
-    if (this.props.asks.length && this.props.bids.length && scroll > 0) {
-      this.isScrollSet = true;
-    }
-  }
-
   handleUpdatePriceAndDepth = (price: number, depth: number) => () => {
-    this.props.updatePriceAndDepth(price, depth);
+    if (this.props.isAuth) {
+      this.props.updatePriceAndDepth(price, depth);
+    }
   };
 
   handleUpdatePrice = (price: number) => () => {
-    this.props.updatePrice(price);
+    if (this.props.isAuth) {
+      this.props.updatePrice(price);
+    }
   };
 
   handleCancelOrder = (connectedLimitOrders: string[]) => () => {
@@ -139,6 +123,15 @@ class OrderBook extends React.Component<OrderBookProps> {
     this.props.showMyOrders({orders: []});
   };
 
+  handleStopScroll = () => {
+    const stickToTop =
+      this.scrollComponent.getScrollTop() > this.askLevel.scrollHeight;
+    const stickToBottom =
+      this.askLevel.scrollHeight - this.scrollComponent.getScrollTop() + 30 >
+      this.scrollComponent.getClientHeight();
+    this.shouldScroll = !stickToTop && !stickToBottom;
+  };
+
   render() {
     const {
       bids,
@@ -152,7 +145,8 @@ class OrderBook extends React.Component<OrderBookProps> {
       onPrevSpan,
       showMyOrders,
       lastTradePrice,
-      loading
+      loading,
+      isAuth
     } = this.props;
 
     const withCurrentType = mapToDisplayType(this.displayType);
@@ -182,17 +176,17 @@ class OrderBook extends React.Component<OrderBookProps> {
           <VBar />
           <OrderBookSwitch
             value={this.displayType}
-            onChange={this.handleChange}
+            onChange={this.handleChangeDisplayType}
           />
         </StyledBar>
         <HBar />
         <StyledHeader>
           <tbody>
-            <StyledHeaderRow>
-              <StyledHeaderCell align="left">Price</StyledHeaderCell>
-              <StyledHeaderCell align="left">Volume</StyledHeaderCell>
-              <StyledHeaderCell align="right">Value</StyledHeaderCell>
-            </StyledHeaderRow>
+            <tr>
+              <th>Price</th>
+              <th>Volume</th>
+              <th>Value</th>
+            </tr>
           </tbody>
         </StyledHeader>
         <HBar />
@@ -203,80 +197,92 @@ class OrderBook extends React.Component<OrderBookProps> {
             marginLeft: '-1rem',
             height: 'calc(100% - 5.2rem)'
           }}
-          ref={this.refHandlers.scrollComponent}
+          ref={el => (this.scrollComponent = el)}
+          // tslint:disable-next-line:jsx-no-lambda
+          onScrollStart={() => (this.shouldScroll = false)}
+          // tslint:disable-next-line:jsx-no-lambda
+          onScrollStop={this.handleStopScroll}
         >
-          <StyledOrders>
-            <StyledSellOrders>
-              {asks.map((order, idx) => (
-                <OrderBookItem
-                  key={idx}
-                  valueToShow={withCurrentType(order)}
-                  maxValue={maxValue}
-                  minValue={minValue}
-                  priceAccuracy={priceAccuracy}
-                  volumeAccuracy={volumeAccuracy}
-                  onPriceClick={this.handleUpdatePrice}
-                  onDepthClick={this.handleUpdatePriceAndDepth}
-                  onOrderClick={this.handleCancelOrder}
-                  showMyOrders={showMyOrders}
-                  {...order}
-                  scrollComponent={this.scrollComponent}
-                />
-              ))}
-            </StyledSellOrders>
-            <tbody ref={this.refHandlers.midPrice}>
-              <tr>
-                {loading || (
-                  <MidRow colSpan={3}>
-                    <MidFigures>
-                      <LastTradePrice>
-                        <span
-                          onClick={this.handleUpdatePrice(
-                            Number(lastTradePrice)
-                          )}
-                        >
-                          {formatNumber(lastTradePrice, priceAccuracy)}
-                        </span>
-                      </LastTradePrice>
-                      <MidPrice>
-                        <span onClick={this.handleUpdatePrice(Number(mid))}>
-                          {formatNumber(mid, priceAccuracy)}
-                          <br />
-                          <small>Mid price</small>
-                        </span>
-                      </MidPrice>
-                      <Spread>
-                        {formatNumber(spreadRelative, priceAccuracy, {
-                          style: 'percent'
-                        })}
-                        <br />
-                        <small>Spread</small>
-                      </Spread>
-                    </MidFigures>
-                    <MidOverlay />
-                  </MidRow>
-                )}
-              </tr>
-            </tbody>
-            <StyledBuyOrders>
-              {bids.map((order, idx) => (
-                <OrderBookItem
-                  key={idx}
-                  valueToShow={withCurrentType(order)}
-                  maxValue={maxValue}
-                  minValue={minValue}
-                  priceAccuracy={priceAccuracy}
-                  volumeAccuracy={volumeAccuracy}
-                  onPriceClick={this.handleUpdatePrice}
-                  onDepthClick={this.handleUpdatePriceAndDepth}
-                  onOrderClick={this.handleCancelOrder}
-                  showMyOrders={showMyOrders}
-                  scrollComponent={this.scrollComponent}
-                  {...order}
-                />
-              ))}
-            </StyledBuyOrders>
-          </StyledOrders>
+          <div>
+            {/* tslint:disable-next-line:jsx-no-lambda */}
+            <Levels innerRef={(el: any) => (this.askLevel = el)}>
+              <tbody>
+                {asks.map((order, idx) => (
+                  <OrderBookItem
+                    key={idx}
+                    valueToShow={withCurrentType(order)}
+                    maxValue={maxValue}
+                    minValue={minValue}
+                    priceAccuracy={priceAccuracy}
+                    volumeAccuracy={volumeAccuracy}
+                    onPriceClick={this.handleUpdatePrice}
+                    onDepthClick={this.handleUpdatePriceAndDepth}
+                    onOrderClick={this.handleCancelOrder}
+                    showMyOrders={showMyOrders}
+                    scrollComponent={this.scrollComponent}
+                    prevPrice={
+                      idx === asks.length - 1
+                        ? order.price
+                        : asks[idx + 1].price
+                    }
+                    isAuth={isAuth}
+                    {...order}
+                  />
+                ))}
+              </tbody>
+            </Levels>
+            {loading || (
+              <React.Fragment>
+                <MidFigures>
+                  <LastTradePrice isAuth={isAuth}>
+                    <span
+                      onClick={this.handleUpdatePrice(Number(lastTradePrice))}
+                    >
+                      {formatNumber(lastTradePrice, priceAccuracy)}
+                    </span>
+                  </LastTradePrice>
+                  <MidPrice isAuth={isAuth}>
+                    <span onClick={this.handleUpdatePrice(Number(mid))}>
+                      {formatNumber(mid, priceAccuracy)}
+                      <br />
+                      <small>Mid price</small>
+                    </span>
+                  </MidPrice>
+                  <Spread>
+                    {formatNumber(spreadRelative, priceAccuracy, {
+                      style: 'percent'
+                    })}
+                    <br />
+                    <small>Spread</small>
+                  </Spread>
+                  <MidOverlay />
+                  <MidOverlayBackground />
+                </MidFigures>
+              </React.Fragment>
+            )}
+            <Levels>
+              <tbody>
+                {bids.map((order, idx) => (
+                  <OrderBookItem
+                    key={idx}
+                    valueToShow={withCurrentType(order)}
+                    maxValue={maxValue}
+                    minValue={minValue}
+                    priceAccuracy={priceAccuracy}
+                    volumeAccuracy={volumeAccuracy}
+                    onPriceClick={this.handleUpdatePrice}
+                    onDepthClick={this.handleUpdatePriceAndDepth}
+                    onOrderClick={this.handleCancelOrder}
+                    showMyOrders={showMyOrders}
+                    scrollComponent={this.scrollComponent}
+                    prevPrice={idx === 0 ? order.price : bids[idx - 1].price}
+                    isAuth={isAuth}
+                    {...order}
+                  />
+                ))}
+              </tbody>
+            </Levels>
+          </div>
         </Scrollbars>
         <ClickOutside
           // tslint:disable-next-line:jsx-no-lambda

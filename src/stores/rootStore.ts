@@ -12,16 +12,18 @@ import {
 } from '../api/index';
 import * as topics from '../api/topics';
 import keys from '../constants/storageKeys';
+import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
-import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
   BalanceListStore,
   BaseStore,
   ChartStore,
+  MarketStore,
   ModalStore,
   NotificationStore,
+  OrderBookChartStore,
   OrderBookStore,
   OrderListStore,
   OrderStore,
@@ -40,6 +42,7 @@ const instrumentStorage = StorageUtils(keys.selectedInstrument);
 class RootStore {
   readonly watchlistStore: WatchlistStore;
   readonly tradeStore: TradeStore;
+  readonly orderBookChartStore: OrderBookChartStore;
   readonly orderBookStore: OrderBookStore;
   readonly balanceListStore: BalanceListStore;
   readonly orderListStore: OrderListStore;
@@ -53,6 +56,7 @@ class RootStore {
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
   readonly priceStore: PriceStore;
+  readonly marketStore: MarketStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -65,6 +69,7 @@ class RootStore {
       this.notificationStore = new NotificationStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
       this.tradeStore = new TradeStore(this, new TradeApi(this));
+      this.orderBookChartStore = new OrderBookChartStore(this);
       this.orderBookStore = new OrderBookStore(this, new OrderBookApi(this));
       this.balanceListStore = new BalanceListStore(
         this,
@@ -79,22 +84,28 @@ class RootStore {
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
       this.priceStore = new PriceStore(this, new PriceApi());
+      this.marketStore = new MarketStore(this);
     }
   }
 
-  startPublicMode = (defaultInstrument: any) => {
+  startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
     return ws.connect(this.wampUrl, this.wampRealm).then(session => {
       this.uiStore.setWs(ws);
+      this.orderBookChartStore.setWs(ws);
       this.orderBookStore.setWs(ws);
       this.chartStore.setWs(ws);
       this.tradeStore.setWs(ws);
       this.priceStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
-        .forEach((x: any) =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        .forEach((x: any) => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Trade, 'day'),
+            this.referenceStore.onCandle
+          );
+        });
       this.uiStore.selectInstrument(
         this.checkDefaultInstrument(defaultInstrument)
       );
@@ -125,7 +136,7 @@ class RootStore {
       .then(async () => {
         const instruments = this.referenceStore.getInstruments();
         const assets = this.referenceStore.getAssets();
-        MarketService.init(instruments, assets);
+        this.marketStore.init(instruments, assets);
 
         const ws = new WampApi();
         await ws.connect(
@@ -135,19 +146,28 @@ class RootStore {
         );
 
         this.uiStore.setWs(ws);
+        this.orderBookChartStore.setWs(ws);
         this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
         this.priceStore.setWs(ws);
+        this.orderListStore.setWs(ws);
         instruments.forEach(x => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Trade, 'day'),
+            this.referenceStore.onCandle
+          );
         });
+
         this.uiStore.selectInstrument(
           this.checkDefaultInstrument(defaultInstrument)
         );
         this.tradeStore.subscribe(ws);
+        this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
+
         return Promise.resolve();
       })
       .catch(() => {
@@ -159,7 +179,6 @@ class RootStore {
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());
-    MarketService.reset();
   };
 
   private checkDefaultInstrument = (defaultInstrument: any) =>

@@ -1,37 +1,32 @@
 import * as React from 'react';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import styled from '../../styled';
 
-const StyledNumber = styled.div`
+const StyledNumber = styled.div.attrs({})`
   color: ${(p: any) => p.color};
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
   span {
     color: #f5f6f7;
   }
 `;
 
 interface WalletBalanceNumberProps {
-  num: number;
-  accuracy: number;
+  num: string;
   color?: string;
+  accuracy: number;
 }
 
 const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   num,
-  accuracy,
   color = '#ffffff',
-  children
+  children,
+  accuracy
 }) => {
   if (num === undefined || num === null) {
     return null;
   }
-  const formatterNum = num.toLocaleString(undefined, {
-    maximumFractionDigits: accuracy
-  });
   return (
-    <StyledNumber color={color} title={formatterNum}>
-      {formatterNum}
+    <StyledNumber color={color}>
+      {formattedNumber(num)}
       {children}
     </StyledNumber>
   );

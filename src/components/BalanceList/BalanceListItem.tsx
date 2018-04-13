@@ -13,7 +13,11 @@ const BalanceListItem: React.SFC<BalanceListItemProps> = ({
   <tr key={id}>
     <td>{symbol}</td>
     <td>
-      <BalanceNumber num={totalBalance} accuracy={accuracy}>
+      <BalanceNumber
+        num={totalBalance.toLocaleString(undefined, {
+          maximumFractionDigits: accuracy
+        })}
+      >
         &nbsp;{baseAssetName}
       </BalanceNumber>
     </td>

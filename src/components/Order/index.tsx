@@ -24,7 +24,12 @@ export interface OrderProps {
   addModal: any;
   ask: number;
   bid: number;
-  accuracy: any;
+  accuracy: {
+    priceAccuracy: number;
+    quantityAccuracy: number;
+    baseAssetAccuracy: number;
+    quoteAssetAccuracy: number;
+  };
   currency: string;
   placeOrder: any;
   baseAssetName: string;
@@ -36,6 +41,7 @@ export interface OrderProps {
   onArrowClick: any;
   onValueChange: any;
   fixedAmount: any;
+  fixedToLocaleString: any;
   updatePriceFn: any;
   updateDepthFn: any;
   initPriceFn: any;
@@ -114,6 +120,7 @@ export interface OrderMarketState {
 export interface OrderMarketProps extends OrderBasicFormProps {
   onResetPercentage: any;
   onInvert: any;
+  fixedToLocaleString: any;
 }
 
 export interface OrderLimitProps extends OrderBasicFormProps {
@@ -152,11 +159,13 @@ const StyledActionTitle = styled.div`
   }
 `;
 
-const StyledAvailable = styled.div`
+const StyledTotalAmount = styled.div`
   padding-top: ${rem(1)};
   color: #8c94a0;
   font-size: ${rem(15)};
+`;
 
+const StyledAvailable = styled(StyledTotalAmount)`
   &:hover {
     cursor: pointer;
   }
@@ -179,6 +188,7 @@ const ConnectedOrder = connect(
       onArrowClick,
       onValueChange,
       fixedAmount,
+      fixedToLocaleString,
       handlePercentageChange,
       updatePercentageState,
       resetPercentage
@@ -192,7 +202,9 @@ const ConnectedOrder = connect(
           pathOr('', ['baseAsset', 'id'], instrument)
         );
         return asset ? asset.accuracy : 2;
-      }
+      },
+      baseAssetAccuracy: pathOr(2, ['baseAsset', 'accuracy'], instrument),
+      quoteAssetAccuracy: pathOr(2, ['quoteAsset', 'accuracy'], instrument)
     },
     addModal,
     ask: bestAsk(),
@@ -206,6 +218,7 @@ const ConnectedOrder = connect(
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
+    fixedToLocaleString,
     getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
     initPriceFn,
@@ -220,18 +233,22 @@ const ConnectedOrder = connect(
     updatePercentageState,
     updatePriceFn,
     get baseAssetBalance() {
-      const asset = getBalance.find((a: AssetBalanceModel) => {
-        const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
-        return a.id === baseAssetName;
-      });
-      return asset && asset.available;
+      const asset: AssetBalanceModel = getBalance.find(
+        (b: AssetBalanceModel) => {
+          const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
+          return b.id === baseAssetName;
+        }
+      );
+      return asset && asset.balance;
     },
     get quoteAssetBalance() {
-      const asset = getBalance.find((a: AssetBalanceModel) => {
-        const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
-        return a.id === quoteAssetName;
-      });
-      return asset && asset.available;
+      const asset: AssetBalanceModel = getBalance.find(
+        (b: AssetBalanceModel) => {
+          const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
+          return b.id === quoteAssetName;
+        }
+      );
+      return asset && asset.balance;
     },
     isAuth
   }),
@@ -245,5 +262,6 @@ export {
   StyledOrderButton,
   StyledReset,
   StyledAvailable,
-  StyledNote
+  StyledNote,
+  StyledTotalAmount
 };

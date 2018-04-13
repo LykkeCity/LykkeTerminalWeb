@@ -1,20 +1,26 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
+import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
-import {Account} from '../Account';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
+import {MyWallets} from '../MyWallets';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
+import OrderBookChart from '../OrderBookChart';
 import {Orders} from '../OrderList';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
 import {TradeLog, Trades} from '../TradeList';
 import {TerminalProps} from './index';
+
+const MAX_LEFT_PADDING = 20;
+const MAX_RIGHT_PADDING = 75;
+const MIN_PANE_SIZE_PERCENTAGE = 25;
 
 const Shell = styled.div`
   background: ${colors.darkGraphite};
@@ -24,87 +30,122 @@ const Shell = styled.div`
   margin: 0;
 `;
 
+const {
+  ChartWidget,
+  OrderWidget,
+  OrderBookWidget,
+  OrderListWidget,
+  TradeListWidget
+} = Widgets;
+
 const layoutStorage = StorageUtils(keys.layout);
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
-  acc: (
-    <Tile title="Account">
-      <Account />
-    </Tile>
-  ),
-  c: (
-    <Tile title="Chart">
+  [ChartWidget]: (
+    <TabbedTile tabs={['Price chart', 'Orderbook chart']} authorize={false}>
       <Chart />
-    </Tile>
+      <OrderBookChart />
+    </TabbedTile>
   ),
-  e: (
+  [TradeListWidget]: (
     <Tile title="Trade log">
       <TradeLog />
     </Tile>
   ),
-  ob: (
+  [OrderBookWidget]: (
     <Tile title="Order book">
       <OrderBook />
     </Tile>
   ),
-  ord: (
-    <TabbedTile tabs={['Orders', 'Trades']}>
+  [OrderListWidget]: (
+    <TabbedTile tabs={['Orders', 'Trades', 'My wallets']}>
       <Orders />
       <Trades />
+      <MyWallets />
     </TabbedTile>
   ),
-  wl: (
+  [OrderWidget]: (
     <Tile title="Order" authorize={true}>
       <Order />
     </Tile>
   )
 };
 
-class Terminal extends React.Component<TerminalProps, {}> {
+class Terminal extends React.Component<TerminalProps, {initialValue: any}> {
   private initialValue: any = {
     direction: 'row' as MosaicDirection,
-    first: {
-      direction: 'column' as MosaicDirection,
-      first: 'wl',
-      second: 'acc',
-      splitPercentage: 60
-    },
+    first: OrderWidget,
     second: {
       direction: 'row' as MosaicDirection,
       first: {
         direction: 'column' as MosaicDirection,
-        first: 'c',
-        second: 'ord',
-        splitPercentage: 70
+        first: ChartWidget,
+        second: OrderListWidget,
+        splitPercentage: 65
       },
       second: {
         direction: 'column' as MosaicDirection,
-        first: 'ob',
-        second: 'e',
+        first: OrderBookWidget,
+        second: TradeListWidget,
         splitPercentage: 70
       },
-      splitPercentage: 78
+      splitPercentage: MAX_RIGHT_PADDING
     },
-    splitPercentage: 22
+    splitPercentage: MAX_LEFT_PADDING
   };
 
   constructor(props: TerminalProps) {
     super(props);
-  }
 
-  componentWillMount() {
     const layout = layoutStorage.get();
     if (layout) {
       this.initialValue = JSON.parse(layout);
     }
+
+    this.state = {
+      initialValue: this.initialValue
+    };
   }
 
   componentDidMount() {
     this.props.rootStore.start();
+    this.handlerMouseUpTransparentDiv();
+  }
+
+  handlerMouseUpTransparentDiv() {
+    const mosaicSplit = document.getElementsByClassName(
+      'mosaic-split -column'
+    )[0];
+    if (mosaicSplit) {
+      mosaicSplit.addEventListener('mouseup', () => {
+        this.removeTransparentDivAfterResize();
+      });
+    }
+  }
+
+  removeTransparentDivAfterResize() {
+    document.getElementById('transparentDiv')!.style.display = 'none';
   }
 
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
-  handleChangeLayout = (args: any) => {
+  handleChange = (args: any) => {
+    if (args.splitPercentage > MAX_LEFT_PADDING) {
+      args.splitPercentage = MAX_LEFT_PADDING;
+    } else if (args.second.splitPercentage < MAX_RIGHT_PADDING) {
+      args.second.splitPercentage = MAX_RIGHT_PADDING;
+    }
+    if (
+      args.second.first.splitPercentage <= MIN_PANE_SIZE_PERCENTAGE ||
+      args.second.first.splitPercentage >= 100 - MIN_PANE_SIZE_PERCENTAGE
+    ) {
+      this.removeTransparentDivAfterResize();
+    } else {
+      document.getElementById('transparentDiv')!.style.display = 'block';
+    }
+
+    this.setState({
+      initialValue: args
+    });
     layoutStorage.set(JSON.stringify(args));
   };
 
@@ -121,9 +162,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
         <Header history={this.props.history} />
         <Mosaic
           renderTile={this.handleRenderTile}
-          onChange={this.handleChangeLayout}
-          resize={{minimumPaneSizePercentage: 20}}
-          initialValue={this.initialValue}
+          onChange={this.handleChange}
+          resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
+          value={this.state.initialValue}
         />
       </Shell>
     );

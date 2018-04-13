@@ -1,43 +1,42 @@
+import {pathOr} from 'rambda';
 import * as React from 'react';
 import {OrderListItem} from '.';
 import {OrderModel} from '../../models';
+import {LoaderProps} from '../Loader/withLoader';
 import {Table} from '../Table';
 
-interface OrderListProps {
+export interface OrderListProps extends LoaderProps {
   orders: OrderModel[];
   onEditOrder: (order: OrderModel) => (id: string) => void;
   onCancelOrder?: (id: string) => void;
+  getInstrumentById: (id: string) => any;
 }
 
 const OrderList: React.SFC<OrderListProps> = ({
   orders,
   onEditOrder,
-  onCancelOrder
+  onCancelOrder,
+  getInstrumentById
 }) => (
-  <Table>
-    <thead>
-      <tr>
-        <th>Asset pair</th>
-        <th>Cancel order</th>
-        <th>OrderID</th>
-        <th>Side</th>
-        <th>Volume</th>
-        <th>Price</th>
-        <th>Created Date</th>
-        <th>Edit</th>
-      </tr>
-    </thead>
-    <tbody>
-      {orders.map(order => (
-        <OrderListItem
-          key={order.id}
-          cancelOrder={onCancelOrder}
-          onEdit={onEditOrder(order)}
-          {...order}
-        />
-      ))}
-    </tbody>
-  </Table>
+  <React.Fragment>
+    <Table>
+      <tbody>
+        {orders.map(order => {
+          const asset = getInstrumentById(order.symbol);
+          return (
+            <OrderListItem
+              key={order.id}
+              cancelOrder={onCancelOrder}
+              onEdit={onEditOrder(order)}
+              order={order}
+              accuracy={pathOr(2, ['baseAsset', 'accuracy'], asset)}
+              symbol={pathOr('', ['displayName'], asset)}
+            />
+          );
+        })}
+      </tbody>
+    </Table>
+  </React.Fragment>
 );
 
 export default OrderList;

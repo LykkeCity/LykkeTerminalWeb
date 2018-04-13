@@ -1,6 +1,5 @@
 import {action, computed, extendObservable, observable} from 'mobx';
 import {join} from 'rambda';
-import {Dir} from '../models';
 import {AssetModel} from './index';
 
 class InstrumentModel {
@@ -14,9 +13,9 @@ class InstrumentModel {
   @observable price: number;
   @observable bid: number;
   @observable ask: number;
-  @observable change: number;
-
-  @observable dir: Dir;
+  @observable volumeInBase: number = 0;
+  @observable change24h: number = 0;
+  @observable volume: number = 0;
 
   @computed
   get displayName() {
@@ -33,8 +32,6 @@ class InstrumentModel {
   @action
   updatePrice = (nextPrice: number) => {
     if (this.price !== nextPrice) {
-      this.change = (nextPrice - this.price) / this.price * 100;
-      this.dir = this.change > 0 ? Dir.Up : Dir.Down;
       this.price = nextPrice;
     }
   };
@@ -47,6 +44,23 @@ class InstrumentModel {
   @action
   updateAsk = (nextPrice: number) => {
     this.ask = nextPrice;
+  };
+
+  @action
+  updateVolumeInBase = (nextVolumeInBase: number) => {
+    if (this.volumeInBase !== nextVolumeInBase) {
+      this.volumeInBase = nextVolumeInBase;
+    }
+  };
+
+  @action
+  updateFromCandle = (
+    openPrice: number,
+    closePrice: number,
+    volume: number
+  ) => {
+    this.change24h = (closePrice - openPrice) / openPrice * 100;
+    this.volume = volume;
   };
 }
 

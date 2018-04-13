@@ -1,10 +1,11 @@
 import OrderApi from '../api/orderApi';
+import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
-import ErrorParser from '../utils/errorParser';
+import {OrderBookType} from '../models/orderType';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
@@ -51,15 +52,21 @@ class OrderStore extends BaseStore {
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        return this.api
-          .placeMarket(body)
-          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
-          .then(() => Promise.resolve());
+        return (
+          this.api
+            .placeMarket(body)
+            // tslint:disable-next-line:no-empty
+            .then(() => {}, this.orderPlacedUnsuccessfully)
+            .then(() => Promise.resolve())
+        );
       case OrderType.Limit:
-        return this.api
-          .placeLimit(body)
-          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
-          .then(() => Promise.resolve());
+        return (
+          this.api
+            .placeLimit(body)
+            // tslint:disable-next-line:no-empty
+            .then(() => {}, this.orderPlacedUnsuccessfully)
+            .then(() => Promise.resolve())
+        );
     }
   };
 
@@ -67,112 +74,112 @@ class OrderStore extends BaseStore {
     this.api
       .cancelOrder(id)
       .then(() => this.api.placeLimit(body))
-      .then(this.updateOrders)
-      .then(this.orderEditedSuccessfully)
       .catch(this.orderPlacedUnsuccessfully);
 
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
-    this.notificationStore.addNotification(
-      levels.information,
-      `${messages.orderCancelled} ${id}`
-    );
-    this.updateOrders();
   };
 
   cancelAll = async () => {
-    const orders = this.rootStore.orderListStore.limitOrders;
-    const promises = orders.map((order: OrderModel) => {
-      return this.api.cancelOrder(order.id);
+    this.rootStore.orderListStore.limitOrders.forEach((order: OrderModel) => {
+      this.api.cancelOrder(order.id);
     });
-    await Promise.all(promises).then(() =>
-      this.notificationStore.addNotification(
-        levels.information,
-        messages.allOrdersCanceled
-      )
-    );
-    this.updateOrders();
   };
 
-  executeOrder = (orders: any[]) => {
-    this.rootStore.orderListStore.fetchAll().then(() => {
-      orders.forEach(order =>
-        this.rootStore.orderListStore.limitOrders.forEach(limit => {
-          const match = limit.id === order.id;
+  subscribe = (ws: any) => {
+    ws.subscribe(topics.orders, this.onOrders);
+  };
 
-          if (match) {
-            if (limit.volume === order.volume) {
-              this.notificationStore.addNotification(
-                levels.success,
-                messages.orderExecuted(order.id)
-              );
-            } else {
-              this.notificationStore.addNotification(
-                levels.success,
-                messages.orderExecutedPartially(order.id, order.volume)
-              );
-            }
-          }
-        })
-      );
-
-      this.updateOrders();
-    });
+  onOrders = (args: any) => {
+    const order = args[0][0];
+    switch (order.Status) {
+      case OrderBookType.Cancelled:
+        this.rootStore.orderListStore.deleteOrder(order.Id);
+        this.orderCancelledSuccessfully(order.Id);
+        break;
+      case OrderBookType.Matched:
+        this.rootStore.orderListStore.deleteOrder(order.Id);
+        this.orderClosedSuccessfully(order.Id);
+        break;
+      case OrderBookType.Processing:
+        this.rootStore.orderListStore.updateOrder(order);
+        this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
+        break;
+      case OrderBookType.Placed:
+        this.rootStore.orderListStore.addOrder(order);
+        this.orderPlacedSuccessfully();
+        break;
+    }
   };
 
   reset = () => {
     return;
   };
 
-  private updateOrders = () => {
-    this.rootStore.orderListStore.fetchAll();
-    // this.rootStore.balanceListStore.fetchAll();
+  private orderClosedSuccessfully = (orderId: string) => {
+    this.notificationStore.addNotification(
+      levels.success,
+      messages.orderExecuted(orderId)
+    );
+  };
+
+  private orderPartiallyClosedSuccessfully = (
+    orderId: string,
+    orderVolume: number
+  ) => {
+    this.notificationStore.addNotification(
+      levels.success,
+      messages.orderExecutedPartially(orderId, orderVolume)
+    );
   };
 
   private orderPlacedSuccessfully = () => {
-    this.updateOrders();
     this.notificationStore.addNotification(
       levels.success,
       messages.orderSuccess
     );
   };
 
-  private orderPlacedUnsuccessfully = (error: any) => {
-    console.error(error);
-
-    const needConfirmation =
-      error.status === 400 &&
-      error.message &&
-      JSON.parse(error.message).Confirmation;
-
-    if (needConfirmation) {
-      this.modalStore.addModal(
-        ModalMessages.expired,
-        null,
-        null,
-        Types.Expired
-      );
-      return;
-    }
-
-    let message;
-    try {
-      message =
-        JSON.parse(error.message).ME || JSON.parse(error.message).message;
-      message = ErrorParser.getMessage(message);
-    } catch (e) {
-      message = !!error.message.length ? error.message : messages.defaultError;
-    }
-    this.notificationStore.addNotification(levels.error, `${message}`);
-
-    return Promise.reject(error);
+  private orderCancelledSuccessfully = (orderId: string) => {
+    this.notificationStore.addNotification(
+      levels.information,
+      `${messages.orderCancelled} ${orderId}`
+    );
   };
 
-  private orderEditedSuccessfully = () => {
-    this.notificationStore.addNotification(
-      levels.success,
-      messages.editOrderSuccess
-    );
+  private orderPlacedUnsuccessfully = (error: any) => {
+    const messageObject = JSON.parse(error.message);
+    if (messageObject) {
+      const key = Object.keys(messageObject)[0];
+
+      if (error.status === 400) {
+        switch (key) {
+          case 'Confirmation': {
+            this.modalStore.addModal(
+              ModalMessages.expired,
+              null,
+              null,
+              Types.Expired
+            );
+            return;
+          }
+          case 'AssetKycNeeded': {
+            this.modalStore.addModal(null, null, null, Types.MissedKyc);
+            return;
+          }
+          default:
+            {
+              const message = messageObject[key];
+              this.notificationStore.addNotification(
+                levels.error,
+                `${message}`
+              );
+            }
+            break;
+        }
+      }
+    }
+    return Promise.reject(error);
   };
 }
 
