@@ -64,6 +64,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private readonly quoteAssetId: string = '';
   private readonly currency: string = '';
   private readonly isSellActive: boolean;
+  private readonly displayBalance: number = 0;
   private readonly balance: number = 0;
 
   constructor(props: EditOrderProps) {
@@ -103,9 +104,13 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     const reserved = this.isSellActive
       ? modal.config.volume
       : modal.config.price;
-    this.balance = (asset.available + reserved).toLocaleString(undefined, {
-      maximumFractionDigits: asset.accuracy
-    });
+    this.displayBalance = (asset.available + reserved).toLocaleString(
+      undefined,
+      {
+        maximumFractionDigits: asset.accuracy
+      }
+    );
+    this.balance = (asset.available + reserved).toFixed(asset.accuracy);
   }
 
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
@@ -237,7 +242,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
             this.state.quantityValue,
             this.accuracy.quoteAssetAccuracy
           )}
-          balance={this.balance}
+          balance={this.displayBalance}
           buttonMessage={'Modify'}
           isEditForm={true}
         />
