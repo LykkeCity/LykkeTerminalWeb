@@ -1,13 +1,24 @@
 import * as React from 'react';
-import styled from '../styled';
+import {
+  ChartContainer,
+  ChartWrapper,
+  ResetButton,
+  TransparentDiv
+} from './styles';
 
-const StyledChart = styled.div`
-  height: 100%;
-`;
+interface ChartProps {
+  onReset: any;
+}
 
-class Chart extends React.Component {
+class Chart extends React.Component<ChartProps> {
   render() {
-    return <StyledChart id="tv_chart_container" />;
+    return (
+      <ChartWrapper>
+        <ResetButton onClick={this.props.onReset}>Reset</ResetButton>
+        <ChartContainer id="tv_chart_container" />
+        <TransparentDiv id="transparentDiv" />
+      </ChartWrapper>
+    );
   }
 }
 
