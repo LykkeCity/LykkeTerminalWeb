@@ -49,6 +49,14 @@ export interface EditOrderProps {
   resetPercentage: any;
   handlePercentageChange: any;
   getBalance: any;
+  isLimitInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number
+  ) => boolean;
 }
 
 export interface EditOrderState {
@@ -68,7 +76,8 @@ const ConnectedEditOrderModal = connect(
       onValueChange,
       fixedAmount,
       resetPercentage,
-      handlePercentageChange
+      handlePercentageChange,
+      isLimitInvalid
     },
     orderStore: {editOrder}
   }) => ({
@@ -80,7 +89,8 @@ const ConnectedEditOrderModal = connect(
     onArrowClick,
     onValueChange,
     orders,
-    resetPercentage
+    resetPercentage,
+    isLimitInvalid
   }),
   EditOrder
 );

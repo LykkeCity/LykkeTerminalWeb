@@ -179,6 +179,82 @@ class UiOrderStore extends BaseStore {
     });
   };
 
+  isLimitInvalid = (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number
+  ) => {
+    return (
+      !+priceValue ||
+      !+quantityValue ||
+      this.isAmountExceedLimitBalance(
+        isSell,
+        quantityValue,
+        priceValue,
+        baseAssetBalance,
+        quoteAssetBalance,
+        priceAccuracy
+      )
+    );
+  };
+
+  isMarketInvalid = (
+    isSell: boolean,
+    quantityValue: string,
+    baseAssetId: string,
+    quoteAssetId: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number
+  ) => {
+    return (
+      !+quantityValue ||
+      this.isAmountExceedMarketBalance(
+        isSell,
+        quantityValue,
+        baseAssetBalance,
+        quoteAssetBalance,
+        baseAssetId,
+        quoteAssetId
+      )
+    );
+  };
+
+  isAmountExceedMarketBalance = (
+    isSell: boolean,
+    quantityValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    baseAssetId: string,
+    quoteAssetId: string
+  ) => {
+    const convertedBalance = MarketService.convert(
+      quoteAssetBalance,
+      quoteAssetId,
+      baseAssetId,
+      this.rootStore.referenceStore.getInstrumentById
+    );
+    return isSell
+      ? +quantityValue > baseAssetBalance
+      : +quantityValue > convertedBalance;
+  };
+
+  isAmountExceedLimitBalance = (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number
+  ) =>
+    isSell
+      ? +quantityValue > baseAssetBalance
+      : +(parseFloat(priceValue) * parseFloat(quantityValue)).toFixed(
+          priceAccuracy
+        ) > +quoteAssetBalance.toFixed(priceAccuracy);
+
   // tslint:disable-next-line:no-empty
   reset = () => {};
 }

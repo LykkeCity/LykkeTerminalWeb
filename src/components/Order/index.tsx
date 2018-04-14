@@ -50,6 +50,22 @@ export interface OrderProps {
   handlePercentageChange: any;
   updatePercentageState: any;
   resetPercentage: any;
+  isLimitInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number
+  ) => boolean;
+  isMarketInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    baseAssetId: string,
+    quoteAssetId: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number
+  ) => boolean;
 }
 
 export interface OrderHeaderProps {
@@ -188,7 +204,9 @@ const ConnectedOrder = connect(
       fixedAmount,
       handlePercentageChange,
       updatePercentageState,
-      resetPercentage
+      resetPercentage,
+      isLimitInvalid,
+      isMarketInvalid
     },
     authStore: {isAuth}
   }) => ({
@@ -215,6 +233,8 @@ const ConnectedOrder = connect(
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
     fixedAmount,
+    isLimitInvalid,
+    isMarketInvalid,
     getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
     initPriceFn,

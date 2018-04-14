@@ -275,18 +275,6 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState(tempObj);
   };
 
-  isLimitDisable = () => {
-    return (
-      !+this.state.priceValue ||
-      !+this.state.quantityValue ||
-      this.state.pendingOrder
-    );
-  };
-
-  isMarketDisable = () => {
-    return !+this.state.quantityValue || this.state.pendingOrder;
-  };
-
   reset = () => {
     const {priceAccuracy, quantityAccuracy} = this.props.accuracy;
     this.props.resetPercentage(percentage);
@@ -312,7 +300,9 @@ class Order extends React.Component<OrderProps, OrderState> {
       fixedAmount,
       bid,
       ask,
-      resetPercentage
+      resetPercentage,
+      baseAssetId,
+      quoteAssetId
     } = this.props;
     const {
       isSellActive,
@@ -326,6 +316,28 @@ class Order extends React.Component<OrderProps, OrderState> {
     const currentPrice =
       (isMarketActive ? (isSellActive ? bid : ask) : parseFloat(priceValue)) ||
       0;
+
+    const isLimitInvalid =
+      this.state.pendingOrder ||
+      this.props.isLimitInvalid(
+        isSellActive,
+        quantityValue,
+        priceValue,
+        baseAssetBalance,
+        quoteAssetBalance,
+        priceAccuracy
+      );
+
+    const isMarketInvalid =
+      this.state.pendingOrder ||
+      this.props.isMarketInvalid(
+        isSellActive,
+        quantityValue,
+        baseAssetId,
+        quoteAssetId,
+        baseAssetBalance,
+        quoteAssetBalance
+      );
 
     const available = isSellActive ? baseAssetBalance : quoteAssetBalance;
 
@@ -381,12 +393,8 @@ class Order extends React.Component<OrderProps, OrderState> {
             baseAssetName={baseAssetName}
             quoteAssetName={quoteAssetName}
             isSell={isSellActive}
-            amount={fixedAmount(
-              currentPrice,
-              quantityValue,
-              quoteAssetAccuracy
-            )}
-            isDisable={this.isLimitDisable()}
+            amount={fixedAmount(currentPrice, quantityValue, priceAccuracy)}
+            isDisable={isLimitInvalid}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
             buttonMessage={`${capitalize(
@@ -407,7 +415,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
             onReset={this.reset}
-            isDisable={this.isMarketDisable()}
+            isDisable={isMarketInvalid}
             onSubmit={this.handleButtonClick}
             balance={available && available.toFixed(balanceAccuracy)}
             isSell={isSellActive}

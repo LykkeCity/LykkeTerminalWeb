@@ -193,20 +193,25 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       .catch(() => this.toggleDisableBtn(false));
   };
 
-  isDisable = () => {
-    return (
-      !+this.state.priceValue ||
-      !+this.state.quantityValue ||
-      this.state.pendingOrder
-    );
-  };
-
   handleCancel = () => {
     this.props.resetPercentage(percentage);
     this.props.modal.close();
   };
 
   render() {
+    const {quantityValue, priceValue} = this.state;
+
+    const {accuracy: {priceAccuracy}, isSellActive, balance} = this;
+    const isOrderInvalid =
+      this.state.pendingOrder ||
+      this.props.isLimitInvalid(
+        isSellActive,
+        quantityValue,
+        priceValue,
+        +balance,
+        +balance,
+        priceAccuracy
+      );
     return (
       <StyledEditModal isSell={this.action === Side.Sell.toLowerCase()}>
         <ModalHeader onClick={this.handleCancel}>
@@ -229,7 +234,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           baseAssetName={this.baseAssetName}
           quoteAssetName={this.quoteAssetName}
           isSell={this.isSellActive}
-          isDisable={this.isDisable()}
+          isDisable={isOrderInvalid}
           amount={this.props.fixedAmount(
             this.state.priceValue,
             this.state.quantityValue,
