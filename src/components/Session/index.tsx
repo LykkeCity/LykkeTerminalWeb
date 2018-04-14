@@ -3,9 +3,26 @@ import Notification from './Notification';
 import SessionNotificationComponent from './SessionNotification';
 
 const ConnectedSessionNotification = connect(
-  ({sessionStore: {getSessionNotesShown, closeSessionNotification}}) => ({
+  ({
+    sessionStore: {
+      getSessionNotesShown,
+      closeSessionNotification,
+      extendSession,
+      showQR,
+      closeViewModeFullNotification,
+      viewModeNotificationFullShown,
+      viewModeNotificationCutShown,
+      sessionNotificationShown
+    }
+  }) => ({
+    closeViewModeFullNotification,
+    extendSession,
     isSessionNotesShown: getSessionNotesShown(),
-    closeSessionNotification
+    closeSessionNotification,
+    showQR,
+    viewModeNotificationFullShown,
+    viewModeNotificationCutShown,
+    sessionNotificationShown
   }),
   SessionNotificationComponent
 );

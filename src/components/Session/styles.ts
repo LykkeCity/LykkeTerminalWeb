@@ -23,6 +23,10 @@ export const SessionNotification = styled(SessionPopup)`
   background-color: #ff3e2e;
 `;
 
+export const ViewModeNotification = styled(SessionPopup)`
+  background-color: #0388ef;
+`;
+
 export const SessionSettings = styled(SessionPopup)`
   margin-top: ${rem(8)};
   background-color: #3c3c3c;
@@ -55,7 +59,7 @@ export const Buttons = styled(Flex)`
   font-size: ${rem(14)};
 `;
 
-export const ExtendSessionButton = styled.div`
+export const ActionSessionButton = styled.div`
   border-radius: ${rem(4)};
   border: solid 1px rgba(255, 255, 255, 0.4);
   line-height: 1.14;

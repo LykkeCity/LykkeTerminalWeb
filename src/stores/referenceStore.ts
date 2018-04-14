@@ -78,11 +78,13 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string, name: string) => {
     const isAuth = this.rootStore.authStore.isAuth;
-    const instruments = isAuth
-      ? this.instruments
-          .filter(i => i.baseAsset && i.quoteAsset)
-          .filter(this.filterAvailableInstrument)
-      : this.instruments;
+    const viewMode = this.rootStore.uiStore.viewMode;
+    const instruments =
+      isAuth || !viewMode
+        ? this.instruments
+            .filter(i => i.baseAsset && i.quoteAsset)
+            .filter(this.filterAvailableInstrument)
+        : this.instruments;
 
     return instruments
       .filter(this.filterWithIdAndName)
@@ -98,7 +100,7 @@ class ReferenceStore extends BaseStore {
       )
       .filter(
         i =>
-          isAuth
+          isAuth || !viewMode
             ? !!~this.rootStore.watchlistStore
                 .watchlistsByName(name)
                 .assetIds.indexOf(i.id)
@@ -120,7 +122,7 @@ class ReferenceStore extends BaseStore {
     await this.fetchCategories();
     await this.fetchAssets();
 
-    if (!this.rootStore.authStore.isAuth) {
+    if (!this.rootStore.authStore.isAuth || this.rootStore.uiStore.viewMode) {
       await this.fetchPublicInstruments();
     } else {
       await this.fetchInstruments();

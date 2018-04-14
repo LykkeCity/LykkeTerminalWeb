@@ -2,10 +2,10 @@ import * as React from 'react';
 import CloseButton from '../CloseButton/CloseButton';
 // tslint:disable-next-line:ordered-imports
 import {
+  ActionSessionButton,
   Body,
   Buttons,
   CloseBtnPosition,
-  ExtendSessionButton,
   Note,
   NoteMark,
   SessionNotification,
@@ -73,9 +73,9 @@ class Notification extends React.Component<
           </Note>
         )}
         <Buttons>
-          <ExtendSessionButton onClick={this.props.onExtendingSession}>
+          <ActionSessionButton onClick={this.props.onExtendingSession}>
             Continue session
-          </ExtendSessionButton>
+          </ActionSessionButton>
           <SettingsButton onClick={this.props.onSettings}>
             Settings
           </SettingsButton>

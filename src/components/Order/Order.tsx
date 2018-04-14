@@ -42,8 +42,8 @@ interface OrderProps {
   accuracy: any;
   currency: string;
   placeOrder: any;
-  baseName: string;
-  quoteName: string;
+  baseAssetName: string;
+  quoteAssetName: string;
   stateFns: any[];
   getAssetById: any;
   onArrowClick: any;
@@ -63,6 +63,8 @@ interface OrderProps {
   ) => {value: number; updatedPercentage: any[]};
   updatePercentageState: any;
   resetPercentage: any;
+  baseAssetId: string;
+  quoteAssetId: string;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
