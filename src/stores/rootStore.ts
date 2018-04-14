@@ -5,8 +5,8 @@ import {
   ChartApi,
   OrderApi,
   OrderBookApi,
-  SessionApi,
   PriceApi,
+  SessionApi,
   TradeApi,
   WampApi,
   WatchlistApi
@@ -124,14 +124,11 @@ class RootStore {
       UiStore.DEFAULT_INSTRUMENT
     );
 
-    if (!this.authStore.isAuth) {
+    if (!this.authStore.isAuth || this.uiStore.viewMode) {
       return this.startPublicMode(defaultInstrument);
     }
 
-    // await this.sessionStore.fetchQrId();
-    if (this.sessionStore.isSessionExpires()) {
-      await this.sessionStore.showQR();
-    }
+    await this.sessionStore.initUserSession();
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();

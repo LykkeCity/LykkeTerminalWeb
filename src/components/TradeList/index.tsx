@@ -24,8 +24,13 @@ export const PublicTradesCellWidth = {
 };
 
 const ConnectedTrades = connect(
-  ({authStore: {isAuth}, tradeStore: {getAllTrades}}) => ({
+  ({
+     authStore: {isAuth},
+     uiStore: {viewMode},
+     tradeStore: {getAllTrades}
+  }) => ({
     isAuth,
+    viewMode,
     trades: getAllTrades
   }),
   withAuth(Trades)

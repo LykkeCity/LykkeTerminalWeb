@@ -4,8 +4,9 @@ import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import Account from './Account';
 
-const mapStoreToProps = ({authStore}: RootStore) => ({
-  isAuth: authStore.isAuth
+const mapStoreToProps = ({authStore, uiStore}: RootStore) => ({
+  isAuth: authStore.isAuth,
+  viewMode: uiStore.viewMode
 });
 
 const ConnectedAccount = connect(mapStoreToProps, withAuth(observer(Account)));
