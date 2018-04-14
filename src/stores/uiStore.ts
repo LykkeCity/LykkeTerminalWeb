@@ -1,10 +1,10 @@
-import {action, observable, reaction} from 'mobx';
 import {
   InstrumentModel,
   OrderBookDisplayType,
   TradeFilter
 } from '../models/index';
 import {keys} from '../models';
+import {action, computed, observable, reaction} from 'mobx';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -12,7 +12,15 @@ import {BaseStore, RootStore} from './index';
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class UiStore extends BaseStore {
+  @computed
+  get viewMode() {
+    return this.isViewMode;
+  }
+
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
+
+  stateFns: any = [];
+  initPriceUpdate: any;
 
   @observable showAssetsSelect: boolean = false;
   @observable searchTerm: string = '';
@@ -23,6 +31,7 @@ class UiStore extends BaseStore {
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
+  @observable private isViewMode: boolean = true;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
 
   stateFns: any = [];
@@ -122,6 +131,11 @@ class UiStore extends BaseStore {
   @action
   toggleSessionNotification = (value: boolean) =>
     (this.showSessionNotification = value);
+
+  runViewMode = () => {
+    this.isViewMode = true;
+    this.rootStore.sessionStore.showViewModeFullNotification();
+  };
 
   @action
   toggleInstrumentPerformanceData = (show: boolean) =>

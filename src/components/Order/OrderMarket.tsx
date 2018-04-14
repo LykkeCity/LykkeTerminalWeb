@@ -100,9 +100,10 @@ class OrderMarket extends React.Component<
             <div>
               <Flex justify="space-between">
                 <Action>
-                  {this.state.action}{' '}{!this.isInverted ? baseAssetName : quoteAssetName}
+                  {this.state.action}{' '}
+                  {!this.isInverted ? baseAssetName : quoteAssetName}
                 </Action>
-                <Amount  onClick={this.handlePercentageChange()>
+                <Amount onClick={this.handlePercentageChange()}>
                   {this.props.balance}{' '}
                   {this.props.isSell ? baseAssetName : quoteAssetName} available
                 </Amount>

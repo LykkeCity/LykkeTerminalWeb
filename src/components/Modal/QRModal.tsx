@@ -1,6 +1,7 @@
 import QRCode from 'qrcode.react';
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
+import ModalHeader from './ModalHeader/ModalHeader';
 import {
   ModalBody,
   ModalTitle,
@@ -20,9 +21,14 @@ const QRModal: React.SFC<QRModalProps> = ({modal, qrId}) => {
     modal.close();
   };
 
+  // tslint:disable-next-line:no-empty
+  const confirmSession = () => {};
+
   return (
     <SessionQRConfirm>
-      <ModalTitle>{modal.message.title}</ModalTitle>
+      <ModalHeader onClick={confirmSession}>
+        <ModalTitle>{modal.message.title}</ModalTitle>
+      </ModalHeader>
       <ModalBody>{modal.message.body}</ModalBody>
       <QRBody>
         <QRCode size={128} value={qrId} />
