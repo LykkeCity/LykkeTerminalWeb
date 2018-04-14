@@ -1,12 +1,18 @@
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
+import {timeZones} from '../constants/chartTimezones';
 import {InstrumentModel} from '../models/index';
+import {dateFns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 export const LINESTYLE_DOTTED = 1;
 export const LINESTYLE_DASHED = 2;
 export const LINESTYLE_SOLID = 0;
 export const LINESTYLE_LARGE_DASHED = 3;
+
+const timezone = dateFns.getTimeZone(timeZones);
+const defaultSettings = CHART_DEFAULT_SETTINGS;
+defaultSettings.charts[0].timezone = timezone;
 
 class ChartStore extends BaseStore {
   static readonly config = {
@@ -55,7 +61,7 @@ class ChartStore extends BaseStore {
       disabled_features: [
         'widget_logo',
         'link_to_tradingview',
-        'left_toolbar',
+        // 'left_toolbar',
         'header_symbol_search',
         'header_screenshot',
         'compare_symbol',
@@ -88,7 +94,9 @@ class ChartStore extends BaseStore {
           'rgba(140, 148, 160, 0.4)',
         'mainSeriesProperties.candleStyle.wickDownColor':
           'rgba(140, 148, 160, 0.4)',
-        'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false
+        'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
+
+        timezone
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
@@ -99,13 +107,15 @@ class ChartStore extends BaseStore {
           .then((res: any) => {
             if (res && res.Data) {
               const settings = JSON.parse(res.Data);
+              settings.charts[0].timezone = timezone;
+
               this.widget.load(settings);
             }
             chartContainerExists.style.display = 'block';
           })
           .catch(err => {
             if (err.status === 404) {
-              this.widget.load(CHART_DEFAULT_SETTINGS);
+              this.widget.load(defaultSettings);
             }
             chartContainerExists.style.display = 'block';
           });
@@ -115,7 +125,7 @@ class ChartStore extends BaseStore {
       });
     } else {
       this.widget.onChartReady(() => {
-        this.widget.load(CHART_DEFAULT_SETTINGS);
+        this.widget.load(defaultSettings);
         chartContainerExists.style.display = 'block';
       });
     }
@@ -129,7 +139,7 @@ class ChartStore extends BaseStore {
 
   resetToDefault = () => {
     if (this.widget) {
-      this.widget.load(CHART_DEFAULT_SETTINGS);
+      this.widget.load(defaultSettings);
     }
   };
 
