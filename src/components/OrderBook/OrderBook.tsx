@@ -4,7 +4,7 @@ import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import ModalMessages from '../../constants/modalMessages';
 import keys from '../../constants/storageKeys';
-import {Order, OrderBookDisplayType} from '../../models';
+import {InstrumentModel, Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
 import {minOrMaxFromList} from '../../utils/math';
@@ -64,6 +64,7 @@ export interface OrderBookProps extends LoaderProps {
   showMyOrders: any;
   lastTradePrice: number;
   isAuth: boolean;
+  selectedInstrument: InstrumentModel;
 }
 
 class OrderBook extends React.Component<OrderBookProps> {
@@ -71,18 +72,39 @@ class OrderBook extends React.Component<OrderBookProps> {
 
   private scrollComponent: any;
   private askLevel: any;
-  private shouldScroll = true;
 
-  componentDidUpdate() {
-    let offset = 0;
-    const scrollHeight = this.askLevel.scrollHeight;
-    const clientHeight = this.scrollComponent.getClientHeight();
-    if (this.shouldScroll && clientHeight / 2 < scrollHeight) {
-      this.scrollComponent.scrollToTop();
-      offset = scrollHeight - clientHeight / 2 + 30;
-      this.scrollComponent.scrollTop(offset);
+  private nextScrollTop: number | undefined;
+  private prevAsksHeight: number | undefined;
+
+  componentWillReceiveProps(nextProps: OrderBookProps) {
+    if (
+      this.props.selectedInstrument &&
+      this.props.selectedInstrument.id !== nextProps.selectedInstrument.id
+    ) {
+      this.nextScrollTop = undefined;
+      this.prevAsksHeight = undefined;
     }
   }
+
+  componentDidUpdate() {
+    const asksHeight = this.askLevel.scrollHeight;
+    const diff = asksHeight - (this.prevAsksHeight || 0);
+    this.prevAsksHeight = this.askLevel.scrollHeight;
+    const clientHeight = this.scrollComponent.getClientHeight();
+    const midScrollTop = asksHeight - clientHeight / 2 + 30;
+    if (clientHeight / 2 < asksHeight) {
+      if (this.nextScrollTop !== undefined) {
+        this.scrollComponent.scrollTop(this.nextScrollTop + diff);
+      } else {
+        this.scrollComponent.scrollToTop();
+        this.scrollComponent.scrollTop(midScrollTop);
+      }
+    }
+  }
+
+  handleStopScroll = () => {
+    this.nextScrollTop = this.scrollComponent.getScrollTop();
+  };
 
   handleChangeDisplayType = (displayType: OrderBookDisplayType) => {
     this.displayType = displayType;
@@ -98,9 +120,10 @@ class OrderBook extends React.Component<OrderBookProps> {
     }
   };
 
-  handleUpdatePrice = (price: number) => () => {
+  handleUpdatePrice = (price: number) => (e: React.SyntheticEvent<any>) => {
     if (this.props.isAuth) {
       this.props.updatePrice(price);
+      e.stopPropagation();
     }
   };
 
@@ -121,15 +144,6 @@ class OrderBook extends React.Component<OrderBookProps> {
       Types.Confirm
     );
     this.props.showMyOrders({orders: []});
-  };
-
-  handleStopScroll = () => {
-    const stickToTop =
-      this.scrollComponent.getScrollTop() > this.askLevel.scrollHeight;
-    const stickToBottom =
-      this.askLevel.scrollHeight - this.scrollComponent.getScrollTop() + 62 >
-      this.scrollComponent.getClientHeight();
-    this.shouldScroll = !stickToTop && !stickToBottom;
   };
 
   render() {
@@ -198,9 +212,6 @@ class OrderBook extends React.Component<OrderBookProps> {
             height: 'calc(100% - 5.2rem)'
           }}
           ref={el => (this.scrollComponent = el)}
-          // tslint:disable-next-line:jsx-no-lambda
-          onScrollStart={() => (this.shouldScroll = false)}
-          // tslint:disable-next-line:jsx-no-lambda
           onScrollStop={this.handleStopScroll}
         >
           <div>

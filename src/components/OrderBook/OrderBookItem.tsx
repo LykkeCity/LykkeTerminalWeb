@@ -87,12 +87,16 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   };
 
   return (
-    <StyledOrderRow onMouseEnter={handleHover} isAuth={isAuth}>
-      <StyledPrice side={side} onClick={onPriceClick(+currentPrice)}>
+    <StyledOrderRow onMouseEnter={handleHover}>
+      <StyledPrice
+        side={side}
+        onClick={onPriceClick(+currentPrice)}
+        isAuth={isAuth}
+      >
         <span style={{opacity: 0.4}}>{diffInPrice.sim}</span>
         <span>{diffInPrice.diff}</span>
       </StyledPrice>
-      <StyledVolume side={side}>
+      <StyledVolume side={side} isAuth={isAuth}>
         <div onClick={onDepthClick(+currentPrice, depth)}>
           {ownOrders && <MyOrdersIndicator side={side} />}
           <StyledVolumeOverlay

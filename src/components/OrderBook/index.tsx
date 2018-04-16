@@ -50,7 +50,8 @@ const ConnectedOrderBook = connect(
       showMyOrders,
       lastTradePrice,
       loading: hasPendingItems,
-      isAuth
+      isAuth,
+      selectedInstrument
     };
   },
   compose(withLoader((p: OrderBookProps) => p.loading!), observer)(OrderBook)

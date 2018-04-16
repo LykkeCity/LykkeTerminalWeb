@@ -129,6 +129,10 @@ export const LastTradePrice = styled.div`
   cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(fonts.extraLarge)};
+
+  & > span:hover {
+    cursor: pointer;
+  }
 ` as any;
 
 export const MidPrice = styled.div`
@@ -179,17 +183,18 @@ export const StyledOrderRow = styled.tr`
 
   &:hover {
     background-color: ${colors.darkGraphite};
-    cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
   }
 ` as any;
 
 export const StyledPrice = styled.td`
   color: ${(p: any) => colorBySide(p.side)}!important;
+  cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
   text-align: left;
 ` as any;
 
 export const StyledVolume = styled.td`
   color: ${(p: any) => colorBySide(p.side)};
+  cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
   text-align: left;
   position: relative;
   min-width: 80px !important;
