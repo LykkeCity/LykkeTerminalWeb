@@ -1,100 +1,65 @@
 import {rem, rgb} from 'polished';
 import styled from 'styled-components';
+import {colors, fonts} from '../styled';
 
-// ...................MyWallets...................
 export const MyWalletsContainer = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
 `;
 
-export const WalletOverview = styled.div`
+export const Sidebar = styled.div`
   background-color: ${rgb(45, 45, 45)};
   border-radius: 2px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   height: 100%;
   padding: ${rem(8)};
 `;
 
-export const WalletNames = styled.div``;
-
-export const WalletBalances = styled.div`
-  width: 100%;
-  height: 100%;
-  margin-left: ${rem(8)};
+export const WalletNameList = styled.div`
+  flex-wrap: nowrap;
+  overflow: hidden;
 `;
 
-export const ManageWalletsLink = styled.a`
+export const ManageAccountLink = styled.a`
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
   cursor: pointer;
-  color: ${rgb(245, 246, 247)};
-  font-size: ${rem(14)};
-  font-family: 'ProximaNova', sans-serif;
-  font-weight: normal;
-  text-align: center;
-  text-decoration: none;
+  color: ${colors.white};
+  font-size: ${fonts.normal};
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: ${rem(250)};
   min-height: ${rem(32)};
-  margin-top: auto;
+  margin-top: 1rem;
   padding: ${rem(8)} 0;
+  text-align: center;
+  text-decoration: none;
 `;
 
-export const Br = styled.div`
-  width: 272px;
-  height: 1px;
-  opacity: 0.4;
-  background-color: rgba(0, 0, 0, 0.2);
-`;
-
-// ...................Names...................
-export const WalletItemContainer = styled.div`
-  display: flex;
+export const StyledWalletItem = styled.div`
+  background-color: ${(p: any) => (p.selected ? rgb(60, 60, 60) : '')};
   border-radius: 2px;
-  color: ${rgb(245, 246, 247)};
+  color: ${colors.white};
   cursor: pointer;
+  display: flex;
   padding: ${rem(10)};
-  width: 272px;
-  height: 32px;
-
-  &.selected-wallet-name {
-    background-color: ${rgb(60, 60, 60)};
-  }
-`;
+` as any;
 
 export const WalletName = styled.div`
-  width: ${rem(89)};
-  height: ${rem(17)};
-  font-family: 'ProximaNova', sans-serif;
-  font-size: ${rem(14)};
+  color: ${colors.white};
   font-weight: 600;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
   text-align: left;
-  color: #f5f6f7;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  width: ${rem(100)};
 `;
 
 export const WalletTotalBalance = styled.div`
   margin-left: auto;
-  width: ${rem(91)};
-  height: ${rem(17)};
-  font-family: 'ProximaNova', sans-serif;
-  font-size: ${rem(14)};
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
   text-align: right;
   color: #f5f6f7;
   white-space: nowrap;
@@ -102,22 +67,16 @@ export const WalletTotalBalance = styled.div`
   overflow: hidden;
 `;
 
-// ...................TotalBalance...................
 export const Total = styled.div`
-  color: ${rgb(255, 255, 255)};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 15px;
+  color: ${colors.white};
+  text-align: center;
+  margin-top: auto;
 `;
 
 export const TotalAmount = styled.div`
   font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(24)};
+  font-size: ${rem(fonts.extraLarge)};
   font-weight: bold;
-  width: 159px;
-  height: 24px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -128,4 +87,10 @@ export const TotalLabel = styled.div`
   opacity: 0.4;
   font-size: ${rem(12)};
   margin-top: ${rem(2)};
+`;
+
+export const WalletBalances = styled.div`
+  width: 100%;
+  height: 100%;
+  margin-left: ${rem(8)};
 `;

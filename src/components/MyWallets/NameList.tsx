@@ -1,40 +1,22 @@
 import * as React from 'react';
 import {WalletModel} from '../../models';
-import Name from './Name';
-import {Br, WalletNames} from './styles';
+import {HBar} from '../Bar';
+import {WalletItem} from './';
+import {WalletNameList} from './styles';
 
-interface WalletNamesProps {
+export interface WalletListProps {
   wallets: WalletModel[];
-  onChangeWallet: any;
-  selectedIndex: number;
-  baseAssetName: string;
-  accuracy: number;
 }
 
-const NameList: React.SFC<WalletNamesProps> = ({
-  wallets,
-  onChangeWallet,
-  selectedIndex,
-  baseAssetName,
-  accuracy
-}) => {
-  const handleChangeWallet = (idx: number) => () => onChangeWallet(idx);
-  return (
-    <WalletNames>
-      {wallets.map((wallet, index) => (
-        <div key={index} onClick={handleChangeWallet(index)}>
-          <Name
-            name={wallet.name}
-            selectedIndex={index === selectedIndex}
-            baseAssetName={baseAssetName}
-            accuracy={accuracy}
-            totalBalance={wallet.totalBalance}
-          />
-          <Br />
-        </div>
-      ))}
-    </WalletNames>
-  );
-};
+const WalletList: React.SFC<WalletListProps> = ({wallets}) => (
+  <WalletNameList>
+    {wallets.map((wallet, index) => (
+      <React.Fragment>
+        <WalletItem key={wallet.id} {...wallet} />
+        <HBar style={{opacity: 0.4}} />
+      </React.Fragment>
+    ))}
+  </WalletNameList>
+);
 
-export default NameList;
+export default WalletList;

@@ -3,6 +3,7 @@ import {add, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import {default as storageKeys} from '../constants/storageKeys';
 import keys from '../constants/tradingWalletKeys';
+import tradingWalletKeys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, WalletModel} from '../models';
 import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
@@ -45,17 +46,19 @@ class BalanceListStore extends BaseStore {
     return this.tradingTotal;
   }
 
+  @observable currentWalletId: string;
+
   @computed
-  get getCurrentWalletModel() {
-    return this.currentWallet
-      ? this.currentWallet
-      : this.getWalletsWithPositiveBalances[0];
+  get currentWallet() {
+    return (
+      this.walletList.find(w => w.id === this.currentWalletId) ||
+      this.walletList.find(w => w.type === tradingWalletKeys.trading)
+    );
   }
 
   @observable.shallow private walletList: WalletModel[] = [];
   @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
   @observable private tradingTotal: number = 0;
-  @observable private currentWallet: WalletModel;
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -105,8 +108,8 @@ class BalanceListStore extends BaseStore {
     await this.updateTradingWallet();
   };
 
-  selectWallet = async (index: number) => {
-    this.currentWallet = this.getWalletsWithPositiveBalances[index];
+  changeWallet = (walletId: string) => {
+    this.currentWalletId = walletId;
   };
 
   updateWithAssets = async (ids: string[]) => {

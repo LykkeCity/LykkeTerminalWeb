@@ -1,27 +1,24 @@
-import * as React from 'react';
+import React from 'react';
+import {AssetModel} from '../../models';
 import {Total, TotalAmount, TotalLabel} from './styles';
 
-interface TotalBalanceProps {
+export interface TotalBalanceProps {
   total: number;
-  accuracy?: number;
-  name?: string;
+  baseAsset: AssetModel;
+  formatBalance: (asset: AssetModel, balance: number) => string;
 }
 
 const TotalBalance: React.SFC<TotalBalanceProps> = ({
   total,
-  accuracy,
-  name
-}) => {
-  const totalWithName =
-    total.toLocaleString(undefined, {maximumFractionDigits: accuracy}) +
-    ' ' +
-    (name ? name : '');
-  return (
-    <Total>
-      <TotalAmount title={totalWithName}>{totalWithName}</TotalAmount>
-      <TotalLabel>Total Balance</TotalLabel>
-    </Total>
-  );
-};
+  baseAsset,
+  formatBalance
+}) => (
+  <Total>
+    <TotalAmount title={formatBalance(baseAsset, total)}>
+      {formatBalance(baseAsset, total)}
+    </TotalAmount>
+    <TotalLabel>Total Balance</TotalLabel>
+  </Total>
+);
 
 export default TotalBalance;

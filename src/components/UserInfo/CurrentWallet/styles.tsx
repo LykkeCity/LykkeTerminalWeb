@@ -1,5 +1,6 @@
-import {rem, rgb} from 'polished';
-import styled from '../../styled';
+import {rem} from 'polished';
+import styled, {colors, fonts} from '../../styled';
+
 export const StyledCurrentWallet = styled.div`
   display: flex;
   flex-direction: column;
@@ -7,9 +8,9 @@ export const StyledCurrentWallet = styled.div`
   text-align: right;
 
   span {
-    color: ${rgb(245, 246, 247)};
+    color: ${colors.white};
     font-family: 'Akrobat', sans-serif;
-    font-size: ${rem(16)};
+    font-size: ${fonts.large};
     font-weight: bold;
     text-transform: uppercase;
     width: 102px;

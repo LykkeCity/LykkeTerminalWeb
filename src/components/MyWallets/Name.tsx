@@ -1,39 +1,33 @@
-import * as React from 'react';
-import {WalletItemContainer, WalletName, WalletTotalBalance} from './styles';
+import React from 'react';
+import {WalletActions} from '.';
+import {AssetModel, WalletModel} from '../../models';
+import {StyledWalletItem, WalletName, WalletTotalBalance} from './styles';
 
-interface WalletNameProps {
-  name: string;
-  selectedIndex: boolean;
-  baseAssetName: string;
-  totalBalance?: number;
-  accuracy: number;
+export interface WalletItemProps extends WalletModel, WalletActions {
+  selectedId: string;
+  baseAsset: AssetModel;
+  formatBalance: (asset: AssetModel, balance: number) => string;
 }
 
-const Name: React.SFC<WalletNameProps> = ({
+const WalletItem: React.SFC<WalletItemProps> = ({
+  id,
   name,
-  selectedIndex,
-  baseAssetName,
   totalBalance,
-  accuracy
-}) => {
-  const totalBalanceWithLocale =
-    totalBalance &&
-    totalBalance.toLocaleString(undefined, {
-      maximumFractionDigits: accuracy
-    }) +
-      ' ' +
-      baseAssetName;
+  selectedId,
+  onChangeWallet,
+  formatBalance,
+  baseAsset
+}) => (
+  <StyledWalletItem
+    selected={selectedId === id}
+    // tslint:disable-next-line:jsx-no-lambda
+    onClick={() => onChangeWallet(id)}
+  >
+    <WalletName title={name}>{name}</WalletName>
+    <WalletTotalBalance title={formatBalance(baseAsset, totalBalance)}>
+      {formatBalance(baseAsset, totalBalance)}
+    </WalletTotalBalance>
+  </StyledWalletItem>
+);
 
-  return (
-    <WalletItemContainer
-      className={selectedIndex ? 'selected-wallet-name' : ''}
-    >
-      <WalletName title={name}>{name}</WalletName>
-      <WalletTotalBalance title={totalBalanceWithLocale + ''}>
-        {totalBalanceWithLocale}
-      </WalletTotalBalance>
-    </WalletItemContainer>
-  );
-};
-
-export default Name;
+export default WalletItem;

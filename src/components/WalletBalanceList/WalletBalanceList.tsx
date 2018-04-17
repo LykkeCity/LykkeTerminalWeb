@@ -4,7 +4,7 @@ import WalletModel from '../../models/walletModel';
 import {Table} from '../Table';
 import {WalletBalanceItem} from './index';
 
-interface WalletBalanceListProps {
+export interface WalletBalanceListProps {
   assets: AssetBalanceModel[];
   baseAsset: AssetModel;
   wallet: WalletModel;
@@ -12,10 +12,10 @@ interface WalletBalanceListProps {
 }
 
 const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
+  wallet,
   assets = [],
   baseAsset,
   baseAsset: {accuracy, name},
-  wallet,
   getAssetById
 }) => (
   <Table>

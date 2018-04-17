@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {AssetModel} from '../../../models';
+import {AssetBalanceModel, AssetModel} from '../../../models';
 import WalletBalanceNumber from './WalletBalanceNumber';
 interface WalletBalanceItemProps {
   balance: any;
   baseAsset: AssetModel;
-  asset: AssetModel;
+  asset: AssetBalanceModel;
 }
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   assetBalance: {

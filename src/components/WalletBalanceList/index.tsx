@@ -3,17 +3,16 @@ import {AssetModel} from '../../models/index';
 import {connect} from '../connect';
 import {withScroll} from '../CustomScrollbar';
 import WalletBalanceItem from './WalletBalanceItem/WalletBalanceItem';
-import WalletBalanceList from './WalletBalanceList';
+import WalletBalanceList, {WalletBalanceListProps} from './WalletBalanceList';
 
-const ConnectedWalletBalanceList = connect(
+const ConnectedWalletBalanceList = connect<WalletBalanceListProps>(
   ({
-    balanceListStore: {tradingWalletAssets: assets, tradingWalletTotal: total},
-    referenceStore,
+    balanceListStore: {currentWallet},
     referenceStore: {getAssetById, baseAssetId}
   }) => ({
-    assets,
+    wallet: currentWallet,
+    assets: currentWallet && currentWallet.balances,
     baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
-    total,
     getAssetById
   }),
   withScroll(WalletBalanceList)
