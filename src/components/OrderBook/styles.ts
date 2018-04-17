@@ -107,54 +107,44 @@ export const Levels = Table.extend`
   }
 `;
 
-export const MidFigures = styled.div`
+export const FigureList = styled.div`
   display: flex;
+  align-items: center;
+  padding: 1rem;
   position: sticky;
   top: 0;
   bottom: 0;
-  padding: 1rem;
   z-index: 1;
-  font-weight: bold;
-
-  small {
-    font-family: 'ProximaNova';
-    font-size: ${rem(fonts.normal)};
-    font-weight: normal;
-    text-align: right;
-    margin-left: auto;
-  }
 `;
 
-export const LastTradePrice = styled.div`
+export const Figure = styled.div`
   cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
+  font-size: ${rem(fonts.normal)};
+` as any;
+
+export const FigureValue = styled.div`
+  text-align: right;
+`;
+
+export const FigureHint = styled.div`
+  font-size: ${rem(fonts.small)};
+  font-weight: normal;
+  text-align: right;
+  opacity: 0.4;
+`;
+
+export const LastPriceValue = FigureValue.extend`
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(fonts.extraLarge)};
+  font-weight: bold;
+`;
 
-  & > span:hover {
-    cursor: pointer;
-  }
-` as any;
-
-export const MidPrice = styled.div`
-  cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
-  font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(fonts.large)};
-  text-align: right;
+export const MidPrice = Figure.extend`
   margin-left: auto;
+`;
 
-  & > span:hover {
-    cursor: pointer;
-  }
-
-  small {
-    opacity: 0.4;
-    font-size: ${fonts.small};
-  }
-` as any;
-
-export const Spread = MidPrice.extend`
-  font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(fonts.large)};
+export const Spread = Figure.extend`
+  cursor: initial;
   margin-left: 30px;
 `;
 

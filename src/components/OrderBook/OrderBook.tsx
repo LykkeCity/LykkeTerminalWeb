@@ -15,9 +15,12 @@ import {LoaderProps} from '../Loader/withLoader';
 import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
 import {
-  LastTradePrice,
+  Figure,
+  FigureHint,
+  FigureList,
+  FigureValue,
+  LastPriceValue,
   Levels,
-  MidFigures,
   MidOverlay,
   MidOverlayBackground,
   MidPrice,
@@ -244,31 +247,36 @@ class OrderBook extends React.Component<OrderBookProps> {
             </Levels>
             {loading || (
               <React.Fragment>
-                <MidFigures>
-                  <LastTradePrice isAuth={isAuth}>
-                    <span
-                      onClick={this.handleUpdatePrice(Number(lastTradePrice))}
-                    >
+                <FigureList>
+                  <Figure
+                    isAuth={isAuth}
+                    onClick={this.handleUpdatePrice(Number(lastTradePrice))}
+                  >
+                    <LastPriceValue>
                       {formatNumber(lastTradePrice, priceAccuracy)}
-                    </span>
-                  </LastTradePrice>
-                  <MidPrice isAuth={isAuth}>
-                    <span onClick={this.handleUpdatePrice(Number(mid))}>
+                    </LastPriceValue>
+                    <FigureHint>Last price</FigureHint>
+                  </Figure>
+                  <MidPrice
+                    isAuth={isAuth}
+                    onClick={this.handleUpdatePrice(Number(mid))}
+                  >
+                    <FigureValue>
                       {formatNumber(mid, priceAccuracy)}
-                      <br />
-                      <small>Mid price</small>
-                    </span>
+                    </FigureValue>
+                    <FigureHint>Mid price</FigureHint>
                   </MidPrice>
                   <Spread>
-                    {formatNumber(spreadRelative, priceAccuracy, {
-                      style: 'percent'
-                    })}
-                    <br />
-                    <small>Spread</small>
+                    <FigureValue>
+                      {formatNumber(spreadRelative, priceAccuracy, {
+                        style: 'percent'
+                      })}
+                    </FigureValue>
+                    <FigureHint>Spread</FigureHint>
                   </Spread>
                   <MidOverlay />
                   <MidOverlayBackground />
-                </MidFigures>
+                </FigureList>
               </React.Fragment>
             )}
             <Levels>
