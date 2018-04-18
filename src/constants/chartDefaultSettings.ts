@@ -1,6 +1,4 @@
-// tslint:disable:object-literal-sort-keys
 export const CHART_DEFAULT_SETTINGS = {
-  layout: 's',
   charts: [
     {
       panes: [
@@ -41,44 +39,44 @@ export const CHART_DEFAULT_SETTINGS = {
                   upColor: 'rgb(19, 183, 42)',
                   downColor: 'rgb(255, 62, 46)',
                   drawWick: true,
-                  drawBorder: true,
-                  borderColor: 'rgba( 55, 134, 88, 1)',
-                  borderUpColor: 'rgba( 34, 84, 55, 1)',
-                  borderDownColor: 'rgba( 91, 26, 19, 1)',
-                  wickColor: 'rgba( 115, 115, 117, 1)',
-                  wickUpColor: 'rgba(140, 148, 160, 1)',
-                  wickDownColor: 'rgba(140, 148, 160, 1)',
+                  drawBorder: false,
+                  borderColor: 'rgba(140, 148, 160, 0.4)',
+                  borderUpColor: 'rgb(19, 183, 42)',
+                  borderDownColor: 'rgb(255, 62, 46)',
+                  wickColor: 'rgba(140, 148, 160, 0.4)',
+                  wickUpColor: 'rgba(140, 148, 160, 0.4)',
+                  wickDownColor: 'rgba(140, 148, 160, 0.4)',
                   barColorsOnPrevClose: false
                 },
                 hollowCandleStyle: {
-                  upColor: 'rgba( 107, 165, 131, 1)',
-                  downColor: 'rgba( 215, 84, 66, 1)',
+                  upColor: 'rgb(19, 183, 42)',
+                  downColor: 'rgb(255, 62, 46)',
                   drawWick: true,
-                  drawBorder: true,
-                  borderColor: 'rgba( 55, 134, 88, 1)',
-                  borderUpColor: 'rgba( 34, 84, 55, 1)',
-                  borderDownColor: 'rgba( 91, 26, 19, 1)',
-                  wickColor: 'rgba( 115, 115, 117, 1)',
-                  wickUpColor: 'rgba( 115, 115, 117, 1)',
-                  wickDownColor: 'rgba( 115, 115, 117, 1)'
+                  drawBorder: false,
+                  borderColor: 'rgba(140, 148, 160, 0.4)',
+                  borderUpColor: 'rgb(19, 183, 42)',
+                  borderDownColor: 'rgb(255, 62, 46)',
+                  wickColor: 'rgba(140, 148, 160, 0.4)',
+                  wickUpColor: 'rgba(140, 148, 160, 0.4)',
+                  wickDownColor: 'rgba(140, 148, 160, 0.4)'
                 },
                 haStyle: {
-                  upColor: 'rgba( 107, 165, 131, 1)',
-                  downColor: 'rgba( 215, 84, 66, 1)',
+                  upColor: 'rgb(19, 183, 42)',
+                  downColor: 'rgb(255, 62, 46)',
                   drawWick: true,
-                  drawBorder: true,
-                  borderColor: 'rgba( 55, 134, 88, 1)',
-                  borderUpColor: 'rgba( 34, 84, 55, 1)',
-                  borderDownColor: 'rgba( 91, 26, 19, 1)',
-                  wickColor: 'rgba( 115, 115, 117, 1)',
-                  wickUpColor: 'rgba( 115, 115, 117, 1)',
-                  wickDownColor: 'rgba( 115, 115, 117, 1)',
+                  drawBorder: false,
+                  borderColor: 'rgba(140, 148, 160, 0.4)',
+                  borderUpColor: 'rgb(19, 183, 42)',
+                  borderDownColor: 'rgb(255, 62, 46)',
+                  wickColor: 'rgba(140, 148, 160, 0.4)',
+                  wickUpColor: 'rgba(140, 148, 160, 0.4)',
+                  wickDownColor: 'rgba(140, 148, 160, 0.4)',
                   showRealLastPrice: false,
                   barColorsOnPrevClose: false
                 },
                 barStyle: {
-                  upColor: 'rgba( 107, 165, 131, 1)',
-                  downColor: 'rgba( 215, 84, 66, 1)',
+                  upColor: 'rgb(19, 183, 42)',
+                  downColor: 'rgb(255, 62, 46)',
                   barColorsOnPrevClose: false,
                   dontDrawOpen: false
                 },
@@ -110,8 +108,8 @@ export const CHART_DEFAULT_SETTINGS = {
                 renkoStyle: {
                   upColor: 'rgba( 107, 165, 131, 1)',
                   downColor: 'rgba( 215, 84, 66, 1)',
-                  borderUpColor: 'rgba( 34, 84, 55, 1)',
-                  borderDownColor: 'rgba( 91, 26, 19, 1)',
+                  borderUpColor: 'rgb(19, 183, 42)',
+                  borderDownColor: 'rgb(255, 62, 46)',
                   upColorProjection: 'rgba( 74, 214, 190, 1)',
                   downColorProjection: 'rgba( 214, 73, 207, 1)',
                   borderUpColorProjection: 'rgba( 34, 84, 55, 1)',
@@ -132,8 +130,8 @@ export const CHART_DEFAULT_SETTINGS = {
                 pbStyle: {
                   upColor: 'rgba( 107, 165, 131, 1)',
                   downColor: 'rgba( 215, 84, 66, 1)',
-                  borderUpColor: 'rgba( 34, 84, 55, 1)',
-                  borderDownColor: 'rgba( 91, 26, 19, 1)',
+                  borderUpColor: 'rgb(19, 183, 42)',
+                  borderDownColor: 'rgb(255, 62, 46)',
                   upColorProjection: 'rgba( 74, 214, 190, 1)',
                   downColorProjection: 'rgba( 214, 73, 207, 1)',
                   borderUpColorProjection: 'rgba( 34, 84, 55, 1)',
@@ -673,18 +671,30 @@ export const CHART_DEFAULT_SETTINGS = {
       timeScale: {m_barSpacing: 5.763973016993665, m_rightOffset: 2},
       chartProperties: {
         paneProperties: {
-          background: '#333333',
-          gridProperties: {color: '#E6E6E6', style: 0},
-          vertGridProperties: {color: 'rgba(152, 152, 152, 0.22)', style: 1},
-          horzGridProperties: {color: 'rgba(152, 152, 152, 0.2)', style: 1},
-          crossHairProperties: {
-            color: 'rgba(255, 255, 255, 1)',
+          background: 'rgb(51,51,51)',
+          gridProperties: {
+            color: 'rgb(140, 148, 160)',
             style: 0,
-            transparency: 0,
+            transparency: 0.6
+          },
+          vertGridProperties: {
+            color: 'rgb(140, 148, 160)',
+            style: 1,
+            transparency: 0.6
+          },
+          horzGridProperties: {
+            color: 'rgb(140, 148, 160)',
+            style: 2,
+            transparency: 0.6
+          },
+          crossHairProperties: {
+            color: 'rgb(140, 148, 160)',
+            style: 0,
+            transparency: 0.4,
             width: 1
           },
-          topMargin: 15,
-          bottomMargin: 10,
+          topMargin: 20,
+          bottomMargin: 5,
           leftAxisProperties: {
             autoScale: true,
             autoScaleDisabled: false,
@@ -724,9 +734,9 @@ export const CHART_DEFAULT_SETTINGS = {
         scalesProperties: {
           showLeftScale: false,
           showRightScale: true,
-          backgroundColor: 'rgba( 255, 255, 255, 1)',
+          backgroundColor: 'rgb(51,51,51)',
           lineColor: 'rgba( 85, 85, 85, 1)',
-          textColor: 'rgba(242, 242, 242, 1)',
+          textColor: 'rgb(140, 148, 160)',
           fontSize: 11,
           scaleSeriesOnly: false,
           showSeriesLastValue: true,

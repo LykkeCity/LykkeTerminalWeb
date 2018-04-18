@@ -1,9 +1,7 @@
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
-// import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
+import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {InstrumentModel} from '../models/index';
 import {BaseStore, RootStore} from './index';
-
-// tslint:disable:object-literal-sort-keys
 
 export const LINESTYLE_DOTTED = 1;
 export const LINESTYLE_DASHED = 2;
@@ -30,6 +28,8 @@ class ChartStore extends BaseStore {
     supports_time: true
   };
 
+  private widget: any;
+
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
   }
@@ -39,11 +39,9 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
-    // tslint:disable-next-line:no-unused-expression
-    new (window as any).TradingView.widget({
+    this.widget = new (window as any).TradingView.widget({
       autosize: true,
-      // fullscreen: true,
-      symbol: instrument.name,
+      symbol: instrument.displayName,
       interval: '60',
       container_id: 'tv_chart_container',
       datafeed: new ChartDataFeed(
@@ -68,7 +66,9 @@ class ChartStore extends BaseStore {
         'header_undo_redo',
         'header_interval_dialog_button',
         'show_interval_dialog_on_keypress',
-        'timeframes_toolbar'
+        'timeframes_toolbar',
+        'use_localstorage_for_settings',
+        'save_chart_properties_to_local_storage'
       ],
       overrides: {
         'paneProperties.background': '#333333',
@@ -92,33 +92,33 @@ class ChartStore extends BaseStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
     });
-    // chartContainerExists.style.display = 'none';
-    // if (this.rootStore.authStore.isAuth) {
-    //   widget.onChartReady(() => {
-    //     this.load()
-    //       .then((res: any) => {
-    //         if (res && res.Data) {
-    //           const settings = JSON.parse(res.Data);
-    //           widget.load(settings);
-    //         }
-    //         chartContainerExists.style.display = 'block';
-    //       })
-    //       .catch(err => {
-    //         if (err.status === 404) {
-    //           widget.load(CHART_DEFAULT_SETTINGS);
-    //         }
-    //         chartContainerExists.style.display = 'block';
-    //       });
-    //     widget.subscribe('onAutoSaveNeeded', () => {
-    //       widget.save(this.save);
-    //     });
-    //   });
-    // } else {
-    //   widget.onChartReady(() => {
-    //     widget.load(CHART_DEFAULT_SETTINGS);
-    //     chartContainerExists.style.display = 'block';
-    //   });
-    // }
+    chartContainerExists.style.display = 'none';
+    if (this.rootStore.authStore.isAuth) {
+      this.widget.onChartReady(() => {
+        this.load()
+          .then((res: any) => {
+            if (res && res.Data) {
+              const settings = JSON.parse(res.Data);
+              this.widget.load(settings);
+            }
+            chartContainerExists.style.display = 'block';
+          })
+          .catch(err => {
+            if (err.status === 404) {
+              this.widget.load(CHART_DEFAULT_SETTINGS);
+            }
+            chartContainerExists.style.display = 'block';
+          });
+        this.widget.subscribe('onAutoSaveNeeded', () => {
+          this.widget.save(this.save);
+        });
+      });
+    } else {
+      this.widget.onChartReady(() => {
+        this.widget.load(CHART_DEFAULT_SETTINGS);
+        chartContainerExists.style.display = 'block';
+      });
+    }
   };
 
   save = (settings: any) => {
@@ -126,6 +126,12 @@ class ChartStore extends BaseStore {
   };
 
   load = () => this.api.load();
+
+  resetToDefault = () => {
+    if (this.widget) {
+      this.widget.load(CHART_DEFAULT_SETTINGS);
+    }
+  };
 
   reset = () => {
     return;
