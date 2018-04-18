@@ -18,7 +18,7 @@ class OrderModel {
 
   @computed
   get filledPercent() {
-    return this.volume / this.remainingVolume;
+    return this.filled !== 0 ? this.remainingVolume / this.volume : 0;
   }
 
   constructor(order: Partial<OrderModel>) {

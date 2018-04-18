@@ -35,14 +35,13 @@ const Blotter: React.SFC<OrdersProps> = ({cancelOrder, addModal}) => {
         <thead>
           <tr>
             <HeaderCell w={OrderCellWidth.Symbol}>Asset pair</HeaderCell>
-            <HeaderCell w={OrderCellWidth.CancelOrder}>Cancel order</HeaderCell>
             <HeaderCell w={OrderCellWidth.Id}>OrderID</HeaderCell>
             <HeaderCell w={OrderCellWidth.Side}>Side</HeaderCell>
             <th>Volume</th>
             <HeaderCell w={OrderCellWidth.Filled}>Filled</HeaderCell>
             <th>Price</th>
             <HeaderCell w={OrderCellWidth.CreatedDate}>Created Date</HeaderCell>
-            <HeaderCell w={OrderCellWidth.Edit}>Edit</HeaderCell>
+            <HeaderCell w={OrderCellWidth.Actions}>Actions</HeaderCell>
           </tr>
         </thead>
       </Table>

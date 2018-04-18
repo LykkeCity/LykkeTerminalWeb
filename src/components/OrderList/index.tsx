@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react';
 import {compose} from 'rambda';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
@@ -5,20 +6,20 @@ import {withStyledScroll} from '../CustomScrollbar';
 import withLoader from '../Loader/withLoader';
 import OrderList from './OrderList';
 import {OrderListProps} from './OrderList';
+import OrderListItem from './OrderListItem';
 import Orders from './Orders';
 
 export const OrderCellWidth = {
-  Symbol: 100,
-  CancelOrder: 70,
-  Id: 320,
-  Side: 70,
+  Symbol: 70,
+  Id: 300,
+  Side: 50,
   Filled: 100,
-  CreatedDate: 200,
-  Edit: 40
+  CreatedDate: 150,
+  Actions: 60
 };
 
 export interface OrderActions {
-  cancelOrder?: (id: string) => void;
+  cancelOrder: (id: string) => void;
 }
 
 const ConnectedOrders = connect(
@@ -49,6 +50,8 @@ const ConnectedOrderList = connect<OrderListProps>(
   )(OrderList)
 );
 
+const ConnectedOrderListItem = observer(OrderListItem);
+
 export {ConnectedOrders as Orders};
 export {ConnectedOrderList as OrderList};
-export {default as OrderListItem} from './OrderListItem';
+export {ConnectedOrderListItem as OrderListItem};

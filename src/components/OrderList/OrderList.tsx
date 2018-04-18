@@ -7,7 +7,7 @@ import {Table} from '../Table';
 export interface OrderListProps extends LoaderProps {
   orders: OrderModel[];
   onEditOrder: (order: OrderModel) => (id: string) => void;
-  onCancelOrder?: (id: string) => void;
+  onCancelOrder: (id: string) => void;
   getInstrumentById: (id: string) => any;
 }
 

@@ -1,4 +1,3 @@
-import {observer} from 'mobx-react';
 import * as React from 'react';
 import {InstrumentModel, OrderModel} from '../../models';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
@@ -12,22 +11,6 @@ interface OrderListItemProps {
   order: OrderModel;
   instrument: InstrumentModel;
 }
-
-const getFilled = (filled: number, accuracy: number) => {
-  return toLocaleStringWithAccuracy(filled, accuracy);
-};
-
-const getFilledPercent = (
-  filled: number,
-  filledPercent: number,
-  accuracy: number
-) => {
-  return filled === 0
-    ? 0
-    : toLocaleStringWithAccuracy(filledPercent * 100, accuracy, {
-        style: 'percent'
-      });
-};
 
 const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
   order: {
@@ -50,37 +33,37 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     baseAsset: {accuracy: baseAssetAccuracy}
   } = instrument;
 
+  const handleEditOrder = () => onEdit(id);
+
+  const handleCancelOrder = () => cancelOrder(id);
+
   return (
     <tr>
       <Cell w={OrderCellWidth.Symbol}>{displayName}</Cell>
-      <Cell w={OrderCellWidth.CancelOrder}>
-        {/* tslint:disable-next-line:jsx-no-lambda */}
-        <span onClick={() => cancelOrder!(id)}>
-          <Icon name="cross" />
-        </span>
-      </Cell>
       <Cell w={OrderCellWidth.Id}>{id}</Cell>
       <SideCell w={OrderCellWidth.Side} side={side}>
         {side}
       </SideCell>
       <td>{toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}</td>
       <Cell w={OrderCellWidth.Filled}>
-        {getFilled(filled, baseAssetAccuracy)} ({getFilledPercent(
-          filled,
+        {toLocaleStringWithAccuracy(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(
           filledPercent,
-          baseAssetAccuracy
-        )}%)
+          2,
+          {style: 'percent'}
+        )})
       </Cell>
       <td>{toLocaleStringWithAccuracy(price, accuracy)}</td>
       <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
-      <Cell w={OrderCellWidth.Edit}>
-        {/* tslint:disable-next-line:jsx-no-lambda */}
-        <span onClick={() => onEdit(id)}>
+      <Cell w={OrderCellWidth.Actions}>
+        <span onClick={handleEditOrder}>
           <Icon name="pencil" />
+        </span>
+        <span style={{marginLeft: '0.75rem'}} onClick={handleCancelOrder}>
+          <Icon name="cross" />
         </span>
       </Cell>
     </tr>
   );
 };
 
-export default observer(OrderListItem);
+export default OrderListItem;
