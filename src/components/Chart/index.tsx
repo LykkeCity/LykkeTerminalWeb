@@ -1,11 +1,11 @@
 import {connect} from '../connect';
-import Chart from './Chart';
+import Chart, {ChartProps} from './Chart';
 
-const connectedChart = connect(
+const ConnectedChart = connect<ChartProps>(
   ({chartStore}) => ({
     onReset: chartStore.resetToDefault
   }),
   Chart
 );
 
-export {connectedChart as Chart};
+export {ConnectedChart as Chart};

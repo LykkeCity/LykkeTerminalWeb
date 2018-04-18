@@ -1,10 +1,11 @@
 import keys from '../constants/storageKeys';
 import {RestApi} from './restApi';
+import {ApiResponse} from './types';
 
 export interface ChartApi {
-  save: (body: any, key: string) => Promise<any>;
-  load: (key: string) => Promise<any>;
-  reset: () => Promise<any>;
+  save: (body: any, key: string) => ApiResponse;
+  load: (key: string) => ApiResponse;
+  reset: () => ApiResponse;
 }
 
 export class RestChartApi extends RestApi implements ChartApi {

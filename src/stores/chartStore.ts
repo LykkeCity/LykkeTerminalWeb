@@ -3,8 +3,6 @@ import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {InstrumentModel} from '../models/index';
 import {BaseStore, RootStore} from './index';
 
-// tslint:disable:object-literal-sort-keys
-
 export const LINESTYLE_DOTTED = 1;
 export const LINESTYLE_DASHED = 2;
 export const LINESTYLE_SOLID = 0;
@@ -41,11 +39,9 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
-    // tslint:disable-next-line:no-unused-expression
     this.widget = new (window as any).TradingView.widget({
       autosize: true,
-      // fullscreen: true,
-      symbol: instrument.name,
+      symbol: instrument.displayName,
       interval: '60',
       container_id: 'tv_chart_container',
       datafeed: new ChartDataFeed(
@@ -59,7 +55,7 @@ class ChartStore extends BaseStore {
       disabled_features: [
         'widget_logo',
         'link_to_tradingview',
-        // 'left_toolbar',
+        'left_toolbar',
         'header_symbol_search',
         'header_screenshot',
         'compare_symbol',
