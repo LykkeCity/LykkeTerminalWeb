@@ -101,6 +101,7 @@ class ChartStore extends BaseStore {
           'rgba(140, 148, 160, 0.4)',
         'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
 
+        'timeScale.rightOffset': 0,
         timezone
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css'
