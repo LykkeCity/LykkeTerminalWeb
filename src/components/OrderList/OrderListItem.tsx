@@ -13,27 +13,24 @@ interface OrderListItemProps {
   symbol: string;
 }
 
-const getFilled = (
-  volume: number,
-  remainingVolume: number,
-  accuracy: number
-) => {
-  return toLocaleStringWithAccuracy(volume - remainingVolume, accuracy);
+const getFilled = (filled: number, accuracy: number) => {
+  return toLocaleStringWithAccuracy(filled, accuracy);
 };
 
 const getFilledPercent = (
+  filled: number,
   volume: number,
   remainingVolume: number,
   accuracy: number
 ) => {
-  return volume - remainingVolume === 0
+  return filled === 0
     ? 0
     : toLocaleStringWithAccuracy(remainingVolume / volume * 100, accuracy);
 };
 
 const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
   ({
-    order: {createdAt, price, id, side, volume, remainingVolume},
+    order: {createdAt, price, id, side, volume, remainingVolume, filled},
     accuracy,
     onEdit,
     symbol,
@@ -44,7 +41,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
     return (
       <tr>
         <Cell w={OrderCellWidth.Symbol}>{symbol}</Cell>
-        <Cell w={OrderCellWidth.CancelOrder} style={{textAlign: 'center'}}>
+        <Cell w={OrderCellWidth.CancelOrder}>
           {/* tslint:disable-next-line:jsx-no-lambda */}
           <span onClick={() => cancelOrder!(id)}>
             <Icon name="cross" />
@@ -55,13 +52,14 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
           {side}
         </Cell>
         <td>{volume}</td>
-        <td>
-          {getFilled(volume, remainingVolume, accuracy)} ({getFilledPercent(
+        <Cell w={OrderCellWidth.Filled}>
+          {getFilled(filled, accuracy)} ({getFilledPercent(
+            filled,
             volume,
             remainingVolume,
             accuracy
           )}%)
-        </td>
+        </Cell>
         <td>{price}</td>
         <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
         <Cell w={OrderCellWidth.Edit}>

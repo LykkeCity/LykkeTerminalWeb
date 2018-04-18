@@ -23,6 +23,7 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   showInstrumentSelection: boolean;
   onToggleInstrumentSelection: any;
   watchlistNames: string[];
+  isAuth: boolean;
 }
 
 export interface InstrumentPopoverProps extends InstrumentPickerActions {
@@ -49,6 +50,7 @@ export interface InstrumentListProps {
   change: any;
   instruments: InstrumentModel[];
   onPick: any;
+  isAuth: boolean;
 }
 
 export interface InstrumentShortcutSelectionProps {
@@ -60,7 +62,7 @@ export interface InstrumentShortcutSelectionProps {
 }
 
 const connectedInstrumentPicker = connect(
-  ({referenceStore, uiStore, watchlistStore}) => ({
+  ({authStore, referenceStore, uiStore, watchlistStore}) => ({
     baseAsset:
       referenceStore.getAssetById(referenceStore.baseAssetId) ||
       new AssetModel({}),
@@ -80,7 +82,8 @@ const connectedInstrumentPicker = connect(
     onToggleInstrumentSelection: uiStore.toggleInstrumentSelection,
     onSearch: uiStore.search,
     onSearchWalletName: uiStore.searchWallet,
-    watchlistNames: watchlistStore.watchlistNames
+    watchlistNames: watchlistStore.watchlistNames,
+    isAuth: authStore.isAuth
   }),
   InstrumentPicker
 );

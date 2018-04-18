@@ -8,13 +8,15 @@ interface InstrumentTableProps {
   currentInstrumentId: string;
   instruments: InstrumentModel[];
   onPick: any;
+  isAuth: boolean;
 }
 
 const InstrumentTable: React.SFC<InstrumentTableProps> = ({
   baseAsset,
   currentInstrumentId,
   instruments,
-  onPick
+  onPick,
+  isAuth
 }) => {
   return (
     <InstrumentTableEl>
@@ -26,6 +28,7 @@ const InstrumentTable: React.SFC<InstrumentTableProps> = ({
             onPick={onPick}
             inactive={currentInstrumentId !== instrument.id}
             instrument={instrument}
+            isAuth={isAuth}
           />
         ))}
       </tbody>

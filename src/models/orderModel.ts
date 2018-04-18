@@ -2,6 +2,7 @@ import {extendObservable} from 'mobx';
 import {Side} from './index';
 
 class OrderModel {
+  filled: number;
   symbol: string;
   side: Side;
   volume: number;

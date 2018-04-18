@@ -1,6 +1,7 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
 import {AssetModel, InstrumentModel} from '../../models/index';
+import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {colors} from '../styled';
 import {InstrumentListNumber, InstrumentPickerActions} from './index';
 
@@ -8,10 +9,11 @@ interface InstrumentListItemProps extends InstrumentPickerActions {
   baseAsset: AssetModel;
   instrument: InstrumentModel;
   inactive: boolean;
+  isAuth: boolean;
 }
 
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
-  ({baseAsset, instrument, onPick, inactive}) => {
+  ({baseAsset, instrument, onPick, inactive, isAuth}) => {
     const percentageAccuracy = 2;
     const click = () => inactive && onPick && onPick(instrument);
 
@@ -20,14 +22,18 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>{instrument.displayName}</td>
         <td>
           <InstrumentListNumber
-            num={instrument.price}
-            accuracy={instrument.accuracy}
+            num={toLocaleStringWithAccuracy(
+              instrument.price,
+              instrument.accuracy
+            )}
           />
         </td>
         <td>
           <InstrumentListNumber
-            num={instrument.change24h}
-            accuracy={percentageAccuracy}
+            num={toLocaleStringWithAccuracy(
+              instrument.change24h,
+              percentageAccuracy
+            )}
             dynamics={instrument.change24h >= 0 ? 'up' : 'down'}
             preSign={instrument.change24h >= 0 ? '+' : ''}
           >
@@ -35,21 +41,40 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           </InstrumentListNumber>
         </td>
         <td>
-          <InstrumentListNumber
-            num={instrument.volume}
-            accuracy={instrument.baseAsset.accuracy}
-          >
-            &nbsp;{instrument.baseAsset.name}
-          </InstrumentListNumber>
+          {isAuth ? (
+            <InstrumentListNumber
+              num={toLocaleStringWithAccuracy(
+                instrument.volume,
+                instrument.baseAsset.accuracy
+              )}
+            >
+              &nbsp;{instrument.baseAsset.name}
+            </InstrumentListNumber>
+          ) : (
+            ''
+          )}
         </td>
         <td>
-          <InstrumentListNumber
-            num={instrument.volumeInBase}
-            accuracy={baseAsset.accuracy}
-            color={colors.lightGrey}
-          >
-            &nbsp;{baseAsset.name}
-          </InstrumentListNumber>
+          {isAuth ? (
+            <InstrumentListNumber
+              num={toLocaleStringWithAccuracy(
+                instrument.volumeInBase,
+                baseAsset.accuracy
+              )}
+              color={colors.lightGrey}
+            >
+              &nbsp;{baseAsset.name}
+            </InstrumentListNumber>
+          ) : (
+            <InstrumentListNumber
+              num={toLocaleStringWithAccuracy(
+                instrument.volume,
+                instrument.baseAsset.accuracy
+              )}
+            >
+              &nbsp;{instrument.baseAsset.name}
+            </InstrumentListNumber>
+          )}
         </td>
       </tr>
     );

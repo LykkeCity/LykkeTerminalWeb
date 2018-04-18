@@ -2,7 +2,12 @@ import * as React from 'react';
 import {OrderModel} from '../../models';
 import Types from '../../models/modals';
 import {HBar} from '../Bar';
-import {sortData, TableHeader, TableSortState} from '../Table';
+import {
+  checkDataForSorting,
+  sortData,
+  TableHeader,
+  TableSortState
+} from '../Table';
 import {OrderActions, OrderCellWidth, OrderList} from './';
 import {CancelAllOrders, ToggleOrders} from './OrderListAdditional';
 import OrderListToolbar from './OrderListToolbar';
@@ -48,7 +53,12 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
       );
     };
     const headers: any[] = [
-      {key: 'symbol', value: 'Asset pair', width: OrderCellWidth.Symbol},
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
+        key: 'symbol',
+        value: 'Asset pair',
+        width: OrderCellWidth.Symbol
+      },
       {
         sortDisabled: true,
         className: 'center-align',
@@ -57,24 +67,43 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         width: OrderCellWidth.CancelOrder
       },
       {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
         className: 'right-align',
-        key: 'id',
+        key: 'price',
         value: 'OrderID',
         width: OrderCellWidth.Id
       },
       {
+        sortDisabled: checkDataForSorting(this.state.data, 'side'),
         className: 'right-align',
         key: 'side',
         value: 'Side',
         width: OrderCellWidth.Side
       },
-      {className: 'right-align', key: 'volume', value: 'Volume'},
-      {className: 'right-align', key: 'remainingVolume', value: 'Filled'},
-      {className: 'right-align', key: 'price', value: 'Price'},
       {
+        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        className: 'right-align',
+        key: 'volume',
+        value: 'Volume'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'filled'),
+        className: 'right-align',
+        key: 'filled',
+        value: 'Filled',
+        width: OrderCellWidth.Filled
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        className: 'right-align',
+        key: 'price',
+        value: 'Price'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'createdAt'),
         className: 'right-align',
         key: 'createdAt',
-        value: 'Created Date',
+        value: 'Time',
         width: OrderCellWidth.CreatedDate
       },
       {

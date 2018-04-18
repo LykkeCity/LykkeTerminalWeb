@@ -1,4 +1,4 @@
-import {prop, sortBy} from 'rambda';
+import {prop, sortBy, uniq} from 'rambda';
 
 export const sortData = (
   dataToSort: any[],
@@ -11,7 +11,6 @@ export const sortData = (
     state.sortByParam === sortByParam
       ? state.sortDirection === 'ASC' ? 'DESC' : 'ASC'
       : sortDirectionDefault;
-
   const data = (() => {
     switch (sortDirection) {
       default:
@@ -27,4 +26,18 @@ export const sortData = (
     sortByParam,
     sortDirection
   };
+};
+
+export const checkDataForSorting = (data: any[], sortByParam: string) => {
+  const checkData: any[] = [];
+
+  data.forEach(item => {
+    if (item[sortByParam]) {
+      checkData.push(item[sortByParam].toString());
+    } else {
+      checkData.push(false);
+    }
+  });
+
+  return uniq(checkData).length === 1;
 };

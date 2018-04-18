@@ -3,22 +3,21 @@ import * as React from 'react';
 import {InstrumentNumber} from './styles';
 
 interface InstrumentListNumberProps {
-  num: number;
-  accuracy: number;
+  num: string;
   color?: string;
   dynamics?: string;
   preSign?: string;
 }
 
 const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
-  ({num, accuracy, color, active, children, dynamics, preSign}) => {
+  ({num, color, children, dynamics, preSign}) => {
     if (num === undefined || num === null) {
       return null;
     }
     return (
       <InstrumentNumber color={color || ''} className={dynamics || ''}>
         {preSign}
-        {num.toFixed(accuracy).replace(/[.,]?0+$/, '')}
+        {num || 0}
         {children}
       </InstrumentNumber>
     );

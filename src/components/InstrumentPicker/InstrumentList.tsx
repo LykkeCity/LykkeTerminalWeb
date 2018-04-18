@@ -1,5 +1,10 @@
 import * as React from 'react';
-import {sortData, TableHeader, TableSortState} from '../Table';
+import {
+  checkDataForSorting,
+  sortData,
+  TableHeader,
+  TableSortState
+} from '../Table';
 import {InstrumentListProps, InstrumentTable} from './index';
 
 class InstrumentList extends React.Component<
@@ -38,11 +43,29 @@ class InstrumentList extends React.Component<
 
   render() {
     const headers = [
-      {key: 'displayName', value: 'Asset pair'},
-      {key: 'price', value: 'Price'},
-      {className: 'right-align', key: 'change24h', value: '24h Change'},
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'displayName'),
+        key: 'displayName',
+        value: 'Asset pair'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        key: 'price',
+        value: 'Price'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'change24h'),
+        className: 'right-align',
+        key: 'change24h',
+        value: '24h Change'
+      },
       {sortDisabled: true, className: 'right-align', key: '', value: ''},
-      {className: 'right-align', key: 'volume', value: 'Volume'}
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        className: 'right-align',
+        key: 'volume',
+        value: 'Volume'
+      }
     ];
 
     return (
@@ -60,6 +83,7 @@ class InstrumentList extends React.Component<
           baseAsset={this.props.baseAsset}
           currentInstrumentId={this.props.currentInstrumentId}
           onPick={this.props.onPick}
+          isAuth={this.props.isAuth}
         />
       </React.Fragment>
     );

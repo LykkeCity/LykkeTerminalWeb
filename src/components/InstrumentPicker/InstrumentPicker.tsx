@@ -78,6 +78,7 @@ class InstrumentPicker extends React.Component<
               instruments={this.props.instruments}
               onPick={this.props.onPick}
               change={this.changeValue}
+              isAuth={this.props.isAuth}
             />
           </InstrumentPopover>
         ) : null}

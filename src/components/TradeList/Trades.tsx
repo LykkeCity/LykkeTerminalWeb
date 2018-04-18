@@ -1,7 +1,12 @@
 import * as React from 'react';
 import {TradeFilter as TradeFilterModel, TradeModel} from '../../models/index';
 import {HBar} from '../Bar';
-import {sortData, TableHeader, TableSortState} from '../Table';
+import {
+  checkDataForSorting,
+  sortData,
+  TableHeader,
+  TableSortState
+} from '../Table';
 import {TradeFilter, TradeList, TradesCellWidth} from './index';
 import {TradeListToolbar} from './styles';
 
@@ -37,28 +42,56 @@ class Trades extends React.Component<TradesProps, TableSortState> {
 
   render() {
     const headers: any[] = [
-      {key: 'symbol', value: 'Asset pair', width: TradesCellWidth.Symbol},
       {
+        sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
+        key: 'symbol',
+        value: 'Asset pair',
+        width: TradesCellWidth.Symbol
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'side'),
         className: 'right-align',
         key: 'side',
         value: 'Side',
         width: TradesCellWidth.Side
       },
-      {className: 'right-align', key: 'volume', value: 'Volume'},
-      {className: 'right-align', key: 'price', value: 'Price'},
       {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
         className: 'right-align',
-        key: 'oppositeVolume',
-        value: 'Opposite volume'
+        key: 'price',
+        value: 'Price'
       },
       {
+        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        className: 'right-align',
+        key: 'volume',
+        value: 'Filled'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'fee'),
+        className: 'right-align',
+        key: 'fee',
+        value: 'Fee'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'oppositeVolume'),
+        className: 'right-align',
+        key: 'oppositeVolume',
+        value: 'Value'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'orderType'),
         className: 'right-align',
         key: 'orderType',
         value: 'Order type',
         width: TradesCellWidth.OrderType
       },
-      {className: 'right-align', key: 'fee', value: 'Fee'},
-      {className: 'right-align', key: 'timestamp', value: 'Time'}
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'timestamp'),
+        className: 'right-align',
+        key: 'timestamp',
+        value: 'Time'
+      }
     ];
 
     return (
