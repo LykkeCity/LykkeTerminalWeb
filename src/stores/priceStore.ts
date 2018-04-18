@@ -58,8 +58,6 @@ class PriceStore extends BaseStore {
         }
       })
       .catch((e: any) => {
-        // tslint:disable:no-console
-        console.error(e);
         this.rootStore.notificationStore.addNotification(
           levels.error,
           messages.pairNotConfigured(this.selectedInstrument!.id)
