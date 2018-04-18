@@ -74,7 +74,7 @@ class ReferenceStore extends BaseStore {
   };
 
   getInstrumentById = (id: string) =>
-    this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase()));
+    this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase())); // TODO: remove toLowerCase conversion
 
   findInstruments = (term: string, name: string) => {
     const isAuth = this.rootStore.authStore.isAuth;

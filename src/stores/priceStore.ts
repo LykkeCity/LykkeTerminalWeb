@@ -5,6 +5,8 @@ import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
 import * as topics from '../api/topics';
+import levels from '../constants/notificationLevels';
+import messages from '../constants/notificationMessages';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
 
@@ -40,18 +42,33 @@ class PriceStore extends BaseStore {
   }
 
   fetchLastPrice = async () => {
-    const resp = await this.api.fetchCandles(
-      this.selectedInstrument!.id,
-      toUtc(addMonths(new Date(), -12)),
-      toUtc(addMonths(new Date(), 1)),
-      'month'
-    );
-    if (resp.History && resp.History.length > 0) {
-      runInAction(() => {
-        const {close} = map.mapToBarFromRest(last(resp.History));
-        this.lastTradePrice = close;
+    return this.api
+      .fetchCandles(
+        this.selectedInstrument!.id,
+        toUtc(addMonths(new Date(), -12)),
+        toUtc(addMonths(new Date(), 1)),
+        'month'
+      )
+      .then((resp: any) => {
+        if (resp.History && resp.History.length > 0) {
+          runInAction(() => {
+            const {close} = map.mapToBarFromRest(last(resp.History));
+            this.lastTradePrice = close;
+          });
+        }
+      })
+      .catch((e: any) => {
+        switch (e.status) {
+          case 404:
+            this.rootStore.notificationStore.addNotification(
+              levels.error,
+              messages.pairNotConfigured(this.selectedInstrument!.id)
+            );
+            break;
+          default:
+            break;
+        }
       });
-    }
   };
 
   fetchDailyCandle = async () => {
