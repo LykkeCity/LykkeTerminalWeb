@@ -38,7 +38,12 @@ export const getWampErrorMessage = (message: string) =>
 export const getRestErrorMessage = (message: any) =>
   (Object as any).values(message)[0].join('. ');
 
-export const toLocaleStringWithAccuracy = (num: number, accuracy: number) =>
+export const toLocaleStringWithAccuracy = (
+  num: number,
+  accuracy: number,
+  options?: any
+) =>
   num.toLocaleString(undefined, {
-    maximumFractionDigits: accuracy
+    maximumFractionDigits: accuracy,
+    ...options
   });

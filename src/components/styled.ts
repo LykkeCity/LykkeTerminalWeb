@@ -52,10 +52,5 @@ export const iconCss = css`
   }
 `;
 
-export const greyButton = {
-  borderColor: 'rgba(140, 148, 160, 0.4)',
-  borderRadius: '4px'
-};
-
 export {css, injectGlobal, keyframes, ThemeProvider};
 export default styled;

@@ -37,7 +37,7 @@ class OrderListStore extends BaseStore {
     return this.selectedOrder;
   }
 
-  @observable hasPendingOrders: boolean = false;
+  @observable hasPendingRequests: boolean = false;
   @observable.shallow private orders: OrderModel[] = [];
   @observable
   private selectedOrder: string = OrdersDefaultSelection.CurrentAsset;
@@ -55,10 +55,10 @@ class OrderListStore extends BaseStore {
   }
 
   fetchAll = async () => {
-    this.hasPendingOrders = true;
+    this.hasPendingRequests = true;
     const dto = await this.api.fetchAll();
     this.orders = dto.map(mappers.mapToLimitOrder);
-    this.hasPendingOrders = false;
+    this.hasPendingRequests = false;
   };
 
   @action
@@ -67,18 +67,13 @@ class OrderListStore extends BaseStore {
   };
 
   @action
-  deleteOrder = (orderId: string) => {
-    this.orders.some((existedOrder: OrderModel, index: number) => {
-      if (existedOrder.id === orderId) {
-        this.orders.splice(index, 1);
-        return true;
-      }
-      return false;
-    });
-  };
+  deleteOrder = (orderId: string) =>
+    (this.orders = [
+      ...this.orders.filter((order: OrderModel) => order.id !== orderId)
+    ]);
 
   @action
-  updateOrder = (dto: any) => {
+  addOrUpdateOrder = (dto: any) => {
     const order = this.orders.find((o: OrderModel) => o.id === dto.Id);
     if (!order) {
       this.addOrder(dto);

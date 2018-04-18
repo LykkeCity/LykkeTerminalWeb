@@ -9,7 +9,7 @@ enum OrderInputs {
   Quantity = 'quantityValue'
 }
 
-enum OrderBookType {
+enum OrderStatus {
   Cancelled = 'Cancelled',
   Matched = 'Matched',
   Placed = 'InOrderBook',
@@ -17,4 +17,4 @@ enum OrderBookType {
   Rejected = 'Rejected'
 }
 
-export {OrderType, OrderInputs, OrderBookType};
+export {OrderType, OrderInputs, OrderStatus};

@@ -1,4 +1,3 @@
-import {pathOr} from 'rambda';
 import * as React from 'react';
 import {OrderListItem} from '.';
 import {OrderModel} from '../../models';
@@ -22,15 +21,14 @@ const OrderList: React.SFC<OrderListProps> = ({
     <Table>
       <tbody>
         {orders.map(order => {
-          const asset = getInstrumentById(order.symbol);
+          const instrument = getInstrumentById(order.symbol);
           return (
             <OrderListItem
               key={order.id}
               cancelOrder={onCancelOrder}
               onEdit={onEditOrder(order)}
               order={order}
-              accuracy={pathOr(2, ['baseAsset', 'accuracy'], asset)}
-              symbol={pathOr('', ['displayName'], asset)}
+              instrument={instrument}
             />
           );
         })}

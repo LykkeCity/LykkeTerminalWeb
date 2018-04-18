@@ -5,7 +5,7 @@ import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
-import {OrderBookType} from '../models/orderType';
+import {OrderStatus} from '../models/orderType';
 import {getRestErrorMessage} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
@@ -57,7 +57,6 @@ class OrderStore extends BaseStore {
             .placeMarket(body)
             // tslint:disable-next-line:no-empty
             .then(() => {}, this.orderPlacedUnsuccessfully)
-            .then(() => Promise.resolve())
         );
       case OrderType.Limit:
         return (
@@ -65,7 +64,6 @@ class OrderStore extends BaseStore {
             .placeLimit(body)
             // tslint:disable-next-line:no-empty
             .then(() => {}, this.orderPlacedUnsuccessfully)
-            .then(() => Promise.resolve())
         );
     }
   };
@@ -80,11 +78,10 @@ class OrderStore extends BaseStore {
     await this.api.cancelOrder(id);
   };
 
-  cancelAll = async () => {
-    this.rootStore.orderListStore.limitOrders.forEach((order: OrderModel) => {
-      this.api.cancelOrder(order.id);
-    });
-  };
+  cancelAll = () =>
+    this.rootStore.orderListStore.limitOrders
+      .map((o: OrderModel) => o.id)
+      .forEach(this.api.cancelOrder);
 
   subscribe = (ws: any) => {
     ws.subscribe(topics.orders, this.onOrders);
@@ -93,19 +90,19 @@ class OrderStore extends BaseStore {
   onOrders = (args: any) => {
     const order = args[0][0];
     switch (order.Status) {
-      case OrderBookType.Cancelled:
+      case OrderStatus.Cancelled:
         this.rootStore.orderListStore.deleteOrder(order.Id);
         this.orderCancelledSuccessfully(order.Id);
         break;
-      case OrderBookType.Matched:
+      case OrderStatus.Matched:
         this.rootStore.orderListStore.deleteOrder(order.Id);
         this.orderClosedSuccessfully(order.Id);
         break;
-      case OrderBookType.Processing:
-        this.rootStore.orderListStore.updateOrder(order);
+      case OrderStatus.Processing:
+        this.rootStore.orderListStore.addOrUpdateOrder(order);
         this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
         break;
-      case OrderBookType.Placed:
+      case OrderStatus.Placed:
         this.rootStore.orderListStore.addOrder(order);
         this.orderPlacedSuccessfully();
         break;

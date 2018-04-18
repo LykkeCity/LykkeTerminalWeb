@@ -62,7 +62,7 @@ describe('orderList store', () => {
       expect(orderListStore.allOrders[0].remainingVolume).not.toBe(
         dto.RemainingVolume
       );
-      orderListStore.updateOrder(dto);
+      orderListStore.addOrUpdateOrder(dto);
       expect(orderListStore.allOrders[0].remainingVolume).toEqual(
         dto.RemainingVolume
       );
