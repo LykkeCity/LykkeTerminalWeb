@@ -1,5 +1,4 @@
 import {OrderModel} from '../../models';
-import * as mappers from '../../models/mappers';
 import {OrderListStore, RootStore} from '../index';
 
 describe('orderList store', () => {
@@ -10,22 +9,64 @@ describe('orderList store', () => {
     placeMarket: jest.fn()
   };
 
+  const defaultOrder = {
+    AssetPairId: 'BTCUSD',
+    CreateDateTime: '2018-01-17T07:17:40.84Z',
+    Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
+    OrderAction: 'Buy',
+    Price: 1,
+    Status: 'InOrderBook',
+    Volume: 0.0001,
+    RemainingVolume: 0
+  };
+
   beforeEach(() => {
     const rootStore = new RootStore(true);
     rootStore.orderBookStore.fetchAll = jest.fn();
     orderListStore = new OrderListStore(rootStore, api);
 
-    api.fetchAll = jest.fn(() => [
-      {
+    api.fetchAll = jest.fn(() => [defaultOrder]);
+  });
+
+  describe('order', () => {
+    beforeEach(async done => {
+      await orderListStore.fetchAll();
+      done();
+    });
+
+    it('should be added into order list', () => {
+      expect(orderListStore.allOrders.length).toBe(1);
+      orderListStore.addOrder({
         AssetPairId: 'BTCUSD',
         CreateDateTime: '2018-01-17T07:17:40.84Z',
         Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
-        OrderAction: 'Buy',
+        OrderAction: 'Sell',
         Price: 1,
         Status: 'InOrderBook',
         Volume: 0.0001
-      }
-    ]);
+      });
+      expect(orderListStore.allOrders.length).toBe(2);
+    });
+
+    it('should be deleted from order list', () => {
+      expect(orderListStore.allOrders.length).toBe(1);
+      orderListStore.deleteOrder(defaultOrder.Id);
+      expect(orderListStore.allOrders.length).toBe(0);
+    });
+
+    it('should be updated', () => {
+      const dto = {
+        Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
+        RemainingVolume: 0.00005
+      };
+      expect(orderListStore.allOrders[0].remainingVolume).not.toBe(
+        dto.RemainingVolume
+      );
+      orderListStore.addOrUpdateOrder(dto);
+      expect(orderListStore.allOrders[0].remainingVolume).toEqual(
+        dto.RemainingVolume
+      );
+    });
   });
 
   describe('state', () => {
@@ -45,37 +86,6 @@ describe('orderList store', () => {
       orderListStore.reset();
 
       expect(orderListStore.limitOrders.length).toBe(0);
-    });
-  });
-
-  describe('fetch orderLists', () => {
-    it('should populate orderList collection', async () => {
-      orderListStore.updateOrders = jest.fn();
-
-      await orderListStore.fetchAll();
-
-      expect(orderListStore.updateOrders).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('update orderLists', () => {
-    it('should update orderLists', async () => {
-      orderListStore.reset();
-
-      orderListStore.updateOrders(
-        [
-          {
-            AssetPair: 'BTCUSD',
-            DateTime: new Date(),
-            Id: 12389418351364984,
-            OrderType: 'Buy',
-            Price: 5900.65,
-            Volume: 1
-          }
-        ].map(mappers.mapToLimitOrder)
-      );
-
-      expect(orderListStore.allOrders.length).toBe(1);
     });
   });
 

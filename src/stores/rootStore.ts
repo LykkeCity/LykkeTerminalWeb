@@ -145,10 +145,12 @@ class RootStore {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
         });
+        this.orderListStore.setWs(ws);
         this.uiStore.selectInstrument(
           this.lastOrDefaultInstrument(defaultInstrument)
         );
         this.tradeStore.subscribe(ws);
+        this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
         return Promise.resolve();
       })
