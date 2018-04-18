@@ -5,10 +5,10 @@ import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
 import * as topics from '../api/topics';
-import {MarketType, PriceType} from '../models';
-import * as map from '../models/mappers';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
+import {MarketType, PriceType} from '../models';
+import * as map from '../models/mappers';
 
 const toUtc = (date: Date) => {
   const y = date.getUTCFullYear();
@@ -58,10 +58,16 @@ class PriceStore extends BaseStore {
         }
       })
       .catch((e: any) => {
-        this.rootStore.notificationStore.addNotification(
-          levels.error,
-          messages.pairNotConfigured(this.selectedInstrument!.id)
-        );
+        switch (e.status) {
+          case 404:
+            this.rootStore.notificationStore.addNotification(
+              levels.error,
+              messages.pairNotConfigured(this.selectedInstrument!.id)
+            );
+            break;
+          default:
+            break;
+        }
       });
   };
 

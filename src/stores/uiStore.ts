@@ -27,12 +27,7 @@ class UiStore extends BaseStore {
         if (instrument) {
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
           reset();
-
-          try {
-            await fetchAll(); // should be waited for loading bids and asks
-          } catch (e) {
-            return;
-          }
+          await fetchAll(); // should be waited for loading bids and asks
 
           subscribe(this.getWs());
 
