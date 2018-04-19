@@ -37,7 +37,8 @@ class OrderListStore extends BaseStore {
     return this.selectedOrder;
   }
 
-  @observable private orders: OrderModel[] = [];
+  @observable hasPendingRequests: boolean = false;
+  @observable.shallow private orders: OrderModel[] = [];
   @observable
   private selectedOrder: string = OrdersDefaultSelection.CurrentAsset;
 
@@ -54,15 +55,32 @@ class OrderListStore extends BaseStore {
   }
 
   fetchAll = async () => {
+    this.hasPendingRequests = true;
     const dto = await this.api.fetchAll();
-
-    this.updateOrders(dto.map(mappers.mapToLimitOrder));
-    this.rootStore.orderBookStore.fetchAll();
+    this.orders = dto.map(mappers.mapToLimitOrder);
+    this.hasPendingRequests = false;
   };
 
   @action
-  updateOrders = (orders: OrderModel[]) => {
-    this.orders = orders;
+  addOrder = (order: any) => {
+    this.orders.push(mappers.mapToLimitOrder(order));
+  };
+
+  @action
+  deleteOrder = (orderId: string) =>
+    (this.orders = [
+      ...this.orders.filter((order: OrderModel) => order.id !== orderId)
+    ]);
+
+  @action
+  addOrUpdateOrder = (dto: any) => {
+    const order = this.orders.find((o: OrderModel) => o.id === dto.Id);
+    if (!order) {
+      this.addOrder(dto);
+      return;
+    }
+    order!.remainingVolume = dto.RemainingVolume;
+    order!.volume = dto.Volume;
   };
 
   filterOrders = (orders: OrderModel[], instrument?: InstrumentModel) => {
@@ -78,11 +96,6 @@ class OrderListStore extends BaseStore {
   toggleOrders = (option: string) => {
     this.selectedOrder = option;
     this.rootStore.uiStore.toggleOrdersSelect();
-  };
-
-  @action
-  addOrders = (orders: OrderModel[]) => {
-    this.orders.push(...orders);
   };
 
   reset = () => {

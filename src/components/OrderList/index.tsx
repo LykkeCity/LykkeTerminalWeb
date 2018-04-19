@@ -1,39 +1,57 @@
+import {observer} from 'mobx-react';
+import {compose} from 'rambda';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar';
+import {withStyledScroll} from '../CustomScrollbar';
+import withLoader from '../Loader/withLoader';
 import OrderList from './OrderList';
+import {OrderListProps} from './OrderList';
+import OrderListItem from './OrderListItem';
 import Orders from './Orders';
 
-export interface OrderActions {
-  cancelOrder?: (id: string) => void;
-}
+export const OrderCellWidth = {
+  Symbol: 70,
+  Id: 300,
+  Side: 50,
+  Filled: 100,
+  CreatedDate: 150,
+  Actions: 60
+};
 
-export interface OrderListProps {
-  onEdit: any;
+export interface OrderActions {
+  cancelOrder: (id: string) => void;
 }
 
 const ConnectedOrders = connect(
   ({
-    orderListStore: {limitOrders: orders},
     orderStore: {cancelOrder},
     modalStore: {addModal},
     authStore: {isAuth}
   }) => ({
     addModal,
     cancelOrder,
-    orders,
     isAuth
   }),
   withAuth(Orders)
 );
 
-const ConnectedOrderList = connect(
-  ({orderListStore: {limitOrders: orders}}) => ({
-    orders
+const ConnectedOrderList = connect<OrderListProps>(
+  ({
+    orderListStore: {limitOrders: orders, hasPendingRequests},
+    referenceStore: {getInstrumentById}
+  }) => ({
+    orders,
+    loading: hasPendingRequests,
+    getInstrumentById
   }),
-  withScroll(OrderList)
+  compose(
+    withLoader<OrderListProps>(p => p.loading!),
+    withStyledScroll({height: 'calc(100% - 85px)'})
+  )(OrderList)
 );
+
+const ConnectedOrderListItem = observer(OrderListItem);
 
 export {ConnectedOrders as Orders};
 export {ConnectedOrderList as OrderList};
-export {default as OrderListItem} from './OrderListItem';
+export {ConnectedOrderListItem as OrderListItem};

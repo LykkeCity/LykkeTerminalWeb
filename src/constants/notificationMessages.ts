@@ -8,7 +8,10 @@ const messages = {
   orderExecuted: (id: string) => `Order: ${id} was closed successfully`,
   orderExecutedPartially: (id: string, volume: number) =>
     `Order: ${id} was partially closed. Amount: ${volume}`,
-  orderSuccess: 'Order was placed successfully'
+  orderSuccess: 'Order has been placed successfully',
+  pairNotFound: (id: string) =>
+    `Asset pair ${id} was not found. You've been switched to the default instrument`,
+  pairNotConfigured: (id: string) => `Asset pair ${id} is not configured`
 };
 
 export default messages;

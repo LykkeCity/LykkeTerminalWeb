@@ -94,3 +94,14 @@ button._tv-button {
   background: #333333;
   border-color: rgba(0, 0, 0, 0.3) !important;
 }
+
+._tv-dialog {
+  height: 90%;
+}
+
+.main-properties-aftertabs {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+}

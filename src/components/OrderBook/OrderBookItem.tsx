@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Order} from '../../models/index';
+import {Order, Side} from '../../models/index';
 import {normalizeVolume} from '../../utils';
 import {
   MyOrdersIndicator,
@@ -9,6 +9,19 @@ import {
   StyledVolume,
   StyledVolumeOverlay
 } from './styles';
+
+const diff = (num1: string, num2: string) => {
+  if (num1 === num2) {
+    return {sim: '', diff: num1};
+  }
+  let i = 0;
+  let res = '';
+  while (num1[i] === num2[i] && i < num1.length) {
+    res += num1[i];
+    i++;
+  }
+  return {sim: res, diff: num1.substr(i)};
+};
 
 interface OrderBookItemProps extends Order {
   priceAccuracy: number;
@@ -24,6 +37,9 @@ interface OrderBookItemProps extends Order {
   connectedLimitOrders: string[];
   showMyOrders: any;
   scrollComponent?: any;
+  askLevel?: any;
+  prevPrice: number;
+  isAuth?: boolean;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
@@ -42,30 +58,45 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   onDepthClick,
   onOrderClick,
   showMyOrders,
-  scrollComponent
+  scrollComponent,
+  prevPrice,
+  isAuth = false,
+  askLevel
 }) => {
   const currentPrice = price.toFixed(priceAccuracy);
+  const diffInPrice = diff(
+    price.toLocaleString(undefined, {
+      maximumFractionDigits: priceAccuracy
+    }),
+    prevPrice.toLocaleString(undefined, {
+      maximumFractionDigits: priceAccuracy
+    })
+  );
   const ownOrders = connectedLimitOrders.length > 0;
+
+  const handleHover = (e: React.MouseEvent<any>) => {
+    const top = e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62;
+    showMyOrders({
+      position: {
+        top: side === Side.Sell ? top : top + askLevel.offsetHeight + 63
+      },
+      orders: connectedLimitOrders,
+      volume: orderVolume,
+      onCancel: onOrderClick
+    });
+  };
+
   return (
-    <StyledOrderRow
-      // tslint:disable-next-line:jsx-no-lambda
-      onMouseEnter={e =>
-        showMyOrders({
-          position: {
-            top: e.currentTarget.offsetTop - scrollComponent.getScrollTop() + 62
-          },
-          orders: connectedLimitOrders,
-          volume: orderVolume,
-          onCancel: onOrderClick
-        })
-      }
-    >
-      <StyledPrice onClick={onPriceClick(+currentPrice)}>
-        {(+currentPrice).toLocaleString(undefined, {
-          maximumFractionDigits: priceAccuracy
-        })}
+    <StyledOrderRow onMouseEnter={handleHover}>
+      <StyledPrice
+        side={side}
+        onClick={onPriceClick(+currentPrice)}
+        isAuth={isAuth}
+      >
+        <span style={{opacity: 0.4}}>{diffInPrice.sim}</span>
+        <span>{diffInPrice.diff}</span>
       </StyledPrice>
-      <StyledVolume side={side}>
+      <StyledVolume side={side} isAuth={isAuth}>
         <div onClick={onDepthClick(+currentPrice, depth)}>
           {ownOrders && <MyOrdersIndicator side={side} />}
           <StyledVolumeOverlay

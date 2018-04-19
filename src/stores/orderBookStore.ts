@@ -1,19 +1,10 @@
 import {ISubscription} from 'autobahn';
 import {action, computed, observable, runInAction} from 'mobx';
-import {
-  compose,
-  curry,
-  head,
-  last,
-  map,
-  reverse,
-  sortBy,
-  toLower
-} from 'rambda';
+import {compose, curry, head, last, map, reverse, sortBy} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {Order, Side} from '../models/index';
-import * as mappers from '../models/mappers';
+import {toOrder} from '../models/mappers/orderMapper';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
@@ -142,10 +133,10 @@ class OrderBookStore extends BaseStore {
     const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
     if (selectedInstrument) {
       this.hasPendingItems = true;
-      const orders = await this.api.fetchAll(toLower(selectedInstrument.id));
+      const orders = await this.api.fetchAll(selectedInstrument.id);
       this.hasPendingItems = false;
       runInAction(() => {
-        orders.forEach((levels: any) => this.onUpdate([levels]));
+        orders.forEach((levels: any) => this.onNextOrders([levels]));
         if (this.isInitFetch && initPriceUpdate) {
           initPriceUpdate(this.bestBid(), selectedInstrument);
           this.isInitFetch = false;
@@ -158,18 +149,22 @@ class OrderBookStore extends BaseStore {
     const topic = curry(topics.orderBook)(
       this.rootStore.uiStore.selectedInstrument!.id
     );
-    this.subscriptions.add(await ws.subscribe(topic(Side.Buy), this.onUpdate));
-    this.subscriptions.add(await ws.subscribe(topic(Side.Sell), this.onUpdate));
+    this.subscriptions.add(
+      await ws.subscribe(topic(Side.Buy), this.onNextOrders)
+    );
+    this.subscriptions.add(
+      await ws.subscribe(topic(Side.Sell), this.onNextOrders)
+    );
   };
 
-  onUpdate = (args: any) => {
+  onNextOrders = (args: any) => {
     const {IsBuy, Levels} = args[0];
-    const mapToOrders = map(x => mappers.mapToOrder({...x, IsBuy}));
+    const mapToOrders = map(toOrder);
 
     if (IsBuy) {
-      this.rawBids = mapToOrders(Levels);
+      this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
     } else {
-      this.rawAsks = mapToOrders(Levels);
+      this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
     }
   };
 
