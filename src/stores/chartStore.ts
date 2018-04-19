@@ -40,6 +40,12 @@ class ChartStore extends BaseStore {
     super(store);
   }
 
+  bindClickOutside = () => {
+    document.addEventListener('click', () => {
+      this.widget.closePopupsAndDialogs();
+    });
+  };
+
   renderChart = (instrument: InstrumentModel) => {
     const chartContainerExists = document.getElementById('tv_chart_container');
     if (!chartContainerExists || !(window as any).TradingView) {
@@ -104,6 +110,7 @@ class ChartStore extends BaseStore {
     chartContainerExists.style.display = 'none';
     if (this.rootStore.authStore.isAuth) {
       this.widget.onChartReady(() => {
+        this.bindClickOutside();
         this.load()
           .then((res: any) => {
             if (res && res.Data) {
@@ -126,7 +133,9 @@ class ChartStore extends BaseStore {
       });
     } else {
       this.widget.onChartReady(() => {
-        this.widget.load(defaultSettings);
+        this.bindClickOutside();
+        this.widget.load(CHART_DEFAULT_SETTINGS);
+
         chartContainerExists.style.display = 'block';
       });
     }
