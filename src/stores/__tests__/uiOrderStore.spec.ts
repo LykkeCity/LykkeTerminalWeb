@@ -167,6 +167,23 @@ describe('uiOrder store', () => {
         expect(isInvalid).toBeFalsy();
         expect(valid).toBe(true);
       });
+
+      it('should be invalid if the total price slightly differs from the available amount and direction is buy', () => {
+        const amounTaken = 2050.353;
+        quantityValue = (amounTaken * 1.000001 / 5848.989).toFixed(8);
+        priceValue = '5848.989';
+        isSell = false;
+        const isInvalid = uiOrderStore.isAmountExceedLimitBalance(
+          isSell,
+          quantityValue,
+          priceValue,
+          baseAssetBalance,
+          amounTaken,
+          3,
+          8
+        );
+        expect(isInvalid).toBe(true);
+      });
     });
   });
 });
