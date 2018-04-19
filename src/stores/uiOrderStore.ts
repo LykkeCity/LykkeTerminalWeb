@@ -1,5 +1,5 @@
 import MarketService from '../services/marketService';
-import {truncate} from '../utils/math';
+import {precisionFloor} from '../utils/math';
 import {
   getPostDecimalsLength,
   isOnlyNumbers,
@@ -70,7 +70,9 @@ class UiOrderStore extends BaseStore {
     accuracy: number
   ) => {
     const amount = currentPrice * parseFloat(quantityValue);
-    return amount === 0 ? amount.toFixed(2) : amount.toFixed(accuracy);
+    return amount === 0
+      ? precisionFloor(amount, 2)
+      : precisionFloor(amount, accuracy);
   };
 
   handlePercentageChange = async (config: any) => {
@@ -158,7 +160,7 @@ class UiOrderStore extends BaseStore {
   };
 
   getPartlyValue = (percent: number, balance: number, accuracy: number) => {
-    return truncate(percent / 100 * balance, accuracy);
+    return precisionFloor(percent / 100 * balance, accuracy);
   };
 
   updatePercentageState = (percentage: any[], index: number) => {
@@ -244,7 +246,7 @@ class UiOrderStore extends BaseStore {
     );
     return isSell
       ? +quantityValue > baseAssetBalance
-      : +quantityValue > truncate(+convertedBalance, quantityAccuracy);
+      : +quantityValue > precisionFloor(+convertedBalance, quantityAccuracy);
   };
 
   isAmountExceedLimitBalance = (
@@ -258,10 +260,10 @@ class UiOrderStore extends BaseStore {
   ) =>
     isSell
       ? +quantityValue > baseAssetBalance
-      : truncate(
+      : precisionFloor(
           +(parseFloat(priceValue) * parseFloat(quantityValue)),
           quantityAccuracy
-        ) > truncate(+quoteAssetBalance, priceAccuracy);
+        ) > precisionFloor(+quoteAssetBalance, priceAccuracy);
 
   // tslint:disable-next-line:no-empty
   reset = () => {};

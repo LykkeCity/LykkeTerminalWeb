@@ -36,8 +36,3 @@ export const decimalAdjust = (type: string, value: any, exp: number) => {
   value = value.toString().split('e');
   return +(value[0] + 'e' + (value[1] ? +value[1] + exp : exp));
 };
-
-export const truncate = (num: number, places: number) => {
-  const numPower = Math.pow(10, places);
-  return Math.floor(num * numPower) / numPower;
-};
