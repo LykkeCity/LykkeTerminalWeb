@@ -148,5 +148,25 @@ describe('uiOrder store', () => {
       );
       expect(isInvalid).toBeFalsy();
     });
+
+    describe('edge prices', () => {
+      it('should be valid if the total price mathematically the same as available amount and direction is buy', () => {
+        quantityValue = (2050.352 / 5848.989).toFixed(8);
+        priceValue = '5848.989';
+        isSell = false;
+        const isInvalid = uiOrderStore.isAmountExceedLimitBalance(
+          isSell,
+          quantityValue,
+          priceValue,
+          baseAssetBalance,
+          2050.352,
+          3,
+          8
+        );
+        const valid = !isInvalid;
+        expect(isInvalid).toBeFalsy();
+        expect(valid).toBe(true);
+      });
+    });
   });
 });

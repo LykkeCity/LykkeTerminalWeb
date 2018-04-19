@@ -260,10 +260,9 @@ class UiOrderStore extends BaseStore {
   ) =>
     isSell
       ? +quantityValue > baseAssetBalance
-      : precisionFloor(
-          +(parseFloat(priceValue) * parseFloat(quantityValue)),
-          quantityAccuracy
-        ) > precisionFloor(+quoteAssetBalance, priceAccuracy);
+      : parseFloat(priceValue) *
+          precisionFloor(parseFloat(quantityValue), quantityAccuracy) >
+        quoteAssetBalance;
 
   // tslint:disable-next-line:no-empty
   reset = () => {};
