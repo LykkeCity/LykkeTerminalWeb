@@ -1,4 +1,5 @@
 import MarketService from '../services/marketService';
+import {truncate} from '../utils/math';
 import {
   getPostDecimalsLength,
   isOnlyNumbers,
@@ -157,7 +158,7 @@ class UiOrderStore extends BaseStore {
   };
 
   getPartlyValue = (percent: number, balance: number, accuracy: number) => {
-    return (percent / 100 * balance).toFixed(accuracy);
+    return truncate(percent / 100 * balance, accuracy);
   };
 
   updatePercentageState = (percentage: any[], index: number) => {
@@ -241,7 +242,7 @@ class UiOrderStore extends BaseStore {
     );
     return isSell
       ? +quantityValue > baseAssetBalance
-      : +quantityValue > +convertedBalance.toFixed(quantityAccuracy);
+      : +quantityValue > truncate(+convertedBalance, quantityAccuracy);
   };
 
   isAmountExceedLimitBalance = (
@@ -254,9 +255,10 @@ class UiOrderStore extends BaseStore {
   ) =>
     isSell
       ? +quantityValue > baseAssetBalance
-      : +(parseFloat(priceValue) * parseFloat(quantityValue)).toFixed(
+      : truncate(
+          +(parseFloat(priceValue) * parseFloat(quantityValue)),
           priceAccuracy
-        ) > +quoteAssetBalance.toFixed(priceAccuracy);
+        ) > truncate(+quoteAssetBalance, priceAccuracy);
 
   // tslint:disable-next-line:no-empty
   reset = () => {};
