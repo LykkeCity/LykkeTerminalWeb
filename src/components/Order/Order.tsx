@@ -243,7 +243,12 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetId,
       quoteAssetId
     } = this.props;
-    const {isLimitActive, isSellActive, isMarketActive} = this.state;
+    const {
+      isLimitActive,
+      isSellActive,
+      isMarketActive,
+      priceValue
+    } = this.state;
     const balance = this.state.isSellActive
       ? baseAssetBalance
       : quoteAssetBalance;
@@ -263,7 +268,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteAssetId
+      quoteAssetId,
+      currentPrice: priceValue
     });
 
     this.setState(tempObj);
@@ -295,7 +301,12 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {
       baseAssetBalance,
       quoteAssetBalance,
-      accuracy: {quantityAccuracy, priceAccuracy},
+      accuracy: {
+        quantityAccuracy,
+        priceAccuracy,
+        quoteAssetAccuracy,
+        baseAssetAccuracy
+      },
       baseAssetName,
       quoteAssetName,
       fixedAmount,
@@ -318,7 +329,9 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     const available = isSellActive ? baseAssetBalance : quoteAssetBalance;
 
-    const balanceAccuracy = isSellActive ? quantityAccuracy : priceAccuracy;
+    const balanceAccuracy = isSellActive
+      ? baseAssetAccuracy
+      : quoteAssetAccuracy;
 
     return (
       <div>
@@ -368,7 +381,11 @@ class Order extends React.Component<OrderProps, OrderState> {
             baseAssetName={baseAssetName}
             quoteAssetName={quoteAssetName}
             isSell={isSellActive}
-            amount={fixedAmount(currentPrice, quantityValue, priceAccuracy)}
+            amount={fixedAmount(
+              currentPrice,
+              quantityValue,
+              quoteAssetAccuracy
+            )}
             isDisable={this.isLimitDisable()}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
