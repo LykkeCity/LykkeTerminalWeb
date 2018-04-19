@@ -14,8 +14,18 @@ const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
     if (num === undefined || num === null) {
       return null;
     }
+
+    const afterSign = children
+      ? typeof children === 'object' ? children.join('') : children
+      : '';
+    const title = `${preSign || ''} ${num} ${afterSign}`;
+
     return (
-      <InstrumentNumber color={color || ''} className={dynamics || ''}>
+      <InstrumentNumber
+        color={color || ''}
+        className={dynamics || ''}
+        title={title}
+      >
         {preSign}
         {num || 0}
         {children}

@@ -41,7 +41,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
     return (
       <tr>
         <Cell w={OrderCellWidth.Symbol}>{symbol}</Cell>
-        <Cell w={OrderCellWidth.CancelOrder}>
+        <Cell w={OrderCellWidth.CancelOrder} style={{textAlign: 'center'}}>
           {/* tslint:disable-next-line:jsx-no-lambda */}
           <span onClick={() => cancelOrder!(id)}>
             <Icon name="cross" />

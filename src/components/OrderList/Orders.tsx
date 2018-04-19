@@ -67,9 +67,9 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         width: OrderCellWidth.CancelOrder
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        sortDisabled: checkDataForSorting(this.state.data, 'id'),
         className: 'right-align',
-        key: 'price',
+        key: 'id',
         value: 'OrderID',
         width: OrderCellWidth.Id
       },
