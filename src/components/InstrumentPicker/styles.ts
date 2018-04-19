@@ -17,10 +17,10 @@ export const ShortcutSelectionWrapper = styled.div`
 export const ShortcutSelection = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   width: 100%;
   margin-left: ${rem(8)};
-  text-align: left;
   color: ${colors.coolGrey};
 
   &:after {
@@ -33,7 +33,10 @@ export const ShortcutSelection = styled.div`
 
   &.active {
     color: ${colors.white};
-    box-shadow: inset 0 -3px 0 0 ${colors.blue};
+
+    > * {
+      box-shadow: inset 0 -3px 0 0 ${colors.blue};
+    }
   }
 `;
 

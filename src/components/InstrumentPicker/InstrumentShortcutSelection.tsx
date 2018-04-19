@@ -46,7 +46,7 @@ const InstrumentShortcutSelection: React.SFC<
               borderRadius: '4px',
               height: '69px',
               minWidth: '150px',
-              right: '175px',
+              right: '200px',
               top: '45px'
             }}
             isActiveMarked={true}
