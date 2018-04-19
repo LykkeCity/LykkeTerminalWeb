@@ -29,12 +29,29 @@ class ChartStore extends BaseStore {
   };
 
   private widget: any;
-
+  private widgetReady: boolean = false;
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
   }
 
+  handleClosePopupsAfterOutsidClicked() {
+    this.widgetReady = true;
+    document.addEventListener('click', () => {
+      const chartContainerExists = document.getElementById(
+        'tv_chart_container'
+      );
+      if (
+        chartContainerExists &&
+        (window as any).TradingView &&
+        this.widgetReady
+      ) {
+        this.widget.closePopupsAndDialogs();
+      }
+    });
+  }
+
   renderChart = (instrument: InstrumentModel) => {
+    this.widgetReady = false;
     const chartContainerExists = document.getElementById('tv_chart_container');
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
@@ -95,6 +112,7 @@ class ChartStore extends BaseStore {
     chartContainerExists.style.display = 'none';
     if (this.rootStore.authStore.isAuth) {
       this.widget.onChartReady(() => {
+        this.handleClosePopupsAfterOutsidClicked();
         this.load()
           .then((res: any) => {
             if (res && res.Data) {
@@ -115,6 +133,7 @@ class ChartStore extends BaseStore {
       });
     } else {
       this.widget.onChartReady(() => {
+        this.handleClosePopupsAfterOutsidClicked();
         this.widget.load(CHART_DEFAULT_SETTINGS);
         chartContainerExists.style.display = 'block';
       });
