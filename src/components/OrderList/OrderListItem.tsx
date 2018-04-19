@@ -1,5 +1,7 @@
 import * as React from 'react';
+import {supportedDesignedIcons} from '../../constants/navigatorInfo';
 import {OrderModel, Side} from '../../models';
+import {FAIcon} from '../Icon/Icon';
 import {Icon} from '../Icon/index';
 import {OrderActions, OrderListProps} from './index';
 
@@ -20,7 +22,11 @@ const OrderListItem: React.SFC<OrderModel & OrderActions & OrderListProps> = ({
       <td>
         {/* tslint:disable-next-line:jsx-no-lambda */}
         <span onClick={() => cancelOrder!(id)}>
-          <Icon name="cross" />
+          {supportedDesignedIcons ? (
+            <Icon name="cross" />
+          ) : (
+            <FAIcon name="times" />
+          )}
         </span>
       </td>
       <td>{id}</td>
@@ -31,7 +37,11 @@ const OrderListItem: React.SFC<OrderModel & OrderActions & OrderListProps> = ({
       <td>
         {/* tslint:disable-next-line:jsx-no-lambda */}
         <span onClick={() => onEdit(id)}>
-          <Icon name="pencil" />
+          {supportedDesignedIcons ? (
+            <Icon name="pencil" />
+          ) : (
+            <FAIcon name="pencil-alt" />
+          )}
         </span>
       </td>
     </tr>

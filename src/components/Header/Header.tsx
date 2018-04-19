@@ -1,7 +1,9 @@
 import {rem} from 'polished';
 import * as React from 'react';
+import {supportedDesignedIcons} from '../../constants/navigatorInfo';
 import {BalanceInfo} from '../BalanceInfo';
 import ClickOutside from '../ClickOutside/ClickOutside';
+import {FAIcon} from '../Icon/Icon';
 import {Icon} from '../Icon/index';
 import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
@@ -109,7 +111,11 @@ const Header: React.SFC<HeaderProps> = ({
                     className="hidden-xs settings"
                     onClick={handleToggleSettings}
                   >
-                    <Icon color={`#8c94a0`} name={`cog`} />
+                    {supportedDesignedIcons ? (
+                      <Icon color={`#8c94a0`} name={`cog`} />
+                    ) : (
+                      <FAIcon color={`#8c94a0`} name={`cog`} />
+                    )}
                   </span>
                   {settingsStore.showSettings ? <SettingsModal /> : null}
                 </HeaderItem>
@@ -119,11 +125,19 @@ const Header: React.SFC<HeaderProps> = ({
               <Link>
                 {authStore.isAuth ? (
                   <span className="hidden-xs" onClick={signOut}>
-                    <Icon color={'#8c94a0'} name={'exit'} />
+                    {supportedDesignedIcons ? (
+                      <Icon color={'#8c94a0'} name={'exit'} />
+                    ) : (
+                      <FAIcon color={`#8c94a0`} name={`sign-out-alt`} />
+                    )}
                   </span>
                 ) : (
                   <span className="hidden-xs" onClick={signIn}>
-                    <Icon color={'#8c94a0'} name={'enter'} />
+                    {supportedDesignedIcons ? (
+                      <Icon color={'#8c94a0'} name={'enter'} />
+                    ) : (
+                      <FAIcon color={`#8c94a0`} name={`fa-sign-in-alt`} />
+                    )}
                   </span>
                 )}
                 <i className="icon icon--participate visible-xs" />
