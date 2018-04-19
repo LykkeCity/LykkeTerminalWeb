@@ -24,7 +24,12 @@ export interface OrderProps {
   addModal: any;
   ask: number;
   bid: number;
-  accuracy: any;
+  accuracy: {
+    priceAccuracy: number;
+    quantityAccuracy: number;
+    baseAssetAccuracy: number;
+    quoteAssetAccuracy: number;
+  };
   currency: string;
   placeOrder: any;
   baseAssetName: string;
@@ -152,11 +157,13 @@ const StyledActionTitle = styled.div`
   }
 `;
 
-const StyledAvailable = styled.div`
+const StyledTotalAmount = styled.div`
   padding-top: ${rem(1)};
   color: #8c94a0;
   font-size: ${rem(15)};
+`;
 
+const StyledAvailable = styled(StyledTotalAmount)`
   &:hover {
     cursor: pointer;
   }
@@ -192,7 +199,9 @@ const ConnectedOrder = connect(
           pathOr('', ['baseAsset', 'id'], instrument)
         );
         return asset ? asset.accuracy : 2;
-      }
+      },
+      baseAssetAccuracy: pathOr(2, ['baseAsset', 'accuracy'], instrument),
+      quoteAssetAccuracy: pathOr(2, ['quoteAsset', 'accuracy'], instrument)
     },
     addModal,
     ask: bestAsk(),
@@ -245,5 +254,6 @@ export {
   StyledOrderButton,
   StyledReset,
   StyledAvailable,
-  StyledNote
+  StyledNote,
+  StyledTotalAmount
 };
