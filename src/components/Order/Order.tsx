@@ -159,14 +159,12 @@ class Order extends React.Component<OrderProps, OrderState> {
   ) => {
     this.disableButton(true);
     const {quantityValue, priceValue} = this.state;
-    const currentPrice = parseFloat(priceValue).toLocaleString(undefined, {
-      maximumFractionDigits: this.props.accuracy.priceAccuracy
-    });
+    const currentPrice = parseFloat(priceValue).toFixed(
+      this.props.accuracy.priceAccuracy
+    );
 
     const currentQuantity = accuracy
-      ? parseFloat(quantityValue).toLocaleString(undefined, {
-          maximumFractionDigits: accuracy
-        })
+      ? parseFloat(quantityValue).toFixed(accuracy)
       : quantityValue;
 
     const isConfirm = confirmStorage.get() as string;
@@ -312,7 +310,6 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetName,
       quoteAssetName,
       fixedAmount,
-      fixedToLocaleString,
       bid,
       ask,
       resetPercentage
@@ -391,13 +388,10 @@ class Order extends React.Component<OrderProps, OrderState> {
             )}
             isDisable={this.isLimitDisable()}
             onReset={this.reset}
-            balance={
-              available && fixedToLocaleString(available, balanceAccuracy)
-            }
-            buttonMessage={`${capitalize(action)} ${fixedToLocaleString(
-              parseFloat(quantityValue),
-              quantityAccuracy
-            )} ${baseAssetName}`}
+            balance={available && available.toFixed(balanceAccuracy)}
+            buttonMessage={`${capitalize(
+              action
+            )} ${quantityValue} ${baseAssetName}`}
           />
         )}
 
@@ -415,15 +409,12 @@ class Order extends React.Component<OrderProps, OrderState> {
             onReset={this.reset}
             isDisable={this.isMarketDisable()}
             onSubmit={this.handleButtonClick}
-            balance={
-              available && fixedToLocaleString(available, balanceAccuracy)
-            }
+            balance={available && available.toFixed(balanceAccuracy)}
             isSell={isSellActive}
             // tslint:disable-next-line:jsx-no-lambda
             onResetPercentage={() => resetPercentage(percentage)}
             priceAccuracy={priceAccuracy}
             onInvert={this.handleInvert}
-            fixedToLocaleString={fixedToLocaleString}
           />
         )}
 

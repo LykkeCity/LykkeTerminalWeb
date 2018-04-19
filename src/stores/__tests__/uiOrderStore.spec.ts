@@ -43,11 +43,7 @@ describe('uiOrder store', () => {
     accuracy = 2;
     expect(
       uiOrderStore.fixedAmount(currentPrice, quantityValue, accuracy)
-    ).toBe(
-      (currentPrice * parseFloat(quantityValue)).toLocaleString(undefined, {
-        maximumFractionDigits: accuracy
-      })
-    );
+    ).toBe((currentPrice * parseFloat(quantityValue)).toFixed(accuracy));
   });
 
   it('should return object with fixed value', () => {

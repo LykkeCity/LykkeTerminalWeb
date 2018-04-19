@@ -66,19 +66,10 @@ class UiOrderStore extends BaseStore {
   fixedAmount = (
     currentPrice: number,
     quantityValue: string,
-    customAccuracy: number
+    accuracy: number
   ) => {
     const amount = currentPrice * parseFloat(quantityValue);
-    return this.fixedToLocaleString(amount, customAccuracy);
-  };
-
-  fixedToLocaleString = (balance: number, customAccuracy: number) => {
-    const accuracy = balance === 0 ? 2 : customAccuracy;
-    const fractionDigits =
-      balance === 0 ? 'minimumFractionDigits' : 'maximumFractionDigits';
-    return balance.toLocaleString(undefined, {
-      [fractionDigits]: accuracy
-    });
+    return amount === 0 ? amount.toFixed(2) : amount.toFixed(accuracy);
   };
 
   handlePercentageChange = async (config: any) => {
