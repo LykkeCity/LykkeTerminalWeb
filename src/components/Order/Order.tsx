@@ -336,7 +336,8 @@ class Order extends React.Component<OrderProps, OrderState> {
         baseAssetId,
         quoteAssetId,
         baseAssetBalance,
-        quoteAssetBalance
+        quoteAssetBalance,
+        quantityAccuracy
       );
 
     const available = isSellActive ? baseAssetBalance : quoteAssetBalance;

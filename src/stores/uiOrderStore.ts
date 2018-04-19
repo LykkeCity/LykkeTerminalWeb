@@ -207,7 +207,8 @@ class UiOrderStore extends BaseStore {
     baseAssetId: string,
     quoteAssetId: string,
     baseAssetBalance: number,
-    quoteAssetBalance: number
+    quoteAssetBalance: number,
+    quantityAccuracy: number
   ) => {
     return (
       !+quantityValue ||
@@ -217,7 +218,8 @@ class UiOrderStore extends BaseStore {
         baseAssetBalance,
         quoteAssetBalance,
         baseAssetId,
-        quoteAssetId
+        quoteAssetId,
+        quantityAccuracy
       )
     );
   };
@@ -228,7 +230,8 @@ class UiOrderStore extends BaseStore {
     baseAssetBalance: number,
     quoteAssetBalance: number,
     baseAssetId: string,
-    quoteAssetId: string
+    quoteAssetId: string,
+    quantityAccuracy: number
   ) => {
     const convertedBalance = MarketService.convert(
       quoteAssetBalance,
@@ -238,7 +241,7 @@ class UiOrderStore extends BaseStore {
     );
     return isSell
       ? +quantityValue > baseAssetBalance
-      : +quantityValue > convertedBalance;
+      : +quantityValue > +convertedBalance.toFixed(quantityAccuracy);
   };
 
   isAmountExceedLimitBalance = (

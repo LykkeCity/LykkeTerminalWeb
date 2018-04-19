@@ -64,7 +64,8 @@ export interface OrderProps {
     baseAssetId: string,
     quoteAssetId: string,
     baseAssetBalance: number,
-    quoteAssetBalance: number
+    quoteAssetBalance: number,
+    quantityAccuracy: number
   ) => boolean;
 }
 
