@@ -10,6 +10,7 @@ export const ChartContainer = styled.div`
   height: 100%;
 `;
 
+
 export const ResetButton = styled.div`
   position: absolute;
   right: ${rem(16)};

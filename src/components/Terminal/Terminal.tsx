@@ -25,6 +25,7 @@ const Shell = styled.div`
 `;
 
 const layoutStorage = StorageUtils(keys.layout);
+const MIN_PANE_SIZE_PERCENTAGE = 25;
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   acc: (
     <Tile title="Account">
@@ -100,12 +101,50 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   componentDidMount() {
     this.props.rootStore.start();
+    this.handlerMouseUpTransparentDiv();
+  }
+
+  handlerMouseUpTransparentDiv() {
+    const mosaicSplitList = document.getElementsByClassName(
+      'mosaic-split -column'
+    );
+    let mosaicSplit = null;
+    Array.from(mosaicSplitList).forEach((item: any, index: number) => {
+      const previousElement = item.previousElementSibling!.querySelector(
+        '#tv_chart_container'
+      );
+      if (previousElement !== null) {
+        mosaicSplit = mosaicSplitList[index];
+      }
+    });
+    if (mosaicSplit) {
+      (mosaicSplit as Element).addEventListener('mouseup', () => {
+        this.removeTransparentDivAfterResize();
+      });
+    }
+  }
+
+  removeTransparentDivAfterResize() {
+    const transparentDiv = document.getElementById('transparentDiv');
+    if (transparentDiv) {
+      transparentDiv!.style.display = 'none';
+    }
   }
 
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
-  handleChangeLayout = (args: any) => {
-    layoutStorage.set(JSON.stringify(args));
+  handleChange = (args: any) => {
+    const transparentDiv = document.getElementById('transparentDiv');
+    if (
+      args.second.first.splitPercentage <= MIN_PANE_SIZE_PERCENTAGE ||
+      args.second.first.splitPercentage >= 100 - MIN_PANE_SIZE_PERCENTAGE
+    ) {
+      this.removeTransparentDivAfterResize();
+    } else {
+      if (transparentDiv) {
+        transparentDiv!.style.display = 'block';
+      }
+    }
   };
 
   render() {
@@ -121,8 +160,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
         <Header history={this.props.history} />
         <Mosaic
           renderTile={this.handleRenderTile}
-          onChange={this.handleChangeLayout}
-          resize={{minimumPaneSizePercentage: 20}}
+          onChange={this.handleChange}
+          resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
           initialValue={this.initialValue}
         />
       </Shell>
