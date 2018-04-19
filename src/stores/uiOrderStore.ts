@@ -1,4 +1,5 @@
 import MarketService from '../services/marketService';
+import {precisionFloor} from '../utils/math';
 import {
   getPostDecimalsLength,
   isOnlyNumbers,
@@ -69,7 +70,9 @@ class UiOrderStore extends BaseStore {
     accuracy: number
   ) => {
     const amount = currentPrice * parseFloat(quantityValue);
-    return amount === 0 ? amount.toFixed(2) : amount.toFixed(accuracy);
+    return amount === 0
+      ? precisionFloor(amount, 2)
+      : precisionFloor(amount, accuracy);
   };
 
   handlePercentageChange = async (config: any) => {
@@ -157,7 +160,7 @@ class UiOrderStore extends BaseStore {
   };
 
   getPartlyValue = (percent: number, balance: number, accuracy: number) => {
-    return (percent / 100 * balance).toFixed(accuracy);
+    return precisionFloor(percent / 100 * balance, accuracy);
   };
 
   updatePercentageState = (percentage: any[], index: number) => {
@@ -178,6 +181,88 @@ class UiOrderStore extends BaseStore {
       item.isActive = false;
     });
   };
+
+  isLimitInvalid = (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number,
+    quantityAccuracy: number
+  ) => {
+    return (
+      !+priceValue ||
+      !+quantityValue ||
+      this.isAmountExceedLimitBalance(
+        isSell,
+        quantityValue,
+        priceValue,
+        baseAssetBalance,
+        quoteAssetBalance,
+        priceAccuracy,
+        quantityAccuracy
+      )
+    );
+  };
+
+  isMarketInvalid = (
+    isSell: boolean,
+    quantityValue: string,
+    baseAssetId: string,
+    quoteAssetId: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    quantityAccuracy: number
+  ) => {
+    return (
+      !+quantityValue ||
+      this.isAmountExceedMarketBalance(
+        isSell,
+        quantityValue,
+        baseAssetBalance,
+        quoteAssetBalance,
+        baseAssetId,
+        quoteAssetId,
+        quantityAccuracy
+      )
+    );
+  };
+
+  isAmountExceedMarketBalance = (
+    isSell: boolean,
+    quantityValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    baseAssetId: string,
+    quoteAssetId: string,
+    quantityAccuracy: number
+  ) => {
+    const convertedBalance = MarketService.convert(
+      quoteAssetBalance,
+      quoteAssetId,
+      baseAssetId,
+      this.rootStore.referenceStore.getInstrumentById
+    );
+    return isSell
+      ? +quantityValue > baseAssetBalance
+      : +quantityValue > precisionFloor(+convertedBalance, quantityAccuracy);
+  };
+
+  isAmountExceedLimitBalance = (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number,
+    quantityAccuracy: number
+  ) =>
+    isSell
+      ? +quantityValue > baseAssetBalance
+      : parseFloat(priceValue) *
+          precisionFloor(parseFloat(quantityValue), quantityAccuracy) >
+        quoteAssetBalance;
 
   // tslint:disable-next-line:no-empty
   reset = () => {};
