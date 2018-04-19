@@ -55,7 +55,8 @@ export interface EditOrderProps {
     priceValue: string,
     baseAssetBalance: number,
     quoteAssetBalance: number,
-    priceAccuracy: number
+    priceAccuracy: number,
+    quantityAccuracy: number
   ) => boolean;
 }
 

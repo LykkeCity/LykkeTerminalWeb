@@ -201,7 +201,11 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   render() {
     const {quantityValue, priceValue} = this.state;
 
-    const {accuracy: {priceAccuracy}, isSellActive, balance} = this;
+    const {
+      accuracy: {priceAccuracy, quantityAccuracy},
+      isSellActive,
+      balance
+    } = this;
     const isOrderInvalid =
       this.state.pendingOrder ||
       this.props.isLimitInvalid(
@@ -210,7 +214,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
         priceValue,
         +balance,
         +balance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
     return (
       <StyledEditModal isSell={this.action === Side.Sell.toLowerCase()}>
