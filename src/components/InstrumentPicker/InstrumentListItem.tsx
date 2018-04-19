@@ -1,80 +1,84 @@
 import {observer} from 'mobx-react';
-import {rem} from 'polished';
 import * as React from 'react';
-import {Dir} from '../../models';
-import {InstrumentModel} from '../../models/index';
-import styled, {colors} from '../styled';
-import {InstrumentField, InstrumentPickerActions} from './index';
-
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
+import {AssetModel, InstrumentModel} from '../../models/index';
+import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {colors} from '../styled';
+import {InstrumentListNumber, InstrumentPickerActions} from './index';
 
 interface InstrumentListItemProps extends InstrumentPickerActions {
+  baseAsset: AssetModel;
   instrument: InstrumentModel;
   inactive: boolean;
+  isAuth: boolean;
 }
 
-const StyledInstrumentItem = styled(Flex)`
-  margin-top: 10px;
-  justify-content: space-between;
+const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
+  ({baseAsset, instrument, onPick, inactive, isAuth}) => {
+    const percentageAccuracy = 2;
+    const click = () => inactive && onPick && onPick(instrument);
 
-  &.active {
-    background-color: ${colors.blue};
-
-    > div {
-      color: ${colors.white}!important;
-    }
+    return (
+      <tr onClick={click} className={inactive ? 'inactive' : 'active'}>
+        <td>{instrument.displayName}</td>
+        <td>
+          <InstrumentListNumber
+            num={toLocaleStringWithAccuracy(
+              instrument.price,
+              instrument.accuracy
+            )}
+          />
+        </td>
+        <td>
+          <InstrumentListNumber
+            num={toLocaleStringWithAccuracy(
+              instrument.change24h,
+              percentageAccuracy
+            )}
+            dynamics={instrument.change24h >= 0 ? 'up' : 'down'}
+            preSign={instrument.change24h >= 0 ? '+' : ''}
+          >
+            %
+          </InstrumentListNumber>
+        </td>
+        <td>
+          {isAuth ? (
+            <InstrumentListNumber
+              num={toLocaleStringWithAccuracy(
+                instrument.volume,
+                instrument.baseAsset.accuracy
+              )}
+            >
+              &nbsp;{instrument.baseAsset.name}
+            </InstrumentListNumber>
+          ) : (
+            ''
+          )}
+        </td>
+        <td>
+          {isAuth ? (
+            <InstrumentListNumber
+              num={toLocaleStringWithAccuracy(
+                instrument.volumeInBase,
+                baseAsset.accuracy
+              )}
+              color={colors.lightGrey}
+            >
+              &nbsp;{baseAsset.name}
+            </InstrumentListNumber>
+          ) : (
+            <InstrumentListNumber
+              num={toLocaleStringWithAccuracy(
+                instrument.volume,
+                instrument.baseAsset.accuracy
+              )}
+            >
+              &nbsp;{instrument.baseAsset.name}
+            </InstrumentListNumber>
+          )}
+        </td>
+      </tr>
+    );
   }
-  &.inactive:hover {
-    cursor: pointer;
-  }
-  &:not(.active):hover {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const StyledInstrumentField = styled(InstrumentField)`
-  padding: ${rem(10)};
-  text-align: left;
-`;
-
-const StyledInstrumentName = StyledInstrumentField.extend`
-  min-width: ${rem(150)};
-`;
-
-const StyledInstrumentPrice = StyledInstrumentField.extend`
-  color: ${p => (p.dir === Dir.Up ? '#13b72a' : '#ff3e2e')};
-  text-align: right;
-  min-width: ${rem(100)};
-`;
-
-interface InstrumentPriceProps {
-  instrument: InstrumentModel;
-  dir: Dir;
-}
-
-const InstrumentPrice: React.SFC<InstrumentPriceProps> = observer(
-  ({instrument: {price = 0, accuracy}, dir}) => (
-    <StyledInstrumentPrice dir={dir}>
-      {price.toFixed(accuracy)}
-    </StyledInstrumentPrice>
-  )
-);
-
-const InstrumentListItem: React.SFC<InstrumentListItemProps> = ({
-  instrument,
-  instrument: {dir = Dir.Up, displayName},
-  onPick,
-  inactive
-}) => (
-  <StyledInstrumentItem
-    // tslint:disable-next-line:jsx-no-lambda
-    onClick={() => inactive && onPick && onPick(instrument)}
-    className={inactive ? 'inactive' : 'active'}
-  >
-    <StyledInstrumentName>{displayName}</StyledInstrumentName>
-    <InstrumentPrice instrument={instrument} dir={dir} />
-  </StyledInstrumentItem>
 );
 
 export default InstrumentListItem;

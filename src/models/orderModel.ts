@@ -2,6 +2,7 @@ import {computed, extendObservable} from 'mobx';
 import {Side} from './index';
 
 class OrderModel {
+  filled: number;
   symbol: string;
   side: Side;
   volume: number;
@@ -10,11 +11,6 @@ class OrderModel {
   createdAt: Date;
   id: string;
   cancelOrder?: (id: string) => void;
-
-  @computed
-  get filled() {
-    return this.volume - this.remainingVolume;
-  }
 
   @computed
   get filledPercent() {

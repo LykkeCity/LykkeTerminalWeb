@@ -4,6 +4,7 @@ import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import withLoader from '../Loader/withLoader';
+import {tableScrollMargin} from '../styled';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
@@ -12,30 +13,36 @@ import TradeListItem from './TradeListItem';
 import TradeLog from './TradeLog';
 import Trades from './Trades';
 
+export const TradesCellWidth = {
+  Symbol: 100,
+  Side: 70,
+  OrderType: 110
+};
+
+export const PublicTradesCellWidth = {
+  Side: 60
+};
+
 const ConnectedTrades = connect(
-  ({authStore: {isAuth}}) => ({
-    isAuth
+  ({authStore: {isAuth}, tradeStore: {getAllTrades}}) => ({
+    isAuth,
+    trades: getAllTrades
   }),
   withAuth(Trades)
 );
 
 const ConnectedTradeList = connect<TradeListProps>(
-  ({
-    tradeStore: {
-      getAllTrades,
-      hasPendingItems,
-      shouldFetchMore,
-      fetchNextTrades
-    }
-  }) => ({
-    trades: getAllTrades,
+  ({tradeStore: {hasPendingItems, shouldFetchMore, fetchNextTrades}}) => ({
     loading: hasPendingItems,
     fetchNextTrades,
     shouldFetchMore
   }),
   compose(
     withLoader<TradeListProps>(p => p.loading!),
-    withStyledScroll({height: 'calc(100% - 85px)'})
+    withStyledScroll({
+      width: `calc(100% + ${tableScrollMargin})`,
+      height: 'calc(100% - 85px)'
+    })
   )(TradeList)
 );
 
@@ -48,16 +55,14 @@ const ConnectedTradeFilter = connect<TradeFilterProps>(
   TradeFilter
 );
 
-const ConnectedPublicTradeList = connect(
-  ({tradeStore: {getPublicTrades}, uiStore: {selectedInstrument}}) => ({
-    trades: getPublicTrades,
-    selectedInstrument
-  }),
-  withStyledScroll({height: 'calc(100% - 40px)'})(PublicTradeList)
-);
+const ConnectedPublicTradeList = withStyledScroll({
+  width: `calc(100% + ${tableScrollMargin})`,
+  height: 'calc(100% - 40px)'
+})(PublicTradeList);
 
 const ConnectedTradeLog = connect(
-  ({uiStore: {selectedInstrument}}) => ({
+  ({tradeStore: {getPublicTrades}, uiStore: {selectedInstrument}}) => ({
+    trades: getPublicTrades,
     selectedInstrument
   }),
   TradeLog

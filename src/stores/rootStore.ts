@@ -14,14 +14,15 @@ import * as topics from '../api/topics';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import keys from '../constants/storageKeys';
+import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
-import MarketService from '../services/marketService';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
   BalanceListStore,
   BaseStore,
   ChartStore,
+  MarketStore,
   ModalStore,
   NotificationStore,
   OrderBookStore,
@@ -55,6 +56,7 @@ class RootStore {
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
   readonly priceStore: PriceStore;
+  readonly marketStore: MarketStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -81,6 +83,7 @@ class RootStore {
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
       this.priceStore = new PriceStore(this, new PriceApi());
+      this.marketStore = new MarketStore(this);
     }
   }
 
@@ -94,9 +97,13 @@ class RootStore {
       this.priceStore.setWs(ws);
       this.referenceStore
         .findInstruments('', Watchlists.All)
-        .forEach((x: any) =>
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
-        );
+        .forEach((x: any) => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Trade, 'day'),
+            this.referenceStore.onCandle
+          );
+        });
       this.uiStore.selectInstrument(
         this.lastOrDefaultInstrument(defaultInstrument)
       );
@@ -127,7 +134,7 @@ class RootStore {
       .then(async () => {
         const instruments = this.referenceStore.getInstruments();
         const assets = this.referenceStore.getAssets();
-        MarketService.init(instruments, assets);
+        this.marketStore.init(instruments, assets);
 
         const ws = new WampApi();
         await ws.connect(
@@ -144,6 +151,10 @@ class RootStore {
         instruments.forEach(x => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Trade, 'day'),
+            this.referenceStore.onCandle
+          );
         });
         this.orderListStore.setWs(ws);
         this.uiStore.selectInstrument(
@@ -163,7 +174,6 @@ class RootStore {
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());
-    MarketService.reset();
   };
 
   private lastOrDefaultInstrument = (defaultInstrument: any) => {
