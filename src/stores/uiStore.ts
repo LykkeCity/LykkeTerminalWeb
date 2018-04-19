@@ -15,6 +15,7 @@ class UiStore extends BaseStore {
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
+  @observable showInstrumentPerformanceData = false;
   @observable showOrdersSelect: boolean = false;
   stateFns: any = [];
   initPriceUpdate: any;
@@ -25,9 +26,12 @@ class UiStore extends BaseStore {
       () => this.selectedInstrument,
       async instrument => {
         if (instrument) {
+          this.toggleInstrumentPerformanceData(false);
+
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
           reset();
           await fetchAll(); // should be waited for loading bids and asks
+
           subscribe(this.getWs());
 
           const {
@@ -63,6 +67,8 @@ class UiStore extends BaseStore {
           await fetchLastPrice();
           await fetchDailyCandle();
           subscribeToDailyCandle();
+
+          this.toggleInstrumentPerformanceData(true);
         }
       }
     );
@@ -95,6 +101,10 @@ class UiStore extends BaseStore {
   @action
   toggleInstrumentPicker = () =>
     (this.showInstrumentPicker = !this.showInstrumentPicker);
+
+  @action
+  toggleInstrumentPerformanceData = (show: boolean) =>
+    (this.showInstrumentPerformanceData = show);
 
   reset = () => {
     this.searchTerm = '';

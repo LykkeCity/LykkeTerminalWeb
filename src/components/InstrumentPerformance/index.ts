@@ -5,7 +5,7 @@ import InstrumentPerformance, {
   InstrumentPerformanceProps
 } from './InstrumentPerformance';
 
-const mapStoreToProps = ({priceStore}: RootStore) => ({
+const mapStoreToProps = ({priceStore, uiStore}: RootStore) => ({
   lastPrice: priceStore.lastTradePrice,
   change: priceStore.dailyChange,
   high: priceStore.dailyHigh,
@@ -20,7 +20,8 @@ const mapStoreToProps = ({priceStore}: RootStore) => ({
     undefined,
     ['selectedInstrument', 'baseAsset', 'accuracy'],
     priceStore
-  )
+  ),
+  showPerformance: uiStore.showInstrumentPerformanceData
 });
 
 const ConnectedInstrumentPerformance = connect<InstrumentPerformanceProps>(

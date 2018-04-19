@@ -1,14 +1,22 @@
 import * as React from 'react';
-import {ChartContainer, ChartWrapper, TransparentDiv} from './styles';
 
-class Chart extends React.Component {
-  render() {
-    return (
-      <ChartWrapper>
-        <ChartContainer id="tv_chart_container" />
-        <TransparentDiv id="transparentDiv" />
-      </ChartWrapper>
-    );
-  }
+import {
+  ChartContainer,
+  ChartWrapper,
+  ResetButton,
+  TransparentDiv
+} from './styles';
+
+export interface ChartProps {
+  onReset: () => void;
 }
+
+const Chart: React.SFC<ChartProps> = ({onReset}) => (
+  <ChartWrapper>
+    <ResetButton onClick={onReset}>Reset</ResetButton>
+    <ChartContainer id="tv_chart_container" />
+    <TransparentDiv id="transparentDiv" />
+  </ChartWrapper>
+);
+
 export default Chart;

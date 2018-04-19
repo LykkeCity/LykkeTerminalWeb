@@ -11,6 +11,8 @@ import {
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
+import levels from '../constants/notificationLevels';
+import messages from '../constants/notificationMessages';
 import keys from '../constants/storageKeys';
 import Watchlists from '../models/watchlists';
 import MarketService from '../services/marketService';
@@ -96,7 +98,7 @@ class RootStore {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote)
         );
       this.uiStore.selectInstrument(
-        this.checkDefaultInstrument(defaultInstrument)
+        this.lastOrDefaultInstrument(defaultInstrument)
       );
     });
   };
@@ -143,14 +145,16 @@ class RootStore {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
         });
+        this.orderListStore.setWs(ws);
         this.uiStore.selectInstrument(
-          this.checkDefaultInstrument(defaultInstrument)
+          this.lastOrDefaultInstrument(defaultInstrument)
         );
         this.tradeStore.subscribe(ws);
+        this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
         return Promise.resolve();
       })
-      .catch(() => {
+      .catch(e => {
         this.startPublicMode(defaultInstrument);
       });
   };
@@ -162,10 +166,23 @@ class RootStore {
     MarketService.reset();
   };
 
-  private checkDefaultInstrument = (defaultInstrument: any) =>
-    instrumentStorage.get()
-      ? JSON.parse(instrumentStorage.get()!)
-      : defaultInstrument;
+  private lastOrDefaultInstrument = (defaultInstrument: any) => {
+    try {
+      const lastUsedInstrument = JSON.parse(instrumentStorage.get()!);
+      const refInstrument = this.referenceStore.getInstrumentById(
+        lastUsedInstrument.id
+      );
+      if (refInstrument === undefined) {
+        this.notificationStore.addNotification(
+          levels.error,
+          messages.pairNotFound(lastUsedInstrument.name)
+        );
+      }
+      return refInstrument || defaultInstrument;
+    } catch {
+      return defaultInstrument;
+    }
+  };
 }
 
 export default RootStore;

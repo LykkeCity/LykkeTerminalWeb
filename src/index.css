@@ -21,6 +21,10 @@
   margin: 0 1px 1px 0;
 }
 
+.mosaic-split {
+  z-index: 2;
+}
+
 body * {
   box-sizing: border-box;
 }

@@ -52,15 +52,19 @@ const StyledTitle = styled.div`
 `;
 
 class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
-  private action: string;
-  private accuracy: {priceAccuracy: number; quantityAccuracy: number};
-  private baseAssetName: string = '';
-  private quoteAssetName: string = '';
-  private baseAssetId: string = '';
-  private quoteAssetId: string = '';
-  private currency: string = '';
-  private isSellActive: boolean;
-  private balance: number = 0;
+  private readonly action: string;
+  private readonly accuracy: {
+    priceAccuracy: number;
+    quantityAccuracy: number;
+    quoteAssetAccuracy: number;
+  };
+  private readonly baseAssetName: string = '';
+  private readonly quoteAssetName: string = '';
+  private readonly baseAssetId: string = '';
+  private readonly quoteAssetId: string = '';
+  private readonly currency: string = '';
+  private readonly isSellActive: boolean;
+  private readonly balance: number = 0;
 
   constructor(props: EditOrderProps) {
     super(props);
@@ -77,7 +81,12 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
 
     this.accuracy = {
       priceAccuracy: pathOr(2, ['accuracy'], currentInstrument),
-      quantityAccuracy: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument)
+      quantityAccuracy: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument),
+      quoteAssetAccuracy: pathOr(
+        2,
+        ['quoteAsset', 'accuracy'],
+        currentInstrument
+      )
     };
     this.baseAssetName = currentInstrument.baseAsset.name;
     this.quoteAssetName = currentInstrument.quoteAsset.name;
@@ -117,7 +126,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       percentage,
       priceAccuracy,
       quantityAccuracy,
-      quoteAssetId
+      quoteAssetId,
+      currentPrice: this.state.priceValue
     });
 
     this.setState(tempObj);
@@ -184,7 +194,11 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   };
 
   isDisable = () => {
-    return !+this.state.priceValue || !+this.state.quantityValue;
+    return (
+      !+this.state.priceValue ||
+      !+this.state.quantityValue ||
+      this.state.pendingOrder
+    );
   };
 
   handleCancel = () => {
@@ -219,7 +233,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           amount={this.props.fixedAmount(
             this.state.priceValue,
             this.state.quantityValue,
-            this.accuracy.priceAccuracy
+            this.accuracy.quoteAssetAccuracy
           )}
           balance={this.balance}
           buttonMessage={'Modify'}
