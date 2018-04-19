@@ -56,7 +56,8 @@ export interface OrderProps {
     priceValue: string,
     baseAssetBalance: number,
     quoteAssetBalance: number,
-    priceAccuracy: number
+    priceAccuracy: number,
+    quantityAccuracy: number
   ) => boolean;
   isMarketInvalid: (
     isSell: boolean,

@@ -186,7 +186,8 @@ class UiOrderStore extends BaseStore {
     priceValue: string,
     baseAssetBalance: number,
     quoteAssetBalance: number,
-    priceAccuracy: number
+    priceAccuracy: number,
+    quantityAccuracy: number
   ) => {
     return (
       !+priceValue ||
@@ -197,7 +198,8 @@ class UiOrderStore extends BaseStore {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       )
     );
   };
@@ -251,13 +253,14 @@ class UiOrderStore extends BaseStore {
     priceValue: string,
     baseAssetBalance: number,
     quoteAssetBalance: number,
-    priceAccuracy: number
+    priceAccuracy: number,
+    quantityAccuracy: number
   ) =>
     isSell
       ? +quantityValue > baseAssetBalance
       : truncate(
           +(parseFloat(priceValue) * parseFloat(quantityValue)),
-          priceAccuracy
+          quantityAccuracy
         ) > truncate(+quoteAssetBalance, priceAccuracy);
 
   // tslint:disable-next-line:no-empty

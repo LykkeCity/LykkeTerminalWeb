@@ -59,6 +59,7 @@ describe('uiOrder store', () => {
     const baseAssetBalance = 2;
     const quoteAssetBalance = 2;
     const priceAccuracy = 0;
+    const quantityAccuracy = 0;
 
     it('should return true if quantity value is equal 0', () => {
       const isInvalid = uiOrderStore.isLimitInvalid(
@@ -67,7 +68,8 @@ describe('uiOrder store', () => {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
       expect(isInvalid).toBeTruthy();
     });
@@ -80,7 +82,8 @@ describe('uiOrder store', () => {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
       expect(isInvalid).toBeTruthy();
     });
@@ -93,7 +96,8 @@ describe('uiOrder store', () => {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
       expect(isInvalid).toBeTruthy();
     });
@@ -108,7 +112,8 @@ describe('uiOrder store', () => {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
       expect(isInvalid).toBeTruthy();
     });
@@ -121,7 +126,8 @@ describe('uiOrder store', () => {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
       expect(isInvalid).toBeFalsy();
     });
@@ -136,7 +142,8 @@ describe('uiOrder store', () => {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
       expect(isInvalid).toBeFalsy();
     });

@@ -325,7 +325,8 @@ class Order extends React.Component<OrderProps, OrderState> {
         priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy
+        priceAccuracy,
+        quantityAccuracy
       );
 
     const isMarketInvalid =
