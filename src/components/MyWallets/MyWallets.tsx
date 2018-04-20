@@ -1,5 +1,6 @@
 import React from 'react';
 import {TotalBalance, WalletList} from '.';
+import {HeaderCell} from '../Table/styles';
 import {WalletBalanceList} from '../WalletBalanceList/';
 import {
   ManageAccountLink,
@@ -25,9 +26,9 @@ const MyWallets = () => (
       <WalletBalanceListHeader>
         <thead>
           <tr>
-            <th>Asset</th>
-            <th>Base currency</th>
-            <th>Balance</th>
+            <HeaderCell w="20%">Asset</HeaderCell>
+            <HeaderCell w="40%">Base currency</HeaderCell>
+            <HeaderCell w="40%">Balance</HeaderCell>
           </tr>
         </thead>
       </WalletBalanceListHeader>

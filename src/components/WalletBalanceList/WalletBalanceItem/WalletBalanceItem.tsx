@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {AssetBalanceModel, AssetModel} from '../../../models';
 import {colors} from '../../styled';
+import {Cell} from '../../Table/styles';
 import WalletBalanceNumber from './WalletBalanceNumber';
 
 interface WalletBalanceItemProps {
@@ -12,8 +13,8 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   baseAsset
 }) => (
   <tr>
-    <td>{assetBalance.name}</td>
-    <td>
+    <Cell w="20%">{assetBalance.name}</Cell>
+    <Cell w="40%">
       <WalletBalanceNumber
         num={assetBalance.balanceInBaseAsset}
         accuracy={baseAsset.accuracy}
@@ -21,15 +22,15 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
       >
         &nbsp;{baseAsset.name}
       </WalletBalanceNumber>
-    </td>
-    <td>
+    </Cell>
+    <Cell w="40%">
       <WalletBalanceNumber
         num={assetBalance.balance}
         accuracy={assetBalance.accuracy}
       >
         &nbsp;{assetBalance.name}
       </WalletBalanceNumber>
-    </td>
+    </Cell>
   </tr>
 );
 export default WalletBalanceItem;
