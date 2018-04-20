@@ -21,12 +21,9 @@ const QRModal: React.SFC<QRModalProps> = ({modal, qrId}) => {
     modal.close();
   };
 
-  // tslint:disable-next-line:no-empty
-  const confirmSession = () => {};
-
   return (
     <SessionQRConfirm>
-      <ModalHeader onClick={confirmSession}>
+      <ModalHeader onClick={handleContinue}>
         <ModalTitle>{modal.message.title}</ModalTitle>
       </ModalHeader>
       <ModalBody>{modal.message.body}</ModalBody>

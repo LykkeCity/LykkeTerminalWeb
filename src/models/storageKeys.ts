@@ -8,8 +8,8 @@ enum keys {
   state = 'lwt-state',
   token = 'lwt-token',
   sessionNote = 'lwt-sessionNote-test',
-  sessionKickoff = 'lwt-session-kickoff',
-  sessionExpiration = 'lwt-session-expiration'
+  sessionToken = 'lwt-session-token',
+  sessionDuration = 'lwt-session-duration-test'
 }
 
 export default keys;

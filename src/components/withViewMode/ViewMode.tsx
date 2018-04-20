@@ -18,12 +18,12 @@ const Centered = styled.div`
 `;
 
 const mapStoreToProps = ({sessionStore}: RootStore) => ({
-  showQr: sessionStore.showQR
+  startTrade: sessionStore.startTrade
 });
 
-const ViewMode = inject(mapStoreToProps)(({showQr}) => (
+const ViewMode = inject(mapStoreToProps)(({startTrade}) => (
   <Centered>
-    <Link onClick={showQr}>Scan QR</Link>&nbsp;to start trading
+    <Link onClick={startTrade}>Scan QR</Link>&nbsp;to start trading
   </Centered>
 ));
 
