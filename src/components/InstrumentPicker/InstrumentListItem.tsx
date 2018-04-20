@@ -19,7 +19,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
 
     return (
       <tr onClick={click} className={inactive ? 'inactive' : 'active'}>
-        <td>{instrument.displayName}</td>
+        <td title={instrument.displayName}>{instrument.displayName}</td>
         <td>
           <InstrumentListNumber
             num={toLocaleStringWithAccuracy(
