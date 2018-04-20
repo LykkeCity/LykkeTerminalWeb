@@ -5,7 +5,7 @@ import {OrderActionProps} from './index';
 
 const StyledOrderAction = styled.div`
   display: flex;
-  border-bottom: solid 1px #292929;
+  border-bottom: solid 1px #272727;
   flex-direction: column;
   width: 50%;
   padding: ${rem(8)} 0;

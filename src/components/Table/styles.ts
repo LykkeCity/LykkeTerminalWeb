@@ -61,7 +61,7 @@ export const Table = styled.table`
     line-height: 1;
   }
   thead {
-    border-bottom: solid 1px #292929;
+    border-bottom: solid 1px #272727;
   }
   th,
   td {

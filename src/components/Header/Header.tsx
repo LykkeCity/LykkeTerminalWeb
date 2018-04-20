@@ -14,10 +14,20 @@ import {HeaderProps} from './index';
 const {Flex, Box} = require('grid-styled');
 
 export const HeaderItem = styled(Box)`
-  border-left: solid 1px rgba(0, 0, 0, 0.2);
-  font-size: ${rem(14)};
+  font-size: ${rem(16)};
+  position: relative;
 
-  &:first-child {
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 24px;
+    margin-top: -12px;
+    border-left: solid 1px rgba(0, 0, 0, 0.2);
+  }
+
+  &:first-child:after {
     border-left: 0;
   }
 
@@ -38,8 +48,8 @@ export const HeaderItem = styled(Box)`
 
 const HeaderWrapper = styled.header`
   padding: ${rem(9)} ${rem(11)};
-  height: 50px;
-  border-bottom: solid 1px #292929;
+  height: 60px;
+  border-bottom: solid 1px #272727;
   background: #333;
 `;
 
