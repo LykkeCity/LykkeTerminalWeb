@@ -13,10 +13,12 @@ interface SessionNotificationProps {
   closeSessionNotification: () => {};
   extendSession: () => {};
   showQR: () => Promise<any>;
-  closeViewModeFullNotification: () => {};
-  viewModeNotificationFullShown: boolean;
-  viewModeNotificationCutShown: boolean;
+  closeViewModeNotification: () => {};
+  viewModeNotificationShown: boolean;
   sessionNotificationShown: boolean;
+  startTrade: () => {};
+  handleSetDuration: () => {};
+  sessionCurrentDuration: number;
 }
 
 class SessionNotificationComponent extends React.Component<
@@ -62,14 +64,18 @@ class SessionNotificationComponent extends React.Component<
             isSessionNotesShown={this.props.isSessionNotesShown}
           />
         )}
-        {this.props.viewModeNotificationFullShown && (
+        {this.props.viewModeNotificationShown && (
           <ViewModeNotificationComponent
-            onNotificationClose={this.props.closeViewModeFullNotification}
-            onStartTrade={this.props.showQR}
+            onNotificationClose={this.props.closeViewModeNotification}
+            onStartTrade={this.props.startTrade}
           />
         )}
         {this.state.isSettingsShown && (
-          <Settings onSettingsClose={this.handleSettingsClose} />
+          <Settings
+            onSettingsClose={this.handleSettingsClose}
+            handleDurationClick={this.props.handleSetDuration}
+            getCurrentSessionDuration={this.props.sessionCurrentDuration}
+          />
         )}
       </SessionNotificationBlock>
     );

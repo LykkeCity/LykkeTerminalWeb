@@ -124,11 +124,20 @@ class RootStore {
       UiStore.DEFAULT_INSTRUMENT
     );
 
-    if (!this.authStore.isAuth || this.uiStore.viewMode) {
+    if (!this.authStore.isAuth) {
       return this.startPublicMode(defaultInstrument);
     }
 
-    await this.sessionStore.initUserSession();
+    const isSessionConfirmed = await this.sessionStore.isSessionConfirmed();
+
+    if (!isSessionConfirmed) {
+      this.uiStore.runViewMode();
+    }
+
+    if (this.uiStore.viewMode) {
+      await this.sessionStore.initUserSession();
+      return this.startPublicMode(defaultInstrument);
+    }
 
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();

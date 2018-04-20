@@ -14,10 +14,16 @@ const sessionDuration = [1, 5, 15, 30];
 const DURATION_VALUE = 'min';
 
 interface SettingsProps {
-  onSettingsClose: any;
+  onSettingsClose: () => void;
+  handleDurationClick: (value: number) => {};
+  getCurrentSessionDuration: number;
 }
 
-const Settings: React.SFC<SettingsProps> = ({onSettingsClose}) => {
+const Settings: React.SFC<SettingsProps> = ({
+  onSettingsClose,
+  handleDurationClick,
+  getCurrentSessionDuration
+}) => {
   return (
     <SessionSettings>
       <CloseButton
@@ -32,12 +38,10 @@ const Settings: React.SFC<SettingsProps> = ({onSettingsClose}) => {
             key={index}
             value={item}
             description={DURATION_VALUE}
-            isActive={false}
+            isActive={getCurrentSessionDuration === item}
             // tslint:disable-next-line:no-empty
             // tslint:disable-next-line:jsx-no-lambda
-            onClick={() => {
-              return;
-            }}
+            onClick={() => handleDurationClick(item)}
           />
         ))}
       </SessionDurations>
