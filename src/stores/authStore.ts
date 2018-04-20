@@ -9,6 +9,7 @@ import {BaseStore, RootStore} from './index';
 const randomString = RandomString();
 const tokenStorage = StorageUtils(keys.token);
 const stateStorage = StorageUtils(keys.state);
+const sessionTokenStorage = StorageUtils(keys.sessionToken);
 
 class AuthStore extends BaseStore {
   @computed
@@ -34,7 +35,8 @@ class AuthStore extends BaseStore {
 
   fetchToken = async (accessToken: string, state: string) => {
     if (state === stateStorage.get()) {
-      const {token} = await this.api.fetchToken(accessToken);
+      const {token, authId} = await this.api.fetchToken(accessToken);
+      sessionTokenStorage.set(authId);
       this.token = token;
       tokenStorage.set(token);
       stateStorage.clear();

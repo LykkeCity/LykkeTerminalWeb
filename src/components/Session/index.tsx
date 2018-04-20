@@ -9,20 +9,24 @@ const ConnectedSessionNotification = connect(
       closeSessionNotification,
       extendSession,
       showQR,
-      closeViewModeFullNotification,
-      viewModeNotificationFullShown,
-      viewModeNotificationCutShown,
-      sessionNotificationShown
+      closeViewModeNotification,
+      viewModeNotificationShown,
+      sessionNotificationShown,
+      startTrade,
+      handleSetDuration,
+      sessionCurrentDuration
     }
   }) => ({
-    closeViewModeFullNotification,
+    closeViewModeNotification,
     extendSession,
     isSessionNotesShown: getSessionNotesShown(),
     closeSessionNotification,
     showQR,
-    viewModeNotificationFullShown,
-    viewModeNotificationCutShown,
-    sessionNotificationShown
+    viewModeNotificationShown,
+    sessionNotificationShown,
+    startTrade,
+    handleSetDuration,
+    sessionCurrentDuration
   }),
   SessionNotificationComponent
 );
