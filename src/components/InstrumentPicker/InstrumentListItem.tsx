@@ -23,19 +23,19 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>
           <InstrumentListNumber
             num={toLocaleStringWithAccuracy(
-              instrument.price,
-              instrument.accuracy
+              instrument.price || 0,
+              instrument.accuracy || 0
             )}
           />
         </td>
         <td>
           <InstrumentListNumber
             num={toLocaleStringWithAccuracy(
-              instrument.change24h,
-              percentageAccuracy
+              instrument.change24h || 0,
+              percentageAccuracy || 0
             )}
-            dynamics={instrument.change24h >= 0 ? 'up' : 'down'}
-            preSign={instrument.change24h >= 0 ? '+' : ''}
+            dynamics={instrument.change24h || 0 >= 0 ? 'up' : 'down'}
+            preSign={instrument.change24h || 0 >= 0 ? '+' : ''}
           >
             %
           </InstrumentListNumber>
@@ -44,8 +44,8 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           {isAuth ? (
             <InstrumentListNumber
               num={toLocaleStringWithAccuracy(
-                instrument.volume,
-                instrument.baseAsset.accuracy
+                instrument.volume || 0,
+                instrument.baseAsset.accuracy || 0
               )}
             >
               &nbsp;{instrument.baseAsset.name}
@@ -58,8 +58,8 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           {isAuth ? (
             <InstrumentListNumber
               num={toLocaleStringWithAccuracy(
-                instrument.volumeInBase,
-                baseAsset.accuracy
+                instrument.volumeInBase || 0,
+                baseAsset.accuracy || 0
               )}
               color={colors.lightGrey}
             >
@@ -68,8 +68,8 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           ) : (
             <InstrumentListNumber
               num={toLocaleStringWithAccuracy(
-                instrument.volume,
-                instrument.baseAsset.accuracy
+                instrument.volume || 0,
+                instrument.baseAsset.accuracy || 0
               )}
             >
               &nbsp;{instrument.baseAsset.name}
