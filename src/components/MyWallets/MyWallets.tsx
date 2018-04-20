@@ -1,25 +1,15 @@
 import React from 'react';
-import {TotalBalance, WalletActions, WalletList} from '.';
-import {AssetModel, WalletModel} from '../../models';
+import {TotalBalance, WalletList} from '.';
 import {WalletBalanceList} from '../WalletBalanceList/';
 import {
   ManageAccountLink,
   MyWalletsContainer,
   Sidebar,
+  WalletBalanceListHeader,
   WalletBalances
 } from './styles';
 
-export interface MyWalletsProps extends WalletActions {
-  currentWallet: WalletModel;
-  total: number;
-  baseAsset: AssetModel;
-}
-
-const MyWallets: React.SFC<MyWalletsProps> = ({
-  currentWallet,
-  baseAsset,
-  total
-}) => (
+const MyWallets = () => (
   <MyWalletsContainer>
     <Sidebar>
       <WalletList />
@@ -32,7 +22,16 @@ const MyWallets: React.SFC<MyWalletsProps> = ({
       </ManageAccountLink>
     </Sidebar>
     <WalletBalances>
-      <WalletBalanceList wallet={currentWallet} />
+      <WalletBalanceListHeader>
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Base currency</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+      </WalletBalanceListHeader>
+      <WalletBalanceList />
     </WalletBalances>
   </MyWalletsContainer>
 );

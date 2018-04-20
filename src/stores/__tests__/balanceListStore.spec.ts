@@ -21,17 +21,5 @@ describe('balanceList store', () => {
       expect(balanceListStore.getBalances instanceof Array).toBeTruthy();
       expect(balanceListStore.getBalances.length).toBe(0);
     });
-
-    it('tradingAssets should be defined after instantiation', () => {
-      expect(balanceListStore.tradingWalletAssets).toBeDefined();
-      expect(balanceListStore.tradingWalletAssets).not.toBeNull();
-    });
-
-    it('tradingAssets should be an empty array by default', () => {
-      expect(
-        balanceListStore.tradingWalletAssets instanceof Array
-      ).toBeTruthy();
-      expect(balanceListStore.tradingWalletAssets.length).toBe(0);
-    });
   });
 });

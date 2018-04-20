@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {WalletModel} from '../../models';
 import {HBar} from '../Bar';
 import {WalletItem} from './';

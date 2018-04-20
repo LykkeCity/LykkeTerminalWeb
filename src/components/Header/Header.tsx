@@ -8,7 +8,6 @@ import {Link} from '../Link/index';
 import {SettingsModal} from '../Settings';
 import styled from '../styled';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
-import {CurrentWallet} from '../UserInfo/CurrentWallet';
 import {HeaderProps} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -17,7 +16,6 @@ const {Flex, Box} = require('grid-styled');
 export const HeaderItem = styled(Box)`
   border-left: solid 1px rgba(0, 0, 0, 0.2);
   font-size: ${rem(14)};
-  /* height: 26px; */
 
   &:first-child {
     border-left: 0;
@@ -101,7 +99,6 @@ const Header: React.SFC<HeaderProps> = ({
             {authStore.isAuth ? (
               <HeaderItem>
                 <Flex>
-                  <CurrentWallet />
                   <BalanceInfo />
                 </Flex>
               </HeaderItem>

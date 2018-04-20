@@ -19,22 +19,13 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   getAssetById
 }) => (
   <Table>
-    <thead>
-      <tr>
-        <th>Assets</th>
-        <th />
-        <th>Base currency</th>
-        <th>Balance</th>
-      </tr>
-    </thead>
     <tbody>
       {wallet &&
-        wallet.balances.map((assetBalance, index) => (
+        wallet.balances.map(assetBalance => (
           <WalletBalanceItem
-            key={index}
+            key={assetBalance.id}
+            assetBalance={assetBalance}
             baseAsset={baseAsset}
-            balance={wallet.balances[index]}
-            asset={getAssetById(wallet.balances[index].AssetId)}
           />
         ))}
     </tbody>

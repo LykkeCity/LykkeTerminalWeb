@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react';
 import {AssetModel} from '../../models/index';
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar';
+import {withStyledScroll} from '../CustomScrollbar';
 import WalletBalanceItem from './WalletBalanceItem/WalletBalanceItem';
 import WalletBalanceList, {WalletBalanceListProps} from './WalletBalanceList';
 
@@ -15,7 +15,7 @@ const ConnectedWalletBalanceList = connect<WalletBalanceListProps>(
     baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
     getAssetById
   }),
-  withScroll(WalletBalanceList)
+  withStyledScroll({height: 'calc(100% - 1rem)'})(WalletBalanceList)
 );
 
 const ObservedWalletBalanceItem = observer(WalletBalanceItem);

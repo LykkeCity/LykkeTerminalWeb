@@ -2,7 +2,7 @@ import {compose, curry} from 'rambda';
 import {AssetModel} from '../../models';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
-import MyWallets, {MyWalletsProps} from './MyWallets';
+import MyWallets from './MyWallets';
 import WalletItem, {WalletItemProps} from './Name';
 import WalletList, {WalletListProps} from './NameList';
 import TotalBalance, {TotalBalanceProps} from './TotalBalance';
@@ -14,7 +14,8 @@ const toLocaleWithAccuracy = (accuracy: number, num: number) =>
 
 const toNumberOrNoop = (num: number | undefined) => num || '';
 
-const withName = (name: string, num: string) => num.concat(' ', name);
+const withName = (name: string, num: string) =>
+  (num && name && num.concat(' ', name)) || '';
 
 const formatBalance = (baseAsset: AssetModel, balance: number) =>
   compose(
@@ -27,20 +28,8 @@ export interface WalletActions {
   onChangeWallet: (walletId: string) => void;
 }
 
-const ConnectedMyWallets = connect<MyWalletsProps>(
-  ({
-    balanceListStore: {
-      getWalletsWithPositiveBalances: wallets,
-      totalBalance: total,
-      currentWallet
-    },
-    referenceStore: {getAssetById, baseAssetId},
-    authStore: {isAuth}
-  }) => ({
-    wallets,
-    currentWallet,
-    baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
-    total,
+const ConnectedMyWallets = connect(
+  ({authStore: {isAuth}}) => ({
     isAuth
   }),
   withAuth(MyWallets)

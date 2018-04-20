@@ -1,6 +1,7 @@
 import {rem, rgb} from 'polished';
 import styled from 'styled-components';
 import {colors, fonts} from '../styled';
+import {Table} from '../Table';
 
 export const MyWalletsContainer = styled.div`
   display: flex;
@@ -28,9 +29,7 @@ export const ManageAccountLink = styled.a`
   cursor: pointer;
   color: ${colors.white};
   font-size: ${fonts.normal};
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   min-width: ${rem(250)};
   min-height: ${rem(32)};
   margin-top: 1rem;
@@ -93,4 +92,8 @@ export const WalletBalances = styled.div`
   width: 100%;
   height: 100%;
   margin-left: ${rem(8)};
+`;
+
+export const WalletBalanceListHeader = Table.extend`
+  margin-bottom: 0;
 `;

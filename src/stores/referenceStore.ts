@@ -227,12 +227,7 @@ class ReferenceStore extends BaseStore {
     this.baseAsset = assetId;
     this.api.setBaseAsset({BaseAsssetId: assetId});
     this.updateInstruments();
-    const {
-      updateBalance,
-      updateTradingWallet
-    } = this.rootStore.balanceListStore;
-    updateBalance();
-    updateTradingWallet();
+    this.rootStore.balanceListStore.updateWalletBalances();
   };
 
   updateInstruments = () => {
