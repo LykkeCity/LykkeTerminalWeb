@@ -1,6 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import {Icon} from '../../Icon';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
@@ -35,7 +36,7 @@ const ModalHeader: React.SFC<{
     <Flex justify={'space-between'}>
       <StyledTitle>{title ? title : children}</StyledTitle>
       <StyledCloseBtn href="#" onClick={onClick}>
-        <span>&times;</span>
+        <Icon name="cross" />
       </StyledCloseBtn>
     </Flex>
   );
