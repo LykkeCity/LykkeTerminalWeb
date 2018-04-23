@@ -14,8 +14,8 @@ const {
 
 export const colorFromSide = (sideOrProps: any) => css`
   color: ${(sideOrProps.side || sideOrProps) === Side.Buy
-    ? '#fb8f01'
-    : '#d070ff'};
+    ? colors.buy
+    : colors.sell};
 `;
 
 export const colors = {

@@ -1,76 +1,61 @@
-import {observer} from 'mobx-react';
 import * as React from 'react';
-import {OrderModel, Side} from '../../models';
+import {InstrumentModel, OrderModel} from '../../models';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
+import {SideCell} from '../TradeList/styles';
 import {OrderActions, OrderCellWidth} from './index';
 
 interface OrderListItemProps {
   onEdit: any;
   order: OrderModel;
-  accuracy: number;
-  symbol: string;
+  instrument: InstrumentModel;
 }
 
-const getFilled = (filled: number, accuracy: number) => {
-  return toLocaleStringWithAccuracy(filled, accuracy);
+const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
+  order: {
+    createdAt,
+    price,
+    id,
+    side,
+    volume,
+    remainingVolume,
+    filled,
+    filledPercent
+  },
+  onEdit,
+  cancelOrder,
+  instrument: {displayName, accuracy, baseAsset: {accuracy: baseAssetAccuracy}}
+}) => {
+  const handleEditOrder = () => onEdit(id);
+  const handleCancelOrder = () => cancelOrder(id);
+  return (
+    <tr>
+      <Cell w={OrderCellWidth.Symbol}>{displayName}</Cell>
+      <Cell w={OrderCellWidth.Id}>{id}</Cell>
+      <SideCell w={OrderCellWidth.Side} side={side}>
+        {side}
+      </SideCell>
+      <td>{toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}</td>
+      <Cell w={OrderCellWidth.Filled}>
+        {toLocaleStringWithAccuracy(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(
+          filledPercent,
+          2,
+          {style: 'percent'}
+        )})
+      </Cell>
+      <td>{price}</td>
+      <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
+      <Cell w={OrderCellWidth.Actions}>
+        <span onClick={handleEditOrder}>
+          <Icon name="pencil" />
+        </span>
+        <span style={{marginLeft: '0.75rem'}} onClick={handleCancelOrder}>
+          <Icon name="cross" />
+        </span>
+      </Cell>
+    </tr>
+  );
 };
-
-const getFilledPercent = (
-  filled: number,
-  volume: number,
-  remainingVolume: number,
-  accuracy: number
-) => {
-  return filled === 0
-    ? 0
-    : toLocaleStringWithAccuracy(remainingVolume / volume * 100, accuracy);
-};
-
-const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = observer(
-  ({
-    order: {createdAt, price, id, side, volume, remainingVolume, filled},
-    accuracy,
-    onEdit,
-    symbol,
-    cancelOrder
-  }) => {
-    const colorSide = side === Side.Buy ? '#fb8f01' : '#d070ff';
-
-    return (
-      <tr>
-        <Cell w={OrderCellWidth.Symbol}>{symbol}</Cell>
-        <Cell w={OrderCellWidth.CancelOrder} style={{textAlign: 'center'}}>
-          {/* tslint:disable-next-line:jsx-no-lambda */}
-          <span onClick={() => cancelOrder!(id)}>
-            <Icon name="cross" />
-          </span>
-        </Cell>
-        <Cell w={OrderCellWidth.Id}>{id}</Cell>
-        <Cell w={OrderCellWidth.Side} style={{color: colorSide}}>
-          {side}
-        </Cell>
-        <td>{volume}</td>
-        <Cell w={OrderCellWidth.Filled}>
-          {getFilled(filled, accuracy)} ({getFilledPercent(
-            filled,
-            volume,
-            remainingVolume,
-            accuracy
-          )}%)
-        </Cell>
-        <td>{price}</td>
-        <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
-        <Cell w={OrderCellWidth.Edit}>
-          {/* tslint:disable-next-line:jsx-no-lambda */}
-          <span onClick={() => onEdit(id)}>
-            <Icon name="pencil" />
-          </span>
-        </Cell>
-      </tr>
-    );
-  }
-);
 
 export default OrderListItem;

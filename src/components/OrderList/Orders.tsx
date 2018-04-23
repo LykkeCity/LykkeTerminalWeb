@@ -60,13 +60,6 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         width: OrderCellWidth.Symbol
       },
       {
-        sortDisabled: true,
-        className: 'center-align',
-        key: '',
-        value: 'Close',
-        width: OrderCellWidth.CancelOrder
-      },
-      {
         sortDisabled: checkDataForSorting(this.state.data, 'id'),
         className: 'right-align',
         key: 'id',
@@ -110,8 +103,8 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         sortDisabled: true,
         className: 'right-align',
         key: '',
-        value: 'Edit',
-        width: OrderCellWidth.Edit
+        value: 'Actions',
+        width: OrderCellWidth.Actions
       }
     ];
 

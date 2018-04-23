@@ -3,7 +3,6 @@ import {add, find, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import tradingWalletKeys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, WalletModel} from '../models';
-import MarketService from '../services/marketService';
 import {BaseStore, RootStore} from './index';
 
 class BalanceListStore extends BaseStore {
@@ -23,7 +22,9 @@ class BalanceListStore extends BaseStore {
 
   @computed
   get totalBalance() {
-    return this.walletList.map(b => b.totalBalanceInBaseAsset).reduce(add, 0);
+    return this.walletList
+      .map(wallet => wallet.totalBalanceInBaseAsset)
+      .reduce(add, 0);
   }
 
   @computed
@@ -47,7 +48,6 @@ class BalanceListStore extends BaseStore {
   }
 
   @observable.shallow private walletList: WalletModel[] = [];
-  @observable.shallow private tradingAssets: AssetBalanceModel[] = [];
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
@@ -82,7 +82,7 @@ class BalanceListStore extends BaseStore {
         assetBalance.name = pathOr('', ['name'], asset);
         assetBalance.accuracy = pathOr('', ['accuracy'], asset);
 
-        assetBalance.balanceInBaseAsset = MarketService.convert(
+        assetBalance.balanceInBaseAsset = this.rootStore.marketStore.convert(
           balance,
           id,
           baseAssetId,
@@ -106,7 +106,6 @@ class BalanceListStore extends BaseStore {
 
   reset = () => {
     this.walletList = [];
-    this.tradingAssets = [];
   };
 }
 

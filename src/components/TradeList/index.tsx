@@ -41,7 +41,7 @@ const ConnectedTradeList = connect<TradeListProps>(
     withLoader<TradeListProps>(p => p.loading!),
     withStyledScroll({
       width: `calc(100% + ${tableScrollMargin})`,
-      height: 'calc(100% - 85px)'
+      height: 'calc(100% - 5rem)'
     })
   )(TradeList)
 );
@@ -57,7 +57,7 @@ const ConnectedTradeFilter = connect<TradeFilterProps>(
 
 const ConnectedPublicTradeList = withStyledScroll({
   width: `calc(100% + ${tableScrollMargin})`,
-  height: 'calc(100% - 40px)'
+  height: 'calc(100% - 1.75rem)'
 })(PublicTradeList);
 
 const ConnectedTradeLog = connect(

@@ -12,7 +12,13 @@ const toLocaleWithAccuracy = (accuracy: number, num: number) =>
     maximumFractionDigits: accuracy
   });
 
-const toNumberOrNoop = (num: number | undefined) => num || '';
+const toNumberOrNoop = (num: number | undefined) => {
+  if (num !== undefined && isFinite(num)) {
+    return num;
+  } else {
+    return '';
+  }
+};
 
 const withName = (name: string, num: string) =>
   (num && name && num.concat(' ', name)) || '';
