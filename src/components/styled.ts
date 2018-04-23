@@ -63,5 +63,7 @@ export const greyButton = {
   borderRadius: '4px'
 };
 
+export const tableScrollMargin = '1rem';
+
 export {css, injectGlobal, keyframes, ThemeProvider};
 export default styled;

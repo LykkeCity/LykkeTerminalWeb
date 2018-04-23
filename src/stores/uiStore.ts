@@ -16,6 +16,7 @@ class UiStore extends BaseStore {
   @observable selectedInstrument: InstrumentModel | null;
   @observable showInstrumentPicker = false;
   @observable showInstrumentPerformanceData = false;
+  @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   stateFns: any = [];
   initPriceUpdate: any;
@@ -30,7 +31,12 @@ class UiStore extends BaseStore {
 
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
           reset();
-          await fetchAll(); // should be waited for loading bids and asks
+
+          try {
+            await fetchAll(); // should be waited for loading bids and asks
+          } catch (e) {
+            return;
+          }
 
           subscribe(this.getWs());
 
@@ -81,6 +87,10 @@ class UiStore extends BaseStore {
   @action
   readonly toggleAssetsSelect = () =>
     (this.showAssetsSelect = !this.showAssetsSelect);
+
+  @action
+  readonly toggleInstrumentSelection = () =>
+    (this.showInstrumentSelection = !this.showInstrumentSelection);
 
   @action
   readonly toggleOrdersSelect = () =>

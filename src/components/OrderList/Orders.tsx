@@ -1,53 +1,141 @@
 import * as React from 'react';
+import {OrderModel} from '../../models';
 import Types from '../../models/modals';
 import {HBar} from '../Bar';
-import {Table} from '../Table';
-import {HeaderCell} from '../Table/styles';
+import {
+  checkDataForSorting,
+  sortData,
+  TableHeader,
+  TableSortState
+} from '../Table';
 import {OrderActions, OrderCellWidth, OrderList} from './';
 import {CancelAllOrders, ToggleOrders} from './OrderListAdditional';
 import OrderListToolbar from './OrderListToolbar';
 
 interface OrdersProps extends OrderActions {
   addModal: any;
+  cancelOrder: any;
+  orders: OrderModel[];
 }
 
-const Blotter: React.SFC<OrdersProps> = ({cancelOrder, addModal}) => {
-  const handleEditOrder = (order: any) => (id: string) => {
-    addModal(
-      id,
-      // tslint:disable-next-line:no-empty
-      () => {},
-      // tslint:disable-next-line:no-empty
-      () => {},
-      Types.EditOrder,
-      order
+class Blotter extends React.Component<OrdersProps, TableSortState> {
+  constructor(props: OrdersProps) {
+    super(props);
+    this.state = {
+      data: this.props.orders,
+      sortByParam: '',
+      sortDirection: 'ASC'
+    };
+  }
+
+  componentWillReceiveProps(args: any) {
+    this.setState({
+      data: args.orders
+    });
+  }
+
+  sort = (sortByParam: string, sortDirectionDefault: string) => {
+    this.setState(
+      sortData(this.props.orders, sortByParam, sortDirectionDefault, this.state)
     );
   };
 
-  return (
-    <React.Fragment>
-      <OrderListToolbar>
-        <ToggleOrders />
-        <CancelAllOrders />
-      </OrderListToolbar>
-      <HBar />
-      <Table>
-        <thead>
-          <tr>
-            <HeaderCell w={OrderCellWidth.Symbol}>Asset pair</HeaderCell>
-            <HeaderCell w={OrderCellWidth.Id}>OrderID</HeaderCell>
-            <HeaderCell w={OrderCellWidth.Side}>Side</HeaderCell>
-            <th>Volume</th>
-            <HeaderCell w={OrderCellWidth.Filled}>Filled</HeaderCell>
-            <th>Price</th>
-            <HeaderCell w={OrderCellWidth.CreatedDate}>Created Date</HeaderCell>
-            <HeaderCell w={OrderCellWidth.Actions}>Actions</HeaderCell>
-          </tr>
-        </thead>
-      </Table>
-      <OrderList onEditOrder={handleEditOrder} onCancelOrder={cancelOrder} />
-    </React.Fragment>
-  );
-};
+  render() {
+    const handleEditOrder = (order: any) => (id: string) => {
+      this.props.addModal(
+        id,
+        // tslint:disable-next-line:no-empty
+        () => {},
+        // tslint:disable-next-line:no-empty
+        () => {},
+        Types.EditOrder,
+        order
+      );
+    };
+    const headers: any[] = [
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
+        key: 'symbol',
+        value: 'Asset pair',
+        width: OrderCellWidth.Symbol
+      },
+      {
+        sortDisabled: true,
+        className: 'center-align',
+        key: '',
+        value: 'Close',
+        width: OrderCellWidth.CancelOrder
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'id'),
+        className: 'right-align',
+        key: 'id',
+        value: 'OrderID',
+        width: OrderCellWidth.Id
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'side'),
+        className: 'right-align',
+        key: 'side',
+        value: 'Side',
+        width: OrderCellWidth.Side
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        className: 'right-align',
+        key: 'volume',
+        value: 'Volume'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'filled'),
+        className: 'right-align',
+        key: 'filled',
+        value: 'Filled',
+        width: OrderCellWidth.Filled
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        className: 'right-align',
+        key: 'price',
+        value: 'Price'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'createdAt'),
+        className: 'right-align',
+        key: 'createdAt',
+        value: 'Time',
+        width: OrderCellWidth.CreatedDate
+      },
+      {
+        sortDisabled: true,
+        className: 'right-align',
+        key: '',
+        value: 'Edit',
+        width: OrderCellWidth.Edit
+      }
+    ];
+
+    return (
+      <React.Fragment>
+        <OrderListToolbar>
+          <ToggleOrders />
+          <CancelAllOrders />
+        </OrderListToolbar>
+        <HBar />
+        <TableHeader
+          currentSortDirection={this.state.sortDirection}
+          currentSortByParam={this.state.sortByParam}
+          headers={headers}
+          onSort={this.sort}
+        />
+        <OrderList
+          orders={this.state.data}
+          onEditOrder={handleEditOrder}
+          onCancelOrder={this.props.cancelOrder}
+        />
+      </React.Fragment>
+    );
+  }
+}
 
 export default Blotter;

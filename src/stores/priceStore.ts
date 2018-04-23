@@ -54,6 +54,11 @@ class PriceStore extends BaseStore {
           runInAction(() => {
             const {close} = map.mapToBarFromRest(last(resp.History));
             this.lastTradePrice = close;
+            this.selectedInstrument!.updateFromCandle(
+              undefined,
+              close,
+              undefined
+            );
           });
         }
       })
@@ -80,13 +85,23 @@ class PriceStore extends BaseStore {
     );
     if (resp.History && resp.History.length > 0) {
       runInAction(() => {
-        const {open, high, low, volume} = map.mapToBarFromRest(
+        const {open, high, low, close, volume} = map.mapToBarFromRest(
           last(resp.History)
         );
         this.dailyOpen = open;
         this.dailyHigh = high;
         this.dailyLow = low;
         this.dailyVolume = volume;
+
+        this.selectedInstrument!.updateFromCandle(open, close, volume);
+        this.selectedInstrument!.updateVolumeInBase(
+          this.rootStore.marketStore.convert(
+            volume,
+            this.selectedInstrument!.baseAsset.id,
+            this.rootStore.referenceStore.baseAssetId,
+            this.rootStore.referenceStore.getInstrumentById
+          )
+        );
       });
     }
   };
