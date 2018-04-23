@@ -12,7 +12,7 @@ interface SessionNotificationProps {
   isSessionNotesShown: boolean;
   closeSessionNotification: () => {};
   extendSession: () => {};
-  showQR: () => Promise<any>;
+  startSessionListener: () => Promise<any>;
   closeViewModeNotification: () => {};
   viewModeNotificationShown: boolean;
   sessionNotificationShown: boolean;

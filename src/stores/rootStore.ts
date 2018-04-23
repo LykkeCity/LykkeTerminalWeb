@@ -131,14 +131,7 @@ class RootStore {
       return this.startPublicMode(defaultInstrument);
     }
 
-    const isSessionConfirmed = await this.sessionStore.isSessionConfirmed();
-
-    if (!isSessionConfirmed) {
-      this.uiStore.runViewMode();
-    }
-
     if (this.uiStore.viewMode) {
-      await this.sessionStore.initUserSession();
       return this.startPublicMode(defaultInstrument);
     }
 
@@ -189,6 +182,8 @@ class RootStore {
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
+
+  resetSubscriptions = () => this.uiStore.getWs().close();
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());
