@@ -395,7 +395,11 @@ class Order extends React.Component<OrderProps, OrderState> {
             baseAssetName={baseAssetName}
             quoteAssetName={quoteAssetName}
             isSell={isSellActive}
-            amount={fixedAmount(currentPrice, quantityValue, priceAccuracy)}
+            amount={fixedAmount(
+              currentPrice,
+              quantityValue,
+              quoteAssetAccuracy
+            )}
             isDisable={isLimitInvalid}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
