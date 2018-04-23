@@ -252,7 +252,6 @@ class ReferenceStore extends BaseStore {
     const {a: id, p: price} = args[0];
     const instrument = this.getInstrumentById(id);
     if (instrument && instrument.id) {
-      instrument.updatePrice(price);
       instrument.updateBid(price); // TODO: improve domain model design
     }
   };

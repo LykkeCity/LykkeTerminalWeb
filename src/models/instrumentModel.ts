@@ -55,12 +55,19 @@ class InstrumentModel {
 
   @action
   updateFromCandle = (
-    openPrice: number,
-    closePrice: number,
-    volume: number
+    openPrice?: number,
+    closePrice?: number,
+    volume?: number
   ) => {
-    this.change24h = (closePrice - openPrice) / openPrice * 100;
-    this.volume = volume;
+    if (openPrice && closePrice) {
+      this.change24h = (closePrice - openPrice) / openPrice * 100;
+    }
+    if (closePrice) {
+      this.price = closePrice;
+    }
+    if (volume) {
+      this.volume = volume;
+    }
   };
 }
 

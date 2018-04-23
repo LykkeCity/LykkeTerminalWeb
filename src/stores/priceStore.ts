@@ -54,6 +54,11 @@ class PriceStore extends BaseStore {
           runInAction(() => {
             const {close} = map.mapToBarFromRest(last(resp.History));
             this.lastTradePrice = close;
+            this.selectedInstrument!.updateFromCandle(
+              undefined,
+              close,
+              undefined
+            );
           });
         }
       })
