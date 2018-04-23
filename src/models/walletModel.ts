@@ -1,34 +1,28 @@
+import {computed, observable} from 'mobx';
 import {add} from 'rambda';
-import MarketService from '../services/marketService';
-import ReferenceStore from '../stores/referenceStore';
+import {AssetBalanceModel} from '.';
 
 export default class WalletModel {
-  symbol: string;
-  balances: any[];
+  name: string;
+  @observable balances: AssetBalanceModel[];
   id: string;
   profitAndLoss: number = 0;
-  totalBalance: number = 0;
   type: string;
 
-  constructor(wallet: any) {
-    this.symbol = wallet.Name;
-    this.id = wallet.Id;
-    this.balances = wallet.Balances;
-    this.type = wallet.Type;
+  @computed
+  get totalBalance() {
+    return this.balances.map(b => b.balance).reduce(add, 0);
   }
 
-  updateTotalBalance = async (referenceStore: ReferenceStore) => {
-    const baseAssetId = referenceStore.baseAssetId;
+  @computed
+  get totalBalanceInBaseAsset() {
+    return this.balances.map(b => b.balanceInBaseAsset).reduce(add, 0);
+  }
 
-    this.totalBalance = this.balances
-      .map(b =>
-        MarketService.convert(
-          b.Balance,
-          b.AssetId,
-          baseAssetId,
-          referenceStore.getInstrumentById
-        )
-      )
-      .reduce(add, 0);
-  };
+  constructor(wallet: any) {
+    this.name = wallet.Name;
+    this.id = wallet.Id;
+    this.balances = wallet.Balances.map((b: any) => new AssetBalanceModel(b));
+    this.type = wallet.Type;
+  }
 }

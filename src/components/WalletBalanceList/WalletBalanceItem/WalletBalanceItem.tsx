@@ -1,38 +1,36 @@
-import {observer} from 'mobx-react';
 import * as React from 'react';
-import {WalletBalanceItemProps} from '../';
+import {AssetBalanceModel, AssetModel} from '../../../models';
+import {colors} from '../../styled';
 import {Cell} from '../../Table/styles';
 import WalletBalanceNumber from './WalletBalanceNumber';
 
+interface WalletBalanceItemProps {
+  assetBalance: AssetBalanceModel;
+  baseAsset: AssetModel;
+}
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
-  assetBalance: {
-    id,
-    name,
-    accuracy,
-    balance,
-    reserved,
-    available,
-    balanceInBaseAsset
-  },
+  assetBalance,
   baseAsset
 }) => (
-  <tr key={id}>
-    <Cell w={60}>{name}</Cell>
-    <td>
+  <tr>
+    <Cell w="20%">{assetBalance.name}</Cell>
+    <Cell w="40%">
       <WalletBalanceNumber
-        num={balanceInBaseAsset}
+        num={assetBalance.balanceInBaseAsset}
         accuracy={baseAsset.accuracy}
-        color={'rgba(245, 246, 247, 0.4)'}
+        color={colors.lightGrey}
       >
         &nbsp;{baseAsset.name}
       </WalletBalanceNumber>
-    </td>
-    <td>
-      <WalletBalanceNumber num={balance} accuracy={accuracy}>
-        &nbsp;{name}
+    </Cell>
+    <Cell w="40%">
+      <WalletBalanceNumber
+        num={assetBalance.balance}
+        accuracy={assetBalance.accuracy}
+      >
+        &nbsp;{assetBalance.name}
       </WalletBalanceNumber>
-    </td>
+    </Cell>
   </tr>
 );
-
-export default observer(WalletBalanceItem);
+export default WalletBalanceItem;

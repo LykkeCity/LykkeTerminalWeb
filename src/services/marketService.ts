@@ -1,4 +1,7 @@
+import {pathOr} from 'rambda';
+import {MarketApi} from '../api/';
 import {AssetModel, InstrumentModel} from '../models';
+import {Side} from '../models';
 
 class MarketService {
   private result: any = {};
@@ -15,6 +18,22 @@ class MarketService {
   reset = () => {
     this.result = {};
     this.graph = {};
+  };
+
+  convertList = async (assets: any[], assetId: string) => {
+    const convertedQuotes = await MarketApi.convert({
+      AssetsFrom: assets.map((asset: any) => ({
+        Amount: asset.Balance,
+        AssetId: asset.AssetId
+      })),
+      BaseAssetId: assetId,
+      OrderAction: Side.Sell
+    });
+    return convertedQuotes.Converted.map((converted: any) => ({
+      AssetId: pathOr(null, ['To', 'AssetId'], converted),
+      Balance: pathOr(0, ['To', 'Amount'], converted),
+      FromAssetId: pathOr(null, ['From', 'AssetId'], converted)
+    }));
   };
 
   convert = (

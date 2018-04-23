@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import * as React from 'react';
+import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import {dims} from '../styled';
 

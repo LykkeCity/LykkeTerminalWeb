@@ -1,4 +1,3 @@
-import MarketService from '../services/marketService';
 import {precisionFloor} from '../utils/math';
 import {
   getPostDecimalsLength,
@@ -119,7 +118,7 @@ class UiOrderStore extends BaseStore {
         if (!isInverted) {
           quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
         } else {
-          const convertedBalance = MarketService.convert(
+          const convertedBalance = this.rootStore.marketStore.convert(
             balance,
             baseAssetId,
             quoteAssetId,
@@ -135,7 +134,7 @@ class UiOrderStore extends BaseStore {
         if (isInverted) {
           quantityValue = this.getPartlyValue(value, balance, priceAccuracy);
         } else {
-          const convertedBalance = MarketService.convert(
+          const convertedBalance = this.rootStore.marketStore.convert(
             balance,
             quoteAssetId,
             baseAssetId,
@@ -238,7 +237,7 @@ class UiOrderStore extends BaseStore {
     quoteAssetId: string,
     quantityAccuracy: number
   ) => {
-    const convertedBalance = MarketService.convert(
+    const convertedBalance = this.rootStore.marketStore.convert(
       quoteAssetBalance,
       quoteAssetId,
       baseAssetId,
