@@ -1,6 +1,8 @@
 import * as React from 'react';
+import {supportedDesignedIcons} from '../../constants/navigatorInfo';
 import {InstrumentModel, OrderModel} from '../../models';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {FAIcon} from '../Icon/Icon';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
 import {OrderActions, OrderCellWidth} from './index';
@@ -56,10 +58,18 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>
-          <Icon name="pencil" />
+          {supportedDesignedIcons ? (
+            <Icon name="pencil" />
+          ) : (
+            <FAIcon name="pencil-alt" />
+          )}
         </span>
         <span style={{marginLeft: '0.75rem'}} onClick={handleCancelOrder}>
-          <Icon name="cross" />
+          {supportedDesignedIcons ? (
+            <Icon name="cross" />
+          ) : (
+            <FAIcon name="times" />
+          )}
         </span>
       </Cell>
     </tr>
