@@ -1,5 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {add, pathOr} from 'rambda';
+import {add, find, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import tradingWalletKeys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, WalletModel} from '../models';
@@ -27,8 +27,8 @@ class BalanceListStore extends BaseStore {
   }
 
   @computed
-  get availableBalance() {
-    return this.tradingAssets.filter((a: AssetBalanceModel) => a.name);
+  get tradingWalletBalances() {
+    return (this.tradingWallet && this.tradingWallet.balances) || [];
   }
 
   @observable currentWalletId: string;
@@ -39,6 +39,11 @@ class BalanceListStore extends BaseStore {
       this.walletList.find(w => w.id === this.currentWalletId) ||
       this.walletList.find(w => w.type === tradingWalletKeys.trading)
     );
+  }
+
+  @computed
+  get tradingWallet() {
+    return find(w => w.type === tradingWalletKeys.trading, this.walletList);
   }
 
   @observable.shallow private walletList: WalletModel[] = [];

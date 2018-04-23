@@ -10,9 +10,9 @@ export interface WalletListProps {
 
 const WalletList: React.SFC<WalletListProps> = ({wallets}) => (
   <WalletNameList>
-    {wallets.map((wallet, index) => (
-      <React.Fragment>
-        <WalletItem key={wallet.id} {...wallet} />
+    {wallets.map((wallet, idx) => (
+      <React.Fragment key={wallet.id}>
+        <WalletItem {...wallet} />
         <HBar style={{opacity: 0.4}} />
       </React.Fragment>
     ))}

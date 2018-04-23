@@ -194,7 +194,7 @@ const StyledNote = styled.div`
 
 const ConnectedOrder = connect(
   ({
-    balanceListStore: {availableBalance: getBalance},
+    balanceListStore: {tradingWalletBalances: getBalance},
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
     orderStore: {placeOrder, updatePriceFn, updateDepthFn},

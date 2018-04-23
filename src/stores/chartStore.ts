@@ -35,18 +35,23 @@ class ChartStore extends BaseStore {
   };
 
   private widget: any;
+  private shouldHandleOutsideClick = false;
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
   }
 
   bindClickOutside = () => {
+    this.shouldHandleOutsideClick = true;
     document.addEventListener('click', () => {
-      this.widget.closePopupsAndDialogs();
+      if (this.shouldHandleOutsideClick) {
+        this.widget.closePopupsAndDialogs();
+      }
     });
   };
 
   renderChart = (instrument: InstrumentModel) => {
+    this.shouldHandleOutsideClick = false;
     const chartContainerExists = document.getElementById('tv_chart_container');
     if (!chartContainerExists || !(window as any).TradingView) {
       return;

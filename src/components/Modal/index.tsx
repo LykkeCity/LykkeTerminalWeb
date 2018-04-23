@@ -69,7 +69,7 @@ export interface EditOrderState {
 
 const ConnectedEditOrderModal = connect(
   ({
-    balanceListStore: {availableBalance: getBalance},
+    balanceListStore: {tradingWalletBalances: getBalance},
     orderListStore: {limitOrders: orders},
     referenceStore: {getInstrumentById},
     uiOrderStore: {

@@ -100,11 +100,10 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     const asset = this.props.getBalance.find((a: AssetBalanceModel) => {
       return a.id === assetId;
     });
-    // const reserved = this.isSellActive
-    //   ? modal.config.volume
-    //   : modal.config.price;
-    // this.balance = (asset.available + reserved).toFixed(asset.accuracy);
-    this.balance = asset.available;
+    const reserved = this.isSellActive
+      ? modal.config.volume
+      : modal.config.price;
+    this.balance = (asset.available + reserved).toFixed(asset.accuracy);
   }
 
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
