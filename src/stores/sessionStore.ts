@@ -2,6 +2,7 @@ import {computed, observable} from 'mobx';
 import {SessionApi} from '../api';
 import ModalMessages from '../constants/modalMessages';
 import {keys} from '../models';
+import ModalModel from '../models/modalModel';
 import Types from '../models/modals';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -32,7 +33,7 @@ class SessionStore extends BaseStore {
 
   @computed
   get sessionRemain() {
-    return this.sessionRemains;
+    return this.ttl;
   }
 
   @computed
@@ -42,13 +43,14 @@ class SessionStore extends BaseStore {
 
   @observable private isSessionNotificationShown: boolean = false;
   @observable private isViewModeNotificationShown: boolean = false;
-  @observable private sessionRemains: number = 0;
   @observable private sessionDuration: number;
+  @observable private ttl: number;
   private currentQrId: string = '';
   private isSessionNotesShown: boolean = false;
   private sessionRemainIntervalId: any;
   private pollingSessionTimerId: any;
-  private ttl: number;
+  private sessionConfirmationExpireTimerId: any;
+  private qrModal: ModalModel;
 
   constructor(store: RootStore, private readonly api: SessionApi) {
     super(store);
@@ -61,26 +63,16 @@ class SessionStore extends BaseStore {
       .catch((e: any) => Promise.resolve(DEFAULT_SESSION_DURATION));
   };
 
-  isSessionConfirmed = async () => {
-    const session = await this.api.getSessionStatus();
-    return session.TradingSession.Confirmed;
-  };
-
   initUserSession = async () => {
     const session = await this.api.getSessionStatus();
-    const {Confirmed} = session.TradingSession;
     this.sessionDuration = await this.getSessionDuration();
-    this.ttl =
-      Math.floor(session.TradingSession.Ttl / 1000) ||
-      this.sessionDuration / 1000;
+    const {Confirmed, Ttl} = session.TradingSession;
+    this.ttl = Math.floor(Ttl / 1000);
+
+    this.setQrId();
+
     if (!Confirmed) {
-      const sessionToken = sessionTokenStorage.get();
-      if (!sessionToken) {
-        this.rootStore.authStore.signOut();
-        return;
-      }
-      this.currentQrId = sessionToken;
-      this.showQR();
+      this.startSessionListener();
       return;
     }
     this.rootStore.uiStore.stopViewMode();
@@ -89,6 +81,15 @@ class SessionStore extends BaseStore {
     } else {
       this.showSessionNotification();
     }
+  };
+
+  setQrId = () => {
+    const sessionToken = sessionTokenStorage.get();
+    if (!sessionToken) {
+      this.rootStore.authStore.signOut();
+      return;
+    }
+    this.currentQrId = sessionToken;
   };
 
   runSessionNotificationTimeout = () => {
@@ -103,21 +104,27 @@ class SessionStore extends BaseStore {
     }, (this.ttl - SESSION_WARNING_REMAINING) * 1000);
   };
 
-  showQR = async () => {
-    await this.api.createSession(this.sessionDuration);
-    const QRModal = this.rootStore.modalStore.addModal(
+  showQR = () => {
+    this.qrModal = this.rootStore.modalStore.addModal(
       ModalMessages.qr,
       // tslint:disable-next-line:no-empty
       () => {},
-      this.rootStore.uiStore.runViewMode,
+      this.continueInViewMode,
       Types.QR
     );
+  };
+
+  startSessionListener = async () => {
+    await this.api.createSession(this.sessionDuration);
+    this.sessionConfirmationExpire();
+
+    this.showQR();
 
     this.pollingSessionTimerId = setInterval(() => {
       this.api.getSessionStatus().then((res: any) => {
         const {Confirmed, Ttl} = res.TradingSession;
         if (Confirmed) {
-          this.rootStore.uiStore.stopViewMode();
+          this.sessionConfirmed();
           if (Ttl) {
             this.ttl = Math.floor(Ttl / 1000);
           }
@@ -127,10 +134,28 @@ class SessionStore extends BaseStore {
             this.showSessionNotification();
           }
           this.stopPollingSession();
-          QRModal.close();
+          this.qrModal.close();
         }
       });
     }, 1000);
+  };
+
+  sessionConfirmationExpire = () => {
+    this.sessionConfirmationExpireTimerId = setTimeout(() => {
+      this.qrModal.close();
+      this.continueInViewMode();
+    }, this.sessionDuration);
+  };
+
+  continueInViewMode = () => {
+    this.stopPollingSession();
+    this.showViewModeNotification();
+  };
+
+  sessionConfirmed = () => {
+    this.stopListenSessionConfirmationExpire();
+    this.rootStore.uiStore.stopViewMode();
+    this.rootStore.start();
   };
 
   showSessionNotification = () => {
@@ -157,21 +182,27 @@ class SessionStore extends BaseStore {
   };
 
   runSessionRemains = () => {
-    this.sessionRemains = this.ttl;
+    this.timeTick();
     this.sessionRemainIntervalId = setInterval(() => {
-      if (this.sessionRemains < 1) {
+      if (this.ttl < 1) {
         this.stopSessionRemains();
         this.closeSessionNotification();
+        this.showViewModeNotification();
         this.rootStore.uiStore.runViewMode();
+        this.rootStore.resetSubscriptions();
+        this.rootStore.start();
         this.api.getSessionStatus().then((res: any) => {
           // tslint:disable-next-line:no-console
           console.log(res);
         });
         return;
       }
-      this.sessionRemains -= 1;
-      this.ttl -= 1;
+      this.timeTick();
     }, 1000);
+  };
+
+  timeTick = () => {
+    this.ttl -= 1;
   };
 
   saveSessionNoteShownDate = (date: number) => {
@@ -185,7 +216,6 @@ class SessionStore extends BaseStore {
   };
 
   showViewModeNotification = () => {
-    this.stopPollingSession();
     this.isViewModeNotificationShown = true;
   };
 
@@ -211,7 +241,6 @@ class SessionStore extends BaseStore {
   stopSessionRemains = () => {
     clearInterval(this.sessionRemainIntervalId);
     this.sessionRemainIntervalId = null;
-    this.sessionRemains = SESSION_REMAINS;
   };
 
   stopPollingSession = () => {
@@ -219,8 +248,13 @@ class SessionStore extends BaseStore {
     this.pollingSessionTimerId = null;
   };
 
+  stopListenSessionConfirmationExpire = () => {
+    clearInterval(this.sessionConfirmationExpireTimerId);
+    this.sessionConfirmationExpireTimerId = null;
+  };
+
   startTrade = () => {
-    this.showQR();
+    this.startSessionListener();
     this.closeViewModeNotification();
   };
 
