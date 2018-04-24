@@ -1,9 +1,8 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {add, find, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
-import keys from '../constants/tradingWalletKeys';
-import {keys as storageKeys} from '../models';
 import * as topics from '../api/topics';
+import tradingWalletKeys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, WalletModel} from '../models';
 import {BaseStore, RootStore} from './index';
 
