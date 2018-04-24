@@ -44,8 +44,14 @@ class ChartStore extends BaseStore {
   bindClickOutside = () => {
     this.shouldHandleOutsideClick = true;
     document.addEventListener('click', () => {
-      if (this.shouldHandleOutsideClick) {
-        this.widget.closePopupsAndDialogs();
+      const chartContainerExists = document.getElementById(
+        'tv_chart_container'
+      );
+      if (this.shouldHandleOutsideClick && chartContainerExists) {
+        const chartExists = document.getElementsByTagName('iframe')[0];
+        if (chartExists) {
+          this.widget.closePopupsAndDialogs();
+        }
       }
     });
   };
