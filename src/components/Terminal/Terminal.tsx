@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
+import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
@@ -25,31 +26,43 @@ const Shell = styled.div`
 `;
 
 const layoutStorage = StorageUtils(keys.layout);
-const MIN_PANE_SIZE_PERCENTAGE = 25;
+
+const MAX_LEFT_PADDING = 20;
+const MAX_RIGHT_PADDING = 75;
+const MIN_PANE_SIZE_PERCENTAGE = 20;
+
+const {
+  ChartWidget,
+  OrderWidget,
+  OrderBookWidget,
+  OrderListWidget,
+  TradeListWidget
+} = Widgets;
+
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
-  c: (
+  [ChartWidget]: (
     <Tile title="Chart">
       <Chart />
     </Tile>
   ),
-  e: (
+  [TradeListWidget]: (
     <Tile title="Trade log">
       <TradeLog />
     </Tile>
   ),
-  ob: (
+  [OrderBookWidget]: (
     <Tile title="Order book">
       <OrderBook />
     </Tile>
   ),
-  ord: (
+  [OrderListWidget]: (
     <TabbedTile tabs={['Orders', 'Trades', 'My wallets']}>
       <Orders />
       <Trades />
       <MyWallets />
     </TabbedTile>
   ),
-  wl: (
+  [OrderWidget]: (
     <Tile title="Order" authorize={true}>
       <Order />
     </Tile>
@@ -57,85 +70,74 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 };
 
 class Terminal extends React.Component<TerminalProps, {}> {
-  private initialValue: any = {
-    direction: 'row' as MosaicDirection,
-    first: 'wl',
-    second: {
+  state = {
+    initialValue: {
       direction: 'row' as MosaicDirection,
-      first: {
-        direction: 'column' as MosaicDirection,
-        first: 'c',
-        second: 'ord',
-        splitPercentage: 65
-      },
+      first: OrderWidget,
       second: {
-        direction: 'column' as MosaicDirection,
-        first: 'ob',
-        second: 'e',
-        splitPercentage: 70
+        direction: 'row' as MosaicDirection,
+        first: {
+          direction: 'column' as MosaicDirection,
+          first: ChartWidget,
+          second: OrderListWidget,
+          splitPercentage: 65
+        },
+        second: {
+          direction: 'column' as MosaicDirection,
+          first: OrderBookWidget,
+          second: TradeListWidget,
+          splitPercentage: 70
+        },
+        splitPercentage: MAX_RIGHT_PADDING
       },
-      splitPercentage: 78
-    },
-    splitPercentage: 22
-  };
-
-  constructor(props: TerminalProps) {
-    super(props);
-  }
-
-  componentWillMount() {
-    const layout = layoutStorage.get();
-    if (layout) {
-      this.initialValue = JSON.parse(layout);
+      splitPercentage: MAX_LEFT_PADDING
     }
-  }
+  };
 
   componentDidMount() {
     this.props.rootStore.start();
-    this.handlerMouseUpTransparentDiv();
+    const layout = layoutStorage.get();
+    if (layout) {
+      this.setState({
+        initialValue: JSON.parse(layout)
+      });
+    }
+    this.bindChartOverlayHandler();
   }
 
-  handlerMouseUpTransparentDiv() {
+  bindChartOverlayHandler() {
     const mosaicSplitList = document.getElementsByClassName(
       'mosaic-split -column'
     );
-    let mosaicSplit = null;
-    Array.from(mosaicSplitList).forEach((item: any, index: number) => {
-      const previousElement = item.previousElementSibling!.querySelector(
-        '#tv_chart_container'
-      );
-      if (previousElement !== null) {
-        mosaicSplit = mosaicSplitList[index];
-      }
-    });
+    const mosaicSplit = Array.from(mosaicSplitList).find(
+      item =>
+        item.previousElementSibling!.querySelector('#tv_chart_container') !==
+        null
+    );
     if (mosaicSplit) {
-      (mosaicSplit as Element).addEventListener('mouseup', () => {
-        this.removeTransparentDivAfterResize();
+      mosaicSplit.addEventListener('mouseup', () => {
+        this.toggleChartOverlayHelper(false);
+      });
+      mosaicSplit.addEventListener('mousedown', () => {
+        this.toggleChartOverlayHelper(true);
       });
     }
   }
 
-  removeTransparentDivAfterResize() {
+  toggleChartOverlayHelper(show = false) {
     const transparentDiv = document.getElementById('transparentDiv');
     if (transparentDiv) {
-      transparentDiv!.style.display = 'none';
+      transparentDiv!.style.display = show ? 'block' : 'none';
     }
   }
 
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
   handleChange = (args: any) => {
-    const transparentDiv = document.getElementById('transparentDiv');
-    if (
-      args.second.first.splitPercentage <= MIN_PANE_SIZE_PERCENTAGE ||
-      args.second.first.splitPercentage >= 100 - MIN_PANE_SIZE_PERCENTAGE
-    ) {
-      this.removeTransparentDivAfterResize();
-    } else {
-      if (transparentDiv) {
-        transparentDiv!.style.display = 'block';
-      }
-    }
+    this.setState({
+      initialValue: args
+    });
+    layoutStorage.set(JSON.stringify(args));
   };
 
   render() {
@@ -153,7 +155,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
           renderTile={this.handleRenderTile}
           onChange={this.handleChange}
           resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
-          initialValue={this.initialValue}
+          initialValue={this.state.initialValue}
         />
       </Shell>
     );

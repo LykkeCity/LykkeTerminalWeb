@@ -251,21 +251,17 @@ const ConnectedOrder = connect(
     updatePercentageState,
     updatePriceFn,
     get baseAssetBalance() {
-      const asset: AssetBalanceModel = getBalance.find(
-        (b: AssetBalanceModel) => {
-          const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
-          return b.id === baseAssetName;
-        }
-      );
+      const asset = getBalance.find((b: AssetBalanceModel) => {
+        const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
+        return b.id === baseAssetName;
+      });
       return asset && asset.balance;
     },
     get quoteAssetBalance() {
-      const asset: AssetBalanceModel = getBalance.find(
-        (b: AssetBalanceModel) => {
-          const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
-          return b.id === quoteAssetName;
-        }
-      );
+      const asset = getBalance.find((b: AssetBalanceModel) => {
+        const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
+        return b.id === quoteAssetName;
+      });
       return asset && asset.balance;
     },
     isAuth
