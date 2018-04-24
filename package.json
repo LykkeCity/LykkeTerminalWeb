@@ -28,7 +28,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.2.0",
     "react-konva": "^1.7.2",
-    "react-measure": "^2.0.0",
+    "react-measure": "^2.0.2",
     "react-mosaic-component": "^1.0.3",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.8.0",
@@ -40,10 +40,7 @@
     "yup": "^0.24.0"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx,js,jsx,json,css,scss}": [
-      "prettier --write",
-      "git add"
-    ],
+    "src/**/*.{ts,tsx,js,jsx,json,css,scss}": ["prettier --write", "git add"],
     "src/**/*.{ts,tsx}": "tslint --fix"
   },
   "scripts": {
