@@ -7,10 +7,8 @@ import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import {SettingsModal} from '../Settings';
-import {HeaderFlex, HeaderItem, HeaderWrapper, Logo} from './styles';
-import styled from '../styled';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
-import {HeaderProps} from './index';
+import {HeaderFlex, HeaderItem, HeaderWrapper, Logo} from './styles';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
