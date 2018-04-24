@@ -102,9 +102,6 @@ export const Levels = Table.extend`
   td:first-child {
     padding-left: 1rem !important;
   }
-  td:last-child {
-    padding-right: 1rem !important;
-  }
 `;
 
 export const FigureList = styled.div`
