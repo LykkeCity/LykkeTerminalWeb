@@ -27,7 +27,11 @@ class Auth extends React.Component<AuthProps> {
     const {authStore} = this.props;
     authStore
       .fetchToken(accessToken, state)
-      .then(() => this.props.history.push('/'));
+      .then(() =>
+        authStore
+          .fetchUserInfo(accessToken)
+          .then(() => this.props.history.push('/'))
+      );
   }
 
   render() {

@@ -4,8 +4,9 @@ import keys from '../../constants/storageKeys';
 import ModalModel from '../../models/modalModel';
 import {StorageUtils} from '../../utils/index';
 import CustomCheckbox from '../CustomCheckbox/CustomCheckbox';
-import {Button, ConfirmModalProps, StyledModal} from './index';
+import {ConfirmModalProps} from './index';
 import ModalHeader from './ModalHeader/ModalHeader';
+import {Button, Modal} from './styles';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
@@ -72,7 +73,7 @@ class ConfirmModal extends React.Component<
     const {modal} = this.props;
     return (
       <div>
-        <StyledModal>
+        <Modal>
           <ModalHeader title={'Confirm'} onClick={this.handleCancel(modal)} />
           <StyledContent>Do you really want to {modal.message}?</StyledContent>
           <StyledReminder>
@@ -90,7 +91,7 @@ class ConfirmModal extends React.Component<
               Cancel
             </CancelButton>
           </Flex>
-        </StyledModal>
+        </Modal>
       </div>
     );
   }
