@@ -1,5 +1,5 @@
-const keys = {
+const tradingWalletKeys = {
   trading: 'Trading'
 };
 
-export default keys;
+export default tradingWalletKeys;

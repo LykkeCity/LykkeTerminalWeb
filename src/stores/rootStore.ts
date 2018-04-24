@@ -15,7 +15,6 @@ import * as topics from '../api/topics';
 import messages from '../constants/notificationMessages';
 import {levels} from '../models';
 import {keys} from '../models';
-import Types from '../models/modals';
 import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
