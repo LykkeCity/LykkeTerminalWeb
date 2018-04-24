@@ -84,6 +84,7 @@ class AuthStore extends BaseStore {
   reset = () => {
     this.token = '';
     tokenStorage.clear();
+    sessionTokenStorage.clear();
   };
 }
 

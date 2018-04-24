@@ -31,7 +31,7 @@ class UiStore extends BaseStore {
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
-  @observable private isViewMode: boolean = true;
+  @observable private isViewMode: boolean;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
 
   stateFns: any = [];
@@ -132,14 +132,9 @@ class UiStore extends BaseStore {
   toggleSessionNotification = (value: boolean) =>
     (this.showSessionNotification = value);
 
-  runViewMode = () => {
-    this.isViewMode = true;
-    this.reset();
-  };
+  showViewMode = () => (this.isViewMode = true);
 
-  stopViewMode = () => {
-    this.isViewMode = false;
-  };
+  hideViewMode = () => (this.isViewMode = false);
 
   @action
   toggleInstrumentPerformanceData = (show: boolean) =>

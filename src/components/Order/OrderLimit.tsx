@@ -8,6 +8,7 @@ import OrderPercentage from './OrderPercentage';
 import {
   Action,
   Amount,
+  Available,
   InputControl,
   LimitTitle,
   LimitTotal,
@@ -52,9 +53,9 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           <Action>
             {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </Action>
-          <Amount onClick={onHandlePercentageChange()}>
+          <Available onClick={onHandlePercentageChange()}>
             {balance} {isSell ? baseAssetName : quoteAssetName} available
-          </Amount>
+          </Available>
         </Flex>
         <NumberInput
           value={quantity}

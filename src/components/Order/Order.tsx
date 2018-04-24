@@ -39,7 +39,12 @@ interface OrderProps {
   addModal: any;
   ask: number;
   bid: number;
-  accuracy: any;
+  accuracy: {
+    priceAccuracy: number;
+    quantityAccuracy: number;
+    baseAssetAccuracy: number;
+    quoteAssetAccuracy: number;
+  };
   currency: string;
   placeOrder: any;
   baseAssetName: string;
@@ -65,6 +70,24 @@ interface OrderProps {
   resetPercentage: any;
   baseAssetId: string;
   quoteAssetId: string;
+  isLimitInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number,
+    quantityAccuracy: number
+  ) => boolean;
+  isMarketInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    baseAssetId: string,
+    quoteAssetId: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    quantityAccuracy: number
+  ) => boolean;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {

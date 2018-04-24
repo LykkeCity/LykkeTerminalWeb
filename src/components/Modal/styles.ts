@@ -1,5 +1,6 @@
 import {rem} from 'polished';
 import styled from 'styled-components';
+import {colors} from '../styled';
 import ModalHeader from './ModalHeader/ModalHeader';
 
 export const StyledModalHeader = styled(ModalHeader)`
@@ -130,9 +131,19 @@ export const QRBody = styled.div`
   margin-bottom: ${rem(64)};
 `;
 
+export const ModalHeaderTitle = styled.div`
+  font-family: 'Akrobat';
+  font-size: ${rem(20)};
+  font-weight: bold;
+  line-height: 0.8;
+  text-align: left;
+`;
+
 export const EditModal = styled.div.attrs({
   style: (props: any) => ({
-    borderTop: `${rem(6)} solid ${props.isSell ? '#ab00ff' : '#fb8f01'}`
+    borderTop: `${rem(6)} solid ${
+      props.isSell ? colors.brightViolet : colors.brightMango
+    }`
   })
 })`
   border-radius: ${rem(6)};
@@ -142,8 +153,8 @@ export const EditModal = styled.div.attrs({
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
-  background-color: #3c3c3c;
-  border: solid 1px rgba(0, 0, 0, 0.2);
+  background-color: ${colors.grey};
+  border: solid 1px ${colors.darkGraphite};
   z-index: 31;
   width: ${rem(360)};
   font-size: ${rem(14)};
@@ -160,10 +171,15 @@ export const EditTitle = styled.div`
 
 export const EditActionTitle = styled.div.attrs({
   style: (props: any) => ({
-    color: props.isSell ? '#d070ff' : '#fb8f01'
+    color: props.isSell ? colors.violet : colors.brightMango
   })
 })`
   text-transform: uppercase;
   font-size: ${rem(12)};
   letter-spacing: ${rem(1.5)};
 ` as any;
+
+export const CloseBtnPosition = {
+  top: 5,
+  right: 25
+};

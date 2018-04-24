@@ -1,5 +1,11 @@
 import {timeZones} from '../../constants/chartTimezones';
 import dates from '../../constants/dateKeys';
+import {
+  convertMinutesToMs,
+  convertMsToMinutes,
+  convertMsToSeconds,
+  convertSecondsToMs
+} from '../dateFns';
 import {dateFns} from '../index';
 
 describe('Date functions', () => {
@@ -137,5 +143,25 @@ describe('Date functions', () => {
 
       expect(timezone).toBe('Etc/UTC');
     });
+  });
+
+  it('should convert seconds to milliseconds', () => {
+    const seconds = 1;
+    expect(convertSecondsToMs(seconds)).toBe(seconds * 1000);
+  });
+
+  it('should convert milliseconds to seconds', () => {
+    const milliseconds = 1000;
+    expect(convertMsToSeconds(milliseconds)).toBe(milliseconds / 1000);
+  });
+
+  it('should convert milliseconds to minutes', () => {
+    const milliseconds = 120000;
+    expect(convertMsToMinutes(milliseconds)).toBe(milliseconds / 60000);
+  });
+
+  it('should convert minutes to milliseconds', () => {
+    const minutes = 2;
+    expect(convertMinutesToMs(minutes)).toBe(minutes * 60000);
   });
 });

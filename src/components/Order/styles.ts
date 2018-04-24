@@ -143,6 +143,12 @@ export const Amount = styled.div`
   font-size: ${rem(15)};
 `;
 
+export const Available = styled(Amount)`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export const Action = styled.div`
   font-size: ${rem(16)};
   font-weight: 600;
