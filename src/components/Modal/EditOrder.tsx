@@ -26,7 +26,16 @@ interface EditOrderProps {
     percentage: any[],
     index?: number
   ) => {value: number; updatedPercentage: any[]};
-  getBalance: any;
+  availableBalances: any;
+  isLimitInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number,
+    quantityAccuracy: number
+  ) => boolean;
 }
 
 interface EditOrderState {
@@ -82,7 +91,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.isSellActive = this.action === Side.Sell.toLowerCase();
 
     const assetId = this.isSellActive ? this.baseAssetId : this.quoteAssetId;
-    const asset: AssetBalanceModel = this.props.getBalance.find(
+    const asset: AssetBalanceModel = this.props.availableBalances.find(
       (b: AssetBalanceModel) => {
         return b.id === assetId;
       }

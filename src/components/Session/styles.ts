@@ -1,5 +1,6 @@
 import {rem} from 'polished';
 import styled from 'styled-components';
+import {colors} from '../styled';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
@@ -14,22 +15,22 @@ export const SessionNotificationBlock = styled.div`
 const SessionPopup = styled.div`
   width: 304px;
   border-radius: ${rem(6)};
-  box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 10px 0 ${colors.darkGraphite};
   padding: ${rem(24)} ${rem(16)} ${rem(16)};
   position: relative;
 `;
 
 export const SessionNotification = styled(SessionPopup)`
-  background-color: #ff3e2e;
+  background-color: ${colors.red};
 `;
 
 export const ViewModeNotification = styled(SessionPopup)`
-  background-color: #0388ef;
+  background-color: ${colors.blue};
 `;
 
 export const SessionSettings = styled(SessionPopup)`
   margin-top: ${rem(8)};
-  background-color: #3c3c3c;
+  background-color: ${colors.grey};
 `;
 
 export const Title = styled.div`
@@ -37,12 +38,12 @@ export const Title = styled.div`
   font-size: ${rem(20)};
   font-weight: bold;
   line-height: 0.8;
-  color: #f5f6f7;
+  color: ${colors.white};
 `;
 
 export const Body = styled.div`
   font-size: ${rem(16)};
-  color: #ffffff;
+  color: ${colors.white};
   margin-top: ${rem(14)};
 `;
 
@@ -51,7 +52,7 @@ export const Timer = styled.span`
   font-size: ${rem(20)};
   font-weight: bold;
   line-height: 0.8;
-  color: #f5f6f7;
+  color: ${colors.white};
 `;
 
 export const Buttons = styled(Flex)`
@@ -61,10 +62,10 @@ export const Buttons = styled(Flex)`
 
 export const ActionSessionButton = styled.div`
   border-radius: ${rem(4)};
-  border: solid 1px rgba(255, 255, 255, 0.4);
+  border: solid 1px ${colors.lightWhite};
   line-height: 1.14;
   text-align: center;
-  color: #f5f6f7;
+  color: ${colors.white};
   width: ${rem(144)};
   height: ${rem(32)};
   display: flex;
@@ -90,7 +91,7 @@ export const Note = styled.div`
   font-family: ProximaNova, sans-serif;
   font-size: ${rem(12)};
   line-height: 1.33;
-  color: #ffffff;
+  color: ${colors.white};
 `;
 
 export const NoteMark = styled.span`
@@ -98,9 +99,9 @@ export const NoteMark = styled.span`
   border-radius: 50%;
   width: ${rem(16)};
   height: ${rem(16)};
-  background-color: #fff;
+  background-color: ${colors.white};
   opacity: 0.4;
-  color: #ff3e2e;
+  color: ${colors.red};
   text-align: center;
 
   &:hover {

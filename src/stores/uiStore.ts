@@ -1,5 +1,5 @@
 import {action, computed, observable, reaction} from 'mobx';
-import {keys, InstrumentModel, TradeFilter} from '../models';
+import {InstrumentModel, keys, TradeFilter} from '../models';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -26,9 +26,7 @@ class UiStore extends BaseStore {
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
-  @observable private isViewMode: boolean = true;
-  stateFns: any = [];
-  initPriceUpdate: any;
+  @observable private isViewMode: boolean;
 
   constructor(store: RootStore) {
     super(store);
@@ -125,14 +123,9 @@ class UiStore extends BaseStore {
   toggleSessionNotification = (value: boolean) =>
     (this.showSessionNotification = value);
 
-  runViewMode = () => {
-    this.isViewMode = true;
-    this.reset();
-  };
+  showViewMode = () => (this.isViewMode = true);
 
-  stopViewMode = () => {
-    this.isViewMode = false;
-  };
+  hideViewMode = () => (this.isViewMode = false);
 
   @action
   toggleInstrumentPerformanceData = (show: boolean) =>

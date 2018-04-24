@@ -4,16 +4,23 @@ import ModalMessages from '../constants/modalMessages';
 import {keys} from '../models';
 import ModalModel from '../models/modalModel';
 import Types from '../models/modals';
+import {
+  convertMinutesToMs,
+  convertMsToMinutes,
+  convertMsToSeconds,
+  convertSecondsToMs,
+  getDiffDays
+} from '../utils/dateFns';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
-const SESSION_NOTE_HIDDEN_DURATION = 30;
-const SESSION_REMAINS = 59;
-const SESSION_WARNING_REMAINING = 60; // 1 minute
+const SESSION_NOTE_HIDDEN_DURATION = 30; // days
+const SESSION_REMAINS = 59; // seconds
+const SESSION_WARNING_REMAINING = 60; // seconds
 
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 
-const DEFAULT_SESSION_DURATION = 60000;
+const DEFAULT_SESSION_DURATION = 300000;
 
 class SessionStore extends BaseStore {
   @computed
@@ -38,13 +45,13 @@ class SessionStore extends BaseStore {
 
   @computed
   get sessionCurrentDuration() {
-    return this.sessionDuration / 60000;
+    return convertMsToMinutes(this.sessionDuration); // returns minutes
   }
 
   @observable private isSessionNotificationShown: boolean = false;
   @observable private isViewModeNotificationShown: boolean = false;
   @observable private sessionDuration: number;
-  @observable private ttl: number;
+  @observable private ttl: number = 0;
   private currentQrId: string = '';
   private isSessionNotesShown: boolean = false;
   private sessionRemainIntervalId: any;
@@ -67,15 +74,17 @@ class SessionStore extends BaseStore {
     const session = await this.api.getSessionStatus();
     this.sessionDuration = await this.getSessionDuration();
     const {Confirmed, Ttl} = session.TradingSession;
-    this.ttl = Math.floor(Ttl / 1000);
+    this.ttl = Math.floor(convertMsToSeconds(Ttl));
 
     this.setQrId();
 
     if (!Confirmed) {
+      this.rootStore.uiStore.showViewMode();
       this.startSessionListener();
       return;
     }
-    this.rootStore.uiStore.stopViewMode();
+
+    this.rootStore.uiStore.hideViewMode();
     if (this.ttl - SESSION_WARNING_REMAINING >= 0) {
       this.runSessionNotificationTimeout();
     } else {
@@ -97,11 +106,7 @@ class SessionStore extends BaseStore {
       this.ttl = SESSION_REMAINS;
       this.showSessionNotification();
       clearTimeout(timeoutId);
-      this.api.getSessionStatus().then((res: any) => {
-        // tslint:disable-next-line:no-console
-        console.log(res);
-      });
-    }, (this.ttl - SESSION_WARNING_REMAINING) * 1000);
+    }, convertSecondsToMs(this.ttl - SESSION_WARNING_REMAINING));
   };
 
   showQR = () => {
@@ -125,9 +130,7 @@ class SessionStore extends BaseStore {
         const {Confirmed, Ttl} = res.TradingSession;
         if (Confirmed) {
           this.sessionConfirmed();
-          if (Ttl) {
-            this.ttl = Math.floor(Ttl / 1000);
-          }
+          this.ttl = Math.floor(convertMsToSeconds(Ttl));
           if (this.ttl - SESSION_WARNING_REMAINING > 0) {
             this.runSessionNotificationTimeout();
           } else {
@@ -152,23 +155,19 @@ class SessionStore extends BaseStore {
     this.showViewModeNotification();
   };
 
-  sessionConfirmed = () => {
-    this.stopListenSessionConfirmationExpire();
-    this.rootStore.uiStore.stopViewMode();
-    this.rootStore.start();
-  };
-
   showSessionNotification = () => {
     const currentDate = new Date().getTime();
     this.api
       .loadSessionNoteShown()
       .then((resp: any) => {
         const noteLastSeen = resp.Data;
-        const timeDiff = Math.abs(currentDate - noteLastSeen);
-        const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        if (diffDays > SESSION_NOTE_HIDDEN_DURATION) {
+        if (
+          getDiffDays(currentDate, noteLastSeen) > SESSION_NOTE_HIDDEN_DURATION
+        ) {
           this.saveSessionNoteShownDate(currentDate);
           this.isSessionNotesShown = true;
+        } else {
+          this.isSessionNotesShown = false;
         }
         this.isSessionNotificationShown = true;
         this.runSessionRemains();
@@ -182,23 +181,25 @@ class SessionStore extends BaseStore {
   };
 
   runSessionRemains = () => {
-    this.timeTick();
     this.sessionRemainIntervalId = setInterval(() => {
       if (this.ttl < 1) {
-        this.stopSessionRemains();
-        this.closeSessionNotification();
-        this.showViewModeNotification();
-        this.rootStore.uiStore.runViewMode();
-        this.rootStore.resetSubscriptions();
-        this.rootStore.start();
-        this.api.getSessionStatus().then((res: any) => {
-          // tslint:disable-next-line:no-console
-          console.log(res);
-        });
+        this.sessionExpired();
         return;
       }
       this.timeTick();
     }, 1000);
+  };
+
+  sessionExpired = () => {
+    this.stopSessionRemains();
+    this.closeSessionNotification();
+    this.showViewModeNotification();
+    this.rootStore.runViewMode();
+  };
+
+  sessionConfirmed = () => {
+    this.stopListenSessionConfirmationExpire();
+    this.rootStore.stopViewMode();
   };
 
   timeTick = () => {
@@ -233,8 +234,8 @@ class SessionStore extends BaseStore {
 
   extendSession = () => {
     this.stopSessionRemains();
-    this.ttl += this.sessionDuration / 1000;
-    this.api.extendSession(this.ttl * 1000);
+    this.ttl += convertMsToSeconds(this.sessionDuration);
+    this.api.extendSession(convertSecondsToMs(this.ttl));
     this.runSessionNotificationTimeout();
   };
 
@@ -259,7 +260,7 @@ class SessionStore extends BaseStore {
   };
 
   handleSetDuration = (value: number) => {
-    this.sessionDuration = value * 60000;
+    this.sessionDuration = convertMinutesToMs(value);
     this.api.saveSessionDuration(this.sessionDuration);
   };
 

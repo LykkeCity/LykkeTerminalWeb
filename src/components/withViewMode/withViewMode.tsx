@@ -9,6 +9,10 @@ const withViewMode = <P extends {}>(Component: React.ComponentType<P>) => ({
   viewMode,
   ...props
 }: ViewModeProps & any) =>
-  !viewMode ? <Component {...props} /> : <ViewMode />;
+  viewMode === undefined ? null : !viewMode ? (
+    <Component {...props} />
+  ) : (
+    <ViewMode />
+  );
 
 export default withViewMode;

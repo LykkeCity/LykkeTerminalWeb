@@ -29,7 +29,13 @@ export const colors = {
   graphiteBorder: 'rgba(0, 0, 0, 0.1)',
   white: 'rgb(245, 246, 247)',
   buy: rgb(70, 235, 106),
-  sell: rgb(255, 97, 97)
+  sell: rgb(255, 97, 97),
+  grey: '#3c3c3c',
+  brightMango: '#ffae2c',
+  brightViolet: '#ab00ff',
+  violet: '#d070ff',
+  mango: '#fb8f01',
+  lightWhite: 'rgba(255, 255, 255, 0.4)'
 };
 
 export const fonts = {
