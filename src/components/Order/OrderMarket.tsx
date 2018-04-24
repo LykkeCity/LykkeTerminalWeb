@@ -9,7 +9,7 @@ import OrderButton from './OrderButton';
 import OrderPercentage from './OrderPercentage';
 import {
   Action,
-  Amount,
+  Available,
   InputControl,
   MarketConfirmButton,
   Reset
@@ -103,10 +103,10 @@ class OrderMarket extends React.Component<
                   {this.state.action}{' '}
                   {!this.isInverted ? baseAssetName : quoteAssetName}
                 </Action>
-                <Amount onClick={this.handlePercentageChange()}>
+                <Available onClick={this.handlePercentageChange()}>
                   {this.props.balance}{' '}
                   {this.props.isSell ? baseAssetName : quoteAssetName} available
-                </Amount>
+                </Available>
               </Flex>
             </div>
           </div>

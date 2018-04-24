@@ -81,3 +81,12 @@ export const getTimeZone = (zones: any[]) => {
 
   return timezone;
 };
+
+export const convertSecondsToMs = (seconds: number) => seconds * 1000;
+export const convertMsToSeconds = (ms: number) => ms / 1000;
+export const convertMsToMinutes = (ms: number) => ms / 60000;
+export const convertMinutesToMs = (ms: number) => ms * 60000;
+export const getDiffDays = (currentDate: number, previousDate: number) => {
+  const timeDiff = Math.abs(currentDate - previousDate);
+  return Math.ceil(timeDiff / (1000 * 3600 * 24));
+};

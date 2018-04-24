@@ -4,7 +4,7 @@ import QRModal from './QRModal';
 
 const ConnectedEditOrderModal = connect(
   ({
-    balanceListStore: {tradingWalletBalances: getBalance},
+    balanceListStore: {tradingWalletBalances: availableBalances},
     orderListStore: {limitOrders: orders},
     referenceStore: {getInstrumentById},
     uiOrderStore: {
@@ -20,7 +20,7 @@ const ConnectedEditOrderModal = connect(
   }) => ({
     editOrder,
     fixedAmount,
-    getBalance,
+    availableBalances,
     getInstrumentById,
     handlePercentageChange,
     onArrowClick,

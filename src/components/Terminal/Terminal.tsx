@@ -96,9 +96,13 @@ class Terminal extends React.Component<TerminalProps, {}> {
   };
 
   componentDidMount() {
-    this.props.rootStore.sessionStore
-      .initUserSession()
-      .then(this.props.rootStore.start);
+    if (this.props.rootStore.authStore.isAuth) {
+      this.props.rootStore.sessionStore
+        .initUserSession()
+        .then(this.props.rootStore.start);
+    } else {
+      this.props.rootStore.start();
+    }
     const layout = layoutStorage.get();
     if (layout) {
       this.setState({

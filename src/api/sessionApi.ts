@@ -24,15 +24,4 @@ export class RestSessionApi extends RestApi implements SessionApi {
   getSessionDuration = () => this.get(`/dictionary/${keys.sessionDuration}`);
 }
 
-// tslint:disable-next-line:max-classes-per-file
-export class MockSessionApi implements SessionApi {
-  saveSessionNoteShown = () => Promise.resolve();
-  loadSessionNoteShown = () => Promise.resolve();
-  saveSessionDuration = () => Promise.resolve();
-  getSessionDuration = () => Promise.resolve();
-  getSessionStatus = () => Promise.resolve();
-  extendSession = () => Promise.resolve();
-  createSession = () => Promise.resolve();
-}
-
 export default RestSessionApi;

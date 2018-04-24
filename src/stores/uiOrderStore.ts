@@ -75,7 +75,7 @@ class UiOrderStore extends BaseStore {
   setActivePercentage = (percentage: any[], index?: number) => {
     let value: number = 0;
 
-    if (!index) {
+    if (index === undefined) {
       value = 100;
     } else {
       percentage.forEach((item: any, i: number) => {
