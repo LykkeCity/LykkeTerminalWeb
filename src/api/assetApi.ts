@@ -22,6 +22,11 @@ export class RestAssetApi extends RestApi implements AssetApi {
   setBaseAsset = (body: any) => this.fireAndForget('/assets/baseAsset', body);
   fetchAssetById = (id: string) => this.get(`/assets/${id}`);
   fetchRates = () => this.get('/assetpairs/rates');
+  fetchMarket = () =>
+    this.publicWretcher()
+      .url('/market')
+      .get()
+      .json();
 }
 
 // tslint:disable-next-line:max-classes-per-file
