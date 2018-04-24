@@ -56,7 +56,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile tabs={['Orders', 'Trades', 'My wallets']}>
+    <TabbedTile tabs={['Orders', 'Trades', 'My funds']}>
       <Orders />
       <Trades />
       <MyWallets />

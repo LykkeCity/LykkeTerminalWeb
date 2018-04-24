@@ -18,12 +18,7 @@ interface MyWalletsProps {
 
 const MyWallets: React.SFC<MyWalletsProps> = ({addModal}) => {
   const handleManageWallets = () =>
-    addModal(
-      ModalMessages.attention('manageWallets'),
-      null,
-      null,
-      Types.Attention
-    );
+    addModal(ModalMessages.manageWallets, null, null, Types.ManageFunds);
 
   return (
     <MyWalletsContainer>
@@ -31,7 +26,7 @@ const MyWallets: React.SFC<MyWalletsProps> = ({addModal}) => {
         <WalletList />
         <TotalBalance />
         <ManageAccountLink onClick={handleManageWallets}>
-          Manage Wallets
+          Manage funds
         </ManageAccountLink>
       </Sidebar>
       <WalletBalances>
