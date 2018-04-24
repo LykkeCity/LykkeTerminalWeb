@@ -72,8 +72,8 @@ class SessionStore extends BaseStore {
 
   initUserSession = async () => {
     const session = await this.api.getSessionStatus();
-    this.sessionDuration = await this.getSessionDuration();
     const {Confirmed, Ttl} = session.TradingSession;
+    this.sessionDuration = await this.getSessionDuration();
     this.ttl = Math.floor(convertMsToSeconds(Ttl));
 
     this.setQrId();

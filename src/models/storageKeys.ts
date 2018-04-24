@@ -7,9 +7,9 @@ enum keys {
   selectedInstrument = 'selected-instrument',
   state = 'lwt-state',
   token = 'lwt-token',
-  sessionNote = 'lwt-sessionNote-test',
+  sessionNote = 'lwt-sessionNote',
   sessionToken = 'lwt-session-token',
-  sessionDuration = 'lwt-session-duration-test'
+  sessionDuration = 'lwt-session-duration'
 }
 
 export default keys;
