@@ -119,21 +119,16 @@ class BalanceListStore extends BaseStore {
   };
 
   checkFundsAndKyc = () => {
-    let noFunds: boolean = false;
-    let noKyc: boolean = false;
-
-    if (this.totalBalance <= 0 || !this.totalBalance) {
-      noFunds = true;
-    }
-    if (!this.rootStore.authStore.kyc) {
-      noKyc = true;
-    }
-    if (noFunds || noKyc) {
+    if (
+      this.totalBalance <= 0 ||
+      !this.totalBalance ||
+      !this.rootStore.authStore.kyc
+    ) {
       this.rootStore.modalStore.addModal(
-        ModalMessages.attention('noFundsAndKyc', noFunds, noKyc),
+        ModalMessages.NoFundsAndKyc,
         null,
         null,
-        Types.Attention
+        Types.NoFundsAndKyc
       );
     }
   };

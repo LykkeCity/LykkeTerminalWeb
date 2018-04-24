@@ -2,7 +2,8 @@ enum Types {
   Confirm = 'Confirm',
   Expired = 'Expired',
   EditOrder = 'EditOrder',
-  Attention = 'Attention'
+  ManageFunds = 'ManageFunds',
+  NoFundsAndKyc = 'NoFundsAndKyc'
 }
 
 export default Types;
