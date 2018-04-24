@@ -673,22 +673,22 @@ export const CHART_DEFAULT_SETTINGS = {
         paneProperties: {
           background: 'rgb(51,51,51)',
           gridProperties: {
-            color: 'rgb(140, 148, 160)',
+            color: 'rgba(140, 148, 160, 0.4)',
             style: 0,
-            transparency: 0.6
+            transparency: 0.4
           },
           vertGridProperties: {
-            color: 'rgb(140, 148, 160)',
+            color: 'rgba(140, 148, 160, 0.4)',
             style: 1,
-            transparency: 0.6
+            transparency: 0.4
           },
           horzGridProperties: {
-            color: 'rgb(140, 148, 160)',
-            style: 2,
-            transparency: 0.6
+            color: 'rgba(140, 148, 160, 0.4)',
+            style: 1,
+            transparency: 0.4
           },
           crossHairProperties: {
-            color: 'rgb(140, 148, 160)',
+            color: 'rgba(140, 148, 160, 0.4)',
             style: 0,
             transparency: 0.4,
             width: 1
