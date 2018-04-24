@@ -14,6 +14,7 @@ export const OrderCellWidth = {
   Symbol: 70,
   Id: 300,
   Side: 50,
+  Volume: 100,
   Filled: 100,
   CreatedDate: 150,
   Actions: 60
