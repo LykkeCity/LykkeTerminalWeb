@@ -2,9 +2,9 @@ import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import ModalModel from '../../models/modalModel';
-import {Button, StyledModal} from './index';
+import {Button, Modal} from './styles';
 
-const StyledExpiredModal = styled(StyledModal)`
+const StyledExpiredModal = styled(Modal)`
   width: 300px;
   text-align: center;
   div {

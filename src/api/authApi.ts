@@ -25,6 +25,8 @@ export class RestAuthApi extends RestApi implements AuthApi {
       .get()
       .json();
 
+  fetchUserInfo = (accessToken: string) => this.get('/client/userinfo');
+
   signout = () =>
     this.wretcher()
       .url(process.env.REACT_APP_AUTH_URL!, true)
