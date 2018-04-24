@@ -2,8 +2,9 @@ import {connect} from '../connect';
 import Chart, {ChartProps} from './Chart';
 
 const ConnectedChart = connect<ChartProps>(
-  ({chartStore}) => ({
-    onReset: chartStore.resetToDefault
+  ({chartStore, start}) => ({
+    onReset: chartStore.resetToDefault,
+    renderChart: start
   }),
   Chart
 );

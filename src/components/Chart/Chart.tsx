@@ -9,14 +9,26 @@ import {
 
 export interface ChartProps {
   onReset: () => void;
+  renderChart: any;
 }
 
-const Chart: React.SFC<ChartProps> = ({onReset}) => (
-  <ChartWrapper>
-    <ResetButton onClick={onReset}>Reset</ResetButton>
-    <ChartContainer id="tv_chart_container" />
-    <TransparentDiv id="transparentDiv" />
-  </ChartWrapper>
-);
+class Chart extends React.Component<ChartProps> {
+  constructor(props: ChartProps) {
+    super(props);
+  }
 
+  componentDidMount() {
+    this.props.renderChart();
+  }
+
+  render() {
+    return (
+      <ChartWrapper>
+        <ResetButton onClick={this.props.onReset}>Reset</ResetButton>
+        <ChartContainer id="tv_chart_container" />
+        <TransparentDiv id="transparentDiv" />
+      </ChartWrapper>
+    );
+  }
+}
 export default Chart;

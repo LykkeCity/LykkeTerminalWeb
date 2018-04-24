@@ -5,6 +5,7 @@ import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
+import DepthChart from '../DepthChart';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
 import {MyWallets} from '../MyWallets';
@@ -41,9 +42,10 @@ const {
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   [ChartWidget]: (
-    <Tile title="Chart">
+    <TabbedTile tabs={['Price chart', 'Depth chart']} authorize={false}>
       <Chart />
-    </Tile>
+      <DepthChart />
+    </TabbedTile>
   ),
   [TradeListWidget]: (
     <Tile title="Trade log">
