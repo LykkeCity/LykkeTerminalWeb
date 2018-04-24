@@ -1,4 +1,5 @@
 import * as React from 'react';
+import withViewMode from '../withViewMode/withViewMode';
 import {NotAuthorized} from './';
 
 interface AuthProps {
@@ -8,6 +9,7 @@ interface AuthProps {
 const withAuth = <P extends {}>(Component: React.ComponentType<P>) => ({
   isAuth,
   ...props
-}: AuthProps & any) => (isAuth ? <Component {...props} /> : <NotAuthorized />);
+}: AuthProps & any) =>
+  isAuth ? withViewMode(Component)(props) : <NotAuthorized />;
 
 export default withAuth;

@@ -1,50 +1,31 @@
 import {Form, FormikProps, withFormik} from 'formik';
-import {rem} from 'polished';
 import * as React from 'react';
-import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
 import NumberInput from '../NumberInput/NumberInput';
-import {
-  OrderMarketProps,
-  OrderMarketState,
-  StyledActionTitle,
-  StyledAvailable,
-  StyledInputControl,
-  StyledReset
-} from './index';
+import {OrderBasicFormProps} from './index';
 import OrderButton from './OrderButton';
 import OrderPercentage from './OrderPercentage';
+import {
+  Action,
+  Available,
+  InputControl,
+  MarketConfirmButton,
+  Reset
+} from './styles';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
-const StyledOrderButton = styled.div`
-  margin-top: ${rem(24)};
-`;
+interface OrderMarketState {
+  action: string;
+}
 
-// const StyledInvertedTitle = Box.extend`
-//   font-size: ${rem(14)};
-//   opacity: 0.4;
-//
-//   &:first-letter {
-//     text-transform: capitalize;
-//   }
-// `;
-//
-// const StyledInvertedBtn = Box.extend`
-//   background: url('assets/images/invert.png') no-repeat center;
-//   border: 1px solid rgba(140, 148, 160, 0.4);
-//   border-radius: 4px;
-//   width: 32px;
-//   height: 32px;
-//   margin: 0 8px;
-//
-//   &:hover {
-//     cursor: pointer;
-//   }
-// `;
+export interface OrderMarketProps extends OrderBasicFormProps {
+  onResetPercentage: any;
+  onInvert: any;
+}
 
 class OrderMarket extends React.Component<
   OrderMarketProps & FormikProps<{}>,
@@ -118,35 +99,26 @@ class OrderMarket extends React.Component<
           <div>
             <div>
               <Flex justify="space-between">
-                <StyledActionTitle>
+                <Action>
                   {this.state.action}{' '}
                   {!this.isInverted ? baseAssetName : quoteAssetName}
-                </StyledActionTitle>
-                <StyledAvailable onClick={this.handlePercentageChange()}>
+                </Action>
+                <Available onClick={this.handlePercentageChange()}>
                   {this.props.balance}{' '}
                   {this.props.isSell ? baseAssetName : quoteAssetName} available
-                </StyledAvailable>
+                </Available>
               </Flex>
             </div>
           </div>
           <Flex>
-            <StyledInputControl style={{width: '100%'}}>
+            <InputControl style={{width: '100%'}}>
               <NumberInput
                 value={quantity}
                 id={OrderInputs.Quantity}
                 onChange={this.props.onChange(currentAccuracy)}
                 onArrowClick={this.props.onArrowClick(currentAccuracy)}
               />
-            </StyledInputControl>
-            {/*<Flex align={'center'}>*/}
-            {/*<StyledInvertedBtn onClick={this.onInvert} />*/}
-            {/*<StyledInvertedTitle>*/}
-            {/*{this.state.action === orderAction.sell.action*/}
-            {/*? orderAction.buy.action*/}
-            {/*: orderAction.sell.action}{' '}*/}
-            {/*{this.isInverted ? baseAssetName : quoteAssetName}*/}
-            {/*</StyledInvertedTitle>*/}
-            {/*</Flex>*/}
+            </InputControl>
           </Flex>
           <div>
             <Flex justify={'space-between'} style={{width: '100%'}}>
@@ -162,7 +134,7 @@ class OrderMarket extends React.Component<
             </Flex>
           </div>
         </div>
-        <StyledOrderButton>
+        <MarketConfirmButton>
           <OrderButton
             isDisable={this.props.isDisable}
             type={'submit'}
@@ -170,10 +142,10 @@ class OrderMarket extends React.Component<
               !this.isInverted ? baseAssetName : quoteAssetName
             }`}
           />
-        </StyledOrderButton>
-        <StyledReset justify={'center'}>
+        </MarketConfirmButton>
+        <Reset justify={'center'}>
           <span onClick={this.reset}>Reset and clear</span>
-        </StyledReset>
+        </Reset>
       </div>
     );
   }

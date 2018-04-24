@@ -8,8 +8,6 @@ import {
 } from '../utils/string';
 import {BaseStore, RootStore} from './index';
 
-const ALL_AVAILABLE = 100;
-
 class UiOrderStore extends BaseStore {
   constructor(store: RootStore) {
     super(store);
@@ -74,6 +72,28 @@ class UiOrderStore extends BaseStore {
       : precisionFloor(amount, accuracy);
   };
 
+  setActivePercentage = (percentage: any[], index?: number) => {
+    let value: number = 0;
+
+    if (index === undefined) {
+      value = 100;
+    } else {
+      percentage.forEach((item: any, i: number) => {
+        if (index === i) {
+          item.isActive = true;
+          value = item.percent;
+        } else {
+          item.isActive = false;
+        }
+      });
+    }
+
+    return {
+      value,
+      updatedPercentage: percentage
+    };
+  };
+
   handlePercentageChange = async (config: any) => {
     const {
       isLimitActive = true,
@@ -85,21 +105,9 @@ class UiOrderStore extends BaseStore {
       isInverted,
       baseAssetId,
       quoteAssetId,
-      percentage,
-      index,
+      value,
       currentPrice
     } = config;
-    let value: number = 0;
-    percentage.forEach((item: any, i: number) => {
-      if (index === i) {
-        item.isActive = true;
-        value = item.percent;
-      } else {
-        item.isActive = false;
-      }
-    });
-
-    value = value || ALL_AVAILABLE;
 
     let quantityValue: any;
     if (isLimitActive) {
@@ -152,10 +160,7 @@ class UiOrderStore extends BaseStore {
     if (quantityValue) {
       tempObj.quantityValue = quantityValue;
     }
-    return {
-      percentage,
-      ...tempObj
-    };
+    return tempObj;
   };
 
   getPartlyValue = (percent: number, balance: number, accuracy: number) => {

@@ -1,6 +1,6 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {AssetApi} from '../api/index';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -78,10 +78,13 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string, name: string) => {
     const isAuth = this.rootStore.authStore.isAuth;
+    const viewMode = this.rootStore.uiStore.viewMode;
     const instruments = isAuth
-      ? this.instruments
-          .filter(i => i.baseAsset && i.quoteAsset)
-          .filter(this.filterAvailableInstrument)
+      ? !viewMode
+        ? this.instruments
+            .filter(i => i.baseAsset && i.quoteAsset)
+            .filter(this.filterAvailableInstrument)
+        : this.instruments
       : this.instruments;
 
     return instruments
@@ -99,9 +102,11 @@ class ReferenceStore extends BaseStore {
       .filter(
         i =>
           isAuth
-            ? !!~this.rootStore.watchlistStore
-                .watchlistsByName(name)
-                .assetIds.indexOf(i.id)
+            ? !viewMode
+              ? !!~this.rootStore.watchlistStore
+                  .watchlistsByName(name)
+                  .assetIds.indexOf(i.id)
+              : i
             : i
       );
   };
@@ -120,7 +125,7 @@ class ReferenceStore extends BaseStore {
     await this.fetchCategories();
     await this.fetchAssets();
 
-    if (!this.rootStore.authStore.isAuth) {
+    if (!this.rootStore.authStore.isAuth || this.rootStore.uiStore.viewMode) {
       await this.fetchPublicInstruments();
     } else {
       await this.fetchInstruments();

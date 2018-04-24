@@ -6,14 +6,15 @@ import {
   OrderApi,
   OrderBookApi,
   PriceApi,
+  SessionApi,
   TradeApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import keys from '../constants/storageKeys';
+import {levels} from '../models';
+import {keys} from '../models';
 import {PriceType} from '../models/index';
 import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
@@ -31,6 +32,7 @@ import {
   OrderStore,
   PriceStore,
   ReferenceStore,
+  SessionStore,
   SettingsStore,
   TradeStore,
   UiOrderStore,
@@ -57,6 +59,7 @@ class RootStore {
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
+  readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
 
@@ -85,6 +88,7 @@ class RootStore {
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
+      this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
     }
@@ -123,6 +127,10 @@ class RootStore {
     );
 
     if (!this.authStore.isAuth) {
+      return this.startPublicMode(defaultInstrument);
+    }
+
+    if (this.uiStore.viewMode) {
       return this.startPublicMode(defaultInstrument);
     }
 
@@ -177,6 +185,22 @@ class RootStore {
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
+
+  resetSubscriptions = () => this.uiStore.getWs().close();
+
+  runViewMode = () => {
+    this.uiStore.showViewMode();
+    this.uiStore.reset();
+    this.modalStore.reset();
+    this.resetSubscriptions();
+    this.start();
+  };
+
+  stopViewMode = () => {
+    this.uiStore.hideViewMode();
+    this.resetSubscriptions();
+    this.start();
+  };
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());

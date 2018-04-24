@@ -1,4 +1,4 @@
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 

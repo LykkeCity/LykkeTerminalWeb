@@ -1,20 +1,18 @@
-import {rem} from 'polished';
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import styled from 'styled-components';
 import orderAction from '../../constants/orderAction';
 import {Percentage} from '../../constants/ordersPercentage';
-import keys from '../../constants/storageKeys';
+import {keys} from '../../models';
 import {OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
-import {OrderProps, OrderState} from './index';
-import OrderActionButton from './OrderActionButton';
-import OrderChoiceButton from './OrderChoiceButton';
+import ActionChoiceButton from './ActionChoiceButton';
+import MarketChoiceButton from './MarketChoiceButton';
 import OrderLimit from './OrderLimit';
 import OrderMarket from './OrderMarket';
+import {Actions, Markets} from './styles';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
 
@@ -26,17 +24,71 @@ const MARKET = OrderType.Market;
 const LIMIT = OrderType.Limit;
 const STOP_LIMIT = OrderType.StopLimit;
 
-const StyledMarkets = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: ${rem(16)};
-  border-bottom: 1px solid #2d2d2d;
-`;
+interface OrderState {
+  isMarketActive: boolean;
+  isLimitActive: boolean;
+  isStopLimitActive: boolean;
+  isSellActive: boolean;
+  quantityValue: string;
+  pendingOrder: boolean;
+  priceValue: string;
+  percents: any[];
+}
 
-const StyledActions = StyledMarkets.extend`
-  justify-content: center;
-  border-bottom: none;
-`;
+interface OrderProps {
+  addModal: any;
+  ask: number;
+  bid: number;
+  accuracy: {
+    priceAccuracy: number;
+    quantityAccuracy: number;
+    baseAssetAccuracy: number;
+    quoteAssetAccuracy: number;
+  };
+  currency: string;
+  placeOrder: any;
+  baseAssetName: string;
+  quoteAssetName: string;
+  stateFns: any[];
+  getAssetById: any;
+  onArrowClick: any;
+  onValueChange: any;
+  fixedAmount: any;
+  updatePriceFn: any;
+  updateDepthFn: any;
+  initPriceFn: any;
+  baseAssetBalance: any;
+  quoteAssetBalance: any;
+  convertPartiallyBalance: any;
+  mid: number;
+  handlePercentageChange: any;
+  setActivePercentage: (
+    percentage: any[],
+    index?: number
+  ) => {value: number; updatedPercentage: any[]};
+  updatePercentageState: any;
+  resetPercentage: any;
+  baseAssetId: string;
+  quoteAssetId: string;
+  isLimitInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    priceValue: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    priceAccuracy: number,
+    quantityAccuracy: number
+  ) => boolean;
+  isMarketInvalid: (
+    isSell: boolean,
+    quantityValue: string,
+    baseAssetId: string,
+    quoteAssetId: string,
+    baseAssetBalance: number,
+    quoteAssetBalance: number,
+    quantityAccuracy: number
+  ) => boolean;
+}
 
 class Order extends React.Component<OrderProps, OrderState> {
   constructor(props: OrderProps) {
@@ -257,6 +309,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       return;
     }
 
+    const {updatedPercentage, value} = this.props.setActivePercentage(
+      percentage,
+      index
+    );
+
     const tempObj = await this.props.handlePercentageChange({
       balance,
       baseAssetId,
@@ -265,12 +322,14 @@ class Order extends React.Component<OrderProps, OrderState> {
       isLimitActive,
       isMarketActive,
       isSellActive,
-      percentage,
       priceAccuracy,
       quantityAccuracy,
       quoteAssetId,
+      value,
       currentPrice: priceValue
     });
+
+    tempObj.percents = updatedPercentage;
 
     this.setState(tempObj);
   };
@@ -349,36 +408,31 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     return (
       <div>
-        <StyledMarkets>
-          <OrderChoiceButton
+        <Markets>
+          <MarketChoiceButton
             title={LIMIT}
             isActive={isLimitActive}
             click={this.handleActionChoiceClick(LIMIT)}
           />
-          <OrderChoiceButton
+          <MarketChoiceButton
             title={MARKET}
             isActive={isMarketActive}
             click={this.handleActionChoiceClick(MARKET)}
           />
-          {/*<OrderChoiceButton*/}
-          {/*title={STOP_LIMIT}*/}
-          {/*isActive={this.state.isStopLimitActive}*/}
-          {/*click={this.handleActionChoiceClick(STOP_LIMIT)}*/}
-          {/*/>*/}
-        </StyledMarkets>
+        </Markets>
 
-        <StyledActions>
-          <OrderActionButton
+        <Actions>
+          <ActionChoiceButton
             title={orderAction.sell.action}
             click={this.handleActionClick(orderAction.sell.action)}
             isActive={isSellActive}
           />
-          <OrderActionButton
+          <ActionChoiceButton
             title={orderAction.buy.action}
             click={this.handleActionClick(orderAction.buy.action)}
             isActive={!isSellActive}
           />
-        </StyledActions>
+        </Actions>
 
         {isLimitActive && (
           <OrderLimit
@@ -431,15 +485,6 @@ class Order extends React.Component<OrderProps, OrderState> {
             onInvert={this.handleInvert}
           />
         )}
-
-        {/*{this.state.isStopLimitActive && (*/}
-        {/*<OrderStopLimit*/}
-        {/*/>*/}
-        {/*)}*/}
-
-        {/*<StyledNote>*/}
-        {/*Your order may execute as a maker order or taker order.*/}
-        {/*</StyledNote>*/}
       </div>
     );
   }
