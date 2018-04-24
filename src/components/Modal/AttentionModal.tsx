@@ -18,11 +18,6 @@ interface AttentionModalProps {
 @inject('authStore')
 class AttentionModal extends React.Component<AttentionModalProps> {
   render() {
-    const goToAppStore = () =>
-      this.redirect(this.props.modal.message.link.appStore);
-    const goToPlayMarket = () =>
-      this.redirect(this.props.modal.message.link.playMarket);
-
     return (
       <AttentionWrapper>
         <Wrapper>
@@ -31,20 +26,22 @@ class AttentionModal extends React.Component<AttentionModalProps> {
         </Wrapper>
         <MarginedBody>{this.props.modal.message.body}</MarginedBody>
         <Wrapper>
-          <ImgLink onClick={goToAppStore} image={'app-store'} />
-          <ImgLink onClick={goToPlayMarket} image={'google-play'} />
+          <ImgLink
+            href={this.props.modal.message.link.appStore}
+            target={'_blank'}
+            onClick={this.close}
+            image={'app-store'}
+          />
+          <ImgLink
+            href={this.props.modal.message.link.playMarket}
+            target={'_blank'}
+            onClick={this.close}
+            image={'google-play'}
+          />
         </Wrapper>
       </AttentionWrapper>
     );
   }
-
-  private redirect = (link?: string) => {
-    if (this.props.modal.message.signOut) {
-      this.props.authStore.signOut(link || '');
-    } else {
-      location.replace(link || '/');
-    }
-  };
 
   private close = () => {
     if (this.props.modal.message.signOut) {
