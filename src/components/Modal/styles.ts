@@ -12,7 +12,7 @@ export const Modal = styled.div`
   background-color: #3c3c3c;
   border: solid 1px rgba(0, 0, 0, 0.2);
   z-index: 30;
-  min-width: 360px;
+  min-width: ${rem(360)};
 `;
 
 export const Button = styled.button`
@@ -27,24 +27,42 @@ export const Button = styled.button`
   }
 `;
 
+export const CancelButton = styled(Button)`
+  background: transparent;
+  border: solid 1px rgba(140, 148, 160, 0.4);
+`;
+
+export const GotButton = styled(CancelButton)`
+  margin: ${rem(20)} 0 0 0;
+  width: 100%;
+`;
+
+export const ModalBody = styled.div`
+  margin-top: ${rem(15)};
+  line-height: 1.5;
+`;
+
+export const ModalHeaderTitle = styled.div`
+  font-family: 'Akrobat';
+  font-size: ${rem(20)};
+  font-weight: bold;
+  line-height: 0.8;
+  text-align: left;
+`;
+
+export const CloseBtnPosition = {
+  top: 5,
+  right: 25
+};
+
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
 
-export const Body = styled.div`
-  line-height: 1.5;
-  text-align: left;
-`;
-
-export const MarginedBody = styled(Body)`
+export const MarginedModalBody = styled(ModalBody)`
   margin: ${rem(15)} 0;
-`;
-
-export const Title = styled.div`
-  font-size: ${rem(20)};
-  font-weight: 600;
 `;
 
 export const ImgLink = styled.a.attrs({
@@ -54,14 +72,13 @@ export const ImgLink = styled.a.attrs({
   })
 })`
   width: 49%;
-  height: 45px;
+  height: ${rem(45)};
   background: no-repeat center;
   background-size: cover;
-  margin: 20px 0 0 0;
+  border-radius: ${rem(6)};
   text-decoration: none;
 ` as any;
 
-export const AttentionWrapper = styled(Modal)`
-  width: 300px;
-  text-align: center;
+export const ModalWrapper = styled(Modal)`
+  width: ${rem(300)};
 `;
