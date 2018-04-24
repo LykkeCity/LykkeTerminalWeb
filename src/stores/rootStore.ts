@@ -99,6 +99,7 @@ class RootStore {
         .findInstruments('', Watchlists.All)
         .forEach((x: any) => {
           ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
           ws.subscribe(
             topics.candle('spot', x.id, PriceType.Trade, 'day'),
             this.referenceStore.onCandle
@@ -112,6 +113,11 @@ class RootStore {
 
   start = async () => {
     await this.referenceStore.fetchReferenceData();
+    const instruments = this.referenceStore.getInstruments();
+    const assets = this.referenceStore.getAssets();
+
+    this.marketStore.init(instruments, assets);
+
     await this.referenceStore.fetchRates();
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
@@ -132,10 +138,6 @@ class RootStore {
         this.orderListStore.fetchAll();
       }, reject => Promise.resolve)
       .then(async () => {
-        const instruments = this.referenceStore.getInstruments();
-        const assets = this.referenceStore.getAssets();
-        this.marketStore.init(instruments, assets);
-
         const ws = new WampApi();
         await ws.connect(
           this.wampUrl,
