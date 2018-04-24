@@ -255,14 +255,14 @@ const ConnectedOrder = connect(
         const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
         return b.id === baseAssetName;
       });
-      return asset && asset.balance;
+      return asset && asset.available;
     },
     get quoteAssetBalance() {
       const asset = getBalance.find((b: AssetBalanceModel) => {
         const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
         return b.id === quoteAssetName;
       });
-      return asset && asset.balance;
+      return asset && asset.available;
     },
     isAuth
   }),
