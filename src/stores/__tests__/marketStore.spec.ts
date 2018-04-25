@@ -24,6 +24,24 @@ describe('market store', () => {
       quoteAsset: new AssetModel({id: 'USD'}),
       bid: 0.05,
       ask: 0.06
+    }),
+    new InstrumentModel({
+      id: 'BTCEUR',
+      baseAsset: new AssetModel({id: 'BTC'}),
+      quoteAsset: new AssetModel({id: 'EUR'}),
+      bid: 5800
+    }),
+    new InstrumentModel({
+      id: 'EURUSD',
+      baseAsset: new AssetModel({id: 'EUR'}),
+      quoteAsset: new AssetModel({id: 'USD'}),
+      bid: 1.1
+    }),
+    new InstrumentModel({
+      id: 'LKKEUR',
+      baseAsset: new AssetModel({id: 'LKK'}),
+      quoteAsset: new AssetModel({id: 'EUR'}),
+      ask: 100
     })
   ];
 
@@ -32,7 +50,8 @@ describe('market store', () => {
     new AssetModel({id: 'USD'}),
     new AssetModel({id: 'RUB'}),
     new AssetModel({id: 'LKK'}),
-    new AssetModel({id: 'TEST'})
+    new AssetModel({id: 'TEST'}),
+    new AssetModel({id: 'EUR'})
   ];
 
   const find = (id: string) => instruments.find(x => x.id === id)!;
@@ -77,6 +96,17 @@ describe('market store', () => {
 
       const resultRubLkk = marketStore.convert(10000, 'RUB', 'LKK', find);
       expect(resultRubLkk).toBe(10000 * (1 / 58) * (1 / 0.06));
+    });
+
+    it('should avoid path with zero price', async () => {
+      const resultEurBtc = marketStore.convert(1000, 'EUR', 'BTC', find);
+      expect(resultEurBtc).toBe(1000 * 1.1 * (1 / 9600)); // EUR -> USD -> BTC
+
+      const resultLKkEur = marketStore.convert(1000, 'LKK', 'EUR', find);
+      expect(resultLKkEur).toBe(1000 * 0.05 * (1 / 9600) * 5800); // LKK -> USD -> BTC -> EUR
+
+      const resultEurLkk = marketStore.convert(1000, 'EUR', 'LKK', find);
+      expect(resultEurLkk).toBe(1000 * (1 / 100));
     });
   });
 });
