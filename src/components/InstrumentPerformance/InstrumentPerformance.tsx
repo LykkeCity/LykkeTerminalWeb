@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {HeaderItem} from '../Header/styles';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {
   InstrumentPerformanceFigureLabel,
   InstrumentPerformanceFigureValue,
@@ -46,9 +47,7 @@ const InstrumentPerformanceFigure: React.SFC<
         {show && value && Number.isFinite(value)
           ? valueFormatter
             ? valueFormatter(value)
-            : value.toLocaleString(undefined, {
-                maximumFractionDigits: accuracy
-              })
+            : formattedNumber(value, accuracy)
           : '--'}
       </InstrumentPerformanceFigureValue>
       <InstrumentPerformanceFigureLabel>

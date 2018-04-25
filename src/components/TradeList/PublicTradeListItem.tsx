@@ -2,7 +2,7 @@ import {isToday} from 'date-fns';
 import * as React from 'react';
 import {PublicTradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
-import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {SideCell} from './styles';
 
 // tslint:disable-next-line:no-empty-interface
@@ -18,10 +18,8 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   const date = new Date(timestamp);
   return (
     <tr>
-      <td>
-        {toLocaleStringWithAccuracy(volume, instrument!.baseAsset.accuracy)}
-      </td>
-      <td>{toLocaleStringWithAccuracy(price, instrument!.accuracy)}</td>
+      <td>{formattedNumber(volume, instrument!.baseAsset.accuracy)}</td>
+      <td>{formattedNumber(price, instrument!.accuracy)}</td>
       <SideCell w={PublicTradesCellWidth.Side} side={side}>
         {side}
       </SideCell>
