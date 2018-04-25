@@ -9,7 +9,7 @@ const {Flex} = require('grid-styled');
 const notificationLevels = {
   Error: '#ff6161',
   Information: '#0388ef',
-  Success: '#46eb6a'
+  Success: '#13b72a'
 };
 
 const getBackground = (level: string) => {
