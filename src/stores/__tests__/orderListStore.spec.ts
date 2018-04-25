@@ -34,24 +34,38 @@ describe('orderList store', () => {
       done();
     });
 
-    it('should be added into order list', () => {
+    it('should be added into order list and return true', () => {
       expect(orderListStore.allOrders.length).toBe(1);
-      orderListStore.addOrder({
+      const isAdded = orderListStore.addOrder({
         AssetPairId: 'BTCUSD',
         CreateDateTime: '2018-01-17T07:17:40.84Z',
-        Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c7',
+        Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c6',
         OrderAction: 'Sell',
         Price: 1,
         Status: 'InOrderBook',
         Volume: 0.0001
       });
       expect(orderListStore.allOrders.length).toBe(2);
+      expect(isAdded).toBeTruthy();
     });
 
-    it('should be deleted from order list', () => {
+    it('should not be added into order list with the same id and return false', () => {
       expect(orderListStore.allOrders.length).toBe(1);
-      orderListStore.deleteOrder(defaultOrder.Id);
+      const isAdded = orderListStore.addOrder(defaultOrder);
+      expect(orderListStore.allOrders.length).toBe(1);
+      expect(isAdded).toBeFalsy();
+    });
+
+    it('should be deleted from order list and return true', () => {
+      expect(orderListStore.allOrders.length).toBe(1);
+      const isDeleted = orderListStore.deleteOrder(defaultOrder.Id);
       expect(orderListStore.allOrders.length).toBe(0);
+      expect(isDeleted).toBeTruthy();
+    });
+
+    it('should return false if deleted order does not exist in the order list', () => {
+      const isDeleted = orderListStore.deleteOrder('some id');
+      expect(isDeleted).toBeFalsy();
     });
 
     it('should be updated', () => {
