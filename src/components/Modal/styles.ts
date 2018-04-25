@@ -99,6 +99,14 @@ export const QRBody = styled.div`
   margin-bottom: ${rem(64)};
 `;
 
+/*hack for ios mobile*/
+export const QRCodeWrapper = styled.div`
+  border: 2px solid #fff;
+  width: ${rem(160 / 14 * 16)};
+  height: ${rem(160 / 14 * 16)};
+  box-sizing: content-box;
+`;
+
 export const ModalHeaderTitle = styled.div`
   font-family: 'Akrobat';
   font-size: ${rem(24)};
