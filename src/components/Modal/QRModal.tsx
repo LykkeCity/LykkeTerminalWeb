@@ -7,6 +7,7 @@ import {
   ModalTitle,
   QRBody,
   QRButton,
+  QRCodeWrapper,
   SessionQRConfirm
 } from './styles';
 
@@ -28,7 +29,9 @@ const QRModal: React.SFC<QRModalProps> = ({modal, qrId}) => {
       </ModalHeader>
       <ModalBody>{modal.message.body}</ModalBody>
       <QRBody>
-        <QRCode size={160} value={qrId} />
+        <QRCodeWrapper>
+          <QRCode size={160} value={qrId} />
+        </QRCodeWrapper>
       </QRBody>
       <QRButton onClick={handleContinue}>{modal.message.button}</QRButton>
     </SessionQRConfirm>
