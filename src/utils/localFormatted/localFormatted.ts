@@ -1,47 +1,35 @@
-export const locale =
-  (navigator.languages && navigator.languages[0]) ||
-  navigator.language ||
-  'en-US';
+export function formattedNumber(
+  value: any,
+  accuracy?: number,
+  options?: any
+): string {
+  const indexOfPoint = (value + '').search(/\./);
+  const countOfFractionPoints = (value + '').length - indexOfPoint - 1;
 
-export function formattedNumber(value: any, accuracy?: number): string {
   if (typeof value === 'string') {
-    accuracy = !accuracy ? value.length - value.search(/\./) - 1 : accuracy;
+    accuracy = !accuracy ? countOfFractionPoints : accuracy;
     value = +value;
   }
-  const result = new Intl.NumberFormat(locale).format(value);
 
-  if (!accuracy) {
-    return result;
-  } else {
-    return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: accuracy,
-      maximumFractionDigits: accuracy
-    }).format(value);
+  if (indexOfPoint === -1) {
+    return value.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      ...options
+    });
   }
-}
 
-export function formattedDate(date: any): string {
-  return new Intl.DateTimeFormat(locale).format(date);
-}
+  if (accuracy) {
+    options = {
+      minimumFractionDigits: accuracy,
+      maximumFractionDigits: accuracy,
+      ...options
+    };
+  }
 
-export function formattedTime(date: any): string {
-  const options = {
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric'
-  };
-  return new Intl.DateTimeFormat(locale, options).format(date);
-}
+  let result = value.toLocaleString(undefined, options);
+  const indexOfZero = result.search(/0+$/);
+  result = indexOfZero !== -1 ? result.slice(0, indexOfZero + 1) : result + '0';
 
-export function formattedDateTime(date: any): string {
-  const options = {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hour12: true
-  };
-  return new Intl.DateTimeFormat(locale, options).format(date);
+  return result;
 }

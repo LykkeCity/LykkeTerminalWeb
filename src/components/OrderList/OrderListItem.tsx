@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {InstrumentModel, OrderModel, Side} from '../../models';
 import {precisionCeil, precisionFloor} from '../../utils/math';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
@@ -60,9 +61,9 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <SideCell w={OrderCellWidth.Side} side={side}>
         {side}
       </SideCell>
-      <TitledCell>{toLocaleStringWithAccuracy(price, accuracy)}</TitledCell>
+      <TitledCell>{formattedNumber(price, accuracy)}</TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)} {baseAssetName}
+        {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
       <TitledCell>
         {toLocaleStringWithAccuracy(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(

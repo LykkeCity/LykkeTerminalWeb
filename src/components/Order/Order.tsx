@@ -10,6 +10,7 @@ import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
 import ActionChoiceButton from './ActionChoiceButton';
 import MarketChoiceButton from './MarketChoiceButton';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import OrderLimit from './OrderLimit';
 import OrderMarket from './OrderMarket';
 import {Actions, Markets} from './styles';
@@ -462,9 +463,10 @@ class Order extends React.Component<OrderProps, OrderState> {
             isDisable={isLimitInvalid}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
-            buttonMessage={`${capitalize(
-              action
-            )} ${quantityValue} ${baseAssetName}`}
+            buttonMessage={`${capitalize(action)} ${formattedNumber(
+              quantityValue,
+              quantityAccuracy
+            )} ${baseAssetName}`}
           />
         )}
 
