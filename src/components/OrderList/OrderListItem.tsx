@@ -36,7 +36,9 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <SideCell w={OrderCellWidth.Side} side={side}>
         {side}
       </SideCell>
-      <td>{toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}</td>
+      <Cell w={OrderCellWidth.Volume}>
+        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}
+      </Cell>
       <Cell w={OrderCellWidth.Filled}>
         {toLocaleStringWithAccuracy(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(
           filledPercent,
