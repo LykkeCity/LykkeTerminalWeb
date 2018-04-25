@@ -2,11 +2,12 @@ import {inject} from 'mobx-react';
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import {AuthStore} from '../../stores/index';
+import ModalHeader from './ModalHeader/ModalHeader';
 import {
-  AttentionModalWrapper,
+  GotButton,
   ImgLink,
   MarginedModalBody,
-  ModalHeaderTitle,
+  ModalWrapper,
   Wrapper
 } from './styles';
 
@@ -16,14 +17,13 @@ interface AttentionModalProps {
 }
 
 @inject('authStore')
-class AttentionModal extends React.Component<AttentionModalProps> {
+class NoFundsAndKycModal extends React.Component<AttentionModalProps> {
   render() {
+    const goToLykke = () => this.close(this.props.modal.message.link.lykke);
+
     return (
-      <AttentionModalWrapper>
-        <Wrapper>
-          <ModalHeaderTitle>{this.props.modal.message.title}</ModalHeaderTitle>
-          <div onClick={this.close}>X</div>
-        </Wrapper>
+      <ModalWrapper>
+        <ModalHeader onClick={this.close}>Attention!</ModalHeader>
         <MarginedModalBody>{this.props.modal.message.body}</MarginedModalBody>
         <Wrapper>
           <ImgLink
@@ -39,17 +39,15 @@ class AttentionModal extends React.Component<AttentionModalProps> {
             image={'google-play'}
           />
         </Wrapper>
-      </AttentionModalWrapper>
+        <GotButton onClick={goToLykke}>Got it!</GotButton>
+      </ModalWrapper>
     );
   }
 
-  private close = () => {
-    if (this.props.modal.message.signOut) {
-      this.props.authStore.signOut();
-    } else {
-      this.props.modal.close();
-    }
+  private close = (redirect?: string) => {
+    const link = typeof redirect === 'string' ? redirect : '';
+    this.props.authStore.signOut(link);
   };
 }
 
-export default AttentionModal;
+export default NoFundsAndKycModal;

@@ -60,6 +60,11 @@ export const QRButton = styled(CancelButton)`
   width: 100%;
 `;
 
+export const GotButton = styled(CancelButton)`
+  margin: ${rem(20)} 0 0 0;
+  width: 100%;
+`;
+
 export const Expired = styled(Modal)`
   width: 300px;
   text-align: center;
@@ -171,10 +176,9 @@ export const ImgLink = styled.a.attrs({
   background: no-repeat center;
   background-size: cover;
   border-radius: ${rem(6)};
-  margin: ${rem(10)} 0 0 0;
   text-decoration: none;
 ` as any;
 
-export const AttentionModalWrapper = styled(Modal)`
+export const ModalWrapper = styled(Modal)`
   width: ${rem(300)};
 `;

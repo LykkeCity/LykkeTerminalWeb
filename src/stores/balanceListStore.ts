@@ -130,10 +130,10 @@ class BalanceListStore extends BaseStore {
     }
     if (noFunds || noKyc) {
       this.rootStore.modalStore.addModal(
-        ModalMessages.attention('noFundsAndKyc', noFunds, noKyc),
+        ModalMessages.NoFundsAndKyc(noFunds, noKyc),
         null,
         null,
-        Types.Attention
+        Types.NoFundsAndKyc
       );
     }
   };

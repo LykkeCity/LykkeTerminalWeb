@@ -1,16 +1,18 @@
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
-import AttentionModal from './AttentionModal';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
 import {EditOrder, QRModal} from './index';
+import ManageFundsModal from './ManageFundsModal';
+import NoFundsAndKycModal from './NoFundsAndKycModal';
 
 const Modals = {
   Confirm: ConfirmModal,
   EditOrder,
   Expired: ExpiredModal,
-  Attention: AttentionModal,
-  QR: QRModal
+  QR: QRModal,
+  ManageFunds: ManageFundsModal,
+  NoFundsAndKyc: NoFundsAndKycModal
 };
 
 interface ModalProps {
