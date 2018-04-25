@@ -45,7 +45,7 @@ const ModalMessages = {
     return modal;
   },
   qr: {
-    body: 'Please, scan a QR code to start trading',
+    body: 'Please, scan QR code to start trading',
     button: 'Continue in view mode',
     title: 'Confirm trade session'
   }
