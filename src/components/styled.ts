@@ -20,8 +20,8 @@ export const colorFromSide = (sideOrProps: any) => css`
 
 export const colors = {
   blue: '#0388ef',
-  green: '#13b72a',
-  red: '#ff3e2e',
+  green: '#46eb6a',
+  red: '#ff6161',
   coolGrey: '#8c94a0',
   darkGraphite: 'rgba(0, 0, 0, 0.2)',
   lightGraphite: 'rgb(51, 51, 51)',
@@ -35,7 +35,8 @@ export const colors = {
   brightViolet: '#ab00ff',
   violet: '#d070ff',
   mango: '#fb8f01',
-  lightWhite: 'rgba(255, 255, 255, 0.4)'
+  lightWhite: 'rgba(255, 255, 255, 0.4)',
+  snowWhite: '#fff'
 };
 
 export const fonts = {

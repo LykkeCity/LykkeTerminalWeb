@@ -12,7 +12,7 @@ const ActionChoiceButton: React.SFC<ActionChoiceButtonProps> = ({
   click,
   isActive
 }) => (
-  <ActionButton>
+  <ActionButton side={title}>
     <ActionProperty onClick={click} side={title} isActive={isActive}>
       {title}
     </ActionProperty>
