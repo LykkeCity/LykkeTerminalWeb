@@ -20,3 +20,4 @@ export {default as OrderBookDisplayType} from './orderBookDisplayType';
 export {default as TradeFilter} from './tradeFilter';
 export {default as levels} from './notificationLevels';
 export {default as FeeType} from './feeType';
+export {default as KycStatuses} from './kycStatuses';

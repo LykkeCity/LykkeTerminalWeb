@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
+import AttentionModal from './AttentionModal';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
 import {EditOrder, QRModal} from './index';
@@ -8,6 +9,7 @@ const Modals = {
   Confirm: ConfirmModal,
   EditOrder,
   Expired: ExpiredModal,
+  Attention: AttentionModal,
   QR: QRModal
 };
 

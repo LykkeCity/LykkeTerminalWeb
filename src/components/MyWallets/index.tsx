@@ -35,7 +35,8 @@ export interface WalletActions {
 }
 
 const ConnectedMyWallets = connect(
-  ({authStore: {isAuth}, uiStore: {viewMode}}) => ({
+  ({authStore: {isAuth}, modalStore: {addModal}, uiStore: {viewMode}}) => ({
+    addModal,
     isAuth,
     viewMode
   }),

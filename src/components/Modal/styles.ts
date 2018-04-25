@@ -149,3 +149,32 @@ export const CloseBtnPosition = {
   top: 5,
   right: 25
 };
+
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const MarginedModalBody = styled(ModalBody)`
+  margin: ${rem(15)} 0;
+`;
+
+export const ImgLink = styled.a.attrs({
+  style: (props: any) => ({
+    backgroundImage: `url('assets/images/${props.image}.svg')`,
+    cursor: 'pointer'
+  })
+})`
+  width: 49%;
+  height: ${rem(45)};
+  background: no-repeat center;
+  background-size: cover;
+  border-radius: ${rem(6)};
+  margin: ${rem(10)} 0 0 0;
+  text-decoration: none;
+` as any;
+
+export const AttentionModalWrapper = styled(Modal)`
+  width: ${rem(300)};
+`;
