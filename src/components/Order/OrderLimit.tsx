@@ -3,6 +3,7 @@ import rem from 'polished/lib/helpers/rem';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrderInputs} from '../../models';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {
   OrderLimitProps,
@@ -59,7 +60,8 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
             {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </StyledActionTitle>
           <StyledAvailable onClick={onHandlePercentageChange()}>
-            {balance} {isSell ? baseAssetName : quoteAssetName} available
+            {formattedNumber(balance || 0)}{' '}
+            {isSell ? baseAssetName : quoteAssetName} available
           </StyledAvailable>
         </Flex>
         <NumberInput
@@ -94,7 +96,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <StyledTotal>
         <StyledTitle>Total</StyledTitle>
         <StyledTotalAmount>
-          {amount} {quoteAssetName}
+          {formattedNumber(amount)} {quoteAssetName}
         </StyledTotalAmount>
       </StyledTotal>
 

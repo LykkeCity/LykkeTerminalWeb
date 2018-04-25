@@ -10,6 +10,7 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {OrderProps, OrderState} from './index';
 import OrderActionButton from './OrderActionButton';
 import OrderChoiceButton from './OrderChoiceButton';
@@ -403,9 +404,9 @@ class Order extends React.Component<OrderProps, OrderState> {
             isDisable={isLimitInvalid}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
-            buttonMessage={`${capitalize(
-              action
-            )} ${quantityValue} ${baseAssetName}`}
+            buttonMessage={`${capitalize(action)} ${formattedNumber(
+              quantityValue
+            )} ${baseAssetName}`}
           />
         )}
 
