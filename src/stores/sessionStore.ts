@@ -232,10 +232,10 @@ class SessionStore extends BaseStore {
     return this.currentQrId;
   };
 
-  extendSession = () => {
+  extendSession = async () => {
     this.stopSessionRemains();
     this.ttl = convertMsToSeconds(this.sessionDuration);
-    this.api.extendSession(convertSecondsToMs(this.ttl));
+    await this.api.extendSession(this.sessionDuration);
     this.runSessionNotificationTimeout();
   };
 
