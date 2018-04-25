@@ -234,7 +234,7 @@ class SessionStore extends BaseStore {
 
   extendSession = () => {
     this.stopSessionRemains();
-    this.ttl += convertMsToSeconds(this.sessionDuration);
+    this.ttl = convertMsToSeconds(this.sessionDuration);
     this.api.extendSession(convertSecondsToMs(this.ttl));
     this.runSessionNotificationTimeout();
   };

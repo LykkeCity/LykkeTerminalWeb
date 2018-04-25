@@ -92,6 +92,8 @@ export const CancelButton = styled(Button)`
 
 export const QRButton = styled(CancelButton)`
   width: 100%;
+  font-weight: bold;
+  line-height: 1;
 `;
 
 export const Expired = styled(Modal)`
@@ -133,9 +135,9 @@ export const QRBody = styled.div`
 
 export const ModalHeaderTitle = styled.div`
   font-family: 'Akrobat';
-  font-size: ${rem(20)};
+  font-size: ${rem(24)};
   font-weight: bold;
-  line-height: 0.8;
+  line-height: 0.67;
   text-align: left;
 `;
 

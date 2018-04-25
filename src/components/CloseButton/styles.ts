@@ -10,6 +10,7 @@ export const Button = styled.a.attrs({
   color: #f5f6f7;
   text-decoration: none;
   cursor: pointer;
-  font-size: ${rem(16)};
+  font-size: ${rem(20)};
   position: absolute;
+  opacity: 0.8;
 ` as any;
