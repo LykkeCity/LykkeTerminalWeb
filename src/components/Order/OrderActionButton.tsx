@@ -2,12 +2,12 @@ import {rem, rgba} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import Side from '../../models/side';
-import {css} from '../styled';
+import {colors, css} from '../styled';
 import {OrderChoiceButtonProps} from './index';
 
 const buttonColorBySide = (side: string, isActive: boolean) => {
   return isActive
-    ? side === Side.Sell.toLowerCase() ? '#ab00ff' : '#fb8f01'
+    ? side === Side.Sell.toLowerCase() ? '#ff6161' : '#46eb6a'
     : 'transparent';
 };
 
@@ -24,14 +24,18 @@ const StyledColumn = styled.div`
 
 const StyledActionChoice = styled.div.attrs({
   style: (props: any) => ({
-    backgroundColor: buttonColorBySide(props.side, props.isActive)
+    backgroundColor: buttonColorBySide(props.side, props.isActive),
+    color:
+      props.side === Side.Buy.toLowerCase() && props.isActive
+        ? '#333'
+        : colors.white
   })
 })`
   background: transparent;
   border: solid 1px ${(p: any) => buttonBorderColorBySide(p.isActive)};
-  color: rgb(245, 246, 247);
   cursor: pointer;
   font-size: ${rem(14)};
+  font-weight: 600;
   line-height: 1.14;
   text-align: center;
   text-transform: capitalize;
