@@ -8,6 +8,7 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import ActionChoiceButton from './ActionChoiceButton';
 import MarketChoiceButton from './MarketChoiceButton';
 import OrderLimit from './OrderLimit';
@@ -457,9 +458,10 @@ class Order extends React.Component<OrderProps, OrderState> {
             isDisable={isLimitInvalid}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
-            buttonMessage={`${capitalize(
-              action
-            )} ${quantityValue} ${baseAssetName}`}
+            buttonMessage={`${capitalize(action)} ${formattedNumber(
+              quantityValue,
+              quantityAccuracy
+            )} ${baseAssetName}`}
           />
         )}
 

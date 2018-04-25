@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
 import {AssetModel, InstrumentModel} from '../../models/index';
-import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {colors} from '../styled';
 import {InstrumentListNumber, InstrumentPickerActions} from './index';
 
@@ -22,7 +22,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td title={instrument.displayName}>{instrument.displayName}</td>
         <td>
           <InstrumentListNumber
-            num={toLocaleStringWithAccuracy(
+            num={formattedNumber(
               instrument.price || 0,
               instrument.accuracy || 0
             )}
@@ -30,7 +30,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         </td>
         <td>
           <InstrumentListNumber
-            num={toLocaleStringWithAccuracy(
+            num={formattedNumber(
               instrument.change24h || 0,
               percentageAccuracy || 0
             )}
@@ -43,7 +43,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>
           {isAuth ? (
             <InstrumentListNumber
-              num={toLocaleStringWithAccuracy(
+              num={formattedNumber(
                 instrument.volume || 0,
                 instrument.baseAsset.accuracy || 0
               )}
@@ -57,7 +57,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>
           {isAuth ? (
             <InstrumentListNumber
-              num={toLocaleStringWithAccuracy(
+              num={formattedNumber(
                 instrument.volumeInBase || 0,
                 baseAsset.accuracy || 0
               )}
@@ -67,7 +67,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
             </InstrumentListNumber>
           ) : (
             <InstrumentListNumber
-              num={toLocaleStringWithAccuracy(
+              num={formattedNumber(
                 instrument.volume || 0,
                 instrument.baseAsset.accuracy || 0
               )}
