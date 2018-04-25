@@ -23,7 +23,9 @@ class NoFundsAndKycModal extends React.Component<AttentionModalProps> {
 
     return (
       <ModalWrapper>
-        <ModalHeader onClick={this.close}>Attention!</ModalHeader>
+        <ModalHeader onClick={this.close}>
+          {this.props.modal.message.title}
+        </ModalHeader>
         <MarginedModalBody>{this.props.modal.message.body}</MarginedModalBody>
         <Wrapper>
           <ImgLink

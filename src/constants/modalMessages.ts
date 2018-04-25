@@ -15,34 +15,16 @@ const ModalMessages = {
         'https://play.google.com/store/apps/details?id=com.lykkex.LykkeWallet'
     }
   },
-  NoFundsAndKyc: (noFunds?: boolean, noKyc?: boolean) => {
-    const modal = {
-      body: '',
-      link: {
-        appStore: 'https://itunes.apple.com/ru/app/lykke-wallet/id1112839581',
-        playMarket:
-          'https://play.google.com/store/apps/details?id=com.lykkex.LykkeWallet',
-        lykke: 'https://www.lykke.com/'
-      },
-      title: 'Attention!'
-    };
-
-    if (noFunds && !noKyc) {
-      modal.body =
-        'There should be some funds in your wallets to start trading. Please refill your account.';
-    }
-    if (!noFunds && noKyc) {
-      modal.body =
-        'You should pass KYC (Know Your Client) procedure to start trading. You can pass the KYC in the Lykke mobile app.';
-    }
-    if (noFunds && noKyc) {
-      modal.body = `
-        You should pass KYC (Know Your Client) procedure and have some funds in your wallets to start trading.
-        Please use Lykke mobile app to do it.
-      `;
-    }
-
-    return modal;
+  NoFundsAndKyc: {
+    body:
+      "Lykke's web platform is being premiered exclusively for its active mobile users. In order to use the web platform, you need to have successfully passed our Know Your Customer (KYC) procedure and deposited funds in your Lykke Trading Wallet via Lykke Wallet Mobile Application. For more details about the release read our blogpost.",
+    link: {
+      appStore: 'https://itunes.apple.com/ru/app/lykke-wallet/id1112839581',
+      playMarket:
+        'https://play.google.com/store/apps/details?id=com.lykkex.LykkeWallet',
+      lykke: 'https://www.lykke.com/'
+    },
+    title: 'Dear user,'
   },
   qr: {
     body: 'Please, scan QR code to start trading',
