@@ -28,7 +28,7 @@ const QRModal: React.SFC<QRModalProps> = ({modal, qrId}) => {
       </ModalHeader>
       <ModalBody>{modal.message.body}</ModalBody>
       <QRBody>
-        <QRCode size={128} value={qrId} />
+        <QRCode size={160} value={qrId} />
       </QRBody>
       <QRButton onClick={handleContinue}>{modal.message.button}</QRButton>
     </SessionQRConfirm>
