@@ -6,6 +6,7 @@ import {levels} from '../models';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
+import {capitalize} from '../utils';
 import {getRestErrorMessage} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
@@ -63,7 +64,20 @@ class OrderStore extends BaseStore {
           this.api
             .placeLimit(body)
             // tslint:disable-next-line:no-empty
-            .then(() => {}, this.orderPlacedUnsuccessfully)
+            .then((orderId: any) => {
+              const isAdded = this.rootStore.orderListStore.addOrder({
+                Id: orderId,
+                CreateDateTime: new Date(),
+                OrderAction: capitalize(body.OrderAction),
+                Volume: body.Volume,
+                RemainingVolume: body.Volume,
+                Price: body.Price,
+                AssetPairId: body.AssetPairId
+              });
+              if (isAdded) {
+                this.orderPlacedSuccessfully();
+              }
+            }, this.orderPlacedUnsuccessfully)
         );
     }
   };
@@ -76,12 +90,16 @@ class OrderStore extends BaseStore {
 
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
+    const isDeleted = this.rootStore.orderListStore.deleteOrder(id);
+    if (isDeleted) {
+      this.orderCancelledSuccessfully(id);
+    }
   };
 
   cancelAll = () =>
     this.rootStore.orderListStore.limitOrders
       .map((o: OrderModel) => o.id)
-      .forEach(this.api.cancelOrder);
+      .forEach(this.cancelOrder);
 
   subscribe = (ws: any) => {
     ws.subscribe(topics.orders, this.onOrders);
@@ -91,8 +109,10 @@ class OrderStore extends BaseStore {
     const order = args[0][0];
     switch (order.Status) {
       case OrderStatus.Cancelled:
-        this.rootStore.orderListStore.deleteOrder(order.Id);
-        this.orderCancelledSuccessfully(order.Id);
+        const isDeleted = this.rootStore.orderListStore.deleteOrder(order.Id);
+        if (isDeleted) {
+          this.orderCancelledSuccessfully(order.Id);
+        }
         break;
       case OrderStatus.Matched:
         this.rootStore.orderListStore.deleteOrder(order.Id);
@@ -103,8 +123,10 @@ class OrderStore extends BaseStore {
         this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
         break;
       case OrderStatus.Placed:
-        this.rootStore.orderListStore.addOrder(order);
-        this.orderPlacedSuccessfully();
+        const isAdded = this.rootStore.orderListStore.addOrder(order);
+        if (isAdded) {
+          this.orderPlacedSuccessfully();
+        }
         break;
     }
   };
