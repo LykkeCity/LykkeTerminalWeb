@@ -7,9 +7,9 @@ const ModalMessages = {
     title: 'Please, confirm your session'
   },
   qr: {
-    body: 'Please, confirm your trade session with the phone',
+    body: 'Please, scan a QR code to start trading',
     button: 'Continue in view mode',
-    title: 'Please, confirm your session'
+    title: 'Confirm trade session'
   }
 };
 

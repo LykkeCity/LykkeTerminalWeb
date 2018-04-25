@@ -1,6 +1,7 @@
 import {rem, rgba} from 'polished';
 import styled, {css} from 'styled-components';
 import {Side} from '../../models';
+import {colors} from '../styled';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
@@ -19,7 +20,7 @@ export const Actions = Markets.extend`
 
 const buttonColorBySide = (side: string, isActive: boolean) => {
   return isActive
-    ? side === Side.Sell.toLowerCase() ? '#ab00ff' : '#fb8f01'
+    ? side === Side.Sell.toLowerCase() ? colors.red : colors.green
     : 'transparent';
 };
 
@@ -32,7 +33,15 @@ export const ActionButton = styled.div`
   justify-content: center;
   align-items: center;
   width: 50%;
-`;
+  ${(p: any) =>
+    p.side === Side.Sell.toLowerCase()
+      ? css`
+          padding-right: 4px;
+        `
+      : css`
+          padding-left: 4px;
+        `};
+` as any;
 
 export const ActionProperty = styled.div.attrs({
   style: (props: any) => ({
@@ -44,24 +53,13 @@ export const ActionProperty = styled.div.attrs({
   color: rgb(245, 246, 247);
   cursor: pointer;
   font-size: ${rem(14)};
+  font-weight: 600;
   line-height: 1.14;
   text-align: center;
   text-transform: capitalize;
   padding: ${rem(8)} ${rem(58)};
   width: 100%;
   border-radius: 4px;
-
-  ${(p: any) =>
-    p.side === Side.Sell.toLowerCase()
-      ? css`
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
-        `
-      : css`
-          border-top-left-radius: 0;
-          border-bottom-left-radius: 0;
-          border-left: none;
-        `};
 ` as any;
 
 export const MarketButton = styled.div`
@@ -78,14 +76,14 @@ export const MarketButton = styled.div`
 export const MarketProperty = styled.div`
   cursor: pointer;
   text-align: center;
-  padding: ${rem(16)} 0;
-  color: rgb(140, 148, 160);
+  padding: ${rem(9)} 0;
+  color: ${colors.coolGrey};
   font-size: ${rem(18)};
-  border-bottom: 1px solid transparent;
+  border-bottom: 2px solid transparent;
 
   &.active {
-    border-bottom: 2px solid rgb(3, 136, 239);
-    color: rgb(255, 255, 255);
+    border-bottom-color: ${colors.blue};
+    color: ${colors.snowWhite};
     font-weight: 600;
   }
 `;
