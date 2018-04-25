@@ -7,6 +7,7 @@ import {keys} from '../../models';
 import {InstrumentModel, Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {minOrMaxFromList} from '../../utils/math';
 import {HBar, VBar} from '../Bar';
 import ClickOutside from '../ClickOutside/ClickOutside';
@@ -41,11 +42,7 @@ const formatNumber = (
   accuracy: number,
   options?: object
 ) =>
-  (isFinite(Number(num)) &&
-    Number(num).toLocaleString(undefined, {
-      maximumFractionDigits: accuracy,
-      ...options
-    })) ||
+  (isFinite(Number(num)) && formattedNumber(Number(num), accuracy, options)) ||
   '--';
 
 export interface OrderBookProps extends LoaderProps {
