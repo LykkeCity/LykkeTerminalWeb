@@ -51,8 +51,8 @@ export const Modal = styled.div`
 `;
 
 export const SessionQRConfirm = styled(Modal)`
-  width: ${rem(300)};
   box-sizing: border-box;
+  padding: ${rem(24)};
 `;
 
 export const Button = styled.button`
@@ -182,6 +182,6 @@ export const EditActionTitle = styled.div.attrs({
 ` as any;
 
 export const CloseBtnPosition = {
-  top: 5,
-  right: 25
+  top: 10,
+  right: 16
 };
