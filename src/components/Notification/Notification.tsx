@@ -7,9 +7,9 @@ import {NotificationProps} from './index';
 const {Flex} = require('grid-styled');
 
 const notificationLevels = {
-  Error: '#ff3e2e',
+  Error: '#ff6161',
   Information: '#0388ef',
-  Success: '#13b72a'
+  Success: '#46eb6a'
 };
 
 const getBackground = (level: string) => {
