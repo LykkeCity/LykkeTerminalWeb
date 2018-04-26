@@ -69,7 +69,7 @@ export const splitter = (from: number, to: number, resolution: string) => {
 };
 
 export const getTimeZone = (zones: any[]) => {
-  const gmt = new Date().toString().match(/([-\+][0-9]+)\s/)![1];
+  const gmt = new Date().toString().match(/([-\+][0-9]+)/)![1];
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   let timezone =
