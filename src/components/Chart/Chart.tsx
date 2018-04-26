@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import {UiStore} from '../../stores';
+
+import {InstrumentModel} from '../../models';
 import {
   ChartContainer,
   ChartWrapper,
@@ -10,6 +13,8 @@ import {
 export interface ChartProps {
   onReset: () => void;
   renderChart: any;
+  fetchPublicInstruments: any;
+  getInstrumentById: (instrumentId: string) => InstrumentModel | undefined;
 }
 
 class Chart extends React.Component<ChartProps> {
@@ -18,7 +23,11 @@ class Chart extends React.Component<ChartProps> {
   }
 
   componentDidMount() {
-    this.props.renderChart();
+    this.props.fetchPublicInstruments().then(() => {
+      this.props.renderChart(
+        this.props.getInstrumentById(UiStore.DEFAULT_INSTRUMENT)
+      );
+    });
   }
 
   render() {
