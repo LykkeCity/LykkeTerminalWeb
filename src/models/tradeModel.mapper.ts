@@ -163,6 +163,7 @@ export const fromWampToTrade = (dto: any[], instruments: InstrumentModel[]) => {
 
 export const fromRestToPublicTrade = ({
   id,
+  index,
   assetPairId,
   volume,
   price,
@@ -171,6 +172,7 @@ export const fromRestToPublicTrade = ({
 }: any) =>
   new TradeModel({
     id,
+    index,
     volume,
     symbol: assetPairId,
     price,
