@@ -31,6 +31,11 @@ class BalanceListStore extends BaseStore {
   }
 
   @computed
+  get checkAnyFunds() {
+    return this.walletList.map(wallet => wallet.totalBalance).reduce(add, 0);
+  }
+
+  @computed
   get tradingWalletBalances() {
     return (this.tradingWallet && this.tradingWallet.balances) || [];
   }
@@ -120,8 +125,8 @@ class BalanceListStore extends BaseStore {
 
   checkFundsAndKyc = () => {
     if (
-      this.totalBalance <= 0 ||
-      !this.totalBalance ||
+      this.checkAnyFunds <= 0 ||
+      !this.checkAnyFunds ||
       !this.rootStore.authStore.kyc
     ) {
       this.rootStore.modalStore.addModal(
