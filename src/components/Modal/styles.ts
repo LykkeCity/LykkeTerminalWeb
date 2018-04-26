@@ -182,7 +182,7 @@ export const ImgLink = styled.a.attrs({
   })
 })`
   width: 49%;
-  height: ${rem(45)};
+  height: ${rem(42)};
   background: no-repeat center;
   background-size: cover;
   border-radius: ${rem(6)};
