@@ -48,7 +48,7 @@ export const fonts = {
 
 export const dims = {
   headerHeight: 50,
-  tileHeaderHeight: 40,
+  tileHeaderHeight: 32,
   padding: [8, 16]
 };
 

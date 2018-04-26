@@ -28,6 +28,7 @@ const StyledInstrumentPopover = styled(InstrumentPopover)`
   width: 700px;
   height: 360px;
   top: 5px;
+  font-size: ${rem(14)};
 `;
 
 export default StyledInstrumentPopover;

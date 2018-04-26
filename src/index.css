@@ -2,7 +2,7 @@
 @import 'icons.css';
 
 .mosaic {
-  height: calc(100% - 50px);
+  height: calc(100% - 60px);
 }
 
 .mosaic-root {

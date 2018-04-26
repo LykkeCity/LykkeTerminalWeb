@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const BalanceInfoDiv = styled.div`
   text-align: right;
-  padding-right: ${rem(15)};
+  padding: 0 ${rem(16)};
 `;
 
 export const BalanceValue = styled.span`
@@ -33,5 +33,5 @@ export const Button = styled.button`
 
 export const BalanceLabel = styled.div`
   color: #8c94a0;
-  font-size: 0.7rem;
+  font-size: ${rem(12)};
 `;
