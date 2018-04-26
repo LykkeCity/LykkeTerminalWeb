@@ -5,16 +5,8 @@ import DepthChart from './DepthChart';
 // tslint:disable:object-literal-sort-keys
 const ConnectedDepthChart = connect(
   ({
-    depthChartStore: {
-      asks,
-      bids,
-      mid,
-      spread,
-      lastTradePrice,
-      span,
-      nextSpan,
-      prevSpan
-    },
+    depthChartStore: {asks, bids, mid, spread, span, nextSpan, prevSpan},
+    priceStore: {lastTradePrice},
     uiStore: {selectedInstrument}
   }) => {
     const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
@@ -22,14 +14,14 @@ const ConnectedDepthChart = connect(
 
     const midPrice = mid().toFixed(priceAccuracy);
     const priceSpread = spread().toFixed(accuracy);
-    const lastPrice = lastTradePrice().toFixed(accuracy);
     return {
       asks,
       bids,
       mid: midPrice,
       spread: priceSpread,
-      lastTradePrice: lastPrice,
+      lastTradePrice,
       span,
+      priceAccuracy,
       onNextSpan: nextSpan,
       onPrevSpan: prevSpan
     };
