@@ -65,7 +65,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <TitledCell>
         {toLocaleStringWithAccuracy(price * volume, baseAssetAccuracy)}
       </TitledCell>
-      <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
+      <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>
           <Icon name="pencil" />
