@@ -92,7 +92,7 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route exact={true} path={paths.auth} component={Auth} />
-          <Route exact={true} path="/" component={Terminal} />
+          <Route exact={true} path={paths.main} component={Terminal} />
         </Switch>
       </Router>
     );
