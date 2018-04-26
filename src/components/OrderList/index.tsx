@@ -11,9 +11,8 @@ import OrderListItem from './OrderListItem';
 import Orders from './Orders';
 
 export const OrderCellWidth = {
-  Symbol: 70,
-  Id: 300,
-  Side: 50,
+  Symbol: 100,
+  Side: 70,
   Filled: 100,
   CreatedDate: 150,
   Actions: 60

@@ -60,31 +60,11 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         width: OrderCellWidth.Symbol
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'id'),
-        className: 'right-align',
-        key: 'id',
-        value: 'OrderID',
-        width: OrderCellWidth.Id
-      },
-      {
         sortDisabled: checkDataForSorting(this.state.data, 'side'),
         className: 'right-align',
         key: 'side',
         value: 'Side',
         width: OrderCellWidth.Side
-      },
-      {
-        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
-        className: 'right-align',
-        key: 'volume',
-        value: 'Volume'
-      },
-      {
-        sortDisabled: checkDataForSorting(this.state.data, 'filled'),
-        className: 'right-align',
-        key: 'filled',
-        value: 'Filled',
-        width: OrderCellWidth.Filled
       },
       {
         sortDisabled: checkDataForSorting(this.state.data, 'price'),
@@ -93,11 +73,28 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         value: 'Price'
       },
       {
+        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        className: 'right-align',
+        key: 'amount',
+        value: 'Amount'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'filled'),
+        className: 'right-align',
+        key: 'filled',
+        value: 'Filled'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'value'),
+        className: 'right-align',
+        key: 'value',
+        value: 'Value'
+      },
+      {
         sortDisabled: checkDataForSorting(this.state.data, 'createdAt'),
         className: 'right-align',
         key: 'createdAt',
-        value: 'Time',
-        width: OrderCellWidth.CreatedDate
+        value: 'Time'
       },
       {
         sortDisabled: true,
