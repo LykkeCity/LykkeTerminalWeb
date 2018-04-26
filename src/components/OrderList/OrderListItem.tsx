@@ -39,7 +39,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
   instrument: {
     displayName,
     accuracy,
-    baseAsset: {accuracy: baseAssetAccuracy},
+    baseAsset: {accuracy: baseAssetAccuracy, name: baseAssetName},
     quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName}
   }
 }) => {
@@ -51,9 +51,9 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <SideCell w={OrderCellWidth.Side} side={side}>
         {side}
       </SideCell>
-      <TitledCell>{price}</TitledCell>
+      <TitledCell>{toLocaleStringWithAccuracy(price, accuracy)}</TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}
+        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
       <TitledCell>
         {toLocaleStringWithAccuracy(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(
@@ -63,7 +63,8 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
         )})
       </TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(price * volume, baseAssetAccuracy)}
+        {toLocaleStringWithAccuracy(price * volume, baseAssetAccuracy)}{' '}
+        {quoteAssetName}
       </TitledCell>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
