@@ -52,17 +52,19 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
         {side}
       </SideCell>
       <TitledCell>{price}</TitledCell>
-      <td>{toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}</td>
-      <Cell w={OrderCellWidth.Filled}>
+      <TitledCell>
+        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}
+      </TitledCell>
+      <TitledCell>
         {toLocaleStringWithAccuracy(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(
           filledPercent,
           2,
           {style: 'percent'}
         )})
-      </Cell>
-      <Cell>
+      </TitledCell>
+      <TitledCell>
         {toLocaleStringWithAccuracy(price * volume, baseAssetAccuracy)}
-      </Cell>
+      </TitledCell>
       <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>
