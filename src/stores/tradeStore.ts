@@ -14,7 +14,13 @@ const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
   sortBy((o: TradeModel) => new Date(o.timestamp).getTime())
 );
 
-// const sortByMultipleParams = sortWith([ascend(prop('timestamp'))]);
+const sortMultiField = (source: TradeModel[]) => {
+  return source.sort(
+    (a: any, b: any) =>
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime() ||
+      a.index - b.index
+  );
+};
 
 class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
@@ -31,10 +37,7 @@ class TradeStore extends BaseStore {
 
   @computed
   get getPublicTrades() {
-    sortByDate(this.publicTrades).forEach(i => {
-      // console.log(new Date(i.timestamp).getTime(), i.index)
-    });
-    return sortByDate(this.publicTrades);
+    return sortMultiField(this.publicTrades);
   }
 
   @computed
