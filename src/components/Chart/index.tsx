@@ -5,8 +5,7 @@ const ConnectedChart = connect<ChartProps>(
   ({chartStore, referenceStore, uiStore}) => ({
     onReset: chartStore.resetToDefault,
     renderChart: chartStore.renderChart,
-    fetchPublicInstruments: referenceStore.fetchPublicInstruments,
-    getInstrumentById: referenceStore.getInstrumentById
+    selectedInstrument: uiStore.selectedInstrument
   }),
   Chart
 );
