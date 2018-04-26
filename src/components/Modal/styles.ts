@@ -51,8 +51,8 @@ export const ModalHeaderTitle = styled.div`
 `;
 
 export const CloseBtnPosition = {
-  top: 5,
-  right: 25
+  top: 10,
+  right: 16
 };
 
 export const Wrapper = styled.div`
@@ -72,7 +72,7 @@ export const ImgLink = styled.a.attrs({
   })
 })`
   width: 49%;
-  height: ${rem(45)};
+  height: ${rem(42)};
   background: no-repeat center;
   background-size: cover;
   border-radius: ${rem(6)};
