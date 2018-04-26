@@ -4,18 +4,8 @@ import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Cell} from '../Table/styles';
+import {TitledCell} from '../Table/TitledCell';
 import {SideCell} from './styles';
-
-const withTitle = (Component: React.ComponentType<any>) => ({
-  children,
-  ...rest
-}: any) => (
-  <Component title={React.Children.toArray(children).join('')} {...rest}>
-    {children}
-  </Component>
-);
-
-const TitledCell = withTitle(Cell);
 
 interface TradeListItemProps extends TradeModel {
   className?: string;

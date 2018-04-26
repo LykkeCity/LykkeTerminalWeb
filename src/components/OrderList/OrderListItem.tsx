@@ -3,19 +3,9 @@ import {InstrumentModel, OrderModel} from '../../models';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
+import {TitledCell} from '../Table/TitledCell';
 import {SideCell} from '../TradeList/styles';
 import {OrderActions, OrderCellWidth} from './index';
-
-const withTitle = (Component: React.ComponentType<any>) => ({
-  children,
-  ...rest
-}: any) => (
-  <Component title={React.Children.toArray(children).join('')} {...rest}>
-    {children}
-  </Component>
-);
-
-const TitledCell = withTitle(Cell);
 
 interface OrderListItemProps {
   onEdit: any;
