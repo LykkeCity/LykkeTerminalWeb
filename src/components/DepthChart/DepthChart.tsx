@@ -10,13 +10,26 @@ import {
 } from '../OrderBook/styles';
 import ChartWrapper from './Chart';
 
+const formatNumber = (
+  num: number | string,
+  accuracy: number,
+  options?: object
+) =>
+  (isFinite(Number(num)) &&
+    Number(num).toLocaleString(undefined, {
+      maximumFractionDigits: accuracy,
+      ...options
+    })) ||
+  '--';
+
 interface DepthChartProps {
   asks: Order[];
   bids: Order[];
   mid: string;
   spread: string;
-  lastTradePrice: string;
+  lastTradePrice: number;
   span: number;
+  priceAccuracy: number;
   onNextSpan: () => void;
   onPrevSpan: () => void;
 }
@@ -32,6 +45,7 @@ class DepthChart extends React.Component<DepthChartProps> {
       spread,
       lastTradePrice,
       span,
+      priceAccuracy,
       onNextSpan,
       onPrevSpan
     } = this.props;
@@ -65,7 +79,7 @@ class DepthChart extends React.Component<DepthChartProps> {
               <VBar />
               <div className="price-container">
                 <span>Last Trade Price</span>
-                <div>{lastTradePrice}</div>
+                <div>{formatNumber(lastTradePrice, priceAccuracy)}</div>
               </div>
             </div>
           </StyledPriceList>
