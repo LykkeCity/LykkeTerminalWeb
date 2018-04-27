@@ -6,7 +6,7 @@ import ChartWrapper from './ChartWrapper';
 const ConnectedChart = connect(
   ({depthChartStore: {asks, bids, mid}, uiStore: {selectedInstrument}}) => {
     const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
-    const midPrice = mid().toFixed(priceAccuracy);
+    const midPrice = mid();
 
     const baseAsset = selectedInstrument!.baseAsset.name;
     const quoteAsset = selectedInstrument!.quoteAsset.name;
