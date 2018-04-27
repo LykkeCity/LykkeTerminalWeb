@@ -169,7 +169,7 @@ class Mesh extends React.Component<ChartProps> {
   };
 
   initilaize() {
-    this.mid = parseInt(this.props.mid, 10);
+    this.mid = this.props.mid;
     this.asks = this.props.asks;
     this.bids = this.props.bids;
     this.mesh = [];

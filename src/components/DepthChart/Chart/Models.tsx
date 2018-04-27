@@ -3,7 +3,7 @@ import {AssetModel, Order} from '../../../models';
 export interface ChartProps {
   asks: Order[];
   bids: Order[];
-  mid: string;
+  mid: number;
   baseAsset: AssetModel;
   quoteAsset: AssetModel;
   width: number;
