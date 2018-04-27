@@ -1,4 +1,5 @@
 import {prop, sortBy, uniq} from 'rambda';
+import {SortDirections} from '../../models';
 
 export const sortData = (
   dataToSort: any[],
@@ -9,14 +10,16 @@ export const sortData = (
   const sort = sortBy(prop(sortByParam));
   const sortDirection =
     state.sortByParam === sortByParam
-      ? state.sortDirection === 'ASC' ? 'DESC' : 'ASC'
+      ? state.sortDirection === SortDirections.ASC
+        ? SortDirections.DESC
+        : SortDirections.ASC
       : sortDirectionDefault;
   const data = (() => {
     switch (sortDirection) {
       default:
-      case 'ASC':
+      case SortDirections.ASC:
         return sort(dataToSort);
-      case 'DESC':
+      case SortDirections.DESC:
         return sort(dataToSort).reverse();
     }
   })();

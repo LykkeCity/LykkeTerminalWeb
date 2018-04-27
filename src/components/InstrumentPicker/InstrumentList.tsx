@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {SortDirections} from '../../models';
 import {
   checkDataForSorting,
   sortData,
@@ -15,8 +16,8 @@ class InstrumentList extends React.Component<
     super(props);
     this.state = {
       data: this.props.instruments,
-      sortByParam: '',
-      sortDirection: 'ASC'
+      sortByParam: 'volumeInBase',
+      sortDirection: SortDirections.DESC
     };
   }
 
@@ -31,13 +32,12 @@ class InstrumentList extends React.Component<
   }
 
   sort = (sortByParam: string, sortDirectionDefault: string) => {
+    const sortDirection =
+      this.state.sortByParam === sortByParam
+        ? sortDirectionDefault
+        : SortDirections.DESC;
     this.setState(
-      sortData(
-        this.props.instruments,
-        sortByParam,
-        sortDirectionDefault,
-        this.state
-      )
+      sortData(this.props.instruments, sortByParam, sortDirection, this.state)
     );
   };
 
@@ -61,9 +61,9 @@ class InstrumentList extends React.Component<
       },
       {sortDisabled: true, className: 'right-align', key: '', value: ''},
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        sortDisabled: checkDataForSorting(this.state.data, 'volumeInBase'),
         className: 'right-align',
-        key: 'volume',
+        key: 'volumeInBase',
         value: 'Volume'
       }
     ];
