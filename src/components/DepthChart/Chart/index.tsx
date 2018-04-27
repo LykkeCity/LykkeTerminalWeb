@@ -15,7 +15,8 @@ const ConnectedChart = connect(
       bids,
       mid: midPrice,
       baseAsset,
-      quoteAsset
+      quoteAsset,
+      priceAccuracy
     };
   },
   ChartWrapper
