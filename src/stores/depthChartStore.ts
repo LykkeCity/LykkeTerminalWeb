@@ -1,35 +1,45 @@
 import {action, computed, observable} from 'mobx';
 import {reverse} from 'rambda';
-import {TradeModel} from '../models';
+import {Order, TradeModel} from '../models';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
 class DepthChartStore extends BaseStore {
-  @observable spanMultiplierIdx = 0;
-
-  @computed
-  get seedSpan() {
-    return this.rootStore.orderBookStore.seedSpan;
-  }
-
-  @computed
-  get spanMultiplier() {
-    return Math.pow(10, this.spanMultiplierIdx);
-  }
-
-  @computed
-  get maxMultiplierIdx() {
-    return this.rootStore.orderBookStore.maxMultiplierIdx;
-  }
+  multiplers: number[] = [0, 0.01, 0.05, 0.25, 0.5, 1];
+  maxMultiplier = 5;
+  @observable spanMultiplierIdx = 1;
 
   @computed
   get span() {
-    return this.seedSpan * this.spanMultiplier;
+    return this.multiplers[this.spanMultiplierIdx] * 100;
   }
 
   constructor(store: RootStore) {
     super(store);
   }
+
+  reduceBidsArray = (bids: Order[]) => {
+    const mid = this.mid();
+    const lowerBound = mid - mid * this.multiplers[this.spanMultiplierIdx];
+    const filteredBids = bids.filter(bid => {
+      return bid.price > lowerBound;
+    });
+    return filteredBids.length ? filteredBids : bids.slice(0, 1);
+  };
+
+  reduceAsksArray = (asks: Order[]) => {
+    const mid = this.mid();
+    const upperBound =
+      mid +
+      Math.max(...asks.map(ask => ask.price)) *
+        this.multiplers[this.spanMultiplierIdx];
+    const filteredAsks = asks.filter(ask => {
+      return ask.price < upperBound;
+    });
+    return filteredAsks.length
+      ? filteredAsks
+      : asks.slice(asks.length - 1, asks.length);
+  };
 
   @computed
   get bids() {
@@ -41,9 +51,12 @@ class DepthChartStore extends BaseStore {
       this.span,
       false
     );
-    return connectLimitOrders(aggregatedOrders, limitOrders, this.span, false);
+    return this.reduceBidsArray(
+      connectLimitOrders(aggregatedOrders, limitOrders, this.span, false)
+    );
   }
 
+  @computed
   get asks() {
     const {
       orderListStore: {limitOrdersForThePair: limitOrders}
@@ -53,8 +66,10 @@ class DepthChartStore extends BaseStore {
       this.span,
       true
     );
-    return reverse(
-      connectLimitOrders(aggregatedOrders, limitOrders, this.span, true)
+    return this.reduceAsksArray(
+      reverse(
+        connectLimitOrders(aggregatedOrders, limitOrders, this.span, true)
+      )
     );
   }
 
@@ -76,15 +91,15 @@ class DepthChartStore extends BaseStore {
 
   @action
   nextSpan = () => {
-    if (this.spanMultiplierIdx < this.maxMultiplierIdx) {
-      this.spanMultiplierIdx += 2;
+    if (this.spanMultiplierIdx < this.maxMultiplier) {
+      this.spanMultiplierIdx++;
     }
   };
 
   @action
   prevSpan = () => {
-    if (this.spanMultiplierIdx > 0) {
-      this.spanMultiplierIdx -= 2;
+    if (this.spanMultiplierIdx > 1) {
+      this.spanMultiplierIdx--;
     }
   };
 

@@ -54,7 +54,6 @@ class DepthChart extends React.Component<DepthChartProps> {
       <StyledWrapper>
         <StyledBar>
           <StyledGrouping>
-            Grouping:
             <button onClick={onPrevSpan}>
               <FAIcon name="minus" />
             </button>
@@ -63,6 +62,7 @@ class DepthChart extends React.Component<DepthChartProps> {
                 {span.toLocaleString(undefined, {
                   maximumFractionDigits: priceAccuracy
                 })}
+                {' %'}
               </strong>
             </div>
             <button onClick={onNextSpan}>
