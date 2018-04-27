@@ -9,6 +9,7 @@ export interface ChartProps {
   width: number;
   height: number;
   priceAccuracy: number;
+  selectedInstrument?: any;
 }
 
 export interface PointerProps {
