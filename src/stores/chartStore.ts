@@ -57,6 +57,14 @@ class ChartStore extends BaseStore {
       return;
     }
     this.widget = new (window as any).TradingView.widget({
+      customFormatters: {
+        timeFormatter: {
+          format: (date: any) => date.toLocaleTimeString()
+        },
+        dateFormatter: {
+          format: (date: any) => date.toLocaleDateString()
+        }
+      },
       autosize: true,
       symbol: instrument.displayName,
       interval: '60',
