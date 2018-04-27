@@ -67,7 +67,7 @@ export const MarginedModalBody = styled(ModalBody)`
 
 export const ImgLink = styled.a.attrs({
   style: (props: any) => ({
-    backgroundImage: `url('assets/images/${props.image}.svg')`,
+    backgroundImage: `url('assets/images/${props.image}.png')`,
     cursor: 'pointer'
   })
 })`

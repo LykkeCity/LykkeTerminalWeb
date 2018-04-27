@@ -1,9 +1,11 @@
 import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
+import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import keys from '../constants/storageKeys';
 import {KycStatuses} from '../models';
+import Types from '../models/modals';
 import {RandomString, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -23,6 +25,15 @@ class AuthStore extends BaseStore {
     return (
       this.kycStatus === KycStatuses.ReviewDone ||
       this.kycStatus === KycStatuses.Ok
+    );
+  }
+
+  @computed
+  get noKycAndFunds() {
+    return (
+      !this.kyc ||
+      !this.rootStore.balanceListStore ||
+      this.rootStore.balanceListStore.checkAnyFunds < 0
     );
   }
 
@@ -70,6 +81,15 @@ class AuthStore extends BaseStore {
       messages.expired
     );
     this.signOut();
+  };
+
+  showNoFundsAndKycModal = () => {
+    this.rootStore.modalStore.addModal(
+      ModalMessages.NoFundsAndKyc,
+      null,
+      null,
+      Types.NoFundsAndKyc
+    );
   };
 
   signIn = () => {

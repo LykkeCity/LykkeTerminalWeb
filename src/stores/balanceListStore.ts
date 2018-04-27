@@ -2,10 +2,8 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {add, find, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import * as topics from '../api/topics';
-import ModalMessages from '../constants/modalMessages';
 import tradingWalletKeys from '../constants/tradingWalletKeys';
 import {AssetBalanceModel, WalletModel} from '../models';
-import Types from '../models/modals';
 import {BaseStore, RootStore} from './index';
 
 class BalanceListStore extends BaseStore {
@@ -98,8 +96,6 @@ class BalanceListStore extends BaseStore {
         );
       });
     });
-
-    this.checkFundsAndKyc();
   };
 
   changeWallet = (walletId: string) => {
@@ -121,21 +117,6 @@ class BalanceListStore extends BaseStore {
     balance.reserved = r;
 
     this.updateWalletBalances();
-  };
-
-  checkFundsAndKyc = () => {
-    if (
-      this.checkAnyFunds <= 0 ||
-      !this.checkAnyFunds ||
-      !this.rootStore.authStore.kyc
-    ) {
-      this.rootStore.modalStore.addModal(
-        ModalMessages.NoFundsAndKyc,
-        null,
-        null,
-        Types.NoFundsAndKyc
-      );
-    }
   };
 
   reset = () => {
