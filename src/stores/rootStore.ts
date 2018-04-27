@@ -128,7 +128,6 @@ class RootStore {
     await this.referenceStore
       .fetchBaseAsset()
       .then(() => {
-        this.balanceListStore.fetchAll();
         this.orderListStore.fetchAll();
       }, reject => Promise.resolve)
       .then(async () => {
