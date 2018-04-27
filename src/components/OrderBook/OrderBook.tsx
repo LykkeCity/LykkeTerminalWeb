@@ -266,9 +266,7 @@ class OrderBook extends React.Component<OrderBookProps> {
                   </MidPrice>
                   <Spread>
                     <FigureValue>
-                      {formatNumber(spreadRelative, priceAccuracy, {
-                        style: 'percent'
-                      })}
+                      {formatNumber(spreadRelative, priceAccuracy)}%
                     </FigureValue>
                     <FigureHint>Spread</FigureHint>
                   </Spread>
