@@ -22,7 +22,7 @@ class ChartWrapper extends React.Component<ChartProps> {
   }
 
   render() {
-    const {asks, bids, mid, baseAsset, quoteAsset, priceAccuracy} = this.props;
+    const {asks, bids, mid, priceAccuracy, selectedInstrument} = this.props;
 
     return (
       <Measure
@@ -41,28 +41,32 @@ class ChartWrapper extends React.Component<ChartProps> {
           <div style={{height: '100%'}} ref={measureRef}>
             <Stage width={this.width} height={this.height}>
               <FastLayer clearBeforeDraw={true}>
-                <Mesh
-                  asks={asks}
-                  bids={bids}
-                  mid={mid}
-                  baseAsset={baseAsset}
-                  quoteAsset={quoteAsset}
-                  width={this.width - chart.labelsWidth}
-                  height={this.height - chart.labelsHeight}
-                  priceAccuracy={priceAccuracy}
-                />
+                {selectedInstrument && (
+                  <Mesh
+                    asks={asks}
+                    bids={bids}
+                    mid={mid}
+                    baseAsset={selectedInstrument!.baseAsset.name}
+                    quoteAsset={selectedInstrument!.quoteAsset.name}
+                    width={this.width - chart.labelsWidth}
+                    height={this.height - chart.labelsHeight}
+                    priceAccuracy={priceAccuracy}
+                  />
+                )}
               </FastLayer>
               <Layer>
-                <Chart
-                  asks={asks}
-                  bids={bids}
-                  mid={mid}
-                  baseAsset={baseAsset}
-                  quoteAsset={quoteAsset}
-                  width={this.width - chart.labelsWidth}
-                  height={this.height - chart.labelsHeight}
-                  priceAccuracy={priceAccuracy}
-                />
+                {selectedInstrument && (
+                  <Chart
+                    asks={asks}
+                    bids={bids}
+                    mid={mid}
+                    baseAsset={selectedInstrument!.baseAsset.name}
+                    quoteAsset={selectedInstrument!.quoteAsset.name}
+                    width={this.width - chart.labelsWidth}
+                    height={this.height - chart.labelsHeight}
+                    priceAccuracy={priceAccuracy}
+                  />
+                )}
               </Layer>
             </Stage>
           </div>
