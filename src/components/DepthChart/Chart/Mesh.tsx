@@ -61,7 +61,11 @@ class Mesh extends React.Component<ChartProps> {
 
       const step = maximum / chart.mesh.horizontalLinesAmount;
       for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
-        labels.push((step * (i + 1) - step / 2).toFixed(2));
+        labels.push(
+          (step * (i + 1) - step / 2).toLocaleString(undefined, {
+            maximumFractionDigits: 2
+          })
+        );
       }
     }
     return labels.reverse();
