@@ -201,18 +201,12 @@ class ReferenceStore extends BaseStore {
     resp.forEach(({assetPair, lastPrice, bid, ask, volume24H}: any) => {
       const instrument = this.getInstrumentById(assetPair);
       if (instrument) {
-        instrument.price = lastPrice;
-        instrument.bid = bid;
-        instrument.ask = ask;
-        instrument.volume = volume24H;
-        instrument.updateVolumeInBase(
-          this.rootStore.marketStore.convert(
-            instrument.volume,
-            instrument.baseAsset.id,
-            this.baseAssetId,
-            this.getInstrumentById
-          )
-        );
+        runInAction(() => {
+          instrument.price = lastPrice;
+          instrument.bid = bid;
+          instrument.ask = ask;
+          instrument.volume = volume24H;
+        });
       }
     });
   };

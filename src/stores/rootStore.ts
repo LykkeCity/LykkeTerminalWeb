@@ -132,6 +132,10 @@ class RootStore {
     await this.referenceStore
       .fetchBaseAsset()
       .then(() => {
+        this.referenceStore
+          .fetchRates()
+          .then(this.referenceStore.updateInstruments)
+          .catch(console.error);
         this.balanceListStore.fetchAll();
         this.orderListStore.fetchAll();
       }, reject => Promise.resolve)
@@ -163,8 +167,6 @@ class RootStore {
         this.tradeStore.subscribe(ws);
         this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
-
-        this.referenceStore.fetchRates().catch(console.error);
 
         return Promise.resolve();
       })
