@@ -58,11 +58,10 @@ class Mesh extends React.Component<ChartProps> {
         this.bids[this.bids.length - 1].depth
       );
       const maximum = maxDepth + maxDepth / 2;
-      const minimum = 0;
 
-      const step = (maximum - minimum) / chart.mesh.horizontalLinesAmount;
+      const step = maximum / chart.mesh.horizontalLinesAmount;
       for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
-        labels.push((minimum + step * (i + 1)).toFixed(2));
+        labels.push((step * (i + 1) - step / 2).toFixed(2));
       }
     }
     return labels.reverse();
