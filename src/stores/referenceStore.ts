@@ -63,14 +63,7 @@ class ReferenceStore extends BaseStore {
   getCategories = () => this.categories;
 
   getInstruments = () => {
-    const {watchlistStore} = this.rootStore;
-    return watchlistStore
-      ? this.instruments
-          .filter(
-            i => watchlistStore.defaultWatchlist.assetIds.indexOf(i.id) > -1
-          )
-          .filter(this.filterAvailableInstrument)
-      : this.instruments;
+    return this.instruments;
   };
 
   getInstrumentById = (id: string) =>
@@ -79,9 +72,7 @@ class ReferenceStore extends BaseStore {
   findInstruments = (term: string, name: string) => {
     const isAuth = this.rootStore.authStore.isAuth;
     const instruments = isAuth
-      ? this.instruments
-          .filter(i => i.baseAsset && i.quoteAsset)
-          .filter(this.filterAvailableInstrument)
+      ? this.instruments.filter(i => i.baseAsset && i.quoteAsset)
       : this.instruments;
 
     return instruments
@@ -289,10 +280,6 @@ class ReferenceStore extends BaseStore {
     this.assets = [];
     this.availableAssets = [];
   };
-
-  private filterAvailableInstrument = (i: InstrumentModel) =>
-    this.availableAssets.indexOf(i.baseAsset.id) > -1 &&
-    this.availableAssets.indexOf(i.quoteAsset.id) > -1;
 
   private filterWithIdAndName = (i: InstrumentModel) =>
     i.id && i.name && i.displayName;
