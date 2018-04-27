@@ -31,12 +31,20 @@ class Mesh extends React.Component<ChartProps> {
       step =
         (this.mid - this.bids[0].price) / (chart.mesh.verticalLinesAmount / 2);
       for (let i = 0; i < chart.mesh.verticalLinesAmount / 2; i++) {
-        labels.push((minimum + step * (i + 1)).toFixed(3));
+        labels.push(
+          (minimum + step * (i + 1)).toLocaleString(undefined, {
+            maximumFractionDigits: this.props.priceAccuracy
+          })
+        );
       }
 
       step = (maximum - this.mid) / (chart.mesh.verticalLinesAmount / 2);
       for (let i = 0; i < chart.mesh.verticalLinesAmount / 2; i++) {
-        labels.push((this.mid + step * (i + 1)).toFixed(3));
+        labels.push(
+          (this.mid + step * (i + 1)).toLocaleString(undefined, {
+            maximumFractionDigits: this.props.priceAccuracy
+          })
+        );
       }
     }
     return labels;
