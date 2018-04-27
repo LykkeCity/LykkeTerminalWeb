@@ -8,15 +8,12 @@ const ConnectedChart = connect(
     const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
     const midPrice = mid();
 
-    const baseAsset = selectedInstrument!.baseAsset.name;
-    const quoteAsset = selectedInstrument!.quoteAsset.name;
     return {
       asks,
       bids,
       mid: midPrice,
-      baseAsset,
-      quoteAsset,
-      priceAccuracy
+      priceAccuracy,
+      selectedInstrument
     };
   },
   ChartWrapper
