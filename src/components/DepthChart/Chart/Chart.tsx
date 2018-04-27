@@ -44,7 +44,7 @@ class Chart extends React.Component<ChartProps> {
   }
 
   calculateAsksStepHeight(ask: Order) {
-    return this.coef * Math.ceil(ask.depth);
+    return this.coef * ask.depth;
   }
 
   generateAsksPoints = () => {
@@ -118,7 +118,7 @@ class Chart extends React.Component<ChartProps> {
   }
 
   calculateBidsStepHeight(bid: Order) {
-    return this.coef * Math.ceil(bid.depth);
+    return this.coef * bid.depth;
   }
 
   generateBidsPoints = () => {
