@@ -59,7 +59,11 @@ class DepthChart extends React.Component<DepthChartProps> {
               <FAIcon name="minus" />
             </button>
             <div>
-              <strong>{span}</strong>
+              <strong>
+                {span.toLocaleString(undefined, {
+                  maximumFractionDigits: priceAccuracy
+                })}
+              </strong>
             </div>
             <button onClick={onNextSpan}>
               <FAIcon name="plus" />
