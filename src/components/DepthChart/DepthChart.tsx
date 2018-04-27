@@ -8,7 +8,7 @@ import {
   StyledPriceList,
   StyledWrapper
 } from '../OrderBook/styles';
-import ChartWrapper from './Chart';
+import ChartWrapper from './Chart/index';
 
 const formatNumber = (
   num: number | string,

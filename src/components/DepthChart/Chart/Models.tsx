@@ -8,6 +8,7 @@ export interface ChartProps {
   quoteAsset: AssetModel;
   width: number;
   height: number;
+  priceAccuracy: number;
 }
 
 export interface PointerProps {
@@ -20,4 +21,5 @@ export interface PointerProps {
   quoteAsset: AssetModel;
   width: number;
   height: number;
+  priceAccuracy: number;
 }

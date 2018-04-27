@@ -22,7 +22,7 @@ class ChartWrapper extends React.Component<ChartProps> {
   }
 
   render() {
-    const {asks, bids, mid, baseAsset, quoteAsset} = this.props;
+    const {asks, bids, mid, baseAsset, quoteAsset, priceAccuracy} = this.props;
 
     return (
       <Measure
@@ -49,6 +49,7 @@ class ChartWrapper extends React.Component<ChartProps> {
                   quoteAsset={quoteAsset}
                   width={this.width - chart.labelsWidth}
                   height={this.height - chart.labelsHeight}
+                  priceAccuracy={priceAccuracy}
                 />
               </FastLayer>
               <Layer>
@@ -60,6 +61,7 @@ class ChartWrapper extends React.Component<ChartProps> {
                   quoteAsset={quoteAsset}
                   width={this.width - chart.labelsWidth}
                   height={this.height - chart.labelsHeight}
+                  priceAccuracy={priceAccuracy}
                 />
               </Layer>
             </Stage>
