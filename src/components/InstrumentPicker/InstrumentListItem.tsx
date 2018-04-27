@@ -34,8 +34,8 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
               instrument.change24h || 0,
               percentageAccuracy || 0
             )}
-            dynamics={instrument.change24h || 0 >= 0 ? 'up' : 'down'}
-            preSign={instrument.change24h || 0 >= 0 ? '+' : ''}
+            dynamics={(instrument.change24h || 0) >= 0 ? 'up' : 'down'}
+            preSign={(instrument.change24h || 0) >= 0 ? '+' : ''}
           >
             %
           </InstrumentListNumber>
