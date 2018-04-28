@@ -51,7 +51,7 @@ describe('orderList store', () => {
       expect(addedOrder instanceof OrderModel).toBeTruthy();
     });
 
-    it('should not be added into order list with the same id and return тгдд', () => {
+    it('should not be added into order list with the same id and return null', () => {
       expect(orderListStore.allOrders.length).toBe(1);
       const addedOrder = orderListStore.addOrder(defaultOrder);
       expect(orderListStore.allOrders.length).toBe(1);
