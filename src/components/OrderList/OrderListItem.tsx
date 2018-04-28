@@ -1,10 +1,9 @@
 import * as React from 'react';
-import {InstrumentModel, OrderModel, Side} from '../../models';
-import {precisionCeil, precisionFloor} from '../../utils/math';
+import {InstrumentModel, OrderModel} from '../../models';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
-import {TitledCell} from '../Table/TitledCell';
+import TitledCell from '../Table/TitledCell';
 import {SideCell} from '../TradeList/styles';
 import {OrderActions, OrderCellWidth} from './index';
 
@@ -23,7 +22,9 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     volume,
     remainingVolume,
     filled,
-    filledPercent
+    filledPercent,
+    value,
+    accuracy: quoteAssetAccuracy
   },
   onEdit,
   cancelOrder,
@@ -31,16 +32,11 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     displayName,
     accuracy,
     baseAsset: {accuracy: baseAssetAccuracy, name: baseAssetName},
-    quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName}
+    quoteAsset: {name: quoteAssetName}
   }
 }) => {
   const handleEditOrder = () => onEdit(id);
   const handleCancelOrder = () => cancelOrder(id);
-
-  const value =
-    side === Side.Buy
-      ? precisionCeil(price * volume, quoteAssetAccuracy)
-      : precisionFloor(price * volume, quoteAssetAccuracy);
 
   return (
     <tr>
@@ -60,7 +56,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
         )})
       </TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(value, baseAssetAccuracy)} {quoteAssetName}
+        {toLocaleStringWithAccuracy(value, quoteAssetAccuracy)} {quoteAssetName}
       </TitledCell>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>

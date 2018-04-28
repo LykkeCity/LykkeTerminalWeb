@@ -1,7 +1,7 @@
 import React from 'react';
 import {Cell} from './styles';
 
-const withTitle = (Component: React.ComponentType<any>) => ({
+export const withTitle = (Component: React.ComponentType<any>) => ({
   children,
   ...rest
 }: any) => (
@@ -10,4 +10,4 @@ const withTitle = (Component: React.ComponentType<any>) => ({
   </Component>
 );
 
-export const TitledCell = withTitle(Cell);
+export default withTitle(Cell);

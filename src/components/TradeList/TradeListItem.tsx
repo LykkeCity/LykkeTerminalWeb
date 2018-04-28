@@ -4,7 +4,7 @@ import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Cell} from '../Table/styles';
-import {TitledCell} from '../Table/TitledCell';
+import TitledCell from '../Table/TitledCell';
 import {SideCell} from './styles';
 
 interface TradeListItemProps extends TradeModel {
