@@ -68,8 +68,7 @@ export const splitter = (from: number, to: number, resolution: string) => {
   return timePeriods;
 };
 
-export const getTimeOffset = () => {
-  const offset = new Date().getTimezoneOffset();
+export const getTimeOffset = (offset: number) => {
   const absOffset = Math.abs(offset);
   return (
     (offset < 0 ? '+' : '-') +
@@ -80,7 +79,7 @@ export const getTimeOffset = () => {
 
 export const getTimeZone = (zones: any[]) => {
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const gmt = getTimeOffset();
+  const gmt = getTimeOffset(new Date().getTimezoneOffset());
 
   let timezone =
     zones.find((z: any) => z.zone === zone) ||

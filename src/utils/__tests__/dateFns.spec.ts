@@ -51,16 +51,26 @@ describe('Date functions', () => {
   });
 
   describe('Get time offset', () => {
+    const offset: any = {
+      plus: {minutes: 240, gmt: '-0400'},
+      minus: {minutes: -120, gmt: '+0200'}
+    };
     let timezone: string;
 
     it('date getTimeOffset function should be defined', () => {
       expect(dateFns.getTimeOffset).toBeDefined();
     });
 
-    it('getTimeOffset should return calculated offset as string', () => {
-      timezone = dateFns.getTimeOffset();
+    it('getTimeOffset should return GMT +04', () => {
+      timezone = dateFns.getTimeOffset(offset.plus.minutes);
 
-      expect(typeof timezone).toBe('string');
+      expect(timezone).toBe(offset.plus.gmt);
+    });
+
+    it('getTimeOffset should return GMT -02', () => {
+      timezone = dateFns.getTimeOffset(offset.minus.minutes);
+
+      expect(timezone).toBe(offset.minus.gmt);
     });
   });
 
