@@ -64,8 +64,12 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   const {price, orderVolume, depth, side, connectedLimitOrders} = order;
   const currentPrice = price.toFixed(priceAccuracy);
   const diffInPrice = diff(
-    formattedNumber(price, priceAccuracy),
-    formattedNumber(prevPrice, priceAccuracy)
+    price.toLocaleString(undefined, {
+      maximumFractionDigits: priceAccuracy
+    }),
+    prevPrice.toLocaleString(undefined, {
+      maximumFractionDigits: priceAccuracy
+    })
   );
 
   const ownOrders = connectedLimitOrders.length > 0;

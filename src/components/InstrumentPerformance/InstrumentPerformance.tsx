@@ -14,7 +14,7 @@ const colorFromChange = (change: number) =>
     : undefined;
 
 const mapToPercentageWithAccuracy = (acc: number) => (val: number) =>
-  `${val >= 0 ? '+' : ''}${val.toFixed(acc).concat('%')}`;
+  `${val >= 0 ? '+' : ''}${formattedNumber(val, acc).concat('%')}`;
 
 const mapToPercentage = mapToPercentageWithAccuracy(2);
 

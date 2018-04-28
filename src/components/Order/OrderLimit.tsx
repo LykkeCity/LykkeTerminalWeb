@@ -45,7 +45,8 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   isDisable,
   onReset,
   balance,
-  isEditForm
+  isEditForm,
+  baseAssetAccuracy
 }) => {
   return (
     <Form>
@@ -66,7 +67,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
             {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </Action>
           <Available onClick={onHandlePercentageChange()}>
-            {formattedNumber(balance || 0)}{' '} {isSell ? baseAssetName : quoteAssetName} available
+            {formattedNumber(balance || 0, quantityAccuracy)}{' '} {isSell ? baseAssetName : quoteAssetName} available
           </Available>
         </Flex>
         <NumberInput
@@ -90,7 +91,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <LimitTotal>
         <LimitTitle>Total</LimitTitle>
         <Amount>
-          {formattedNumber(amount)} {quoteAssetName}
+          {formattedNumber(amount ? +amount : 0, baseAssetAccuracy)} {quoteAssetName}
         </Amount>
       </LimitTotal>
 
