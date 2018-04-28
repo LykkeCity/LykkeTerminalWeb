@@ -116,8 +116,6 @@ class RootStore {
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
-    this.marketStore.init(instruments, assets);
-
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
     );
@@ -131,11 +129,10 @@ class RootStore {
 
     await this.referenceStore
       .fetchBaseAsset()
-      .then(() => {
-        this.referenceStore
-          .fetchRates()
-          .then(this.referenceStore.updateInstruments)
-          .catch(console.error);
+      .then(async () => {
+        await this.referenceStore.fetchRates().catch(console.error);
+        this.marketStore.init(instruments, assets);
+        this.referenceStore.updateInstruments();
         this.balanceListStore.fetchAll();
         this.orderListStore.fetchAll();
       }, reject => Promise.resolve)
