@@ -73,7 +73,7 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         value: 'Price'
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        sortDisabled: checkDataForSorting(this.state.data, 'amount'),
         className: 'right-align',
         key: 'amount',
         value: 'Amount'
