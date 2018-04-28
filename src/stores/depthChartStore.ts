@@ -3,15 +3,35 @@ import {reverse} from 'rambda';
 import {Order, TradeModel} from '../models';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
+import {precisionFloor} from '../utils/math';
 
 class DepthChartStore extends BaseStore {
-  multiplers: number[] = [0, 0.01, 0.05, 0.25, 0.5, 1];
-  maxMultiplier = 5;
+  multiplers: number[] = [0, 0.01, 0.05, 0.1, 0.25, 0.5, 1];
+  maxMultiplier = this.multiplers.length - 1;
   @observable spanMultiplierIdx = 1;
 
   @computed
   get span() {
     return this.multiplers[this.spanMultiplierIdx] * 100;
+  }
+
+  @computed
+  get seedSpan() {
+    if (this.rootStore.uiStore.selectedInstrument) {
+      return Math.pow(10, -this.rootStore.uiStore.selectedInstrument.accuracy);
+    }
+    return 0;
+  }
+
+  @computed
+  get instrumentSpan() {
+    if (this.rootStore.uiStore.selectedInstrument) {
+      return precisionFloor(
+        this.seedSpan * 1,
+        this.rootStore.uiStore.selectedInstrument.accuracy
+      );
+    }
+    return 0;
   }
 
   constructor(store: RootStore) {
@@ -29,10 +49,7 @@ class DepthChartStore extends BaseStore {
 
   reduceAsksArray = (asks: Order[]) => {
     const mid = this.mid();
-    const upperBound =
-      mid +
-      Math.max(...asks.map(ask => ask.price)) *
-        this.multiplers[this.spanMultiplierIdx];
+    const upperBound = mid + mid * this.multiplers[this.spanMultiplierIdx];
     const filteredAsks = asks.filter(ask => {
       return ask.price < upperBound;
     });
@@ -48,7 +65,7 @@ class DepthChartStore extends BaseStore {
     } = this.rootStore;
     const aggregatedOrders = aggregateOrders(
       this.rootStore.orderBookStore.rawBids,
-      this.span,
+      this.instrumentSpan,
       false
     );
     return this.reduceBidsArray(
@@ -63,7 +80,7 @@ class DepthChartStore extends BaseStore {
     } = this.rootStore;
     const aggregatedOrders = aggregateOrders(
       this.rootStore.orderBookStore.rawAsks,
-      this.span,
+      this.instrumentSpan,
       true
     );
     return this.reduceAsksArray(
