@@ -23,8 +23,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     remainingVolume,
     filled,
     filledPercent,
-    value,
-    accuracy: quoteAssetAccuracy
+    value
   },
   onEdit,
   cancelOrder,
@@ -32,12 +31,11 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     displayName,
     accuracy,
     baseAsset: {accuracy: baseAssetAccuracy, name: baseAssetName},
-    quoteAsset: {name: quoteAssetName}
+    quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName}
   }
 }) => {
   const handleEditOrder = () => onEdit(id);
   const handleCancelOrder = () => cancelOrder(id);
-
   return (
     <tr>
       <Cell w={OrderCellWidth.Symbol}>{displayName}</Cell>

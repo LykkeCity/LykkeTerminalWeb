@@ -22,6 +22,7 @@ const OrderList: React.SFC<OrderListProps> = ({
       <tbody>
         {orders.map(order => {
           const instrument = getInstrumentById(order.symbol);
+          order.accuracy = instrument.quoteAsset.accuracy;
           return (
             <OrderListItem
               key={order.id}
