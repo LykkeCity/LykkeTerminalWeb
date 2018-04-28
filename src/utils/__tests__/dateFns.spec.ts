@@ -11,7 +11,6 @@ describe('Date functions', () => {
 
     it('date splitter function should be defined', () => {
       expect(dateFns.splitter).toBeDefined();
-      expect(true).toBe(true);
     });
 
     it('splitter should return only one object in array for 5 minutes resolution and 1 week time interval', () => {
@@ -121,8 +120,10 @@ describe('Date functions', () => {
       expect(typeof equalTimezone).toBe('string');
     });
 
-    it('getTimeZone should return \'Etc/UTC\' if there are no equal timezone in the list', () => {
-      timezone = dateFns.getTimeZone([{zone: 'Antarctica/Vostok', gmt: '+1200'}]);
+    it("getTimeZone should return 'Etc/UTC' if there are no equal timezone in the list", () => {
+      timezone = dateFns.getTimeZone([
+        {zone: 'Antarctica/Vostok', gmt: '+1200'}
+      ]);
 
       expect(timezone).toBe('Etc/UTC');
     });
