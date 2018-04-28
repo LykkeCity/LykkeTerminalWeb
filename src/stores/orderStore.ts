@@ -65,7 +65,7 @@ class OrderStore extends BaseStore {
             .placeLimit(body)
             // tslint:disable-next-line:no-empty
             .then((orderId: any) => {
-              const isAdded = this.rootStore.orderListStore.addOrder({
+              const addedOrder = this.rootStore.orderListStore.addOrder({
                 Id: orderId,
                 CreateDateTime: new Date(),
                 OrderAction: capitalize(body.OrderAction),
@@ -74,7 +74,7 @@ class OrderStore extends BaseStore {
                 Price: body.Price,
                 AssetPairId: body.AssetPairId
               });
-              if (isAdded) {
+              if (addedOrder) {
                 this.orderPlacedSuccessfully();
               }
             }, this.orderPlacedUnsuccessfully)
@@ -90,8 +90,8 @@ class OrderStore extends BaseStore {
 
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
-    const isDeleted = this.rootStore.orderListStore.deleteOrder(id);
-    if (isDeleted) {
+    const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
+    if (deletedOrder) {
       this.orderCancelledSuccessfully(id);
     }
   };
@@ -109,8 +109,8 @@ class OrderStore extends BaseStore {
     const order = args[0][0];
     switch (order.Status) {
       case OrderStatus.Cancelled:
-        const isDeleted = this.rootStore.orderListStore.deleteOrder(order.Id);
-        if (isDeleted) {
+        const deleteOrder = this.rootStore.orderListStore.deleteOrder(order.Id);
+        if (deleteOrder) {
           this.orderCancelledSuccessfully(order.Id);
         }
         break;

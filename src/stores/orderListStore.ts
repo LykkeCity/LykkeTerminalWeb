@@ -68,10 +68,11 @@ class OrderListStore extends BaseStore {
       (order: OrderModel) => order.id === addedOrder.Id
     );
     if (!!~orderIndex) {
-      return false;
+      return null;
     }
-    this.orders.push(mappers.mapToLimitOrder(addedOrder));
-    return true;
+    const mappedOrder = mappers.mapToLimitOrder(addedOrder);
+    this.orders.push(mappedOrder);
+    return mappedOrder;
   };
 
   @action
@@ -80,13 +81,10 @@ class OrderListStore extends BaseStore {
       (order: OrderModel) => order.id === orderId
     );
     if (!~orderIndex) {
-      return false;
+      return null;
     }
-    this.orders = [
-      ...this.orders.slice(0, orderIndex),
-      ...this.orders.slice(orderIndex + 1)
-    ];
-    return true;
+    const deletedOrders = this.orders.splice(orderIndex, 1);
+    return deletedOrders[0];
   };
 
   @action

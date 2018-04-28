@@ -34,9 +34,9 @@ describe('orderList store', () => {
       done();
     });
 
-    it('should be added into order list and return true', () => {
+    it('should be added into order list and return added order', () => {
       expect(orderListStore.allOrders.length).toBe(1);
-      const isAdded = orderListStore.addOrder({
+      const order = {
         AssetPairId: 'BTCUSD',
         CreateDateTime: '2018-01-17T07:17:40.84Z',
         Id: '1f4f1673-d7e8-497a-be00-e63cfbdcd0c6',
@@ -44,28 +44,29 @@ describe('orderList store', () => {
         Price: 1,
         Status: 'InOrderBook',
         Volume: 0.0001
-      });
+      };
+      const addedOrder = orderListStore.addOrder(order);
       expect(orderListStore.allOrders.length).toBe(2);
-      expect(isAdded).toBeTruthy();
+      expect(addedOrder!.id).toBe(order.Id);
     });
 
-    it('should not be added into order list with the same id and return false', () => {
+    it('should not be added into order list with the same id and return тгдд', () => {
       expect(orderListStore.allOrders.length).toBe(1);
-      const isAdded = orderListStore.addOrder(defaultOrder);
+      const addedOrder = orderListStore.addOrder(defaultOrder);
       expect(orderListStore.allOrders.length).toBe(1);
-      expect(isAdded).toBeFalsy();
+      expect(addedOrder).toBeNull();
     });
 
-    it('should be deleted from order list and return true', () => {
+    it('should be deleted from order list and return deletedOrder', () => {
       expect(orderListStore.allOrders.length).toBe(1);
-      const isDeleted = orderListStore.deleteOrder(defaultOrder.Id);
+      const deletedOrder = orderListStore.deleteOrder(defaultOrder.Id);
       expect(orderListStore.allOrders.length).toBe(0);
-      expect(isDeleted).toBeTruthy();
+      expect(deletedOrder!.id).toBe(defaultOrder.Id);
     });
 
-    it('should return false if deleted order does not exist in the order list', () => {
-      const isDeleted = orderListStore.deleteOrder('some id');
-      expect(isDeleted).toBeFalsy();
+    it('should return null if deleted order does not exist in the order list', () => {
+      const deletedOrder = orderListStore.deleteOrder('some id');
+      expect(deletedOrder).toBeNull();
     });
 
     it('should be updated', () => {
