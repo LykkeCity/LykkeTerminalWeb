@@ -217,13 +217,15 @@ class Order extends React.Component<OrderProps, OrderState> {
   ) => {
     this.disableButton(true);
     const {quantityValue, priceValue} = this.state;
-    const currentPrice = parseFloat(priceValue).toFixed(
+    const currentPrice = formattedNumber(
+      +parseFloat(priceValue),
       this.props.accuracy.priceAccuracy
     );
 
-    const currentQuantity = accuracy
-      ? parseFloat(quantityValue).toFixed(accuracy)
-      : quantityValue;
+    const currentQuantity = formattedNumber(
+      +parseFloat(quantityValue),
+      accuracy ? accuracy : 2
+    );
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
@@ -450,6 +452,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             priceAccuracy={priceAccuracy}
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
+            baseAssetAccuracy={baseAssetAccuracy}
             percents={percents}
             onHandlePercentageChange={this.handlePercentageChange}
             baseAssetName={baseAssetName}
@@ -464,7 +467,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
             buttonMessage={`${capitalize(action)} ${formattedNumber(
-              quantityValue,
+              +quantityValue,
               quantityAccuracy
             )} ${baseAssetName}`}
           />

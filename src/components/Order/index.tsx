@@ -20,6 +20,7 @@ export interface OrderBasicFormProps {
   quantity: string;
   quantityAccuracy: number;
   priceAccuracy: number;
+  baseAssetAccuracy?: any;
 }
 
 const ConnectedOrder = connect(
