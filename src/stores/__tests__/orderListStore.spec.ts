@@ -48,6 +48,7 @@ describe('orderList store', () => {
       const addedOrder = orderListStore.addOrder(order);
       expect(orderListStore.allOrders.length).toBe(2);
       expect(addedOrder!.id).toBe(order.Id);
+      expect(addedOrder instanceof OrderModel).toBeTruthy();
     });
 
     it('should not be added into order list with the same id and return тгдд', () => {
@@ -62,6 +63,7 @@ describe('orderList store', () => {
       const deletedOrder = orderListStore.deleteOrder(defaultOrder.Id);
       expect(orderListStore.allOrders.length).toBe(0);
       expect(deletedOrder!.id).toBe(defaultOrder.Id);
+      expect(deletedOrder instanceof OrderModel).toBeTruthy();
     });
 
     it('should return null if deleted order does not exist in the order list', () => {
