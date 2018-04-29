@@ -17,6 +17,12 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
     const percentageAccuracy = 2;
     const click = () => inactive && onPick && onPick(instrument);
 
+    const dynamics =
+      (instrument.change24h || 0) === 0
+        ? 'zero'
+        : (instrument.change24h || 0) > 0 ? 'up' : 'down';
+    const sign = (instrument.change24h || 0) > 0 ? '+' : '';
+
     return (
       <tr onClick={click} className={inactive ? 'inactive' : 'active'}>
         <td title={instrument.displayName}>{instrument.displayName}</td>
@@ -34,8 +40,8 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
               instrument.change24h || 0,
               percentageAccuracy || 0
             )}
-            dynamics={(instrument.change24h || 0) >= 0 ? 'up' : 'down'}
-            preSign={(instrument.change24h || 0) >= 0 ? '+' : ''}
+            dynamics={dynamics}
+            sign={sign}
           >
             %
           </InstrumentListNumber>

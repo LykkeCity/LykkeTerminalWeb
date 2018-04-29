@@ -1,6 +1,6 @@
 import {pathOr} from 'rambda';
 import * as React from 'react';
-import {InstrumentModel, SortDirections, TradeModel} from '../../models';
+import {InstrumentModel, SortDirection, TradeModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
 import {
   checkDataForSorting,
@@ -21,7 +21,7 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
     this.state = {
       data: this.props.trades,
       sortByParam: '',
-      sortDirection: SortDirections.ASC
+      sortDirection: SortDirection.ASC
     };
   }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {OrderModel, SortDirections} from '../../models';
+import {OrderModel, SortDirection} from '../../models';
 import Types from '../../models/modals';
 import {HBar} from '../Bar';
 import {
@@ -24,7 +24,7 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
     this.state = {
       data: this.props.orders,
       sortByParam: '',
-      sortDirection: SortDirections.ASC
+      sortDirection: SortDirection.ASC
     };
   }
 
