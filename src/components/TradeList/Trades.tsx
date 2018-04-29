@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  SortDirections,
+  SortDirection,
   TradeFilter as TradeFilterModel,
   TradeModel
 } from '../../models/index';
@@ -28,7 +28,7 @@ class Trades extends React.Component<TradesProps, TableSortState> {
     this.state = {
       data: this.props.trades,
       sortByParam: '',
-      sortDirection: SortDirections.ASC
+      sortDirection: SortDirection.ASC
     };
   }
 

@@ -41,7 +41,9 @@ class WatchlistStore extends BaseStore {
       .fetchAll()
       .then((resp: any) => {
         runInAction(() => {
-          this.watchlists = resp.map(mappers.mapToWatchList);
+          if (resp.length > 0) {
+            this.watchlists = resp.map(mappers.mapToWatchList);
+          }
         });
         return Promise.resolve();
       })

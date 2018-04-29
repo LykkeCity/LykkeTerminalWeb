@@ -6,11 +6,11 @@ interface InstrumentListNumberProps {
   num: string;
   color?: string;
   dynamics?: string;
-  preSign?: string;
+  sign?: string;
 }
 
 const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
-  ({num, color, children, dynamics, preSign}) => {
+  ({num, color, children, dynamics, sign}) => {
     if (num === undefined || num === null) {
       return null;
     }
@@ -18,7 +18,7 @@ const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
     const afterSign = children
       ? typeof children === 'object' ? children.join('') : children
       : '';
-    const title = `${preSign || ''} ${num} ${afterSign}`;
+    const title = `${sign || ''} ${num} ${afterSign}`;
 
     return (
       <InstrumentNumber
@@ -26,7 +26,7 @@ const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
         className={dynamics || ''}
         title={title}
       >
-        {preSign}
+        {sign}
         {num || 0}
         {children}
       </InstrumentNumber>
