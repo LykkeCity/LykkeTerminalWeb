@@ -129,10 +129,7 @@ class RootStore {
       return this.startPublicMode(defaultInstrument);
     }
 
-    if (this.uiStore.viewMode) {
-      return this.startPublicMode(defaultInstrument);
-    }
-
+    this.sessionStore.initUserSession();
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
 
@@ -180,22 +177,6 @@ class RootStore {
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
-
-  resetSubscriptions = () => this.uiStore.getWs().close();
-
-  runViewMode = () => {
-    this.uiStore.showViewMode();
-    this.uiStore.reset();
-    this.modalStore.reset();
-    this.resetSubscriptions();
-    this.start();
-  };
-
-  stopViewMode = () => {
-    this.uiStore.hideViewMode();
-    this.resetSubscriptions();
-    this.start();
-  };
 
   reset = () => {
     Array.from(this.stores).forEach(s => s.reset && s.reset());

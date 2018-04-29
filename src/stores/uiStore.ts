@@ -132,9 +132,9 @@ class UiStore extends BaseStore {
   toggleSessionNotification = (value: boolean) =>
     (this.showSessionNotification = value);
 
-  showViewMode = () => (this.isViewMode = true);
+  runViewMode = () => (this.isViewMode = true);
 
-  hideViewMode = () => (this.isViewMode = false);
+  stopViewMode = () => (this.isViewMode = false);
 
   @action
   toggleInstrumentPerformanceData = (show: boolean) =>

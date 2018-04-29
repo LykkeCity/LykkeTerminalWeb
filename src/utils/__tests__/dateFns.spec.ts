@@ -4,7 +4,8 @@ import {
   convertMinutesToMs,
   convertMsToMinutes,
   convertMsToSeconds,
-  convertSecondsToMs
+  convertSecondsToMs,
+  getDiffDays
 } from '../dateFns';
 import {dateFns} from '../index';
 
@@ -163,5 +164,18 @@ describe('Date functions', () => {
   it('should convert minutes to milliseconds', () => {
     const minutes = 2;
     expect(convertMinutesToMs(minutes)).toBe(minutes * 60000);
+  });
+
+  it('should return 0 as no difference between two dates in days', () => {
+    const currentDate = new Date().getTime();
+    const previousDate = new Date().getTime();
+    expect(getDiffDays(currentDate, previousDate)).toBe(0);
+  });
+
+  it('should return difference between two days', () => {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const currentDate = new Date().getTime();
+    const previousDate = new Date().getTime() - oneDay;
+    expect(getDiffDays(currentDate, previousDate)).toBe(1);
   });
 });
