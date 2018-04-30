@@ -106,20 +106,19 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   bindChartOverlayHandler() {
-    const mosaicSplitList = document.getElementsByClassName(
+    const firstColSplitter = document.getElementsByClassName(
       'mosaic-split -column'
-    );
-    const mosaicSplit = Array.from(mosaicSplitList).find(
-      item =>
-        item.previousElementSibling!.querySelector('#tv_chart_container') !==
-        null
-    );
-    if (mosaicSplit) {
-      mosaicSplit.addEventListener('mouseup', () => {
-        this.toggleChartOverlayHelper(false);
-      });
-      mosaicSplit.addEventListener('mousedown', () => {
-        this.toggleChartOverlayHelper(true);
+    )[0];
+    const rowSplitters = document.getElementsByClassName('mosaic-split -row');
+    const splitters = [...Array.from(rowSplitters), firstColSplitter];
+    if (splitters) {
+      splitters.forEach(e => {
+        e.addEventListener('mouseup', () => {
+          this.toggleChartOverlayHelper(false);
+        });
+        e.addEventListener('mousedown', () => {
+          this.toggleChartOverlayHelper(true);
+        });
       });
     }
   }
