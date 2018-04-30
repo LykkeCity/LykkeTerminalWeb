@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {InstrumentModel, OrderModel} from '../../models';
+import {InstrumentModel, OrderModel, Side} from '../../models';
+import {precisionCeil, precisionFloor} from '../../utils/math';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
@@ -36,6 +37,10 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
 }) => {
   const handleEditOrder = () => onEdit(id);
   const handleCancelOrder = () => cancelOrder(id);
+  const roundedValue =
+    side === Side.Buy
+      ? precisionCeil(value, quoteAssetAccuracy)
+      : precisionFloor(value, quoteAssetAccuracy);
   return (
     <tr>
       <Cell w={OrderCellWidth.Symbol}>{displayName}</Cell>
@@ -54,7 +59,8 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
         )})
       </TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(value, quoteAssetAccuracy)} {quoteAssetName}
+        {toLocaleStringWithAccuracy(roundedValue, quoteAssetAccuracy)}{' '}
+        {quoteAssetName}
       </TitledCell>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
