@@ -15,7 +15,6 @@ import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
 import keys from '../constants/storageKeys';
 import {PriceType} from '../models/index';
-import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
@@ -65,6 +64,7 @@ class RootStore {
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
+      this.referenceStore = new ReferenceStore(this, new AssetApi(this));
       this.modalStore = new ModalStore(this);
       this.notificationStore = new NotificationStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
@@ -76,7 +76,6 @@ class RootStore {
       );
       this.orderListStore = new OrderListStore(this, new OrderApi(this));
       this.uiStore = new UiStore(this);
-      this.referenceStore = new ReferenceStore(this, new AssetApi(this));
       this.authStore = new AuthStore(this, new AuthApi(this));
       this.chartStore = new ChartStore(this, new ChartApi(this));
       this.orderStore = new OrderStore(this, new OrderApi(this));
@@ -95,16 +94,14 @@ class RootStore {
       this.chartStore.setWs(ws);
       this.tradeStore.setWs(ws);
       this.priceStore.setWs(ws);
-      this.referenceStore
-        .findInstruments('', Watchlists.All)
-        .forEach((x: any) => {
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-          ws.subscribe(
-            topics.candle('spot', x.id, PriceType.Trade, 'day'),
-            this.referenceStore.onCandle
-          );
-        });
+      this.referenceStore.getInstruments().forEach((x: any) => {
+        ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+        ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+        ws.subscribe(
+          topics.candle('spot', x.id, PriceType.Trade, 'day'),
+          this.referenceStore.onCandle
+        );
+      });
       this.uiStore.selectInstrument(
         this.lastOrDefaultInstrument(defaultInstrument)
       );
@@ -112,7 +109,7 @@ class RootStore {
   };
 
   start = async () => {
-    await this.referenceStore.fetchReferenceData();
+    await this.referenceStore.fetchReferenceData(this.authStore.isAuth);
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 

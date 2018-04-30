@@ -110,9 +110,16 @@ export const mapToLimitOrder = ({
     remainingVolume: RemainingVolume
   });
 
-export const mapToWatchList = ({Id, Name, AssetIds, ReadOnly, Order}: any) =>
+export const mapToWatchlist = ({
+  Id,
+  Name,
+  AssetPairIds,
+  AssetIds,
+  ReadOnly,
+  Order
+}: any) =>
   new WatchlistModel({
-    assetIds: AssetIds,
+    assetIds: AssetPairIds || AssetIds,
     id: Id,
     name: Name,
     readOnly: ReadOnly,

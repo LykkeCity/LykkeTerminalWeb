@@ -32,7 +32,7 @@ class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
   sortShorcuts = () => {
     const shortcuts = [...this.props.shortcuts];
 
-    this.primeShortcuts = shortcuts.splice(0, this.shortcutsNum);
+    this.primeShortcuts = shortcuts.slice(0, this.shortcutsNum);
 
     if (this.props.shortcuts.length > this.shortcutsNum) {
       this.otherShortcuts = shortcuts.map((shortcut, index) => ({

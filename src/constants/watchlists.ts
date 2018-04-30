@@ -1,3 +1,4 @@
+// TODO: to be removed
 const defaultWatchLists = [
   {
     AssetIds: [

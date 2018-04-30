@@ -1,4 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
+import {compose, filter, replace, toLower} from 'rambda';
 import {AssetApi} from '../api/index';
 import keys from '../constants/storageKeys';
 import {
@@ -11,9 +12,16 @@ import * as mappers from '../models/mappers';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
+// tslint:disable-next-line:no-var-requires
+const {includes} = require('rambda');
+
+const normalize = compose(
+  replace(SearchString.Delimiter, SearchString.Empty),
+  toLower
+);
+
 const baseAssetStorage = StorageUtils(keys.baseAsset);
 
-// tslint:disable:no-bitwise
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
   @observable.shallow private availableAssets: string[] = [];
@@ -66,31 +74,24 @@ class ReferenceStore extends BaseStore {
     return this.instruments;
   };
 
-  getInstrumentById = (id: string) =>
-    this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase())); // TODO: remove toLowerCase conversion
+  getInstrumentById = (id: string) => this.instruments.find(x => x.id === id);
 
-  findInstruments = (term: string, name: string) =>
-    this.instruments
-      .filter(i => i.baseAsset && i.quoteAsset)
-      .filter(this.filterWithIdAndName)
-      .filter(x =>
-        x.displayName!
-          .toLowerCase()
-          .replace(SearchString.Delimiter, SearchString.Empty)
-          .includes(
-            term
-              .toLowerCase()
-              .replace(SearchString.Delimiter, SearchString.Empty)
-          )
-      )
-      .filter(
-        i =>
-          this.rootStore.authStore.isAuth
-            ? !!~this.rootStore.watchlistStore
-                .watchlistsByName(name)
-                .assetIds.indexOf(i.id)
-            : i
-      );
+  findInstruments = (term: string, watchlistName: string) => {
+    const {getWatchlistByName} = this.rootStore.watchlistStore;
+    const instrumentsByName = this.instruments.filter(instrument =>
+      includes(normalize(term), normalize(instrument.displayName!))
+    );
+    if (watchlistName) {
+      const instrumentsByWatchlist = getWatchlistByName(watchlistName);
+      if (instrumentsByWatchlist) {
+        return filter(
+          i => instrumentsByWatchlist.assetIds.indexOf(i.id) > -1,
+          instrumentsByName
+        );
+      }
+    }
+    return instrumentsByName;
+  };
 
   @action
   addInstrument = (instrument: InstrumentModel) => {
@@ -102,15 +103,15 @@ class ReferenceStore extends BaseStore {
     this.availableAssets.push(assetId);
   };
 
-  fetchReferenceData = async () => {
+  fetchReferenceData = async (authenticated: boolean) => {
     await this.fetchCategories();
     await this.fetchAssets();
 
-    if (!this.rootStore.authStore.isAuth) {
-      await this.fetchPublicInstruments();
-    } else {
+    if (authenticated) {
       await this.fetchInstruments();
       await this.fetchAvailableAssets();
+    } else {
+      await this.fetchPublicInstruments();
     }
   };
 
@@ -269,9 +270,6 @@ class ReferenceStore extends BaseStore {
     this.assets = [];
     this.availableAssets = [];
   };
-
-  private filterWithIdAndName = (i: InstrumentModel) =>
-    i.id && i.name && i.displayName;
 }
 
 export default ReferenceStore;
