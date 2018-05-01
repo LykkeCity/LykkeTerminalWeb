@@ -6,9 +6,9 @@ export interface LoaderProps {
   loading?: boolean;
 }
 
-const withLoader = <P extends LoaderProps>(loading: (p: P) => boolean) => (
-  Component: React.ComponentType<P>
-) => (props: P) =>
+const withLoader = <P extends LoaderProps>(
+  loading: (p: P) => boolean = p => p.loading!
+) => (Component: React.ComponentType<P>) => (props: P) =>
   loading(props) ? (
     <React.Fragment>
       <Component {...props} />

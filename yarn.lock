@@ -3621,6 +3621,10 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
+konva@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-2.0.3.tgz#80c8b8d0f2ba4b93b8cc86b10c3aabd2438dfaf6"
+
 latest-version@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/latest-version/-/latest-version-2.0.0.tgz#56f8d6139620847b8017f8f1f4d78e211324168b"
@@ -5107,6 +5111,13 @@ react-error-overlay@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-3.0.0.tgz#c2bc8f4d91f1375b3dad6d75265d51cd5eeaf655"
 
+react-konva@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-1.7.2.tgz#55f640acfbea723139198274e18aa951d7937fff"
+  dependencies:
+    fbjs "^0.8.16"
+    react-reconciler "^0.9.0"
+
 react-mosaic-component@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-mosaic-component/-/react-mosaic-component-1.0.3.tgz#9a4c7e5489f3fc65df33ca3d9928777a23009140"
@@ -5118,6 +5129,15 @@ react-mosaic-component@^1.0.3:
     react-dnd "^2.5.4"
     react-dnd-html5-backend "^2.5.4"
     uuid "^3.0.1"
+
+react-reconciler@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.9.0.tgz#759d39f2ecd2fcb58e5fe0015ecb1c2da642f8a1"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react-router-dom@^4.2.2:
   version "4.2.2"

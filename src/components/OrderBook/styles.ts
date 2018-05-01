@@ -80,20 +80,11 @@ export const StyledSwitch = styled.div`
 `;
 
 export const StyledHeader = Table.extend`
-  margin: ${rem(dims.padding[1])} 0 ${rem(dims.padding[0])};
-  margin-left: -1rem;
-  width: calc(100% + 2rem);
+  margin: ${rem(16)} 0 ${rem(8)};
+  width: 100%;
   th {
-    padding: 0;
     text-align: left;
-    width: 33%;
-  }
-  th:first-child {
-    padding-left: 1rem !important;
-  }
-  th:last-child {
-    padding-right: 1rem !important;
-    text-align: right;
+    padding: 0;
   }
 `;
 
@@ -107,7 +98,7 @@ export const Levels = Table.extend`
 export const FigureList = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   position: sticky;
   top: 0;
   bottom: 0;
@@ -146,7 +137,9 @@ export const Spread = Figure.extend`
 `;
 
 export const MidOverlay = styled.div`
-  background: ${colors.darkGraphite};
+  background: ${colors.lightGraphite};
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  border-radius: 4px;
   position: absolute;
   top: 0;
   left: 0;

@@ -23,7 +23,7 @@ const diff = (num1: string, num2: string) => {
   return {sim: res, diff: num1.substr(i)};
 };
 
-interface OrderBookItemProps extends Order {
+interface OrderBookItemProps {
   priceAccuracy: number;
   volumeAccuracy: number;
   maxValue?: number;
@@ -32,28 +32,24 @@ interface OrderBookItemProps extends Order {
   onPriceClick: any;
   onDepthClick: any;
   onOrderClick: any;
-  depth: number;
-  orderVolume: number;
-  connectedLimitOrders: string[];
+  // depth: number;
+  // orderVolume: number;
+  // connectedLimitOrders: string[];
   showMyOrders: any;
   scrollComponent?: any;
   askLevel?: any;
   prevPrice: number;
   isAuth?: boolean;
+  order: Order;
 }
 
 const OrderBookItem: React.SFC<OrderBookItemProps> = ({
-  id,
-  price,
   valueToShow,
-  side,
   priceAccuracy,
   volumeAccuracy,
   minValue = 10,
   maxValue = 100,
-  orderVolume,
-  connectedLimitOrders,
-  depth,
+  // connectedLimitOrders,
   onPriceClick,
   onDepthClick,
   onOrderClick,
@@ -61,8 +57,10 @@ const OrderBookItem: React.SFC<OrderBookItemProps> = ({
   scrollComponent,
   prevPrice,
   isAuth = false,
-  askLevel
+  askLevel,
+  order
 }) => {
+  const {price, orderVolume, depth, side, connectedLimitOrders} = order;
   const currentPrice = price.toFixed(priceAccuracy);
   const diffInPrice = diff(
     price.toLocaleString(undefined, {
