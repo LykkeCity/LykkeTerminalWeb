@@ -85,11 +85,10 @@ const LevelListItem: React.SFC<LevelListItemProps> = ({
         y={10}
         width={width / 3}
         height={height}
-        text={
-          order.orderVolume
-            ? format(order.orderVolume, instrument.baseAsset.accuracy)
-            : '--'
-        }
+        text={format(
+          order[displayType] * order.price,
+          instrument.quoteAsset.accuracy
+        )}
         fill={colors.white}
         align="right"
       />

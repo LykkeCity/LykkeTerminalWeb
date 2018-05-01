@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/react-custom-scrollbars": "^4.0.1",
+    "@types/react-measure": "^2.0.2",
     "@types/react-router-dom": "^4.2.3",
     "@types/react-select": "^1.1.0",
     "@types/react-tooltip": "^3.3.4",
@@ -25,6 +26,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.2.0",
     "react-konva": "^1.7.2",
+    "react-measure": "^2.0.0",
     "react-mosaic-component": "^1.0.3",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.8.0",

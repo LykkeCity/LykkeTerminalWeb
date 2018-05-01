@@ -7,7 +7,7 @@ export default () => (
       <tr>
         <th>Price</th>
         <th>Volume</th>
-        <th>My size</th>
+        <th>Value</th>
       </tr>
     </tbody>
   </StyledHeader>

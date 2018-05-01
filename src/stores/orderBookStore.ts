@@ -195,7 +195,11 @@ class OrderBookStore extends BaseStore {
     const promises = Array.from(this.subscriptions).map(
       this.getWs().unsubscribe
     );
-    Promise.all(promises).then(this.subscriptions.clear);
+    Promise.all(promises).then(() => {
+      if (this.subscriptions.size > 0) {
+        this.subscriptions.clear();
+      }
+    });
   };
 
   reset = () => {

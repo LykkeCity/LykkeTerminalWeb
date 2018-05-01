@@ -1,10 +1,12 @@
 import {observer} from 'mobx-react';
 import {compose, concat, curry, map, pathOr, prop, toLower} from 'rambda';
 import React from 'react';
+import Scrollbars from 'react-custom-scrollbars';
+import {withContentRect} from 'react-measure';
 import {normalizeVolume} from '../../utils';
 import {HBar} from '../Bar';
 import {connect} from '../connect';
-import {withScroll, withStyledScroll} from '../CustomScrollbar';
+import {withScroll} from '../CustomScrollbar';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
 import Figures, {FigureListProps} from './Figures';
@@ -168,30 +170,44 @@ const ConnectedFigures = connect<FigureListProps>(
   Figures
 );
 
-const Scrollable = withStyledScroll({
-  height: 'calc(100% - 5.3rem)',
-  width: 'calc(100% + 1rem)',
-  marginLeft: '-0.5rem'
-})(React.Fragment);
+const withMeasureAnLoader = compose(withLoader(), withContentRect('client'));
 
 const ConnectedOrderbook = connect(
   ({orderBookStore: {hasPendingItems}, uiStore: {selectedInstrument}}) => ({
-    loading: hasPendingItems && selectedInstrument === undefined
+    loading: hasPendingItems || selectedInstrument === undefined
   }),
-  () => (
+  withMeasureAnLoader(({measureRef, contentRect, loading}: any) => (
     <React.Fragment>
       <ConnectedBar />
       <HBar />
       <Header />
       <HBar />
-      <Scrollable>
-        <ConnectedAsks height={LEVELS_COUNT * LEVEL_HEIGHT} width={310} />
-        <ConnectedFigures />
-        <ConnectedBids height={LEVELS_COUNT * LEVEL_HEIGHT} width={310} />
-      </Scrollable>
+      <div style={{height: '100%'}} ref={measureRef}>
+        <Scrollbars
+          style={{
+            height: `${contentRect.client.height - 74}px`,
+            width: 'calc(100% + 1rem)',
+            marginLeft: '-0.5rem'
+          }}
+          ref={(node: any) => {
+            // tslint:disable-next-line:no-unused-expression
+            node && node.scrollTop(LEVELS_COUNT * LEVEL_HEIGHT - 145);
+          }}
+        >
+          <ConnectedAsks
+            height={LEVELS_COUNT * LEVEL_HEIGHT}
+            width={contentRect.client.width || 300}
+          />
+          {loading || <ConnectedFigures />}
+          <ConnectedBids
+            height={LEVELS_COUNT * LEVEL_HEIGHT}
+            width={contentRect.client.width || 300}
+          />
+        </Scrollbars>
+      </div>
       <ConnectedMyOrders />
     </React.Fragment>
-  )
+  ))
 );
 
 const ConnectedMyOrders = connect<MyOrdersProps>(
