@@ -198,7 +198,7 @@ const ConnectedOrderbook = connect(
             height={LEVELS_COUNT * LEVEL_HEIGHT}
             width={contentRect.client.width || 300}
           />
-          {loading || <ConnectedFigures />}
+          {loading ? null : <ConnectedFigures />}
           <ConnectedBids
             height={LEVELS_COUNT * LEVEL_HEIGHT}
             width={contentRect.client.width || 300}

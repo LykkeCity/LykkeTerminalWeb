@@ -166,22 +166,10 @@ class OrderBookStore extends BaseStore {
     );
   };
 
-  onNextProdOrders = (args: any) => {
-    const {IsBuy, Levels} = args[0];
-    const mapToOrders = map(toOrder);
-    if (IsBuy) {
-      this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
-    } else {
-      this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
-    }
-  };
-
   onNextOrders = (args: any) => {
     const {AssetPair, IsBuy, Levels} = args[0];
-    if (
-      this.rootStore.uiStore.selectedInstrument &&
-      AssetPair === this.rootStore.uiStore.selectedInstrument!.id
-    ) {
+    const {selectedInstrument} = this.rootStore.uiStore;
+    if (selectedInstrument && selectedInstrument.id === AssetPair) {
       const mapToOrders = map(toOrder);
       if (IsBuy) {
         this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
