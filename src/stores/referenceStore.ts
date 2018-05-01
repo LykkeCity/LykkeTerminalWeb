@@ -206,7 +206,7 @@ class ReferenceStore extends BaseStore {
           instrument.price = lastPrice;
           instrument.bid = bid;
           instrument.ask = ask;
-          instrument.volume = volume24H;
+          instrument.volume = volume24H / lastPrice;
         });
       }
     });
