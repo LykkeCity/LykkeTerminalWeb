@@ -28,7 +28,12 @@ const ConnectedOrder = connect(
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
     orderStore: {placeOrder, updatePriceFn, updateDepthFn},
-    uiStore: {selectedInstrument: instrument, stateFns, initPriceFn, viewMode},
+    uiStore: {
+      selectedInstrument: instrument,
+      stateFns,
+      initPriceFn,
+      readOnlyMode
+    },
     referenceStore,
     uiOrderStore: {
       onArrowClick,
@@ -97,7 +102,7 @@ const ConnectedOrder = connect(
       return asset && asset.available;
     },
     isAuth,
-    viewMode
+    readOnlyMode
   }),
   withAuth(Order)
 );

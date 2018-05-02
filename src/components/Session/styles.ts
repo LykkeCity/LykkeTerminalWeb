@@ -24,7 +24,7 @@ export const SessionNotification = styled(SessionPopup)`
   background-color: ${colors.red};
 `;
 
-export const ViewModeNotification = styled(SessionPopup)`
+export const ReadOnlyModeNotification = styled(SessionPopup)`
   background-color: ${colors.blue};
 `;
 

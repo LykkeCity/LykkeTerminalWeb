@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {Notification} from './';
+import ReadOnlyModeNotificationComponent from './ReadOnlyModeNotification';
 import Settings from './Settings';
 import {SessionNotificationBlock} from './styles';
-import ViewModeNotificationComponent from './ViewModeNotification';
 
 interface SessionNotificationState {
   isSettingsShown: boolean;
@@ -13,8 +13,8 @@ interface SessionNotificationProps {
   closeSessionNotification: () => {};
   extendSession: () => {};
   startSessionListener: () => Promise<any>;
-  closeViewModeNotification: () => {};
-  viewModeNotificationShown: boolean;
+  closeReadOnlyModeNotification: () => {};
+  readOnlyModeNotificationShown: boolean;
   sessionNotificationShown: boolean;
   startTrade: () => {};
   handleSetDuration: () => {};
@@ -64,9 +64,9 @@ class SessionNotificationComponent extends React.Component<
             isSessionNotesShown={this.props.isSessionNotesShown}
           />
         )}
-        {this.props.viewModeNotificationShown && (
-          <ViewModeNotificationComponent
-            onNotificationClose={this.props.closeViewModeNotification}
+        {this.props.readOnlyModeNotificationShown && (
+          <ReadOnlyModeNotificationComponent
+            onNotificationClose={this.props.closeReadOnlyModeNotification}
             onStartTrade={this.props.startTrade}
           />
         )}

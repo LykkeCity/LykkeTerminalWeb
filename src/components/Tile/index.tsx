@@ -3,17 +3,17 @@ import TabbedTile from './TabbedTile';
 import Tile from './Tile';
 
 const ConnectedTile = connect(
-  ({authStore: {isAuth}, uiStore: {viewMode}}) => ({
+  ({authStore: {isAuth}, uiStore: {readOnlyMode}}) => ({
     isAuth,
-    viewMode
+    readOnlyMode
   }),
   Tile
 );
 
 const ConnectedTabbedTile = connect(
-  ({authStore: {isAuth}, uiStore: {viewMode}}) => ({
+  ({authStore: {isAuth}, uiStore: {readOnlyMode}}) => ({
     isAuth,
-    viewMode
+    readOnlyMode
   }),
   TabbedTile
 );

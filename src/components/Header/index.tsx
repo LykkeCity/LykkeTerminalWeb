@@ -2,9 +2,9 @@ import {connect} from '../connect';
 import Header from './Header';
 
 const connectedHeader = connect(
-  ({authStore, settingsStore, uiStore: {viewMode}}) => ({
+  ({authStore, settingsStore, uiStore: {readOnlyMode}}) => ({
     authStore,
-    viewMode,
+    readOnlyMode,
     settingsStore
   }),
   Header

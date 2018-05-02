@@ -8,7 +8,7 @@ const ModalMessages = {
   },
   qr: {
     body: 'Please, scan QR code to start trading',
-    button: 'Continue in view mode',
+    button: 'Continue in read only mode',
     title: 'Confirm trade session'
   },
   missedKyc: {

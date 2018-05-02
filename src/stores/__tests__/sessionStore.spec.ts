@@ -36,17 +36,17 @@ describe('session store', () => {
       sessionStore.rootStore.authStore.signOut = jest.fn();
     });
 
-    it('should show view mode notification', () => {
-      expect(sessionStore.viewModeNotificationShown).toBeFalsy();
-      sessionStore.continueInViewMode();
-      expect(sessionStore.viewModeNotificationShown).toBeTruthy();
+    it('should show read only mode notification', () => {
+      expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
+      sessionStore.continueInReadOnlyMode();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
     });
 
-    it('should hide view mode notification', () => {
-      sessionStore.continueInViewMode();
-      expect(sessionStore.viewModeNotificationShown).toBeTruthy();
+    it('should hide read only mode notification', () => {
+      sessionStore.continueInReadOnlyMode();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
       sessionStore.startTrade();
-      expect(sessionStore.viewModeNotificationShown).toBeFalsy();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
     });
 
     it('should call saveSessionNoteShown', () => {
@@ -101,18 +101,18 @@ describe('session store', () => {
       );
     });
 
-    it('should set view mode to true', () => {
-      expect(sessionStore.rootStore.uiStore.viewMode).toBeFalsy();
-      expect(sessionStore.viewModeNotificationShown).toBeFalsy();
+    it('should set read only mode to true', () => {
+      expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeFalsy();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
       sessionStore.sessionExpired();
-      expect(sessionStore.rootStore.uiStore.viewMode).toBeTruthy();
-      expect(sessionStore.viewModeNotificationShown).toBeTruthy();
+      expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeTruthy();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
     });
 
-    it('should show view mode notification', () => {
-      expect(sessionStore.viewModeNotificationShown).toBeFalsy();
+    it('should show read only mode notification', () => {
+      expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
       sessionStore.sessionExpired();
-      expect(sessionStore.viewModeNotificationShown).toBeTruthy();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
     });
 
     it('should close session notification', async () => {
@@ -122,11 +122,11 @@ describe('session store', () => {
       expect(sessionStore.sessionNotificationShown).toBeFalsy();
     });
 
-    it('should set view mode to false', () => {
+    it('should set read only mode to false', () => {
       sessionStore.sessionExpired();
-      expect(sessionStore.rootStore.uiStore.viewMode).toBeTruthy();
+      expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeTruthy();
       sessionStore.sessionConfirmed();
-      expect(sessionStore.rootStore.uiStore.viewMode).toBeFalsy();
+      expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeFalsy();
     });
 
     it('should decrease ttl by 1', async () => {
@@ -147,16 +147,16 @@ describe('session store', () => {
       expect(sessionStore.sessionNotificationShown).toBeFalsy();
     });
 
-    it('should set true to isViewModeNotificationShown', () => {
-      sessionStore.showViewModeNotification();
-      expect(sessionStore.viewModeNotificationShown).toBeTruthy();
+    it('should set true to isReadOnlyModeNotificationShown', () => {
+      sessionStore.showReadOnlyModeNotification();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
     });
 
-    it('should set false to isViewModeNotificationShown', () => {
-      sessionStore.showViewModeNotification();
-      expect(sessionStore.viewModeNotificationShown).toBeTruthy();
-      sessionStore.closeViewModeNotification();
-      expect(sessionStore.viewModeNotificationShown).toBeFalsy();
+    it('should set false to isReadOnlyModeNotificationShown', () => {
+      sessionStore.showReadOnlyModeNotification();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
+      sessionStore.closeReadOnlyModeNotification();
+      expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
     });
 
     it('should return value of isSessionNotesShown', () => {
@@ -167,18 +167,18 @@ describe('session store', () => {
       expect(sessionStore.getQrId()).toBe('');
     });
 
-    it('should continue in view mode after session duration is over', () => {
+    it('should continue in read only mode after session duration is over', () => {
       const duration = 1;
-      sessionStore.continueInViewMode = jest.fn();
+      sessionStore.continueInReadOnlyMode = jest.fn();
       sessionStore.showQR();
       sessionStore.handleSetDuration(duration);
       sessionStore.sessionConfirmationExpire();
-      expect(sessionStore.continueInViewMode).not.toHaveBeenCalled();
+      expect(sessionStore.continueInReadOnlyMode).not.toHaveBeenCalled();
 
       jest.runTimersToTime(convertMinutesToMs(duration));
 
-      expect(sessionStore.continueInViewMode).toHaveBeenCalled();
-      expect(sessionStore.continueInViewMode).toHaveBeenCalledTimes(1);
+      expect(sessionStore.continueInReadOnlyMode).toHaveBeenCalled();
+      expect(sessionStore.continueInReadOnlyMode).toHaveBeenCalledTimes(1);
     });
 
     it('should call showSessionNotification after extended time is over', async () => {
@@ -200,15 +200,15 @@ describe('session store', () => {
     });
 
     it('should clear sessionConfirmationExpireTimerId', () => {
-      sessionStore.continueInViewMode = jest.fn();
+      sessionStore.continueInReadOnlyMode = jest.fn();
       sessionStore.handleSetDuration(100);
       sessionStore.sessionConfirmationExpire();
       sessionStore.stopListenSessionConfirmationExpire();
-      expect(sessionStore.continueInViewMode).not.toHaveBeenCalled();
+      expect(sessionStore.continueInReadOnlyMode).not.toHaveBeenCalled();
 
       jest.runTimersToTime(100);
 
-      expect(sessionStore.continueInViewMode).not.toHaveBeenCalled();
+      expect(sessionStore.continueInReadOnlyMode).not.toHaveBeenCalled();
     });
   });
 

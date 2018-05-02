@@ -6,7 +6,7 @@ import Account from './Account';
 
 const mapStoreToProps = ({authStore, uiStore}: RootStore) => ({
   isAuth: authStore.isAuth,
-  viewMode: uiStore.viewMode
+  readOnlyMode: uiStore.readOnlyMode
 });
 
 const ConnectedAccount = connect(mapStoreToProps, withAuth(observer(Account)));

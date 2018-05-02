@@ -21,10 +21,10 @@ const mapStoreToProps = ({sessionStore}: RootStore) => ({
   startTrade: sessionStore.startTrade
 });
 
-const ViewMode = inject(mapStoreToProps)(({startTrade}) => (
+const ReadOnlyMode = inject(mapStoreToProps)(({startTrade}) => (
   <Centered>
     <Link onClick={startTrade}>Scan QR</Link>&nbsp;to start trading
   </Centered>
 ));
 
-export default ViewMode;
+export default ReadOnlyMode;

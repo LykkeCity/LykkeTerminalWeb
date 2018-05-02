@@ -17,14 +17,14 @@ export interface HeaderProps {
   authStore: AuthStore;
   history: any;
   settingsStore: SettingsStore;
-  viewMode: boolean;
+  readOnlyMode: boolean;
 }
 
 const Header: React.SFC<HeaderProps> = ({
   authStore,
   history,
   settingsStore,
-  viewMode
+  readOnlyMode
 }) => {
   const signOut = () => {
     authStore.signOut();
@@ -66,14 +66,14 @@ const Header: React.SFC<HeaderProps> = ({
 
         <Box ml="auto" is="menu">
           <Flex align="center">
-            {authStore.isAuth && !viewMode ? (
+            {authStore.isAuth && !readOnlyMode ? (
               <HeaderItem>
                 <Flex>
                   <BalanceInfo />
                 </Flex>
               </HeaderItem>
             ) : null}
-            {authStore.isAuth && !viewMode ? (
+            {authStore.isAuth && !readOnlyMode ? (
               <ClickOutside onClickOutside={handleCloseSettings}>
                 <HeaderItem>
                   <span

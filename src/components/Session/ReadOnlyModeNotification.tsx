@@ -5,33 +5,32 @@ import {
   Body,
   Buttons,
   CloseBtnPosition,
-  Title,
-  ViewModeNotification
+  ReadOnlyModeNotification,
+  Title
 } from './styles';
 
-interface ViewModeNotificationProps {
+interface ReadOnlyModeNotificationProps {
   onNotificationClose: () => {};
   onStartTrade: () => {};
 }
 
-const ViewModeNotificationComponent: React.SFC<ViewModeNotificationProps> = ({
-  onNotificationClose,
-  onStartTrade
-}) => (
-  <ViewModeNotification>
+const ReadOnlyModeNotificationComponent: React.SFC<
+  ReadOnlyModeNotificationProps
+> = ({onNotificationClose, onStartTrade}) => (
+  <ReadOnlyModeNotification>
     <CloseButton
       onClose={onNotificationClose}
       top={CloseBtnPosition.top}
       right={CloseBtnPosition.right}
     />
     <Title>Attention</Title>
-    <Body>You are using the terminal in a view mode</Body>
+    <Body>You are using the terminal in a read only mode</Body>
     <Buttons>
       <ActionSessionButton onClick={onStartTrade}>
         Start trade
       </ActionSessionButton>
     </Buttons>
-  </ViewModeNotification>
+  </ReadOnlyModeNotification>
 );
 
-export default ViewModeNotificationComponent;
+export default ReadOnlyModeNotificationComponent;

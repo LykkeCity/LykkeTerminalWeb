@@ -35,9 +35,9 @@ export interface WalletActions {
 }
 
 const ConnectedMyWallets = connect(
-  ({authStore: {isAuth}, uiStore: {viewMode}}) => ({
+  ({authStore: {isAuth}, uiStore: {readOnlyMode}}) => ({
     isAuth,
-    viewMode
+    readOnlyMode
   }),
   withAuth(MyWallets)
 );

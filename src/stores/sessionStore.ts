@@ -25,7 +25,9 @@ const DEFAULT_SESSION_DURATION = 300000;
 class SessionStore extends BaseStore {
   @computed
   get sessionNotificationsBlockShown() {
-    return this.isSessionNotificationShown || this.isViewModeNotificationShown;
+    return (
+      this.isSessionNotificationShown || this.isReadOnlyModeNotificationShown
+    );
   }
 
   @computed
@@ -34,8 +36,8 @@ class SessionStore extends BaseStore {
   }
 
   @computed
-  get viewModeNotificationShown() {
-    return this.isViewModeNotificationShown;
+  get readOnlyModeNotificationShown() {
+    return this.isReadOnlyModeNotificationShown;
   }
 
   @computed
@@ -49,7 +51,7 @@ class SessionStore extends BaseStore {
   }
 
   @observable private isSessionNotificationShown: boolean = false;
-  @observable private isViewModeNotificationShown: boolean = false;
+  @observable private isReadOnlyModeNotificationShown: boolean = false;
   @observable private sessionDuration: number;
   @observable private ttl: number = 0;
   private currentQrId: string = '';
@@ -79,12 +81,12 @@ class SessionStore extends BaseStore {
     this.setQrId();
 
     if (!Confirmed) {
-      this.rootStore.uiStore.runViewMode();
+      this.rootStore.uiStore.runReadOnlyMode();
       this.startSessionListener();
       return;
     }
 
-    this.rootStore.uiStore.stopViewMode();
+    this.rootStore.uiStore.stopReadOnlyMode();
     if (this.ttl - SESSION_WARNING_REMAINING >= 0) {
       this.runSessionNotificationTimeout();
     } else {
@@ -114,7 +116,7 @@ class SessionStore extends BaseStore {
       ModalMessages.qr,
       // tslint:disable-next-line:no-empty
       () => {},
-      this.continueInViewMode,
+      this.continueInReadOnlyMode,
       Types.QR
     );
   };
@@ -140,14 +142,14 @@ class SessionStore extends BaseStore {
   sessionConfirmationExpire = () => {
     this.sessionConfirmationExpireTimerId = setTimeout(() => {
       this.qrModal.close();
-      this.continueInViewMode();
+      this.continueInReadOnlyMode();
     }, this.sessionDuration);
   };
 
-  continueInViewMode = () => {
+  continueInReadOnlyMode = () => {
     this.stopListenSessionConfirmationExpire();
     this.stopPollingSession();
-    this.showViewModeNotification();
+    this.showReadOnlyModeNotification();
   };
 
   showSessionNotification = () => {
@@ -188,14 +190,14 @@ class SessionStore extends BaseStore {
   sessionExpired = () => {
     this.stopSessionRemains();
     this.closeSessionNotification();
-    this.showViewModeNotification();
-    this.rootStore.uiStore.runViewMode();
+    this.showReadOnlyModeNotification();
+    this.rootStore.uiStore.runReadOnlyMode();
   };
 
   sessionConfirmed = () => {
     this.extendSession();
     this.stopListenSessionConfirmationExpire();
-    this.rootStore.uiStore.stopViewMode();
+    this.rootStore.uiStore.stopReadOnlyMode();
   };
 
   timeTick = () => {
@@ -212,12 +214,12 @@ class SessionStore extends BaseStore {
     this.isSessionNotificationShown = false;
   };
 
-  showViewModeNotification = () => {
-    this.isViewModeNotificationShown = true;
+  showReadOnlyModeNotification = () => {
+    this.isReadOnlyModeNotificationShown = true;
   };
 
-  closeViewModeNotification = () => {
-    this.isViewModeNotificationShown = false;
+  closeReadOnlyModeNotification = () => {
+    this.isReadOnlyModeNotificationShown = false;
   };
 
   getSessionNotesShown = () => {
@@ -237,7 +239,7 @@ class SessionStore extends BaseStore {
 
   startTrade = () => {
     this.startSessionListener();
-    this.closeViewModeNotification();
+    this.closeReadOnlyModeNotification();
   };
 
   handleSetDuration = (value: number) => {

@@ -13,8 +13,8 @@ const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class UiStore extends BaseStore {
   @computed
-  get viewMode() {
-    return this.isViewMode;
+  get readOnlyMode() {
+    return this.isReadOnlyMode;
   }
 
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
@@ -31,7 +31,7 @@ class UiStore extends BaseStore {
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
-  @observable private isViewMode: boolean;
+  @observable private isReadOnlyMode: boolean;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
 
   stateFns: any = [];
@@ -132,9 +132,9 @@ class UiStore extends BaseStore {
   toggleSessionNotification = (value: boolean) =>
     (this.showSessionNotification = value);
 
-  runViewMode = () => (this.isViewMode = true);
+  runReadOnlyMode = () => (this.isReadOnlyMode = true);
 
-  stopViewMode = () => (this.isViewMode = false);
+  stopReadOnlyMode = () => (this.isReadOnlyMode = false);
 
   @action
   toggleInstrumentPerformanceData = (show: boolean) =>
