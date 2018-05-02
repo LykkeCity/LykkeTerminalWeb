@@ -1,7 +1,4 @@
-import {pathOr} from 'rambda';
-import {MarketApi} from '../api/';
 import {AssetModel, InstrumentModel} from '../models';
-import {Side} from '../models';
 import {BaseStore} from './index';
 
 class MarketStore extends BaseStore {
@@ -21,22 +18,6 @@ class MarketStore extends BaseStore {
     this.graph = {};
   };
 
-  convertList = async (assets: any[], assetId: string) => {
-    const convertedQuotes = await MarketApi.convert({
-      AssetsFrom: assets.map((asset: any) => ({
-        Amount: asset.Balance,
-        AssetId: asset.AssetId
-      })),
-      BaseAssetId: assetId,
-      OrderAction: Side.Sell
-    });
-    return convertedQuotes.Converted.map((converted: any) => ({
-      AssetId: pathOr(null, ['To', 'AssetId'], converted),
-      Balance: pathOr(0, ['To', 'Amount'], converted),
-      FromAssetId: pathOr(null, ['From', 'AssetId'], converted)
-    }));
-  };
-
   convert = (
     amount: number,
     assetFrom: any,
@@ -47,7 +28,6 @@ class MarketStore extends BaseStore {
     if (!precalc) {
       return 0;
     }
-
     const path = [];
     for (let v = assetTo; v && v !== assetFrom; v = precalc[v]) {
       path.push(v);
@@ -71,13 +51,15 @@ class MarketStore extends BaseStore {
       }
       const {pair, straight} = secondAssetData;
       const instrument = getInstrumentById(pair);
-      if (!instrument || !instrument.bid || !instrument.ask) {
+      if (!instrument) {
         return 0;
       }
-      if (straight) {
+      if (straight && instrument.bid) {
         output *= instrument.bid;
-      } else {
+      } else if (!straight && instrument.ask) {
         output *= 1 / instrument.ask;
+      } else {
+        return 0;
       }
     }
 
@@ -96,20 +78,24 @@ class MarketStore extends BaseStore {
       if (!g[baseAssetId]) {
         g[baseAssetId] = {};
       }
-      g[baseAssetId][quoteAssetId] = {
-        weight: this.getWeight(instrument),
-        pair: instrument.id,
-        straight: true
-      };
+      if (instrument.bid) {
+        g[baseAssetId][quoteAssetId] = {
+          weight: this.getWeight(instrument),
+          pair: instrument.id,
+          straight: true
+        };
+      }
 
       if (!g[quoteAssetId]) {
         g[quoteAssetId] = {};
       }
-      g[quoteAssetId][baseAssetId] = {
-        weight: this.getWeight(instrument),
-        pair: instrument.id,
-        straight: false
-      };
+      if (instrument.ask) {
+        g[quoteAssetId][baseAssetId] = {
+          weight: this.getWeight(instrument),
+          pair: instrument.id,
+          straight: false
+        };
+      }
 
       d[baseAssetId] = Infinity;
       d[quoteAssetId] = Infinity;
