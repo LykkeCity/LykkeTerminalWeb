@@ -68,9 +68,18 @@ export const splitter = (from: number, to: number, resolution: string) => {
   return timePeriods;
 };
 
+export const getTimeOffset = (offset: number) => {
+  const absOffset = Math.abs(offset);
+  return (
+    (offset < 0 ? '+' : '-') +
+    ('00' + Math.floor(absOffset / 60)).slice(-2) +
+    ('00' + absOffset % 60).slice(-2)
+  );
+};
+
 export const getTimeZone = (zones: any[]) => {
-  const gmt = new Date().toString().match(/([-\+][0-9]+)\s/)![1];
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const gmt = getTimeOffset(new Date().getTimezoneOffset());
 
   let timezone =
     zones.find((z: any) => z.zone === zone) ||
