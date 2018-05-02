@@ -1,4 +1,5 @@
 import OrderApi from '../api/orderApi';
+import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
@@ -82,8 +83,6 @@ class OrderStore extends BaseStore {
     this.api
       .cancelOrder(id)
       .then(() => this.api.placeLimit(body))
-      .then(this.updateOrders)
-      .then(this.orderEditedSuccessfully)
       .catch(this.orderPlacedUnsuccessfully);
 
   cancelOrder = async (id: string) => {
@@ -129,60 +128,68 @@ class OrderStore extends BaseStore {
     }
   };
 
-  convertPartiallyBalance = async (
-    balance: number,
-    baseAssetName: string,
-    quoteAssetName: string
-  ) => {
-    return await MarketService.convertAsset(
-      {
-        Amount: balance,
-        AssetId: baseAssetName
-      },
-      quoteAssetName
-    );
+  subscribe = (ws: any) => {
+    ws.subscribe(topics.orders, this.onOrders);
   };
 
-  executeOrder = (orders: any[]) => {
-    this.rootStore.orderListStore.fetchAll().then(() => {
-      orders.forEach(order =>
-        this.rootStore.orderListStore.limitOrders.forEach(limit => {
-          const match = limit.id === order.id;
-
-          if (match) {
-            if (limit.volume === order.volume) {
-              this.notificationStore.addNotification(
-                levels.success,
-                messages.orderExecuted(order.id)
-              );
-            } else {
-              this.notificationStore.addNotification(
-                levels.success,
-                messages.orderExecutedPartially(order.id, order.volume)
-              );
-            }
-          }
-        })
-      );
-
-      this.updateOrders();
-    });
+  onOrders = (args: any) => {
+    const order = args[0][0];
+    switch (order.Status) {
+      case OrderStatus.Cancelled:
+        const deleteOrder = this.rootStore.orderListStore.deleteOrder(order.Id);
+        if (deleteOrder) {
+          this.orderCancelledSuccessfully(order.Id);
+        }
+        break;
+      case OrderStatus.Matched:
+        this.rootStore.orderListStore.deleteOrder(order.Id);
+        this.orderClosedSuccessfully(order.Id);
+        break;
+      case OrderStatus.Processing:
+        this.rootStore.orderListStore.addOrUpdateOrder(order);
+        this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
+        break;
+      case OrderStatus.Placed:
+        const isAdded = this.rootStore.orderListStore.addOrder(order);
+        if (isAdded) {
+          this.orderPlacedSuccessfully();
+        }
+        break;
+    }
   };
 
   reset = () => {
     return;
   };
 
-  private updateOrders = () => {
-    this.rootStore.orderListStore.fetchAll();
-    // this.rootStore.balanceListStore.fetchAll();
+  private orderClosedSuccessfully = (orderId: string) => {
+    this.notificationStore.addNotification(
+      levels.success,
+      messages.orderExecuted(orderId)
+    );
+  };
+
+  private orderPartiallyClosedSuccessfully = (
+    orderId: string,
+    orderVolume: number
+  ) => {
+    this.notificationStore.addNotification(
+      levels.success,
+      messages.orderExecutedPartially(orderId, orderVolume)
+    );
   };
 
   private orderPlacedSuccessfully = () => {
-    this.updateOrders();
     this.notificationStore.addNotification(
       levels.success,
       messages.orderSuccess
+    );
+  };
+
+  private orderCancelledSuccessfully = (orderId: string) => {
+    this.notificationStore.addNotification(
+      levels.information,
+      `${messages.orderCancelled} ${orderId}`
     );
   };
 
@@ -218,13 +225,6 @@ class OrderStore extends BaseStore {
         }
       }
     }
-  };
-
-  private orderEditedSuccessfully = () => {
-    this.notificationStore.addNotification(
-      levels.success,
-      messages.editOrderSuccess
-    );
   };
 }
 
