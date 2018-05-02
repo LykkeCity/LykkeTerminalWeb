@@ -1,9 +1,9 @@
 import {action, computed, observable} from 'mobx';
 import {reverse} from 'rambda';
 import {Order, TradeModel} from '../models';
+import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
-import {precisionFloor} from '../utils/math';
 
 class DepthChartStore extends BaseStore {
   multiplers: number[] = [0, 0.01, 0.05, 0.1, 0.25, 0.5, 1];
