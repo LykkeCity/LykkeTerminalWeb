@@ -20,7 +20,16 @@ const StyledColumn = styled.div`
   justify-content: center;
   align-items: center;
   width: 50%;
-`;
+
+  ${(p: any) =>
+    p.side === Side.Sell.toLowerCase()
+      ? css`
+          padding-right: 4px;
+        `
+      : css`
+          padding-left: 4px;
+        `};
+` as any;
 
 const StyledActionChoice = styled.div.attrs({
   style: (props: any) => ({
@@ -42,18 +51,6 @@ const StyledActionChoice = styled.div.attrs({
   padding: ${rem(8)} ${rem(58)};
   width: 100%;
   border-radius: 4px;
-
-  ${(p: any) =>
-    p.side === Side.Sell.toLowerCase()
-      ? css`
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
-        `
-      : css`
-          border-top-left-radius: 0;
-          border-bottom-left-radius: 0;
-          border-left: none;
-        `};
 ` as any;
 
 const OrderActionButton: React.SFC<OrderChoiceButtonProps> = ({
@@ -61,7 +58,7 @@ const OrderActionButton: React.SFC<OrderChoiceButtonProps> = ({
   click,
   isActive
 }) => (
-  <StyledColumn>
+  <StyledColumn side={title}>
     <StyledActionChoice onClick={click} side={title} isActive={isActive}>
       {title}
     </StyledActionChoice>

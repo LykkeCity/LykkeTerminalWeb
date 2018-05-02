@@ -39,7 +39,7 @@ const TableScrolled = styled.table`
     line-height: 1;
   }
   thead {
-    border-bottom: solid 1px #292929;
+    border-bottom: solid 1px #272727;
     flex: 0 0 auto;
     width: calc(100% - 0.9em);
   }

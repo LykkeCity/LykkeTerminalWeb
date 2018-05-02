@@ -12,20 +12,19 @@ export const TileHeader = styled.div`
   align-items: center;
   border: none;
   border-bottom: 1px solid ${colors.darkGraphite};
-  font-size: ${rem(fonts.large)};
+  font-size: ${rem(fonts.normal)};
   position: relative;
   z-index: 0;
-  height: ${rem(dims.tileHeaderHeight)} !important;
+  height: ${dims.tileHeaderHeight}px !important;
   width: 100% !important;
   &:before {
     content: '';
-    background-color: ${colors.darkGraphite};
+    background-color: #2f2f2f;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.4;
     z-index: -1;
   }
 `;
@@ -59,7 +58,7 @@ export const TileTab = TileTitle.extend`
 export const TileContent = styled.div`
   font-size: ${rem(fonts.normal)};
   padding: ${padding(...dims.padding)};
-  height: calc(100% - ${rem(dims.tileHeaderHeight)}) !important;
+  height: calc(100% - 40px) !important;
   overflow: hidden;
 `;
 

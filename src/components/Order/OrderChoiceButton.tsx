@@ -17,13 +17,13 @@ const StyledColumn = styled.div`
 const StyledActionChoice = styled.div`
   cursor: pointer;
   text-align: center;
-  padding: ${rem(16)} 0;
-  color: rgb(140, 148, 160);
+  padding: ${rem(9)} 0;
+  color: #8c94a0;
   font-size: ${rem(18)};
-  border-bottom: 1px solid transparent;
+  border-bottom: 2px solid transparent;
 
   &.active {
-    border-bottom: 2px solid rgb(3, 136, 239);
+    border-bottom-color: rgb(3, 136, 239);
     color: rgb(255, 255, 255);
     font-weight: 600;
   }
