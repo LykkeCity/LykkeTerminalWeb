@@ -13,6 +13,7 @@ class TradeModel {
   orderType: OrderType;
   fee: number;
   instrument?: InstrumentModel;
+  index?: number;
 
   constructor(trade: Partial<TradeModel>) {
     Object.assign(this, trade);

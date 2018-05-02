@@ -1,14 +1,14 @@
-import {extendObservable} from 'mobx';
+import {observable} from 'mobx';
 
 class WatchlistModel {
-  id: number;
-  name: string;
-  assetIds: string[];
-  readOnly: boolean;
-  order?: number;
+  id: string;
+  @observable name: string;
+  @observable assetIds: string[];
+  @observable readOnly: boolean;
+  @observable order?: number;
 
   constructor(watchlist: Partial<WatchlistModel>) {
-    extendObservable(this, watchlist);
+    Object.assign(this, watchlist);
   }
 }
 

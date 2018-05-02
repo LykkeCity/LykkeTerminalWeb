@@ -278,36 +278,4 @@ describe('referenceStore', () => {
       expect(assetStore.getInstruments()[0].quoteAsset.id).not.toBe('BTC');
     });
   });
-
-  describe('filter instruments', () => {
-    it('should filter by available instruments', () => {
-      // arrange
-      const assets = ['LKK1Y', 'USD', 'BTC'];
-      const instruments = ['LKKUSD', 'ETHUSD', 'BTCUSD'];
-
-      const rootStore = new RootStore(true);
-
-      const {watchlistStore, referenceStore: refStore} = rootStore;
-      watchlistStore.defaultWatchlist.assetIds = instruments;
-      // authStore.isAuth = true;
-
-      // act
-      assets.forEach(refStore.addAvailableAsset);
-      instruments.forEach(instrument =>
-        refStore.addInstrument(
-          new InstrumentModel({
-            id: instrument,
-            name: instrument,
-            baseAsset: new AssetModel({
-              id: instrument.substring(0, 3)
-            }),
-            quoteAsset: new AssetModel({id: instrument.substring(3)})
-          })
-        )
-      );
-
-      // assert
-      expect(refStore.getInstruments()).toHaveLength(1);
-    });
-  });
 });
