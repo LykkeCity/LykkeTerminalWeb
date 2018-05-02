@@ -130,11 +130,14 @@ class PriceStore extends BaseStore {
   };
 
   unsubscribeFromDailyCandle = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(
-      this.getWs().unsubscribe
-    );
+    const subscriptions = Array.from(this.subscriptions).map(s => {
+      // tslint:disable-next-line:no-unused-expression
+      this.getWs() && this.getWs().unsubscribe(s);
+    });
     await Promise.all(subscriptions);
-    this.subscriptions.clear();
+    if (this.subscriptions.size > 0) {
+      this.subscriptions.clear();
+    }
   };
 
   reset = () => {
