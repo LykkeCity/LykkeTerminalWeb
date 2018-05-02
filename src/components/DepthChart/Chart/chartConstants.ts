@@ -28,8 +28,8 @@ const chart = {
   },
   modal: {
     width: 350,
-    longBeforeArrow: 300,
-    shortBeforeArrow: 38,
+    longBeforeArrow: 320,
+    shortBeforeArrow: 18,
     height: 112.4,
     shiftFromBall: 10,
     arrowWidth: 12,
@@ -61,9 +61,6 @@ const chart = {
 
   strokeWidth: 2,
   fillOpacity: 0.2,
-
-  width: 1125,
-  height: 549,
 
   labelsWidth: 50,
   labelsHeight: 45

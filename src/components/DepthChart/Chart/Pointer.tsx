@@ -9,7 +9,7 @@ import chart from './chartConstants';
 
 class Pointer extends React.Component<PointerProps> {
   calcY: number = -chart.modal.height;
-  mouseX: number = -chart.modal.width;
+  mouseX: number = this.props.width * 2;
 
   orders: Order[];
   orderIndex: number = 0;
@@ -47,11 +47,13 @@ class Pointer extends React.Component<PointerProps> {
         chart.modal.marginLeft;
       this.text = 'Can be bought';
     } else {
-      this.titleX =
-        this.mouseX -
-        chart.modal.arrowWidth / 2 -
-        chart.modal.shortBeforeArrow +
-        chart.modal.marginLeft;
+      const fromMouseToLeftSide =
+        this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.shortBeforeArrow;
+      if (fromMouseToLeftSide < 0) {
+        this.titleX = chart.modal.marginLeft;
+      } else {
+        this.titleX = fromMouseToLeftSide + chart.modal.marginLeft;
+      }
       this.text = 'Can be sold';
     }
 
@@ -77,8 +79,13 @@ class Pointer extends React.Component<PointerProps> {
       leftX =
         this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.longBeforeArrow;
     } else {
-      leftX =
+      const fromMouseToLeftSide =
         this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.shortBeforeArrow;
+      if (fromMouseToLeftSide < 0) {
+        leftX = 0;
+      } else {
+        leftX = fromMouseToLeftSide;
+      }
     }
     const rightX = leftX + chart.modal.width;
     const bottomY =
@@ -86,7 +93,9 @@ class Pointer extends React.Component<PointerProps> {
     const topY = bottomY - chart.modal.height;
 
     this.modal.push(this.mouseX, this.calcY - chart.modal.shiftFromBall);
+
     this.modal.push(this.mouseX - chart.modal.arrowWidth / 2, bottomY);
+
     this.modal.push(leftX, bottomY);
     this.modal.push(leftX, topY);
     this.modal.push(rightX, topY);
