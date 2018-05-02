@@ -107,6 +107,7 @@ export const FigureList = styled.div`
 
 export const Figure = styled.div`
   cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
+  cursor: initial;
   font-size: ${rem(fonts.normal)};
 ` as any;
 

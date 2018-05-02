@@ -17,7 +17,7 @@ const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
   <div className={className} onClick={onToggle}>
     <Value>{value}</Value>&nbsp;
     {value && <FAIcon name="angle-down" />}
-    <Label>Current asset-pair</Label>
+    <Label>Current asset pair</Label>
   </div>
 );
 
