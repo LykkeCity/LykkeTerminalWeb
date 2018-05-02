@@ -21,6 +21,11 @@ class OrderModel {
     return this.filled !== 0 ? this.remainingVolume / this.volume : 0;
   }
 
+  @computed
+  get value() {
+    return this.price * this.volume;
+  }
+
   constructor(order: Partial<OrderModel>) {
     extendObservable(this, order);
   }

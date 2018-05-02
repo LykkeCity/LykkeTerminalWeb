@@ -1,4 +1,5 @@
 import {capitalize, nextSkip} from './utils';
+import {toLocaleStringWithAccuracy} from './utils/string';
 
 describe('capitalize', () => {
   it('should capitalize the string given', () => {
@@ -25,5 +26,14 @@ describe('nextSkip', () => {
 
   it('should add sided numbers to the next skip', () => {
     expect(nextSkip(50, 50, 2)).toBe(102);
+  });
+});
+
+describe('toLocaleStringWithAccuracy', () => {
+  it('should not mutate value if accuracy equals target accuracy', () => {
+    expect(toLocaleStringWithAccuracy(1.12345, 5)).toBe('1.12345');
+    expect(toLocaleStringWithAccuracy(1.12341, 5)).toBe('1.12341');
+    expect(toLocaleStringWithAccuracy(1.12349, 5)).toBe('1.12349');
+    expect(toLocaleStringWithAccuracy(1, 0)).toBe('1');
   });
 });
