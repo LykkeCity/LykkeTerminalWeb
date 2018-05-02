@@ -240,7 +240,8 @@ class OrderBook extends React.Component<OrderBookProps> {
                         : asks[idx + 1].price
                     }
                     isAuth={isAuth}
-                    {...order}
+                    order={order}
+                    // {...order}
                   />
                 ))}
               </tbody>
@@ -297,7 +298,8 @@ class OrderBook extends React.Component<OrderBookProps> {
                     askLevel={this.askLevel}
                     prevPrice={idx === 0 ? order.price : bids[idx - 1].price}
                     isAuth={isAuth}
-                    {...order}
+                    order={order}
+                    // {...order}
                   />
                 ))}
               </tbody>

@@ -1,8 +1,9 @@
 import {ISubscription} from 'autobahn';
 import {action, computed, observable, runInAction} from 'mobx';
-import {compose, curry, head, last, map, reverse, sortBy} from 'rambda';
+import {compose, curry, head, last, map, reverse, sortBy, take} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
+import {LEVELS_COUNT} from '../components/OrderBook';
 import {Order, Side} from '../models/index';
 import {toOrder} from '../models/mappers/orderMapper';
 import {precisionFloor} from '../utils/math';
@@ -74,21 +75,29 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get bids() {
-    const {
-      orderListStore: {limitOrdersForThePair: limitOrders}
-    } = this.rootStore;
-    const aggregatedOrders = aggregateOrders(this.rawBids, this.span, false);
-    return connectLimitOrders(aggregatedOrders, limitOrders, this.span, false);
+    const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
+    return take(
+      LEVELS_COUNT,
+      connectLimitOrders(
+        aggregateOrders(this.rawBids, this.span, false),
+        limitOrders,
+        this.span,
+        false
+      )
+    );
   }
 
   @computed
   get asks() {
-    const {
-      orderListStore: {limitOrdersForThePair: limitOrders}
-    } = this.rootStore;
-    const aggregatedOrders = aggregateOrders(this.rawAsks, this.span, true);
-    return reverse(
-      connectLimitOrders(aggregatedOrders, limitOrders, this.span, true)
+    const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
+    return take(
+      LEVELS_COUNT,
+      connectLimitOrders(
+        aggregateOrders(this.rawAsks, this.span, true),
+        limitOrders,
+        this.span,
+        true
+      )
     );
   }
 
@@ -158,19 +167,27 @@ class OrderBookStore extends BaseStore {
   };
 
   onNextOrders = (args: any) => {
-    const {IsBuy, Levels} = args[0];
-    const mapToOrders = map(toOrder);
-
-    if (IsBuy) {
-      this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
-    } else {
-      this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
+    const {AssetPair, IsBuy, Levels} = args[0];
+    const {selectedInstrument} = this.rootStore.uiStore;
+    if (selectedInstrument && selectedInstrument.id === AssetPair) {
+      const mapToOrders = map(toOrder);
+      if (IsBuy) {
+        this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
+      } else {
+        this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
+      }
     }
   };
 
   unsubscribe = () => {
-    this.subscriptions.forEach(s => this.getWs().unsubscribe(s));
-    this.subscriptions.clear();
+    const promises = Array.from(this.subscriptions).map(
+      this.getWs().unsubscribe
+    );
+    Promise.all(promises).then(() => {
+      if (this.subscriptions.size > 0) {
+        this.subscriptions.clear();
+      }
+    });
   };
 
   reset = () => {

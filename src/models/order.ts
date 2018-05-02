@@ -1,6 +1,7 @@
+import {observable} from 'mobx';
 import {Side} from './index';
 
-interface Order {
+export interface OrderLevel {
   id: string;
   volume: number;
   price: number;
@@ -9,6 +10,19 @@ interface Order {
   depth: number;
   orderVolume: number;
   connectedLimitOrders: string[];
+}
+
+export class Order implements Order {
+  static create = (order: Partial<Order>) => Object.assign(new Order(), order);
+
+  id: string;
+  @observable volume: number;
+  @observable price: number;
+  timestamp: any;
+  side: Side;
+  @observable depth: number;
+  orderVolume: number;
+  @observable.shallow connectedLimitOrders: string[];
 }
 
 export default Order;
