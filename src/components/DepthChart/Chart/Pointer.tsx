@@ -25,6 +25,7 @@ class Pointer extends React.Component<PointerProps> {
   modal: number[] = [];
   titleX: number;
   titleY: number;
+  text: string;
 
   soldX: number;
   totalX: number;
@@ -44,12 +45,14 @@ class Pointer extends React.Component<PointerProps> {
         chart.modal.arrowWidth / 2 -
         chart.modal.longBeforeArrow +
         chart.modal.marginLeft;
+      this.text = 'Can be bought';
     } else {
       this.titleX =
         this.mouseX -
         chart.modal.arrowWidth / 2 -
         chart.modal.shortBeforeArrow +
         chart.modal.marginLeft;
+      this.text = 'Can be sold';
     }
 
     this.titleY = this.calcY - chart.modal.arrowHeight - chart.modal.height;
@@ -226,7 +229,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // labels
         <Text
-          text="Can be sold"
+          text={this.text}
           fontSize={chart.modal.label.fontSize}
           fontFamily={chart.modal.label.fontFamily}
           fontStyle={chart.modal.label.fontStyle}
