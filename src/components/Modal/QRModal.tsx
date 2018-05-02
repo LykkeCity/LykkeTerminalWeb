@@ -16,24 +16,27 @@ interface QRModalProps {
   qrId: string;
 }
 
-const QRModal: React.SFC<QRModalProps> = ({modal, qrId}) => {
+const QRModal: React.SFC<QRModalProps> = ({
+  modal: {cancelAction, close, message},
+  qrId
+}) => {
   const handleContinue = () => {
-    modal.cancelAction();
-    modal.close();
+    cancelAction();
+    close();
   };
 
   return (
     <SessionQRConfirm>
       <ModalHeader onClick={handleContinue}>
-        <ModalTitle>{modal.message.title}</ModalTitle>
+        <ModalTitle>{message.title}</ModalTitle>
       </ModalHeader>
-      <ModalBody>{modal.message.body}</ModalBody>
+      <ModalBody>{message.body}</ModalBody>
       <QRBody>
         <QRCodeWrapper>
           <QRCode size={160} value={qrId} />
         </QRCodeWrapper>
       </QRBody>
-      <QRButton onClick={handleContinue}>{modal.message.button}</QRButton>
+      <QRButton onClick={handleContinue}>{message.button}</QRButton>
     </SessionQRConfirm>
   );
 };

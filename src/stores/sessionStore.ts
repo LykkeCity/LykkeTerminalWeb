@@ -145,6 +145,7 @@ class SessionStore extends BaseStore {
   };
 
   continueInViewMode = () => {
+    this.stopListenSessionConfirmationExpire();
     this.stopPollingSession();
     this.showViewModeNotification();
   };
@@ -250,17 +251,17 @@ class SessionStore extends BaseStore {
     this.currentQrId = '';
   };
 
-  private stopSessionRemains = () => {
+  stopSessionRemains = () => {
     clearInterval(this.sessionRemainIntervalId);
     this.sessionRemainIntervalId = null;
   };
 
-  private stopPollingSession = () => {
+  stopPollingSession = () => {
     clearInterval(this.pollingSessionTimerId);
     this.pollingSessionTimerId = null;
   };
 
-  private stopListenSessionConfirmationExpire = () => {
+  stopListenSessionConfirmationExpire = () => {
     clearInterval(this.sessionConfirmationExpireTimerId);
     this.sessionConfirmationExpireTimerId = null;
   };

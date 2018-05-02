@@ -1,9 +1,14 @@
+import {
+  convertMinutesToMs,
+  convertMsToMinutes,
+  convertMsToSeconds,
+  convertSecondsToMs
+} from '../../utils/dateFns';
 import {RootStore, SessionStore} from '../index';
-import {convertMsToMinutes, convertMsToSeconds} from '../../utils/dateFns';
 
 jest.useFakeTimers();
 
-describe('auth store', () => {
+describe('session store', () => {
   let sessionStore: SessionStore;
   const confirmation = {
     Confirmed: true,
@@ -161,6 +166,50 @@ describe('auth store', () => {
     it('should return value of currentQrId. empty string by default', () => {
       expect(sessionStore.getQrId()).toBe('');
     });
+
+    it('should continue in view mode after session duration is over', () => {
+      const duration = 1;
+      sessionStore.continueInViewMode = jest.fn();
+      sessionStore.showQR();
+      sessionStore.handleSetDuration(duration);
+      sessionStore.sessionConfirmationExpire();
+      expect(sessionStore.continueInViewMode).not.toHaveBeenCalled();
+
+      jest.runTimersToTime(convertMinutesToMs(duration));
+
+      expect(sessionStore.continueInViewMode).toHaveBeenCalled();
+      expect(sessionStore.continueInViewMode).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call showSessionNotification after extended time is over', async () => {
+      sessionStore.showSessionNotification = jest.fn();
+
+      const extendedTime = 2;
+      const SESSION_WARNING_REMAINING = 60;
+      const ttl = convertMsToSeconds(convertMinutesToMs(extendedTime));
+      const timeout = convertSecondsToMs(ttl - SESSION_WARNING_REMAINING);
+      sessionStore.handleSetDuration(extendedTime);
+      await sessionStore.extendSession();
+
+      expect(sessionStore.showSessionNotification).not.toHaveBeenCalled();
+
+      jest.runTimersToTime(convertMinutesToMs(timeout));
+
+      expect(sessionStore.showSessionNotification).toHaveBeenCalled();
+      expect(sessionStore.showSessionNotification).toHaveBeenCalledTimes(1);
+    });
+
+    it('should clear sessionConfirmationExpireTimerId', () => {
+      sessionStore.continueInViewMode = jest.fn();
+      sessionStore.handleSetDuration(100);
+      sessionStore.sessionConfirmationExpire();
+      sessionStore.stopListenSessionConfirmationExpire();
+      expect(sessionStore.continueInViewMode).not.toHaveBeenCalled();
+
+      jest.runTimersToTime(100);
+
+      expect(sessionStore.continueInViewMode).not.toHaveBeenCalled();
+    });
   });
 
   describe('showSessionNotification', () => {
@@ -186,7 +235,7 @@ describe('auth store', () => {
       sessionStore.rootStore.authStore.signOut = jest.fn();
     });
 
-    it('should show session notes because time limit expires', async () => {
+    it('should show session notes because of time limit expires', async () => {
       await sessionStore.showSessionNotification();
       expect(sessionStore.getSessionNotesShown()).toBeTruthy();
     });
