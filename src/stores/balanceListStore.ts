@@ -104,12 +104,22 @@ class BalanceListStore extends BaseStore {
   onUpdateBalance = async (args: any) => {
     const dto = args[0];
     const {id, a, b, r} = dto;
-    const wallet = this.walletList.find((w: WalletModel) => w.id === id);
-    const balance = wallet!.balances.find(
+    const wallet = this.walletList.find((w: WalletModel) => w.id === id)!;
+    const balance = wallet.balances.find(
       (bc: AssetBalanceModel) => bc.id === a
-    )!;
-    balance.balance = b;
-    balance.reserved = r;
+    );
+    if (balance) {
+      balance.balance = b;
+      balance.reserved = r;
+    } else {
+      wallet.balances.push(
+        new AssetBalanceModel({
+          AssetId: a,
+          Balance: b,
+          Reserved: r
+        })
+      );
+    }
 
     this.updateWalletBalances();
   };
