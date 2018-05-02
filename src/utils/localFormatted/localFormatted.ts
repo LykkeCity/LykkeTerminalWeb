@@ -3,17 +3,19 @@ export const formattedNumber = (
   accuracy: number,
   options?: object
 ): string => {
-  if (accuracy) {
-    options = {
-      minimumFractionDigits: accuracy,
-      maximumFractionDigits: accuracy,
-      ...options
-    };
-  }
+  options = {
+    minimumFractionDigits: accuracy,
+    maximumFractionDigits: accuracy,
+    ...options
+  };
 
-  let result = value.toLocaleString(undefined, options);
-  const indexOfZero = result.search(/0+$/);
-  result = indexOfZero !== -1 ? result.slice(0, indexOfZero + 1) : result + '0';
-
-  return result;
+  const result = value.toLocaleString(undefined, options);
+  return checkForTrailingZero(result);
 };
+
+export const checkForTrailingZero = (value: string): string => {
+  const indexOfZero = value.search(/0+$/);
+  return indexOfZero !== -1 ? value.slice(0, indexOfZero + 1) : value;
+};
+
+export default formattedNumber;
