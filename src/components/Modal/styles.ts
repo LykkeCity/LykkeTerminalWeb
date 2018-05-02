@@ -1,10 +1,9 @@
 import {rem} from 'polished';
-import styled from 'styled-components';
+import styled, {colors, greyButton} from '../styled';
 
 export const Modal = styled.div`
-  font-family: Proxima Nova;
   position: absolute;
-  padding: 20px 25px;
+  padding: ${rem(20)} ${rem(25)};
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
@@ -16,9 +15,9 @@ export const Modal = styled.div`
 `;
 
 export const Button = styled.button`
-  color: #f5f6f7;
-  width: 152px;
-  height: 49px;
+  color: ${colors.white};
+  width: ${rem(152)};
+  height: ${rem(49)};
   border-radius: 4px;
   outline: none;
 
@@ -29,7 +28,7 @@ export const Button = styled.button`
 
 export const CancelButton = styled(Button)`
   background: transparent;
-  border: solid 1px rgba(140, 148, 160, 0.4);
+  border: solid 1px ${greyButton.borderColor};
 `;
 
 export const GotButton = styled(CancelButton)`

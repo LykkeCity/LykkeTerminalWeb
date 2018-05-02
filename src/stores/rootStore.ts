@@ -122,10 +122,6 @@ class RootStore {
       UiStore.DEFAULT_INSTRUMENT
     );
 
-    if (!this.authStore.isAuth) {
-      return this.startPublicMode(defaultInstrument);
-    }
-
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
 

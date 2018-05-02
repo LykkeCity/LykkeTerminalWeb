@@ -29,8 +29,10 @@ class BalanceListStore extends BaseStore {
   }
 
   @computed
-  get checkAnyFunds() {
-    return this.walletList.map(wallet => wallet.totalBalance).reduce(add, 0);
+  get fundsOnBalance() {
+    return (
+      this.walletList.map(wallet => wallet.totalBalance).reduce(add, 0) > 0
+    );
   }
 
   @computed

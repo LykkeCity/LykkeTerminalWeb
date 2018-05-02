@@ -11,13 +11,13 @@ import {
   Wrapper
 } from './styles';
 
-interface AttentionModalProps {
+interface NoFundsAndKycModalProps {
   authStore: AuthStore;
   modal: ModalModel;
 }
 
 @inject('authStore')
-class NoFundsAndKycModal extends React.Component<AttentionModalProps> {
+class NoFundsAndKycModal extends React.Component<NoFundsAndKycModalProps> {
   render() {
     const goToLykke = () => this.close(this.props.modal.message.link.lykke);
 

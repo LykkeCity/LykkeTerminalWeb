@@ -10,9 +10,13 @@ import {
 } from './styles';
 
 const ManageFundsModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
+  const handleCancel = (m: ModalModel) => () => {
+    m.close();
+  };
+
   return (
     <ModalWrapper>
-      <ModalHeader onClick={modal.close} />
+      <ModalHeader onClick={handleCancel(modal)} />
       <MarginedModalBody>{modal.message.body}</MarginedModalBody>
       <Wrapper>
         <ImgLink

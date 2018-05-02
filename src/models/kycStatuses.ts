@@ -1,7 +1,7 @@
 enum KycStatuses {
-  Ok = 'ok',
-  ReviewDone = 'reviewdone',
-  NeedToFillData = 'needtofilldata'
+  Ok = 'Ok',
+  ReviewDone = 'ReviewDone',
+  NeedToFillData = 'NeedToFillData'
 }
 
 export default KycStatuses;

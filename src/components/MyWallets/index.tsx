@@ -2,6 +2,7 @@ import {compose, curry} from 'rambda';
 import {AssetModel} from '../../models';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
+import ManageAccount, {ManageAccountProps} from './ManageAccount';
 import MyWallets from './MyWallets';
 import WalletItem, {WalletItemProps} from './Name';
 import WalletList, {WalletListProps} from './NameList';
@@ -35,8 +36,7 @@ export interface WalletActions {
 }
 
 const ConnectedMyWallets = connect(
-  ({authStore: {isAuth}, modalStore: {addModal}}) => ({
-    addModal,
+  ({authStore: {isAuth}}) => ({
     isAuth
   }),
   withAuth(MyWallets)
@@ -74,9 +74,17 @@ const ConnectedTotalBalance = connect<TotalBalanceProps>(
   TotalBalance
 );
 
+const ConnectedManageAccount = connect<ManageAccountProps>(
+  ({modalStore: {addModal}}) => ({
+    addModal
+  }),
+  ManageAccount
+);
+
 export {ConnectedMyWallets as MyWallets};
 export {ConnectedWalletList as WalletList};
 export {ConnectedWalletItem as WalletItem};
 export {ConnectedTotalBalance as TotalBalance};
+export {ConnectedManageAccount as ManageAccount};
 
 export {default as MyWalletNameList} from './MyWallets';

@@ -2,6 +2,12 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import keys from '../../constants/storageKeys';
 import Widgets from '../../models/mosaicWidgets';
+import {
+  AuthStore,
+  BalanceListStore,
+  ReferenceStore,
+  UiStore
+} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
@@ -94,17 +100,25 @@ class Terminal extends React.Component<TerminalProps, {}> {
     }
   };
 
+  private authStore: AuthStore = this.props.rootStore.authStore;
+  private balanceListStore: BalanceListStore = this.props.rootStore
+    .balanceListStore;
+  private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
+
   componentDidMount() {
-    if (this.props.rootStore.authStore.isAuth) {
-      this.props.rootStore.balanceListStore.fetchAll().then(() => {
-        if (this.props.rootStore.authStore.noKycAndFunds) {
-          this.props.rootStore.authStore.showNoFundsAndKycModal();
+    if (this.authStore.isAuth) {
+      this.balanceListStore.fetchAll().then(() => {
+        if (this.authStore.noKycAndFunds) {
+          this.authStore.showNoFundsAndKycModal();
         } else {
           this.props.rootStore.start();
         }
       });
     } else {
-      this.props.rootStore.start();
+      const defaultInstrument = this.referenceStore.getInstrumentById(
+        UiStore.DEFAULT_INSTRUMENT
+      );
+      this.props.rootStore.startPublicMode(defaultInstrument);
     }
     const layout = layoutStorage.get();
     if (layout) {

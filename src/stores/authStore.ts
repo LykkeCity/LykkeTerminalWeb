@@ -12,7 +12,7 @@ import {BaseStore, RootStore} from './index';
 const randomString = RandomString();
 const tokenStorage = StorageUtils(keys.token);
 const stateStorage = StorageUtils(keys.state);
-const kycStatusStorage = StorageUtils(keys.kyc);
+const kycStatusStorage = StorageUtils(keys.isKycPassed);
 
 class AuthStore extends BaseStore {
   @computed
@@ -21,7 +21,7 @@ class AuthStore extends BaseStore {
   }
 
   @computed
-  get kyc() {
+  get isKycPassed() {
     return (
       this.kycStatus === KycStatuses.ReviewDone ||
       this.kycStatus === KycStatuses.Ok
@@ -30,11 +30,7 @@ class AuthStore extends BaseStore {
 
   @computed
   get noKycAndFunds() {
-    return (
-      !this.kyc ||
-      !this.rootStore.balanceListStore ||
-      this.rootStore.balanceListStore.checkAnyFunds < 0
-    );
+    return !this.isKycPassed || !this.rootStore.balanceListStore.fundsOnBalance;
   }
 
   @observable private token: string = tokenStorage.get() || '';
@@ -67,12 +63,9 @@ class AuthStore extends BaseStore {
   };
 
   fetchUserInfo = async (accessToken: string) => {
-    let {KycStatus} = await this.api.fetchUserInfo(accessToken);
-    KycStatus = KycStatus.toLowerCase();
-
+    const {KycStatus} = await this.api.fetchUserInfo(accessToken);
     this.kycStatus = KycStatus;
     kycStatusStorage.set(KycStatus);
-    return Promise.resolve();
   };
 
   catchUnauthorized = () => {
