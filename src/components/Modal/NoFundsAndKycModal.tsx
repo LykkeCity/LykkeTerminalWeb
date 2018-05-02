@@ -4,11 +4,11 @@ import ModalModel from '../../models/modalModel';
 import {AuthStore} from '../../stores/index';
 import ModalHeader from './ModalHeader/ModalHeader';
 import {
-  GotButton,
-  ImgLink,
   MarginedModalBody,
+  MobileAppLink,
+  ModalContentWrapper,
   ModalWrapper,
-  Wrapper
+  OkButton
 } from './styles';
 
 interface NoFundsAndKycModalProps {
@@ -27,21 +27,21 @@ class NoFundsAndKycModal extends React.Component<NoFundsAndKycModalProps> {
           {this.props.modal.message.title}
         </ModalHeader>
         <MarginedModalBody>{this.props.modal.message.body}</MarginedModalBody>
-        <Wrapper>
-          <ImgLink
+        <ModalContentWrapper>
+          <MobileAppLink
             href={this.props.modal.message.link.appStore}
             target={'_blank'}
             onClick={this.close}
             image={'app-store'}
           />
-          <ImgLink
+          <MobileAppLink
             href={this.props.modal.message.link.playMarket}
             target={'_blank'}
             onClick={this.close}
             image={'google-play'}
           />
-        </Wrapper>
-        <GotButton onClick={goToLykke}>Got it!</GotButton>
+        </ModalContentWrapper>
+        <OkButton onClick={goToLykke}>Got it!</OkButton>
       </ModalWrapper>
     );
   }

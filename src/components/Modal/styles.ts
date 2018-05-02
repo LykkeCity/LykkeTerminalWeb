@@ -31,7 +31,7 @@ export const CancelButton = styled(Button)`
   border: solid 1px ${greyButton.borderColor};
 `;
 
-export const GotButton = styled(CancelButton)`
+export const OkButton = styled(CancelButton)`
   margin: ${rem(20)} 0 0 0;
   width: 100%;
 `;
@@ -54,7 +54,7 @@ export const CloseBtnPosition = {
   right: 16
 };
 
-export const Wrapper = styled.div`
+export const ModalContentWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -64,7 +64,7 @@ export const MarginedModalBody = styled(ModalBody)`
   margin: ${rem(15)} 0;
 `;
 
-export const ImgLink = styled.a.attrs({
+export const MobileAppLink = styled.a.attrs({
   style: (props: any) => ({
     backgroundImage: `url('assets/images/${props.image}.png')`,
     cursor: 'pointer'

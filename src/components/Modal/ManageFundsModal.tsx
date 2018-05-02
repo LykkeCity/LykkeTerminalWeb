@@ -2,11 +2,11 @@ import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import ModalHeader from './ModalHeader/ModalHeader';
 import {
-  GotButton,
-  ImgLink,
   MarginedModalBody,
+  MobileAppLink,
+  ModalContentWrapper,
   ModalWrapper,
-  Wrapper
+  OkButton
 } from './styles';
 
 const ManageFundsModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
@@ -18,21 +18,21 @@ const ManageFundsModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
     <ModalWrapper>
       <ModalHeader onClick={handleCancel(modal)} />
       <MarginedModalBody>{modal.message.body}</MarginedModalBody>
-      <Wrapper>
-        <ImgLink
+      <ModalContentWrapper>
+        <MobileAppLink
           href={modal.message.link.appStore}
           target={'_blank'}
           onClick={modal.close}
           image={'app-store'}
         />
-        <ImgLink
+        <MobileAppLink
           href={modal.message.link.playMarket}
           target={'_blank'}
           onClick={modal.close}
           image={'google-play'}
         />
-      </Wrapper>
-      <GotButton onClick={modal.close}>Got it!</GotButton>
+      </ModalContentWrapper>
+      <OkButton onClick={modal.close}>Got it!</OkButton>
     </ModalWrapper>
   );
 };
