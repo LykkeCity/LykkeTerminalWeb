@@ -6,9 +6,9 @@ import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
 class DepthChartStore extends BaseStore {
-  multiplers: number[] = [0, 0.01, 0.05, 0.1, 0.25, 0.5, 1];
+  multiplers: number[] = [0, 1, 0.5, 0.25, 0.1, 0.05, 0.01];
   maxMultiplier = this.multiplers.length - 1;
-  @observable spanMultiplierIdx = 1;
+  @observable spanMultiplierIdx = 3;
 
   @computed
   get span() {

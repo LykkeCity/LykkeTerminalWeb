@@ -22,30 +22,39 @@ class Mesh extends React.Component<ChartProps> {
   }
 
   generateVerticalLabels = () => {
-    const labels = [];
+    let labels: string[] = [];
+    const bidsLabels = [];
+    const asksLabels = [];
+
     if (this.asks.length > 0 && this.bids.length > 0) {
-      const minimum = this.bids[this.bids.length - 1].price;
       const maximum = this.asks[0].price;
 
       let step;
       step =
-        (this.mid - this.bids[0].price) / (chart.mesh.verticalLinesAmount / 2);
-      for (let i = 0; i < chart.mesh.verticalLinesAmount / 2; i++) {
-        labels.push(
-          (minimum + step * (i + 1)).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy
-          })
-        );
+        (this.mid - this.bids[this.bids.length - 1].price) /
+        chart.mesh.verticalLinesAmount;
+      for (let i = chart.mesh.verticalLinesAmount; i > 0; i--) {
+        if (i % 2 === 1) {
+          bidsLabels.push(
+            (this.mid - step * i).toLocaleString(undefined, {
+              maximumFractionDigits: this.props.priceAccuracy
+            })
+          );
+        }
       }
 
-      step = (maximum - this.mid) / (chart.mesh.verticalLinesAmount / 2);
-      for (let i = 0; i < chart.mesh.verticalLinesAmount / 2; i++) {
-        labels.push(
-          (this.mid + step * (i + 1)).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy
-          })
-        );
+      step = (maximum - this.mid) / chart.mesh.verticalLinesAmount;
+      for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
+        if (i % 2 === 1) {
+          asksLabels.push(
+            (this.mid + step * i).toLocaleString(undefined, {
+              maximumFractionDigits: this.props.priceAccuracy
+            })
+          );
+        }
       }
+
+      labels = bidsLabels.concat(asksLabels);
     }
     return labels;
   };
