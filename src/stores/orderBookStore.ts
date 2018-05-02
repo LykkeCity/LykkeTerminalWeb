@@ -142,7 +142,11 @@ class OrderBookStore extends BaseStore {
     const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
     if (selectedInstrument) {
       this.hasPendingItems = true;
-      const orders = await this.api.fetchAll(selectedInstrument.id);
+      const orders = await this.api
+        .fetchAll(selectedInstrument.id)
+        .catch(() => {
+          this.hasPendingItems = false;
+        });
       this.hasPendingItems = false;
       runInAction(() => {
         orders.forEach((levels: any) => this.onNextOrders([levels]));
