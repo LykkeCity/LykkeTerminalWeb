@@ -1,3 +1,4 @@
+import {prop, sortBy} from 'rambda';
 import * as React from 'react';
 import {SortDirection} from '../../models';
 import {
@@ -14,9 +15,12 @@ class InstrumentList extends React.Component<
 > {
   constructor(props: InstrumentListProps) {
     super(props);
+    const defaultSortField = this.props.instruments.some(x => !!x.volumeInBase)
+      ? 'volumeInBase'
+      : 'volume';
     this.state = {
-      data: this.props.instruments,
-      sortByParam: 'volumeInBase',
+      data: sortBy(prop(defaultSortField), this.props.instruments),
+      sortByParam: defaultSortField,
       sortDirection: SortDirection.DESC
     };
   }

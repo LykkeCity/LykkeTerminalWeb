@@ -26,6 +26,7 @@ const formatWithAccuracy = (
 ) =>
   (isFinite(Number(num)) &&
     Number(num).toLocaleString(undefined, {
+      minimumFractionDigits: accuracy,
       maximumFractionDigits: accuracy,
       ...options
     })) ||
@@ -182,16 +183,20 @@ const ConnectedOrderbook = connect(
       <HBar />
       <Header />
       <HBar />
-      <div style={{height: '100%'}} ref={measureRef}>
+      <div style={{height: 'calc(100% - 75px)'}} ref={measureRef}>
         <Scrollbars
           style={{
-            height: `${contentRect.client.height - 74}px`,
+            height: `100%`,
             width: 'calc(100% + 1rem)',
             marginLeft: '-0.5rem'
           }}
           ref={(node: any) => {
             // tslint:disable-next-line:no-unused-expression
-            node && node.scrollTop(LEVELS_COUNT * LEVEL_HEIGHT - 145);
+            node &&
+              node.scrollTop(
+                LEVELS_COUNT * LEVEL_HEIGHT -
+                  (contentRect.client.height - 52) / 2
+              );
           }}
         >
           <ConnectedAsks

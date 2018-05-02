@@ -121,12 +121,14 @@ class PriceStore extends BaseStore {
   };
 
   onDailyTradeCandle = (args: any[]) => {
-    const {open, high, low, close, volume} = map.mapToBarFromWamp(args[0]);
-    this.dailyOpen = open;
-    this.dailyHigh = high;
-    this.dailyLow = low;
-    this.lastTradePrice = close;
-    this.dailyVolume = volume;
+    if (this.selectedInstrument && this.selectedInstrument.id === args[0].a) {
+      const {open, high, low, close, volume} = map.mapToBarFromWamp(args[0]);
+      this.dailyOpen = open;
+      this.dailyHigh = high;
+      this.dailyLow = low;
+      this.lastTradePrice = close;
+      this.dailyVolume = volume;
+    }
   };
 
   unsubscribeFromDailyCandle = async () => {
