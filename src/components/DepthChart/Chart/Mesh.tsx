@@ -66,7 +66,7 @@ class Mesh extends React.Component<ChartProps> {
         this.asks[0].depth,
         this.bids[this.bids.length - 1].depth
       );
-      const maximum = maxDepth + maxDepth / 2;
+      const maximum = maxDepth / 0.9;
 
       const step = maximum / chart.mesh.horizontalLinesAmount;
       for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
@@ -105,7 +105,7 @@ class Mesh extends React.Component<ChartProps> {
           closed={true}
           stroke={chart.mesh.color}
           strokeWidth={chart.mesh.strikeWidth}
-          dash={chart.mesh.dash}
+          dash={chart.mesh.dots}
           opacity={0.6}
         />
       );

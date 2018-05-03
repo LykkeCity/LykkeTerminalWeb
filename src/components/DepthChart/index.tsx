@@ -2,7 +2,6 @@ import {pathOr} from 'rambda';
 import {connect} from '../connect';
 import DepthChart from './DepthChart';
 
-// tslint:disable:object-literal-sort-keys
 const ConnectedDepthChart = connect(
   ({
     depthChartStore: {mid, spread, span, nextSpan, prevSpan},

@@ -1,7 +1,8 @@
 const chart = {
   mesh: {
     color: '#8c94a0',
-    dash: [1, 3],
+    dash: [2, 5],
+    dots: [1, 5],
     strikeWidth: 1,
     opacity: 0.4,
     verticalFontSize: 14,
