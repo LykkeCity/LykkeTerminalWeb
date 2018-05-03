@@ -128,36 +128,6 @@ class OrderStore extends BaseStore {
     }
   };
 
-  subscribe = (ws: any) => {
-    ws.subscribe(topics.orders, this.onOrders);
-  };
-
-  onOrders = (args: any) => {
-    const order = args[0][0];
-    switch (order.Status) {
-      case OrderStatus.Cancelled:
-        const deleteOrder = this.rootStore.orderListStore.deleteOrder(order.Id);
-        if (deleteOrder) {
-          this.orderCancelledSuccessfully(order.Id);
-        }
-        break;
-      case OrderStatus.Matched:
-        this.rootStore.orderListStore.deleteOrder(order.Id);
-        this.orderClosedSuccessfully(order.Id);
-        break;
-      case OrderStatus.Processing:
-        this.rootStore.orderListStore.addOrUpdateOrder(order);
-        this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
-        break;
-      case OrderStatus.Placed:
-        const isAdded = this.rootStore.orderListStore.addOrder(order);
-        if (isAdded) {
-          this.orderPlacedSuccessfully();
-        }
-        break;
-    }
-  };
-
   reset = () => {
     return;
   };
