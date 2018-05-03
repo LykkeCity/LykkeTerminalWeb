@@ -12,7 +12,8 @@ describe('session store', () => {
   let sessionStore: SessionStore;
   const confirmation = {
     Confirmed: true,
-    Ttl: 70000
+    Ttl: 70000,
+    Enabled: true
   };
   const sessionDuration = {Data: '60000'};
 
@@ -267,6 +268,35 @@ describe('session store', () => {
     it('should not show session notes because time limit does not expire', async () => {
       await sessionStore.showSessionNotification();
       expect(sessionStore.getSessionNotesShown()).toBeFalsy();
+    });
+  });
+
+  describe('store', () => {
+    beforeEach(() => {
+      confirmation.Enabled = false;
+      const api: any = {
+        saveSessionNoteShown: jest.fn(),
+        loadSessionNoteShown: jest.fn(),
+        getSessionStatus: () => {
+          return {
+            TradingSession: confirmation
+          };
+        },
+        extendSession: jest.fn(),
+        createSession: jest.fn(),
+        saveSessionDuration: jest.fn(),
+        getSessionDuration: () => Promise.resolve(sessionDuration)
+      };
+
+      sessionStore = new SessionStore(new RootStore(true), api);
+      sessionStore.rootStore.authStore.signOut = jest.fn();
+    });
+
+    it('should stop read only mode as session disabled', async () => {
+      sessionStore.rootStore.uiStore.runReadOnlyMode();
+      expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeTruthy();
+      await sessionStore.initUserSession();
+      expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeFalsy();
     });
   });
 });

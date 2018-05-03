@@ -74,7 +74,13 @@ class SessionStore extends BaseStore {
 
   initUserSession = async () => {
     const session = await this.api.getSessionStatus();
-    const {Confirmed, Ttl} = session.TradingSession;
+    const {Confirmed, Ttl, Enabled} = session.TradingSession;
+
+    if (!Enabled) {
+      this.rootStore.uiStore.stopReadOnlyMode();
+      return;
+    }
+
     this.sessionDuration = await this.getSessionDuration();
     this.ttl = Math.floor(convertMsToSeconds(Ttl));
 
