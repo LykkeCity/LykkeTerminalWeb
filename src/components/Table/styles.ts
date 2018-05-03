@@ -8,7 +8,11 @@ interface CellProps {
 const width = (w: string | number | undefined) =>
   (w && (w.toString().endsWith('%') ? w : rem(w))) || 'inherit';
 
-export const Cell = styled.td`
+export const Cell = styled.td.attrs({
+  style: (props: any) => ({
+    cursor: `${props.clickable ? 'pointer' : 'default'}`
+  })
+})`
   width: ${(p: CellProps) => width(p.w)};
 ` as any;
 

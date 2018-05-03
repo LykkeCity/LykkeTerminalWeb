@@ -9,17 +9,28 @@ export interface TradeListProps extends LoaderProps {
   trades: TradeModel[];
   fetchNextTrades?: any;
   shouldFetchMore?: boolean;
+  isAllTrades: boolean;
+  onChangeInstrumentById: (id: string) => void;
 }
 
 const TradeList: React.SFC<TradeListProps> = ({
   trades = [],
   fetchNextTrades,
-  shouldFetchMore
+  shouldFetchMore,
+  isAllTrades,
+  onChangeInstrumentById
 }) => (
   <React.Fragment>
     <Table>
       <tbody>
-        {trades.map(trade => <TradeListItem key={trade.id} {...trade} />)}
+        {trades.map(trade => (
+          <TradeListItem
+            key={trade.id}
+            {...trade}
+            clickable={isAllTrades}
+            changeInstrumentById={onChangeInstrumentById}
+          />
+        ))}
       </tbody>
     </Table>
     {shouldFetchMore && (

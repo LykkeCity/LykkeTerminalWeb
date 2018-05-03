@@ -39,11 +39,14 @@ const ConnectedOrders = connect(
 
 const ConnectedOrderList = connect<OrderListProps>(
   ({
-    orderListStore: {hasPendingOrders},
-    referenceStore: {getInstrumentById}
+    orderListStore: {hasPendingOrders, isAllOrders},
+    referenceStore: {getInstrumentById},
+    uiStore: {selectInstrumentById}
   }) => ({
     loading: hasPendingOrders,
-    getInstrumentById
+    getInstrumentById,
+    isAllOrders: isAllOrders(),
+    onChangeInstrumentById: selectInstrumentById
   }),
   compose(
     withLoader<OrderListProps>(p => p.loading!),

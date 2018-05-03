@@ -37,10 +37,20 @@ const ConnectedTrades = connect(
 );
 
 const ConnectedTradeList = connect<TradeListProps>(
-  ({tradeStore: {hasPendingItems, shouldFetchMore, fetchNextTrades}}) => ({
+  ({
+    tradeStore: {
+      hasPendingItems,
+      shouldFetchMore,
+      fetchNextTrades,
+      isAllTrades
+    },
+    uiStore: {selectInstrumentById}
+  }) => ({
     loading: hasPendingItems,
     fetchNextTrades,
-    shouldFetchMore
+    shouldFetchMore,
+    isAllTrades: isAllTrades(),
+    onChangeInstrumentById: selectInstrumentById
   }),
   compose(
     withLoader<TradeListProps>(p => p.loading!),
