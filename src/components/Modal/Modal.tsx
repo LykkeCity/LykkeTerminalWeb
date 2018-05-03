@@ -2,7 +2,8 @@ import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
-import {EditOrder, KycModal, QRModal} from './index';
+import {EditOrder, QRModal} from './index';
+import KycModal from './KycModal';
 
 const Modals = {
   Confirm: ConfirmModal,

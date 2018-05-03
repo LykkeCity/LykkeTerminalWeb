@@ -1,9 +1,8 @@
 import {rem} from 'polished';
 import styled from 'styled-components';
 import {colors} from '../styled';
-import ModalHeader from './ModalHeader/ModalHeader';
 
-export const StyledModalHeader = styled(ModalHeader)`
+export const StyledKycModalHeader = styled.div`
   font-size: ${rem(24)};
 `;
 
@@ -108,6 +107,7 @@ export const StyledButton = styled(Button)`
   background: transparent;
   border: solid 1px rgba(140, 148, 160, 0.4);
   margin: 20px 0 5px 0;
+  width: 100%;
 `;
 
 export const ModalBody = styled.div`
