@@ -24,6 +24,7 @@ const StyledPercent = styled.div.attrs({
   font-size: ${rem(14)};
   display: flex;
   justify-content: center;
+  margin-bottom: ${rem(4)};
 
   div {
     border-left: 1px solid rgba(140, 148, 160, 0.4);
