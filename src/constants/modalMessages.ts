@@ -5,6 +5,12 @@ const ModalMessages = {
     body:
       'Your session has expired. Please, confirm your session with your phone',
     title: 'Please, confirm your session'
+  },
+  missedKyc: {
+    body: `To offer you the advanced range of services we need you to confirm your
+    identity and pass KYC (Know Your Customer) procedure. You can pass the
+    KYC in the Lykke Wallet app.`,
+    title: 'Attention!'
   }
 };
 

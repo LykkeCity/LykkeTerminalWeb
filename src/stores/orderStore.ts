@@ -11,6 +11,11 @@ import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
 
+enum Errors {
+  Confirmation = 'Confirmation',
+  AssetKycNeeded = 'AssetKycNeeded'
+}
+
 // tslint:disable:no-console
 class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
@@ -170,7 +175,7 @@ class OrderStore extends BaseStore {
 
       if (error.status === 400) {
         switch (key) {
-          case 'Confirmation': {
+          case Errors.Confirmation: {
             this.modalStore.addModal(
               ModalMessages.expired,
               null,
@@ -179,7 +184,7 @@ class OrderStore extends BaseStore {
             );
             return;
           }
-          case 'AssetKycNeeded': {
+          case Errors.AssetKycNeeded: {
             this.modalStore.addModal(null, null, null, Types.MissedKyc);
             return;
           }
