@@ -106,27 +106,15 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
 
   componentDidMount() {
-    if (this.authStore.isAuth) {
-      this.balanceListStore.fetchAll().then(() => {
-        if (this.authStore.noKycAndFunds) {
-          this.authStore.showNoFundsAndKycModal();
-        } else {
-          this.props.rootStore.start();
-        }
-      });
-    } else {
-      const defaultInstrument = this.referenceStore.getInstrumentById(
-        UiStore.DEFAULT_INSTRUMENT
-      );
-      this.props.rootStore.startPublicMode(defaultInstrument);
-    }
-    const layout = layoutStorage.get();
-    if (layout) {
-      this.setState({
-        initialValue: JSON.parse(layout)
-      });
-    }
-    this.bindChartOverlayHandler();
+    this.start().then(() => {
+      const layout = layoutStorage.get();
+      if (layout) {
+        this.setState({
+          initialValue: JSON.parse(layout)
+        });
+      }
+      this.bindChartOverlayHandler();
+    });
   }
 
   bindChartOverlayHandler() {
@@ -163,6 +151,25 @@ class Terminal extends React.Component<TerminalProps, {}> {
     });
     layoutStorage.set(JSON.stringify(args));
   };
+
+  async start() {
+    await this.referenceStore.fetchReferenceData();
+
+    if (this.authStore.isAuth) {
+      this.balanceListStore.fetchAll().then(() => {
+        if (this.authStore.noKycAndFunds) {
+          this.authStore.showNoFundsAndKycModal();
+        } else {
+          this.props.rootStore.start();
+        }
+      });
+    } else {
+      const defaultInstrument = this.referenceStore.getInstrumentById(
+        UiStore.DEFAULT_INSTRUMENT
+      );
+      this.props.rootStore.startPublicMode(defaultInstrument);
+    }
+  }
 
   render() {
     return (

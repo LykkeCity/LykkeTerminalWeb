@@ -112,7 +112,6 @@ class RootStore {
   };
 
   start = async () => {
-    await this.referenceStore.fetchReferenceData();
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
