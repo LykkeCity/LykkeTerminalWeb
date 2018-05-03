@@ -7,7 +7,6 @@ import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
 import {capitalize} from '../utils';
-import {getRestErrorMessage} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
@@ -53,12 +52,10 @@ class OrderStore extends BaseStore {
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        return (
-          this.api
-            .placeMarket(body)
-            // tslint:disable-next-line:no-empty
-            .then(() => {}, this.orderPlacedUnsuccessfully)
-        );
+        return this.api
+          .placeMarket(body)
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
+          .then(() => Promise.resolve());
       case OrderType.Limit:
         return (
           this.api
@@ -167,33 +164,37 @@ class OrderStore extends BaseStore {
   };
 
   private orderPlacedUnsuccessfully = (error: any) => {
-    console.error(error);
+    const messageObject = JSON.parse(error.message);
+    if (messageObject) {
+      const key = Object.keys(messageObject)[0];
 
-    const needConfirmation =
-      error.status === 400 &&
-      error.message &&
-      JSON.parse(error.message).Confirmation;
-
-    if (needConfirmation) {
-      this.modalStore.addModal(
-        ModalMessages.expired,
-        null,
-        null,
-        Types.Expired
-      );
-      return;
+      if (error.status === 400) {
+        switch (key) {
+          case 'Confirmation': {
+            this.modalStore.addModal(
+              ModalMessages.expired,
+              null,
+              null,
+              Types.Expired
+            );
+            return;
+          }
+          case 'AssetKycNeeded': {
+            this.modalStore.addModal(null, null, null, Types.MissedKyc);
+            return;
+          }
+          default:
+            {
+              const message = messageObject[key];
+              this.notificationStore.addNotification(
+                levels.error,
+                `${message}`
+              );
+            }
+            break;
+        }
+      }
     }
-
-    let message;
-    try {
-      message = JSON.parse(error.message).ME || JSON.parse(error.message);
-      message = getRestErrorMessage(message);
-    } catch (e) {
-      message = !!error.message.length ? error.message : messages.defaultError;
-    }
-    this.notificationStore.addNotification(levels.error, `${message}`);
-
-    return Promise.reject(error);
   };
 }
 
