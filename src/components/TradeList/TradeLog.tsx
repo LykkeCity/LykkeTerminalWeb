@@ -40,19 +40,19 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
   render() {
     const headers: any[] = [
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
-        key: 'volume',
-        value: 'Trade size'
-      },
-      {
         sortDisabled: checkDataForSorting(this.state.data, 'price'),
-        className: 'right-align',
         key: 'price',
         value: `Price (${pathOr(
           '',
           ['quoteAsset', 'name'],
           this.props.selectedInstrument
         )})`
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        className: 'right-align',
+        key: 'volume',
+        value: 'Trade size'
       },
       {
         sortDisabled: checkDataForSorting(this.state.data, 'side'),

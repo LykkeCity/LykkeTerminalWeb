@@ -18,10 +18,10 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   const date = new Date(timestamp);
   return (
     <tr>
+      <td>{toLocaleStringWithAccuracy(price, instrument!.accuracy)}</td>
       <td>
         {toLocaleStringWithAccuracy(volume, instrument!.baseAsset.accuracy)}
       </td>
-      <td>{toLocaleStringWithAccuracy(price, instrument!.accuracy)}</td>
       <SideCell w={PublicTradesCellWidth.Side} side={side}>
         {side}
       </SideCell>
