@@ -250,6 +250,7 @@ class SessionStore extends BaseStore {
   reset = () => {
     this.stopSessionRemains();
     this.stopPollingSession();
+    this.stopListenSessionConfirmationExpire();
     this.currentQrId = '';
   };
 

@@ -88,6 +88,7 @@ interface OrderProps {
     quoteAssetBalance: number,
     quantityAccuracy: number
   ) => boolean;
+  instrument: InstrumentModel;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -108,6 +109,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.props.updatePriceFn(this.updatePriceByOrderBook);
     this.props.updateDepthFn(this.updateDepthByOrderBook);
     this.props.initPriceFn(this.initPriceUpdate);
+  }
+
+  componentDidMount() {
+    this.handleChangeInstrument(this.props.instrument);
   }
 
   initPriceUpdate = (price: number = 0, instrument: InstrumentModel) => {

@@ -1,10 +1,10 @@
+import {action, computed, observable, reaction} from 'mobx';
+import {keys} from '../models';
 import {
   InstrumentModel,
   OrderBookDisplayType,
   TradeFilter
 } from '../models/index';
-import {keys} from '../models';
-import {action, computed, observable, reaction} from 'mobx';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -31,11 +31,8 @@ class UiStore extends BaseStore {
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
-  @observable private isReadOnlyMode: boolean;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
-
-  stateFns: any = [];
-  initPriceUpdate: any;
+  @observable private isReadOnlyMode: boolean;
 
   constructor(store: RootStore) {
     super(store);

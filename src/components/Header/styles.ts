@@ -5,14 +5,20 @@ import styled from '../styled';
 const {Flex, Box} = require('grid-styled');
 
 export const HeaderItem = styled(Box)`
-  border-left: solid 1px rgba(0, 0, 0, 0.2);
-  font-size: ${rem(14)};
-  /* height: 26px; */
-
-  &:first-child {
+  font-size: ${rem(16)};
+  position: relative;
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 24px;
+    margin-top: -12px;
+    border-left: solid 1px rgba(0, 0, 0, 0.2);
+  }
+  &:first-child:after {
     border-left: 0;
   }
-
   > span,
   a {
     padding: ${rem(6)} ${rem(10)} ${rem(9)};
@@ -21,7 +27,6 @@ export const HeaderItem = styled(Box)`
     border: 0;
     display: block;
     cursor: pointer;
-
     &.active {
       background-color: rgba(0, 0, 0, 0.2);
     }
@@ -30,7 +35,7 @@ export const HeaderItem = styled(Box)`
 
 export const HeaderWrapper = styled.header`
   padding: ${rem(9)} ${rem(11)};
-  height: 50px;
+  height: 60px;
   border-bottom: solid 1px #292929;
   background: #333;
 `;

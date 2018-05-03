@@ -77,16 +77,16 @@ class UiOrderStore extends BaseStore {
 
     if (index === undefined) {
       value = 100;
-    } else {
-      percentage.forEach((item: any, i: number) => {
-        if (index === i) {
-          item.isActive = true;
-          value = item.percent;
-        } else {
-          item.isActive = false;
-        }
-      });
     }
+
+    percentage.forEach((item: any, i: number) => {
+      if (index === i) {
+        item.isActive = true;
+        value = item.percent;
+      } else {
+        item.isActive = false;
+      }
+    });
 
     return {
       value,

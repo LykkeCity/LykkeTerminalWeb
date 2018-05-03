@@ -102,7 +102,8 @@ const ConnectedOrder = connect(
       return asset && asset.available;
     },
     isAuth,
-    readOnlyMode
+    readOnlyMode,
+    instrument
   }),
   withAuth(Order)
 );
