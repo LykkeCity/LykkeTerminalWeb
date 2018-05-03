@@ -1,7 +1,7 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, filter, replace, toLower} from 'rambda';
 import {AssetApi} from '../api/index';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import {
   AssetCategoryModel,
   AssetModel,

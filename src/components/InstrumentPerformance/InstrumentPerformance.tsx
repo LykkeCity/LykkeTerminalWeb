@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {HeaderItem} from '../Header/Header';
+import {HeaderItem} from '../Header/styles';
 import {
   InstrumentPerformanceFigureLabel,
   InstrumentPerformanceFigureValue,

@@ -6,14 +6,15 @@ import {
   OrderApi,
   OrderBookApi,
   PriceApi,
+  SessionApi,
   TradeApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import keys from '../constants/storageKeys';
+import {levels} from '../models';
+import {keys} from '../models';
 import {PriceType} from '../models/index';
 import {StorageUtils} from '../utils/index';
 import {
@@ -29,6 +30,7 @@ import {
   OrderStore,
   PriceStore,
   ReferenceStore,
+  SessionStore,
   SettingsStore,
   TradeStore,
   UiOrderStore,
@@ -54,6 +56,7 @@ class RootStore {
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
+  readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
 
@@ -81,6 +84,7 @@ class RootStore {
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
+      this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
     }
@@ -125,6 +129,7 @@ class RootStore {
       return this.startPublicMode(defaultInstrument);
     }
 
+    this.sessionStore.initUserSession();
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
 

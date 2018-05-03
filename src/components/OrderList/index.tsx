@@ -25,11 +25,13 @@ const ConnectedOrders = connect(
     orderListStore: {limitOrders: orders},
     orderStore: {cancelOrder},
     modalStore: {addModal},
-    authStore: {isAuth}
+    authStore: {isAuth},
+    uiStore: {readOnlyMode}
   }) => ({
     addModal,
     cancelOrder,
     isAuth,
+    readOnlyMode,
     orders
   }),
   withAuth(Orders)

@@ -3,7 +3,7 @@ import {curry} from 'rambda';
 import * as React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import ModalMessages from '../../constants/modalMessages';
-import keys from '../../constants/storageKeys';
+import {keys} from '../../models';
 import {InstrumentModel, Order, OrderBookDisplayType} from '../../models';
 import Types from '../../models/modals';
 import {StorageUtils} from '../../utils/index';

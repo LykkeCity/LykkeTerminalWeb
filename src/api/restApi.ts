@@ -1,6 +1,6 @@
 import wretch from 'wretch';
 import {WretcherError} from 'wretch/dist/resolver';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import RootStore from '../stores/rootStore';
 import {StorageUtils} from '../utils/index';
 
@@ -49,6 +49,14 @@ export class RestApi {
 
   protected fireAndForget = (url: string, body: any, headers: any = {}) =>
     this._post(url, body, headers).res();
+
+  protected patch = (url: string, body: any) =>
+    this.wretcher()
+      .url(url)
+      .json(body)
+      .patch()
+      .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .res();
 
   protected put = (url: string, body: any) =>
     this.wretcher()

@@ -1,3 +1,4 @@
+export {default as keys} from './storageKeys';
 export {default as AssetModel} from './assetModel';
 export {default as AssetBalanceModel} from './assetBalanceModel';
 export {default as AssetCategoryModel} from './assetCategoryModel';
@@ -17,5 +18,6 @@ export {OrderType, OrderInputs} from './orderType';
 export {default as OperationType} from './operationType';
 export {default as OrderBookDisplayType} from './orderBookDisplayType';
 export {default as TradeFilter} from './tradeFilter';
+export {default as levels} from './notificationLevels';
 export {default as FeeType} from './feeType';
 export {default as SortDirection} from './sortDirection';

@@ -1,8 +1,8 @@
 import OrderApi from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
+import {levels} from '../models';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';

@@ -1,5 +1,5 @@
-import {action, observable, reaction} from 'mobx';
-import keys from '../constants/storageKeys';
+import {action, computed, observable, reaction} from 'mobx';
+import {keys} from '../models';
 import {
   InstrumentModel,
   OrderBookDisplayType,
@@ -12,7 +12,15 @@ import {BaseStore, RootStore} from './index';
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class UiStore extends BaseStore {
+  @computed
+  get readOnlyMode() {
+    return this.isReadOnlyMode;
+  }
+
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
+
+  stateFns: any = [];
+  initPriceUpdate: any;
 
   @observable showAssetsSelect: boolean = false;
   @observable searchTerm: string = '';
@@ -22,10 +30,9 @@ class UiStore extends BaseStore {
   @observable showInstrumentPerformanceData = false;
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
+  @observable showSessionNotification: boolean = true;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
-
-  stateFns: any = [];
-  initPriceUpdate: any;
+  @observable private isReadOnlyMode: boolean;
 
   constructor(store: RootStore) {
     super(store);
@@ -117,6 +124,14 @@ class UiStore extends BaseStore {
   @action
   toggleInstrumentPicker = () =>
     (this.showInstrumentPicker = !this.showInstrumentPicker);
+
+  @action
+  toggleSessionNotification = (value: boolean) =>
+    (this.showSessionNotification = value);
+
+  runReadOnlyMode = () => (this.isReadOnlyMode = true);
+
+  stopReadOnlyMode = () => (this.isReadOnlyMode = false);
 
   @action
   toggleInstrumentPerformanceData = (show: boolean) =>
