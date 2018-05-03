@@ -103,15 +103,15 @@ class ReferenceStore extends BaseStore {
     this.availableAssets.push(assetId);
   };
 
-  fetchReferenceData = async (authenticated: boolean) => {
+  fetchReferenceData = async () => {
     await this.fetchCategories();
     await this.fetchAssets();
 
-    if (authenticated) {
+    if (!this.rootStore.authStore.isAuth) {
+      await this.fetchPublicInstruments();
+    } else {
       await this.fetchInstruments();
       await this.fetchAvailableAssets();
-    } else {
-      await this.fetchPublicInstruments();
     }
   };
 

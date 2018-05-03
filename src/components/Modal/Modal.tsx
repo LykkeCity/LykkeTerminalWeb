@@ -4,13 +4,17 @@ import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
 import {EditOrder, QRModal} from './index';
 import KycModal from './KycModal';
+import ManageFundsModal from './ManageFundsModal';
+import NoFundsAndKycModal from './NoFundsAndKycModal';
 
 const Modals = {
   Confirm: ConfirmModal,
   EditOrder,
   Expired: ExpiredModal,
   QR: QRModal,
-  MissedKyc: KycModal
+  MissedKyc: KycModal,
+  ManageFunds: ManageFundsModal,
+  NoFundsAndKyc: NoFundsAndKycModal
 };
 
 interface ModalProps {

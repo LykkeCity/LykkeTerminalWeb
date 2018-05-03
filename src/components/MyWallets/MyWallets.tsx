@@ -2,8 +2,8 @@ import React from 'react';
 import {TotalBalance, WalletList} from '.';
 import {HeaderCell} from '../Table/styles';
 import {WalletBalanceList} from '../WalletBalanceList/';
+import {ManageAccount} from './';
 import {
-  ManageAccountLink,
   MyWalletsContainer,
   Sidebar,
   WalletBalanceListHeader,
@@ -15,12 +15,7 @@ const MyWallets = () => (
     <Sidebar>
       <WalletList />
       <TotalBalance />
-      <ManageAccountLink
-        href={process.env.REACT_APP_WEBWALLET_URL}
-        target="_blank"
-      >
-        Manage Wallets
-      </ManageAccountLink>
+      <ManageAccount />
     </Sidebar>
     <WalletBalances>
       <WalletBalanceListHeader>
