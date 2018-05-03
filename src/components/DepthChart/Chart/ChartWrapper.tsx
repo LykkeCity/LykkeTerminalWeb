@@ -31,9 +31,7 @@ class ChartWrapper extends React.Component<ChartProps> {
         // tslint:disable-next-line:jsx-no-lambda
         onResize={contentRect => {
           this.width = Math.ceil(contentRect.client!.width);
-          this.height = Math.ceil(
-            contentRect.client!.height - chart.labelsHeight
-          );
+          this.height = Math.ceil(contentRect.client!.height);
           this.forceUpdate();
         }}
       >

@@ -5,7 +5,7 @@ const chart = {
     dots: [1, 5],
     strikeWidth: 1,
     opacity: 0.4,
-    verticalFontSize: 14,
+    verticalFontSize: 12,
     horizontalFontSize: 12,
     fontFamily: 'Proxima Nova',
 
@@ -64,7 +64,7 @@ const chart = {
   fillOpacity: 0.2,
 
   labelsWidth: 50,
-  labelsHeight: 45
+  labelsHeight: 30
 };
 
 export default chart;
