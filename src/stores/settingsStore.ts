@@ -1,5 +1,5 @@
 import {observable} from 'mobx';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 

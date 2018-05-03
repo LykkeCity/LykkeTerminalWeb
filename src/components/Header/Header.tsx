@@ -1,70 +1,30 @@
-import {rem} from 'polished';
 import * as React from 'react';
+import AuthStore from '../../stores/authStore';
+import SettingsStore from '../../stores/settingsStore';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import {Icon} from '../Icon/index';
 import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {Link} from '../Link/index';
 import {SettingsModal} from '../Settings';
-import styled from '../styled';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
-import {HeaderProps} from './index';
+import {HeaderFlex, HeaderItem, HeaderWrapper, Logo} from './styles';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
 
-export const HeaderItem = styled(Box)`
-  font-size: ${rem(16)};
-  position: relative;
-
-  &:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    height: 24px;
-    margin-top: -12px;
-    border-left: solid 1px rgba(0, 0, 0, 0.2);
-  }
-
-  &:first-child:after {
-    border-left: 0;
-  }
-
-  > span,
-  a {
-    padding: ${rem(6)} ${rem(10)} ${rem(9)};
-    margin: 0 ${rem(5)};
-    border-radius: 4px;
-    border: 0;
-    display: block;
-    cursor: pointer;
-
-    &.active {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
-`;
-
-const HeaderWrapper = styled.header`
-  padding: ${rem(9)} ${rem(11)};
-  height: 60px;
-  border-bottom: solid 1px #272727;
-  background: #333;
-`;
-
-const Logo = styled.div`
-  margin-right: ${rem(18)};
-`;
-
-const HeaderFlex = styled(Flex)`
-  height: 100%;
-`;
+export interface HeaderProps {
+  authStore: AuthStore;
+  history: any;
+  settingsStore: SettingsStore;
+  readOnlyMode: boolean;
+}
 
 const Header: React.SFC<HeaderProps> = ({
   authStore,
   history,
-  settingsStore
+  settingsStore,
+  readOnlyMode
 }) => {
   const signOut = () => {
     authStore.signOut();
@@ -106,14 +66,14 @@ const Header: React.SFC<HeaderProps> = ({
 
         <Box ml="auto" is="menu">
           <Flex align="center">
-            {authStore.isAuth ? (
+            {authStore.isAuth && !readOnlyMode ? (
               <HeaderItem>
                 <Flex>
                   <BalanceInfo />
                 </Flex>
               </HeaderItem>
             ) : null}
-            {authStore.isAuth ? (
+            {authStore.isAuth && !readOnlyMode ? (
               <ClickOutside onClickOutside={handleCloseSettings}>
                 <HeaderItem>
                   <span

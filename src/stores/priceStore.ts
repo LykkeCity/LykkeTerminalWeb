@@ -5,8 +5,8 @@ import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
 import * as topics from '../api/topics';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
+import {levels} from '../models';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
 

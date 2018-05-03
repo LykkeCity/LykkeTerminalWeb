@@ -29,7 +29,8 @@ class ModalStore extends BaseStore {
       type,
       config
     );
-    this.modals = [...this.modals, ...[modal]];
+    this.modals.push(modal);
+    return modal;
   };
 
   closeModal = (modal: ModalModel) => {
@@ -38,6 +39,7 @@ class ModalStore extends BaseStore {
   };
 
   reset = () => {
+    this.modals = [];
     return;
   };
 }

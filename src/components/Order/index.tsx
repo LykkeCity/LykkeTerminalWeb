@@ -1,116 +1,8 @@
-import {rem} from 'polished';
 import {pathOr} from 'rambda';
-import styled from 'styled-components';
 import {AssetBalanceModel} from '../../models';
 import withAuth from '../Auth/withAuth';
 import {connect} from '../connect';
 import Order from './Order';
-
-// tslint:disable-next-line:no-var-requires
-const {Flex} = require('grid-styled');
-
-export interface OrderState {
-  isMarketActive: boolean;
-  isLimitActive: boolean;
-  isStopLimitActive: boolean;
-  isSellActive: boolean;
-  quantityValue: string;
-  pendingOrder: boolean;
-  priceValue: string;
-  percents: any[];
-}
-
-export interface OrderProps {
-  addModal: any;
-  ask: number;
-  bid: number;
-  accuracy: {
-    priceAccuracy: number;
-    quantityAccuracy: number;
-    baseAssetAccuracy: number;
-    quoteAssetAccuracy: number;
-  };
-  currency: string;
-  placeOrder: any;
-  baseAssetName: string;
-  baseAssetId: string;
-  quoteAssetName: string;
-  quoteAssetId: string;
-  stateFns: any[];
-  getAssetById: any;
-  onArrowClick: any;
-  onValueChange: any;
-  fixedAmount: any;
-  updatePriceFn: any;
-  updateDepthFn: any;
-  initPriceFn: any;
-  baseAssetBalance: any;
-  quoteAssetBalance: any;
-  mid: number;
-  handlePercentageChange: any;
-  updatePercentageState: any;
-  resetPercentage: any;
-  isLimitInvalid: (
-    isSell: boolean,
-    quantityValue: string,
-    priceValue: string,
-    baseAssetBalance: number,
-    quoteAssetBalance: number,
-    priceAccuracy: number,
-    quantityAccuracy: number
-  ) => boolean;
-  isMarketInvalid: (
-    isSell: boolean,
-    quantityValue: string,
-    baseAssetId: string,
-    quoteAssetId: string,
-    baseAssetBalance: number,
-    quoteAssetBalance: number,
-    quantityAccuracy: number
-  ) => boolean;
-}
-
-export interface OrderHeaderProps {
-  orderCurrency: string;
-  click: any;
-}
-
-export interface OrderChoiceButtonProps {
-  title: string;
-  click: any;
-  isActive: boolean;
-}
-
-export interface OrderButtonProps {
-  isDisable: boolean;
-  type: string;
-  message?: string;
-}
-
-export interface OrderActionProps {
-  price: number;
-  title: string;
-  action: string;
-  click: any;
-  isActive: boolean;
-}
-
-export interface OrderFormProps {
-  onChange: any;
-  onArrowClick: any;
-  isMarket: boolean;
-  isDisable: boolean;
-  action: string;
-  onSubmit?: any;
-  assetName: string;
-  quantity: string;
-  price: string;
-  amount: string;
-  buy?: string;
-  sell?: string;
-  quantityAccuracy?: number;
-  priceAccuracy?: number;
-}
 
 export interface OrderBasicFormProps {
   action: string;
@@ -130,75 +22,18 @@ export interface OrderBasicFormProps {
   priceAccuracy: number;
 }
 
-export interface OrderMarketState {
-  action: string;
-}
-
-export interface OrderMarketProps extends OrderBasicFormProps {
-  onResetPercentage: any;
-  onInvert: any;
-}
-
-export interface OrderLimitProps extends OrderBasicFormProps {
-  amount?: string;
-  price: string;
-  buttonMessage: string;
-  isEditForm?: boolean;
-}
-
-const StyledOrderButton = styled.div`
-  margin-top: ${rem(24)};
-  margin-bottom: ${rem(10)};
-`;
-
-const StyledInputControl = styled.div`
-  margin: ${rem(14)} 0 ${rem(8)} 0;
-`;
-
-const StyledReset = Flex.extend`
-  color: rgb(3, 136, 239);
-  font-size: ${rem(16)};
-  font-weight: bold;
-  line-height: 1;
-  padding: ${rem(16)} 0;
-
-  span:hover {
-    cursor: pointer;
-  }
-`;
-
-const StyledActionTitle = styled.div`
-  font-size: ${rem(16)};
-  font-weight: 600;
-  &:first-letter {
-    text-transform: capitalize;
-  }
-`;
-
-const StyledTotalAmount = styled.div`
-  padding-top: ${rem(1)};
-  color: #8c94a0;
-  font-size: ${rem(15)};
-`;
-
-const StyledAvailable = styled(StyledTotalAmount)`
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const StyledNote = styled.div`
-  font-size: ${rem(14)};
-  color: #fff;
-`;
-
 const ConnectedOrder = connect(
   ({
     balanceListStore: {tradingWalletBalances: getBalance},
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
     orderStore: {placeOrder, updatePriceFn, updateDepthFn},
-    uiStore: {selectedInstrument: instrument, stateFns, initPriceFn},
+    uiStore: {
+      selectedInstrument: instrument,
+      stateFns,
+      initPriceFn,
+      readOnlyMode
+    },
     referenceStore,
     uiOrderStore: {
       onArrowClick,
@@ -207,6 +42,7 @@ const ConnectedOrder = connect(
       handlePercentageChange,
       updatePercentageState,
       resetPercentage,
+      setActivePercentage,
       isLimitInvalid,
       isMarketInvalid
     },
@@ -239,6 +75,7 @@ const ConnectedOrder = connect(
     isMarketInvalid,
     getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
+    setActivePercentage,
     initPriceFn,
     mid: mid(),
     onArrowClick,
@@ -264,18 +101,11 @@ const ConnectedOrder = connect(
       });
       return asset && asset.available;
     },
-    isAuth
+    isAuth,
+    readOnlyMode,
+    instrument
   }),
   withAuth(Order)
 );
 
 export {ConnectedOrder as Order};
-export {
-  StyledActionTitle,
-  StyledInputControl,
-  StyledOrderButton,
-  StyledReset,
-  StyledAvailable,
-  StyledNote,
-  StyledTotalAmount
-};
