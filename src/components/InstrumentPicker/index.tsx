@@ -67,9 +67,10 @@ const connectedInstrumentPicker = connect(
       referenceStore.getAssetById(referenceStore.baseAssetId) ||
       new AssetModel({}),
     instrumentId: pathOr(undefined, ['selectedInstrument', 'id'], uiStore),
-    instruments: referenceStore
-      .findInstruments(uiStore.searchTerm, uiStore.searchWalletName)
-      .sort((a, b) => b.volumeInBase - a.volumeInBase),
+    instruments: referenceStore.findInstruments(
+      uiStore.searchTerm,
+      uiStore.searchWalletName
+    ),
     value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
     show: uiStore.showInstrumentPicker,
     showInstrumentSelection: uiStore.showInstrumentSelection,
