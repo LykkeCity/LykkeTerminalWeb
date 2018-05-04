@@ -21,7 +21,7 @@ const StyledInput = styled.input`
 `;
 
 const StyledInputNumberComponent = styled.div`
-  position: sticky;
+  position: relative;
 
   > span.up,
   > span.down {

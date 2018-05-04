@@ -1,6 +1,5 @@
 import {rem} from 'polished';
-import styled from 'styled-components';
-import {colors} from '../styled';
+import styled, {colors, greyButton} from '../styled';
 
 export const StyledKycModalHeader = styled.div`
   font-size: ${rem(24)};
@@ -38,7 +37,7 @@ export const StyledGooglePlay = styled.div`
 export const Modal = styled.div`
   font-family: Proxima Nova;
   position: absolute;
-  padding: 20px 25px;
+  padding: ${rem(20)} ${rem(25)};
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
@@ -55,9 +54,9 @@ export const SessionQRConfirm = styled(Modal)`
 `;
 
 export const Button = styled.button`
-  color: #f5f6f7;
-  width: 152px;
-  height: 49px;
+  color: ${colors.white};
+  width: ${rem(152)};
+  height: ${rem(49)};
   border-radius: 4px;
   outline: none;
 
@@ -86,7 +85,12 @@ export const ApplyButton = styled(Button)`
 
 export const CancelButton = styled(Button)`
   background: transparent;
-  border: solid 1px rgba(140, 148, 160, 0.4);
+  border: solid 1px ${greyButton.borderColor};
+`;
+
+export const OkButton = styled(CancelButton)`
+  margin: ${rem(20)} 0 0 0;
+  width: 100%;
 `;
 
 export const QRButton = styled(CancelButton)`
@@ -193,3 +197,39 @@ export const CloseBtnPosition = {
   top: 10,
   right: 16
 };
+
+export const ModalContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const MarginedModalBody = styled(ModalBody)`
+  margin: ${rem(15)} 0;
+`;
+
+export const MobileAppLink = styled.a.attrs({
+  style: (props: any) => ({
+    backgroundImage: `url('assets/images/${props.image}.png')`,
+    cursor: 'pointer'
+  })
+})`
+  width: 49%;
+  height: ${rem(42)};
+  background: no-repeat center;
+  background-size: cover;
+  border-radius: ${rem(6)};
+  text-decoration: none;
+` as any;
+
+export const ModalWrapper = styled(Modal)`
+  width: ${rem(300)};
+`;
+
+export const KycAndFundsBack = styled.div`
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+  background-color: ${colors.lightGraphite};
+`;

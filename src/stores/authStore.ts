@@ -1,8 +1,7 @@
 import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
 import messages from '../constants/notificationMessages';
-import {levels} from '../models';
-import {keys} from '../models';
+import {keys, KycStatuses, levels} from '../models';
 import {RandomString, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -10,6 +9,7 @@ const randomString = RandomString();
 const tokenStorage = StorageUtils(keys.token);
 const stateStorage = StorageUtils(keys.state);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
+const kycStatusStorage = StorageUtils(keys.isKycPassed);
 
 class AuthStore extends BaseStore {
   @computed
@@ -17,7 +17,21 @@ class AuthStore extends BaseStore {
     return !!this.token;
   }
 
+  @computed
+  get isKycPassed() {
+    return (
+      this.kycStatus === KycStatuses.ReviewDone ||
+      this.kycStatus === KycStatuses.Ok
+    );
+  }
+
+  @computed
+  get noKycAndFunds() {
+    return !this.isKycPassed || !this.rootStore.balanceListStore.fundsOnBalance;
+  }
+
   @observable private token: string = tokenStorage.get() || '';
+  @observable private kycStatus: string = kycStatusStorage.get() || '';
 
   constructor(store: RootStore, private readonly api: AuthApi) {
     super(store);
@@ -46,6 +60,12 @@ class AuthStore extends BaseStore {
     }
   };
 
+  fetchUserInfo = async (accessToken: string) => {
+    const {KycStatus} = await this.api.fetchUserInfo(accessToken);
+    this.kycStatus = KycStatus;
+    kycStatusStorage.set(KycStatus);
+  };
+
   catchUnauthorized = () => {
     this.rootStore.notificationStore.addNotification(
       levels.information,
@@ -71,18 +91,20 @@ class AuthStore extends BaseStore {
     );
   };
 
-  signOut = async () => {
+  signOut = async (redirectUrl?: string) => {
     this.rootStore.reset();
     const {REACT_APP_AUTH_URL: url} = process.env;
     location.replace(
       `${url}/connect/logout?post_logout_redirect_uri=${encodeURIComponent(
-        location.origin
+        redirectUrl || location.origin
       )}`
     );
   };
 
   reset = () => {
+    this.kycStatus = '';
     this.token = '';
+    kycStatusStorage.clear();
     tokenStorage.clear();
     sessionTokenStorage.clear();
   };

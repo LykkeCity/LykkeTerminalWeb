@@ -117,7 +117,6 @@ class RootStore {
   };
 
   start = async () => {
-    await this.referenceStore.fetchReferenceData(this.authStore.isAuth);
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
@@ -129,19 +128,13 @@ class RootStore {
       UiStore.DEFAULT_INSTRUMENT
     );
 
-    if (!this.authStore.isAuth) {
-      return this.startPublicMode(defaultInstrument);
-    }
-
     this.sessionStore.initUserSession();
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
 
     await this.referenceStore
       .fetchBaseAsset()
-      .then(async () => {
-        this.referenceStore.updateInstruments();
-        this.balanceListStore.fetchAll();
+      .then(() => {
         this.orderListStore.fetchAll();
       }, reject => Promise.resolve)
       .then(async () => {
