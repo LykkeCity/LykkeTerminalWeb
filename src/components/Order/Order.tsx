@@ -212,49 +212,41 @@ class Order extends React.Component<OrderProps, OrderState> {
   handleButtonClick = (
     action: string,
     baseAssetName: string,
-    quoteAssetName: string,
-    accuracy?: number
+    quoteAssetName: string
   ) => {
     this.disableButton(true);
     const {quantityValue, priceValue} = this.state;
-    const currentPrice = formattedNumber(
+    const displayedPrice = formattedNumber(
       +parseFloat(priceValue),
       this.props.accuracy.priceAccuracy
     );
 
-    const currentQuantity = formattedNumber(
+    const displayedQuantity = formattedNumber(
       +parseFloat(quantityValue),
-      accuracy ? accuracy : this.props.accuracy.baseAssetAccuracy
+      this.props.accuracy.baseAssetAccuracy
     );
-
-    const placedPrice = parseFloat(priceValue).toFixed(
-      this.props.accuracy.priceAccuracy
-    );
-    const placedQuantity = accuracy
-      ? parseFloat(quantityValue).toFixed(accuracy)
-      : quantityValue;
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
       return this.applyOrder(
         action,
-        placedQuantity,
+        quantityValue,
         this.props.baseAssetId,
-        placedPrice
+        priceValue
       ); // TODO baseAssetId should be passed from component for inverted case
     }
     const messageSuffix = this.state.isMarketActive
       ? 'at the market price'
-      : `at the price of ${currentPrice} ${quoteAssetName}`;
-    const message = `${action} ${currentQuantity} ${baseAssetName} ${messageSuffix}`;
+      : `at the price of ${displayedPrice} ${quoteAssetName}`;
+    const message = `${action} ${displayedQuantity} ${baseAssetName} ${messageSuffix}`;
     this.props.addModal(
       message,
       () =>
         this.applyOrder(
           action,
-          placedQuantity,
+          quantityValue,
           this.props.baseAssetId,
-          placedPrice
+          priceValue
         ), // TODO baseAssetId should be passed from component for inverted case
       this.cancelOrder,
       Types.Confirm

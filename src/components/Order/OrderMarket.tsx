@@ -154,19 +154,12 @@ const OrderMarketForm: React.SFC<OrderMarketProps & FormikProps<{}>> = (
 
 export default withFormik<OrderMarketProps, {}>({
   handleSubmit: (values: any, {props}) => {
-    const {
-      action,
-      baseAssetName,
-      quoteAssetName,
-      quantityAccuracy,
-      priceAccuracy
-    } = props;
+    const {action, baseAssetName, quoteAssetName} = props;
     const {invertedAction, isInverted} = values;
     props.onSubmit(
       invertedAction || action,
       isInverted ? quoteAssetName : baseAssetName,
-      isInverted ? baseAssetName : quoteAssetName,
-      isInverted ? priceAccuracy : quantityAccuracy
+      isInverted ? baseAssetName : quoteAssetName
     );
   }
 })(OrderMarketForm);
