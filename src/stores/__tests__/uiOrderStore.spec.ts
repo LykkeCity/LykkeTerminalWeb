@@ -1,4 +1,3 @@
-import {precisionFloor} from '../../utils/math';
 import {RootStore, UiOrderStore} from '../index';
 
 describe('uiOrder store', () => {
@@ -36,15 +35,6 @@ describe('uiOrder store', () => {
     expect(gottenObject[field]).toBe(
       (parseFloat(value) - Math.pow(10, -1 * accuracy)).toFixed(accuracy)
     );
-  });
-
-  it('should fixed value with accuracy', () => {
-    const currentPrice = 1;
-    const quantityValue = '0.1';
-    accuracy = 2;
-    expect(
-      uiOrderStore.fixedAmount(currentPrice, quantityValue, accuracy)
-    ).toBe(currentPrice * precisionFloor(+quantityValue, accuracy));
   });
 
   it('should return object with fixed value', () => {

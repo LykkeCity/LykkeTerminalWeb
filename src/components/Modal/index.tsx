@@ -10,7 +10,6 @@ const ConnectedEditOrderModal = connect(
     uiOrderStore: {
       onArrowClick,
       onValueChange,
-      fixedAmount,
       resetPercentage,
       handlePercentageChange,
       setActivePercentage,
@@ -19,7 +18,6 @@ const ConnectedEditOrderModal = connect(
     orderStore: {editOrder}
   }) => ({
     editOrder,
-    fixedAmount,
     availableBalances,
     getInstrumentById,
     handlePercentageChange,

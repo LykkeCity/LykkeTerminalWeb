@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {HeaderItem} from '../Header/styles';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import {HeaderItem} from '../Header/styles';
 import {
   InstrumentPerformanceFigureLabel,
   InstrumentPerformanceFigureValue,
