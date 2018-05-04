@@ -15,7 +15,7 @@ const ConnectedWalletBalanceList = connect<WalletBalanceListProps>(
     baseAsset: getAssetById(baseAssetId) || new AssetModel({}),
     getAssetById
   }),
-  withStyledScroll({height: 'calc(100% - 1.5rem)'})(WalletBalanceList)
+  withStyledScroll({height: 'calc(100% - 1.5rem)'})(observer(WalletBalanceList))
 );
 
 const ObservedWalletBalanceItem = observer(WalletBalanceItem);
