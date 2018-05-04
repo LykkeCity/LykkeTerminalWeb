@@ -183,6 +183,8 @@ class TradeStore extends BaseStore {
     this.unsubscribeFromPublicTrades();
   };
 
+  isAllTrades = () => this.filter === TradeFilter.All;
+
   @action
   reset = () => {
     this.resetTrades();
