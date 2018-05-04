@@ -8,9 +8,10 @@ import InstrumentModel from '../../models/instrumentModel';
 import Types from '../../models/modals';
 import {capitalize} from '../../utils';
 import {StorageUtils} from '../../utils/index';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import {precisionFloor} from '../../utils/math';
 import ActionChoiceButton from './ActionChoiceButton';
 import MarketChoiceButton from './MarketChoiceButton';
-import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import OrderLimit from './OrderLimit';
 import OrderMarket from './OrderMarket';
 import {Actions, Markets} from './styles';
@@ -54,7 +55,6 @@ interface OrderProps {
   getAssetById: any;
   onArrowClick: any;
   onValueChange: any;
-  fixedAmount: any;
   updatePriceFn: any;
   updateDepthFn: any;
   initPriceFn: any;
@@ -224,7 +224,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     const currentQuantity = formattedNumber(
       +parseFloat(quantityValue),
-      accuracy ? accuracy : 2
+      accuracy ? accuracy : this.props.accuracy.baseAssetAccuracy
     );
 
     const isConfirm = confirmStorage.get() as string;
@@ -364,7 +364,6 @@ class Order extends React.Component<OrderProps, OrderState> {
       },
       baseAssetName,
       quoteAssetName,
-      fixedAmount,
       bid,
       ask,
       resetPercentage,
@@ -414,6 +413,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       ? baseAssetAccuracy
       : quoteAssetAccuracy;
 
+    const roundedAmount = precisionFloor(
+      currentPrice * parseFloat(quantityValue),
+      quoteAssetAccuracy
+    );
+
     return (
       <div>
         <Markets>
@@ -458,18 +462,15 @@ class Order extends React.Component<OrderProps, OrderState> {
             baseAssetName={baseAssetName}
             quoteAssetName={quoteAssetName}
             isSell={isSellActive}
-            amount={fixedAmount(
-              currentPrice,
-              quantityValue,
-              quoteAssetAccuracy
-            )}
+            amount={formattedNumber(roundedAmount || 0, quoteAssetAccuracy)}
             isDisable={isLimitInvalid}
             onReset={this.reset}
-            balance={available && available.toFixed(balanceAccuracy)}
+            balance={available}
             buttonMessage={`${capitalize(action)} ${formattedNumber(
               +quantityValue,
               quantityAccuracy
             )} ${baseAssetName}`}
+            balanceAccuracy={balanceAccuracy}
           />
         )}
 
@@ -487,12 +488,13 @@ class Order extends React.Component<OrderProps, OrderState> {
             onReset={this.reset}
             isDisable={isMarketInvalid}
             onSubmit={this.handleButtonClick}
-            balance={available && available.toFixed(balanceAccuracy)}
+            balance={available}
             isSell={isSellActive}
             // tslint:disable-next-line:jsx-no-lambda
             onResetPercentage={() => resetPercentage(percentage)}
             priceAccuracy={priceAccuracy}
             onInvert={this.handleInvert}
+            balanceAccuracy={balanceAccuracy}
           />
         )}
       </div>

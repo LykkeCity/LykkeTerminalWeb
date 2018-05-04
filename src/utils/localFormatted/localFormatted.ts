@@ -15,7 +15,11 @@ export const formattedNumber = (
 
 export const checkForTrailingZero = (value: string): string => {
   const indexOfZero = value.search(/0+$/);
-  return indexOfZero !== -1 ? value.slice(0, indexOfZero + 1) : value;
+  const zeroQuantity =
+    value[indexOfZero - 1] === ',' || value[indexOfZero - 1] === '.' ? 2 : 1;
+  return indexOfZero !== -1
+    ? value.slice(0, indexOfZero + zeroQuantity)
+    : value;
 };
 
 export default formattedNumber;
