@@ -20,6 +20,8 @@ export interface OrderBasicFormProps {
   quantity: string;
   quantityAccuracy: number;
   priceAccuracy: number;
+  baseAssetAccuracy?: any;
+  balanceAccuracy: number;
 }
 
 const ConnectedOrder = connect(
@@ -38,7 +40,6 @@ const ConnectedOrder = connect(
     uiOrderStore: {
       onArrowClick,
       onValueChange,
-      fixedAmount,
       handlePercentageChange,
       updatePercentageState,
       resetPercentage,
@@ -70,7 +71,6 @@ const ConnectedOrder = connect(
     },
     bid: bestBid(),
     currency: pathOr('', ['id'], instrument),
-    fixedAmount,
     isLimitInvalid,
     isMarketInvalid,
     getAssetById: referenceStore.getAssetById,

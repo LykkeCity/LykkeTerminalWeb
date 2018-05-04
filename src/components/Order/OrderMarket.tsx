@@ -3,6 +3,7 @@ import * as React from 'react';
 import orderAction from '../../constants/orderAction';
 import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
+import formattedNumber from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderBasicFormProps} from './index';
 import OrderButton from './OrderButton';
@@ -88,52 +89,42 @@ class OrderMarket extends React.Component<
   };
 
   render() {
-    const {baseAssetName, quoteAssetName} = this.props;
+    const {baseAssetName, quoteAssetName, balanceAccuracy} = this.props;
     this.previousPropsAction = this.props.action;
     const {quantityAccuracy, priceAccuracy, quantity} = this.props;
     const currentAccuracy = this.isInverted ? priceAccuracy : quantityAccuracy;
 
     return (
       <div>
-        <div>
-          <div>
-            <div>
-              <Flex justify="space-between">
-                <Action>
-                  {this.state.action}{' '}
-                  {!this.isInverted ? baseAssetName : quoteAssetName}
-                </Action>
-                <Available onClick={this.handlePercentageChange()}>
-                  {this.props.balance}{' '}
-                  {this.props.isSell ? baseAssetName : quoteAssetName} available
-                </Available>
-              </Flex>
-            </div>
-          </div>
-          <Flex>
-            <InputControl style={{width: '100%'}}>
-              <NumberInput
-                value={quantity}
-                id={OrderInputs.Quantity}
-                onChange={this.props.onChange(currentAccuracy)}
-                onArrowClick={this.props.onArrowClick(currentAccuracy)}
-              />
-            </InputControl>
+        <InputControl style={{width: '100%'}}>
+          <Flex justify="space-between" style={{marginBottom: '8px'}}>
+            <Action>
+              {this.state.action}{' '}
+              {!this.isInverted ? baseAssetName : quoteAssetName}
+            </Action>
+            <Available onClick={this.handlePercentageChange()}>
+              {formattedNumber(this.props.balance || 0, balanceAccuracy)}{' '}
+              {this.props.isSell ? baseAssetName : quoteAssetName} available
+            </Available>
           </Flex>
-          <div>
-            <Flex justify={'space-between'} style={{width: '100%'}}>
-              {this.props.percents!.map((item: any, index: number) => (
-                <OrderPercentage
-                  percent={item.percent}
-                  key={index}
-                  onClick={this.handlePercentageChange(index)}
-                  isActive={item.isActive}
-                  isDisabled={!this.props.balance}
-                />
-              ))}
-            </Flex>
-          </div>
-        </div>
+          <NumberInput
+            value={quantity}
+            id={OrderInputs.Quantity}
+            onChange={this.props.onChange(currentAccuracy)}
+            onArrowClick={this.props.onArrowClick(currentAccuracy)}
+          />
+        </InputControl>
+        <Flex justify={'space-between'} style={{width: '100%'}}>
+          {this.props.percents!.map((item: any, index: number) => (
+            <OrderPercentage
+              percent={item.percent}
+              key={index}
+              onClick={this.handlePercentageChange(index)}
+              isActive={item.isActive}
+              isDisabled={!this.props.balance}
+            />
+          ))}
+        </Flex>
         <MarketConfirmButton>
           <OrderButton
             isDisable={this.props.isDisable}
