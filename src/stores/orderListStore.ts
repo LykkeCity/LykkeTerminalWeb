@@ -6,6 +6,7 @@ import * as mappers from '../models/mappers';
 import OrdersDefaultSelection from '../models/ordersDefaultSelection';
 import {BaseStore, RootStore} from './index';
 
+// tslint:disable:no-bitwise
 class OrderListStore extends BaseStore {
   @computed
   get allOrders() {
@@ -62,15 +63,29 @@ class OrderListStore extends BaseStore {
   };
 
   @action
-  addOrder = (order: any) => {
-    this.orders.push(mappers.mapToLimitOrder(order));
+  addOrder = (addedOrder: any) => {
+    const orderIndex = this.orders.findIndex(
+      (order: OrderModel) => order.id === addedOrder.Id
+    );
+    if (!!~orderIndex) {
+      return null;
+    }
+    const mappedOrder = mappers.mapToLimitOrder(addedOrder);
+    this.orders.push(mappedOrder);
+    return mappedOrder;
   };
 
   @action
-  deleteOrder = (orderId: string) =>
-    (this.orders = [
-      ...this.orders.filter((order: OrderModel) => order.id !== orderId)
-    ]);
+  deleteOrder = (orderId: string) => {
+    const orderIndex = this.orders.findIndex(
+      (order: OrderModel) => order.id === orderId
+    );
+    if (!~orderIndex) {
+      return null;
+    }
+    const deletedOrders = this.orders.splice(orderIndex, 1);
+    return deletedOrders[0];
+  };
 
   @action
   addOrUpdateOrder = (dto: any) => {

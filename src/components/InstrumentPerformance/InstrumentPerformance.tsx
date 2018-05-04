@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {HeaderItem} from '../Header/Header';
+import {HeaderItem} from '../Header/styles';
 import {
   InstrumentPerformanceFigureLabel,
   InstrumentPerformanceFigureValue,
@@ -9,7 +9,7 @@ import {
 
 const colorFromChange = (change: number) =>
   Number.isFinite(change)
-    ? change === 0 ? undefined : change > 0 ? '#13b72a' : '#ff3e2e'
+    ? change === 0 ? undefined : change > 0 ? '#46eb6a' : '#ff6161'
     : undefined;
 
 const mapToPercentageWithAccuracy = (acc: number) => (val: number) =>

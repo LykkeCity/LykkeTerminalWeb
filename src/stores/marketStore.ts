@@ -1,20 +1,21 @@
 import {AssetModel, InstrumentModel} from '../models';
-import {BaseStore, RootStore} from './index';
+import {BaseStore} from './index';
 
 class MarketStore extends BaseStore {
   private result: any = {};
   private graph: any = {};
 
-  constructor(store: RootStore) {
-    super(store);
-  }
-
   init = (insturments: InstrumentModel[], assets: AssetModel[]) => {
     const {g, d, u} = this.initData(insturments);
     for (const asset of assets) {
-      this.result[asset.id] = this.buildDeikstra(asset.id, g, {...d}, {...u});
+      this.result[asset.id] = this.buildDijkstra(asset.id, g, {...d}, {...u});
     }
     this.graph = g;
+  };
+
+  reset = () => {
+    this.result = {};
+    this.graph = {};
   };
 
   convert = (
@@ -27,7 +28,6 @@ class MarketStore extends BaseStore {
     if (!precalc) {
       return 0;
     }
-
     const path = [];
     for (let v = assetTo; v && v !== assetFrom; v = precalc[v]) {
       path.push(v);
@@ -51,21 +51,19 @@ class MarketStore extends BaseStore {
       }
       const {pair, straight} = secondAssetData;
       const instrument = getInstrumentById(pair);
-      if (!instrument || !instrument.price) {
+      if (!instrument) {
         return 0;
       }
-      if (straight) {
-        output *= instrument.price;
+      if (straight && instrument.bid) {
+        output *= instrument.bid;
+      } else if (!straight && instrument.ask) {
+        output *= 1 / instrument.ask;
       } else {
-        output *= 1 / instrument.price;
+        return 0;
       }
     }
-    return output;
-  };
 
-  reset = () => {
-    this.result = {};
-    this.graph = {};
+    return output;
   };
 
   private initData = (instruments: InstrumentModel[]) => {
@@ -80,31 +78,47 @@ class MarketStore extends BaseStore {
       if (!g[baseAssetId]) {
         g[baseAssetId] = {};
       }
-      g[baseAssetId][quoteAssetId] = {
-        weight: 1,
-        pair: instrument.id,
-        straight: true
-      };
+      if (instrument.bid) {
+        g[baseAssetId][quoteAssetId] = {
+          weight: this.getWeight(instrument),
+          pair: instrument.id,
+          straight: true
+        };
+      }
 
       if (!g[quoteAssetId]) {
         g[quoteAssetId] = {};
       }
-      g[quoteAssetId][baseAssetId] = {
-        weight: 1,
-        pair: instrument.id,
-        straight: false
-      };
+      if (instrument.ask) {
+        g[quoteAssetId][baseAssetId] = {
+          weight: this.getWeight(instrument),
+          pair: instrument.id,
+          straight: false
+        };
+      }
 
       d[baseAssetId] = Infinity;
       d[quoteAssetId] = Infinity;
       u[baseAssetId] = false;
       u[quoteAssetId] = false;
     }
-
     return {g, d, u};
   };
 
-  private buildDeikstra = (start: string, g: any, d: any, u: any) => {
+  private getWeight(instrument: InstrumentModel) {
+    const assets = [instrument.baseAsset.id, instrument.quoteAsset.id];
+
+    if (assets.indexOf('BTC') !== -1) {
+      return 4;
+    } else if (assets.indexOf('ETH') !== -1) {
+      return 5;
+    } else if (assets.indexOf('USD') !== -1) {
+      return 6;
+    }
+    return 7;
+  }
+
+  private buildDijkstra = (start: string, g: any, d: any, u: any) => {
     d[start] = 0;
     const keys = Object.keys(g);
     const result = {};

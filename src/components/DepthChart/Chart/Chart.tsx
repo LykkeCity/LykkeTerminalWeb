@@ -25,6 +25,9 @@ class Chart extends React.Component<ChartProps> {
   midXBids: number;
   midY: number;
 
+  minDepth: number;
+  maxDepth: number;
+
   coef: number;
 
   constructor(props: ChartProps) {
@@ -53,13 +56,17 @@ class Chart extends React.Component<ChartProps> {
     let newX = this.midXAsks;
     let newY = this.midY;
     const points = [currentX, currentY];
+
     this.asks.forEach((ask, index) => {
       newX = currentX + this.calculateAsksStepLength(ask, index);
       newY = this.midY - this.calculateAsksStepHeight(ask);
+
       points.push(currentX, newY, newX, newY);
+
       currentX = newX;
       currentY = newY;
     });
+
     this.pointsAsks = points;
   };
 
@@ -127,10 +134,13 @@ class Chart extends React.Component<ChartProps> {
     let newX = this.midXBids;
     let newY = this.midY;
     const points = [currentX, currentY];
+
     this.bids.forEach((bid, index) => {
       newX = currentX - this.calculateBidsStepLength(bid, index);
       newY = this.midY - this.calculateBidsStepHeight(bid);
+
       points.push(currentX, newY, newX, newY);
+
       currentX = newX;
       currentY = newY;
     });
@@ -180,15 +190,13 @@ class Chart extends React.Component<ChartProps> {
   };
 
   calculateCoef() {
-    if (this.asks[this.asks.length - 1] && this.bids[this.bids.length - 1]) {
-      const maxDepth = Math.max(
-        this.asks[this.asks.length - 1].depth,
-        this.bids[this.bids.length - 1].depth
-      );
-      return this.height / (maxDepth + maxDepth / 2);
-    } else {
-      return 1;
+    if (this.minDepth && this.maxDepth) {
+      if (this.minDepth === this.maxDepth) {
+        return this.height / this.minDepth * 0.65;
+      }
+      return this.height / (this.maxDepth - this.minDepth) * 0.65;
     }
+    return 1;
   }
 
   initilaize() {
@@ -201,6 +209,8 @@ class Chart extends React.Component<ChartProps> {
     this.asks = this.props.asks.reverse();
     this.bids = this.props.bids;
     this.mid = this.props.mid;
+    this.minDepth = Math.min(...this.bids.concat(this.asks).map(x => x.depth));
+    this.maxDepth = Math.max(...this.bids.concat(this.asks).map(x => x.depth));
     this.coef = this.calculateCoef();
   }
 
@@ -210,8 +220,12 @@ class Chart extends React.Component<ChartProps> {
     this.drawAsks();
     this.drawBids();
 
-    this.drawAsksPointerPadding();
-    this.drawBidsPointerPadding();
+    if (this.asks.length > 0) {
+      this.drawAsksPointerPadding();
+    }
+    if (this.bids.length > 0) {
+      this.drawBidsPointerPadding();
+    }
 
     return this.graphics;
   }

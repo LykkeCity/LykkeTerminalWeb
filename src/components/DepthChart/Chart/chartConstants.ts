@@ -1,10 +1,11 @@
 const chart = {
   mesh: {
     color: '#8c94a0',
-    dash: [1, 3],
+    dash: [2, 5],
+    dots: [1, 5],
     strikeWidth: 1,
     opacity: 0.4,
-    verticalFontSize: 14,
+    verticalFontSize: 12,
     horizontalFontSize: 12,
     fontFamily: 'Proxima Nova',
 
@@ -63,7 +64,7 @@ const chart = {
   fillOpacity: 0.2,
 
   labelsWidth: 50,
-  labelsHeight: 45
+  labelsHeight: 25
 };
 
 export default chart;

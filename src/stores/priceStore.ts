@@ -5,8 +5,8 @@ import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
 import * as topics from '../api/topics';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
+import {levels} from '../models';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
 
@@ -121,20 +121,25 @@ class PriceStore extends BaseStore {
   };
 
   onDailyTradeCandle = (args: any[]) => {
-    const {open, high, low, close, volume} = map.mapToBarFromWamp(args[0]);
-    this.dailyOpen = open;
-    this.dailyHigh = high;
-    this.dailyLow = low;
-    this.lastTradePrice = close;
-    this.dailyVolume = volume;
+    if (this.selectedInstrument && this.selectedInstrument.id === args[0].a) {
+      const {open, high, low, close, volume} = map.mapToBarFromWamp(args[0]);
+      this.dailyOpen = open;
+      this.dailyHigh = high;
+      this.dailyLow = low;
+      this.lastTradePrice = close;
+      this.dailyVolume = volume;
+    }
   };
 
   unsubscribeFromDailyCandle = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(
-      this.getWs().unsubscribe
-    );
+    const subscriptions = Array.from(this.subscriptions).map(s => {
+      // tslint:disable-next-line:no-unused-expression
+      this.getWs() && this.getWs().unsubscribe(s);
+    });
     await Promise.all(subscriptions);
-    this.subscriptions.clear();
+    if (this.subscriptions.size > 0) {
+      this.subscriptions.clear();
+    }
   };
 
   reset = () => {

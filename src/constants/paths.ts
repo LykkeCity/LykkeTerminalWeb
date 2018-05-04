@@ -1,6 +1,7 @@
 const paths = {
   auth: '/auth',
-  signin: '/signin'
+  signin: '/signin',
+  main: '/'
 };
 
 export default paths;

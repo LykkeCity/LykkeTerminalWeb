@@ -20,5 +20,5 @@ export const InstrumentPerformanceFigureValue = styled.div`
 
 export const InstrumentPerformanceFigureLabel = styled.small`
   color: #8c94a0;
-  font-size: 0.7rem;
+  font-size: ${rem(fonts.small)};
 `;

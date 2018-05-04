@@ -5,7 +5,7 @@ import autobahn, {
   Session,
   Subscription
 } from 'autobahn';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import {StorageUtils} from '../utils/index';
 
 const tokenStorage = StorageUtils(keys.token);

@@ -17,65 +17,76 @@ class Mesh extends React.Component<ChartProps> {
   width: number;
   height: number;
 
+  emptyLabels: string[] = ['', '', '', ''];
+
   constructor(props: ChartProps) {
     super(props);
   }
 
-  generateVerticalLabels = () => {
-    let labels: string[] = [];
-    const bidsLabels = [];
+  generateAsksLabels = (): string[] => {
     const asksLabels = [];
+    if (this.asks.length > 0) {
+      const step =
+        (this.asks[0].price - this.mid) / chart.mesh.verticalLinesAmount;
+      for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
+        if (i % 2 === 1) {
+          const label = (this.mid + step * i).toLocaleString(undefined, {
+            maximumFractionDigits: this.props.priceAccuracy
+          });
+          asksLabels.push(label);
+        }
+      }
+    }
+    return asksLabels.length > 0 ? asksLabels : this.emptyLabels;
+  };
 
-    if (this.asks.length > 0 && this.bids.length > 0) {
-      const maximum = this.asks[0].price;
-
-      let step;
-      step =
+  generateBidsLabels = (): string[] => {
+    const bidsLabels = [];
+    if (this.bids.length > 0) {
+      const step =
         (this.mid - this.bids[this.bids.length - 1].price) /
         chart.mesh.verticalLinesAmount;
       for (let i = chart.mesh.verticalLinesAmount; i > 0; i--) {
         if (i % 2 === 1) {
-          bidsLabels.push(
-            (this.mid - step * i).toLocaleString(undefined, {
-              maximumFractionDigits: this.props.priceAccuracy
-            })
-          );
+          const label = (this.mid - step * i).toLocaleString(undefined, {
+            maximumFractionDigits: this.props.priceAccuracy
+          });
+          bidsLabels.push(label);
         }
       }
-
-      step = (maximum - this.mid) / chart.mesh.verticalLinesAmount;
-      for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
-        if (i % 2 === 1) {
-          asksLabels.push(
-            (this.mid + step * i).toLocaleString(undefined, {
-              maximumFractionDigits: this.props.priceAccuracy
-            })
-          );
-        }
-      }
-
-      labels = bidsLabels.concat(asksLabels);
     }
-    return labels;
+    return bidsLabels.length > 0 ? bidsLabels : this.emptyLabels;
+  };
+
+  generateVerticalLabels = () => {
+    return this.generateBidsLabels().concat(this.generateAsksLabels());
+  };
+
+  calculateMaxDepth = () => {
+    if (this.asks.length > 0 && this.bids.length > 0) {
+      return Math.max(
+        this.asks[0].depth,
+        this.bids[this.bids.length - 1].depth
+      );
+    } else if (this.asks.length > 0) {
+      return this.asks[0].depth;
+    } else if (this.bids.length > 0) {
+      return this.bids[this.bids.length - 1].depth;
+    }
+    return 1;
   };
 
   generateHorizontalLabels = () => {
     const labels = [];
-    if (this.asks.length > 0 && this.bids.length > 0) {
-      const maxDepth = Math.max(
-        this.asks[0].depth,
-        this.bids[this.bids.length - 1].depth
-      );
-      const maximum = maxDepth + maxDepth / 2;
+    const maximum = this.calculateMaxDepth() / 0.65;
 
-      const step = maximum / chart.mesh.horizontalLinesAmount;
-      for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
-        labels.push(
-          (step * (i + 1) - step / 2).toLocaleString(undefined, {
-            maximumFractionDigits: 2
-          })
-        );
-      }
+    const step = maximum / chart.mesh.horizontalLinesAmount;
+    for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
+      labels.push(
+        (step * (i + 1) - step / 2).toLocaleString(undefined, {
+          maximumFractionDigits: 2
+        })
+      );
     }
     return labels.reverse();
   };
@@ -105,7 +116,7 @@ class Mesh extends React.Component<ChartProps> {
           closed={true}
           stroke={chart.mesh.color}
           strokeWidth={chart.mesh.strikeWidth}
-          dash={chart.mesh.dash}
+          dash={chart.mesh.dots}
           opacity={0.6}
         />
       );

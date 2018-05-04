@@ -14,6 +14,14 @@ const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
   sortBy((o: TradeModel) => new Date(o.timestamp).getTime())
 );
 
+const sortMultiField = (source: TradeModel[]) => {
+  return source.sort(
+    (a: any, b: any) =>
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime() ||
+      b.index - a.index
+  );
+};
+
 class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
   @observable shouldFetchMore = false;
@@ -29,7 +37,7 @@ class TradeStore extends BaseStore {
 
   @computed
   get getPublicTrades() {
-    return sortByDate(this.publicTrades);
+    return sortMultiField(this.publicTrades);
   }
 
   @computed
@@ -151,11 +159,14 @@ class TradeStore extends BaseStore {
   };
 
   unsubscribeFromPublicTrades = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(
-      this.getWs().unsubscribe
-    );
+    const subscriptions = Array.from(this.subscriptions).map(s => {
+      // tslint:disable-next-line:no-unused-expression
+      this.getWs() && this.getWs().unsubscribe(s);
+    });
     await Promise.all(subscriptions);
-    this.subscriptions.clear();
+    if (this.subscriptions.size > 0) {
+      this.subscriptions.clear();
+    }
   };
 
   @action

@@ -1,15 +1,20 @@
 import OrderApi from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
+import {levels} from '../models';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
-import {getRestErrorMessage} from '../utils/string';
+import {capitalize} from '../utils';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
+
+enum Errors {
+  Confirmation = 'Confirmation',
+  AssetKycNeeded = 'AssetKycNeeded'
+}
 
 // tslint:disable:no-console
 class OrderStore extends BaseStore {
@@ -52,18 +57,29 @@ class OrderStore extends BaseStore {
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
       case OrderType.Market:
-        return (
-          this.api
-            .placeMarket(body)
-            // tslint:disable-next-line:no-empty
-            .then(() => {}, this.orderPlacedUnsuccessfully)
-        );
+        return this.api
+          .placeMarket(body)
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully)
+          .then(() => Promise.resolve());
       case OrderType.Limit:
         return (
           this.api
             .placeLimit(body)
             // tslint:disable-next-line:no-empty
-            .then(() => {}, this.orderPlacedUnsuccessfully)
+            .then((orderId: any) => {
+              const addedOrder = this.rootStore.orderListStore.addOrder({
+                Id: orderId,
+                CreateDateTime: new Date(),
+                OrderAction: capitalize(body.OrderAction),
+                Volume: body.Volume,
+                RemainingVolume: body.Volume,
+                Price: body.Price,
+                AssetPairId: body.AssetPairId
+              });
+              if (addedOrder) {
+                this.orderPlacedSuccessfully();
+              }
+            }, this.orderPlacedUnsuccessfully)
         );
     }
   };
@@ -76,12 +92,16 @@ class OrderStore extends BaseStore {
 
   cancelOrder = async (id: string) => {
     await this.api.cancelOrder(id);
+    const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
+    if (deletedOrder) {
+      this.orderCancelledSuccessfully(id);
+    }
   };
 
   cancelAll = () =>
     this.rootStore.orderListStore.limitOrders
       .map((o: OrderModel) => o.id)
-      .forEach(this.api.cancelOrder);
+      .forEach(this.cancelOrder);
 
   subscribe = (ws: any) => {
     ws.subscribe(topics.orders, this.onOrders);
@@ -91,8 +111,10 @@ class OrderStore extends BaseStore {
     const order = args[0][0];
     switch (order.Status) {
       case OrderStatus.Cancelled:
-        this.rootStore.orderListStore.deleteOrder(order.Id);
-        this.orderCancelledSuccessfully(order.Id);
+        const deleteOrder = this.rootStore.orderListStore.deleteOrder(order.Id);
+        if (deleteOrder) {
+          this.orderCancelledSuccessfully(order.Id);
+        }
         break;
       case OrderStatus.Matched:
         this.rootStore.orderListStore.deleteOrder(order.Id);
@@ -103,8 +125,10 @@ class OrderStore extends BaseStore {
         this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);
         break;
       case OrderStatus.Placed:
-        this.rootStore.orderListStore.addOrder(order);
-        this.orderPlacedSuccessfully();
+        const isAdded = this.rootStore.orderListStore.addOrder(order);
+        if (isAdded) {
+          this.orderPlacedSuccessfully();
+        }
         break;
     }
   };
@@ -145,33 +169,37 @@ class OrderStore extends BaseStore {
   };
 
   private orderPlacedUnsuccessfully = (error: any) => {
-    console.error(error);
+    const messageObject = JSON.parse(error.message);
+    if (messageObject) {
+      const key = Object.keys(messageObject)[0];
 
-    const needConfirmation =
-      error.status === 400 &&
-      error.message &&
-      JSON.parse(error.message).Confirmation;
-
-    if (needConfirmation) {
-      this.modalStore.addModal(
-        ModalMessages.expired,
-        null,
-        null,
-        Types.Expired
-      );
-      return;
+      if (error.status === 400) {
+        switch (key) {
+          case Errors.Confirmation: {
+            this.modalStore.addModal(
+              ModalMessages.expired,
+              null,
+              null,
+              Types.Expired
+            );
+            return;
+          }
+          case Errors.AssetKycNeeded: {
+            this.modalStore.addModal(null, null, null, Types.MissedKyc);
+            return;
+          }
+          default:
+            {
+              const message = messageObject[key];
+              this.notificationStore.addNotification(
+                levels.error,
+                `${message}`
+              );
+            }
+            break;
+        }
+      }
     }
-
-    let message;
-    try {
-      message = JSON.parse(error.message).ME || JSON.parse(error.message);
-      message = getRestErrorMessage(message);
-    } catch (e) {
-      message = !!error.message.length ? error.message : messages.defaultError;
-    }
-    this.notificationStore.addNotification(levels.error, `${message}`);
-
-    return Promise.reject(error);
   };
 }
 

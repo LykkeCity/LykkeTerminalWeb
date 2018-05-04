@@ -1,8 +1,11 @@
 import wretch from 'wretch';
 import {WretcherError} from 'wretch/dist/resolver';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import RootStore from '../stores/rootStore';
 import {StorageUtils} from '../utils/index';
+
+// tslint:disable-next-line:no-var-requires
+const URLSearchParams = require('url-search-params');
 
 const tokenStorage = StorageUtils(keys.token);
 
@@ -10,10 +13,12 @@ export class RestApi {
   constructor(protected rootStore?: RootStore | any) {}
 
   protected readonly wretcher = () =>
-    wretch(process.env.REACT_APP_API_URL).auth(`Bearer ${tokenStorage.get()}`);
+    wretch(process.env.REACT_APP_API_URL)
+      .polyfills({URLSearchParams})
+      .auth(`Bearer ${tokenStorage.get()}`);
 
   protected readonly publicWretcher = () =>
-    wretch(process.env.REACT_APP_PUBLIC_API_URL);
+    wretch(process.env.REACT_APP_PUBLIC_API_URL).polyfills({URLSearchParams});
 
   protected get = (url: string, headers: any = {}) =>
     this.wretcher()
@@ -44,6 +49,14 @@ export class RestApi {
 
   protected fireAndForget = (url: string, body: any, headers: any = {}) =>
     this._post(url, body, headers).res();
+
+  protected patch = (url: string, body: any) =>
+    this.wretcher()
+      .url(url)
+      .json(body)
+      .patch()
+      .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .res();
 
   protected put = (url: string, body: any) =>
     this.wretcher()

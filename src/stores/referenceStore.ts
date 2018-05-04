@@ -1,6 +1,7 @@
 import {action, computed, observable, runInAction} from 'mobx';
+import {compose, filter, replace, toLower} from 'rambda';
 import {AssetApi} from '../api/index';
-import keys from '../constants/storageKeys';
+import {keys} from '../models';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -11,9 +12,16 @@ import * as mappers from '../models/mappers';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
+// tslint:disable-next-line:no-var-requires
+const {includes} = require('rambda');
+
+const normalize = compose(
+  replace(SearchString.Delimiter, SearchString.Empty),
+  toLower
+);
+
 const baseAssetStorage = StorageUtils(keys.baseAsset);
 
-// tslint:disable:no-bitwise
 class ReferenceStore extends BaseStore {
   @observable private assets: AssetModel[] = [];
   @observable.shallow private availableAssets: string[] = [];
@@ -63,47 +71,26 @@ class ReferenceStore extends BaseStore {
   getCategories = () => this.categories;
 
   getInstruments = () => {
-    const {watchlistStore} = this.rootStore;
-    return watchlistStore
-      ? this.instruments
-          .filter(
-            i => watchlistStore.defaultWatchlist.assetIds.indexOf(i.id) > -1
-          )
-          .filter(this.filterAvailableInstrument)
-      : this.instruments;
+    return this.instruments;
   };
 
-  getInstrumentById = (id: string) =>
-    this.instruments.find(x => x.id.toLowerCase().includes(id.toLowerCase())); // TODO: remove toLowerCase conversion
+  getInstrumentById = (id: string) => this.instruments.find(x => x.id === id);
 
-  findInstruments = (term: string, name: string) => {
-    const isAuth = this.rootStore.authStore.isAuth;
-    const instruments = isAuth
-      ? this.instruments
-          .filter(i => i.baseAsset && i.quoteAsset)
-          .filter(this.filterAvailableInstrument)
-      : this.instruments;
-
-    return instruments
-      .filter(this.filterWithIdAndName)
-      .filter(x =>
-        x.displayName!
-          .toLowerCase()
-          .replace(SearchString.Delimiter, SearchString.Empty)
-          .includes(
-            term
-              .toLowerCase()
-              .replace(SearchString.Delimiter, SearchString.Empty)
-          )
-      )
-      .filter(
-        i =>
-          isAuth
-            ? !!~this.rootStore.watchlistStore
-                .watchlistsByName(name)
-                .assetIds.indexOf(i.id)
-            : i
-      );
+  findInstruments = (term: string, watchlistName: string) => {
+    const {getWatchlistByName} = this.rootStore.watchlistStore;
+    const instrumentsByName = this.instruments.filter(instrument =>
+      includes(normalize(term), normalize(instrument.displayName!))
+    );
+    if (watchlistName) {
+      const instrumentsByWatchlist = getWatchlistByName(watchlistName);
+      if (instrumentsByWatchlist) {
+        return filter(
+          i => instrumentsByWatchlist.assetIds.indexOf(i.id) > -1,
+          instrumentsByName
+        );
+      }
+    }
+    return instrumentsByName;
   };
 
   @action
@@ -116,15 +103,15 @@ class ReferenceStore extends BaseStore {
     this.availableAssets.push(assetId);
   };
 
-  fetchReferenceData = async () => {
+  fetchReferenceData = async (authenticated: boolean) => {
     await this.fetchCategories();
     await this.fetchAssets();
 
-    if (!this.rootStore.authStore.isAuth) {
-      await this.fetchPublicInstruments();
-    } else {
+    if (authenticated) {
       await this.fetchInstruments();
       await this.fetchAvailableAssets();
+    } else {
+      await this.fetchPublicInstruments();
     }
   };
 
@@ -211,13 +198,16 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchRates = async () => {
-    const resp = await this.api.fetchRates();
-    resp.AssetPairRates.forEach(({AssetPair, BidPrice, AskPrice}: any) => {
-      const instrument = this.getInstrumentById(AssetPair);
+    const resp = await this.api.fetchMarket();
+    resp.forEach(({assetPair, lastPrice, bid, ask, volume24H}: any) => {
+      const instrument = this.getInstrumentById(assetPair);
       if (instrument) {
-        instrument.price = BidPrice;
-        instrument.bid = BidPrice;
-        instrument.ask = AskPrice;
+        runInAction(() => {
+          instrument.price = lastPrice;
+          instrument.bid = bid;
+          instrument.ask = ask;
+          instrument.volume = volume24H / lastPrice;
+        });
       }
     });
   };
@@ -280,13 +270,6 @@ class ReferenceStore extends BaseStore {
     this.assets = [];
     this.availableAssets = [];
   };
-
-  private filterAvailableInstrument = (i: InstrumentModel) =>
-    this.availableAssets.indexOf(i.baseAsset.id) > -1 &&
-    this.availableAssets.indexOf(i.quoteAsset.id) > -1;
-
-  private filterWithIdAndName = (i: InstrumentModel) =>
-    i.id && i.name && i.displayName;
 }
 
 export default ReferenceStore;

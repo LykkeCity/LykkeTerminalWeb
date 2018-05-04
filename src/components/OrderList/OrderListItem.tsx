@@ -1,8 +1,10 @@
 import * as React from 'react';
-import {InstrumentModel, OrderModel} from '../../models';
+import {InstrumentModel, OrderModel, Side} from '../../models';
+import {precisionCeil, precisionFloor} from '../../utils/math';
 import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
+import TitledCell from '../Table/TitledCell';
 import {SideCell} from '../TradeList/styles';
 import {OrderActions, OrderCellWidth} from './index';
 
@@ -21,31 +23,46 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     volume,
     remainingVolume,
     filled,
-    filledPercent
+    filledPercent,
+    value
   },
   onEdit,
   cancelOrder,
-  instrument: {displayName, accuracy, baseAsset: {accuracy: baseAssetAccuracy}}
+  instrument: {
+    displayName,
+    accuracy,
+    baseAsset: {accuracy: baseAssetAccuracy, name: baseAssetName},
+    quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName}
+  }
 }) => {
   const handleEditOrder = () => onEdit(id);
   const handleCancelOrder = () => cancelOrder(id);
+  const roundedValue =
+    side === Side.Buy
+      ? precisionCeil(value, quoteAssetAccuracy)
+      : precisionFloor(value, quoteAssetAccuracy);
   return (
     <tr>
       <Cell w={OrderCellWidth.Symbol}>{displayName}</Cell>
-      <Cell w={OrderCellWidth.Id}>{id}</Cell>
       <SideCell w={OrderCellWidth.Side} side={side}>
         {side}
       </SideCell>
-      <td>{toLocaleStringWithAccuracy(volume, baseAssetAccuracy)}</td>
-      <Cell w={OrderCellWidth.Filled}>
+      <TitledCell>{toLocaleStringWithAccuracy(price, accuracy)}</TitledCell>
+      <TitledCell>
+        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)} {baseAssetName}
+      </TitledCell>
+      <TitledCell>
         {toLocaleStringWithAccuracy(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(
           filledPercent,
           2,
           {style: 'percent'}
         )})
-      </Cell>
-      <td>{price}</td>
-      <Cell w={OrderCellWidth.CreatedDate}>{createdAt.toLocaleString()}</Cell>
+      </TitledCell>
+      <TitledCell>
+        {toLocaleStringWithAccuracy(roundedValue, quoteAssetAccuracy)}{' '}
+        {quoteAssetName}
+      </TitledCell>
+      <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>
           <Icon name="pencil" />

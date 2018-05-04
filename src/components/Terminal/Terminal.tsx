@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
-import keys from '../../constants/storageKeys';
+import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
@@ -13,6 +13,7 @@ import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {Orders} from '../OrderList';
+import {SessionNotificationComponent} from '../Session';
 import styled, {colors} from '../styled';
 import {TabbedTile, Tile} from '../Tile';
 import {TradeLog, Trades} from '../TradeList';
@@ -98,6 +99,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   componentDidMount() {
     this.props.rootStore.start();
+
     const layout = layoutStorage.get();
     if (layout) {
       this.setState({
@@ -108,20 +110,19 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   bindChartOverlayHandler() {
-    const mosaicSplitList = document.getElementsByClassName(
+    const firstColSplitter = document.getElementsByClassName(
       'mosaic-split -column'
-    );
-    const mosaicSplit = Array.from(mosaicSplitList).find(
-      item =>
-        item.previousElementSibling!.querySelector('#tv_chart_container') !==
-        null
-    );
-    if (mosaicSplit) {
-      mosaicSplit.addEventListener('mouseup', () => {
-        this.toggleChartOverlayHelper(false);
-      });
-      mosaicSplit.addEventListener('mousedown', () => {
-        this.toggleChartOverlayHelper(true);
+    )[0];
+    const rowSplitters = document.getElementsByClassName('mosaic-split -row');
+    const splitters = [...Array.from(rowSplitters), firstColSplitter];
+    if (splitters) {
+      splitters.forEach(e => {
+        e.addEventListener('mouseup', () => {
+          this.toggleChartOverlayHelper(false);
+        });
+        e.addEventListener('mousedown', () => {
+          this.toggleChartOverlayHelper(true);
+        });
       });
     }
   }
@@ -152,6 +153,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
             <Modal modals={this.props.rootStore.modalStore.modals} />
           </div>
         ) : null}
+        {this.props.rootStore.sessionStore.sessionNotificationsBlockShown && (
+          <SessionNotificationComponent />
+        )}
         <Header history={this.props.history} />
         <Mosaic
           renderTile={this.handleRenderTile}

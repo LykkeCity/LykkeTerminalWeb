@@ -1,59 +1,66 @@
 import {computed, observable, runInAction} from 'mobx';
-import {compose, map, sortBy} from 'rambda';
+import {compose, find, map, reject, sortBy} from 'rambda';
 import {WatchlistApi} from '../api/index';
-import defaultWatchLists from '../constants/watchlists';
+import {InstrumentModel} from '../models';
 import * as mappers from '../models/mappers';
 import WatchlistModel from '../models/watchlistModel';
+import Watchlists from '../models/watchlists';
 import {BaseStore, RootStore} from './index';
 
 class WatchlistStore extends BaseStore {
+  @observable private watchlists: WatchlistModel[] = [];
+
   @computed
-  get defaultWatchlist() {
-    return this.watchlists[0];
+  get allInstrumentsWatchlist() {
+    const instruments =
+      (this.getInstruments && this.getInstruments()) ||
+      this.rootStore.referenceStore.getInstruments();
+    return new WatchlistModel({
+      name: Watchlists.All,
+      assetIds: instruments.map(i => i.id),
+      readOnly: true
+    });
   }
 
   @computed
   get activeWatchlists() {
-    return this.watchlists;
+    return [
+      this.allInstrumentsWatchlist,
+      ...reject(w => w.name === Watchlists.All, this.watchlists)
+    ];
   }
 
   @computed
   get watchlistNames() {
-    const sortedWatchlistNames = compose<
-      WatchlistModel[],
-      WatchlistModel[],
-      string[]
-    >(map(w => w.name), sortBy(w => w.order));
-    return sortedWatchlistNames(this.watchlists);
+    return compose(map((w: WatchlistModel) => w.name), sortBy(w => w.order))(
+      this.activeWatchlists
+    );
   }
 
-  @observable
-  private watchlists: any[] = defaultWatchLists.map(mappers.mapToWatchList);
-
-  constructor(store: RootStore, private readonly api: WatchlistApi) {
+  constructor(
+    store: RootStore,
+    private readonly api: WatchlistApi,
+    private readonly getInstruments?: () => InstrumentModel[]
+  ) {
     super(store);
   }
 
-  getWatchlistById = (id: string) => this.watchlists.find(x => x.id === id);
+  getWatchlistById = (id: string) => find(x => x.id === id, this.watchlists);
 
-  fetchAll = () => {
-    return this.api
-      .fetchAll()
-      .then((resp: any) => {
-        runInAction(() => {
-          this.watchlists = resp.map(mappers.mapToWatchList);
-        });
-        return Promise.resolve();
-      })
-      .catch(Promise.reject);
-  };
+  getWatchlistByName = (name: string) =>
+    find(watchlist => watchlist.name === name, this.activeWatchlists);
 
-  watchlistsByName = (name: string) => {
-    return this.watchlists.find((wl: WatchlistModel) => wl.name === name);
+  addWatchlist = (watchlist: WatchlistModel) => this.watchlists.push(watchlist);
+
+  fetchAll = async () => {
+    const resp = await this.api.fetchAll();
+    runInAction(() => {
+      this.watchlists = resp.map(mappers.mapToWatchlist);
+    });
   };
 
   reset = () => {
-    this.watchlists = defaultWatchLists.map(mappers.mapToWatchList);
+    this.watchlists = [];
   };
 }
 

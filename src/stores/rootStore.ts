@@ -6,16 +6,16 @@ import {
   OrderApi,
   OrderBookApi,
   PriceApi,
+  SessionApi,
   TradeApi,
   WampApi,
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import keys from '../constants/storageKeys';
+import {levels} from '../models';
+import {keys} from '../models';
 import {PriceType} from '../models/index';
-import Watchlists from '../models/watchlists';
 import {StorageUtils} from '../utils/index';
 import {
   AuthStore,
@@ -31,6 +31,7 @@ import {
   OrderStore,
   PriceStore,
   ReferenceStore,
+  SessionStore,
   SettingsStore,
   TradeStore,
   UiOrderStore,
@@ -57,6 +58,7 @@ class RootStore {
   readonly modalStore: ModalStore;
   readonly settingsStore: SettingsStore;
   readonly uiOrderStore: UiOrderStore;
+  readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
 
@@ -67,6 +69,7 @@ class RootStore {
 
   constructor(shouldStartImmediately = true) {
     if (shouldStartImmediately) {
+      this.referenceStore = new ReferenceStore(this, new AssetApi(this));
       this.modalStore = new ModalStore(this);
       this.notificationStore = new NotificationStore(this);
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
@@ -79,12 +82,12 @@ class RootStore {
       );
       this.orderListStore = new OrderListStore(this, new OrderApi(this));
       this.uiStore = new UiStore(this);
-      this.referenceStore = new ReferenceStore(this, new AssetApi(this));
       this.authStore = new AuthStore(this, new AuthApi(this));
       this.chartStore = new ChartStore(this, new ChartApi(this));
       this.orderStore = new OrderStore(this, new OrderApi(this));
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
+      this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
     }
@@ -99,15 +102,14 @@ class RootStore {
       this.chartStore.setWs(ws);
       this.tradeStore.setWs(ws);
       this.priceStore.setWs(ws);
-      this.referenceStore
-        .findInstruments('', Watchlists.All)
-        .forEach((x: any) => {
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          ws.subscribe(
-            topics.candle('spot', x.id, PriceType.Trade, 'day'),
-            this.referenceStore.onCandle
-          );
-        });
+      this.referenceStore.getInstruments().forEach((x: any) => {
+        ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+        ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+        ws.subscribe(
+          topics.candle('spot', x.id, PriceType.Trade, 'day'),
+          this.referenceStore.onCandle
+        );
+      });
       this.uiStore.selectInstrument(
         this.lastOrDefaultInstrument(defaultInstrument)
       );
@@ -115,8 +117,13 @@ class RootStore {
   };
 
   start = async () => {
-    await this.referenceStore.fetchReferenceData();
-    await this.referenceStore.fetchRates();
+    await this.referenceStore.fetchReferenceData(this.authStore.isAuth);
+    const instruments = this.referenceStore.getInstruments();
+    const assets = this.referenceStore.getAssets();
+
+    await this.referenceStore.fetchRates().catch(console.error);
+
+    this.marketStore.init(instruments, assets);
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
@@ -126,20 +133,18 @@ class RootStore {
       return this.startPublicMode(defaultInstrument);
     }
 
+    this.sessionStore.initUserSession();
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
 
     await this.referenceStore
       .fetchBaseAsset()
-      .then(() => {
+      .then(async () => {
+        this.referenceStore.updateInstruments();
         this.balanceListStore.fetchAll();
         this.orderListStore.fetchAll();
       }, reject => Promise.resolve)
       .then(async () => {
-        const instruments = this.referenceStore.getInstruments();
-        const assets = this.referenceStore.getAssets();
-        this.marketStore.init(instruments, assets);
-
         const ws = new WampApi();
         await ws.connect(
           this.wampUrl,

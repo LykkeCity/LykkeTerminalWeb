@@ -10,7 +10,7 @@ const WatchlistItem: React.SFC<WatchlistItemProps> = ({
   ask,
   side
 }) => {
-  const color = side === Dir.Up ? '#13b72a' : '#ff3e2e';
+  const color = side === Dir.Up ? '#46eb6a' : '#ff6161';
   return (
     <tr style={{color}} key={id}>
       <td>

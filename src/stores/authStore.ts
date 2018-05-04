@@ -1,14 +1,15 @@
 import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
-import levels from '../constants/notificationLevels';
 import messages from '../constants/notificationMessages';
-import keys from '../constants/storageKeys';
+import {levels} from '../models';
+import {keys} from '../models';
 import {RandomString, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const randomString = RandomString();
 const tokenStorage = StorageUtils(keys.token);
 const stateStorage = StorageUtils(keys.state);
+const sessionTokenStorage = StorageUtils(keys.sessionToken);
 
 class AuthStore extends BaseStore {
   @computed
@@ -34,7 +35,8 @@ class AuthStore extends BaseStore {
 
   fetchToken = async (accessToken: string, state: string) => {
     if (state === stateStorage.get()) {
-      const {token} = await this.api.fetchToken(accessToken);
+      const {token, authId} = await this.api.fetchToken(accessToken);
+      sessionTokenStorage.set(authId);
       this.token = token;
       tokenStorage.set(token);
       stateStorage.clear();
@@ -82,6 +84,7 @@ class AuthStore extends BaseStore {
   reset = () => {
     this.token = '';
     tokenStorage.clear();
+    sessionTokenStorage.clear();
   };
 }
 

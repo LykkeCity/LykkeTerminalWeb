@@ -11,7 +11,7 @@ export interface OrderApi {
 export class RestOrderApi extends RestApi implements OrderApi {
   placeMarket = (body: any) => this.fireAndForget('/Orders/market', body);
 
-  placeLimit = (body: any) => this.fireAndForget('/Orders/limit', body);
+  placeLimit = (body: any) => this.post('/Orders/limit', body);
 
   cancelOrder = (id: string) =>
     this.fireAndForget(`/orders/limit/${id}/cancel`, {});

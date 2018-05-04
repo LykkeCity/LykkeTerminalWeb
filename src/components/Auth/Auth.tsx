@@ -2,6 +2,7 @@ import {inject} from 'mobx-react';
 import {compose, curry} from 'rambda';
 import * as React from 'react';
 import {RouteComponentProps} from 'react-router';
+import paths from '../../constants/paths';
 import {AuthStore} from '../../stores/index';
 
 interface AuthProps extends RouteComponentProps<any> {
@@ -22,9 +23,15 @@ const getCurrentUrlFragmentValue = compose(
 @inject('authStore')
 class Auth extends React.Component<AuthProps> {
   componentDidMount() {
+    const {authStore} = this.props;
+    if (authStore.isAuth) {
+      this.props.history.push(paths.main);
+      return;
+    }
+
     const accessToken = getCurrentUrlFragmentValue('access_token');
     const state = getCurrentUrlFragmentValue('state');
-    const {authStore} = this.props;
+
     authStore
       .fetchToken(accessToken, state)
       .then(() => this.props.history.push('/'));

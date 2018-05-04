@@ -68,9 +68,18 @@ export const splitter = (from: number, to: number, resolution: string) => {
   return timePeriods;
 };
 
+export const getTimeOffset = (offset: number) => {
+  const absOffset = Math.abs(offset);
+  return (
+    (offset < 0 ? '+' : '-') +
+    ('00' + Math.floor(absOffset / 60)).slice(-2) +
+    ('00' + absOffset % 60).slice(-2)
+  );
+};
+
 export const getTimeZone = (zones: any[]) => {
-  const gmt = new Date().toString().match(/([-\+][0-9]+)\s/)![1];
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const gmt = getTimeOffset(new Date().getTimezoneOffset());
 
   let timezone =
     zones.find((z: any) => z.zone === zone) ||
@@ -80,4 +89,13 @@ export const getTimeZone = (zones: any[]) => {
   timezone = typeof timezone === 'string' ? timezone : timezone.zone;
 
   return timezone;
+};
+
+export const convertSecondsToMs = (seconds: number) => seconds * 1000;
+export const convertMsToSeconds = (ms: number) => ms / 1000;
+export const convertMsToMinutes = (ms: number) => ms / 60000;
+export const convertMinutesToMs = (ms: number) => ms * 60000;
+export const getDiffDays = (currentDate: number, previousDate: number) => {
+  const timeDiff = Math.abs(currentDate - previousDate);
+  return Math.ceil(timeDiff / (1000 * 3600 * 24));
 };

@@ -2,13 +2,20 @@ import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
-import {EditOrder, ModalProps} from './index';
+import {EditOrder, QRModal} from './index';
+import KycModal from './KycModal';
 
 const Modals = {
   Confirm: ConfirmModal,
   EditOrder,
-  Expired: ExpiredModal
+  Expired: ExpiredModal,
+  QR: QRModal,
+  MissedKyc: KycModal
 };
+
+interface ModalProps {
+  modals: ModalModel[];
+}
 
 class Modal extends React.Component<ModalProps> {
   constructor(props: ModalProps) {

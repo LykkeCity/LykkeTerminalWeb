@@ -47,7 +47,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
               styles={{
                 height: '300px',
                 minWidth: '150px',
-                right: '40px',
+                right: '0',
                 top: '40px'
               }}
               items={this.getOptions()}
