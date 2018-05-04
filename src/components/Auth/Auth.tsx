@@ -2,10 +2,12 @@ import {inject} from 'mobx-react';
 import {compose, curry} from 'rambda';
 import * as React from 'react';
 import {RouteComponentProps} from 'react-router';
-import {AuthStore} from '../../stores/index';
+import paths from '../../constants/paths';
+import {AuthStore, BalanceListStore} from '../../stores/index';
 
 interface AuthProps extends RouteComponentProps<any> {
   authStore: AuthStore;
+  balanceListStore: BalanceListStore;
 }
 const getUrlFragmentByKey = (fragments: string[], key: string) =>
   fragments.find(f => f.toLowerCase().startsWith(key.toLowerCase()));
@@ -19,19 +21,23 @@ const getCurrentUrlFragmentValue = compose(
   getCurrentUrlFragmentByKey
 );
 
-@inject('authStore')
+@inject('authStore', 'balanceListStore')
 class Auth extends React.Component<AuthProps> {
   componentDidMount() {
     const accessToken = getCurrentUrlFragmentValue('access_token');
     const state = getCurrentUrlFragmentValue('state');
-    const {authStore} = this.props;
-    authStore
-      .fetchToken(accessToken, state)
-      .then(() =>
-        authStore
-          .fetchUserInfo(accessToken)
-          .then(() => this.props.history.push('/'))
-      );
+    const {authStore, balanceListStore} = this.props;
+    authStore.fetchToken(accessToken, state).then(() =>
+      authStore.fetchUserInfo(accessToken).then(() => {
+        balanceListStore.fetchAll().then(() => {
+          if (authStore.noKycAndFunds) {
+            return this.props.history.push(paths.kycAndFundsCheck);
+          } else {
+            this.props.history.push('/');
+          }
+        });
+      })
+    );
   }
 
   render() {

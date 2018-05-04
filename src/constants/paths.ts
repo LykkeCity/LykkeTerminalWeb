@@ -2,7 +2,7 @@ const paths = {
   auth: '/auth',
   signin: '/signin',
   main: '/',
-  kycAndFundsCheck: '/kycandfundscheck'
+  kycAndFundsCheck: '/check'
 };
 
 export default paths;
