@@ -3,12 +3,12 @@ import ModalMessages from '../../constants/modalMessages';
 import ModalHeader from '../Modal/ModalHeader/ModalHeader';
 import {
   KycAndFundsBack,
-  MarginedModalBody,
   MobileAppLink,
   ModalContentWrapper,
   ModalWrapper,
   OkButton
 } from '../Modal/styles';
+import {CheckBody} from './styles';
 
 interface NoFundsAndKycModalProps {
   signOut: any;
@@ -20,6 +20,7 @@ const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = ({signOut}) => {
     signOut(link);
   };
   const goToLykke = () => closeModal(ModalMessages.NoFundsAndKyc.link.lykke);
+  const body = {__html: ModalMessages.NoFundsAndKyc.body};
 
   return (
     <KycAndFundsBack>
@@ -27,9 +28,7 @@ const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = ({signOut}) => {
         <ModalHeader onClick={closeModal}>
           {ModalMessages.NoFundsAndKyc.title}
         </ModalHeader>
-        <MarginedModalBody>
-          {ModalMessages.NoFundsAndKyc.body}
-        </MarginedModalBody>
+        <CheckBody dangerouslySetInnerHTML={body} />
         <ModalContentWrapper>
           <MobileAppLink
             href={ModalMessages.NoFundsAndKyc.link.appStore}
