@@ -67,9 +67,10 @@ class Notification extends React.Component<
         </Body>
         {(this.props.isSessionNotesShown || this.state.isNoteShown) && (
           <Note>
-            To ensure that no ones your account while you are away, your session
-            will be closed automatically if you don't click on "Continue" or
-            proceed to an action. You can adjust the timing setting below.
+            To ensure that no one uses your account while you are away, your
+            session will be closed automatically if you don't click on
+            "Continue" or proceed to an action. You can adjust the timing
+            setting below.
           </Note>
         )}
         <Buttons>

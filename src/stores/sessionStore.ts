@@ -20,7 +20,7 @@ const SESSION_WARNING_REMAINING = 60; // seconds
 
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 
-const DEFAULT_SESSION_DURATION = 300000;
+const DEFAULT_SESSION_DURATION = 60000;
 
 class SessionStore extends BaseStore {
   @computed
@@ -57,9 +57,9 @@ class SessionStore extends BaseStore {
   private currentQrId: string = '';
   private isSessionNotesShown: boolean = false;
   private sessionRemainIntervalId: any;
-  private pollingSessionTimerId: any;
   private sessionConfirmationExpireTimerId: any;
   private qrModal: ModalModel;
+  private sessionPollingTimerId: any;
 
   constructor(store: RootStore, private readonly api: SessionApi) {
     super(store);
@@ -91,11 +91,11 @@ class SessionStore extends BaseStore {
       this.startSessionListener();
       return;
     }
-
     this.rootStore.uiStore.stopReadOnlyMode();
     if (this.ttl - SESSION_WARNING_REMAINING >= 0) {
       this.runSessionNotificationTimeout();
     } else {
+      this.runSessionRemains();
       this.showSessionNotification();
     }
   };
@@ -111,7 +111,10 @@ class SessionStore extends BaseStore {
 
   runSessionNotificationTimeout = () => {
     const timeoutId = setTimeout(() => {
-      this.ttl = SESSION_REMAINS;
+      if (this.ttl > SESSION_REMAINS) {
+        this.ttl = SESSION_REMAINS;
+      }
+      this.runSessionRemains();
       this.showSessionNotification();
       clearTimeout(timeoutId);
     }, convertSecondsToMs(this.ttl - SESSION_WARNING_REMAINING));
@@ -133,16 +136,23 @@ class SessionStore extends BaseStore {
 
     this.showQR();
 
-    this.pollingSessionTimerId = setInterval(() => {
-      this.api.getSessionStatus().then((res: any) => {
-        const {Confirmed} = res.TradingSession;
+    const polling = () => {
+      this.sessionPollingTimerId = setTimeout(async () => {
+        const sessionStatus = await this.api.getSessionStatus();
+        const {Confirmed} = sessionStatus.TradingSession;
+
         if (Confirmed) {
           this.sessionConfirmed();
-          this.stopPollingSession();
           this.qrModal.close();
+          this.stopSessionPolling();
+          return;
         }
-      });
-    }, 1000);
+
+        polling();
+      }, 1000);
+    };
+
+    polling();
   };
 
   sessionConfirmationExpire = () => {
@@ -154,7 +164,7 @@ class SessionStore extends BaseStore {
 
   continueInReadOnlyMode = () => {
     this.stopListenSessionConfirmationExpire();
-    this.stopPollingSession();
+    this.stopSessionPolling();
     this.showReadOnlyModeNotification();
   };
 
@@ -173,13 +183,11 @@ class SessionStore extends BaseStore {
           this.isSessionNotesShown = false;
         }
         this.isSessionNotificationShown = true;
-        this.runSessionRemains();
       })
       .catch(() => {
         this.saveSessionNoteShownDate(currentDate);
         this.isSessionNotesShown = true;
         this.isSessionNotificationShown = true;
-        this.runSessionRemains();
       });
   };
 
@@ -201,9 +209,18 @@ class SessionStore extends BaseStore {
   };
 
   sessionConfirmed = () => {
-    this.extendSession();
     this.stopListenSessionConfirmationExpire();
+    this.extendSession();
     this.rootStore.uiStore.stopReadOnlyMode();
+  };
+
+  extendSession = async () => {
+    this.stopSessionRemains();
+    this.ttl = convertMsToSeconds(this.sessionDuration);
+    this.runSessionRemains();
+    await this.api.extendSession(this.sessionDuration);
+    this.stopSessionRemains();
+    this.runSessionNotificationTimeout();
   };
 
   timeTick = () => {
@@ -236,13 +253,6 @@ class SessionStore extends BaseStore {
     return this.currentQrId;
   };
 
-  extendSession = async () => {
-    this.stopSessionRemains();
-    this.ttl = convertMsToSeconds(this.sessionDuration);
-    await this.api.extendSession(this.sessionDuration);
-    this.runSessionNotificationTimeout();
-  };
-
   startTrade = () => {
     this.startSessionListener();
     this.closeReadOnlyModeNotification();
@@ -255,7 +265,6 @@ class SessionStore extends BaseStore {
 
   reset = () => {
     this.stopSessionRemains();
-    this.stopPollingSession();
     this.stopListenSessionConfirmationExpire();
     this.currentQrId = '';
   };
@@ -265,14 +274,14 @@ class SessionStore extends BaseStore {
     this.sessionRemainIntervalId = null;
   };
 
-  stopPollingSession = () => {
-    clearInterval(this.pollingSessionTimerId);
-    this.pollingSessionTimerId = null;
-  };
-
   stopListenSessionConfirmationExpire = () => {
     clearInterval(this.sessionConfirmationExpireTimerId);
     this.sessionConfirmationExpireTimerId = null;
+  };
+
+  stopSessionPolling = () => {
+    clearTimeout(this.sessionPollingTimerId);
+    this.sessionPollingTimerId = null;
   };
 }
 

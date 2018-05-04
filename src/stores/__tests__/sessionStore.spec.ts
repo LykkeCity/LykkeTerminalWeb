@@ -130,6 +130,13 @@ describe('session store', () => {
       expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeFalsy();
     });
 
+    it('should stop session remains timeout', () => {
+      sessionStore.stopSessionRemains = jest.fn();
+      sessionStore.sessionExpired();
+      expect(sessionStore.stopSessionRemains).toHaveBeenCalled();
+      expect(sessionStore.stopSessionRemains).toHaveBeenCalledTimes(1);
+    });
+
     it('should decrease ttl by 1', async () => {
       await sessionStore.initUserSession();
       expect(sessionStore.sessionRemain).toBe(
@@ -200,6 +207,25 @@ describe('session store', () => {
       expect(sessionStore.showSessionNotification).toHaveBeenCalledTimes(1);
     });
 
+    it('should run and stop session remains during extending session', async () => {
+      sessionStore.stopSessionRemains = jest.fn();
+      sessionStore.runSessionNotificationTimeout = jest.fn();
+      sessionStore.runSessionRemains = jest.fn();
+
+      await sessionStore.extendSession();
+
+      expect(sessionStore.stopSessionRemains).toHaveBeenCalled();
+      expect(sessionStore.stopSessionRemains).toHaveBeenCalledTimes(2);
+
+      expect(sessionStore.runSessionRemains).toHaveBeenCalled();
+      expect(sessionStore.runSessionRemains).toHaveBeenCalledTimes(1);
+
+      expect(sessionStore.runSessionNotificationTimeout).toHaveBeenCalled();
+      expect(sessionStore.runSessionNotificationTimeout).toHaveBeenCalledTimes(
+        1
+      );
+    });
+
     it('should clear sessionConfirmationExpireTimerId', () => {
       sessionStore.continueInReadOnlyMode = jest.fn();
       sessionStore.handleSetDuration(100);
@@ -210,6 +236,31 @@ describe('session store', () => {
       jest.runTimersToTime(100);
 
       expect(sessionStore.continueInReadOnlyMode).not.toHaveBeenCalled();
+    });
+
+    it('should stop polling session and stop listen session confirmation expire', () => {
+      sessionStore.stopListenSessionConfirmationExpire = jest.fn();
+      sessionStore.stopSessionPolling = jest.fn();
+      sessionStore.continueInReadOnlyMode();
+
+      expect(
+        sessionStore.stopListenSessionConfirmationExpire
+      ).toHaveBeenCalled();
+      expect(
+        sessionStore.stopListenSessionConfirmationExpire
+      ).toHaveBeenCalledTimes(1);
+
+      expect(sessionStore.stopSessionPolling).toHaveBeenCalled();
+      expect(sessionStore.stopSessionPolling).toHaveBeenCalledTimes(1);
+    });
+
+    it('should run session notification timeout', async () => {
+      sessionStore.runSessionNotificationTimeout = jest.fn();
+      await sessionStore.initUserSession();
+      expect(sessionStore.runSessionNotificationTimeout).toHaveBeenCalled();
+      expect(sessionStore.runSessionNotificationTimeout).toHaveBeenCalledTimes(
+        1
+      );
     });
   });
 
@@ -271,7 +322,7 @@ describe('session store', () => {
     });
   });
 
-  describe('store', () => {
+  describe('with disabled session', () => {
     beforeEach(() => {
       confirmation.Enabled = false;
       const api: any = {
@@ -292,11 +343,45 @@ describe('session store', () => {
       sessionStore.rootStore.authStore.signOut = jest.fn();
     });
 
-    it('should stop read only mode as session disabled', async () => {
+    it('should stop read only mode if session disabled', async () => {
       sessionStore.rootStore.uiStore.runReadOnlyMode();
       expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeTruthy();
       await sessionStore.initUserSession();
       expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeFalsy();
+    });
+  });
+
+  describe('with expiring time', () => {
+    beforeEach(() => {
+      confirmation.Ttl = 50000;
+      confirmation.Enabled = true;
+      const api: any = {
+        saveSessionNoteShown: jest.fn(),
+        loadSessionNoteShown: jest.fn(),
+        getSessionStatus: () => {
+          return {
+            TradingSession: confirmation
+          };
+        },
+        extendSession: jest.fn(),
+        createSession: jest.fn(),
+        saveSessionDuration: jest.fn(),
+        getSessionDuration: () => Promise.resolve(sessionDuration)
+      };
+
+      sessionStore = new SessionStore(new RootStore(true), api);
+      sessionStore.rootStore.authStore.signOut = jest.fn();
+    });
+
+    it('should run session remains and call showSessionNotification', async () => {
+      sessionStore.runSessionRemains = jest.fn();
+      sessionStore.showSessionNotification = jest.fn();
+      await sessionStore.initUserSession();
+      expect(sessionStore.runSessionRemains).toHaveBeenCalled();
+      expect(sessionStore.runSessionRemains).toHaveBeenCalledTimes(1);
+
+      expect(sessionStore.showSessionNotification).toHaveBeenCalled();
+      expect(sessionStore.showSessionNotification).toHaveBeenCalledTimes(1);
     });
   });
 });
