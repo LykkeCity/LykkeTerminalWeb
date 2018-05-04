@@ -66,6 +66,7 @@ class Chart extends React.Component<ChartProps> {
       currentX = newX;
       currentY = newY;
     });
+
     this.pointsAsks = points;
   };
 
@@ -190,7 +191,10 @@ class Chart extends React.Component<ChartProps> {
 
   calculateCoef() {
     if (this.minDepth && this.maxDepth) {
-      return this.height / (this.maxDepth - this.minDepth) * 0.9;
+      if (this.minDepth === this.maxDepth) {
+        return this.height / this.minDepth * 0.65;
+      }
+      return this.height / (this.maxDepth - this.minDepth) * 0.65;
     }
     return 1;
   }
@@ -216,8 +220,12 @@ class Chart extends React.Component<ChartProps> {
     this.drawAsks();
     this.drawBids();
 
-    this.drawAsksPointerPadding();
-    this.drawBidsPointerPadding();
+    if (this.asks.length > 0) {
+      this.drawAsksPointerPadding();
+    }
+    if (this.bids.length > 0) {
+      this.drawBidsPointerPadding();
+    }
 
     return this.graphics;
   }
