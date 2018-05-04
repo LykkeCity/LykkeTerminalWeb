@@ -65,9 +65,12 @@ class InstrumentList extends React.Component<
       },
       {sortDisabled: true, className: 'right-align', key: '', value: ''},
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'volumeInBase'),
+        sortDisabled: checkDataForSorting(
+          this.state.data,
+          this.props.isAuth ? 'volumeInBase' : 'volume'
+        ),
         className: 'right-align',
-        key: 'volumeInBase',
+        key: this.props.isAuth ? 'volumeInBase' : 'volume',
         value: 'Volume'
       }
     ];

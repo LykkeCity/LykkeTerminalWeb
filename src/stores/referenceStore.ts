@@ -77,10 +77,16 @@ class ReferenceStore extends BaseStore {
   getInstrumentById = (id: string) => this.instruments.find(x => x.id === id);
 
   findInstruments = (term: string, watchlistName: string) => {
+    const defaultSortField = this.rootStore.authStore.isAuth
+      ? 'volumeInBase'
+      : 'volume';
     const {getWatchlistByName} = this.rootStore.watchlistStore;
-    const instrumentsByName = this.instruments.filter(instrument =>
-      includes(normalize(term), normalize(instrument.displayName!))
-    );
+    const instrumentsByName = this.instruments
+      .filter(instrument =>
+        includes(normalize(term), normalize(instrument.displayName!))
+      )
+      .sort((a, b) => (b[defaultSortField] || 0) - (a[defaultSortField] || 0));
+
     if (watchlistName) {
       const instrumentsByWatchlist = getWatchlistByName(watchlistName);
       if (instrumentsByWatchlist) {
