@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
+import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {
@@ -158,7 +159,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
     if (this.authStore.isAuth) {
       this.balanceListStore.fetchAll().then(() => {
         if (this.authStore.noKycAndFunds) {
-          this.authStore.showNoFundsAndKycModal();
+          return this.props.history.push(paths.kycAndFundsCheck);
         } else {
           this.props.rootStore.start();
         }

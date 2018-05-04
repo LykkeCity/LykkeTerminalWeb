@@ -2,7 +2,7 @@ import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
-import {EditOrder, NoFundsAndKycModal, QRModal} from './index';
+import {EditOrder, QRModal} from './index';
 import KycModal from './KycModal';
 import ManageFundsModal from './ManageFundsModal';
 
@@ -12,8 +12,7 @@ const Modals = {
   Expired: ExpiredModal,
   QR: QRModal,
   MissedKyc: KycModal,
-  ManageFunds: ManageFundsModal,
-  NoFundsAndKyc: NoFundsAndKycModal
+  ManageFunds: ManageFundsModal
 };
 
 interface ModalProps {

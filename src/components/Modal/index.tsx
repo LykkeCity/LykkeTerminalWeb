@@ -1,6 +1,5 @@
 import {connect} from '../connect';
 import EditOrder from './EditOrder';
-import NoFundsAndKycModal from './NoFundsAndKycModal';
 import QRModal from './QRModal';
 
 const ConnectedEditOrderModal = connect(
@@ -41,13 +40,5 @@ const ConnectedQRModal = connect(
   QRModal
 );
 
-const ConnectedNoFundsAndKycModal = connect(
-  ({authStore: {signOut}}) => ({
-    signOut
-  }),
-  NoFundsAndKycModal
-);
-
 export {ConnectedEditOrderModal as EditOrder};
 export {ConnectedQRModal as QRModal};
-export {ConnectedNoFundsAndKycModal as NoFundsAndKycModal};

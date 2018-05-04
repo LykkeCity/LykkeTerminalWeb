@@ -4,8 +4,7 @@ enum Types {
   EditOrder = 'EditOrder',
   QR = 'QR',
   MissedKyc = 'MissedKyc',
-  ManageFunds = 'ManageFunds',
-  NoFundsAndKyc = 'NoFundsAndKyc'
+  ManageFunds = 'ManageFunds'
 }
 
 export default Types;
