@@ -2,10 +2,9 @@ import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
-import {EditOrder, QRModal} from './index';
+import {EditOrder, NoFundsAndKycModal, QRModal} from './index';
 import KycModal from './KycModal';
 import ManageFundsModal from './ManageFundsModal';
-import NoFundsAndKycModal from './NoFundsAndKycModal';
 
 const Modals = {
   Confirm: ConfirmModal,

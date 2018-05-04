@@ -10,13 +10,13 @@ import {
 } from './styles';
 
 const ManageFundsModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
-  const handleCancel = (m: ModalModel) => () => {
-    m.close();
+  const handleCancel = () => {
+    modal.close();
   };
 
   return (
     <ModalWrapper>
-      <ModalHeader onClick={handleCancel(modal)} />
+      <ModalHeader onClick={handleCancel} />
       <MarginedModalBody>{modal.message.body}</MarginedModalBody>
       <ModalContentWrapper>
         <MobileAppLink
@@ -32,7 +32,7 @@ const ManageFundsModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
           image={'google-play'}
         />
       </ModalContentWrapper>
-      <OkButton onClick={modal.close}>Got it!</OkButton>
+      <OkButton onClick={handleCancel}>Got it!</OkButton>
     </ModalWrapper>
   );
 };

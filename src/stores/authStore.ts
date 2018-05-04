@@ -23,7 +23,7 @@ class AuthStore extends BaseStore {
   get isKycPassed() {
     return (
       this.kycStatus === KycStatuses.ReviewDone ||
-      this.kycStatus === KycStatuses.Ok
+      this.kycStatus !== KycStatuses.Ok
     );
   }
 
