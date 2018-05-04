@@ -39,7 +39,7 @@ export default ({
     </MidPrice>
     <Spread>
       <FigureValue>
-        {format(spreadRelative, priceAccuracy, {
+        {format(spreadRelative, 2, {
           style: 'percent'
         })}
       </FigureValue>
