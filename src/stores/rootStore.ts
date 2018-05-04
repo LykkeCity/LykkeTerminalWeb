@@ -116,12 +116,15 @@ class RootStore {
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
+    await this.referenceStore.fetchRates().catch(console.error);
+
     this.marketStore.init(instruments, assets);
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
     );
 
+    this.sessionStore.initUserSession();
     this.settingsStore.init();
     await this.watchlistStore.fetchAll();
 
@@ -158,8 +161,6 @@ class RootStore {
         this.tradeStore.subscribe(ws);
         this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
-
-        this.referenceStore.fetchRates().catch(console.error);
 
         return Promise.resolve();
       })
