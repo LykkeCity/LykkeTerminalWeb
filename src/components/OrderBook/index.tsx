@@ -160,12 +160,14 @@ const ConnectedFigures = connect<FigureListProps>(
   ({
     orderBookStore: {mid, spreadRelative},
     priceStore: {lastTradePrice},
-    authStore: {isAuth}
+    authStore: {isAuth},
+    uiStore: {selectedInstrument}
   }) => ({
     lastTradePrice,
     mid: mid(),
     isAuth,
     spreadRelative,
+    priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
     format: formatWithAccuracy
   }),
   Figures
