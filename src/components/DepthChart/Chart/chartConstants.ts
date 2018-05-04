@@ -64,7 +64,7 @@ const chart = {
   fillOpacity: 0.2,
 
   labelsWidth: 50,
-  labelsHeight: 30
+  labelsHeight: 25
 };
 
 export default chart;
