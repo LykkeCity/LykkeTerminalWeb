@@ -1,18 +1,13 @@
 import * as React from 'react';
-import {Order} from '../../models';
 import {FAIcon} from '../Icon/Icon';
 import {Figure, FigureHint, FigureValue} from '../OrderBook/styles';
 import ChartWrapper from './Chart/index';
 import {AbsoluteCentered, Bar, Button, FillHeight} from './styles';
 
 interface DepthChartProps {
-  asks: Order[];
-  bids: Order[];
-  mid: string;
-  spread: string;
-  lastTradePrice: number;
-  span: number;
+  mid: number;
   priceAccuracy: number;
+  format: (num: number, accuracy: number) => string;
   onNextSpan: () => void;
   onPrevSpan: () => void;
 }
@@ -23,7 +18,7 @@ class DepthChart extends React.Component<DepthChartProps> {
   }
 
   render() {
-    const {mid, onNextSpan, onPrevSpan} = this.props;
+    const {mid, priceAccuracy, format, onNextSpan, onPrevSpan} = this.props;
     return (
       <FillHeight>
         <AbsoluteCentered>
@@ -32,7 +27,7 @@ class DepthChart extends React.Component<DepthChartProps> {
               <FAIcon name="minus" />
             </Button>
             <Figure>
-              <FigureValue>{mid}</FigureValue>
+              <FigureValue>{format(mid, priceAccuracy)}</FigureValue>
               <FigureHint>Mid price</FigureHint>
             </Figure>
             <Button onClick={onNextSpan}>

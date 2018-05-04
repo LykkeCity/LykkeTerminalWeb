@@ -1,5 +1,6 @@
 import {rem} from 'polished';
 import styled, {colors, fonts} from '../styled';
+import chartConstants from './Chart/chartConstants';
 
 export const FillHeight = styled.div`
   height: 100%;
@@ -15,6 +16,7 @@ export const AbsoluteCentered = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: ${chartConstants.labelsWidth}px;
 `;
 
 export const Bar = styled.div`
