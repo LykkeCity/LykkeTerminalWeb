@@ -129,9 +129,10 @@ class OrderMarket extends React.Component<
           <OrderButton
             isDisable={this.props.isDisable}
             type={'submit'}
-            message={`${capitalize(this.state.action)} ${quantity} ${
-              !this.isInverted ? baseAssetName : quoteAssetName
-            }`}
+            message={`${capitalize(this.state.action)} ${formattedNumber(
+              +quantity,
+              quantityAccuracy
+            )} ${!this.isInverted ? baseAssetName : quoteAssetName}`}
           />
         </MarketConfirmButton>
         <Reset justify={'center'}>
