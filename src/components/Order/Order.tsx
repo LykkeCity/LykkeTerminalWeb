@@ -227,13 +227,20 @@ class Order extends React.Component<OrderProps, OrderState> {
       accuracy ? accuracy : this.props.accuracy.baseAssetAccuracy
     );
 
+    const placedPrice = parseFloat(priceValue).toFixed(
+      this.props.accuracy.priceAccuracy
+    );
+    const placedQuantity = accuracy
+      ? parseFloat(quantityValue).toFixed(accuracy)
+      : quantityValue;
+
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
       return this.applyOrder(
         action,
-        currentQuantity,
+        placedQuantity,
         this.props.baseAssetId,
-        currentPrice
+        placedPrice
       ); // TODO baseAssetId should be passed from component for inverted case
     }
     const messageSuffix = this.state.isMarketActive
@@ -245,9 +252,9 @@ class Order extends React.Component<OrderProps, OrderState> {
       () =>
         this.applyOrder(
           action,
-          currentQuantity,
+          placedQuantity,
           this.props.baseAssetId,
-          currentPrice
+          placedPrice
         ), // TODO baseAssetId should be passed from component for inverted case
       this.cancelOrder,
       Types.Confirm
