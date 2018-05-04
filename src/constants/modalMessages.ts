@@ -27,13 +27,13 @@ const ModalMessages = {
     }
   },
   NoFundsAndKyc: {
-    body:
-      "Lykke's web platform is being premiered exclusively for its active mobile users. In order to use the web platform, you need to have successfully passed our Know Your Customer (KYC) procedure and deposited funds in your Lykke Trading Wallet via Lykke Wallet Mobile Application. For more details about the release read our blogpost.",
+    body: `Lykke's web platform is being premiered exclusively for its active mobile users. In order to use the web platform, you need to have successfully passed our Know Your Customer (KYC) procedure and deposited funds in your Lykke Trading Wallet via Lykke Wallet Mobile Application. For more details about the release read our <a href="https://www.lykke.com/company/news/2018-05-web-terminal" target='_blank'>blogpost</a>.`,
     link: {
       appStore: 'https://itunes.apple.com/ru/app/lykke-wallet/id1112839581',
       playMarket:
         'https://play.google.com/store/apps/details?id=com.lykkex.LykkeWallet',
-      lykke: 'https://www.lykke.com/'
+      lykke: 'https://www.lykke.com/',
+      blogpost: 'https://www.lykke.com/company/news/2018-05-web-terminal'
     },
     title: 'Dear user,'
   }
