@@ -57,7 +57,7 @@ class Pointer extends React.Component<PointerProps> {
       this.text = 'Can be sold';
     }
 
-    const aboveMidHeight = this.calcY < this.height * 0.6;
+    const aboveMidHeight = this.calcY < this.height * 0.4;
 
     this.titleY = aboveMidHeight
       ? this.calcY + chart.modal.arrowHeight + 20
@@ -95,7 +95,7 @@ class Pointer extends React.Component<PointerProps> {
       }
     }
 
-    const aboveMidHeight = this.calcY < this.height * 0.6;
+    const aboveMidHeight = this.calcY < this.height * 0.4;
 
     const rightX = leftX + chart.modal.width;
     const bottomY = aboveMidHeight
