@@ -2,27 +2,22 @@ import {pathOr} from 'rambda';
 import {connect} from '../connect';
 import DepthChart from './DepthChart';
 
+const formatWithAccuracy = (num: number, accuracy: number) =>
+  num.toLocaleString(undefined, {
+    maximumFractionDigits: accuracy
+  });
+
 const ConnectedDepthChart = connect(
   ({
-    depthChartStore: {mid, spread, span, nextSpan, prevSpan},
-    priceStore: {lastTradePrice},
+    depthChartStore: {mid, nextSpan, prevSpan},
     uiStore: {selectedInstrument}
-  }) => {
-    const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
-    const accuracy = 3;
-
-    const midPrice = mid().toFixed(priceAccuracy);
-    const priceSpread = spread().toFixed(accuracy);
-    return {
-      mid: midPrice,
-      spread: priceSpread,
-      lastTradePrice,
-      span,
-      priceAccuracy,
-      onNextSpan: nextSpan,
-      onPrevSpan: prevSpan
-    };
-  },
+  }) => ({
+    mid: mid(),
+    priceAccuracy: pathOr(0, ['accuracy'], selectedInstrument),
+    format: formatWithAccuracy,
+    onNextSpan: nextSpan,
+    onPrevSpan: prevSpan
+  }),
   DepthChart
 );
 

@@ -57,7 +57,11 @@ class Pointer extends React.Component<PointerProps> {
       this.text = 'Can be sold';
     }
 
-    this.titleY = this.calcY - chart.modal.arrowHeight - chart.modal.height;
+    const aboveMidHeight = this.calcY < this.height * 0.4;
+
+    this.titleY = aboveMidHeight
+      ? this.calcY + chart.modal.arrowHeight + 20
+      : this.calcY - chart.modal.arrowHeight - chart.modal.height;
 
     this.modalLine = [
       this.titleX,
@@ -73,6 +77,9 @@ class Pointer extends React.Component<PointerProps> {
   }
 
   generateModal() {
+    if (this.calcY < 0) {
+      this.calcY = this.calcY - 10000;
+    }
     this.modal = [];
     let leftX;
     if (this.props.side === 'asks') {
@@ -87,12 +94,23 @@ class Pointer extends React.Component<PointerProps> {
         leftX = fromMouseToLeftSide;
       }
     }
-    const rightX = leftX + chart.modal.width;
-    const bottomY =
-      this.calcY - chart.modal.shiftFromBall - chart.modal.arrowHeight;
-    const topY = bottomY - chart.modal.height;
 
-    this.modal.push(this.mouseX, this.calcY - chart.modal.shiftFromBall);
+    const aboveMidHeight = this.calcY < this.height * 0.4;
+
+    const rightX = leftX + chart.modal.width;
+    const bottomY = aboveMidHeight
+      ? this.calcY + chart.modal.shiftFromBall + chart.modal.arrowHeight
+      : this.calcY - chart.modal.shiftFromBall - chart.modal.arrowHeight;
+    const topY = aboveMidHeight
+      ? bottomY + chart.modal.height
+      : bottomY - chart.modal.height;
+
+    this.modal.push(
+      this.mouseX,
+      aboveMidHeight
+        ? this.calcY + chart.modal.shiftFromBall
+        : this.calcY - chart.modal.shiftFromBall
+    );
 
     this.modal.push(this.mouseX - chart.modal.arrowWidth / 2, bottomY);
 
@@ -264,7 +282,7 @@ class Pointer extends React.Component<PointerProps> {
         // numbers
         <Text
           text={`${depth.toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy
+            maximumFractionDigits: this.props.baseAsset.accuracy
           })} ${this.props.baseAsset}`}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}
@@ -278,7 +296,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         <Text
           text={`${(depth * price).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy
+            maximumFractionDigits: this.props.quoteAsset.accuracy
           })} ${this.props.quoteAsset}`}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}

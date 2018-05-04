@@ -7,6 +7,7 @@ import {Order} from '../../../models';
 import {ChartProps} from './Models';
 
 import chart from './chartConstants';
+import chartConstants from './chartConstants';
 
 class Mesh extends React.Component<ChartProps> {
   mid: number;
@@ -78,7 +79,7 @@ class Mesh extends React.Component<ChartProps> {
 
   generateHorizontalLabels = () => {
     const labels = [];
-    const maximum = this.calculateMaxDepth() / 0.65;
+    const maximum = this.calculateMaxDepth() / chartConstants.scaleFactor;
 
     const step = maximum / chart.mesh.horizontalLinesAmount;
     for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
