@@ -1,6 +1,7 @@
 import {
   checkForTrailingZero,
-  default as formattedNumber
+  formattedNumber,
+  formattedNumberWithDashes
 } from './localFormatted';
 
 describe('Test locale for number and date', () => {
@@ -24,5 +25,21 @@ describe('Test locale for number and date', () => {
     expect(formattedNumber(5, 5)).toBe('5.00');
     expect(formattedNumber(5.234, 5)).toBe('5.2340');
     expect(formattedNumber(5.23455, 5)).toBe('5.23455');
+  });
+
+  it('should replace not a number value with 0', () => {
+    expect(formattedNumber(undefined, 5)).toBe('0.00');
+    expect(formattedNumber(null, 5)).toBe('0.00');
+    expect(formattedNumber(Infinity, 5)).toBe('0.00');
+    expect(formattedNumber(true, 5)).toBe('0.00');
+    expect(formattedNumber('132', 5)).toBe('0.00');
+  });
+
+  it('should replace not a number value with dashes', () => {
+    expect(formattedNumberWithDashes(undefined, 5)).toBe('--');
+    expect(formattedNumberWithDashes(null, 5)).toBe('--');
+    expect(formattedNumberWithDashes(Infinity, 5)).toBe('--');
+    expect(formattedNumberWithDashes(true, 5)).toBe('--');
+    expect(formattedNumberWithDashes('132', 5)).toBe('--');
   });
 });

@@ -18,7 +18,7 @@ class OrderModel {
 
   @computed
   get filledPercent() {
-    return this.filled !== 0 ? this.remainingVolume / this.volume : 0;
+    return this.filled !== 0 ? this.filled / this.volume : 0;
   }
 
   @computed
