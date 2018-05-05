@@ -1,3 +1,6 @@
+// tslint:disable-next-line:no-var-requires
+const Big = require('big.js');
+
 export const logBase = (x: number, y: number) => Math.log(y) / Math.log(x);
 
 export const precisionRound = (num: number, precision: number) => {
@@ -6,13 +9,15 @@ export const precisionRound = (num: number, precision: number) => {
 };
 
 export const precisionCeil = (num: number, precision: number) => {
+  num = Number.isFinite(num) ? num : 0;
   const factor = Math.pow(10, precision);
-  return Math.ceil(num * factor) / factor;
+  return Math.ceil(new Big(num).times(factor).valueOf()) / factor;
 };
 
 export const precisionFloor = (num: number, precision: number) => {
+  num = Number.isFinite(num) ? num : 0;
   const factor = Math.pow(10, precision);
-  return Math.floor(num * factor) / factor;
+  return Math.floor(new Big(num).times(factor).valueOf()) / factor;
 };
 
 export const minOrMaxFromList = (list: number[], type: 'min' | 'max') =>
