@@ -144,6 +144,19 @@ class Terminal extends React.Component<TerminalProps, {}> {
   render() {
     return (
       <Shell>
+        <div
+          style={{
+            top: 0,
+            left: 0,
+            right: 0,
+            background: '#ff6161',
+            color: '#f5f6f7',
+            textAlign: 'center',
+            padding: '0.5rem 0'
+          }}
+        >
+          We're under maintenance. Placing orders is currently disabled
+        </div>
         <NotificationList />
         {this.props.rootStore.modalStore.isModals ? (
           <div>
