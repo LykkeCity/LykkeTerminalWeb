@@ -459,7 +459,7 @@ class Order extends React.Component<OrderProps, OrderState> {
               quantityValue,
               quoteAssetAccuracy
             )}
-            isDisable={true || isLimitInvalid}
+            isDisable={isLimitInvalid}
             onReset={this.reset}
             balance={available && available.toFixed(balanceAccuracy)}
             buttonMessage={`${capitalize(
@@ -480,7 +480,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             onChange={this.onChange}
             onArrowClick={this.onArrowClick}
             onReset={this.reset}
-            isDisable={true || isMarketInvalid}
+            isDisable={isMarketInvalid}
             onSubmit={this.handleButtonClick}
             balance={available && available.toFixed(balanceAccuracy)}
             isSell={isSellActive}
