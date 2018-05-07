@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import {withStyledScroll} from '../CustomScrollbar';
 import {css} from '../styled';
 
+import {rem} from 'polished';
+
 const StyledSelect = styled.div`
   position: absolute;
   border: 1px solid #f5f6f7;
@@ -12,6 +14,7 @@ const StyledSelect = styled.div`
   border: solid 1px rgba(0, 0, 0, 0.2);
   text-align: left;
   overflow: hidden;
+  font-size: ${rem(14)};
 `;
 
 const StyledList = styled.div`

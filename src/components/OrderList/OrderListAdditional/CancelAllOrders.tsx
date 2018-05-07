@@ -10,7 +10,6 @@ const StyledSpan = styled.span`
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
   color: #ccc;
-  margin-right: 5px;
   color: #8c94a0;
   padding: ${padding(...dims.padding)};
   cursor: not-allowed;
