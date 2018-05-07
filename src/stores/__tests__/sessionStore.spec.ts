@@ -366,7 +366,7 @@ describe('session store', () => {
         extendSession: jest.fn(),
         createSession: jest.fn(),
         saveSessionDuration: jest.fn(),
-        getSessionDuration: () => Promise.resolve(sessionDuration)
+        getSessionDuration: () => Promise.reject('error')
       };
 
       sessionStore = new SessionStore(new RootStore(true), api);
@@ -382,6 +382,15 @@ describe('session store', () => {
 
       expect(sessionStore.showSessionNotification).toHaveBeenCalled();
       expect(sessionStore.showSessionNotification).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set user default session duration', async () => {
+      const defaultSessionDuration = 300000;
+      sessionStore.showSessionNotification = jest.fn();
+      await sessionStore.initUserSession();
+      expect(sessionStore.sessionCurrentDuration).toBe(
+        convertMsToMinutes(defaultSessionDuration)
+      );
     });
   });
 });
