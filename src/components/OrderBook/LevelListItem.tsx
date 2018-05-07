@@ -46,11 +46,6 @@ const LevelListItem: React.SFC<LevelListItemProps> = ({
   const y = curry(toY)(order.side, LEVELS_COUNT, itemHeight);
   const fill = fillBySide(order.side);
 
-  const handleClick = (event: any) => {
-    // tslint:disable-next-line:no-console
-    console.log(format(order.price, instrument.accuracy));
-  };
-
   return (
     <Group x={0} y={y(idx)} width={width} height={itemHeight}>
       <Rect
@@ -75,22 +70,12 @@ const LevelListItem: React.SFC<LevelListItemProps> = ({
         stroke={colors.graphiteBorder}
         strokeWidth={1}
       />
-
       <LevelText
         x={8}
         y={10}
         width={width / 3}
         text={format(order.price, instrument.accuracy)}
         fill={fill}
-      />
-      <Rect
-        x={0}
-        y={0}
-        width={width / 3}
-        height={itemHeight}
-        fill={fill}
-        opacity={0.3}
-        onClick={handleClick}
       />
       <LevelText
         x={width / 3 + 8}

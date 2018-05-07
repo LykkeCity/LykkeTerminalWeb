@@ -12,6 +12,7 @@ import Bar, {BarProps} from './Bar';
 import Figures, {FigureListProps} from './Figures';
 import Header from './Header';
 import {LevelList, LevelListProps} from './LevelList';
+import LevelListItemClickable from './LevelListClickable';
 import LevelListItem from './LevelListItem';
 import MyOrders, {MyOrdersProps} from './MyOrders';
 import OrderBookItem from './OrderBookItem';
@@ -156,6 +157,8 @@ const ConnectedLevelListItem = connect(
   observer(LevelListItem)
 );
 
+const ConnectedLevelListItemClickable = observer(LevelListItemClickable);
+
 const ConnectedFigures = connect<FigureListProps>(
   ({
     orderBookStore: {mid, spreadRelative},
@@ -230,3 +233,4 @@ export {ConnectedOrderBookItem as OrderBookItem};
 export {ConnectedFigures as Figures};
 export {ConnectedMyOrders as MyOrders};
 export {ConnectedLevelListItem as LevelListItem};
+export {ConnectedLevelListItemClickable as LevelListItemClickable};
