@@ -28,18 +28,18 @@ describe('Test locale for number and date', () => {
   });
 
   it('should replace not a number value with 0', () => {
-    expect(formattedNumber(undefined, 5)).toBe('0.00');
-    expect(formattedNumber(null, 5)).toBe('0.00');
+    expect(formattedNumber(undefined as any, 5)).toBe('0.00');
+    expect(formattedNumber(null as any, 5)).toBe('0.00');
     expect(formattedNumber(Infinity, 5)).toBe('0.00');
-    expect(formattedNumber(true, 5)).toBe('0.00');
-    expect(formattedNumber('132', 5)).toBe('0.00');
+    expect(formattedNumber(true as any, 5)).toBe('0.00');
+    expect(formattedNumber('132' as any, 5)).toBe('0.00');
   });
 
   it('should replace not a number value with dashes', () => {
-    expect(formattedNumberWithDashes(undefined, 5)).toBe('--');
-    expect(formattedNumberWithDashes(null, 5)).toBe('--');
+    expect(formattedNumberWithDashes(undefined as any, 5)).toBe('--');
+    expect(formattedNumberWithDashes(null as any, 5)).toBe('--');
     expect(formattedNumberWithDashes(Infinity, 5)).toBe('--');
-    expect(formattedNumberWithDashes(true, 5)).toBe('--');
-    expect(formattedNumberWithDashes('132', 5)).toBe('--');
+    expect(formattedNumberWithDashes(true as any, 5)).toBe('--');
+    expect(formattedNumberWithDashes('132' as any, 5)).toBe('--');
   });
 });
