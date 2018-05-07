@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react';
-import {compose} from 'rambda';
+import {compose, pathOr} from 'rambda';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar';
@@ -39,14 +39,14 @@ const ConnectedOrders = connect(
 
 const ConnectedOrderList = connect<OrderListProps>(
   ({
-    orderListStore: {hasPendingOrders, isAllOrders},
+    orderListStore: {hasPendingOrders},
     referenceStore: {getInstrumentById},
-    uiStore: {selectInstrumentById}
+    uiStore: {selectInstrument, selectedInstrument}
   }) => ({
     loading: hasPendingOrders,
     getInstrumentById,
-    isAllOrders: isAllOrders(),
-    onChangeInstrumentById: selectInstrumentById
+    onChangeInstrumentById: selectInstrument,
+    selectedInstrumentId: pathOr('', ['id'], selectedInstrument)
   }),
   compose(
     withLoader<OrderListProps>(p => p.loading!),

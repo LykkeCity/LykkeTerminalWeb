@@ -13,8 +13,8 @@ interface OrderListItemProps {
   onEdit: any;
   order: OrderModel;
   instrument: InstrumentModel;
-  clickable: boolean;
   changeInstrumentById: (id: string) => void;
+  isSelected: boolean;
 }
 
 const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
@@ -38,8 +38,8 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName},
     id: instrumentId
   },
-  clickable,
-  changeInstrumentById
+  changeInstrumentById,
+  isSelected
 }) => {
   const handleEditOrder = () => onEdit(id);
   const handleCancelOrder = () => cancelOrder(id);
@@ -48,11 +48,11 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       ? precisionCeil(value, quoteAssetAccuracy)
       : precisionFloor(value, quoteAssetAccuracy);
   const handleChangeInstrument = () =>
-    clickable && changeInstrumentById(instrumentId);
+    !isSelected && changeInstrumentById(instrumentId);
   return (
     <tr>
       <Cell
-        clickable={clickable}
+        clickable={!isSelected}
         onClick={handleChangeInstrument}
         w={OrderCellWidth.Symbol}
       >

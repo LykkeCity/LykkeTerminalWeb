@@ -1,4 +1,4 @@
-import {compose} from 'rambda';
+import {compose, pathOr} from 'rambda';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
@@ -38,19 +38,14 @@ const ConnectedTrades = connect(
 
 const ConnectedTradeList = connect<TradeListProps>(
   ({
-    tradeStore: {
-      hasPendingItems,
-      shouldFetchMore,
-      fetchNextTrades,
-      isAllTrades
-    },
-    uiStore: {selectInstrumentById}
+    tradeStore: {hasPendingItems, shouldFetchMore, fetchNextTrades},
+    uiStore: {selectInstrument, selectedInstrument}
   }) => ({
     loading: hasPendingItems,
     fetchNextTrades,
     shouldFetchMore,
-    isAllTrades: isAllTrades(),
-    onChangeInstrumentById: selectInstrumentById
+    onChangeInstrumentById: selectInstrument,
+    selectedInstrumentId: pathOr('', ['id'], selectedInstrument)
   }),
   compose(
     withLoader<TradeListProps>(p => p.loading!),

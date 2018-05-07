@@ -1,5 +1,4 @@
 import {OrderType, TradeModel} from '../../models/index';
-import TradeFilter from '../../models/tradeFilter';
 import {RootStore, TradeStore} from '../index';
 
 describe('trade store', () => {
@@ -58,16 +57,6 @@ describe('trade store', () => {
     it('public trades should be an empty array by default', () => {
       expect(tradeStore.getPublicTrades instanceof Array).toBeTruthy();
       expect(tradeStore.getPublicTrades.length).toBe(0);
-    });
-
-    it('should return true filtering by all trades', () => {
-      tradeStore.setFilter(TradeFilter.All);
-      expect(tradeStore.isAllTrades()).toBeTruthy();
-    });
-
-    it('should return false filtering by current instrument trades', () => {
-      tradeStore.setFilter(TradeFilter.CurrentAsset);
-      expect(tradeStore.isAllTrades()).toBeFalsy();
     });
   });
 
