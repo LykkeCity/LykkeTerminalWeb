@@ -1,5 +1,3 @@
-import {throwPastParam} from '../fn';
-
 const replaceNumber = (replacer: any) => (
   value: number,
   accuracy: number,
@@ -22,8 +20,8 @@ const replaceNumber = (replacer: any) => (
   return checkForTrailingZero(result);
 };
 
-export const formattedNumber = throwPastParam(0, replaceNumber);
-export const formattedNumberWithDashes = throwPastParam('--', replaceNumber);
+export const formattedNumber = replaceNumber(0);
+export const formattedNumberWithDashes = replaceNumber('--');
 
 export const checkForTrailingZero = (value: string): string => {
   const indexOfZero = value.search(/0+$/);
