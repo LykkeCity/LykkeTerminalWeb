@@ -1,17 +1,27 @@
-export const formattedNumber = (
+const replaceNumber = (replacer: any) => (
   value: number,
   accuracy: number,
   options?: object
-): string => {
+) => {
   options = {
     minimumFractionDigits: accuracy,
     maximumFractionDigits: accuracy,
     ...options
   };
 
+  if (!Number.isFinite(value)) {
+    if (typeof replacer === 'string') {
+      return replacer;
+    }
+    value = replacer;
+  }
+
   const result = value.toLocaleString(undefined, options);
   return checkForTrailingZero(result);
 };
+
+export const formattedNumber = replaceNumber(0);
+export const formattedNumberWithDashes = replaceNumber('--');
 
 export const checkForTrailingZero = (value: string): string => {
   const indexOfZero = value.search(/0+$/);

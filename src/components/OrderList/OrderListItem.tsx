@@ -2,7 +2,6 @@ import * as React from 'react';
 import {InstrumentModel, OrderModel, Side} from '../../models';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil, precisionFloor} from '../../utils/math';
-import {toLocaleStringWithAccuracy} from '../../utils/string';
 import {Icon} from '../Icon/index';
 import {Cell} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
@@ -66,7 +65,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
       <TitledCell>
-        {formattedNumber(filled, baseAssetAccuracy)} ({toLocaleStringWithAccuracy(
+        {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
           filledPercent,
           2,
           {style: 'percent'}
