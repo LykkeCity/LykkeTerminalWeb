@@ -9,7 +9,6 @@ import {SideCell} from './styles';
 
 interface TradeListItemProps extends TradeModel {
   className?: string;
-  clickable: boolean;
   changeInstrumentById: (id: string) => void;
   isSelected: boolean;
 }
@@ -25,7 +24,6 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   timestamp,
   instrument,
   className,
-  clickable,
   changeInstrumentById,
   isSelected
 }) => {
@@ -37,11 +35,11 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   } = instrument!;
   const feeAsset = feeAssetFromSide(instrument!, side);
   const handleChangeInstrumentById = () =>
-    clickable && !isSelected && changeInstrumentById(instrumentId);
+    !isSelected && changeInstrumentById(instrumentId);
   return (
     <tr>
       <Cell
-        clickable={clickable && !isSelected}
+        clickable={!isSelected}
         onClick={handleChangeInstrumentById}
         w={TradesCellWidth.Symbol}
       >

@@ -9,7 +9,6 @@ export interface OrderListProps extends LoaderProps {
   onEditOrder: (order: OrderModel) => (id: string) => void;
   onCancelOrder: (id: string) => void;
   getInstrumentById: (id: string) => any;
-  isAllOrders: boolean;
   onChangeInstrumentById: (id: string) => void;
   selectedInstrumentId: string;
 }
@@ -19,7 +18,6 @@ const OrderList: React.SFC<OrderListProps> = ({
   onEditOrder,
   onCancelOrder,
   getInstrumentById,
-  isAllOrders,
   onChangeInstrumentById,
   selectedInstrumentId
 }) => (
@@ -35,7 +33,6 @@ const OrderList: React.SFC<OrderListProps> = ({
               onEdit={onEditOrder(order)}
               order={order}
               instrument={instrument}
-              clickable={isAllOrders}
               changeInstrumentById={onChangeInstrumentById}
               isSelected={selectedInstrumentId === instrument.id}
             />

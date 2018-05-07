@@ -113,8 +113,6 @@ class OrderListStore extends BaseStore {
     this.rootStore.uiStore.toggleOrdersSelect();
   };
 
-  isAllOrders = () => this.selectedOrderOptions === OrdersDefaultSelection.All;
-
   reset = () => {
     this.orders = [];
     this.selectedOrder = OrdersDefaultSelection.All;
