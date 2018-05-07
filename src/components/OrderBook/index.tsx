@@ -158,10 +158,10 @@ const ConnectedLevelListItem = connect(
 );
 
 const ConnectedLevelListItemClickable = connect(
-  ({orderStore: {updatePrice, updateDepth, updateOrderState}}) => ({
-    updatePrice,
-    updateDepth,
-    updateOrderState
+  ({orderStore: {updatePriceAndDepth, updateSide, updateType}}) => ({
+    updatePriceAndDepth,
+    updateSide,
+    updateType
   }),
   observer(LevelListItemClickable)
 );

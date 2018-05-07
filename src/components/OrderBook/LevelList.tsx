@@ -33,6 +33,7 @@ export class LevelList extends React.Component<LevelListProps> {
         <Layer>
           {levels.map((o, idx) => (
             <LevelListItemClickable
+              key={o.id}
               order={o}
               idx={idx}
               width={width}
