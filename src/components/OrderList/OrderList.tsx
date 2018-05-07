@@ -11,6 +11,7 @@ export interface OrderListProps extends LoaderProps {
   getInstrumentById: (id: string) => any;
   isAllOrders: boolean;
   onChangeInstrumentById: (id: string) => void;
+  selectedInstrumentId: string;
 }
 
 const OrderList: React.SFC<OrderListProps> = ({
@@ -19,7 +20,8 @@ const OrderList: React.SFC<OrderListProps> = ({
   onCancelOrder,
   getInstrumentById,
   isAllOrders,
-  onChangeInstrumentById
+  onChangeInstrumentById,
+  selectedInstrumentId
 }) => (
   <React.Fragment>
     <Table>
@@ -35,6 +37,7 @@ const OrderList: React.SFC<OrderListProps> = ({
               instrument={instrument}
               clickable={isAllOrders}
               changeInstrumentById={onChangeInstrumentById}
+              isSelected={selectedInstrumentId === instrument.id}
             />
           );
         })}

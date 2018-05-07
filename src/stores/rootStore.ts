@@ -106,8 +106,8 @@ class RootStore {
           this.referenceStore.onCandle
         );
       });
-      this.uiStore.selectInstrumentByInstrument(
-        this.lastOrDefaultInstrument(defaultInstrument)
+      this.uiStore.selectInstrument(
+        this.lastOrDefaultInstrument(defaultInstrument)!.id
       );
     });
   };
@@ -162,8 +162,8 @@ class RootStore {
           );
         });
         this.orderListStore.setWs(ws);
-        this.uiStore.selectInstrumentByInstrument(
-          this.lastOrDefaultInstrument(defaultInstrument)
+        this.uiStore.selectInstrument(
+          this.lastOrDefaultInstrument(defaultInstrument)!.id
         );
         this.tradeStore.subscribe(ws);
         this.orderStore.subscribe(ws);

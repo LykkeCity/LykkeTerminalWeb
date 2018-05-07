@@ -74,7 +74,7 @@ const connectedInstrumentPicker = connect(
     show: uiStore.showInstrumentPicker,
     showInstrumentSelection: uiStore.showInstrumentSelection,
     onPick: (instrument: InstrumentModel) => {
-      uiStore.selectInstrumentByInstrument(instrument);
+      uiStore.selectInstrument(instrument!.id);
       uiStore.toggleInstrumentPicker();
     },
     onToggle: uiStore.toggleInstrumentPicker,
