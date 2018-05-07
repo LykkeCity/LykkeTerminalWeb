@@ -49,7 +49,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   return (
     <Form>
       <InputControl style={{borderBottom: '1px solid #333'}}>
-        <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
+        <Flex justify={'space-between'} style={{marginBottom: '7px'}}>
           <LimitTitle>Price ({quoteAssetName})</LimitTitle>
         </Flex>
         <NumberInput
@@ -60,7 +60,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         />
       </InputControl>
       <InputControl>
-        <Flex justify={'space-between'} style={{marginBottom: '8px'}}>
+        <Flex justify={'space-between'} style={{marginBottom: '7px'}}>
           <Action>
             {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </Action>
