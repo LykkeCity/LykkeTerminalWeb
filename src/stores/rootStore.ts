@@ -106,7 +106,7 @@ class RootStore {
           this.referenceStore.onCandle
         );
       });
-      this.uiStore.selectInstrument(
+      this.uiStore.selectInstrumentByInstrument(
         this.lastOrDefaultInstrument(defaultInstrument)
       );
     });
@@ -162,7 +162,7 @@ class RootStore {
           );
         });
         this.orderListStore.setWs(ws);
-        this.uiStore.selectInstrument(
+        this.uiStore.selectInstrumentByInstrument(
           this.lastOrDefaultInstrument(defaultInstrument)
         );
         this.tradeStore.subscribe(ws);

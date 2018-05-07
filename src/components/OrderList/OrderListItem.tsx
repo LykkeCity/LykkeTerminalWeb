@@ -12,6 +12,8 @@ interface OrderListItemProps {
   onEdit: any;
   order: OrderModel;
   instrument: InstrumentModel;
+  clickable: boolean;
+  changeInstrumentById: (id: string) => void;
 }
 
 const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
@@ -32,8 +34,11 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     displayName,
     accuracy,
     baseAsset: {accuracy: baseAssetAccuracy, name: baseAssetName},
-    quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName}
-  }
+    quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName},
+    id: instrumentId
+  },
+  clickable,
+  changeInstrumentById
 }) => {
   const handleEditOrder = () => onEdit(id);
   const handleCancelOrder = () => cancelOrder(id);
@@ -41,9 +46,17 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
     side === Side.Buy
       ? precisionCeil(value, quoteAssetAccuracy)
       : precisionFloor(value, quoteAssetAccuracy);
+  const handleChangeInstrument = () =>
+    clickable && changeInstrumentById(instrumentId);
   return (
     <tr>
-      <Cell w={OrderCellWidth.Symbol}>{displayName}</Cell>
+      <Cell
+        clickable={clickable}
+        onClick={handleChangeInstrument}
+        w={OrderCellWidth.Symbol}
+      >
+        {displayName}
+      </Cell>
       <SideCell w={OrderCellWidth.Side} side={side}>
         {side}
       </SideCell>

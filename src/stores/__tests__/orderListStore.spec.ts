@@ -1,4 +1,5 @@
 import {OrderModel} from '../../models';
+import OrdersDefaultSelection from '../../models/ordersDefaultSelection';
 import {OrderListStore, RootStore} from '../index';
 
 describe('orderList store', () => {
@@ -83,6 +84,16 @@ describe('orderList store', () => {
       expect(orderListStore.allOrders[0].remainingVolume).toEqual(
         dto.RemainingVolume
       );
+    });
+
+    it('should return true filtering by all trades', () => {
+      orderListStore.toggleOrders(OrdersDefaultSelection.All);
+      expect(orderListStore.isAllOrders()).toBeTruthy();
+    });
+
+    it('should return false filtering by current instrument trades', () => {
+      orderListStore.toggleOrders(OrdersDefaultSelection.CurrentAsset);
+      expect(orderListStore.isAllOrders()).toBeFalsy();
     });
   });
 
