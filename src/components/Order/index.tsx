@@ -27,7 +27,7 @@ const ConnectedOrder = connect(
     balanceListStore: {tradingWalletBalances: getBalance},
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
-    orderStore: {placeOrder, updatePriceFn, updateDepthFn},
+    orderStore: {placeOrder, updatePriceFn, updateDepthFn, orderState},
     uiStore: {
       selectedInstrument: instrument,
       stateFns,
@@ -80,6 +80,7 @@ const ConnectedOrder = connect(
     mid: mid(),
     onArrowClick,
     onValueChange,
+    orderState,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
     resetPercentage,

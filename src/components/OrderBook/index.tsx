@@ -157,7 +157,14 @@ const ConnectedLevelListItem = connect(
   observer(LevelListItem)
 );
 
-const ConnectedLevelListItemClickable = observer(LevelListItemClickable);
+const ConnectedLevelListItemClickable = connect(
+  ({orderStore: {updatePrice, updateDepth, updateOrderState}}) => ({
+    updatePrice,
+    updateDepth,
+    updateOrderState
+  }),
+  observer(LevelListItemClickable)
+);
 
 const ConnectedFigures = connect<FigureListProps>(
   ({
