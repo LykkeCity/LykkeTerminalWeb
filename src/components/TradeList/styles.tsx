@@ -41,7 +41,6 @@ export const StyledLoadMore = styled.div`
 `;
 
 export const StyledLoadMoreButton = styled.span`
-  margin-right: 5px;
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
   color: ${colors.white};

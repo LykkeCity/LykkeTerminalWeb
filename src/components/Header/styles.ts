@@ -1,11 +1,11 @@
 import {rem} from 'polished';
-import styled from '../styled';
+import styled, {fonts} from '../styled';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
 
 export const HeaderItem = styled(Box)`
-  font-size: ${rem(16)};
+  font-size: ${rem(fonts.normal)};
   position: relative;
   &:after {
     content: '';

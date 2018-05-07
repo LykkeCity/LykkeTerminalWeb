@@ -1,4 +1,4 @@
-import {rem, rgba} from 'polished';
+import {rem} from 'polished';
 import styled, {css} from 'styled-components';
 import {Side} from '../../models';
 import {colors} from '../styled';
@@ -16,16 +16,13 @@ export const Markets = styled.div`
 export const Actions = Markets.extend`
   justify-content: center;
   border-bottom: none;
+  margin-bottom: ${rem(30)};
 `;
 
 const buttonColorBySide = (side: string, isActive: boolean) => {
   return isActive
     ? side === Side.Sell.toLowerCase() ? colors.red : colors.green
-    : 'transparent';
-};
-
-const buttonBorderColorBySide = (isActive: boolean) => {
-  return isActive ? rgba(0, 0, 0, 0.2) : rgba(140, 148, 160, 0.4);
+    : '#272727';
 };
 
 export const ActionButton = styled.div`
@@ -46,21 +43,21 @@ export const ActionButton = styled.div`
 export const ActionProperty = styled.div.attrs({
   style: (props: any) => ({
     backgroundColor: buttonColorBySide(props.side, props.isActive),
-    color:
-      props.side === Side.Buy.toLowerCase() && props.isActive
-        ? '#333'
-        : colors.white
+    color: props.isActive
+      ? props.side === Side.Buy.toLowerCase() ? '#333' : colors.white
+      : '#8c94a0'
   })
 })`
-  background: transparent;
-  border: solid 1px ${(p: any) => buttonBorderColorBySide(p.isActive)};
+  background-color: #272727;
+  color: ${colors.white};
   cursor: pointer;
   font-size: ${rem(14)};
   font-weight: 600;
   line-height: 1.14;
   text-align: center;
   text-transform: capitalize;
-  padding: ${rem(8)} ${rem(58)};
+  padding: 10px;
+  height: 32px;
   width: 100%;
   border-radius: 4px;
 ` as any;
@@ -68,18 +65,17 @@ export const ActionProperty = styled.div.attrs({
 export const MarketButton = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: -2px;
 
   &:not(:last-child) {
     margin-right: ${rem(22)};
   }
-
-  margin-bottom: -1px;
 `;
 
 export const MarketProperty = styled.div`
   cursor: pointer;
   text-align: center;
-  padding: ${rem(9)} 0;
+  padding: ${rem(9)} 0 ${rem(11)};
   color: ${colors.coolGrey};
   font-size: ${rem(18)};
   border-bottom: 2px solid transparent;
@@ -101,6 +97,7 @@ export const ConfirmButton = styled.button.attrs({
   min-height: ${rem(50)};
   border-radius: 4px;
   font-size: ${rem(16)};
+  height: 48px;
   padding: ${rem(12)} ${rem(20)};
   font-weight: bold;
   line-height: 1;
@@ -127,6 +124,7 @@ export const LimitTotal = Flex.extend`
 
 export const LimitTitle = styled.div`
   font-size: ${rem(16)};
+  font-weight: 600;
 `;
 
 export const MarketConfirmButton = styled.div`
@@ -139,9 +137,8 @@ export const Note = styled.div`
 `;
 
 export const Amount = styled.div`
-  padding-top: ${rem(1)};
   color: #8c94a0;
-  font-size: ${rem(15)};
+  font-size: ${rem(14)};
 `;
 
 export const Available = styled(Amount)`
@@ -152,6 +149,7 @@ export const Available = styled(Amount)`
 
 export const Action = styled.div`
   font-size: ${rem(16)};
+  font-weight: 600;
   &:first-letter {
     text-transform: capitalize;
   }
@@ -162,7 +160,7 @@ export const Reset = Flex.extend`
   font-size: ${rem(16)};
   font-weight: bold;
   line-height: 1;
-  padding: ${rem(16)} 0;
+  padding: ${rem(19)} 0;
 
   span:hover {
     cursor: pointer;
@@ -170,10 +168,14 @@ export const Reset = Flex.extend`
 `;
 
 export const InputControl = styled.div`
-  margin: ${rem(14)} 0 ${rem(8)} 0;
+  margin: ${rem(8)} 0;
+
+  & + & {
+    margin-top: ${rem(20)};
+  }
 `;
 
 export const StyledOrderButton = styled.div`
-  margin-top: ${rem(24)};
+  margin-top: ${rem(32)};
   margin-bottom: ${rem(10)};
 `;

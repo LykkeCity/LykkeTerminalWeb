@@ -4,12 +4,13 @@ import styled from 'styled-components';
 const StyledInput = styled.input`
   background-color: transparent;
   border-radius: 4px;
-  border: solid 1px rgba(140, 148, 160, 0.4);
+  border: solid 1px #56595e;
   color: #f5f6f7;
-  padding-left: 5px;
-  box-sizing: border-box;
+  padding-left: 8px;
+  padding-right: 20px;
   height: 32px;
   width: 100%;
+  box-sizing: border-box;
 
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
