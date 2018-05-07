@@ -2,6 +2,7 @@ import React from 'react';
 import {Layer, Stage} from 'react-konva';
 import {InstrumentModel, Order} from '../../models';
 import {LevelListItem} from './';
+import {LevelListItemClickable} from './';
 
 export interface LevelListProps {
   levels: Order[];
@@ -17,10 +18,21 @@ export class LevelList extends React.Component<LevelListProps> {
     const {levels, width, height, ...rest} = this.props;
     return (
       <Stage width={width} height={height}>
-        <Layer>
+        <Layer hitGraphEnabled={false}>
           {levels.map((o, idx) => (
             <LevelListItem
               key={o.id}
+              order={o}
+              idx={idx}
+              width={width}
+              height={height}
+              {...rest}
+            />
+          ))}
+        </Layer>
+        <Layer>
+          {levels.map((o, idx) => (
+            <LevelListItemClickable
               order={o}
               idx={idx}
               width={width}
