@@ -17,7 +17,7 @@ export class LevelList extends React.Component<LevelListProps> {
     const {levels, width, height, ...rest} = this.props;
     return (
       <Stage width={width} height={height}>
-        <Layer hitGraphEnabled={false}>
+        <Layer>
           {levels.map((o, idx) => (
             <LevelListItem
               key={o.id}
