@@ -43,14 +43,13 @@ export const ActionButton = styled.div`
 export const ActionProperty = styled.div.attrs({
   style: (props: any) => ({
     backgroundColor: buttonColorBySide(props.side, props.isActive),
-    color:
-      props.side === Side.Buy.toLowerCase() && props.isActive
-        ? '#333'
-        : colors.white
+    color: props.isActive
+      ? props.side === Side.Buy.toLowerCase() ? '#333' : colors.white
+      : '#8c94a0'
   })
 })`
   background-color: #272727;
-  color: rgb(245, 246, 247);
+  color: ${colors.white};
   cursor: pointer;
   font-size: ${rem(14)};
   font-weight: 600;
