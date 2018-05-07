@@ -1,3 +1,4 @@
+import {observable} from 'mobx';
 import OrderApi from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
@@ -26,6 +27,13 @@ enum Errors {
 
 // tslint:disable:no-console
 class OrderStore extends BaseStore {
+  @observable
+  orderState: any = {
+    isLimitActive: true,
+    isMarketActive: false,
+    isSellActive: true
+  };
+
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
@@ -36,6 +44,10 @@ class OrderStore extends BaseStore {
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
   }
+
+  updateOrderState = (state: any) => {
+    this.orderState = state;
+  };
 
   updatePriceFn = (fn: any) => {
     this.updatePriceByOrderBook = fn;

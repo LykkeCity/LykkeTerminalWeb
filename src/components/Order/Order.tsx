@@ -55,6 +55,7 @@ interface OrderProps {
   getAssetById: any;
   onArrowClick: any;
   onValueChange: any;
+  orderState: any;
   updatePriceFn: any;
   updateDepthFn: any;
   initPriceFn: any;
@@ -96,9 +97,9 @@ class Order extends React.Component<OrderProps, OrderState> {
   constructor(props: OrderProps) {
     super(props);
     this.state = {
-      isLimitActive: true,
-      isMarketActive: false,
-      isSellActive: true,
+      isLimitActive: this.props.orderState.isLimitActive,
+      isMarketActive: this.props.orderState.isMarketActive,
+      isSellActive: this.props.orderState.isSellActive,
       isStopLimitActive: false,
       pendingOrder: false,
       percents: percentage,

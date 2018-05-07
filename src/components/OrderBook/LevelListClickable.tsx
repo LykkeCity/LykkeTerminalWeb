@@ -2,41 +2,49 @@ import {curry} from 'rambda';
 import React from 'react';
 import {Group, Rect} from 'react-konva';
 import {LEVELS_COUNT} from '.';
-import {InstrumentModel, Order, Side} from '../../models';
+import {Order, Side} from '../../models';
 
 const toY = (side: Side, total: number, height: number, idx: number) =>
   (side === Side.Buy ? idx : total - idx - 1) * height;
 
 interface LevelListItemProps {
   order: Order;
-  instrument: InstrumentModel;
-  format: (num: number, accuracy: number) => string;
-  normalize: (num: number) => number;
   idx: number;
   height: number;
   width: number;
+  updatePrice: any;
+  updateDepth: any;
+  updateOrderState: any;
 }
 
 const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
   order,
-  instrument,
-  format,
-  normalize,
   idx,
   height,
-  width
+  width,
+  updatePrice,
+  updateDepth,
+  updateOrderState
 }) => {
   const itemHeight = height / LEVELS_COUNT;
   const y = curry(toY)(order.side, LEVELS_COUNT, itemHeight);
 
   const handlePriceClick = (event: any) => {
-    // tslint:disable-next-line:no-console
-    console.log('Price');
+    updatePrice(order.price);
+    updateOrderState({
+      isLimitActive: true,
+      isMarketActive: false,
+      isSellActive: order.side === Side.Sell
+    });
   };
 
   const handleVolumeClick = (event: any) => {
-    // tslint:disable-next-line:no-console
-    console.log('Volume');
+    updateDepth(order.volume);
+    updateOrderState({
+      isLimitActive: false,
+      isMarketActive: true,
+      isSellActive: order.side === Side.Sell
+    });
   };
 
   return (
