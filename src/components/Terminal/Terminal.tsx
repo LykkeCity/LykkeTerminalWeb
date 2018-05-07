@@ -3,12 +3,7 @@ import {Mosaic, MosaicDirection} from 'react-mosaic-component';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
-import {
-  AuthStore,
-  BalanceListStore,
-  ReferenceStore,
-  UiStore
-} from '../../stores';
+import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
@@ -154,9 +149,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
   };
 
   async start() {
-    await this.referenceStore.fetchReferenceData();
-
     if (this.authStore.isAuth) {
+      await this.referenceStore.fetchReferenceData();
       this.balanceListStore.fetchAll().then(() => {
         if (this.authStore.noKycAndFunds) {
           return this.props.history.push(paths.kycAndFundsCheck);
@@ -165,10 +159,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         }
       });
     } else {
-      const defaultInstrument = this.referenceStore.getInstrumentById(
-        UiStore.DEFAULT_INSTRUMENT
-      );
-      this.props.rootStore.startPublicMode(defaultInstrument);
+      this.authStore.signIn();
     }
   }
 
