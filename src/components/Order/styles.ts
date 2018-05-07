@@ -152,7 +152,6 @@ export const Available = styled(Amount)`
 
 export const Action = styled.div`
   font-size: ${rem(16)};
-  font-weight: 600;
   &:first-letter {
     text-transform: capitalize;
   }
