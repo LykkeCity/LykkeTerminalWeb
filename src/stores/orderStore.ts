@@ -1,4 +1,3 @@
-import {observable} from 'mobx';
 import OrderApi from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
@@ -27,17 +26,12 @@ enum Errors {
 
 // tslint:disable:no-console
 class OrderStore extends BaseStore {
-  @observable
-  orderState: any = {
-    isLimitActive: true,
-    isMarketActive: false,
-    isSellActive: true
-  };
-
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
   private updatePriceByOrderBook: any;
   private updateDepthByOrderBook: any;
+  private updateTypeByOrderBook: any;
+  private updateSideByOrderBook: any;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
@@ -45,8 +39,12 @@ class OrderStore extends BaseStore {
     this.modalStore = this.rootStore.modalStore;
   }
 
-  updateOrderState = (state: any) => {
-    this.orderState = state;
+  updateSideFn = (fn: any) => {
+    this.updateSideByOrderBook = fn;
+  };
+
+  updateTypeFn = (fn: any) => {
+    this.updateTypeByOrderBook = fn;
   };
 
   updatePriceFn = (fn: any) => {
@@ -55,6 +53,18 @@ class OrderStore extends BaseStore {
 
   updateDepthFn = (fn: any) => {
     this.updateDepthByOrderBook = fn;
+  };
+
+  updateSide = (isSell: boolean) => {
+    if (this.updateSideByOrderBook) {
+      this.updateSideByOrderBook(isSell);
+    }
+  };
+
+  updateType = (isLimit: boolean) => {
+    if (this.updateTypeByOrderBook) {
+      this.updateTypeByOrderBook(isLimit);
+    }
   };
 
   updatePrice = (price: number) => {

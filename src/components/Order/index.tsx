@@ -29,7 +29,13 @@ const ConnectedOrder = connect(
     balanceListStore: {tradingWalletBalances: getBalance},
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
-    orderStore: {placeOrder, updatePriceFn, updateDepthFn, orderState},
+    orderStore: {
+      placeOrder,
+      updatePriceFn,
+      updateDepthFn,
+      updateSideFn,
+      updateTypeFn
+    },
     uiStore: {
       selectedInstrument: instrument,
       stateFns,
@@ -80,7 +86,6 @@ const ConnectedOrder = connect(
     mid: mid(),
     onArrowClick,
     onValueChange,
-    orderState,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
     resetPercentage,
@@ -88,6 +93,8 @@ const ConnectedOrder = connect(
     updateDepthFn,
     updatePercentageState,
     updatePriceFn,
+    updateSideFn,
+    updateTypeFn,
     get baseAssetBalance() {
       const asset = getBalance.find((b: AssetBalanceModel) => {
         const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);

@@ -12,9 +12,9 @@ interface LevelListItemProps {
   idx: number;
   height: number;
   width: number;
-  updatePrice: any;
-  updateDepth: any;
-  updateOrderState: any;
+  updatePriceAndDepth: any;
+  updateSide: any;
+  updateType: any;
 }
 
 const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
@@ -22,29 +22,23 @@ const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
   idx,
   height,
   width,
-  updatePrice,
-  updateDepth,
-  updateOrderState
+  updatePriceAndDepth,
+  updateSide,
+  updateType
 }) => {
   const itemHeight = height / LEVELS_COUNT;
   const y = curry(toY)(order.side, LEVELS_COUNT, itemHeight);
 
   const handlePriceClick = (event: any) => {
-    updatePrice(order.price);
-    updateOrderState({
-      isLimitActive: true,
-      isMarketActive: false,
-      isSellActive: order.side === Side.Sell
-    });
+    updatePriceAndDepth(order.price, 0);
+    updateSide(order.side === Side.Sell);
+    updateType(true);
   };
 
   const handleVolumeClick = (event: any) => {
-    updateDepth(order.volume);
-    updateOrderState({
-      isLimitActive: false,
-      isMarketActive: true,
-      isSellActive: order.side === Side.Sell
-    });
+    updatePriceAndDepth(0, order.volume);
+    updateSide(order.side === Side.Sell);
+    updateType(false);
   };
 
   return (

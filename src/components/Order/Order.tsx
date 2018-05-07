@@ -58,6 +58,8 @@ interface OrderProps {
   orderState: any;
   updatePriceFn: any;
   updateDepthFn: any;
+  updateSideFn: any;
+  updateTypeFn: any;
   initPriceFn: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
@@ -97,9 +99,9 @@ class Order extends React.Component<OrderProps, OrderState> {
   constructor(props: OrderProps) {
     super(props);
     this.state = {
-      isLimitActive: this.props.orderState.isLimitActive,
-      isMarketActive: this.props.orderState.isMarketActive,
-      isSellActive: this.props.orderState.isSellActive,
+      isLimitActive: true,
+      isMarketActive: false,
+      isSellActive: true,
       isStopLimitActive: false,
       pendingOrder: false,
       percents: percentage,
@@ -110,6 +112,8 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.props.stateFns.push(this.handleChangeInstrument);
     this.props.updatePriceFn(this.updatePriceByOrderBook);
     this.props.updateDepthFn(this.updateDepthByOrderBook);
+    this.props.updateSideFn(this.updateSideByOrderBook);
+    this.props.updateTypeFn(this.updateTypeByOrderBook);
     this.props.initPriceFn(this.initPriceUpdate);
   }
 
@@ -153,6 +157,19 @@ class Order extends React.Component<OrderProps, OrderState> {
   updateDepthByOrderBook = (quantity: number) => {
     this.setState({
       quantityValue: quantity.toFixed(this.props.accuracy.quantityAccuracy)
+    });
+  };
+
+  updateSideByOrderBook = (isSell: boolean) => {
+    this.setState({
+      isSellActive: isSell
+    });
+  };
+
+  updateTypeByOrderBook = (isLimit: boolean) => {
+    this.setState({
+      isMarketActive: !isLimit,
+      isLimitActive: isLimit
     });
   };
 
