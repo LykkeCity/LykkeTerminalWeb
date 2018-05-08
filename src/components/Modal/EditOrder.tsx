@@ -68,13 +68,6 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     const {modal} = this.props;
     const currentInstrument = this.props.getInstrumentById(modal.config.symbol);
 
-    this.state = {
-      pendingOrder: false,
-      percents: percentage,
-      priceValue: `${modal.config.price}`,
-      quantityValue: `${modal.config.volume}`
-    };
-
     this.accuracy = {
       priceAccuracy: pathOr(2, ['accuracy'], currentInstrument),
       quantityAccuracy: pathOr(2, ['baseAsset', 'accuracy'], currentInstrument),
@@ -84,6 +77,14 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
         currentInstrument
       )
     };
+
+    this.state = {
+      pendingOrder: false,
+      percents: percentage,
+      priceValue: modal.config.price.toFixed(this.accuracy.priceAccuracy),
+      quantityValue: modal.config.volume.toFixed(this.accuracy.quantityAccuracy)
+    };
+
     this.baseAssetName = currentInstrument.baseAsset.name;
     this.quoteAssetName = currentInstrument.quoteAsset.name;
     this.baseAssetId = currentInstrument.baseAsset.id;
