@@ -6,8 +6,6 @@ import Widgets from '../../models/mosaicWidgets';
 import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
-import {Chart} from '../Chart/index';
-import DepthChart from '../DepthChart';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
 import {MyWallets} from '../MyWallets';
@@ -17,7 +15,7 @@ import OrderBook from '../OrderBook';
 import {Orders} from '../OrderList';
 import {SessionNotificationComponent} from '../Session';
 import styled, {colors} from '../styled';
-import {TabbedTile, Tile} from '../Tile';
+import {ChartTabbedTile, TabbedTile, Tile} from '../Tile';
 import {TradeLog, Trades} from '../TradeList';
 import {TerminalProps} from './index';
 
@@ -45,10 +43,7 @@ const {
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   [ChartWidget]: (
-    <TabbedTile tabs={['Price chart', 'Depth chart']} authorize={false}>
-      <Chart />
-      <DepthChart />
-    </TabbedTile>
+    <ChartTabbedTile tabs={['Price chart', 'Depth chart']} authorize={false} />
   ),
   [TradeListWidget]: (
     <Tile title="Trade log">
