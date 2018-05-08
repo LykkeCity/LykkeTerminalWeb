@@ -21,3 +21,4 @@ export {default as TradeFilter} from './tradeFilter';
 export {default as levels} from './notificationLevels';
 export {default as FeeType} from './feeType';
 export {default as SortDirection} from './sortDirection';
+export {default as ChartType} from './chartType';
