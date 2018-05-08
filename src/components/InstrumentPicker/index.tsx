@@ -62,28 +62,35 @@ export interface InstrumentShortcutSelectionProps {
 }
 
 const connectedInstrumentPicker = connect(
-  ({authStore, referenceStore, uiStore, watchlistStore}) => ({
-    baseAsset:
-      referenceStore.getAssetById(referenceStore.baseAssetId) ||
-      new AssetModel({}),
-    instrumentId: pathOr(undefined, ['selectedInstrument', 'id'], uiStore),
-    instruments: referenceStore
-      .findInstruments(uiStore.searchTerm, uiStore.searchWalletName)
-      .sort((a, b) => b.volumeInBase - a.volumeInBase),
-    value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
-    show: uiStore.showInstrumentPicker,
-    showInstrumentSelection: uiStore.showInstrumentSelection,
-    onPick: (instrument: InstrumentModel) => {
-      uiStore.selectInstrument(instrument!.id);
-      uiStore.toggleInstrumentPicker();
-    },
-    onToggle: uiStore.toggleInstrumentPicker,
-    onToggleInstrumentSelection: uiStore.toggleInstrumentSelection,
-    onSearch: uiStore.search,
-    onSearchWalletName: uiStore.searchWallet,
-    watchlistNames: watchlistStore.watchlistNames,
-    isAuth: authStore.isAuth
-  }),
+  ({authStore, referenceStore, uiStore, watchlistStore}) => {
+    const getSortedInstruments = (sortField: string) =>
+      referenceStore
+        .findInstruments(uiStore.searchTerm, uiStore.searchWalletName)
+        .sort((a, b) => (b[sortField] || 0) - (a[sortField] || 0));
+
+    return {
+      baseAsset:
+        referenceStore.getAssetById(referenceStore.baseAssetId) ||
+        new AssetModel({}),
+      instrumentId: pathOr(undefined, ['selectedInstrument', 'id'], uiStore),
+      instruments: getSortedInstruments(
+        authStore.isAuth ? 'volumeInBase' : 'volume'
+      ),
+      value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
+      show: uiStore.showInstrumentPicker,
+      showInstrumentSelection: uiStore.showInstrumentSelection,
+      onPick: (instrument: InstrumentModel) => {
+        uiStore.selectInstrument(instrument.id);
+        uiStore.toggleInstrumentPicker();
+      },
+      onToggle: uiStore.toggleInstrumentPicker,
+      onToggleInstrumentSelection: uiStore.toggleInstrumentSelection,
+      onSearch: uiStore.search,
+      onSearchWalletName: uiStore.searchWallet,
+      watchlistNames: watchlistStore.watchlistNames,
+      isAuth: authStore.isAuth
+    };
+  },
   InstrumentPicker
 );
 

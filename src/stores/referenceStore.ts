@@ -81,6 +81,7 @@ class ReferenceStore extends BaseStore {
     const instrumentsByName = this.instruments.filter(instrument =>
       includes(normalize(term), normalize(instrument.displayName!))
     );
+
     if (watchlistName) {
       const instrumentsByWatchlist = getWatchlistByName(watchlistName);
       if (instrumentsByWatchlist) {
