@@ -7,6 +7,12 @@ import {PointerProps} from './Models';
 
 import chart from './chartConstants';
 
+const measureText = (text: string, size: number, font: string) => {
+  const ctx = document.createElement('canvas').getContext('2d');
+  ctx!.font = `${size}px ${font}`;
+  return Math.ceil(ctx!.measureText(text).width);
+};
+
 class Pointer extends React.Component<PointerProps> {
   calcY: number = -chart.modal.height;
   mouseX: number = this.props.width * 2;
@@ -38,22 +44,32 @@ class Pointer extends React.Component<PointerProps> {
     super(props);
   }
 
-  generateModalText(): any {
+  generateModalText(depthLabelWidth: number, totalOfLabelWidth: number): any {
+    const width = Math.max(
+      depthLabelWidth + totalOfLabelWidth + chart.modal.marginLeft * 3,
+      chart.modal.width
+    );
+
     if (this.props.side === 'asks') {
-      this.titleX =
-        this.mouseX -
-        chart.modal.arrowWidth / 2 -
-        chart.modal.longBeforeArrow +
-        chart.modal.marginLeft;
+      const fromMouseToRightSide =
+        this.mouseX +
+        (width - (chart.modal.arrowWidth / 2 + chart.modal.longBeforeArrow));
+      fromMouseToRightSide > this.width
+        ? (this.titleX = this.width - width + chart.modal.marginLeft)
+        : (this.titleX =
+            this.mouseX -
+            chart.modal.arrowWidth / 2 -
+            chart.modal.longBeforeArrow +
+            chart.modal.marginLeft);
+
       this.text = 'Can be bought';
     } else {
       const fromMouseToLeftSide =
         this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.shortBeforeArrow;
-      if (fromMouseToLeftSide < 0) {
-        this.titleX = chart.modal.marginLeft;
-      } else {
-        this.titleX = fromMouseToLeftSide + chart.modal.marginLeft;
-      }
+      fromMouseToLeftSide < 0
+        ? (this.titleX = chart.modal.marginLeft)
+        : (this.titleX = fromMouseToLeftSide + chart.modal.marginLeft);
+
       this.text = 'Can be sold';
     }
 
@@ -66,38 +82,48 @@ class Pointer extends React.Component<PointerProps> {
     this.modalLine = [
       this.titleX,
       this.titleY + 32,
-      this.titleX + (chart.modal.width - chart.modal.marginLeft * 2),
+      this.titleX + (width - chart.modal.marginLeft * 2),
       this.titleY + 32
     ];
 
     this.soldX = this.titleX;
-    this.totalX = this.titleX + chart.modal.width / 2;
+    this.totalX =
+      this.titleX +
+      Math.max(depthLabelWidth + chart.modal.marginLeft, chart.modal.width / 2);
     this.labelsY = this.titleY + 48;
     this.numbersY = this.labelsY + 24;
   }
 
-  generateModal() {
+  generateModal(depthLabelWidth: number, totalOfLabelWidth: number) {
+    const width = Math.max(
+      depthLabelWidth + totalOfLabelWidth + chart.modal.marginLeft * 3,
+      chart.modal.width
+    );
+
     if (this.calcY < 0) {
       this.calcY = this.calcY - 10000;
     }
     this.modal = [];
     let leftX;
     if (this.props.side === 'asks') {
-      leftX =
-        this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.longBeforeArrow;
+      const fromMouseToRightSide =
+        this.mouseX +
+        (width - (chart.modal.arrowWidth / 2 + chart.modal.longBeforeArrow));
+      fromMouseToRightSide > this.width
+        ? (leftX = this.width - width + chart.modal.arrowWidth / 2)
+        : (leftX =
+            this.mouseX -
+            chart.modal.arrowWidth / 2 -
+            chart.modal.longBeforeArrow);
     } else {
       const fromMouseToLeftSide =
         this.mouseX - chart.modal.arrowWidth / 2 - chart.modal.shortBeforeArrow;
-      if (fromMouseToLeftSide < 0) {
-        leftX = 0;
-      } else {
-        leftX = fromMouseToLeftSide;
-      }
+      fromMouseToLeftSide < 0 ? (leftX = 0) : (leftX = fromMouseToLeftSide);
     }
 
     const aboveMidHeight = this.calcY < this.height * 0.4;
 
-    const rightX = leftX + chart.modal.width;
+    const rightX = leftX + width;
     const bottomY = aboveMidHeight
       ? this.calcY + chart.modal.shiftFromBall + chart.modal.arrowHeight
       : this.calcY - chart.modal.shiftFromBall - chart.modal.arrowHeight;
@@ -170,12 +196,33 @@ class Pointer extends React.Component<PointerProps> {
   };
 
   drawPointer = () => {
-    let price = 0;
-    let depth = 0;
-
     if (this.orders.length > 0) {
-      price = this.orders[this.orderIndex].price;
-      depth = this.orders[this.orderIndex].depth;
+      const price = this.orders[this.orderIndex].price;
+      const depth = this.orders[this.orderIndex].depth;
+
+      const priceLabel = `${price.toLocaleString(undefined, {
+        maximumFractionDigits: this.props.priceAccuracy
+      })} ${this.props.quoteAsset}`;
+      const depthLabel = `${depth.toLocaleString(undefined, {
+        maximumFractionDigits: this.props.priceAccuracy
+      })} ${this.props.baseAsset}`;
+      const totalOfLabel = `${(price * depth).toLocaleString(undefined, {
+        maximumFractionDigits: this.props.priceAccuracy
+      })} ${this.props.quoteAsset}`;
+
+      const depthLabelWidth = measureText(
+        depthLabel,
+        chart.modal.title.fontSize,
+        chart.modal.title.fontFamily
+      );
+      const totalOfLableWidth = measureText(
+        totalOfLabel,
+        chart.modal.title.fontSize,
+        chart.modal.title.fontFamily
+      );
+
+      this.generateModal(depthLabelWidth, totalOfLableWidth);
+      this.generateModalText(depthLabelWidth, totalOfLableWidth);
 
       this.graphics.push(
         // invisible borders under a chart
@@ -230,9 +277,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // title text
         <Text
-          text={`${price.toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy
-          })} ${this.props.quoteAsset}`}
+          text={priceLabel}
           fontSize={chart.modal.title.fontSize}
           fontFamily={chart.modal.title.fontFamily}
           fontStyle={chart.modal.title.fontStyle}
@@ -249,7 +294,6 @@ class Pointer extends React.Component<PointerProps> {
           closed={true}
           stroke={this.props.color}
           strokeWidth={chart.strokeWidth}
-          dash={chart.pointer.dash}
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
@@ -281,9 +325,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // numbers
         <Text
-          text={`${depth.toLocaleString(undefined, {
-            maximumFractionDigits: this.props.baseAsset.accuracy
-          })} ${this.props.baseAsset}`}
+          text={depthLabel}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}
           fontStyle={chart.modal.number.fontStyle}
@@ -295,9 +337,7 @@ class Pointer extends React.Component<PointerProps> {
           onMouseLeave={this.handleMouseLeave}
         />,
         <Text
-          text={`${(depth * price).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.quoteAsset.accuracy
-          })} ${this.props.quoteAsset}`}
+          text={totalOfLabel}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}
           fontStyle={chart.modal.number.fontStyle}
@@ -325,8 +365,6 @@ class Pointer extends React.Component<PointerProps> {
   render() {
     this.initialize();
     this.updateLine();
-    this.generateModal();
-    this.generateModalText();
     this.drawPointer();
     return this.graphics;
   }

@@ -41,6 +41,7 @@ class ChartWrapper extends React.Component<ChartProps> {
               <FastLayer clearBeforeDraw={true}>
                 {selectedInstrument && (
                   <Mesh
+                    key={1}
                     asks={asks}
                     bids={bids}
                     mid={mid}
