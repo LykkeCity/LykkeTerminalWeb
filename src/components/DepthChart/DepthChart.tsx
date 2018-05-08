@@ -6,7 +6,7 @@ import {AbsoluteCentered, Bar, Button, FillHeight} from './styles';
 
 interface DepthChartProps {
   mid: number;
-  priceAccuracy: number;
+  quoteAccuracy: number;
   format: (num: number, accuracy: number) => string;
   onNextSpan: () => void;
   onPrevSpan: () => void;
@@ -18,7 +18,7 @@ class DepthChart extends React.Component<DepthChartProps> {
   }
 
   render() {
-    const {mid, priceAccuracy, format, onNextSpan, onPrevSpan} = this.props;
+    const {mid, quoteAccuracy, format, onNextSpan, onPrevSpan} = this.props;
     return (
       <FillHeight>
         <AbsoluteCentered>
@@ -27,7 +27,7 @@ class DepthChart extends React.Component<DepthChartProps> {
               <FAIcon name="minus" />
             </Button>
             <Figure>
-              <FigureValue>{format(mid, priceAccuracy)}</FigureValue>
+              <FigureValue>{format(mid, quoteAccuracy)}</FigureValue>
               <FigureHint>Mid price</FigureHint>
             </Figure>
             <Button onClick={onNextSpan}>

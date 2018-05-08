@@ -8,7 +8,8 @@ export interface ChartProps {
   quoteAsset: AssetModel;
   width: number;
   height: number;
-  priceAccuracy: number;
+  quoteAccuracy: number;
+  baseAccuracy: number;
   selectedInstrument?: any;
 }
 
@@ -22,5 +23,6 @@ export interface PointerProps {
   quoteAsset: AssetModel;
   width: number;
   height: number;
-  priceAccuracy: number;
+  quoteAccuracy: number;
+  baseAccuracy: number;
 }

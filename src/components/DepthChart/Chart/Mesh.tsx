@@ -32,7 +32,8 @@ class Mesh extends React.Component<ChartProps> {
       for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
         if (i % 2 === 1) {
           const label = (this.mid + step * i).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy
+            maximumFractionDigits: this.props.quoteAccuracy,
+            minimumFractionDigits: this.props.quoteAccuracy
           });
           asksLabels.push(label);
         }
@@ -50,7 +51,8 @@ class Mesh extends React.Component<ChartProps> {
       for (let i = chart.mesh.verticalLinesAmount; i > 0; i--) {
         if (i % 2 === 1) {
           const label = (this.mid - step * i).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy
+            maximumFractionDigits: this.props.quoteAccuracy,
+            minimumFractionDigits: this.props.quoteAccuracy
           });
           bidsLabels.push(label);
         }

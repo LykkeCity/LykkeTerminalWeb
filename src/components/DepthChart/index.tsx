@@ -13,7 +13,7 @@ const ConnectedDepthChart = connect(
     uiStore: {selectedInstrument}
   }) => ({
     mid: mid(),
-    priceAccuracy: pathOr(0, ['accuracy'], selectedInstrument),
+    quoteAccuracy: pathOr(0, ['accuracy'], selectedInstrument),
     format: formatWithAccuracy,
     onNextSpan: nextSpan,
     onPrevSpan: prevSpan

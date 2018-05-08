@@ -102,7 +102,8 @@ class Chart extends React.Component<ChartProps> {
         color={chart.asks.lineColor}
         width={this.props.width}
         height={this.props.height}
-        priceAccuracy={this.props.priceAccuracy}
+        quoteAccuracy={this.props.quoteAccuracy}
+        baseAccuracy={this.props.baseAccuracy}
       />
     );
   };
@@ -184,7 +185,8 @@ class Chart extends React.Component<ChartProps> {
         color={chart.bids.lineColor}
         width={this.props.width}
         height={this.props.height}
-        priceAccuracy={this.props.priceAccuracy}
+        quoteAccuracy={this.props.quoteAccuracy}
+        baseAccuracy={this.props.baseAccuracy}
       />
     );
   };
