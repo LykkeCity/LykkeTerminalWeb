@@ -38,6 +38,11 @@ class OrderListStore extends BaseStore {
     return this.selectedOrder;
   }
 
+  @computed
+  get instruments() {
+    return this.rootStore.referenceStore.getInstruments();
+  }
+
   @observable hasPendingOrders: boolean = false;
   @observable.shallow private orders: OrderModel[] = [];
   @observable
@@ -58,7 +63,10 @@ class OrderListStore extends BaseStore {
   fetchAll = async () => {
     this.hasPendingOrders = true;
     const dto = await this.api.fetchAll();
-    this.orders = dto.map(mappers.mapToLimitOrder);
+    this.orders = mappers.filterByInstrumentsAndMapToLimitOrder(
+      this.instruments,
+      dto
+    );
     this.hasPendingOrders = false;
   };
 

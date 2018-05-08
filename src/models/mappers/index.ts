@@ -110,6 +110,17 @@ export const mapToLimitOrder = ({
     remainingVolume: RemainingVolume
   });
 
+export const filterByInstrumentsAndMapToLimitOrder = (
+  instruments: InstrumentModel[],
+  orders: any
+) =>
+  orders.reduce((limitOrders: any[], order: any) => {
+    if (instruments.find(i => i.id === order.AssetPairId)) {
+      limitOrders.push(mapToLimitOrder(order));
+    }
+    return limitOrders;
+  }, []);
+
 export const mapToWatchlist = ({
   Id,
   Name,
