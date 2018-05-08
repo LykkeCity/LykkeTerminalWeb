@@ -27,17 +27,15 @@ class Auth extends React.Component<AuthProps> {
     const accessToken = getCurrentUrlFragmentValue('access_token');
     const state = getCurrentUrlFragmentValue('state');
     const {authStore, balanceListStore} = this.props;
-    authStore.fetchToken(accessToken, state).then(() =>
-      authStore.fetchUserInfo(accessToken).then(() => {
-        balanceListStore.fetchAll().then(() => {
-          if (authStore.noKycAndFunds) {
-            return this.props.history.push(paths.kycAndFundsCheck);
-          } else {
-            this.props.history.push('/');
-          }
-        });
-      })
-    );
+    authStore.fetchToken(accessToken, state).then(() => {
+      balanceListStore.fetchAll().then(() => {
+        if (authStore.noKycAndFunds) {
+          return this.props.history.push(paths.kycAndFundsCheck);
+        } else {
+          this.props.history.push('/');
+        }
+      });
+    });
   }
 
   render() {
