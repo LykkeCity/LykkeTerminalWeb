@@ -66,7 +66,9 @@ const chart = {
   labelsWidth: 50,
   labelsHeight: 25,
 
-  scaleFactor: 0.9
+  scaleFactor: 0.9,
+
+  magicNumber: 1000000000
 };
 
 export default chart;

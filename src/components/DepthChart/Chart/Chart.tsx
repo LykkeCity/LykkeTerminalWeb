@@ -8,7 +8,6 @@ import {ChartProps} from './Models';
 import Pointer from './Pointer';
 
 import chart from './chartConstants';
-import chartConstants from './chartConstants';
 
 class Chart extends React.Component<ChartProps> {
   graphics: any[] = [];
@@ -193,13 +192,9 @@ class Chart extends React.Component<ChartProps> {
   calculateCoef() {
     if (this.minDepth && this.maxDepth) {
       if (this.minDepth === this.maxDepth) {
-        return this.height / this.minDepth * chartConstants.scaleFactor;
+        return this.height / this.minDepth * chart.scaleFactor;
       }
-      return (
-        this.height /
-        (this.maxDepth - this.minDepth) *
-        chartConstants.scaleFactor
-      );
+      return this.height / this.maxDepth * chart.scaleFactor;
     }
     return 1;
   }
