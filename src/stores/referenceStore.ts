@@ -200,17 +200,20 @@ class ReferenceStore extends BaseStore {
 
   fetchRates = async () => {
     const resp = await this.api.fetchMarket();
-    resp.forEach(({assetPair, lastPrice, bid, ask, volume24H}: any) => {
-      const instrument = this.getInstrumentById(assetPair);
-      if (instrument) {
-        runInAction(() => {
-          instrument.price = lastPrice;
-          instrument.bid = bid;
-          instrument.ask = ask;
-          instrument.volume = volume24H / lastPrice;
-        });
+    resp.forEach(
+      ({AssetPair, Volume24H, PriceChange24H, Bid, Ask, LastPrice}: any) => {
+        const instrument = this.getInstrumentById(AssetPair);
+        if (instrument) {
+          runInAction(() => {
+            instrument.price = LastPrice;
+            instrument.bid = Bid;
+            instrument.ask = Ask;
+            instrument.volume = Volume24H;
+            instrument.change24h = PriceChange24H;
+          });
+        }
       }
-    });
+    );
   };
 
   setBaseAssetId = async (assetId: string) => {
