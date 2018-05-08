@@ -18,8 +18,8 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   const date = new Date(timestamp);
   return (
     <tr>
-      <td>{formattedNumber(volume, instrument!.baseAsset.accuracy)}</td>
       <td>{formattedNumber(price, instrument!.accuracy)}</td>
+      <td>{formattedNumber(volume, instrument!.baseAsset.accuracy)}</td>
       <SideCell w={PublicTradesCellWidth.Side} side={side}>
         {side}
       </SideCell>
