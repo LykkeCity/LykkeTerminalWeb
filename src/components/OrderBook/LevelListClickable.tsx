@@ -4,6 +4,11 @@ import {Group, Rect} from 'react-konva';
 import {LEVELS_COUNT} from '.';
 import {Order, Side} from '../../models';
 
+enum Cursor {
+  Pointer = 'pointer',
+  Default = 'default'
+}
+
 const toY = (side: Side, total: number, height: number, idx: number) =>
   (side === Side.Buy ? idx : total - idx - 1) * height;
 
@@ -41,6 +46,14 @@ const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
     updateType(false);
   };
 
+  const handleOnMouseOver = () => {
+    document.body.style.cursor = Cursor.Pointer;
+  };
+
+  const handleOnMouseLeave = () => {
+    document.body.style.cursor = Cursor.Default;
+  };
+
   return (
     <Group x={0} y={y(idx)} width={width} height={itemHeight}>
       <Rect
@@ -49,6 +62,8 @@ const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
         width={width / 3}
         height={itemHeight}
         onClick={handlePriceClick}
+        onMouseOver={handleOnMouseOver}
+        onMouseLeave={handleOnMouseLeave}
       />
       <Rect
         x={width / 3}
@@ -56,6 +71,8 @@ const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
         width={width / 3}
         height={itemHeight}
         onClick={handleVolumeClick}
+        onMouseOver={handleOnMouseOver}
+        onMouseLeave={handleOnMouseLeave}
       />
     </Group>
   );
