@@ -132,6 +132,7 @@ class RootStore {
       .fetchBaseAsset()
       .then(() => {
         this.orderListStore.fetchAll();
+        this.balanceListStore.updateWalletBalances();
       }, reject => Promise.resolve)
       .then(async () => {
         const ws = new WampApi();

@@ -67,7 +67,6 @@ class BalanceListStore extends BaseStore {
       .then((resp: any) => {
         runInAction(() => {
           this.walletList = resp.map((wallet: any) => new WalletModel(wallet));
-          this.updateWalletBalances();
         });
         return Promise.resolve();
       })
@@ -75,7 +74,7 @@ class BalanceListStore extends BaseStore {
   };
 
   @action
-  updateWalletBalances = async () => {
+  updateWalletBalances = () => {
     const {
       baseAssetId,
       getInstrumentById,
