@@ -1,7 +1,9 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
+import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
+import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Chart} from '../Chart/index';
@@ -57,7 +59,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile tabs={['Orders', 'Trades', 'My wallets']}>
+    <TabbedTile tabs={['Orders', 'Trades', 'My funds']}>
       <Orders />
       <Trades />
       <MyWallets />
@@ -95,16 +97,21 @@ class Terminal extends React.Component<TerminalProps, {}> {
     }
   };
 
-  componentDidMount() {
-    this.props.rootStore.start();
+  private authStore: AuthStore = this.props.rootStore.authStore;
+  private balanceListStore: BalanceListStore = this.props.rootStore
+    .balanceListStore;
+  private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
 
-    const layout = layoutStorage.get();
-    if (layout) {
-      this.setState({
-        initialValue: JSON.parse(layout)
-      });
-    }
-    this.bindChartOverlayHandler();
+  componentDidMount() {
+    this.start().then(() => {
+      const layout = layoutStorage.get();
+      if (layout) {
+        this.setState({
+          initialValue: JSON.parse(layout)
+        });
+      }
+      this.bindChartOverlayHandler();
+    });
   }
 
   bindChartOverlayHandler() {
@@ -140,6 +147,21 @@ class Terminal extends React.Component<TerminalProps, {}> {
     });
     layoutStorage.set(JSON.stringify(args));
   };
+
+  async start() {
+    if (this.authStore.isAuth) {
+      await this.referenceStore.fetchReferenceData();
+      this.balanceListStore.fetchAll().then(() => {
+        if (this.authStore.noKycAndFunds) {
+          return this.props.history.push(paths.kycAndFundsCheck);
+        } else {
+          this.props.rootStore.start();
+        }
+      });
+    } else {
+      this.authStore.signIn();
+    }
+  }
 
   render() {
     return (

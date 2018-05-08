@@ -6,7 +6,7 @@ class AssetBalanceModel {
   name: string;
   @observable balance: number;
   @observable reserved: number;
-  @observable balanceInBaseAsset: number;
+  @observable balanceInBaseAsset: number = 0;
 
   @computed
   get available() {

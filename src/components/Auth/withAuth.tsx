@@ -1,6 +1,5 @@
 import * as React from 'react';
 import withReadOnlyMode from '../withReadOnlyMode/withReadOnlyMode';
-import {NotAuthorized} from './';
 
 interface AuthProps {
   isAuth?: boolean;
@@ -9,7 +8,6 @@ interface AuthProps {
 const withAuth = <P extends {}>(Component: React.ComponentType<P>) => ({
   isAuth,
   ...props
-}: AuthProps & any) =>
-  isAuth ? withReadOnlyMode(Component)(props) : <NotAuthorized />;
+}: AuthProps & any) => (isAuth ? withReadOnlyMode(Component)(props) : null);
 
 export default withAuth;

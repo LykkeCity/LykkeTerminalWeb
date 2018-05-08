@@ -29,6 +29,13 @@ class BalanceListStore extends BaseStore {
   }
 
   @computed
+  get fundsOnBalance() {
+    return (
+      this.walletList.map(wallet => wallet.totalBalance).reduce(add, 0) > 0
+    );
+  }
+
+  @computed
   get tradingWalletBalances() {
     return (this.tradingWallet && this.tradingWallet.balances) || [];
   }
@@ -60,7 +67,6 @@ class BalanceListStore extends BaseStore {
       .then((resp: any) => {
         runInAction(() => {
           this.walletList = resp.map((wallet: any) => new WalletModel(wallet));
-          this.updateWalletBalances();
         });
         return Promise.resolve();
       })
@@ -68,7 +74,7 @@ class BalanceListStore extends BaseStore {
   };
 
   @action
-  updateWalletBalances = async () => {
+  updateWalletBalances = () => {
     const {
       baseAssetId,
       getInstrumentById,
