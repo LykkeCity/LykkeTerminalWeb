@@ -201,8 +201,8 @@ class Pointer extends React.Component<PointerProps> {
       const depth = this.orders[this.orderIndex].depth;
 
       const priceLabel = `${price.toLocaleString(undefined, {
-        maximumFractionDigits: this.props.quoteAccuracy,
-        minimumFractionDigits: this.props.quoteAccuracy
+        maximumFractionDigits: this.props.priceAccuracy,
+        minimumFractionDigits: this.props.priceAccuracy
       })} ${this.props.quoteAsset}`;
       const depthLabel = `${depth.toLocaleString(undefined, {
         maximumFractionDigits: this.props.baseAccuracy,

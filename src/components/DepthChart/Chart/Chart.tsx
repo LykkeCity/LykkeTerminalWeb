@@ -104,6 +104,7 @@ class Chart extends React.Component<ChartProps> {
         height={this.props.height}
         quoteAccuracy={this.props.quoteAccuracy}
         baseAccuracy={this.props.baseAccuracy}
+        priceAccuracy={this.props.priceAccuracy}
       />
     );
   };
@@ -187,6 +188,7 @@ class Chart extends React.Component<ChartProps> {
         height={this.props.height}
         quoteAccuracy={this.props.quoteAccuracy}
         baseAccuracy={this.props.baseAccuracy}
+        priceAccuracy={this.props.priceAccuracy}
       />
     );
   };

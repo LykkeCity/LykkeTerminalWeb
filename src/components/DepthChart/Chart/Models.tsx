@@ -10,6 +10,7 @@ export interface ChartProps {
   height: number;
   quoteAccuracy: number;
   baseAccuracy: number;
+  priceAccuracy: number;
   selectedInstrument?: any;
 }
 
@@ -25,4 +26,5 @@ export interface PointerProps {
   height: number;
   quoteAccuracy: number;
   baseAccuracy: number;
+  priceAccuracy: number;
 }

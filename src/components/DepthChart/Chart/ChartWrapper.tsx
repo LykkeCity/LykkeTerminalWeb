@@ -51,6 +51,7 @@ class ChartWrapper extends React.Component<ChartProps> {
                     height={this.height - chart.labelsHeight}
                     quoteAccuracy={selectedInstrument!.quoteAsset.accuracy}
                     baseAccuracy={selectedInstrument!.baseAsset.accuracy}
+                    priceAccuracy={selectedInstrument!.accuracy}
                   />
                 )}
               </FastLayer>
@@ -64,6 +65,7 @@ class ChartWrapper extends React.Component<ChartProps> {
                     quoteAsset={selectedInstrument!.quoteAsset.name}
                     width={this.width - chart.labelsWidth}
                     height={this.height - chart.labelsHeight}
+                    priceAccuracy={selectedInstrument!.accuracy}
                     quoteAccuracy={selectedInstrument!.quoteAsset.accuracy}
                     baseAccuracy={selectedInstrument!.baseAsset.accuracy}
                   />
