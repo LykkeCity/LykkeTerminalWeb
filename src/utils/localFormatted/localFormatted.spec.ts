@@ -1,27 +1,45 @@
-import {formattedDate, formattedNumber} from './localFormatted';
-
-const results = {
-  'en-US': {
-    expectNumber: '50,000.05',
-    expectNumberWithAccuracy: '50,000.0500',
-    expectDate: '12/17/1995'
-  }
-};
+import {
+  checkForTrailingZero,
+  formattedNumber,
+  formattedNumberWithDashes
+} from './localFormatted';
 
 describe('Test locale for number and date', () => {
-  const date = new Date(Date.UTC(1995, 11, 17, 3, 24, 0));
-  const locale = navigator.language;
-  if (locale === 'en-US') {
-    it('should return string number with locale', () => {
-      expect(formattedNumber(50000.05)).toBe(results[locale].expectNumber);
-      expect(formattedNumber('50000.05')).toBe(results[locale].expectNumber);
-      expect(formattedNumber('50000.05', 4)).toBe(
-        results[locale].expectNumberWithAccuracy
-      );
-    });
+  it('should return string number with locale', () => {
+    expect(checkForTrailingZero('50000,05000')).toBe('50000,050');
+    expect(checkForTrailingZero('50000,050004')).toBe('50000,050004');
+    expect(checkForTrailingZero('50000,0000')).toBe('50000,00');
+    expect(checkForTrailingZero('50000,1000')).toBe('50000,10');
 
-    it('should return string date with locale', () => {
-      expect(formattedDate(date)).toBe(results[locale].expectDate);
-    });
-  }
+    expect(checkForTrailingZero('50000.05000')).toBe('50000.050');
+    expect(checkForTrailingZero('50000.050004')).toBe('50000.050004');
+    expect(checkForTrailingZero('50000.0000')).toBe('50000.00');
+    expect(checkForTrailingZero('50000.1000')).toBe('50000.10');
+  });
+
+  it('should return pure value', () => {
+    expect(checkForTrailingZero('1.234')).toBe('1.234');
+  });
+
+  it('should return value with right quantity of trailing zeroes', () => {
+    expect(formattedNumber(5, 5)).toBe('5.00');
+    expect(formattedNumber(5.234, 5)).toBe('5.2340');
+    expect(formattedNumber(5.23455, 5)).toBe('5.23455');
+  });
+
+  it('should replace not a number value with 0', () => {
+    expect(formattedNumber(undefined as any, 5)).toBe('0.00');
+    expect(formattedNumber(null as any, 5)).toBe('0.00');
+    expect(formattedNumber(Infinity, 5)).toBe('0.00');
+    expect(formattedNumber(true as any, 5)).toBe('0.00');
+    expect(formattedNumber('132' as any, 5)).toBe('0.00');
+  });
+
+  it('should replace not a number value with dashes', () => {
+    expect(formattedNumberWithDashes(undefined as any, 5)).toBe('--');
+    expect(formattedNumberWithDashes(null as any, 5)).toBe('--');
+    expect(formattedNumberWithDashes(Infinity, 5)).toBe('--');
+    expect(formattedNumberWithDashes(true as any, 5)).toBe('--');
+    expect(formattedNumberWithDashes('132' as any, 5)).toBe('--');
+  });
 });

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {TradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
-import {toLocaleStringWithAccuracy} from '../../utils/string';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Cell} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 import {SideCell} from './styles';
@@ -48,16 +48,15 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
       <SideCell w={TradesCellWidth.Side} side={side}>
         {side}
       </SideCell>
-      <TitledCell>{toLocaleStringWithAccuracy(price, accuracy)}</TitledCell>
+      <TitledCell>{formattedNumber(price, accuracy)}</TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(volume, baseAssetAccuracy)} {baseAssetName}
+        {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(fee, feeAsset.accuracy)} {feeAsset.name}
+        {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
       </TitledCell>
       <TitledCell>
-        {toLocaleStringWithAccuracy(oppositeVolume, quoteAssetAccuracy)}{' '}
-        {quoteAssetName}
+        {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
       </TitledCell>
       <Cell w={TradesCellWidth.OrderType}>{orderType}</Cell>
       <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>

@@ -1,6 +1,7 @@
 import {Form, withFormik} from 'formik';
 import * as React from 'react';
 import {OrderInputs} from '../../models';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderBasicFormProps} from './index';
 import OrderButton from './OrderButton';
@@ -44,7 +45,9 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   isDisable,
   onReset,
   balance,
-  isEditForm
+  isEditForm,
+  baseAssetAccuracy,
+  balanceAccuracy
 }) => {
   return (
     <Form>
@@ -65,7 +68,8 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
             {isEditForm ? 'Volume' : `${action} ${baseAssetName}`}
           </Action>
           <Available onClick={onHandlePercentageChange()}>
-            {balance} {isSell ? baseAssetName : quoteAssetName} available
+            {formattedNumber(balance || 0, balanceAccuracy)}{' '}
+            {isSell ? baseAssetName : quoteAssetName} available
           </Available>
         </Flex>
         <NumberInput

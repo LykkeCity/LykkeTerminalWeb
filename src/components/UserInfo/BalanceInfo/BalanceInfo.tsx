@@ -1,6 +1,7 @@
 import {pathOr} from 'rambda';
 import * as React from 'react';
 import {ReferenceStore, UiStore} from '../../../stores/index';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import ClickOutside from '../../ClickOutside/ClickOutside';
 import CustomSelect from '../../Select/CustomSelect';
 import {BalanceInfoProps} from './index';
@@ -34,9 +35,10 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
     return (
       <BalanceInfoDiv>
         <BalanceValue>
-          {this.props.totalBalance.toLocaleString(undefined, {
-            maximumFractionDigits: this.referenceStore.getBaseAssetAccuracy
-          })}
+          {formattedNumber(
+            this.props.totalBalance,
+            this.referenceStore.getBaseAssetAccuracy
+          )}
         </BalanceValue>
         <Button onClick={this.handleClick} id="baseAssetBtn">
           {pathOr('', ['getBaseAsset', 'name'], this.referenceStore)}

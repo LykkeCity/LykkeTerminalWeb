@@ -61,17 +61,6 @@ class UiOrderStore extends BaseStore {
     return tempObj;
   };
 
-  fixedAmount = (
-    currentPrice: number,
-    quantityValue: string,
-    accuracy: number
-  ) => {
-    const amount = currentPrice * parseFloat(quantityValue);
-    return amount === 0
-      ? precisionFloor(amount, 2)
-      : precisionFloor(amount, accuracy);
-  };
-
   setActivePercentage = (percentage: any[], index?: number) => {
     let value: number = 0;
 

@@ -4,6 +4,8 @@ import {Percentage} from '../../constants/ordersPercentage';
 import {AssetBalanceModel, OrderInputs, OrderModel} from '../../models';
 import ModalModel from '../../models/modalModel';
 import Side from '../../models/side';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import {precisionFloor} from '../../utils/math';
 import EditOrderForm from '../Order/EditOrderForm/EditOrderForm';
 import ModalHeader from './ModalHeader/ModalHeader';
 import {EditActionTitle, EditModal, EditTitle} from './styles';
@@ -18,7 +20,6 @@ interface EditOrderProps {
   getInstrumentById: any;
   onArrowClick: any;
   onValueChange: any;
-  fixedAmount: any;
   editOrder: any;
   resetPercentage: any;
   handlePercentageChange: any;
@@ -59,6 +60,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private readonly currency: string = '';
   private readonly isSellActive: boolean;
   private readonly balance: number = 0;
+  private assetAccuracy: number;
 
   constructor(props: EditOrderProps) {
     super(props);
@@ -99,10 +101,10 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     const reserved = this.isSellActive
       ? modal.config.volume
       : modal.config.volume * modal.config.price;
-    const assetAccuracy = this.isSellActive
+    this.assetAccuracy = this.isSellActive
       ? this.accuracy.quantityAccuracy
       : pathOr(2, ['quoteAsset', 'accuracy'], currentInstrument);
-    this.balance = (asset.available + reserved).toFixed(assetAccuracy);
+    this.balance = asset.available + reserved;
   }
 
   handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
@@ -223,6 +225,12 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
         priceAccuracy,
         quantityAccuracy
       );
+
+    const roundedAmount = precisionFloor(
+      parseFloat(this.state.quantityValue) * parseFloat(this.state.priceValue),
+      this.accuracy.quoteAssetAccuracy
+    );
+
     return (
       <EditModal isSell={this.action === Side.Sell.toLowerCase()}>
         <ModalHeader onClick={this.handleCancel}>
@@ -246,14 +254,14 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           quoteAssetName={this.quoteAssetName}
           isSell={this.isSellActive}
           isDisable={isOrderInvalid}
-          amount={this.props.fixedAmount(
-            this.state.priceValue,
-            this.state.quantityValue,
+          amount={formattedNumber(
+            roundedAmount || 0,
             this.accuracy.quoteAssetAccuracy
           )}
           balance={this.balance}
           buttonMessage={'Modify'}
           isEditForm={true}
+          balanceAccuracy={this.assetAccuracy}
         />
       </EditModal>
     );
