@@ -56,6 +56,45 @@ export const StyledGrouping = styled.div`
   }
 `;
 
+export const StyledPriceList = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  div.price-list-container {
+    display: flex;
+    align-items: center;
+    div.price-container {
+      display: flex;
+      flex-direction: column;
+      width: ${rem(75)};
+      span {
+        font-size: ${rem(14)};
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 1.14;
+        letter-spacing: normal;
+        text-align: center;
+        color: rgba(234, 237, 239, 0.4);
+      }
+      div {
+        height: ${rem(24)};
+        font-size: ${rem(16)};
+        font-weight: 600;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 1.5;
+        letter-spacing: normal;
+        text-align: center;
+        color: #ffffff;
+      }
+    }
+    div.price-container:last-child {
+      width: ${rem(120)};
+    }
+  }
+`;
+
 export const StyledSwitch = styled.div`
   color: ${colors.white};
   display: flex;
