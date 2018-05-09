@@ -22,13 +22,13 @@ describe('auth store', () => {
 
     it('should save positive KYC status and return truthy isKycPassed', async () => {
       api.fetchUserInfo = jest.fn(() => Promise.resolve({KycStatus: 'Ok'}));
-      await authStore.fetchUserInfo('token');
+      await authStore.fetchUserInfo();
       expect(authStore.isKycPassed).toBeTruthy();
     });
 
     it('should save negative KYC status and return falsy isKycPassed', async () => {
       api.fetchUserInfo = jest.fn(() => Promise.resolve({KycStatus: 'NoData'}));
-      await authStore.fetchUserInfo('token');
+      await authStore.fetchUserInfo();
       expect(authStore.isKycPassed).toBeFalsy();
     });
 
@@ -39,7 +39,7 @@ describe('auth store', () => {
       api.fetchUserInfo = jest.fn(() => Promise.resolve({KycStatus: 'Ok'}));
 
       await authStore.fetchBearerToken('user', 'password');
-      await authStore.fetchUserInfo('token');
+      await authStore.fetchUserInfo();
 
       expect(authStore.isAuth).toBeTruthy();
       expect(authStore.isKycPassed).toBeTruthy();

@@ -100,7 +100,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
 
   componentDidMount() {
-    this.start().then(() => {
+    this.start().then(resp => {
+      if (!resp) {
+        return;
+      }
       const layout = layoutStorage.get();
       if (layout) {
         this.setState({
@@ -119,12 +122,16 @@ class Terminal extends React.Component<TerminalProps, {}> {
     const splitters = [...Array.from(rowSplitters), firstColSplitter];
     if (splitters) {
       splitters.forEach(e => {
-        e.addEventListener('mouseup', () => {
-          this.toggleChartOverlayHelper(false);
-        });
-        e.addEventListener('mousedown', () => {
-          this.toggleChartOverlayHelper(true);
-        });
+        // tslint:disable-next-line:no-unused-expression
+        e &&
+          e.addEventListener('mouseup', () => {
+            this.toggleChartOverlayHelper(false);
+          });
+        // tslint:disable-next-line:no-unused-expression
+        e &&
+          e.addEventListener('mousedown', () => {
+            this.toggleChartOverlayHelper(true);
+          });
       });
     }
   }
@@ -148,16 +155,21 @@ class Terminal extends React.Component<TerminalProps, {}> {
   async start() {
     if (this.authStore.isAuth) {
       await this.referenceStore.fetchReferenceData();
-      this.balanceListStore.fetchAll().then(() => {
-        if (this.authStore.noKycAndFunds) {
-          return this.props.history.push(paths.kycAndFundsCheck);
-        } else {
-          this.props.rootStore.start();
-        }
-      });
+
+      await Promise.all([
+        this.authStore.fetchUserInfo(),
+        this.balanceListStore.fetchAll()
+      ]);
+      if (this.authStore.noKycAndFunds) {
+        this.props.history.push(paths.kycAndFundsCheck);
+        return false;
+      } else {
+        this.props.rootStore.start();
+      }
     } else {
       this.authStore.signIn();
     }
+    return true;
   }
 
   render() {

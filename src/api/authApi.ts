@@ -25,7 +25,7 @@ export class RestAuthApi extends RestApi implements AuthApi {
       .get()
       .json();
 
-  fetchUserInfo = (accessToken: string) => this.get('/client/userinfo');
+  fetchUserInfo = () => this.get('/client/userinfo');
 
   signout = () =>
     this.wretcher()
