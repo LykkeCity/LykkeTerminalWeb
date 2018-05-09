@@ -11,14 +11,14 @@ import {
 import {CheckBody} from './styles';
 
 interface NoFundsAndKycModalProps {
-  signOut: any;
+  reset: () => void;
 }
 
-const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = () => {
+const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = ({reset}) => {
   const redirect = () => {
+    reset();
     location.replace(ModalMessages.NoFundsAndKyc.link.lykke);
   };
-  const body = {__html: ModalMessages.NoFundsAndKyc.body};
 
   return (
     <KycAndFundsBack>
@@ -26,7 +26,9 @@ const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = () => {
         <ModalHeader onClick={redirect}>
           {ModalMessages.NoFundsAndKyc.title}
         </ModalHeader>
-        <CheckBody dangerouslySetInnerHTML={body} />
+        <CheckBody
+          dangerouslySetInnerHTML={{__html: ModalMessages.NoFundsAndKyc.body}}
+        />
         <ModalContentWrapper>
           <MobileAppLink
             href={ModalMessages.NoFundsAndKyc.link.appStore}

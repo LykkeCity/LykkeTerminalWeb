@@ -2,9 +2,7 @@ import {connect} from '../connect';
 import KycAndFundsCheck from './KycAndFundsCheck';
 
 const ConnectedKycAndFundsCheck = connect(
-  ({authStore: {signOut}}) => ({
-    signOut
-  }),
+  ({reset}) => ({reset}),
   KycAndFundsCheck
 );
 

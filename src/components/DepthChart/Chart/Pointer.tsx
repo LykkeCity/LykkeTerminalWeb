@@ -230,6 +230,7 @@ class Pointer extends React.Component<PointerProps> {
       this.graphics.push(
         // invisible borders under a chart
         <Line
+          key="border"
           points={[
             this.borders[0],
             this.borders[1],
@@ -247,6 +248,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // ball
         <Circle
+          key="circle"
           x={this.mouseX}
           y={this.calcY}
           fill={this.props.color}
@@ -258,6 +260,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // dashed line under the ball
         <Line
+          key="line-1"
           points={this.line}
           closed={false}
           stroke={this.props.color}
@@ -269,6 +272,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // modal window
         <Line
+          key="line-2"
           points={this.modal}
           closed={true}
           stroke={chart.modal.strokeColor}
@@ -280,6 +284,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // title text
         <Text
+          key="title"
           text={priceLabel}
           fontSize={chart.modal.title.fontSize}
           fontFamily={chart.modal.title.fontFamily}
@@ -293,6 +298,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // line under the title
         <Line
+          key="line-3"
           points={this.modalLine}
           closed={true}
           stroke={this.props.color}
@@ -303,6 +309,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // labels
         <Text
+          key="text-2"
           text={this.text}
           fontSize={chart.modal.label.fontSize}
           fontFamily={chart.modal.label.fontFamily}
@@ -315,6 +322,7 @@ class Pointer extends React.Component<PointerProps> {
           onMouseLeave={this.handleMouseLeave}
         />,
         <Text
+          key="text-3"
           text="For a total of"
           fontSize={chart.modal.label.fontSize}
           fontFamily={chart.modal.label.fontFamily}
@@ -328,6 +336,7 @@ class Pointer extends React.Component<PointerProps> {
         />,
         // numbers
         <Text
+          key="text-4"
           text={depthLabel}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}
@@ -340,6 +349,7 @@ class Pointer extends React.Component<PointerProps> {
           onMouseLeave={this.handleMouseLeave}
         />,
         <Text
+          key="text-5"
           text={totalOfLabel}
           fontSize={chart.modal.number.fontSize}
           fontFamily={chart.modal.number.fontFamily}

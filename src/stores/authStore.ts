@@ -60,8 +60,8 @@ class AuthStore extends BaseStore {
     }
   };
 
-  fetchUserInfo = async (accessToken: string) => {
-    const {KycStatus} = await this.api.fetchUserInfo(accessToken);
+  fetchUserInfo = async () => {
+    const {KycStatus} = await this.api.fetchUserInfo();
     this.kycStatus = KycStatus;
     kycStatusStorage.set(KycStatus);
   };
