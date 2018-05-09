@@ -97,6 +97,7 @@ class Mesh extends React.Component<ChartProps> {
   drawMid = () => {
     this.mesh.push(
       <Line
+        key="mid"
         points={[this.width / 2, 0, this.width / 2, this.height]}
         closed={true}
         stroke={chart.mesh.color}
@@ -115,6 +116,7 @@ class Mesh extends React.Component<ChartProps> {
     ) {
       this.mesh.push(
         <Line
+          key={`vl-${index}`}
           points={[startX, 0, startX, this.height]}
           closed={true}
           stroke={chart.mesh.color}
@@ -138,6 +140,7 @@ class Mesh extends React.Component<ChartProps> {
       ) {
         this.mesh.push(
           <Text
+            key={`vt-${index}`}
             x={startX - 35}
             y={this.height + 15}
             fill={chart.mesh.color}
@@ -160,6 +163,7 @@ class Mesh extends React.Component<ChartProps> {
     ) {
       this.mesh.push(
         <Line
+          key={`hl-${index}`}
           points={[0, startY, this.width, startY]}
           closed={true}
           stroke={chart.mesh.color}
@@ -183,6 +187,7 @@ class Mesh extends React.Component<ChartProps> {
       ) {
         this.mesh.push(
           <Text
+            key={`ht-${index}`}
             x={this.width + 10}
             y={startY - chart.mesh.horizontalFontSize / 2}
             fill={chart.mesh.color}

@@ -75,6 +75,7 @@ class Chart extends React.Component<ChartProps> {
 
     this.graphics.push(
       <Line
+        key="asks-line"
         points={this.pointsAsks}
         closed={false}
         stroke={chart.asks.lineColor}
@@ -83,6 +84,7 @@ class Chart extends React.Component<ChartProps> {
     );
     this.graphics.push(
       <Line
+        key="asks-area"
         points={this.pointsAsks.concat([this.width, this.height])}
         closed={true}
         fill={chart.asks.fillColor}
@@ -93,6 +95,7 @@ class Chart extends React.Component<ChartProps> {
   drawAsksPointerPadding = () => {
     this.graphics.push(
       <Pointer
+        key="asks-pointer"
         baseAsset={this.props.baseAsset}
         quoteAsset={this.props.quoteAsset}
         orders={this.asks}
@@ -154,6 +157,7 @@ class Chart extends React.Component<ChartProps> {
 
     this.graphics.push(
       <Line
+        key="bids-line"
         points={this.pointsBids}
         closed={false}
         stroke={chart.bids.lineColor}
@@ -162,6 +166,7 @@ class Chart extends React.Component<ChartProps> {
     );
     this.graphics.push(
       <Line
+        key="bids-area"
         points={this.pointsBids.concat([
           0,
           this.midY,
@@ -177,6 +182,7 @@ class Chart extends React.Component<ChartProps> {
   drawBidsPointerPadding = () => {
     this.graphics.push(
       <Pointer
+        key="bids-pointer"
         baseAsset={this.props.baseAsset}
         quoteAsset={this.props.quoteAsset}
         orders={this.bids}
