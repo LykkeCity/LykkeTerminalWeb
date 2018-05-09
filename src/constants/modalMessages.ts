@@ -3,12 +3,13 @@ const ModalMessages = {
     `cancel ${ids.join(', ')} ${ids.length > 1 ? 'orders' : 'order'}`,
   expired: {
     body:
-      'Your session has expired. Please, confirm your session with your phone',
-    title: 'Please, confirm your session'
+      'You need to confirm your trade session by using the Lykke Wallet mobile application.',
+    title: 'Confirm trade session'
   },
   qr: {
-    body: 'Please, scan QR code to start trading',
-    button: 'Continue in read only mode',
+    body:
+      'Please confirm your trade session by using the Lykke Wallet mobile application.',
+    button: 'Continue in read-only mode',
     title: 'Confirm trade session'
   },
   missedKyc: {

@@ -30,7 +30,9 @@ const QRModal: React.SFC<QRModalProps> = ({
       <ModalHeader onClick={handleContinue}>
         <ModalTitle>{message.title}</ModalTitle>
       </ModalHeader>
-      <ModalBody>{message.body}</ModalBody>
+      <ModalBody>
+        <div style={{width: '300px'}}>{message.body}</div>
+      </ModalBody>
       <QRBody>
         <QRCodeWrapper>
           <QRCode size={160} value={qrId} />

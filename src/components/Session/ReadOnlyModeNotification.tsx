@@ -24,7 +24,7 @@ const ReadOnlyModeNotificationComponent: React.SFC<
       right={CloseBtnPosition.right}
     />
     <Title>Attention</Title>
-    <Body>You are using the terminal in a read only mode</Body>
+    <Body>You are using the terminal in a read-only mode</Body>
     <Buttons>
       <ActionSessionButton onClick={onStartTrade}>
         Start trade

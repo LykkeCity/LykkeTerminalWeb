@@ -14,7 +14,8 @@ const ExpiredModal: React.SFC<{modal: ModalModel}> = ({modal}) => {
       <SessionExpiredImage />
       <ModalTitle>{modal.message.title}</ModalTitle>
       <ModalBody>{modal.message.body}</ModalBody>
-      <StyledButton onClick={modal.close}>Exit</StyledButton>
+      {/* tslint:disable-next-line:jsx-no-lambda */}
+      <StyledButton onClick={() => location.reload()}>Turn on 2FA</StyledButton>
     </Expired>
   );
 };
