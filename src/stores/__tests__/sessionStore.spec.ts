@@ -37,13 +37,13 @@ describe('session store', () => {
       sessionStore.rootStore.authStore.signOut = jest.fn();
     });
 
-    it('should show read only mode notification', () => {
+    it('should show read-only mode notification', () => {
       expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
       sessionStore.continueInReadOnlyMode();
       expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
     });
 
-    it('should hide read only mode notification', () => {
+    it('should hide read-only mode notification', () => {
       sessionStore.continueInReadOnlyMode();
       expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
       sessionStore.startTrade();
@@ -102,7 +102,7 @@ describe('session store', () => {
       );
     });
 
-    it('should set read only mode to true', () => {
+    it('should set read-only mode to true', () => {
       expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeFalsy();
       expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
       sessionStore.sessionExpired();
@@ -110,7 +110,7 @@ describe('session store', () => {
       expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
     });
 
-    it('should show read only mode notification', () => {
+    it('should show read-only mode notification', () => {
       expect(sessionStore.readOnlyModeNotificationShown).toBeFalsy();
       sessionStore.sessionExpired();
       expect(sessionStore.readOnlyModeNotificationShown).toBeTruthy();
@@ -123,7 +123,7 @@ describe('session store', () => {
       expect(sessionStore.sessionNotificationShown).toBeFalsy();
     });
 
-    it('should set read only mode to false', () => {
+    it('should set read-only mode to false', () => {
       sessionStore.sessionExpired();
       expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeTruthy();
       sessionStore.sessionConfirmed();
@@ -168,7 +168,7 @@ describe('session store', () => {
       expect(sessionStore.getQrId()).toBe('');
     });
 
-    it('should continue in read only mode after session duration is over', () => {
+    it('should continue in read-only mode after session duration is over', () => {
       const duration = 1;
       sessionStore.continueInReadOnlyMode = jest.fn();
       sessionStore.showQR();
@@ -292,7 +292,7 @@ describe('session store', () => {
       sessionStore.rootStore.authStore.signOut = jest.fn();
     });
 
-    it('should stop read only mode as session disabled', async () => {
+    it('should stop read-only mode as session disabled', async () => {
       sessionStore.rootStore.uiStore.runReadOnlyMode();
       expect(sessionStore.rootStore.uiStore.readOnlyMode).toBeTruthy();
       await sessionStore.initUserSession();

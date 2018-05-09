@@ -11,6 +11,14 @@ import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
 
+const errorOrNoop = (error: string) => {
+  try {
+    return JSON.parse(error);
+  } catch {
+    return undefined;
+  }
+};
+
 enum Errors {
   Confirmation = 'Confirmation',
   AssetKycNeeded = 'AssetKycNeeded'
@@ -91,10 +99,14 @@ class OrderStore extends BaseStore {
       .catch(this.orderPlacedUnsuccessfully);
 
   cancelOrder = async (id: string) => {
-    await this.api.cancelOrder(id);
-    const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
-    if (deletedOrder) {
-      this.orderCancelledSuccessfully(id);
+    try {
+      await this.api.cancelOrder(id);
+      const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
+      if (deletedOrder) {
+        this.orderCancelledSuccessfully(id);
+      }
+    } catch (e) {
+      this.orderPlacedUnsuccessfully(e);
     }
   };
 
@@ -169,28 +181,31 @@ class OrderStore extends BaseStore {
   };
 
   private orderPlacedUnsuccessfully = (error: any) => {
-    const messageObject = JSON.parse(error.message);
-    if (messageObject) {
-      const key = Object.keys(messageObject)[0];
-
+    const errorObject = errorOrNoop(error.message);
+    if (!errorObject) {
+      if (error.message === 'Session confirmation is required') {
+        this.modalStore.addModal(
+          ModalMessages.expired,
+          null,
+          null,
+          Types.Expired
+        );
+      } else {
+        this.notificationStore.addNotification(
+          levels.error,
+          `${error.message}`
+        );
+      }
+    } else {
+      const key = Object.keys(errorObject)[0];
       if (error.status === 400) {
         switch (key) {
-          case Errors.Confirmation: {
-            this.modalStore.addModal(
-              ModalMessages.expired,
-              null,
-              null,
-              Types.Expired
-            );
-            return;
-          }
-          case Errors.AssetKycNeeded: {
+          case Errors.AssetKycNeeded:
             this.modalStore.addModal(null, null, null, Types.MissedKyc);
-            return;
-          }
+            break;
           default:
             {
-              const message = messageObject[key];
+              const message = errorObject[key];
               this.notificationStore.addNotification(
                 levels.error,
                 `${message}`
