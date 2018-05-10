@@ -107,7 +107,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
       const layout = layoutStorage.get();
       if (layout) {
         this.setState({
-          initialValue: JSON.parse(layout)
+          initialValue: Object.assign(
+            this.state.initialValue,
+            JSON.parse(layout)
+          )
         });
       }
       this.bindChartOverlayHandler();
