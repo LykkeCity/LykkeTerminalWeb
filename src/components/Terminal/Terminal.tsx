@@ -7,7 +7,9 @@ import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Header} from '../Header';
+import CommonLoader from '../Loader/commonLoader';
 import Modal from '../Modal/Modal';
+import {CoveringBack} from '../Modal/styles';
 import {MyWallets} from '../MyWallets';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
@@ -91,7 +93,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
         splitPercentage: MAX_RIGHT_PADDING
       },
       splitPercentage: MAX_LEFT_PADDING
-    }
+    },
+    canBeShown: false
   };
 
   private authStore: AuthStore = this.props.rootStore.authStore;
@@ -101,7 +104,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   componentDidMount() {
     this.start().then(resp => {
-      if (!resp) {
+      if (!this.state.canBeShown) {
         return;
       }
       const layout = layoutStorage.get();
@@ -160,10 +163,13 @@ class Terminal extends React.Component<TerminalProps, {}> {
         this.authStore.fetchUserInfo(),
         this.balanceListStore.fetchAll()
       ]);
+
       if (this.authStore.noKycAndFunds) {
+        this.setState({canBeShown: false});
         this.props.history.push(paths.kycAndFundsCheck);
         return false;
       } else {
+        this.setState({canBeShown: true});
         this.props.rootStore.start();
       }
     } else {
@@ -173,7 +179,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   render() {
-    return (
+    return this.state.canBeShown ? (
       <Shell>
         <NotificationList />
         {this.props.rootStore.modalStore.isModals ? (
@@ -193,6 +199,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
           initialValue={this.state.initialValue}
         />
       </Shell>
+    ) : (
+      <CoveringBack>
+        <CommonLoader loadingDescription={'Check user data...'} />
+      </CoveringBack>
     );
   }
 }
