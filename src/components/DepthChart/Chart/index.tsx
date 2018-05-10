@@ -4,10 +4,14 @@ import ChartWrapper from './ChartWrapper';
 import Mesh from './Mesh';
 import Pointer from './Pointer';
 
+import chart from './chartConstants';
+
 // tslint:disable:object-literal-sort-keys
 const ConnectedChartWrapper: any = connect(
-  ({uiStore: {selectedInstrument}}) => {
+  ({depthChartStore: {setWidth, setHeight}, uiStore: {selectedInstrument}}) => {
     return {
+      setWidth,
+      setHeight,
       selectedInstrument
     };
   },
@@ -15,11 +19,16 @@ const ConnectedChartWrapper: any = connect(
 );
 
 const ConnectedMesh = connect(
-  ({depthChartStore: {asks, bids, mid}, uiStore: {selectedInstrument}}) => {
+  ({
+    depthChartStore: {asks, bids, mid, height, width},
+    uiStore: {selectedInstrument}
+  }) => {
     return {
       asks,
       bids,
       mid: mid(),
+      height: height - chart.labelsHeight,
+      width: width - chart.labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
       quoteAsset: selectedInstrument!.quoteAsset.name,
       quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
@@ -31,11 +40,16 @@ const ConnectedMesh = connect(
 );
 
 const ConnectedChart = connect(
-  ({depthChartStore: {asks, bids, mid}, uiStore: {selectedInstrument}}) => {
+  ({
+    depthChartStore: {asks, bids, mid, height, width},
+    uiStore: {selectedInstrument}
+  }) => {
     return {
       asks,
       bids,
       mid: mid(),
+      height: height - chart.labelsHeight,
+      width: width - chart.labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
       quoteAsset: selectedInstrument!.quoteAsset.name,
       quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
@@ -46,15 +60,20 @@ const ConnectedChart = connect(
   Chart
 );
 
-const ConnectedPointer = connect(({uiStore: {selectedInstrument}}) => {
-  return {
-    baseAsset: selectedInstrument!.baseAsset.name,
-    quoteAsset: selectedInstrument!.quoteAsset.name,
-    quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
-    baseAccuracy: selectedInstrument!.baseAsset.accuracy,
-    priceAccuracy: selectedInstrument!.accuracy
-  };
-}, Pointer);
+const ConnectedPointer = connect(
+  ({depthChartStore: {height, width}, uiStore: {selectedInstrument}}) => {
+    return {
+      height: height - chart.labelsHeight,
+      width: width - chart.labelsWidth,
+      baseAsset: selectedInstrument!.baseAsset.name,
+      quoteAsset: selectedInstrument!.quoteAsset.name,
+      quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
+      baseAccuracy: selectedInstrument!.baseAsset.accuracy,
+      priceAccuracy: selectedInstrument!.accuracy
+    };
+  },
+  Pointer
+);
 
 export default ConnectedChartWrapper;
 export {default as ChartWrapper} from './ChartWrapper';
