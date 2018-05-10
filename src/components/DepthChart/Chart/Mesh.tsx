@@ -1,11 +1,22 @@
 import * as React from 'react';
 import {Line, Text} from 'react-konva';
 import {Order} from '../../../models';
-import formattedNumber from '../../../utils/localFormatted/localFormatted';
-import chart from './chartConstants';
-import {ChartProps} from './Models';
 
-class Mesh extends React.Component<ChartProps> {
+import chart from './chartConstants';
+
+interface MeshProps {
+  asks: Order[];
+  bids: Order[];
+  mid: number;
+  width: number;
+  height: number;
+  setLabelsWidth: any;
+  quoteAccuracy: number;
+  baseAccuracy: number;
+  priceAccuracy: number;
+}
+
+class Mesh extends React.Component<MeshProps> {
   mid: number;
   asks: Order[];
   bids: Order[];
@@ -16,7 +27,7 @@ class Mesh extends React.Component<ChartProps> {
 
   emptyLabels: string[] = ['', '', '', ''];
 
-  constructor(props: ChartProps) {
+  constructor(props: MeshProps) {
     super(props);
   }
 

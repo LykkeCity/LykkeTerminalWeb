@@ -5,9 +5,19 @@ import {Line} from 'react-konva';
 import {Order} from '../../../models';
 
 import {Pointer} from './index';
-import {ChartProps} from './Models';
 
 import chart from './chartConstants';
+
+interface ChartProps {
+  asks: Order[];
+  bids: Order[];
+  mid: number;
+  width: number;
+  height: number;
+  quoteAccuracy: number;
+  baseAccuracy: number;
+  priceAccuracy: number;
+}
 
 class Chart extends React.Component<ChartProps> {
   graphics: any[] = [];
@@ -101,8 +111,6 @@ class Chart extends React.Component<ChartProps> {
         orders={this.asks}
         points={this.pointsAsks}
         borders={[this.midXAsks, this.midY, this.width, 0]}
-        width={this.props.width}
-        height={this.props.height}
       />
     );
   };
@@ -183,8 +191,6 @@ class Chart extends React.Component<ChartProps> {
         orders={this.bids}
         points={this.pointsBids}
         borders={[0, this.midY, this.midXBids, 0]}
-        width={this.props.width}
-        height={this.props.height}
       />
     );
   };

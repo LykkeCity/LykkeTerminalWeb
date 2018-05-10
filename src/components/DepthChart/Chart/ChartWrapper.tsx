@@ -6,15 +6,17 @@ import Measure from 'react-measure';
 
 import {Chart, Mesh} from './index';
 
-import {ChartProps} from './Models';
+export interface ChartWrapperProps {
+  setWidth: any;
+  setHeight: any;
+  selectedInstrument?: any;
+}
 
-import chart from './chartConstants';
-
-class ChartWrapper extends React.Component<ChartProps> {
+class ChartWrapper extends React.Component<ChartWrapperProps> {
   width: number = -1;
   height: number = -1;
 
-  constructor(props: ChartProps) {
+  constructor(props: ChartWrapperProps) {
     super(props);
   }
 
@@ -27,28 +29,16 @@ class ChartWrapper extends React.Component<ChartProps> {
         onResize={contentRect => {
           this.width = Math.ceil(contentRect.client!.width);
           this.height = Math.ceil(contentRect.client!.height);
+          this.props.setWidth(this.width);
+          this.props.setHeight(this.height);
           this.forceUpdate();
         }}
       >
         {({measureRef}) => (
           <div style={{height: '100%'}} ref={measureRef}>
             <Stage width={this.width} height={this.height}>
-              <FastLayer>
-                {this.props.selectedInstrument && (
-                  <Mesh
-                    width={this.width - chart.labelsWidth}
-                    height={this.height - chart.labelsHeight}
-                  />
-                )}
-              </FastLayer>
-              <Layer>
-                {this.props.selectedInstrument && (
-                  <Chart
-                    width={this.width - chart.labelsWidth}
-                    height={this.height - chart.labelsHeight}
-                  />
-                )}
-              </Layer>
+              <FastLayer>{this.props.selectedInstrument && <Mesh />}</FastLayer>
+              <Layer>{this.props.selectedInstrument && <Chart />}</Layer>
             </Stage>
           </div>
         )}
