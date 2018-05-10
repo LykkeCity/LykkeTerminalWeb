@@ -4,8 +4,8 @@ import {Line} from 'react-konva';
 
 import {Order} from '../../../models';
 
+import {Pointer} from './index';
 import {ChartProps} from './Models';
-import Pointer from './Pointer';
 
 import chart from './chartConstants';
 
@@ -96,18 +96,13 @@ class Chart extends React.Component<ChartProps> {
     this.graphics.push(
       <Pointer
         key="asks-pointer"
-        baseAsset={this.props.baseAsset}
-        quoteAsset={this.props.quoteAsset}
-        orders={this.asks}
         side={'asks'}
+        color={chart.asks.lineColor}
+        orders={this.asks}
         points={this.pointsAsks}
         borders={[this.midXAsks, this.midY, this.width, 0]}
-        color={chart.asks.lineColor}
         width={this.props.width}
         height={this.props.height}
-        quoteAccuracy={this.props.quoteAccuracy}
-        baseAccuracy={this.props.baseAccuracy}
-        priceAccuracy={this.props.priceAccuracy}
       />
     );
   };
@@ -183,18 +178,13 @@ class Chart extends React.Component<ChartProps> {
     this.graphics.push(
       <Pointer
         key="bids-pointer"
-        baseAsset={this.props.baseAsset}
-        quoteAsset={this.props.quoteAsset}
-        orders={this.bids}
         side={'bids'}
+        color={chart.bids.lineColor}
+        orders={this.bids}
         points={this.pointsBids}
         borders={[0, this.midY, this.midXBids, 0]}
-        color={chart.bids.lineColor}
         width={this.props.width}
         height={this.props.height}
-        quoteAccuracy={this.props.quoteAccuracy}
-        baseAccuracy={this.props.baseAccuracy}
-        priceAccuracy={this.props.priceAccuracy}
       />
     );
   };
