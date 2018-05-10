@@ -224,10 +224,10 @@ export const ModalWrapper = styled(Modal)`
   width: ${rem(300)};
 `;
 
-export const KycAndFundsBack = styled.div`
+export const CoveringBack = styled.div`
   height: 100vh;
   width: 100vw;
   padding: 0;
   margin: 0;
-  background-color: ${colors.lightGraphite};
+  background: ${colors.lightGraphite};
 `;
