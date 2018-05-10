@@ -39,11 +39,10 @@ class Chart extends React.Component<ChartProps> {
     const prevPrice = this.asks[index - 1]
       ? this.asks[index - 1].price
       : this.mid;
-    return Math.abs(
+    return (
       (Math.log10(ask.price) - Math.log10(prevPrice)) *
-        this.midXAsks /
-        (Math.log10(this.asks[this.asks.length - 1].price) -
-          Math.log10(this.mid))
+      this.midXAsks /
+      (Math.log10(this.asks[this.asks.length - 1].price) - Math.log10(this.mid))
     );
   }
 
@@ -118,16 +117,16 @@ class Chart extends React.Component<ChartProps> {
     const prevPrice = this.bids[index - 1]
       ? this.bids[index - 1].price
       : this.mid;
-    return Math.abs(
+    const length =
       (Math.log10(bid.price) - Math.log10(prevPrice)) *
-        this.midXBids /
-        (Math.log10(
-          this.bids[this.bids.length - 1].price === 0
-            ? 1
-            : this.bids[this.bids.length - 1].price
-        ) -
-          Math.log10(this.mid))
-    );
+      this.midXBids /
+      (Math.log10(
+        this.bids[this.bids.length - 1].price === 0
+          ? 1
+          : this.bids[this.bids.length - 1].price
+      ) -
+        Math.log10(this.mid));
+    return length > 0 ? length : 1;
   }
 
   calculateBidsStepHeight(bid: Order) {
