@@ -209,7 +209,7 @@ class ReferenceStore extends BaseStore {
             instrument.bid = Bid;
             instrument.ask = Ask;
             instrument.volume = Volume24H;
-            instrument.change24h = PriceChange24H;
+            instrument.change24h = PriceChange24H * 100;
           });
         }
       }
