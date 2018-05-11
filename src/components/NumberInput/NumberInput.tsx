@@ -68,16 +68,16 @@ const NumberInput: React.SFC<NumberInput> = ({
         id={id}
         type="text"
         value={value}
-        onChange={onChange(id)}
+        onChange={onChange()}
         // tslint:disable-next-line:jsx-no-lambda
         onKeyDown={e => {
           switch (e.keyCode) {
             case 38:
-              onArrowClick('up', id)();
+              onArrowClick('up')();
               e.preventDefault();
               break;
             case 40:
-              onArrowClick('down', id)();
+              onArrowClick('down')();
               e.preventDefault();
               break;
             default:
@@ -86,8 +86,8 @@ const NumberInput: React.SFC<NumberInput> = ({
         }}
         name={value}
       />
-      <span className="up" onClick={onArrowClick('up', id)} />
-      <span className="down" onClick={onArrowClick('down', id)} />
+      <span className="up" onClick={onArrowClick('up')} />
+      <span className="down" onClick={onArrowClick('down')} />
     </StyledInputNumberComponent>
   );
 };

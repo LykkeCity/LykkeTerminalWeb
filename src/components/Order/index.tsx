@@ -11,8 +11,6 @@ export interface OrderBasicFormProps {
   balance: number;
   isDisable: boolean;
   isSell: boolean;
-  onArrowClick: any;
-  onChange: any;
   onHandlePercentageChange: any;
   onReset?: any;
   onSubmit: any;
@@ -22,6 +20,9 @@ export interface OrderBasicFormProps {
   priceAccuracy: number;
   baseAssetAccuracy?: any;
   balanceAccuracy: number;
+  onQuantityArrowClick: (operation: string) => void;
+  onQuantityChange: (value: string) => void;
+  updatePercentageState: (field: string) => void;
 }
 
 const ConnectedOrder = connect(
@@ -29,20 +30,14 @@ const ConnectedOrder = connect(
     balanceListStore: {tradingWalletBalances: getBalance},
     modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
-    orderStore: {
-      placeOrder,
-      updatePriceFn,
-      updateDepthFn,
-      updateSideFn,
-      updateTypeFn
-    },
-    uiStore: {selectedInstrument: instrument, stateFns, readOnlyMode},
+    orderStore: {placeOrder, updateSideFn, updateTypeFn},
+    uiStore: {selectedInstrument: instrument, readOnlyMode},
     referenceStore,
     uiOrderStore: {
-      onArrowClick,
       onPriceArrowClick,
       onQuantityArrowClick,
-      onValueChange,
+      onPriceValueChange,
+      onQuantityValueChange,
       handlePercentageChange,
       updatePercentageState,
       resetPercentage,
@@ -51,8 +46,10 @@ const ConnectedOrder = connect(
       isMarketInvalid,
       getPriceAccuracy,
       getQuantityAccuracy,
-      getPriceValue,
-      getQuantityValue
+      getComputedPriceValue,
+      getComputedQuantityValue,
+      setPriceValue,
+      setQuantityValue
     },
     authStore: {isAuth}
   }) => ({
@@ -79,17 +76,12 @@ const ConnectedOrder = connect(
     handlePercentageChange,
     setActivePercentage,
     mid: mid(),
-    onArrowClick,
     onPriceArrowClick,
     onQuantityArrowClick,
-    onValueChange,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
     resetPercentage,
-    stateFns,
-    updateDepthFn,
     updatePercentageState,
-    updatePriceFn,
     updateSideFn,
     updateTypeFn,
     get baseAssetBalance() {
@@ -109,8 +101,12 @@ const ConnectedOrder = connect(
     isAuth,
     readOnlyMode,
     instrument,
-    priceValue: getPriceValue,
-    quantityValue: getQuantityValue
+    priceValue: getComputedPriceValue,
+    quantityValue: getComputedQuantityValue,
+    onPriceChange: onPriceValueChange,
+    onQuantityChange: onQuantityValueChange,
+    setPriceValue,
+    setQuantityValue
   }),
   withAuth(Order)
 );

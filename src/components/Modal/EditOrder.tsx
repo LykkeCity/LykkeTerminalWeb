@@ -18,7 +18,6 @@ interface EditOrderProps {
   modal: ModalModel;
   orders: OrderModel[];
   getInstrumentById: any;
-  onArrowClick: any;
   onValueChange: any;
   editOrder: any;
   resetPercentage: any;
@@ -165,21 +164,6 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.setState(tempObj);
   };
 
-  onArrowClick = (accuracy: number) => (
-    operation: string,
-    field: string
-  ) => () => {
-    const tempObj = this.props.onArrowClick({
-      accuracy,
-      field,
-      operation,
-      value: this.state[field]
-    });
-
-    this.updatePercentageState(field);
-    this.setState(tempObj);
-  };
-
   toggleDisableBtn = (value: boolean) => {
     this.setState({
       pendingOrder: value
@@ -247,8 +231,22 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           price={this.state.priceValue}
           quantityAccuracy={this.accuracy.quantityAccuracy}
           priceAccuracy={this.accuracy.priceAccuracy}
-          onChange={this.onChange}
-          onArrowClick={this.onArrowClick}
+          // tslint:disable-next-line:jsx-no-lambda
+          onPriceChange={() => {
+            return;
+          }}
+          // tslint:disable-next-line:jsx-no-lambda
+          onQuantityChange={() => {
+            return;
+          }}
+          // tslint:disable-next-line:jsx-no-lambda
+          onQuantityArrowClick={() => {
+            return;
+          }}
+          // tslint:disable-next-line:jsx-no-lambda
+          onPriceArrowClick={() => {
+            return;
+          }}
           percents={this.state.percents}
           onHandlePercentageChange={this.handlePercentageChange}
           baseAssetName={this.baseAssetName}
@@ -263,6 +261,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           buttonMessage={'Modify'}
           isEditForm={true}
           balanceAccuracy={this.assetAccuracy}
+          updatePercentageState={this.updatePercentageState}
         />
       </EditModal>
     );

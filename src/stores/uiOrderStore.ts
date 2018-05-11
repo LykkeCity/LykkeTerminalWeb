@@ -1,115 +1,69 @@
 import {computed, observable} from 'mobx';
+import {onArrowClick, onValueChange} from '../utils/inputNumber';
 import {precisionFloor} from '../utils/math';
-import {
-  getPostDecimalsLength,
-  isOnlyNumbers,
-  substringLast,
-  substringMinus,
-  substringZero
-} from '../utils/string';
 import {BaseStore, RootStore} from './index';
 
 class UiOrderStore extends BaseStore {
   @computed
-  get getPriceValue() {
+  get getComputedPriceValue() {
     return this.priceValue;
   }
 
   @computed
-  get getQuantityValue() {
+  get getComputedQuantityValue() {
     return this.quantityValue;
   }
 
-  @observable private priceValue: number = 0;
-  @observable private quantityValue: number = 0;
+  onPriceValueChange: any;
+  onQuantityValueChange: any;
+  onPriceArrowClick: any;
+  onQuantityArrowClick: any;
+
+  @observable private priceValue: string = '0';
+  @observable private quantityValue: string = '0';
   private priceAccuracy: number = 2;
   private quantityAccuracy: number = 2;
 
   constructor(store: RootStore) {
     super(store);
+
+    this.onPriceValueChange = onValueChange(
+      this.setPriceValueByHand,
+      this.getPriceAccuracy
+    );
+    this.onQuantityValueChange = onValueChange(
+      this.setQuantityValueByHand,
+      this.getQuantityAccuracy
+    );
+    this.onPriceArrowClick = onArrowClick(
+      this.getPriceValue,
+      this.getPriceAccuracy,
+      this.setPriceValue
+    );
+    this.onQuantityArrowClick = onArrowClick(
+      this.getQuantityValue,
+      this.getQuantityAccuracy,
+      this.setQuantityValue
+    );
   }
 
-  setPriceValue = (price: number) => (this.priceValue = price);
-  setQuantityValue = (quantity: number) => (this.quantityValue = quantity);
+  setPriceValue = (price: number) =>
+    (this.priceValue = price.toFixed(this.priceAccuracy));
+  setQuantityValue = (quantity: number) =>
+    (this.quantityValue = quantity.toFixed(this.quantityAccuracy));
+
+  setPriceValueByHand = (price: number) => (this.priceValue = `${price}`);
+  setQuantityValueByHand = (quantity: number) =>
+    (this.quantityValue = `${quantity}`);
+
+  getPriceValue = () => this.priceValue;
+  getQuantityValue = () => this.quantityValue;
 
   getPriceAccuracy = () => this.priceAccuracy;
   getQuantityAccuracy = () => this.quantityAccuracy;
   setPriceAccuracy = (priceAcc: number) => (this.priceAccuracy = priceAcc);
   setQuantityAccuracy = (quantityAcc: number) =>
     (this.quantityAccuracy = quantityAcc);
-
-  onArrowClick = (options: {
-    field: string;
-    operation: string;
-    accuracy: number;
-    value: string;
-  }) => {
-    const {field, operation, accuracy, value} = options;
-    const tempObj = {};
-
-    switch (operation) {
-      case 'up':
-        tempObj[field] = (
-          parseFloat(value) + Math.pow(10, -1 * accuracy)
-        ).toFixed(accuracy);
-        break;
-      case 'down':
-        let newVal = parseFloat(value) - Math.pow(10, -1 * accuracy);
-        newVal = newVal < 0 ? 0 : newVal;
-        tempObj[field] = newVal.toFixed(accuracy);
-        break;
-    }
-
-    return tempObj;
-  };
-
-  onPriceArrowClick = (operation: string) => {
-    switch (operation) {
-      case 'up':
-        this.priceValue += Math.pow(10, -1 * this.priceAccuracy);
-        break;
-      case 'down':
-        const newVal = this.priceValue - Math.pow(10, -1 * this.priceAccuracy);
-        this.priceValue = newVal < 0 ? 0 : newVal;
-        break;
-    }
-  };
-
-  onQuantityArrowClick = (operation: string) => {
-    switch (operation) {
-      case 'up':
-        this.quantityValue += Math.pow(10, -1 * this.quantityAccuracy);
-        break;
-      case 'down':
-        const newVal =
-          this.quantityValue - Math.pow(10, -1 * this.quantityAccuracy);
-        this.quantityValue = newVal < 0 ? 0 : newVal;
-        break;
-    }
-  };
-
-  onValueChange = (options: {
-    value: string;
-    field: string;
-    accuracy: number;
-  }) => {
-    let {value} = options;
-    const {field, accuracy} = options;
-    if (!isOnlyNumbers(value)) {
-      return;
-    }
-    value = substringZero(value);
-    value = substringMinus(value);
-
-    if (getPostDecimalsLength(value) > accuracy) {
-      value = substringLast(value);
-    }
-    value = value === '' ? '0' : value;
-
-    const tempObj = {};
-    tempObj[field] = value;
-    return tempObj;
-  };
 
   setActivePercentage = (percentage: any[], index?: number) => {
     let value: number = 0;

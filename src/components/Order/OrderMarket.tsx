@@ -1,6 +1,5 @@
 import {Form, FormikProps, withFormik} from 'formik';
 import * as React from 'react';
-import orderAction from '../../constants/orderAction';
 import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
 import formattedNumber from '../../utils/localFormatted/localFormatted';
@@ -25,7 +24,6 @@ interface OrderMarketState {
 
 export interface OrderMarketProps extends OrderBasicFormProps {
   onResetPercentage: any;
-  onInvert: any;
 }
 
 class OrderMarket extends React.Component<
@@ -60,21 +58,6 @@ class OrderMarket extends React.Component<
     });
   };
 
-  onInvert = () => {
-    this.props.onResetPercentage();
-    this.isInverted = !this.isInverted;
-    const action = !this.isInverted
-      ? this.props.action
-      : this.state.action === orderAction.sell.action
-        ? orderAction.buy.action
-        : orderAction.sell.action;
-    this.setState({
-      action
-    });
-    this.updateInvertedValues(action);
-    this.props.onInvert(this.isInverted);
-  };
-
   reset = () => {
     this.setState({
       action: this.props.action
@@ -84,6 +67,16 @@ class OrderMarket extends React.Component<
     this.props.onReset();
   };
 
+  handleArrowClick = (operation: string) => () => {
+    this.props.onQuantityArrowClick(operation);
+    this.props.updatePercentageState(OrderInputs.Quantity);
+  };
+
+  handleChange = () => (value: string) => {
+    this.props.onQuantityChange(value);
+    this.props.updatePercentageState(OrderInputs.Quantity);
+  };
+
   handlePercentageChange = (index?: number) => () => {
     this.props.onHandlePercentageChange(index)(this.isInverted);
   };
@@ -91,8 +84,7 @@ class OrderMarket extends React.Component<
   render() {
     const {baseAssetName, quoteAssetName, balanceAccuracy} = this.props;
     this.previousPropsAction = this.props.action;
-    const {quantityAccuracy, priceAccuracy, quantity} = this.props;
-    const currentAccuracy = this.isInverted ? priceAccuracy : quantityAccuracy;
+    const {quantityAccuracy, quantity} = this.props;
 
     return (
       <div>
@@ -110,8 +102,8 @@ class OrderMarket extends React.Component<
           <NumberInput
             value={quantity}
             id={OrderInputs.Quantity}
-            onChange={this.props.onChange(currentAccuracy)}
-            onArrowClick={this.props.onArrowClick(currentAccuracy)}
+            onChange={this.handleChange}
+            onArrowClick={this.handleArrowClick}
           />
         </InputControl>
         <Flex justify={'space-between'} style={{width: '100%'}}>

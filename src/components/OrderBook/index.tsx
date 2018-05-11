@@ -6,7 +6,6 @@ import {withContentRect} from 'react-measure';
 import {normalizeVolume} from '../../utils';
 import {HBar} from '../Bar';
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
 import Figures, {FigureListProps} from './Figures';
@@ -32,57 +31,6 @@ const formatWithAccuracy = (
       ...options
     })) ||
   '--';
-
-export const ConnectedOrderBook2 = connect(
-  ({
-    modalStore: {addModal},
-    orderBookStore: {
-      asks,
-      bids,
-      mid,
-      spreadRelative,
-      seedSpan,
-      span,
-      nextSpan,
-      prevSpan,
-      showMyOrders,
-      hasPendingItems
-    },
-    uiStore: {selectedInstrument},
-    orderStore: {cancelOrder, updatePrice, updatePriceAndDepth},
-    priceStore: {lastTradePrice},
-    authStore: {isAuth}
-  }) => {
-    const volumeAccuracy = pathOr(
-      0,
-      ['baseAsset', 'accuracy'],
-      selectedInstrument
-    );
-    const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
-    const midPrice = mid().toFixed(priceAccuracy);
-    return {
-      addModal,
-      asks,
-      bids,
-      cancelOrder,
-      mid: midPrice,
-      spreadRelative,
-      volumeAccuracy,
-      priceAccuracy,
-      updatePrice,
-      updatePriceAndDepth,
-      span,
-      onNextSpan: nextSpan,
-      onPrevSpan: prevSpan,
-      showMyOrders,
-      lastTradePrice,
-      loading: hasPendingItems,
-      isAuth,
-      selectedInstrument
-    };
-  },
-  compose(withScroll, withLoader())(LevelList)
-);
 
 const ConnectedOrderBookItem = observer(OrderBookItem);
 
@@ -158,10 +106,14 @@ const ConnectedLevelListItem = connect(
 );
 
 const ConnectedLevelListItemClickable = connect(
-  ({orderStore: {updatePriceAndDepth, updateSide, updateType}}) => ({
-    updatePriceAndDepth,
+  ({
+    orderStore: {updateSide, updateType},
+    uiOrderStore: {setPriceValue, setQuantityValue}
+  }) => ({
     updateSide,
-    updateType
+    updateType,
+    setPriceValue,
+    setQuantityValue
   }),
   observer(LevelListItemClickable)
 );

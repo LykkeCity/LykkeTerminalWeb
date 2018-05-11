@@ -28,8 +28,6 @@ enum Errors {
 class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
-  private updatePriceByOrderBook: any;
-  private updateDepthByOrderBook: any;
   private updateTypeByOrderBook: any;
   private updateSideByOrderBook: any;
 
@@ -47,14 +45,6 @@ class OrderStore extends BaseStore {
     this.updateTypeByOrderBook = fn;
   };
 
-  updatePriceFn = (fn: any) => {
-    this.updatePriceByOrderBook = fn;
-  };
-
-  updateDepthFn = (fn: any) => {
-    this.updateDepthByOrderBook = fn;
-  };
-
   updateSide = (isSell: boolean) => {
     if (this.updateSideByOrderBook) {
       this.updateSideByOrderBook(isSell);
@@ -65,23 +55,6 @@ class OrderStore extends BaseStore {
     if (this.updateTypeByOrderBook) {
       this.updateTypeByOrderBook(isLimit);
     }
-  };
-
-  updatePrice = (price: number) => {
-    if (this.updatePriceByOrderBook) {
-      this.updatePriceByOrderBook(price);
-    }
-  };
-
-  updateDepth = (quantity: number) => {
-    if (this.updateDepthByOrderBook) {
-      this.updateDepthByOrderBook(quantity);
-    }
-  };
-
-  updatePriceAndDepth = (price: number, quantity: number) => {
-    this.updatePrice(price);
-    this.updateDepth(quantity);
   };
 
   placeOrder = async (orderType: string, body: any) => {

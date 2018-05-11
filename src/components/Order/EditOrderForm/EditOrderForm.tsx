@@ -8,6 +8,8 @@ interface EditOrderFormProps extends OrderBasicFormProps {
   price: string;
   buttonMessage: string;
   isEditForm: boolean;
+  onPriceArrowClick: (operation: string) => void;
+  onPriceChange: (value?: string) => void;
 }
 
 const EditOrderForm = (props: EditOrderFormProps) => {

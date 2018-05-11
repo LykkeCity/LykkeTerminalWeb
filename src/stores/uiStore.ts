@@ -20,8 +20,6 @@ class UiStore extends BaseStore {
 
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
 
-  stateFns: any = [];
-
   @observable showAssetsSelect: boolean = false;
   @observable searchTerm: string = '';
   @observable searchWalletName: string = Watchlists.All;
@@ -93,10 +91,10 @@ class UiStore extends BaseStore {
             setPriceValue,
             setQuantityValue
           } = this.rootStore.uiOrderStore;
-          setPriceValue(this.rootStore.orderBookStore.mid());
-          setQuantityValue(0);
           setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
           setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
+          setPriceValue(this.rootStore.orderBookStore.mid());
+          setQuantityValue(0);
         }
       }
     );
@@ -149,7 +147,6 @@ class UiStore extends BaseStore {
   reset = () => {
     this.searchTerm = '';
     this.searchWalletName = Watchlists.All;
-    this.stateFns = [];
   };
 }
 
