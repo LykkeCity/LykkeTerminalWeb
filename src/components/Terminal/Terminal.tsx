@@ -9,7 +9,6 @@ import Backdrop from '../Backdrop/Backdrop';
 import {Header} from '../Header';
 import CommonLoader from '../Loader/commonLoader';
 import Modal from '../Modal/Modal';
-import {CoveringBack} from '../Modal/styles';
 import {MyWallets} from '../MyWallets';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
@@ -203,9 +202,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
         />
       </Shell>
     ) : (
-      <CoveringBack>
+      <div>
+        <Backdrop />
         <CommonLoader loadingDescription={'Check user data...'} />
-      </CoveringBack>
+      </div>
     );
   }
 }

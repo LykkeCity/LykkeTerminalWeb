@@ -223,11 +223,3 @@ export const MobileAppLink = styled.a.attrs({
 export const ModalWrapper = styled(Modal)`
   width: ${rem(300)};
 `;
-
-export const CoveringBack = styled.div`
-  height: 100vh;
-  width: 100vw;
-  padding: 0;
-  margin: 0;
-  background: ${colors.lightGraphite};
-`;

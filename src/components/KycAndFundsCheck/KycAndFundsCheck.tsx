@@ -1,8 +1,8 @@
 import * as React from 'react';
 import ModalMessages from '../../constants/modalMessages';
+import Backdrop from '../Backdrop/Backdrop';
 import ModalHeader from '../Modal/ModalHeader/ModalHeader';
 import {
-  CoveringBack,
   MobileAppLink,
   ModalContentWrapper,
   ModalWrapper,
@@ -21,7 +21,8 @@ const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = ({reset}) => {
   };
 
   return (
-    <CoveringBack>
+    <div>
+      <Backdrop />
       <ModalWrapper>
         <ModalHeader onClick={redirect}>
           {ModalMessages.NoFundsAndKyc.title}
@@ -43,7 +44,7 @@ const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = ({reset}) => {
         </ModalContentWrapper>
         <OkButton onClick={redirect}>Got it!</OkButton>
       </ModalWrapper>
-    </CoveringBack>
+    </div>
   );
 };
 
