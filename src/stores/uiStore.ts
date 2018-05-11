@@ -1,4 +1,5 @@
 import {action, computed, observable, reaction} from 'mobx';
+import {pathOr} from 'rambda';
 import {keys} from '../models';
 import {
   InstrumentModel,
@@ -20,7 +21,6 @@ class UiStore extends BaseStore {
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
 
   stateFns: any = [];
-  initPriceUpdate: any;
 
   @observable showAssetsSelect: boolean = false;
   @observable searchTerm: string = '';
@@ -74,8 +74,6 @@ class UiStore extends BaseStore {
             subscribeToPublicTrades
           )();
 
-          this.stateFns.forEach((f: any) => f && f(instrument));
-
           const {
             fetchLastPrice,
             fetchDailyCandle,
@@ -88,14 +86,21 @@ class UiStore extends BaseStore {
           subscribeToDailyCandle();
 
           this.toggleInstrumentPerformanceData(true);
+
+          const {
+            setQuantityAccuracy,
+            setPriceAccuracy,
+            setPriceValue,
+            setQuantityValue
+          } = this.rootStore.uiOrderStore;
+          setPriceValue(this.rootStore.orderBookStore.mid());
+          setQuantityValue(0);
+          setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
+          setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
         }
       }
     );
   }
-
-  initPriceFn = (fn: any) => {
-    this.initPriceUpdate = fn;
-  };
 
   @action
   readonly toggleAssetsSelect = () =>

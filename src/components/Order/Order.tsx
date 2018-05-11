@@ -1,4 +1,3 @@
-import {pathOr} from 'rambda';
 import * as React from 'react';
 import orderAction from '../../constants/orderAction';
 import {Percentage} from '../../constants/ordersPercentage';
@@ -60,7 +59,6 @@ interface OrderProps {
   updateDepthFn: any;
   updateSideFn: any;
   updateTypeFn: any;
-  initPriceFn: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
   convertPartiallyBalance: any;
@@ -93,6 +91,10 @@ interface OrderProps {
     quantityAccuracy: number
   ) => boolean;
   instrument: InstrumentModel;
+  priceValue: number;
+  quantityValue: number;
+  onPriceArrowClick: (operation: string) => void;
+  onQuantityArrowClick: (operation: string) => void;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -105,40 +107,19 @@ class Order extends React.Component<OrderProps, OrderState> {
       isStopLimitActive: false,
       pendingOrder: false,
       percents: percentage,
-      priceValue: '0',
-      quantityValue: '0'
+      priceValue: `${this.props.priceValue}`,
+      quantityValue: `${this.props.quantityValue}`
     };
 
-    this.props.stateFns.push(this.handleChangeInstrument);
     this.props.updatePriceFn(this.updatePriceByOrderBook);
     this.props.updateDepthFn(this.updateDepthByOrderBook);
     this.props.updateSideFn(this.updateSideByOrderBook);
     this.props.updateTypeFn(this.updateTypeByOrderBook);
-    this.props.initPriceFn(this.initPriceUpdate);
   }
 
   componentDidMount() {
-    this.handleChangeInstrument(this.props.instrument);
+    // this.handleChangeInstrument(this.props.instrument); // TODO check session logic
   }
-
-  initPriceUpdate = (price: number = 0, instrument: InstrumentModel) => {
-    const priceAccuracy = pathOr(2, ['accuracy'], instrument);
-    this.setState({
-      priceValue: price.toFixed(priceAccuracy)
-    });
-  };
-
-  handleChangeInstrument = (instrument: InstrumentModel) => {
-    const priceAccuracy = pathOr(2, ['accuracy'], instrument);
-    const asset = this.props.getAssetById(
-      pathOr('', ['baseAsset', 'id'], instrument)
-    );
-    const quantityAccuracy = asset ? asset.accuracy : 2;
-    this.setState({
-      priceValue: this.props.mid.toFixed(priceAccuracy),
-      quantityValue: parseFloat('0').toFixed(quantityAccuracy)
-    });
-  };
 
   handleActionClick = (action: string) => () => {
     this.props.resetPercentage(percentage);
@@ -467,8 +448,8 @@ class Order extends React.Component<OrderProps, OrderState> {
           <OrderLimit
             action={action}
             onSubmit={this.handleButtonClick}
-            quantity={quantityValue}
-            price={priceValue}
+            quantity={`${this.props.quantityValue}`}
+            price={`${this.props.priceValue}`}
             quantityAccuracy={quantityAccuracy}
             priceAccuracy={priceAccuracy}
             onChange={this.onChange}

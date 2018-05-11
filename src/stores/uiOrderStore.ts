@@ -1,3 +1,4 @@
+import {computed, observable} from 'mobx';
 import {precisionFloor} from '../utils/math';
 import {
   getPostDecimalsLength,
@@ -9,9 +10,33 @@ import {
 import {BaseStore, RootStore} from './index';
 
 class UiOrderStore extends BaseStore {
+  @computed
+  get getPriceValue() {
+    return this.priceValue;
+  }
+
+  @computed
+  get getQuantityValue() {
+    return this.quantityValue;
+  }
+
+  @observable private priceValue: number = 0;
+  @observable private quantityValue: number = 0;
+  private priceAccuracy: number = 2;
+  private quantityAccuracy: number = 2;
+
   constructor(store: RootStore) {
     super(store);
   }
+
+  setPriceValue = (price: number) => (this.priceValue = price);
+  setQuantityValue = (quantity: number) => (this.quantityValue = quantity);
+
+  getPriceAccuracy = () => this.priceAccuracy;
+  getQuantityAccuracy = () => this.quantityAccuracy;
+  setPriceAccuracy = (priceAcc: number) => (this.priceAccuracy = priceAcc);
+  setQuantityAccuracy = (quantityAcc: number) =>
+    (this.quantityAccuracy = quantityAcc);
 
   onArrowClick = (options: {
     field: string;
@@ -36,6 +61,31 @@ class UiOrderStore extends BaseStore {
     }
 
     return tempObj;
+  };
+
+  onPriceArrowClick = (operation: string) => {
+    switch (operation) {
+      case 'up':
+        this.priceValue += Math.pow(10, -1 * this.priceAccuracy);
+        break;
+      case 'down':
+        const newVal = this.priceValue - Math.pow(10, -1 * this.priceAccuracy);
+        this.priceValue = newVal < 0 ? 0 : newVal;
+        break;
+    }
+  };
+
+  onQuantityArrowClick = (operation: string) => {
+    switch (operation) {
+      case 'up':
+        this.quantityValue += Math.pow(10, -1 * this.quantityAccuracy);
+        break;
+      case 'down':
+        const newVal =
+          this.quantityValue - Math.pow(10, -1 * this.quantityAccuracy);
+        this.quantityValue = newVal < 0 ? 0 : newVal;
+        break;
+    }
   };
 
   onValueChange = (options: {

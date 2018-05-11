@@ -36,33 +36,29 @@ const ConnectedOrder = connect(
       updateSideFn,
       updateTypeFn
     },
-    uiStore: {
-      selectedInstrument: instrument,
-      stateFns,
-      initPriceFn,
-      readOnlyMode
-    },
+    uiStore: {selectedInstrument: instrument, stateFns, readOnlyMode},
     referenceStore,
     uiOrderStore: {
       onArrowClick,
+      onPriceArrowClick,
+      onQuantityArrowClick,
       onValueChange,
       handlePercentageChange,
       updatePercentageState,
       resetPercentage,
       setActivePercentage,
       isLimitInvalid,
-      isMarketInvalid
+      isMarketInvalid,
+      getPriceAccuracy,
+      getQuantityAccuracy,
+      getPriceValue,
+      getQuantityValue
     },
     authStore: {isAuth}
   }) => ({
     accuracy: {
-      priceAccuracy: pathOr(2, ['accuracy'], instrument),
-      get quantityAccuracy() {
-        const asset = referenceStore.getAssetById(
-          pathOr('', ['baseAsset', 'id'], instrument)
-        );
-        return asset ? asset.accuracy : 2;
-      },
+      priceAccuracy: getPriceAccuracy(),
+      quantityAccuracy: getQuantityAccuracy(),
       baseAssetAccuracy: pathOr(2, ['baseAsset', 'accuracy'], instrument),
       quoteAssetAccuracy: pathOr(2, ['quoteAsset', 'accuracy'], instrument)
     },
@@ -82,9 +78,10 @@ const ConnectedOrder = connect(
     getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
     setActivePercentage,
-    initPriceFn,
     mid: mid(),
     onArrowClick,
+    onPriceArrowClick,
+    onQuantityArrowClick,
     onValueChange,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
@@ -111,7 +108,9 @@ const ConnectedOrder = connect(
     },
     isAuth,
     readOnlyMode,
-    instrument
+    instrument,
+    priceValue: getPriceValue,
+    quantityValue: getQuantityValue
   }),
   withAuth(Order)
 );
