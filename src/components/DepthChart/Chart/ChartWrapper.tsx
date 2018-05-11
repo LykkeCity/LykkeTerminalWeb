@@ -7,8 +7,8 @@ import Measure from 'react-measure';
 import {Chart, Mesh} from './index';
 
 export interface ChartWrapperProps {
-  setWidth: any;
-  setHeight: any;
+  setWidth: (width: number) => void;
+  setHeight: (height: number) => void;
   selectedInstrument?: any;
 }
 

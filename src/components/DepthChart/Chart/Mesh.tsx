@@ -12,7 +12,6 @@ interface MeshProps {
   mid: number;
   width: number;
   height: number;
-  setLabelsWidth: any;
   quoteAccuracy: number;
   baseAccuracy: number;
   priceAccuracy: number;
@@ -111,6 +110,9 @@ class Mesh extends React.Component<MeshProps> {
         closed={true}
         stroke={chart.mesh.color}
         strokeWidth={chart.mesh.strikeWidth}
+        dashEnabled={false}
+        shadowEnabled={false}
+        listening={false}
       />
     );
   };
@@ -132,6 +134,8 @@ class Mesh extends React.Component<MeshProps> {
           strokeWidth={chart.mesh.strikeWidth}
           dash={chart.mesh.dots}
           opacity={0.6}
+          shadowEnabled={false}
+          listening={false}
         />
       );
     }
@@ -156,6 +160,7 @@ class Mesh extends React.Component<MeshProps> {
             fontFamily={chart.mesh.fontFamily}
             fontSize={chart.mesh.verticalFontSize}
             text={`${labels[index]}`}
+            listening={false}
           />
         );
       }
@@ -179,6 +184,8 @@ class Mesh extends React.Component<MeshProps> {
           strokeWidth={chart.mesh.strikeWidth}
           dash={chart.mesh.dash}
           opacity={0.6}
+          shadowEnabled={false}
+          listening={false}
         />
       );
     }
@@ -203,6 +210,7 @@ class Mesh extends React.Component<MeshProps> {
             fontFamily={chart.mesh.fontFamily}
             fontSize={chart.mesh.horizontalFontSize}
             text={`${labels[index]}`}
+            listening={false}
           />
         );
       }

@@ -49,11 +49,12 @@ class Chart extends React.Component<ChartProps> {
     const prevPrice = this.asks[index - 1]
       ? this.asks[index - 1].price
       : this.mid;
-    return (
+    const length =
       (Math.log10(ask.price) - Math.log10(prevPrice)) *
       this.midXAsks /
-      (Math.log10(this.asks[this.asks.length - 1].price) - Math.log10(this.mid))
-    );
+      (Math.log10(this.asks[this.asks.length - 1].price) -
+        Math.log10(this.mid));
+    return length;
   }
 
   calculateAsksStepHeight(ask: Order) {
@@ -62,21 +63,22 @@ class Chart extends React.Component<ChartProps> {
 
   generateAsksPoints = () => {
     let currentX = this.midXAsks;
-    let currentY = this.midY;
     let newX = this.midXAsks;
     let newY = this.midY;
-    const points = [currentX, currentY];
+    const points = [currentX, this.midY];
 
-    this.asks.forEach((ask, index) => {
-      newX = currentX + this.calculateAsksStepLength(ask, index);
-      newY = this.midY - this.calculateAsksStepHeight(ask);
+    for (let index = 0; index < this.asks.length; index++) {
+      const length = this.calculateAsksStepLength(this.asks[index], index);
+      if (length > 0) {
+        newX = currentX + length;
+        newY = this.midY - this.calculateAsksStepHeight(this.asks[index]);
+        points.push(currentX, newY, newX, newY);
 
-      points.push(currentX, newY, newX, newY);
-
-      currentX = newX;
-      currentY = newY;
-    });
-
+        currentX = newX;
+      } else {
+        return;
+      }
+    }
     this.pointsAsks = points;
   };
 
@@ -90,14 +92,26 @@ class Chart extends React.Component<ChartProps> {
         closed={false}
         stroke={chart.asks.lineColor}
         strokeWidth={chart.strokeWidth}
+        dashEnabled={false}
+        shadowEnabled={false}
+        listening={false}
       />
     );
     this.graphics.push(
       <Line
         key="asks-area"
-        points={this.pointsAsks.concat([this.width, this.height])}
+        points={this.pointsAsks.concat([
+          this.width,
+          this.height,
+          this.midXBids,
+          this.height
+        ])}
         closed={true}
         fill={chart.asks.fillColor}
+        strokeEnabled={false}
+        dashEnabled={false}
+        shadowEnabled={false}
+        listening={false}
       />
     );
   };
@@ -129,7 +143,7 @@ class Chart extends React.Component<ChartProps> {
           : this.bids[this.bids.length - 1].price
       ) -
         Math.log10(this.mid));
-    return length > 0 ? length : 1;
+    return length;
   }
 
   calculateBidsStepHeight(bid: Order) {
@@ -138,20 +152,23 @@ class Chart extends React.Component<ChartProps> {
 
   generateBidsPoints = () => {
     let currentX = this.midXBids;
-    let currentY = this.midY;
     let newX = this.midXBids;
     let newY = this.midY;
-    const points = [currentX, currentY];
+    const points = [currentX, this.midY];
 
-    this.bids.forEach((bid, index) => {
-      newX = currentX - this.calculateBidsStepLength(bid, index);
-      newY = this.midY - this.calculateBidsStepHeight(bid);
+    for (let index = 0; index < this.bids.length; index++) {
+      const length = this.calculateBidsStepLength(this.bids[index], index);
+      if (length > 0) {
+        newX = currentX - length;
+        newY = this.midY - this.calculateBidsStepHeight(this.bids[index]);
 
-      points.push(currentX, newY, newX, newY);
+        points.push(currentX, newY, newX, newY);
 
-      currentX = newX;
-      currentY = newY;
-    });
+        currentX = newX;
+      } else {
+        return;
+      }
+    }
     this.pointsBids = points;
   };
 
@@ -165,6 +182,10 @@ class Chart extends React.Component<ChartProps> {
         closed={false}
         stroke={chart.bids.lineColor}
         strokeWidth={chart.strokeWidth}
+        dashEnabled={false}
+        shadowEnabled={false}
+        strokeHitEnabled={false}
+        listening={false}
       />
     );
     this.graphics.push(
@@ -178,6 +199,11 @@ class Chart extends React.Component<ChartProps> {
         ])}
         closed={true}
         fill={chart.bids.fillColor}
+        strokeEnabled={false}
+        dashEnabled={false}
+        shadowEnabled={false}
+        strokeHitEnabled={false}
+        listening={false}
       />
     );
   };
@@ -209,8 +235,8 @@ class Chart extends React.Component<ChartProps> {
     this.graphics = [];
     this.width = this.props.width;
     this.height = this.props.height;
-    this.midXAsks = this.width / 2 + Math.round(chart.strokeWidth / 2);
-    this.midXBids = this.width / 2 - Math.round(chart.strokeWidth / 2);
+    this.midXAsks = this.props.width / 2 + Math.round(chart.strokeWidth / 2);
+    this.midXBids = this.props.width / 2 - Math.round(chart.strokeWidth / 2);
     this.midY = this.height;
     this.asks = this.props.asks.reverse();
     this.bids = this.props.bids;
