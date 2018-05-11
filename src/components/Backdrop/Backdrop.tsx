@@ -2,11 +2,13 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 const StyledBackdrop = styled.div`
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
   background: #232323;
   opacity: 0.7;
-  position: absolute;
   z-index: 30;
 `;
 
