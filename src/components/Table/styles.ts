@@ -67,6 +67,11 @@ export const Table = styled.table`
   thead {
     border-bottom: solid 1px #272727;
   }
+  tbody {
+    tr:hover {
+      background-color: ${colors.graphiteBorder};
+    }
+  }
   th,
   td {
     text-align: right;
