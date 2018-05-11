@@ -26,6 +26,7 @@ export const CommonLoaderWrapper = styled.div`
 
   width: ${rem(300)};
   height: ${rem(150)};
+  z-index: 99;
 `;
 
 export const LoadingDescription = styled.div`
