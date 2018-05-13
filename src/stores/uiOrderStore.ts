@@ -1,6 +1,12 @@
 import {computed, observable} from 'mobx';
+import {OrderType} from '../models';
+import Side from '../models/side';
 import {onArrowClick, onValueChange} from '../utils/inputNumber';
-import {precisionFloor} from '../utils/math';
+import {getPercentsOf, precisionFloor} from '../utils/math';
+import {
+  getPercentOfValueForLimit,
+  isAmountExceedLimitBalance
+} from '../utils/order';
 import {BaseStore, RootStore} from './index';
 
 class UiOrderStore extends BaseStore {
@@ -14,24 +20,37 @@ class UiOrderStore extends BaseStore {
     return this.quantityValue;
   }
 
-  onPriceValueChange: any;
-  onQuantityValueChange: any;
+  @computed
+  get currentMarket() {
+    return this.market;
+  }
+
+  @computed
+  get isCurrentSideSell() {
+    return this.side === Side.Sell;
+  }
+
+  onPriceChange: any;
+  onQuantityChange: any;
   onPriceArrowClick: any;
   onQuantityArrowClick: any;
+  onPercentChangeForLimit: any;
 
   @observable private priceValue: string = '0';
   @observable private quantityValue: string = '0';
+  @observable private market: OrderType = OrderType.Limit;
+  @observable private side: Side = Side.Sell;
   private priceAccuracy: number = 2;
   private quantityAccuracy: number = 2;
 
   constructor(store: RootStore) {
     super(store);
 
-    this.onPriceValueChange = onValueChange(
+    this.onPriceChange = onValueChange(
       this.setPriceValueByHand,
       this.getPriceAccuracy
     );
-    this.onQuantityValueChange = onValueChange(
+    this.onQuantityChange = onValueChange(
       this.setQuantityValueByHand,
       this.getQuantityAccuracy
     );
@@ -45,6 +64,11 @@ class UiOrderStore extends BaseStore {
       this.getQuantityAccuracy,
       this.setQuantityValue
     );
+
+    this.onPercentChangeForLimit = getPercentOfValueForLimit(
+      this.getPriceValue,
+      this.getQuantityAccuracy
+    );
   }
 
   setPriceValue = (price: number) =>
@@ -52,9 +76,9 @@ class UiOrderStore extends BaseStore {
   setQuantityValue = (quantity: number) =>
     (this.quantityValue = quantity.toFixed(this.quantityAccuracy));
 
-  setPriceValueByHand = (price: number) => (this.priceValue = `${price}`);
-  setQuantityValueByHand = (quantity: number) =>
-    (this.quantityValue = `${quantity}`);
+  setPriceValueByHand = (price: string) => (this.priceValue = price);
+  setQuantityValueByHand = (quantity: string) =>
+    (this.quantityValue = quantity);
 
   getPriceValue = () => this.priceValue;
   getQuantityValue = () => this.quantityValue;
@@ -65,175 +89,89 @@ class UiOrderStore extends BaseStore {
   setQuantityAccuracy = (quantityAcc: number) =>
     (this.quantityAccuracy = quantityAcc);
 
-  setActivePercentage = (percentage: any[], index?: number) => {
-    let value: number = 0;
+  setMarket = (type: OrderType) => (this.market = type);
+  setSide = (side: Side) => (this.side = side);
 
-    if (index === undefined) {
-      value = 100;
-    }
-
-    percentage.forEach((item: any, i: number) => {
-      if (index === i) {
-        item.isActive = true;
-        value = item.percent;
-      } else {
-        item.isActive = false;
-      }
-    });
-
-    return {
-      value,
-      updatedPercentage: percentage
-    };
-  };
-
-  handlePercentageChange = async (config: any) => {
-    const {
-      isLimitActive = true,
-      isSellActive,
-      isMarketActive = false,
-      balance,
-      quantityAccuracy,
-      priceAccuracy,
-      isInverted,
-      baseAssetId,
-      quoteAssetId,
-      value,
-      currentPrice
-    } = config;
-
-    let quantityValue: any;
-    if (isLimitActive) {
-      if (isSellActive) {
-        quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
-      } else if (!isSellActive) {
-        const convertedBalance = balance / currentPrice;
-        quantityValue = this.getPartlyValue(
-          value,
-          convertedBalance,
-          quantityAccuracy
-        );
-      }
-    } else if (isMarketActive) {
-      if (isSellActive) {
-        if (!isInverted) {
-          quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
-        } else {
-          const convertedBalance = this.rootStore.marketStore.convert(
-            balance,
-            baseAssetId,
-            quoteAssetId,
-            this.rootStore.referenceStore.getInstrumentById
-          );
-          quantityValue = this.getPartlyValue(
-            value,
-            convertedBalance,
-            priceAccuracy
-          );
-        }
-      } else {
-        if (isInverted) {
-          quantityValue = this.getPartlyValue(value, balance, priceAccuracy);
-        } else {
-          const convertedBalance = this.rootStore.marketStore.convert(
-            balance,
-            quoteAssetId,
-            baseAssetId,
-            this.rootStore.referenceStore.getInstrumentById
-          );
-          quantityValue = this.getPartlyValue(
-            value,
-            convertedBalance,
-            quantityAccuracy
-          );
-        }
-      }
-    }
-    const tempObj: any = {};
-    if (quantityValue) {
-      tempObj.quantityValue = quantityValue;
-    }
-    return tempObj;
-  };
-
-  getPartlyValue = (percent: number, balance: number, accuracy: number) => {
-    return precisionFloor(percent / 100 * balance, accuracy);
-  };
-
-  updatePercentageState = (percentage: any[], index: number) => {
-    let value: number = 0;
-    percentage.forEach((item: any, i: number) => {
-      if (index === i) {
-        item.isActive = true;
-        value = item.percent;
-      } else {
-        item.isActive = false;
-      }
-    });
-    return value;
-  };
-
-  resetPercentage = (percentage: any[]) => {
-    percentage.forEach((item: any) => {
-      item.isActive = false;
-    });
-  };
-
-  isLimitInvalid = (
-    isSell: boolean,
-    quantityValue: string,
-    priceValue: string,
-    baseAssetBalance: number,
-    quoteAssetBalance: number,
-    priceAccuracy: number,
-    quantityAccuracy: number
+  onPercentChangeForMarket = (
+    percents: number,
+    value: number,
+    quoteAssetId: string,
+    baseAssetId: string
   ) => {
+    if (this.isCurrentSideSell) {
+      return getPercentsOf(percents, value, this.getQuantityAccuracy());
+    }
+    const convertedBalance = this.rootStore.marketStore.convert(
+      value,
+      quoteAssetId,
+      baseAssetId,
+      this.rootStore.referenceStore.getInstrumentById
+    );
+    return getPercentsOf(
+      percents,
+      convertedBalance,
+      this.getQuantityAccuracy()
+    );
+  };
+
+  handlePercentageChange = (config: any) => {
+    const {balance, baseAssetId, quoteAssetId, percents} = config;
+
+    const isLimitActive = this.market === OrderType.Limit;
+    if (isLimitActive) {
+      this.setQuantityValue(
+        this.onPercentChangeForLimit(percents, balance, this.side)
+      );
+    } else {
+      this.setQuantityValue(
+        this.onPercentChangeForMarket(
+          percents,
+          balance,
+          quoteAssetId,
+          baseAssetId
+        )
+      );
+    }
+  };
+
+  isLimitInvalid = (baseAssetBalance: number, quoteAssetBalance: number) => {
     return (
-      !+priceValue ||
-      !+quantityValue ||
-      this.isAmountExceedLimitBalance(
-        isSell,
-        quantityValue,
-        priceValue,
+      !+this.priceValue ||
+      !+this.quantityValue ||
+      isAmountExceedLimitBalance(
+        this.isCurrentSideSell,
+        this.quantityValue,
+        this.priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy,
-        quantityAccuracy
+        this.priceAccuracy,
+        this.quantityAccuracy
       )
     );
   };
 
   isMarketInvalid = (
-    isSell: boolean,
-    quantityValue: string,
     baseAssetId: string,
     quoteAssetId: string,
     baseAssetBalance: number,
-    quoteAssetBalance: number,
-    quantityAccuracy: number
+    quoteAssetBalance: number
   ) => {
     return (
-      !+quantityValue ||
+      !+this.quantityValue ||
       this.isAmountExceedMarketBalance(
-        isSell,
-        quantityValue,
         baseAssetBalance,
         quoteAssetBalance,
         baseAssetId,
-        quoteAssetId,
-        quantityAccuracy
+        quoteAssetId
       )
     );
   };
 
   isAmountExceedMarketBalance = (
-    isSell: boolean,
-    quantityValue: string,
     baseAssetBalance: number,
     quoteAssetBalance: number,
     baseAssetId: string,
-    quoteAssetId: string,
-    quantityAccuracy: number
+    quoteAssetId: string
   ) => {
     const convertedBalance = this.rootStore.marketStore.convert(
       quoteAssetBalance,
@@ -241,25 +179,16 @@ class UiOrderStore extends BaseStore {
       baseAssetId,
       this.rootStore.referenceStore.getInstrumentById
     );
-    return isSell
-      ? +quantityValue > baseAssetBalance
-      : +quantityValue > precisionFloor(+convertedBalance, quantityAccuracy);
+    return this.isCurrentSideSell
+      ? +this.quantityValue > baseAssetBalance
+      : +this.quantityValue >
+          precisionFloor(+convertedBalance, this.quantityAccuracy);
   };
 
-  isAmountExceedLimitBalance = (
-    isSell: boolean,
-    quantityValue: string,
-    priceValue: string,
-    baseAssetBalance: number,
-    quoteAssetBalance: number,
-    priceAccuracy: number,
-    quantityAccuracy: number
-  ) =>
-    isSell
-      ? +quantityValue > baseAssetBalance
-      : parseFloat(priceValue) *
-          precisionFloor(parseFloat(quantityValue), quantityAccuracy) >
-        quoteAssetBalance;
+  resetOrder = () => {
+    this.setPriceValue(this.rootStore.orderBookStore.mid());
+    this.setQuantityValue(0);
+  };
 
   // tslint:disable-next-line:no-empty
   reset = () => {};

@@ -1,6 +1,7 @@
 import {connect} from '../connect';
-import EditOrder from './EditOrder';
+import EditOrder, {EditOrderProps} from './EditOrder';
 import QRModal from './QRModal';
+import withModal from './withModal';
 
 const ConnectedEditOrderModal = connect(
   ({
@@ -8,10 +9,8 @@ const ConnectedEditOrderModal = connect(
     orderListStore: {limitOrders: orders},
     referenceStore: {getInstrumentById},
     uiOrderStore: {
-      onPriceValueChange, // TODO change
-      resetPercentage,
+      onPriceChange, // TODO change
       handlePercentageChange,
-      setActivePercentage,
       isLimitInvalid
     },
     orderStore: {editOrder}
@@ -20,13 +19,11 @@ const ConnectedEditOrderModal = connect(
     availableBalances,
     getInstrumentById,
     handlePercentageChange,
-    onValueChange: onPriceValueChange,
+    onValueChange: onPriceChange,
     orders,
-    resetPercentage,
-    setActivePercentage,
     isLimitInvalid
   }),
-  EditOrder
+  withModal<EditOrderProps>(EditOrder)
 );
 
 const ConnectedQRModal = connect(

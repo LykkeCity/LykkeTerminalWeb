@@ -19,9 +19,9 @@ export const Actions = Markets.extend`
   margin-bottom: ${rem(30)};
 `;
 
-const buttonColorBySide = (side: string, isActive: boolean) => {
+const buttonColorBySide = (side: Side, isActive: boolean) => {
   return isActive
-    ? side === Side.Sell.toLowerCase() ? colors.red : colors.green
+    ? side === Side.Sell ? colors.red : colors.green
     : '#272727';
 };
 
@@ -31,7 +31,7 @@ export const ActionButton = styled.div`
   align-items: center;
   width: 50%;
   ${(p: any) =>
-    p.side === Side.Sell.toLowerCase()
+    p.side === Side.Sell
       ? css`
           padding-right: 4px;
         `
@@ -44,7 +44,7 @@ export const ActionProperty = styled.div.attrs({
   style: (props: any) => ({
     backgroundColor: buttonColorBySide(props.side, props.isActive),
     color: props.isActive
-      ? props.side === Side.Buy.toLowerCase() ? '#333' : colors.white
+      ? props.side === Side.Buy ? '#333' : colors.white
       : '#8c94a0'
   })
 })`

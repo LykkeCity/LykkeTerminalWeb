@@ -108,12 +108,17 @@ const ConnectedLevelListItem = connect(
 const ConnectedLevelListItemClickable = connect(
   ({
     orderStore: {updateSide, updateType},
-    uiOrderStore: {setPriceValue, setQuantityValue}
+    uiOrderStore: {setPriceValue, setQuantityValue, setMarket, setSide},
+    uiStore: {selectedInstrument, orderbookDisplayType}
   }) => ({
     updateSide,
     updateType,
     setPriceValue,
-    setQuantityValue
+    setQuantityValue,
+    setMarket,
+    setSide,
+    instrument: selectedInstrument,
+    displayType: toLower(orderbookDisplayType)
   }),
   observer(LevelListItemClickable)
 );

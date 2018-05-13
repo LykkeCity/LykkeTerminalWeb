@@ -72,8 +72,8 @@ class OrderMarket extends React.Component<
     this.props.updatePercentageState(OrderInputs.Quantity);
   };
 
-  handleChange = () => (value: string) => {
-    this.props.onQuantityChange(value);
+  handleChange = () => (e: any) => {
+    this.props.onQuantityChange(e.target.value);
     this.props.updatePercentageState(OrderInputs.Quantity);
   };
 

@@ -36,20 +36,20 @@ const ConnectedOrder = connect(
     uiOrderStore: {
       onPriceArrowClick,
       onQuantityArrowClick,
-      onPriceValueChange,
-      onQuantityValueChange,
+      onPriceChange,
+      onQuantityChange,
       handlePercentageChange,
-      updatePercentageState,
-      resetPercentage,
-      setActivePercentage,
       isLimitInvalid,
       isMarketInvalid,
       getPriceAccuracy,
       getQuantityAccuracy,
       getComputedPriceValue,
       getComputedQuantityValue,
-      setPriceValue,
-      setQuantityValue
+      currentMarket,
+      isCurrentSideSell,
+      setMarket,
+      setSide,
+      resetOrder
     },
     authStore: {isAuth}
   }) => ({
@@ -74,14 +74,11 @@ const ConnectedOrder = connect(
     isMarketInvalid,
     getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
-    setActivePercentage,
     mid: mid(),
     onPriceArrowClick,
     onQuantityArrowClick,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
-    resetPercentage,
-    updatePercentageState,
     updateSideFn,
     updateTypeFn,
     get baseAssetBalance() {
@@ -103,10 +100,13 @@ const ConnectedOrder = connect(
     instrument,
     priceValue: getComputedPriceValue,
     quantityValue: getComputedQuantityValue,
-    onPriceChange: onPriceValueChange,
-    onQuantityChange: onQuantityValueChange,
-    setPriceValue,
-    setQuantityValue
+    onPriceChange,
+    onQuantityChange,
+    resetOrder,
+    currentMarket,
+    isCurrentSideSell,
+    setMarket,
+    setSide
   }),
   withAuth(Order)
 );

@@ -2,10 +2,16 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import {Percentage} from '../../constants/ordersPercentage';
 import {AssetBalanceModel, OrderInputs, OrderModel} from '../../models';
-import ModalModel from '../../models/modalModel';
 import Side from '../../models/side';
+import {onArrowClick, onValueChange} from '../../utils/inputNumber';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../../utils/math';
+import {
+  getPercentOfValueForLimit,
+  isAmountExceedLimitBalance,
+  resetPercentage,
+  setActivePercentage
+} from '../../utils/order';
 import EditOrderForm from '../Order/EditOrderForm/EditOrderForm';
 import ModalHeader from './ModalHeader/ModalHeader';
 import {EditActionTitle, EditModal, EditTitle} from './styles';
@@ -14,18 +20,12 @@ const percentage = Percentage.map((i: any) => {
   return {...i};
 });
 
-interface EditOrderProps {
-  modal: ModalModel;
+export interface EditOrderProps {
   orders: OrderModel[];
   getInstrumentById: any;
   onValueChange: any;
   editOrder: any;
-  resetPercentage: any;
   handlePercentageChange: any;
-  setActivePercentage: (
-    percentage: any[],
-    index?: number
-  ) => {value: number; updatedPercentage: any[]};
   availableBalances: any;
   isLimitInvalid: (
     isSell: boolean,
@@ -36,6 +36,8 @@ interface EditOrderProps {
     priceAccuracy: number,
     quantityAccuracy: number
   ) => boolean;
+  order: OrderModel;
+  onClose: () => void;
 }
 
 interface EditOrderState {
@@ -60,12 +62,17 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   private readonly isSellActive: boolean;
   private readonly balance: number = 0;
   private assetAccuracy: number;
+  private handlePriceArrowClick: any;
+  private handleQuantityArrowClick: any;
+  private handlePriceChange: any;
+  private handleQuantityChange: any;
+  private handlePercentChangeForLimit: any;
 
   constructor(props: EditOrderProps) {
     super(props);
 
-    const {modal} = this.props;
-    const currentInstrument = this.props.getInstrumentById(modal.config.symbol);
+    const {order} = this.props;
+    const currentInstrument = this.props.getInstrumentById(order.symbol);
 
     this.accuracy = {
       priceAccuracy: pathOr(2, ['accuracy'], currentInstrument),
@@ -80,17 +87,44 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.state = {
       pendingOrder: false,
       percents: percentage,
-      priceValue: modal.config.price.toFixed(this.accuracy.priceAccuracy),
-      quantityValue: modal.config.volume.toFixed(this.accuracy.quantityAccuracy)
+      priceValue: order.price.toFixed(this.accuracy.priceAccuracy),
+      quantityValue: order.volume.toFixed(this.accuracy.quantityAccuracy)
     };
+
+    this.handlePriceArrowClick = onArrowClick(
+      () => this.state.priceValue,
+      () => this.accuracy.priceAccuracy,
+      this.setPriceValue
+    );
+
+    this.handleQuantityArrowClick = onArrowClick(
+      () => this.state.quantityValue,
+      () => this.accuracy.quantityAccuracy,
+      this.setQuantityValue
+    );
+
+    this.handlePriceChange = onValueChange(
+      this.setPriceValueByHand,
+      () => this.accuracy.priceAccuracy
+    );
+
+    this.handleQuantityChange = onValueChange(
+      this.setQuantityValueByHand,
+      () => this.accuracy.quantityAccuracy
+    );
+
+    this.handlePercentChangeForLimit = getPercentOfValueForLimit(
+      () => this.state.priceValue,
+      () => this.accuracy.quantityAccuracy
+    );
 
     this.baseAssetName = currentInstrument.baseAsset.name;
     this.quoteAssetName = currentInstrument.quoteAsset.name;
     this.baseAssetId = currentInstrument.baseAsset.id;
     this.quoteAssetId = currentInstrument.quoteAsset.id;
-    this.action = modal.config.side.toLowerCase();
+    this.action = order.side;
     this.currency = currentInstrument.id;
-    this.isSellActive = this.action === Side.Sell.toLowerCase();
+    this.isSellActive = this.action === Side.Sell;
 
     const assetId = this.isSellActive ? this.baseAssetId : this.quoteAssetId;
     const asset: AssetBalanceModel = this.props.availableBalances.find(
@@ -99,68 +133,51 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       }
     );
     const reserved = this.isSellActive
-      ? modal.config.volume
-      : modal.config.volume * modal.config.price;
+      ? order.volume
+      : order.volume * order.price;
     this.assetAccuracy = this.isSellActive
       ? this.accuracy.quantityAccuracy
       : pathOr(2, ['quoteAsset', 'accuracy'], currentInstrument);
     this.balance = asset.available + reserved;
   }
 
-  handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
-    const {
-      accuracy: {quantityAccuracy, priceAccuracy},
-      baseAssetId,
-      quoteAssetId
-    } = this;
+  setPriceValue = (price: number) => {
+    this.setState({
+      priceValue: price.toFixed(this.accuracy.priceAccuracy)
+    });
+  };
 
+  setQuantityValue = (quantity: number) => {
+    this.setState({
+      quantityValue: quantity.toFixed(this.accuracy.quantityAccuracy)
+    });
+  };
+
+  setPriceValueByHand = (price: string) => this.setState({priceValue: price});
+  setQuantityValueByHand = (quantity: string) =>
+    this.setState({quantityValue: quantity});
+
+  handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
     if (!this.balance) {
       return;
     }
 
-    const {updatedPercentage, value} = this.props.setActivePercentage(
-      percentage,
-      index
+    const {updatedPercentage, value} = setActivePercentage(percentage, index);
+
+    this.setQuantityValue(
+      this.handlePercentChangeForLimit(value, this.balance, this.action)
     );
-
-    const tempObj = await this.props.handlePercentageChange({
-      balance: this.balance,
-      baseAssetId,
-      index,
-      isInverted,
-      isSellActive: this.isSellActive,
-      value,
-      priceAccuracy,
-      quantityAccuracy,
-      quoteAssetId,
-      currentPrice: this.state.priceValue
+    this.setState({
+      percents: updatedPercentage
     });
-
-    tempObj.percents = updatedPercentage;
-
-    this.setState(tempObj);
   };
 
   updatePercentageState = (field: string) => {
     const tempObj: any = {};
-    if (this.isSellActive && field === OrderInputs.Quantity) {
-      this.props.resetPercentage(percentage);
-      tempObj.percents = percentage;
-    } else if (!this.isSellActive && field === OrderInputs.Price) {
-      this.props.resetPercentage(percentage);
+    if (field === OrderInputs.Quantity) {
+      resetPercentage(percentage);
       tempObj.percents = percentage;
     }
-    this.setState(tempObj);
-  };
-
-  onChange = (accuracy: number) => (field: string) => (e: any) => {
-    const tempObj = this.props.onValueChange({
-      accuracy,
-      field,
-      value: e.target.value
-    });
-
-    this.updatePercentageState(field);
     this.setState(tempObj);
   };
 
@@ -181,27 +198,28 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     };
 
     this.props
-      .editOrder(body, this.props.modal.config.id)
+      .editOrder(body, this.props.order.id)
       .then(this.handleCancel)
       .catch(() => this.toggleDisableBtn(false));
   };
 
   handleCancel = () => {
-    this.props.resetPercentage(percentage);
-    this.props.modal.close();
+    resetPercentage(percentage);
+    this.props.onClose();
   };
 
-  render() {
+  isLimitInvalid = () => {
     const {quantityValue, priceValue} = this.state;
-
     const {
       accuracy: {priceAccuracy, quantityAccuracy},
       isSellActive,
       balance
     } = this;
-    const isOrderInvalid =
-      this.state.pendingOrder ||
-      this.props.isLimitInvalid(
+
+    return (
+      !+quantityValue ||
+      !+priceValue ||
+      isAmountExceedLimitBalance(
         isSellActive,
         quantityValue,
         priceValue,
@@ -209,7 +227,12 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
         +balance,
         priceAccuracy,
         quantityAccuracy
-      );
+      )
+    );
+  };
+
+  render() {
+    const isOrderInvalid = this.state.pendingOrder || this.isLimitInvalid();
 
     const roundedAmount = precisionFloor(
       parseFloat(this.state.quantityValue) * parseFloat(this.state.priceValue),
@@ -231,22 +254,10 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
           price={this.state.priceValue}
           quantityAccuracy={this.accuracy.quantityAccuracy}
           priceAccuracy={this.accuracy.priceAccuracy}
-          // tslint:disable-next-line:jsx-no-lambda
-          onPriceChange={() => {
-            return;
-          }}
-          // tslint:disable-next-line:jsx-no-lambda
-          onQuantityChange={() => {
-            return;
-          }}
-          // tslint:disable-next-line:jsx-no-lambda
-          onQuantityArrowClick={() => {
-            return;
-          }}
-          // tslint:disable-next-line:jsx-no-lambda
-          onPriceArrowClick={() => {
-            return;
-          }}
+          onPriceChange={this.handlePriceChange}
+          onQuantityChange={this.handleQuantityChange}
+          onQuantityArrowClick={this.handleQuantityArrowClick}
+          onPriceArrowClick={this.handlePriceArrowClick}
           percents={this.state.percents}
           onHandlePercentageChange={this.handlePercentageChange}
           baseAssetName={this.baseAssetName}

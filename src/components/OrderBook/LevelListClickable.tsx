@@ -2,7 +2,9 @@ import {curry} from 'rambda';
 import React from 'react';
 import {Group, Rect} from 'react-konva';
 import {LEVELS_COUNT} from '.';
-import {Order, Side} from '../../models';
+import {Order, OrderType, Side} from '../../models';
+import InstrumentModel from '../../models/instrumentModel';
+import {precisionFloor} from '../../utils/math';
 
 enum Cursor {
   Pointer = 'pointer',
@@ -21,6 +23,10 @@ interface LevelListItemProps {
   updateType: any;
   setPriceValue: (value: number) => void;
   setQuantityValue: (value: number) => void;
+  setMarket: (market: OrderType) => void;
+  setSide: (side: Side) => void;
+  instrument: InstrumentModel;
+  displayType: string;
 }
 
 const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
@@ -31,21 +37,30 @@ const LevelListItemClickable: React.SFC<LevelListItemProps> = ({
   updateSide,
   updateType,
   setPriceValue,
-  setQuantityValue
+  setQuantityValue,
+  setSide,
+  setMarket,
+  displayType,
+  instrument
 }) => {
   const itemHeight = height / LEVELS_COUNT;
   const y = curry(toY)(order.side, LEVELS_COUNT, itemHeight);
 
   const handlePriceClick = (event: any) => {
     setPriceValue(order.price);
-    updateSide(order.side === Side.Sell);
-    updateType(true);
+    setMarket(OrderType.Limit);
+    setSide(order.side);
   };
 
   const handleVolumeClick = (event: any) => {
-    setQuantityValue(order.volume);
-    updateSide(order.side === Side.Sell);
-    updateType(false);
+    const value = precisionFloor(
+      order[displayType] * order.price,
+      instrument.quoteAsset.accuracy
+    );
+    const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
+    setQuantityValue(value);
+    setMarket(OrderType.Market);
+    setSide(orderSide);
   };
 
   const handleOnMouseOver = () => {
