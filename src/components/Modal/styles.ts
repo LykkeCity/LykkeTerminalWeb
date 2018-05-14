@@ -155,9 +155,7 @@ export const ModalHeaderTitle = styled.div`
 
 export const EditModal = styled.div.attrs({
   style: (props: any) => ({
-    borderTop: `${rem(6)} solid ${
-      props.isSell ? colors.brightViolet : colors.brightMango
-    }`
+    borderTop: `${rem(6)} solid ${props.isSell ? colors.red : colors.green}`
   })
 })`
   border-radius: ${rem(6)};
@@ -185,7 +183,7 @@ export const EditTitle = styled.div`
 
 export const EditActionTitle = styled.div.attrs({
   style: (props: any) => ({
-    color: props.isSell ? colors.violet : colors.brightMango
+    color: props.isSell ? colors.red : colors.green
   })
 })`
   text-transform: uppercase;
