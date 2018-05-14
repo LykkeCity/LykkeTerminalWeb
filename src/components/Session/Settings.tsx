@@ -11,9 +11,7 @@ import {
 
 const sessionDuration = [5, 15, 30, 60];
 
-const HOUR = 60;
 const MINUTE_ABBREVIATION = 'min';
-const HOUR_ABBREVIATION = 'hr';
 
 interface SettingsProps {
   onSettingsClose: () => void;
@@ -39,9 +37,7 @@ const Settings: React.SFC<SettingsProps> = ({
           <ChoosableItem
             key={index}
             value={item}
-            description={
-              item === HOUR ? HOUR_ABBREVIATION : MINUTE_ABBREVIATION
-            }
+            description={MINUTE_ABBREVIATION}
             isActive={getCurrentSessionDuration === item}
             // tslint:disable-next-line:no-empty
             // tslint:disable-next-line:jsx-no-lambda
