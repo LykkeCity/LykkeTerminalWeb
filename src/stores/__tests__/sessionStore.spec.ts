@@ -385,7 +385,7 @@ describe('session store', () => {
     });
 
     it('should set user default session duration', async () => {
-      const defaultSessionDuration = 300000;
+      const defaultSessionDuration = 900000;
       sessionStore.showSessionNotification = jest.fn();
       await sessionStore.initUserSession();
       expect(sessionStore.sessionCurrentDuration).toBe(
