@@ -9,9 +9,9 @@ import {
   SessionSettings
 } from './styles';
 
-const sessionDuration = [1, 5, 15, 30];
+const sessionDuration = [5, 15, 30, 60];
 
-const DURATION_VALUE = 'min';
+const MINUTE_ABBREVIATION = 'min';
 
 interface SettingsProps {
   onSettingsClose: () => void;
@@ -37,7 +37,7 @@ const Settings: React.SFC<SettingsProps> = ({
           <ChoosableItem
             key={index}
             value={item}
-            description={DURATION_VALUE}
+            description={MINUTE_ABBREVIATION}
             isActive={getCurrentSessionDuration === item}
             // tslint:disable-next-line:no-empty
             // tslint:disable-next-line:jsx-no-lambda

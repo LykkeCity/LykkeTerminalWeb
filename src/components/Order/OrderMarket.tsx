@@ -99,8 +99,8 @@ class OrderMarket extends React.Component<
         <InputControl style={{width: '100%'}}>
           <Flex justify="space-between" style={{marginBottom: '8px'}}>
             <Action>
-              {this.state.action}{' '}
-              {!this.isInverted ? baseAssetName : quoteAssetName}
+              {'Amount '}
+              {!this.isInverted ? `(${baseAssetName})` : `(${quoteAssetName})`}
             </Action>
             <Available onClick={this.handlePercentageChange()}>
               {formattedNumber(this.props.balance || 0, balanceAccuracy)}{' '}
