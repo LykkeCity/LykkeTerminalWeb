@@ -9,6 +9,8 @@ class DepthChartStore extends BaseStore {
   multiplers: number[] = [0, 1, 0.75, 0.5, 0.25, 0.1, 0.05, 0.025];
   maxMultiplier = this.multiplers.length - 1;
   @observable spanMultiplierIdx = 3;
+  @observable width: number = 1024;
+  @observable height: number = 512;
 
   @computed
   get span() {
@@ -118,6 +120,16 @@ class DepthChartStore extends BaseStore {
     if (this.spanMultiplierIdx > 1) {
       this.spanMultiplierIdx--;
     }
+  };
+
+  @action
+  setWidth = (width: number) => {
+    this.width = width;
+  };
+
+  @action
+  setHeight = (height: number) => {
+    this.height = height;
   };
 
   reset = () => {

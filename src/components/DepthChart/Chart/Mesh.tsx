@@ -4,12 +4,20 @@ import {Line, Text} from 'react-konva';
 
 import {Order} from '../../../models';
 
-import {ChartProps} from './Models';
-
 import chart from './chartConstants';
-import chartConstants from './chartConstants';
 
-class Mesh extends React.Component<ChartProps> {
+interface MeshProps {
+  asks: Order[];
+  bids: Order[];
+  mid: number;
+  width: number;
+  height: number;
+  quoteAccuracy: number;
+  baseAccuracy: number;
+  priceAccuracy: number;
+}
+
+class Mesh extends React.Component<MeshProps> {
   mid: number;
   asks: Order[];
   bids: Order[];
@@ -20,7 +28,7 @@ class Mesh extends React.Component<ChartProps> {
 
   emptyLabels: string[] = ['', '', '', ''];
 
-  constructor(props: ChartProps) {
+  constructor(props: MeshProps) {
     super(props);
   }
 
@@ -81,7 +89,7 @@ class Mesh extends React.Component<ChartProps> {
 
   generateHorizontalLabels = () => {
     const labels = [];
-    const maximum = this.calculateMaxDepth() / chartConstants.scaleFactor;
+    const maximum = this.calculateMaxDepth() / chart.scaleFactor;
 
     const step = maximum / chart.mesh.horizontalLinesAmount;
     for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
@@ -102,6 +110,9 @@ class Mesh extends React.Component<ChartProps> {
         closed={true}
         stroke={chart.mesh.color}
         strokeWidth={chart.mesh.strikeWidth}
+        dashEnabled={false}
+        shadowEnabled={false}
+        listening={false}
       />
     );
   };
@@ -123,6 +134,8 @@ class Mesh extends React.Component<ChartProps> {
           strokeWidth={chart.mesh.strikeWidth}
           dash={chart.mesh.dots}
           opacity={0.6}
+          shadowEnabled={false}
+          listening={false}
         />
       );
     }
@@ -147,6 +160,7 @@ class Mesh extends React.Component<ChartProps> {
             fontFamily={chart.mesh.fontFamily}
             fontSize={chart.mesh.verticalFontSize}
             text={`${labels[index]}`}
+            listening={false}
           />
         );
       }
@@ -170,6 +184,8 @@ class Mesh extends React.Component<ChartProps> {
           strokeWidth={chart.mesh.strikeWidth}
           dash={chart.mesh.dash}
           opacity={0.6}
+          shadowEnabled={false}
+          listening={false}
         />
       );
     }
@@ -194,6 +210,7 @@ class Mesh extends React.Component<ChartProps> {
             fontFamily={chart.mesh.fontFamily}
             fontSize={chart.mesh.horizontalFontSize}
             text={`${labels[index]}`}
+            listening={false}
           />
         );
       }

@@ -2,16 +2,25 @@ import * as React from 'react';
 
 import {Circle, Line, Text} from 'react-konva';
 
-import {Order} from '../../../models';
-import {PointerProps} from './Models';
+import {AssetModel, Order} from '../../../models';
 
 import chart from './chartConstants';
+import {measureText} from './chartHelpers';
 
-const measureText = (text: string, size: number, font: string) => {
-  const ctx = document.createElement('canvas').getContext('2d');
-  ctx!.font = `${size}px ${font}`;
-  return Math.ceil(ctx!.measureText(text).width);
-};
+export interface PointerProps {
+  orders: Order[];
+  side: string;
+  points: number[];
+  borders: number[];
+  color: string;
+  baseAsset: AssetModel;
+  quoteAsset: AssetModel;
+  width: number;
+  height: number;
+  quoteAccuracy: number;
+  baseAccuracy: number;
+  priceAccuracy: number;
+}
 
 class Pointer extends React.Component<PointerProps> {
   calcY: number = -chart.modal.height;
@@ -245,6 +254,12 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          dashEnabled={false}
+          shadowEnabled={false}
+          perfectDrawEnabled={false}
+          strokeEnabled={false}
+          strokeHitEnabled={false}
+          strokeScaleEnabled={false}
         />,
         // ball
         <Circle
@@ -257,6 +272,12 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          dashEnabled={false}
+          shadowEnabled={false}
+          perfectDrawEnabled={false}
+          strokeHitEnabled={false}
+          strokeScaleEnabled={false}
+          listening={false}
         />,
         // dashed line under the ball
         <Line
@@ -269,6 +290,11 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          shadowEnabled={false}
+          perfectDrawEnabled={false}
+          strokeHitEnabled={false}
+          strokeScaleEnabled={false}
+          listening={false}
         />,
         // modal window
         <Line
@@ -281,6 +307,12 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          dashEnabled={false}
+          shadowEnabled={false}
+          perfectDrawEnabled={false}
+          strokeHitEnabled={false}
+          strokeScaleEnabled={false}
+          listening={false}
         />,
         // title text
         <Text
@@ -295,6 +327,7 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          listening={false}
         />,
         // line under the title
         <Line
@@ -306,6 +339,12 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          dashEnabled={false}
+          shadowEnabled={false}
+          perfectDrawEnabled={false}
+          strokeHitEnabled={false}
+          strokeScaleEnabled={false}
+          listening={false}
         />,
         // labels
         <Text
@@ -320,6 +359,8 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          shadowEnabled={false}
+          listening={false}
         />,
         <Text
           key="text-3"
@@ -333,6 +374,8 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          shadowEnabled={false}
+          listening={false}
         />,
         // numbers
         <Text
@@ -347,6 +390,8 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          shadowEnabled={false}
+          listening={false}
         />,
         <Text
           key="text-5"
@@ -360,6 +405,8 @@ class Pointer extends React.Component<PointerProps> {
           onMouseMove={this.handleMouseMove}
           onMouseOver={this.handleMouseMove}
           onMouseLeave={this.handleMouseLeave}
+          shadowEnabled={false}
+          listening={false}
         />
       );
     }

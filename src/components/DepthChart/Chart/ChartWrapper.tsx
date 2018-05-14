@@ -1,29 +1,26 @@
 import * as React from 'react';
 
-import {observable} from 'mobx';
-
 import {FastLayer, Layer, Stage} from 'react-konva';
 
 import Measure from 'react-measure';
 
-import Chart from './Chart';
-import Mesh from './Mesh';
+import {Chart, Mesh} from './index';
 
-import {ChartProps} from './Models';
+export interface ChartWrapperProps {
+  setWidth: (width: number) => void;
+  setHeight: (height: number) => void;
+  selectedInstrument?: any;
+}
 
-import chart from './chartConstants';
+class ChartWrapper extends React.Component<ChartWrapperProps> {
+  width: number = -1;
+  height: number = -1;
 
-class ChartWrapper extends React.Component<ChartProps> {
-  @observable width: number = -1;
-  @observable height: number = -1;
-
-  constructor(props: ChartProps) {
+  constructor(props: ChartWrapperProps) {
     super(props);
   }
 
   render() {
-    const {asks, bids, mid, selectedInstrument} = this.props;
-
     return (
       <Measure
         // tslint:disable-next-line:jsx-boolean-value
@@ -32,45 +29,16 @@ class ChartWrapper extends React.Component<ChartProps> {
         onResize={contentRect => {
           this.width = Math.ceil(contentRect.client!.width);
           this.height = Math.ceil(contentRect.client!.height);
+          this.props.setWidth(this.width);
+          this.props.setHeight(this.height);
           this.forceUpdate();
         }}
       >
         {({measureRef}) => (
           <div style={{height: '100%'}} ref={measureRef}>
             <Stage width={this.width} height={this.height}>
-              <FastLayer clearBeforeDraw={true}>
-                {selectedInstrument && (
-                  <Mesh
-                    key={1}
-                    asks={asks}
-                    bids={bids}
-                    mid={mid}
-                    baseAsset={selectedInstrument!.baseAsset.name}
-                    quoteAsset={selectedInstrument!.quoteAsset.name}
-                    width={this.width - chart.labelsWidth}
-                    height={this.height - chart.labelsHeight}
-                    quoteAccuracy={selectedInstrument!.quoteAsset.accuracy}
-                    baseAccuracy={selectedInstrument!.baseAsset.accuracy}
-                    priceAccuracy={selectedInstrument!.accuracy}
-                  />
-                )}
-              </FastLayer>
-              <Layer>
-                {selectedInstrument && (
-                  <Chart
-                    asks={asks}
-                    bids={bids}
-                    mid={mid}
-                    baseAsset={selectedInstrument!.baseAsset.name}
-                    quoteAsset={selectedInstrument!.quoteAsset.name}
-                    width={this.width - chart.labelsWidth}
-                    height={this.height - chart.labelsHeight}
-                    priceAccuracy={selectedInstrument!.accuracy}
-                    quoteAccuracy={selectedInstrument!.quoteAsset.accuracy}
-                    baseAccuracy={selectedInstrument!.baseAsset.accuracy}
-                  />
-                )}
-              </Layer>
+              <FastLayer>{this.props.selectedInstrument && <Mesh />}</FastLayer>
+              <Layer>{this.props.selectedInstrument && <Chart />}</Layer>
             </Stage>
           </div>
         )}
