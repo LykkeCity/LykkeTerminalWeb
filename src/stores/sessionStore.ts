@@ -20,7 +20,7 @@ const SESSION_WARNING_REMAINING = 60; // seconds
 
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 
-const DEFAULT_SESSION_DURATION = 300000;
+const DEFAULT_SESSION_DURATION = 30000;
 
 class SessionStore extends BaseStore {
   @computed
