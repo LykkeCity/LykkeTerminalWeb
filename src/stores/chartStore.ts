@@ -2,7 +2,6 @@ import {pathOr} from 'rambda';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {timeZones} from '../constants/chartTimezones';
-import {InstrumentModel} from '../models/index';
 import {dateFns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -36,7 +35,6 @@ class ChartStore extends BaseStore {
 
   private widget: any;
   private shouldHandleOutsideClick = false;
-  private instrument: InstrumentModel | null;
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
@@ -58,15 +56,11 @@ class ChartStore extends BaseStore {
   };
 
   renderChart = () => {
-    this.instrument = this.rootStore.uiStore.selectedInstrument;
     this.shouldHandleOutsideClick = false;
 
+    const instrument = this.rootStore.uiStore.selectedInstrument;
     const chartContainerExists = document.getElementById('tv_chart_container');
-    if (
-      !chartContainerExists ||
-      !(window as any).TradingView ||
-      !this.instrument
-    ) {
+    if (!chartContainerExists || !(window as any).TradingView || !instrument) {
       return;
     }
 
@@ -80,12 +74,12 @@ class ChartStore extends BaseStore {
         }
       },
       autosize: true,
-      symbol: this.instrument!.displayName,
+      symbol: instrument!.displayName,
       interval: '60',
       container_id: 'tv_chart_container',
       datafeed: new ChartDataFeed(
         ChartStore.config,
-        this.instrument!,
+        instrument!,
         new PriceApi(this),
         this.getWs()
       ),
@@ -184,11 +178,13 @@ class ChartStore extends BaseStore {
   };
 
   private updateSettings = (settings: any) => {
+    const instrument = this.rootStore.uiStore.selectedInstrument;
+
     settings.charts[0].timezone = timezone;
     settings.charts[0].panes[0].sources[1].state.precision = pathOr(
       0,
       ['accuracy'],
-      this.instrument!.baseAsset
+      instrument!.baseAsset
     );
 
     return settings;
