@@ -6,8 +6,9 @@ import Widgets from '../../models/mosaicWidgets';
 import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
+import {Background} from '../Backdrop/styles';
 import {Header} from '../Header';
-import CommonLoader from '../Loader/commonLoader';
+import CommonLoader from '../Loader/СommonLoader';
 import Modal from '../Modal/Modal';
 import {MyWallets} from '../MyWallets';
 import {NotificationList} from '../Notification';
@@ -93,7 +94,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
       },
       splitPercentage: MAX_LEFT_PADDING
     },
-    canBeShown: false
+    hasAccess: false
   };
 
   private authStore: AuthStore = this.props.rootStore.authStore;
@@ -103,7 +104,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   componentDidMount() {
     this.start().then(resp => {
-      if (!this.state.canBeShown) {
+      if (!this.state.hasAccess) {
         return;
       }
       const layout = layoutStorage.get();
@@ -167,11 +168,11 @@ class Terminal extends React.Component<TerminalProps, {}> {
       ]);
 
       if (this.authStore.noKycAndFunds) {
-        this.setState({canBeShown: false});
+        this.setState({hasAccess: false});
         this.props.history.push(paths.kycAndFundsCheck);
         return false;
       } else {
-        this.setState({canBeShown: true});
+        this.setState({hasAccess: true});
         this.props.rootStore.start();
       }
     } else {
@@ -181,7 +182,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   render() {
-    return this.state.canBeShown ? (
+    return this.state.hasAccess ? (
       <Shell>
         <NotificationList />
         {this.props.rootStore.modalStore.isModals ? (
@@ -202,10 +203,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
         />
       </Shell>
     ) : (
-      <div>
-        <Backdrop />
+      <Background>
         <CommonLoader loadingDescription={'Check user data...'} />
-      </div>
+      </Background>
     );
   }
 }
