@@ -1,3 +1,4 @@
+import {pathOr} from 'rambda';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {timeZones} from '../constants/chartTimezones';
@@ -12,7 +13,6 @@ export const LINESTYLE_LARGE_DASHED = 3;
 
 const timezone = dateFns.getTimeZone(timeZones);
 const defaultSettings = CHART_DEFAULT_SETTINGS;
-defaultSettings.charts[0].timezone = timezone;
 
 class ChartStore extends BaseStore {
   static readonly config = {
@@ -36,6 +36,7 @@ class ChartStore extends BaseStore {
 
   private widget: any;
   private shouldHandleOutsideClick = false;
+  private instrument: InstrumentModel;
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
@@ -57,7 +58,9 @@ class ChartStore extends BaseStore {
   };
 
   renderChart = (instrument: InstrumentModel) => {
+    this.instrument = instrument;
     this.shouldHandleOutsideClick = false;
+
     const chartContainerExists = document.getElementById('tv_chart_container');
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
@@ -134,15 +137,14 @@ class ChartStore extends BaseStore {
           .then((res: any) => {
             if (res && res.Data) {
               const settings = JSON.parse(res.Data);
-              settings.charts[0].timezone = timezone;
 
-              this.widget.load(settings);
+              this.widget.load(this.updateSettings(settings));
             }
             chartContainerExists.style.display = 'block';
           })
           .catch(err => {
             if (err.status === 404) {
-              this.widget.load(defaultSettings);
+              this.widget.load(this.updateSettings(defaultSettings));
             }
             chartContainerExists.style.display = 'block';
           });
@@ -153,7 +155,7 @@ class ChartStore extends BaseStore {
     } else {
       this.widget.onChartReady(() => {
         this.bindClickOutside();
-        this.widget.load(CHART_DEFAULT_SETTINGS);
+        this.widget.load(this.updateSettings(defaultSettings));
 
         chartContainerExists.style.display = 'block';
       });
@@ -168,12 +170,23 @@ class ChartStore extends BaseStore {
 
   resetToDefault = () => {
     if (this.widget) {
-      this.widget.load(defaultSettings);
+      this.widget.load(this.updateSettings(defaultSettings));
     }
   };
 
   reset = () => {
     return;
+  };
+
+  private updateSettings = (settings: any) => {
+    settings.charts[0].timezone = timezone;
+    settings.charts[0].panes[0].sources[1].state.precision = pathOr(
+      0,
+      ['accuracy'],
+      this.instrument.baseAsset
+    );
+
+    return settings;
   };
 }
 
