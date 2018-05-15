@@ -1,3 +1,4 @@
+import {ISubscription} from 'autobahn';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {timeZones} from '../constants/chartTimezones';
@@ -36,6 +37,7 @@ class ChartStore extends BaseStore {
 
   private widget: any;
   private shouldHandleOutsideClick = false;
+  private subscriptions: Set<ISubscription> = new Set();
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
@@ -56,7 +58,8 @@ class ChartStore extends BaseStore {
     });
   };
 
-  renderChart = (instrument: InstrumentModel) => {
+  renderChart = async (instrument: InstrumentModel) => {
+    await this.unsubscribeFromCandle();
     this.shouldHandleOutsideClick = false;
     const chartContainerExists = document.getElementById('tv_chart_container');
     if (!chartContainerExists || !(window as any).TradingView) {
@@ -79,7 +82,8 @@ class ChartStore extends BaseStore {
         ChartStore.config,
         instrument,
         new PriceApi(this),
-        this.getWs()
+        this.getWs(),
+        this.setSubscription
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
@@ -172,8 +176,21 @@ class ChartStore extends BaseStore {
     }
   };
 
+  setSubscription = (s: ISubscription) => this.subscriptions.add(s);
+
+  unsubscribeFromCandle = async () => {
+    const subscriptions = Array.from(this.subscriptions).map(s => {
+      // tslint:disable-next-line:no-unused-expression
+      this.getWs() && this.getWs().unsubscribe(s);
+    });
+    await Promise.all(subscriptions);
+    if (this.subscriptions.size > 0) {
+      this.subscriptions.clear();
+    }
+  };
+
   reset = () => {
-    return;
+    this.unsubscribeFromCandle();
   };
 }
 
