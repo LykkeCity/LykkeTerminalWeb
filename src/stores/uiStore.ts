@@ -115,7 +115,7 @@ class UiStore extends BaseStore {
     const selectedInstrument = getInstrumentById(id);
     instrumentStorage.set(JSON.stringify(selectedInstrument));
     this.selectedInstrument = selectedInstrument!;
-    this.rootStore.chartStore.renderChart(selectedInstrument!);
+    this.rootStore.chartStore.renderChart();
   };
 
   @action search = (term: string) => (this.searchTerm = term);

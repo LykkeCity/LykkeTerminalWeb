@@ -36,7 +36,7 @@ class ChartStore extends BaseStore {
 
   private widget: any;
   private shouldHandleOutsideClick = false;
-  private instrument: InstrumentModel;
+  private instrument: InstrumentModel | null;
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
@@ -57,14 +57,19 @@ class ChartStore extends BaseStore {
     });
   };
 
-  renderChart = (instrument: InstrumentModel) => {
-    this.instrument = instrument;
+  renderChart = () => {
+    this.instrument = this.rootStore.uiStore.selectedInstrument;
     this.shouldHandleOutsideClick = false;
 
     const chartContainerExists = document.getElementById('tv_chart_container');
-    if (!chartContainerExists || !(window as any).TradingView) {
+    if (
+      !chartContainerExists ||
+      !(window as any).TradingView ||
+      !this.instrument
+    ) {
       return;
     }
+
     this.widget = new (window as any).TradingView.widget({
       customFormatters: {
         timeFormatter: {
@@ -75,12 +80,12 @@ class ChartStore extends BaseStore {
         }
       },
       autosize: true,
-      symbol: instrument.displayName,
+      symbol: this.instrument!.displayName,
       interval: '60',
       container_id: 'tv_chart_container',
       datafeed: new ChartDataFeed(
         ChartStore.config,
-        instrument,
+        this.instrument!,
         new PriceApi(this),
         this.getWs()
       ),
@@ -183,7 +188,7 @@ class ChartStore extends BaseStore {
     settings.charts[0].panes[0].sources[1].state.precision = pathOr(
       0,
       ['accuracy'],
-      this.instrument.baseAsset
+      this.instrument!.baseAsset
     );
 
     return settings;
