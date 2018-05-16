@@ -6,6 +6,7 @@ import {Order} from '../../../models';
 
 import {Pointer} from './index';
 
+import {reverse} from 'rambda';
 import chart from './chartConstants';
 
 interface ChartProps {
@@ -238,7 +239,7 @@ class Chart extends React.Component<ChartProps> {
     this.midXAsks = this.props.width / 2 + Math.round(chart.strokeWidth / 2);
     this.midXBids = this.props.width / 2 - Math.round(chart.strokeWidth / 2);
     this.midY = this.height;
-    this.asks = this.props.asks.reverse();
+    this.asks = reverse(this.props.asks);
     this.bids = this.props.bids;
     this.mid = this.props.mid;
     this.minDepth = Math.min(...this.bids.concat(this.asks).map(x => x.depth));
