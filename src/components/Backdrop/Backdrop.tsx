@@ -1,8 +1,13 @@
 import * as React from 'react';
 import {StyledBackdrop} from './styles';
 
-const Backdrop: React.SFC = () => {
-  return <StyledBackdrop />;
+export interface BackdropProps {
+  bg?: string;
+  opacity?: number;
+}
+
+const Backdrop: React.SFC<BackdropProps> = props => {
+  return <StyledBackdrop {...props} />;
 };
 
 export default Backdrop;

@@ -6,7 +6,6 @@ import Widgets from '../../models/mosaicWidgets';
 import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
-import {Background} from '../Backdrop/styles';
 import {Header} from '../Header';
 import CommonLoader from '../Loader/СommonLoader';
 import Modal from '../Modal/Modal';
@@ -200,9 +199,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         />
       </Shell>
     ) : (
-      <Background>
-        <CommonLoader loadingDescription={'Check user data...'} />
-      </Background>
+      <CommonLoader loadingDescription={'Check user data...'} />
     );
   }
 }

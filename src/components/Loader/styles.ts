@@ -1,5 +1,5 @@
 import {rem, rgb} from 'polished';
-import styled from '../styled';
+import styled, {colors} from '../styled';
 
 export const Centered = styled.div`
   display: flex;
@@ -15,6 +15,15 @@ export const Centered = styled.div`
   background: ${rgb(17, 17, 17)};
   opacity: 0.8;
   z-index: 99;
+`;
+
+export const Background = styled.div`
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: ${(props: {back: string | undefined}) =>
+    props.back || colors.lightGraphite};
 `;
 
 export const CommonLoaderWrapper = styled.div`
