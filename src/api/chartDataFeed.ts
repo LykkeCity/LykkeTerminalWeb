@@ -1,3 +1,4 @@
+import {ISubscription} from 'autobahn';
 import {
   addDays,
   addHours,
@@ -53,7 +54,9 @@ class ChartDataFeed {
     private readonly instrument: InstrumentModel,
     private readonly priceApi: PriceApi,
     private readonly session: any,
-    private readonly setSubscription: any
+    private readonly subscribeToCandlesWithResolutions: (
+      s: ISubscription
+    ) => void
   ) {}
 
   onReady = (cb: any) => {
@@ -151,7 +154,7 @@ class ChartDataFeed {
     subscriberUID: any,
     onResetCacheNeededCallback: any
   ) => {
-    this.setSubscription(
+    this.subscribeToCandlesWithResolutions(
       await this.session.subscribe(
         topics.candle(
           MarketType.Spot,
