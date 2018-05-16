@@ -69,7 +69,7 @@ export const Table = styled.table`
   }
   tbody {
     tr:hover {
-      background-color: ${colors.graphiteBorder};
+      background-color: ${colors.darkHover};
     }
   }
   th,

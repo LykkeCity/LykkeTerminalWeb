@@ -36,7 +36,8 @@ export const colors = {
   violet: '#d070ff',
   mango: '#fb8f01',
   lightWhite: 'rgba(255, 255, 255, 0.4)',
-  snowWhite: '#fff'
+  snowWhite: '#fff',
+  darkHover: '#2f2f2f'
 };
 
 export const fonts = {
