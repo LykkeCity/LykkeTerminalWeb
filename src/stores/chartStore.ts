@@ -146,7 +146,7 @@ class ChartStore extends BaseStore {
         instrument!,
         new PriceApi(this),
         this.getWs(),
-        this.setSubscription
+        this.subscribeToCandlesWithResolutions
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
@@ -212,7 +212,8 @@ class ChartStore extends BaseStore {
     return settings;
   };
 
-  setSubscription = (s: ISubscription) => this.subscriptions.add(s);
+  subscribeToCandlesWithResolutions = (s: ISubscription) =>
+    this.subscriptions.add(s);
 
   unsubscribeFromCandle = async () => {
     const subscriptions = Array.from(this.subscriptions).map(s => {
