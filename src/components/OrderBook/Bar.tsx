@@ -28,11 +28,11 @@ export default ({
     <StyledGrouping>
       Grouping:{' '}
       <button onClick={onPrevSpan}>
-        <Icon name="minus" />
+        <Icon name={'minus'} />
       </button>
       <div>{format(span, priceAccuracy)}</div>
       <button onClick={onNextSpan}>
-        <Icon name="plus" />
+        <Icon name={'plus'} />
       </button>
     </StyledGrouping>
     <VBar />

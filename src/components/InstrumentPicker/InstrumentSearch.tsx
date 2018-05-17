@@ -19,7 +19,7 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
   change
 }) => (
   <Box className={className}>
-    <Icon color={colors.coolGrey} name={`search`} />
+    <Icon name={'search'} />
     <input
       value={inputValue}
       type="search"

@@ -11,7 +11,7 @@ import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {minOrMaxFromList} from '../../utils/math';
 import {HBar, VBar} from '../Bar';
 import ClickOutside from '../ClickOutside/ClickOutside';
-import {FAIcon} from '../Icon/Icon';
+import {Icon} from '../Icon';
 import {LoaderProps} from '../Loader/withLoader';
 import {MyOrders, OrderBookItem} from './';
 import OrderBookSwitch from './OrderBookSwitch';
@@ -176,7 +176,7 @@ class OrderBook extends React.Component<OrderBookProps> {
           <StyledGrouping>
             Grouping:{' '}
             <button onClick={onPrevSpan}>
-              <FAIcon name="minus" />
+              <Icon name={'minus'} />
             </button>
             <div>
               {span.toLocaleString(undefined, {
@@ -184,7 +184,7 @@ class OrderBook extends React.Component<OrderBookProps> {
               })}
             </div>
             <button onClick={onNextSpan}>
-              <FAIcon name="plus" />
+              <Icon name={'plus'} />
             </button>
           </StyledGrouping>
           <VBar />
