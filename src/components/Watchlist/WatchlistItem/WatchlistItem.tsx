@@ -14,7 +14,7 @@ const WatchlistItem: React.SFC<WatchlistItemProps> = ({
   return (
     <tr style={{color}} key={id}>
       <td>
-        <Icon color={color} name={`arrow-${side}`} />&nbsp;{name}
+        <Icon name={`arrow-${side}`} />&nbsp;{name}
       </td>
       <td>{bid.toFixed(2)}</td>
       <td>{ask.toFixed(2)}</td>

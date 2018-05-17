@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {FAIcon} from '../Icon/Icon';
+import {Icon} from '../Icon';
 import {Figure, FigureHint, FigureValue} from '../OrderBook/styles';
 import ChartWrapper from './Chart/index';
 import {AbsoluteCentered, Bar, Button, FillHeight} from './styles';
@@ -24,14 +24,14 @@ class DepthChart extends React.Component<DepthChartProps> {
         <AbsoluteCentered>
           <Bar>
             <Button onClick={onPrevSpan}>
-              <FAIcon name="minus" />
+              <Icon name={'minus'} />
             </Button>
             <Figure>
               <FigureValue>{format(mid, quoteAccuracy)}</FigureValue>
               <FigureHint>Mid price</FigureHint>
             </Figure>
             <Button onClick={onNextSpan}>
-              <FAIcon name="plus" />
+              <Icon name={'plus'} />
             </Button>
           </Bar>
         </AbsoluteCentered>

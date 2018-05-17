@@ -77,10 +77,10 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>
-          <Icon name="pencil" />
+          <Icon name={'pencil'} />
         </span>
         <span style={{marginLeft: '0.75rem'}} onClick={handleCancelOrder}>
-          <Icon name="cross" />
+          <Icon name={'cross'} />
         </span>
       </Cell>
     </tr>
