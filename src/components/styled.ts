@@ -1,4 +1,4 @@
-import {lighten, rem, rgb, darken} from 'polished';
+import {darken, lighten, rem, rgb} from 'polished';
 import * as styledComponents from 'styled-components';
 import {ThemedStyledComponentsModule} from 'styled-components';
 import {Side} from '../models/index';

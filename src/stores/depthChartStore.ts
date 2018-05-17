@@ -1,5 +1,6 @@
 import {action, computed, observable} from 'mobx';
 import {reverse} from 'rambda';
+import chart from '../components/DepthChart/Chart/chartConstants';
 import {Order, TradeModel} from '../models';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
@@ -11,6 +12,7 @@ class DepthChartStore extends BaseStore {
   @observable spanMultiplierIdx = 3;
   @observable width: number = 1024;
   @observable height: number = 512;
+  @observable labelsWidth: number = chart.labelsWidth;
 
   @computed
   get span() {
@@ -130,6 +132,11 @@ class DepthChartStore extends BaseStore {
   @action
   setHeight = (height: number) => {
     this.height = height;
+  };
+
+  @action
+  setLabelsWidth = (width: number) => {
+    this.labelsWidth = width > chart.labelsWidth ? width : chart.labelsWidth;
   };
 
   @computed
