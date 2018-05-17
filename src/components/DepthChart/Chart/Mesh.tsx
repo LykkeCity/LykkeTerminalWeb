@@ -3,6 +3,7 @@ import {Line, Text} from 'react-konva';
 import {Order} from '../../../models';
 
 import chart from './chartConstants';
+import {measureText} from './chartHelpers';
 
 interface MeshProps {
   asks: Order[];
@@ -13,6 +14,7 @@ interface MeshProps {
   quoteAccuracy: number;
   baseAccuracy: number;
   priceAccuracy: number;
+  setLabelsWidth: (width: number) => {};
 }
 
 class Mesh extends React.Component<MeshProps> {
@@ -185,11 +187,22 @@ class Mesh extends React.Component<MeshProps> {
     }
   };
 
+  setHorizontalLabelsBarWidth = (longestLabel: string) => {
+    this.props.setLabelsWidth(
+      measureText(
+        longestLabel,
+        chart.mesh.horizontalFontSize,
+        chart.mesh.fontFamily
+      ) + 20
+    );
+  };
+
   drawHorizontalLabels = () => {
     const stepHorizontal = this.height / chart.mesh.horizontalLinesAmount;
     const startHorizontal = stepHorizontal / 2;
     const labels = this.generateHorizontalLabels();
     if (labels.length > 0) {
+      this.setHorizontalLabelsBarWidth(labels[0]);
       for (
         let startY = startHorizontal, index = 0;
         startY < this.height;

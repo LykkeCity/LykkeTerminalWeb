@@ -20,7 +20,15 @@ const ConnectedChartWrapper: any = connect(
 
 const ConnectedMesh = connect(
   ({
-    depthChartStore: {asks, bids, mid, height, width},
+    depthChartStore: {
+      asks,
+      bids,
+      mid,
+      height,
+      width,
+      setLabelsWidth,
+      labelsWidth
+    },
     uiStore: {selectedInstrument}
   }) => {
     return {
@@ -28,12 +36,13 @@ const ConnectedMesh = connect(
       bids,
       mid: mid(),
       height: height - chart.labelsHeight,
-      width: width - chart.labelsWidth,
+      width: width - labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
       quoteAsset: selectedInstrument!.quoteAsset.name,
       quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
       baseAccuracy: selectedInstrument!.baseAsset.accuracy,
-      priceAccuracy: selectedInstrument!.accuracy
+      priceAccuracy: selectedInstrument!.accuracy,
+      setLabelsWidth
     };
   },
   Mesh
@@ -41,7 +50,7 @@ const ConnectedMesh = connect(
 
 const ConnectedChart = connect(
   ({
-    depthChartStore: {asks, bids, mid, height, width},
+    depthChartStore: {asks, bids, mid, height, width, labelsWidth},
     uiStore: {selectedInstrument}
   }) => {
     return {
@@ -49,7 +58,7 @@ const ConnectedChart = connect(
       bids,
       mid: mid(),
       height: height - chart.labelsHeight,
-      width: width - chart.labelsWidth,
+      width: width - labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
       quoteAsset: selectedInstrument!.quoteAsset.name,
       quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
@@ -61,10 +70,13 @@ const ConnectedChart = connect(
 );
 
 const ConnectedPointer = connect(
-  ({depthChartStore: {height, width}, uiStore: {selectedInstrument}}) => {
+  ({
+    depthChartStore: {height, width, labelsWidth},
+    uiStore: {selectedInstrument}
+  }) => {
     return {
       height: height - chart.labelsHeight,
-      width: width - chart.labelsWidth,
+      width: width - labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
       quoteAsset: selectedInstrument!.quoteAsset.name,
       quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
