@@ -1,4 +1,4 @@
-import {lighten, rem, rgb} from 'polished';
+import {lighten, rem, rgb, darken} from 'polished';
 import * as styledComponents from 'styled-components';
 import {ThemedStyledComponentsModule} from 'styled-components';
 import {Side} from '../models/index';
@@ -37,6 +37,20 @@ export const colors = {
   mango: '#fb8f01',
   lightWhite: 'rgba(255, 255, 255, 0.4)',
   snowWhite: '#fff'
+};
+
+export const buttonBackgrounds = {
+  normal: rgb(39, 39, 39),
+  hovered: darken(0.1, rgb(39, 39, 39)),
+  pressed: darken(0.2, rgb(39, 39, 39)),
+  disabled: lighten(0.05, rgb(39, 39, 39))
+};
+
+export const buttonColors = {
+  normal: colors.white,
+  hovered: lighten(0.1, colors.white),
+  pressed: lighten(0.2, colors.white),
+  disabled: darken(0.3, colors.white)
 };
 
 export const fonts = {
