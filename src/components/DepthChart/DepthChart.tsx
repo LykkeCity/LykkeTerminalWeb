@@ -8,8 +8,10 @@ interface DepthChartProps {
   mid: number;
   quoteAccuracy: number;
   format: (num: number, accuracy: number) => string;
-  onNextSpan: () => void;
-  onPrevSpan: () => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
+  isMaxZoom: boolean;
+  isMinZoom: boolean;
 }
 
 class DepthChart extends React.Component<DepthChartProps> {
@@ -18,19 +20,27 @@ class DepthChart extends React.Component<DepthChartProps> {
   }
 
   render() {
-    const {mid, quoteAccuracy, format, onNextSpan, onPrevSpan} = this.props;
+    const {
+      mid,
+      quoteAccuracy,
+      format,
+      zoomIn,
+      zoomOut,
+      isMaxZoom,
+      isMinZoom
+    } = this.props;
     return (
       <FillHeight>
         <AbsoluteCentered>
           <Bar>
-            <Button onClick={onPrevSpan}>
+            <Button onClick={zoomOut} disabled={isMinZoom}>
               <FAIcon name="minus" />
             </Button>
             <Figure>
               <FigureValue>{format(mid, quoteAccuracy)}</FigureValue>
               <FigureHint>Mid price</FigureHint>
             </Figure>
-            <Button onClick={onNextSpan}>
+            <Button onClick={zoomIn} disabled={isMaxZoom}>
               <FAIcon name="plus" />
             </Button>
           </Bar>

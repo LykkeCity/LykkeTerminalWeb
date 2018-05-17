@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors, fonts} from '../styled';
+import styled, {buttonBackgrounds, buttonColors, fonts} from '../styled';
 import chartConstants from './Chart/chartConstants';
 
 export const FillHeight = styled.div`
@@ -29,10 +29,12 @@ export const Bar = styled.div`
 `;
 
 export const Button = styled.button`
-  background: rgb(39, 39, 39);
+  background: ${(props: any) =>
+    !props.disabled ? buttonBackgrounds.normal : buttonBackgrounds.disabled};
   border: none;
   border-radius: 4px;
-  color: ${colors.white};
+  color: ${(props: any) =>
+    !props.disabled ? buttonColors.normal : buttonColors.disabled};
   font-size: ${rem(fonts.small)};
   font-weight: normal;
   opacity: 0.88;
@@ -42,6 +44,26 @@ export const Button = styled.button`
   margin: 0 1rem;
   height: 24px;
   width: 24px;
+
+  &:hover {
+    background: ${(props: any) =>
+      !props.disabled ? buttonBackgrounds.hovered : buttonBackgrounds.disabled};
+  }
+
+  &:active {
+    background: ${(props: any) =>
+      !props.disabled ? buttonBackgrounds.pressed : buttonBackgrounds.disabled};
+  }
+
+  &:hover svg {
+    color: ${(props: any) =>
+      !props.disabled ? buttonColors.hovered : buttonColors.disabled};
+  }
+
+  &:active svg {
+    color: ${(props: any) =>
+      !props.disabled ? buttonColors.pressed : buttonColors.disabled};
+  }
 `;
 
 export const Price = styled.div``;

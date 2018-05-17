@@ -132,6 +132,19 @@ class DepthChartStore extends BaseStore {
     this.height = height;
   };
 
+  @computed
+  get isMaxZoom(): boolean {
+    return (
+      this.multiplers[this.spanMultiplierIdx] ===
+      this.multiplers[this.multiplers.length - 1]
+    );
+  }
+
+  @computed
+  get isMinZoom(): boolean {
+    return this.multiplers[this.spanMultiplierIdx] === this.multiplers[1];
+  }
+
   reset = () => {
     this.spanMultiplierIdx = 0;
   };
