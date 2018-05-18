@@ -92,6 +92,10 @@ class ChartStore extends BaseStore {
         this.widget.subscribe('onAutoSaveNeeded', () => {
           this.widget.save(this.save);
         });
+
+        this.widget.subscribe('onIntervalChange', () => {
+          setTimeout(() => this.widget.save(this.save), 1000);
+        });
       }
 
       chartContainerExists.style.display = 'block';
