@@ -6,7 +6,6 @@ import {levels} from '../models';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
-import {capitalize} from '../utils';
 import {BaseStore, RootStore} from './index';
 import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
@@ -28,34 +27,12 @@ enum Errors {
 class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
-  private updateTypeByOrderBook: any;
-  private updateSideByOrderBook: any;
 
   constructor(store: RootStore, private readonly api: OrderApi) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
   }
-
-  updateSideFn = (fn: any) => {
-    this.updateSideByOrderBook = fn;
-  };
-
-  updateTypeFn = (fn: any) => {
-    this.updateTypeByOrderBook = fn;
-  };
-
-  updateSide = (isSell: boolean) => {
-    if (this.updateSideByOrderBook) {
-      this.updateSideByOrderBook(isSell);
-    }
-  };
-
-  updateType = (isLimit: boolean) => {
-    if (this.updateTypeByOrderBook) {
-      this.updateTypeByOrderBook(isLimit);
-    }
-  };
 
   placeOrder = async (orderType: string, body: any) => {
     switch (orderType) {
@@ -73,7 +50,7 @@ class OrderStore extends BaseStore {
               const addedOrder = this.rootStore.orderListStore.addOrder({
                 Id: orderId,
                 CreateDateTime: new Date(),
-                OrderAction: capitalize(body.OrderAction),
+                OrderAction: body.OrderAction,
                 Volume: body.Volume,
                 RemainingVolume: body.Volume,
                 Price: body.Price,

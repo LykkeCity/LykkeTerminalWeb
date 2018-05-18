@@ -187,7 +187,7 @@ class OrderBookStore extends BaseStore {
   unsubscribe = () => {
     const promises = Array.from(this.subscriptions).map(s => {
       // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe;
+      this.getWs() && this.getWs().unsubscribe(s);
     });
     Promise.all(promises).then(() => {
       if (this.subscriptions.size > 0) {

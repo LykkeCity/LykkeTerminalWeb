@@ -52,6 +52,17 @@ class UiStore extends BaseStore {
           subscribe(this.getWs());
 
           const {
+            setQuantityAccuracy,
+            setPriceAccuracy,
+            setPriceValueWithFixed,
+            setQuantityValueWithFixed
+          } = this.rootStore.uiOrderStore;
+          setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
+          setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
+          setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
+          setQuantityValueWithFixed(0);
+
+          const {
             resetTrades,
             fetchTrades,
             resetPublicTrades,
@@ -84,17 +95,6 @@ class UiStore extends BaseStore {
           subscribeToDailyCandle();
 
           this.toggleInstrumentPerformanceData(true);
-
-          const {
-            setQuantityAccuracy,
-            setPriceAccuracy,
-            setPriceValue,
-            setQuantityValue
-          } = this.rootStore.uiOrderStore;
-          setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
-          setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
-          setPriceValue(this.rootStore.orderBookStore.mid());
-          setQuantityValue(0);
         }
       }
     );

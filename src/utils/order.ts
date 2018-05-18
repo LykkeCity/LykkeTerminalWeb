@@ -3,8 +3,11 @@ import {getPercentsOf, precisionFloor} from './math';
 
 export const getPercentOfValueForLimit = (
   getPriceValue: () => string,
-  getQuantityAccuracy: () => number
-) => (percents: number, value: number, side: Side) => {
+  getQuantityAccuracy: () => number,
+  percents: number,
+  value: number,
+  side: Side
+) => {
   if (side === Side.Sell) {
     return getPercentsOf(percents, value, getQuantityAccuracy());
   }
@@ -31,38 +34,25 @@ export const isAmountExceedLimitBalance = (
       quoteAssetBalance;
 
 export const setActivePercentage = (percentage: any[], index?: number) => {
-  let value: number = 0;
+  let percents: number = 0;
 
   if (index === undefined) {
-    value = 100;
+    percents = 100;
   }
 
   percentage.forEach((item: any, i: number) => {
     if (index === i) {
       item.isActive = true;
-      value = item.percent;
+      percents = item.percent;
     } else {
       item.isActive = false;
     }
   });
 
   return {
-    value,
+    percents,
     updatedPercentage: percentage
   };
-};
-
-export const updatePercentageState = (percentage: any[], index: number) => {
-  let value: number = 0;
-  percentage.forEach((item: any, i: number) => {
-    if (index === i) {
-      item.isActive = true;
-      value = item.percent;
-    } else {
-      item.isActive = false;
-    }
-  });
-  return value;
 };
 
 export const resetPercentage = (percentage: any[]) => {

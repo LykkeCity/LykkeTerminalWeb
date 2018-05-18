@@ -1,5 +1,7 @@
 import {computed, observable} from 'mobx';
+import {curry} from 'rambda';
 import {OrderType} from '../models';
+import ArrowDirection from '../models/arrowDirection';
 import Side from '../models/side';
 import {onArrowClick, onValueChange} from '../utils/inputNumber';
 import {getPercentsOf, precisionFloor} from '../utils/math';
@@ -30,11 +32,15 @@ class UiOrderStore extends BaseStore {
     return this.side === Side.Sell;
   }
 
-  onPriceChange: any;
-  onQuantityChange: any;
-  onPriceArrowClick: any;
-  onQuantityArrowClick: any;
-  onPercentChangeForLimit: any;
+  onPriceChange: (price: string) => void;
+  onQuantityChange: (price: string) => void;
+  onPriceArrowClick: (operation: ArrowDirection) => void;
+  onQuantityArrowClick: (operation: ArrowDirection) => void;
+  onPercentChangeForLimit: (
+    percents: number,
+    value: number,
+    side: Side
+  ) => number;
 
   @observable private priceValue: string = '0';
   @observable private quantityValue: string = '0';
@@ -46,39 +52,38 @@ class UiOrderStore extends BaseStore {
   constructor(store: RootStore) {
     super(store);
 
-    this.onPriceChange = onValueChange(
-      this.setPriceValueByHand,
+    this.onPriceChange = curry(onValueChange)(
+      this.setPriceValue,
       this.getPriceAccuracy
     );
-    this.onQuantityChange = onValueChange(
-      this.setQuantityValueByHand,
+    this.onQuantityChange = curry(onValueChange)(
+      this.setQuantityValue,
       this.getQuantityAccuracy
     );
-    this.onPriceArrowClick = onArrowClick(
+    this.onPriceArrowClick = curry(onArrowClick)(
       this.getPriceValue,
       this.getPriceAccuracy,
-      this.setPriceValue
+      this.setPriceValueWithFixed
     );
-    this.onQuantityArrowClick = onArrowClick(
+    this.onQuantityArrowClick = curry(onArrowClick)(
       this.getQuantityValue,
       this.getQuantityAccuracy,
-      this.setQuantityValue
+      this.setQuantityValueWithFixed
     );
 
-    this.onPercentChangeForLimit = getPercentOfValueForLimit(
+    this.onPercentChangeForLimit = curry(getPercentOfValueForLimit)(
       this.getPriceValue,
       this.getQuantityAccuracy
     );
   }
 
-  setPriceValue = (price: number) =>
+  setPriceValueWithFixed = (price: number) =>
     (this.priceValue = price.toFixed(this.priceAccuracy));
-  setQuantityValue = (quantity: number) =>
+  setQuantityValueWithFixed = (quantity: number) =>
     (this.quantityValue = quantity.toFixed(this.quantityAccuracy));
 
-  setPriceValueByHand = (price: string) => (this.priceValue = price);
-  setQuantityValueByHand = (quantity: string) =>
-    (this.quantityValue = quantity);
+  setPriceValue = (price: string) => (this.priceValue = price);
+  setQuantityValue = (quantity: string) => (this.quantityValue = quantity);
 
   getPriceValue = () => this.priceValue;
   getQuantityValue = () => this.quantityValue;
@@ -91,6 +96,20 @@ class UiOrderStore extends BaseStore {
 
   setMarket = (type: OrderType) => (this.market = type);
   setSide = (side: Side) => (this.side = side);
+
+  handlePriceClickFromOrderBook = (price: number, side: Side) => {
+    this.setPriceValueWithFixed(price);
+    this.setQuantityValueWithFixed(0);
+    this.setMarket(OrderType.Limit);
+    this.setSide(side);
+  };
+
+  handleVolumeClickFormOrderBook = (volume: number, side: Side) => {
+    const orderSide = side === Side.Sell ? Side.Buy : Side.Sell;
+    this.setQuantityValue(`${volume}`);
+    this.setMarket(OrderType.Market);
+    this.setSide(orderSide);
+  };
 
   onPercentChangeForMarket = (
     percents: number,
@@ -119,11 +138,11 @@ class UiOrderStore extends BaseStore {
 
     const isLimitActive = this.market === OrderType.Limit;
     if (isLimitActive) {
-      this.setQuantityValue(
+      this.setQuantityValueWithFixed(
         this.onPercentChangeForLimit(percents, balance, this.side)
       );
     } else {
-      this.setQuantityValue(
+      this.setQuantityValueWithFixed(
         this.onPercentChangeForMarket(
           percents,
           balance,
@@ -186,8 +205,8 @@ class UiOrderStore extends BaseStore {
   };
 
   resetOrder = () => {
-    this.setPriceValue(this.rootStore.orderBookStore.mid());
-    this.setQuantityValue(0);
+    this.setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
+    this.setQuantityValueWithFixed(0);
   };
 
   // tslint:disable-next-line:no-empty

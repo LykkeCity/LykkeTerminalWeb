@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {keys} from '../../models';
-import ModalModel from '../../models/modalModel';
 import {StorageUtils} from '../../utils/index';
 import CustomCheckbox from '../CustomCheckbox/CustomCheckbox';
 import ModalHeader from './ModalHeader/ModalHeader';
@@ -11,9 +10,12 @@ import {
   ModalContent,
   ModalReminder
 } from './styles';
+import withModal from './withModal';
 
 interface ConfirmModalProps {
-  modal: ModalModel;
+  onApply: () => void;
+  onClose: () => void;
+  message: string;
 }
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
@@ -42,25 +44,25 @@ class ConfirmModal extends React.Component<
     });
   };
 
-  handleApply = (modal: ModalModel) => () => {
+  handleApply = () => {
     confirmStorage.set(!this.state.isReminderChecked);
 
-    modal.applyAction();
-    modal.close();
+    this.props.onApply();
+    this.props.onClose();
   };
 
-  handleCancel = (modal: ModalModel) => () => {
-    modal.cancelAction();
-    modal.close();
+  handleCancel = () => {
+    this.props.onClose();
   };
 
   render() {
-    const {modal} = this.props;
     return (
       <div>
         <Modal>
-          <ModalHeader title={'Confirm'} onClick={this.handleCancel(modal)} />
-          <ModalContent>Do you really want to {modal.message}?</ModalContent>
+          <ModalHeader title={'Confirm'} onClick={this.handleCancel} />
+          <ModalContent>
+            Do you really want to {this.props.message}?
+          </ModalContent>
           <ModalReminder>
             <CustomCheckbox
               change={this.handleChange()}
@@ -69,10 +71,10 @@ class ConfirmModal extends React.Component<
             />
           </ModalReminder>
           <Flex justify={'space-between'} style={{marginTop: '24px'}}>
-            <ApplyButton type="button" onClick={this.handleApply(modal)}>
+            <ApplyButton type="button" onClick={this.handleApply}>
               Yes
             </ApplyButton>
-            <CancelButton type="button" onClick={this.handleCancel(modal)}>
+            <CancelButton type="button" onClick={this.handleCancel}>
               Cancel
             </CancelButton>
           </Flex>
@@ -82,4 +84,4 @@ class ConfirmModal extends React.Component<
   }
 }
 
-export default ConfirmModal;
+export default withModal<ConfirmModalProps>(ConfirmModal);

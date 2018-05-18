@@ -3,12 +3,12 @@ import {Percentage} from '../../constants/ordersPercentage';
 import {keys} from '../../models';
 import {OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
-import Types from '../../models/modals';
 import Side from '../../models/side';
 import {StorageUtils} from '../../utils/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../../utils/math';
 import {resetPercentage, setActivePercentage} from '../../utils/order';
+import ConfirmModal from '../Modal/ConfirmModal';
 import ActionChoiceButton from './ActionChoiceButton';
 import MarketChoiceButton from './MarketChoiceButton';
 import OrderLimit from './OrderLimit';
@@ -27,10 +27,10 @@ const LIMIT = OrderType.Limit;
 interface OrderState {
   pendingOrder: boolean;
   percents: any[];
+  isConfirmModalOpen: boolean;
 }
 
 interface OrderProps {
-  addModal: any;
   ask: number;
   bid: number;
   accuracy: {
@@ -43,17 +43,10 @@ interface OrderProps {
   placeOrder: any;
   baseAssetName: string;
   quoteAssetName: string;
-  getAssetById: any;
-  onValueChange: any;
-  orderState: any;
-  updateSideFn: any;
-  updateTypeFn: any;
   baseAssetBalance: any;
   quoteAssetBalance: any;
-  convertPartiallyBalance: any;
   mid: number;
   handlePercentageChange: any;
-  updatePercentageState: any;
   baseAssetId: string;
   quoteAssetId: string;
   isLimitInvalid: (
@@ -77,7 +70,7 @@ interface OrderProps {
   setSide: (side: Side) => void;
   currentMarket: OrderType;
   isCurrentSideSell: boolean;
-  resetOrder: () => {};
+  resetOrder: () => void;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -85,15 +78,12 @@ class Order extends React.Component<OrderProps, OrderState> {
     super(props);
     this.state = {
       pendingOrder: false,
-      percents: percentage
+      percents: percentage,
+      isConfirmModalOpen: false
     };
   }
 
-  componentDidMount() {
-    // this.handleChangeInstrument(this.props.instrument); // TODO check session logic
-  }
-
-  handleActionClick = (side: Side) => () => {
+  handleSideClick = (side: Side) => () => {
     resetPercentage(percentage);
     this.props.setSide(side);
     this.setState({
@@ -101,7 +91,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
-  handleActionChoiceClick = (market: OrderType) => () => {
+  handleMarketClick = (market: OrderType) => () => {
     this.reset();
     this.props.setMarket(market);
     this.setState({
@@ -140,52 +130,33 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   cancelOrder = () => {
+    this.setState({
+      isConfirmModalOpen: false
+    });
     this.disableButton(false);
   };
 
-  handleButtonClick = (
-    action: string,
-    baseAssetName: string,
-    quoteAssetName: string
-  ) => {
+  handleButtonClick = () => {
     this.disableButton(true);
-    const {quantityValue, priceValue} = this.props;
-    const displayedPrice = formattedNumber(
-      +parseFloat(priceValue),
-      this.props.accuracy.priceAccuracy
-    );
-
-    const displayedQuantity = formattedNumber(
-      +parseFloat(quantityValue),
-      this.props.accuracy.baseAssetAccuracy
-    );
+    const {
+      quantityValue,
+      priceValue,
+      isCurrentSideSell,
+      baseAssetId
+    } = this.props;
 
     const isConfirm = confirmStorage.get() as string;
     if (!JSON.parse(isConfirm)) {
       return this.applyOrder(
-        action,
+        isCurrentSideSell ? Side.Sell : Side.Buy,
         quantityValue,
-        this.props.baseAssetId,
+        baseAssetId,
         priceValue
-      ); // TODO baseAssetId should be passed from component for inverted case
+      );
     }
-    const messageSuffix =
-      this.props.currentMarket === MARKET
-        ? 'at the market price'
-        : `at the price of ${displayedPrice} ${quoteAssetName}`;
-    const message = `${action} ${displayedQuantity} ${baseAssetName} ${messageSuffix}`;
-    this.props.addModal(
-      message,
-      () =>
-        this.applyOrder(
-          action,
-          quantityValue,
-          this.props.baseAssetId,
-          priceValue
-        ), // TODO baseAssetId should be passed from component for inverted case
-      this.cancelOrder,
-      Types.Confirm
-    );
+    this.setState({
+      isConfirmModalOpen: true
+    });
   };
 
   updatePercentageState = (field: string) => {
@@ -201,7 +172,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState(tempObj);
   };
 
-  handlePercentageChange = (index?: number) => async (isInverted?: boolean) => {
+  handlePercentageChange = (index?: number) => () => {
     const {
       baseAssetBalance,
       quoteAssetBalance,
@@ -215,18 +186,49 @@ class Order extends React.Component<OrderProps, OrderState> {
       return;
     }
 
-    const {updatedPercentage, value} = setActivePercentage(percentage, index);
+    const {updatedPercentage, percents} = setActivePercentage(
+      percentage,
+      index
+    );
 
     this.props.handlePercentageChange({
       balance,
       baseAssetId,
       quoteAssetId,
-      percents: value
+      percents
     });
 
     this.setState({
       percents: updatedPercentage
     });
+  };
+
+  getConfirmMessage = () => {
+    const action = this.props.isCurrentSideSell ? Side.Sell : Side.Buy;
+    const {
+      baseAssetName,
+      quoteAssetName,
+      currentMarket,
+      priceValue,
+      quantityValue,
+      accuracy: {priceAccuracy, baseAssetAccuracy}
+    } = this.props;
+
+    const displayedPrice = formattedNumber(
+      +parseFloat(priceValue),
+      priceAccuracy
+    );
+
+    const displayedQuantity = formattedNumber(
+      +parseFloat(quantityValue),
+      baseAssetAccuracy
+    );
+
+    const messageSuffix =
+      currentMarket === MARKET
+        ? 'at the market price'
+        : `at the price of ${displayedPrice} ${quoteAssetName}`;
+    return `${action.toLowerCase()} ${displayedQuantity} ${baseAssetName} ${messageSuffix}`;
   };
 
   reset = () => {
@@ -256,7 +258,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       priceValue,
       quantityValue,
       currentMarket,
-      isCurrentSideSell
+      isCurrentSideSell,
+      onPriceChange,
+      onQuantityChange,
+      onPriceArrowClick,
+      onQuantityArrowClick
     } = this.props;
     const {percents} = this.state;
     const currentPrice =
@@ -294,24 +300,24 @@ class Order extends React.Component<OrderProps, OrderState> {
           <MarketChoiceButton
             title={LIMIT}
             isActive={currentMarket === LIMIT}
-            click={this.handleActionChoiceClick(LIMIT)}
+            click={this.handleMarketClick(LIMIT)}
           />
           <MarketChoiceButton
             title={MARKET}
             isActive={currentMarket === MARKET}
-            click={this.handleActionChoiceClick(MARKET)}
+            click={this.handleMarketClick(MARKET)}
           />
         </Markets>
 
         <Actions>
           <ActionChoiceButton
             title={Side.Sell}
-            click={this.handleActionClick(Side.Sell)}
+            click={this.handleSideClick(Side.Sell)}
             isActive={isCurrentSideSell}
           />
           <ActionChoiceButton
             title={Side.Buy}
-            click={this.handleActionClick(Side.Buy)}
+            click={this.handleSideClick(Side.Buy)}
             isActive={!isCurrentSideSell}
           />
         </Actions>
@@ -320,14 +326,14 @@ class Order extends React.Component<OrderProps, OrderState> {
           <OrderLimit
             action={isCurrentSideSell ? Side.Sell : Side.Buy}
             onSubmit={this.handleButtonClick}
-            quantity={this.props.quantityValue}
-            price={this.props.priceValue}
+            quantity={quantityValue}
+            price={priceValue}
             quantityAccuracy={quantityAccuracy}
             priceAccuracy={priceAccuracy}
-            onPriceChange={this.props.onPriceChange}
-            onQuantityChange={this.props.onQuantityChange}
-            onPriceArrowClick={this.props.onPriceArrowClick}
-            onQuantityArrowClick={this.props.onQuantityArrowClick}
+            onPriceChange={onPriceChange}
+            onQuantityChange={onQuantityChange}
+            onPriceArrowClick={onPriceArrowClick}
+            onQuantityArrowClick={onQuantityArrowClick}
             baseAssetAccuracy={baseAssetAccuracy}
             percents={percents}
             onHandlePercentageChange={this.handlePercentageChange}
@@ -353,12 +359,12 @@ class Order extends React.Component<OrderProps, OrderState> {
           <OrderMarket
             quantityAccuracy={quantityAccuracy}
             action={isCurrentSideSell ? Side.Sell : Side.Buy}
-            quantity={this.props.quantityValue}
+            quantity={quantityValue}
             baseAssetName={baseAssetName}
             quoteAssetName={quoteAssetName}
             percents={percents}
             onHandlePercentageChange={this.handlePercentageChange}
-            onQuantityChange={this.props.onQuantityChange}
+            onQuantityChange={onQuantityChange}
             onReset={this.reset}
             isDisable={isMarketInvalid}
             onSubmit={this.handleButtonClick}
@@ -368,8 +374,23 @@ class Order extends React.Component<OrderProps, OrderState> {
             onResetPercentage={() => resetPercentage(percentage)}
             priceAccuracy={priceAccuracy}
             balanceAccuracy={balanceAccuracy}
-            onQuantityArrowClick={this.props.onQuantityArrowClick}
+            onQuantityArrowClick={onQuantityArrowClick}
             updatePercentageState={this.updatePercentageState}
+          />
+        )}
+        {this.state.isConfirmModalOpen && (
+          <ConfirmModal
+            // tslint:disable-next-line:jsx-no-lambda
+            onApply={() =>
+              this.applyOrder(
+                isCurrentSideSell ? Side.Sell : Side.Buy,
+                quantityValue,
+                baseAssetId,
+                priceValue
+              )
+            }
+            onClose={this.cancelOrder}
+            message={this.getConfirmMessage()}
           />
         )}
       </React.Fragment>

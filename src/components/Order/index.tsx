@@ -28,9 +28,8 @@ export interface OrderBasicFormProps {
 const ConnectedOrder = connect(
   ({
     balanceListStore: {tradingWalletBalances: getBalance},
-    modalStore: {addModal},
     orderBookStore: {bestAsk, bestBid, mid},
-    orderStore: {placeOrder, updateSideFn, updateTypeFn},
+    orderStore: {placeOrder},
     uiStore: {selectedInstrument: instrument, readOnlyMode},
     referenceStore,
     uiOrderStore: {
@@ -59,7 +58,6 @@ const ConnectedOrder = connect(
       baseAssetAccuracy: pathOr(2, ['baseAsset', 'accuracy'], instrument),
       quoteAssetAccuracy: pathOr(2, ['quoteAsset', 'accuracy'], instrument)
     },
-    addModal,
     ask: bestAsk(),
     baseAssetId: pathOr('', ['baseAsset', 'id'], instrument),
     get baseAssetName() {
@@ -72,15 +70,12 @@ const ConnectedOrder = connect(
     currency: pathOr('', ['id'], instrument),
     isLimitInvalid,
     isMarketInvalid,
-    getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
     mid: mid(),
     onPriceArrowClick,
     onQuantityArrowClick,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
-    updateSideFn,
-    updateTypeFn,
     get baseAssetBalance() {
       const asset = getBalance.find((b: AssetBalanceModel) => {
         const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);

@@ -1,4 +1,4 @@
-import {pathOr} from 'rambda';
+import {curry, pathOr} from 'rambda';
 import * as React from 'react';
 import {Percentage} from '../../constants/ordersPercentage';
 import {AssetBalanceModel, OrderInputs, OrderModel} from '../../models';
@@ -21,21 +21,9 @@ const percentage = Percentage.map((i: any) => {
 });
 
 export interface EditOrderProps {
-  orders: OrderModel[];
   getInstrumentById: any;
-  onValueChange: any;
   editOrder: any;
-  handlePercentageChange: any;
   availableBalances: any;
-  isLimitInvalid: (
-    isSell: boolean,
-    quantityValue: string,
-    priceValue: string,
-    baseAssetBalance: number,
-    quoteAssetBalance: number,
-    priceAccuracy: number,
-    quantityAccuracy: number
-  ) => boolean;
   order: OrderModel;
   onClose: () => void;
 }
@@ -91,29 +79,29 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       quantityValue: order.volume.toFixed(this.accuracy.quantityAccuracy)
     };
 
-    this.handlePriceArrowClick = onArrowClick(
+    this.handlePriceArrowClick = curry(onArrowClick)(
       () => this.state.priceValue,
       () => this.accuracy.priceAccuracy,
-      this.setPriceValue
+      this.setPriceValueWithFixed
     );
 
-    this.handleQuantityArrowClick = onArrowClick(
+    this.handleQuantityArrowClick = curry(onArrowClick)(
       () => this.state.quantityValue,
       () => this.accuracy.quantityAccuracy,
-      this.setQuantityValue
+      this.setQuantityValueWithFixed
     );
 
-    this.handlePriceChange = onValueChange(
-      this.setPriceValueByHand,
+    this.handlePriceChange = curry(onValueChange)(
+      this.setPriceValue,
       () => this.accuracy.priceAccuracy
     );
 
-    this.handleQuantityChange = onValueChange(
-      this.setQuantityValueByHand,
+    this.handleQuantityChange = curry(onValueChange)(
+      this.setQuantityValue,
       () => this.accuracy.quantityAccuracy
     );
 
-    this.handlePercentChangeForLimit = getPercentOfValueForLimit(
+    this.handlePercentChangeForLimit = curry(getPercentOfValueForLimit)(
       () => this.state.priceValue,
       () => this.accuracy.quantityAccuracy
     );
@@ -141,31 +129,34 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.balance = asset.available + reserved;
   }
 
-  setPriceValue = (price: number) => {
+  setPriceValueWithFixed = (price: number) => {
     this.setState({
       priceValue: price.toFixed(this.accuracy.priceAccuracy)
     });
   };
 
-  setQuantityValue = (quantity: number) => {
+  setQuantityValueWithFixed = (quantity: number) => {
     this.setState({
       quantityValue: quantity.toFixed(this.accuracy.quantityAccuracy)
     });
   };
 
-  setPriceValueByHand = (price: string) => this.setState({priceValue: price});
-  setQuantityValueByHand = (quantity: string) =>
+  setPriceValue = (price: string) => this.setState({priceValue: price});
+  setQuantityValue = (quantity: string) =>
     this.setState({quantityValue: quantity});
 
-  handlePercentageChange = (index: number) => async (isInverted?: boolean) => {
+  handlePercentageChange = (index: number) => () => {
     if (!this.balance) {
       return;
     }
 
-    const {updatedPercentage, value} = setActivePercentage(percentage, index);
+    const {updatedPercentage, percents} = setActivePercentage(
+      percentage,
+      index
+    );
 
-    this.setQuantityValue(
-      this.handlePercentChangeForLimit(value, this.balance, this.action)
+    this.setQuantityValueWithFixed(
+      this.handlePercentChangeForLimit(percents, this.balance, this.action)
     );
     this.setState({
       percents: updatedPercentage
@@ -199,11 +190,11 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
 
     this.props
       .editOrder(body, this.props.order.id)
-      .then(this.handleCancel)
+      .then(this.handleClose)
       .catch(() => this.toggleDisableBtn(false));
   };
 
-  handleCancel = () => {
+  handleClose = () => {
     resetPercentage(percentage);
     this.props.onClose();
   };
@@ -241,7 +232,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
 
     return (
       <EditModal isSell={this.action === Side.Sell.toLowerCase()}>
-        <ModalHeader onClick={this.handleCancel}>
+        <ModalHeader onClick={this.handleClose}>
           <EditActionTitle isSell={this.action === Side.Sell.toLowerCase()}>
             {this.action}
           </EditActionTitle>

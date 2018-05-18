@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import ArrowDirection from '../../models/arrowDirection';
 
 const StyledInput = styled.input`
   background-color: transparent;
@@ -73,11 +74,11 @@ const NumberInput: React.SFC<NumberInput> = ({
         onKeyDown={e => {
           switch (e.keyCode) {
             case 38:
-              onArrowClick('up')();
+              onArrowClick(ArrowDirection.Up)();
               e.preventDefault();
               break;
             case 40:
-              onArrowClick('down')();
+              onArrowClick(ArrowDirection.Down)();
               e.preventDefault();
               break;
             default:
@@ -86,8 +87,8 @@ const NumberInput: React.SFC<NumberInput> = ({
         }}
         name={value}
       />
-      <span className="up" onClick={onArrowClick('up')} />
-      <span className="down" onClick={onArrowClick('down')} />
+      <span className="up" onClick={onArrowClick(ArrowDirection.Up)} />
+      <span className="down" onClick={onArrowClick(ArrowDirection.Down)} />
     </StyledInputNumberComponent>
   );
 };

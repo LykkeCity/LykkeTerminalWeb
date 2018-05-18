@@ -11,13 +11,13 @@ import Bar, {BarProps} from './Bar';
 import Figures, {FigureListProps} from './Figures';
 import Header from './Header';
 import {LevelList, LevelListProps} from './LevelList';
-import LevelListItemClickable from './LevelListClickable';
 import LevelListItem from './LevelListItem';
 import MyOrders, {MyOrdersProps} from './MyOrders';
-import OrderBookItem from './OrderBookItem';
 
 const LEVEL_HEIGHT = 30;
 export const LEVELS_COUNT = 50;
+export const LEFT_PADDING = 8;
+export const TOP_PADDING = 10;
 
 const formatWithAccuracy = (
   num: number | string,
@@ -31,8 +31,6 @@ const formatWithAccuracy = (
       ...options
     })) ||
   '--';
-
-const ConnectedOrderBookItem = observer(OrderBookItem);
 
 const ConnectedBar = connect<BarProps>(
   ({
@@ -57,7 +55,8 @@ const ConnectedBar = connect<BarProps>(
 const ConnectedAsks = connect<LevelListProps>(
   ({
     orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType}
+    uiStore: {selectedInstrument, orderbookDisplayType},
+    uiOrderBookStore: {handleAskLevelCellsClick, storeAskLevelCellInfo}
   }) => {
     const levels = concat(asks, bids);
     const vals = map(prop(toLower(orderbookDisplayType)), levels) as number[];
@@ -69,7 +68,9 @@ const ConnectedAsks = connect<LevelListProps>(
       levels: asks,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      normalize
+      normalize,
+      handleOrderBookClick: handleAskLevelCellsClick,
+      storeLevelCellInfo: storeAskLevelCellInfo
     };
   },
   observer(LevelList)
@@ -78,7 +79,8 @@ const ConnectedAsks = connect<LevelListProps>(
 const ConnectedBids = connect<LevelListProps>(
   ({
     orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType}
+    uiStore: {selectedInstrument, orderbookDisplayType},
+    uiOrderBookStore: {handleBidLevelCellsClick, storeBidLevelCellInfo}
   }) => {
     const vals = map(prop(toLower(orderbookDisplayType)), [
       ...asks,
@@ -92,7 +94,9 @@ const ConnectedBids = connect<LevelListProps>(
       levels: bids,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      normalize
+      normalize,
+      handleOrderBookClick: handleBidLevelCellsClick,
+      storeLevelCellInfo: storeBidLevelCellInfo
     };
   },
   observer(LevelList)
@@ -105,37 +109,21 @@ const ConnectedLevelListItem = connect(
   observer(LevelListItem)
 );
 
-const ConnectedLevelListItemClickable = connect(
-  ({
-    orderStore: {updateSide, updateType},
-    uiOrderStore: {setPriceValue, setQuantityValue, setMarket, setSide},
-    uiStore: {selectedInstrument, orderbookDisplayType}
-  }) => ({
-    updateSide,
-    updateType,
-    setPriceValue,
-    setQuantityValue,
-    setMarket,
-    setSide,
-    instrument: selectedInstrument,
-    displayType: toLower(orderbookDisplayType)
-  }),
-  observer(LevelListItemClickable)
-);
-
 const ConnectedFigures = connect<FigureListProps>(
   ({
     orderBookStore: {mid, spreadRelative},
     priceStore: {lastTradePrice},
     authStore: {isAuth},
-    uiStore: {selectedInstrument}
+    uiStore: {selectedInstrument},
+    uiOrderStore: {handlePriceClickFromOrderBook}
   }) => ({
     lastTradePrice,
     mid: mid(),
     isAuth,
     spreadRelative,
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
-    format: formatWithAccuracy
+    format: formatWithAccuracy,
+    handlePriceClickFromOrderBook
   }),
   Figures
 );
@@ -156,8 +144,7 @@ const ConnectedOrderbook = connect(
         <Scrollbars
           style={{
             height: `100%`,
-            width: 'calc(100% + 1rem)',
-            marginLeft: '-0.5rem'
+            width: 'calc(100% + 1rem)'
           }}
           ref={(node: any) => {
             // tslint:disable-next-line:no-unused-expression
@@ -193,8 +180,4 @@ const ConnectedMyOrders = connect<MyOrdersProps>(
 );
 
 export default ConnectedOrderbook;
-export {ConnectedOrderBookItem as OrderBookItem};
-export {ConnectedFigures as Figures};
-export {ConnectedMyOrders as MyOrders};
 export {ConnectedLevelListItem as LevelListItem};
-export {ConnectedLevelListItemClickable as LevelListItemClickable};

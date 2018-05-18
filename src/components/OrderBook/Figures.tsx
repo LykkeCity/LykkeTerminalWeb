@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Side} from '../../models';
 import {
   Figure,
   FigureHint,
@@ -18,6 +19,7 @@ export interface FigureListProps {
   mid: number;
   spreadRelative: number;
   format: (num: number, accuracy: number, opts?: object) => string;
+  handlePriceClickFromOrderBook: (price: number, side: Side) => void;
 }
 
 export default ({
@@ -26,15 +28,26 @@ export default ({
   priceAccuracy,
   mid,
   spreadRelative,
-  format
+  format,
+  handlePriceClickFromOrderBook
 }: FigureListProps) => (
   <FigureList>
     <Figure isAuth={isAuth}>
-      <LastPriceValue>{format(lastTradePrice, priceAccuracy)}</LastPriceValue>
+      <LastPriceValue
+        // tslint:disable-next-line:jsx-no-lambda
+        onClick={() => handlePriceClickFromOrderBook(lastTradePrice, Side.Buy)}
+      >
+        {format(lastTradePrice, priceAccuracy)}
+      </LastPriceValue>
       <FigureHint>Last price</FigureHint>
     </Figure>
     <MidPrice isAuth={isAuth}>
-      <FigureValue>{format(mid, priceAccuracy)}</FigureValue>
+      <FigureValue
+        // tslint:disable-next-line:jsx-no-lambda
+        onClick={() => handlePriceClickFromOrderBook(mid, Side.Buy)}
+      >
+        {format(mid, priceAccuracy)}
+      </FigureValue>
       <FigureHint>Mid price</FigureHint>
     </MidPrice>
     <Spread>

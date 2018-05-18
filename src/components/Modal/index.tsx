@@ -6,22 +6,12 @@ import withModal from './withModal';
 const ConnectedEditOrderModal = connect(
   ({
     balanceListStore: {tradingWalletBalances: availableBalances},
-    orderListStore: {limitOrders: orders},
     referenceStore: {getInstrumentById},
-    uiOrderStore: {
-      onPriceChange, // TODO change
-      handlePercentageChange,
-      isLimitInvalid
-    },
     orderStore: {editOrder}
   }) => ({
     editOrder,
     availableBalances,
-    getInstrumentById,
-    handlePercentageChange,
-    onValueChange: onPriceChange,
-    orders,
-    isLimitInvalid
+    getInstrumentById
   }),
   withModal<EditOrderProps>(EditOrder)
 );

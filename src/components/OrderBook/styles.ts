@@ -1,14 +1,6 @@
 import {rem} from 'polished';
-import {Side} from '../../models';
 import styled, {colors, dims, fonts, padding} from '../styled';
 import {Table} from '../Table';
-
-const colorBySide = (side: Side) =>
-  side === Side.Buy ? colors.buy : colors.sell;
-
-export const StyledWrapper = styled.div`
-  height: 100%;
-`;
 
 export const StyledBar = styled.div`
   color: ${colors.white};
@@ -53,45 +45,6 @@ export const StyledGrouping = styled.div`
     margin: 0 ${rem(12)};
     display: inline-block;
     text-align: center;
-  }
-`;
-
-export const StyledPriceList = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  div.price-list-container {
-    display: flex;
-    align-items: center;
-    div.price-container {
-      display: flex;
-      flex-direction: column;
-      width: ${rem(75)};
-      span {
-        font-size: ${rem(14)};
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: 1.14;
-        letter-spacing: normal;
-        text-align: center;
-        color: rgba(234, 237, 239, 0.4);
-      }
-      div {
-        height: ${rem(24)};
-        font-size: ${rem(16)};
-        font-weight: 600;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: 1.5;
-        letter-spacing: normal;
-        text-align: center;
-        color: #ffffff;
-      }
-    }
-    div.price-container:last-child {
-      width: ${rem(120)};
-    }
   }
 `;
 
@@ -141,17 +94,20 @@ export const FigureList = styled.div`
   position: sticky;
   top: 0;
   bottom: 0;
-  z-index: 1;
+  z-index: 2;
+  margin-right: 0.7rem;
 `;
 
 export const Figure = styled.div`
   cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
   cursor: initial;
   font-size: ${rem(fonts.normal)};
+  cursor: pointer;
 ` as any;
 
 export const FigureValue = styled.div`
   text-align: right;
+  cursor: pointer;
 `;
 
 export const FigureHint = styled.div`
@@ -191,52 +147,6 @@ export const MidOverlay = styled.div`
 export const MidOverlayBackground = MidOverlay.extend`
   background: ${colors.lightGraphite};
   z-index: -2;
-`;
-
-export const StyledOrderRow = styled.tr`
-  border-bottom: solid 1px rgba(0, 0, 0, 0.08);
-
-  & > td {
-    text-align: left;
-    width: 33%;
-  }
-
-  &:hover {
-    background-color: ${colors.darkGraphite};
-  }
-` as any;
-
-export const StyledPrice = styled.td`
-  color: ${(p: any) => colorBySide(p.side)}!important;
-  cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
-  text-align: left;
-` as any;
-
-export const StyledVolume = styled.td`
-  color: ${(p: any) => colorBySide(p.side)};
-  cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
-  text-align: left;
-  position: relative;
-  min-width: 80px !important;
-  width: 33%;
-` as any;
-
-export const StyledVolumeOverlay = styled.div.attrs({
-  style: ({side, volume}: any) => ({
-    background: colorBySide(side),
-    width: volume + '%'
-  })
-})`
-  border-radius: 2px;
-  opacity: 0.16;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-` as any;
-
-export const StyledValue = styled.td`
-  text-align: right !important;
 `;
 
 export const MyOrdersPopover = styled.div`
@@ -299,11 +209,13 @@ export const MyOrdersCancelButton = styled.button`
   outline: none;
 `;
 
-export const MyOrdersIndicator = styled.div`
+export const FakeOrderBookStage = styled.div.attrs({
+  style: (props: any) => ({
+    height: props.height,
+    width: props.width / 3 * 2
+  })
+})`
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 2px;
-  background: ${(p: any) => colorBySide(p.side)};
+  z-index: 1;
+  cursor: pointer;
 ` as any;

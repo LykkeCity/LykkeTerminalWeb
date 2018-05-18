@@ -1,4 +1,4 @@
-import {precisionCeil, precisionFloor} from '../math';
+import {getPercentsOf, precisionCeil, precisionFloor} from '../math';
 
 describe('Test math functions', () => {
   it('should cut number with precision without rounding', () => {
@@ -19,5 +19,12 @@ describe('Test math functions', () => {
     precision = 2;
     num = 9780.474;
     expect(precisionCeil(num, precision)).toBe(9780.48);
+  });
+
+  it('should calculate percents of value', () => {
+    const percents = 20;
+    const value = 100;
+    const accuracy = 0;
+    expect(getPercentsOf(percents, value, accuracy)).toBe(20);
   });
 });
