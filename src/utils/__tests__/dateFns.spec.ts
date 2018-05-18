@@ -178,4 +178,18 @@ describe('Date functions', () => {
     const previousDate = new Date().getTime() - oneDay;
     expect(getDiffDays(currentDate, previousDate)).toBe(1);
   });
+
+  describe('Update from date to limit chart candles', () => {
+    // const to = new Date().getTime();
+    // let from;
+    // let resolution;
+
+    it('date candlesLimit function should be defined', () => {
+      expect(dateFns.candlesLimit).toBeDefined();
+    });
+
+    it('date candlesLimit function should be defined', () => {
+      expect(dateFns.candlesLimit).toBeDefined();
+    });
+  });
 });

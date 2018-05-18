@@ -90,12 +90,22 @@ class ChartDataFeed {
     onErrorCallback: any,
     firstDataRequest: any
   ) => {
-    const timePeriods = dateFns.splitter(from * 1000, to * 1000, resolution);
+    const correctFrom = dateFns.candlesLimit(
+      from * 1000,
+      to * 1000,
+      resolution
+    );
+    // console.log('________interval: : ', resolution);
+    // console.log('___From: ', new Date(from * 1000));
+    // console.log('_U_From: ', new Date(correctFrom));
+    // console.log('To     : ', new Date(to * 1000));
+
+    const timePeriods = dateFns.splitter(correctFrom, to * 1000, resolution);
     const interval = mappers.mapChartResolutionToWampInterval(resolution);
     const promises = timePeriods!.map(period =>
       this.priceApi.fetchCandles(
         this.instrument.id,
-        new Date(from * 1000),
+        new Date(correctFrom),
         addTick(firstDataRequest ? new Date() : new Date(to * 1000), interval),
         interval
       )
