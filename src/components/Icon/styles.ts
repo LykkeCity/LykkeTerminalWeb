@@ -1,4 +1,4 @@
-import {lighten, rem} from 'polished';
+import {lighten} from 'polished';
 import styled from '../styled';
 
 export const StyledIcon = styled.i`
@@ -12,7 +12,7 @@ export const StyledIcon = styled.i`
 
 export const IconContainer = styled.i`
   cursor: pointer;
-  opacity: 0.7;
+  opacity: ${(props: {opacity: any}) => props.opacity || 0.8};
 
   &:hover {
     opacity: 1;
@@ -20,7 +20,7 @@ export const IconContainer = styled.i`
 `;
 
 export const Img = styled.img`
-  width: ${rem(14)};
-  height: ${rem(14)};
+  width: 16px;
+  height: 16px;
   vertical-align: middle;
 `;
