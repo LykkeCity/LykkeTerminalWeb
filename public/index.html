@@ -9,15 +9,14 @@
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" lazyload>
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-16x16.png" sizes="16x16">
-  <link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg" color="#5bbad5">
-  <link rel="stylesheet" href="%PUBLIC_URL%/chart.css">
-  <link rel="stylesheet" href="%PUBLIC_URL%/icons-font.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" lazyload>
+  <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-32x32.png" sizes="32x32" lazyload>
+  <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-16x16.png" sizes="16x16" lazyload>
+  <link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg" color="#5bbad5" lazyload>
+  <link rel="stylesheet" href="%PUBLIC_URL%/chart.css" lazyload>
   <meta name="theme-color" content="#ffffff">
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
@@ -30,7 +29,7 @@
     -->
   <title>Lykke Web Terminal</title>
   <!-- TradingView Widget BEGIN -->
-  <script src="%PUBLIC_URL%/charting_library/charting_library.min.js"></script>
+  <script src="%PUBLIC_URL%/charting_library/charting_library.min.js" async="true"></script>
   <!-- TradingView Widget END -->
 </head>
 

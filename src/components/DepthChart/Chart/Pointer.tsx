@@ -216,13 +216,13 @@ class Pointer extends React.Component<PointerProps> {
 
       const depthLabelWidth = measureText(
         depthLabel,
-        chart.modal.title.fontSize,
-        chart.modal.title.fontFamily
+        chart.modal.label.fontSize,
+        chart.modal.label.fontFamily
       );
       const totalOfLableWidth = measureText(
         totalOfLabel,
-        chart.modal.title.fontSize,
-        chart.modal.title.fontFamily
+        chart.modal.label.fontSize,
+        chart.modal.label.fontFamily
       );
 
       this.generateModal(depthLabelWidth, totalOfLableWidth);
