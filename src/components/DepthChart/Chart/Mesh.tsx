@@ -1,13 +1,9 @@
 import * as React from 'react';
-
 import {Line, Text} from 'react-konva';
-
 import {Order} from '../../../models';
-
-import {ChartProps} from './Models';
-
+import formattedNumber from '../../../utils/localFormatted/localFormatted';
 import chart from './chartConstants';
-import chartConstants from './chartConstants';
+import {ChartProps} from './Models';
 
 class Mesh extends React.Component<ChartProps> {
   mid: number;
@@ -31,10 +27,10 @@ class Mesh extends React.Component<ChartProps> {
         (this.asks[0].price - this.mid) / chart.mesh.verticalLinesAmount;
       for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
         if (i % 2 === 1) {
-          const label = (this.mid + step * i).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy,
-            minimumFractionDigits: this.props.priceAccuracy
-          });
+          const label = formattedNumber(
+            this.mid + step * i,
+            this.props.priceAccuracy
+          );
           asksLabels.push(label);
         }
       }
@@ -50,10 +46,10 @@ class Mesh extends React.Component<ChartProps> {
         chart.mesh.verticalLinesAmount;
       for (let i = chart.mesh.verticalLinesAmount; i > 0; i--) {
         if (i % 2 === 1) {
-          const label = (this.mid - step * i).toLocaleString(undefined, {
-            maximumFractionDigits: this.props.priceAccuracy,
-            minimumFractionDigits: this.props.priceAccuracy
-          });
+          const label = formattedNumber(
+            this.mid - step * i,
+            this.props.priceAccuracy
+          );
           bidsLabels.push(label);
         }
       }
@@ -81,15 +77,11 @@ class Mesh extends React.Component<ChartProps> {
 
   generateHorizontalLabels = () => {
     const labels = [];
-    const maximum = this.calculateMaxDepth() / chartConstants.scaleFactor;
+    const maximum = this.calculateMaxDepth() / chart.scaleFactor;
 
     const step = maximum / chart.mesh.horizontalLinesAmount;
     for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
-      labels.push(
-        (step * (i + 1) - step / 2).toLocaleString(undefined, {
-          maximumFractionDigits: 2
-        })
-      );
+      labels.push(formattedNumber(step * (i + 1) - step / 2, 2));
     }
     return labels.reverse();
   };
