@@ -6,7 +6,7 @@ import {switchcase} from '../utils/fn';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 
-interface LevelCellInterface {
+export interface LevelCellInterface {
   order: OrderModel;
   type: string;
   x: {start: number; end: number};
@@ -59,7 +59,7 @@ class UiOrderBookStore extends BaseStore {
       order[displayType] * order.price,
       this.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
     );
-    this.rootStore.uiOrderStore.handleVolumeClickFormOrderBook(
+    this.rootStore.uiOrderStore.handleVolumeClickFromOrderBook(
       volume,
       order.side
     );

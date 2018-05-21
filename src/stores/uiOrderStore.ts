@@ -32,10 +32,10 @@ class UiOrderStore extends BaseStore {
     return this.side === Side.Sell;
   }
 
-  onPriceChange: (price: string) => void;
-  onQuantityChange: (price: string) => void;
-  onPriceArrowClick: (operation: ArrowDirection) => void;
-  onQuantityArrowClick: (operation: ArrowDirection) => void;
+  handlePriceChange: (price: string) => void;
+  handleQuantityChange: (price: string) => void;
+  handlePriceArrowClick: (operation: ArrowDirection) => void;
+  handleQuantityArrowClick: (operation: ArrowDirection) => void;
   onPercentChangeForLimit: (
     percents: number,
     value: number,
@@ -52,20 +52,20 @@ class UiOrderStore extends BaseStore {
   constructor(store: RootStore) {
     super(store);
 
-    this.onPriceChange = curry(onValueChange)(
+    this.handlePriceChange = curry(onValueChange)(
       this.setPriceValue,
       this.getPriceAccuracy
     );
-    this.onQuantityChange = curry(onValueChange)(
+    this.handleQuantityChange = curry(onValueChange)(
       this.setQuantityValue,
       this.getQuantityAccuracy
     );
-    this.onPriceArrowClick = curry(onArrowClick)(
+    this.handlePriceArrowClick = curry(onArrowClick)(
       this.getPriceValue,
       this.getPriceAccuracy,
       this.setPriceValueWithFixed
     );
-    this.onQuantityArrowClick = curry(onArrowClick)(
+    this.handleQuantityArrowClick = curry(onArrowClick)(
       this.getQuantityValue,
       this.getQuantityAccuracy,
       this.setQuantityValueWithFixed
@@ -104,7 +104,7 @@ class UiOrderStore extends BaseStore {
     this.setSide(side);
   };
 
-  handleVolumeClickFormOrderBook = (volume: number, side: Side) => {
+  handleVolumeClickFromOrderBook = (volume: number, side: Side) => {
     const orderSide = side === Side.Sell ? Side.Buy : Side.Sell;
     this.setQuantityValue(`${volume}`);
     this.setMarket(OrderType.Market);

@@ -45,7 +45,6 @@ interface OrderProps {
   quoteAssetName: string;
   baseAssetBalance: any;
   quoteAssetBalance: any;
-  mid: number;
   handlePercentageChange: any;
   baseAssetId: string;
   quoteAssetId: string;
@@ -62,10 +61,10 @@ interface OrderProps {
   instrument: InstrumentModel;
   priceValue: string;
   quantityValue: string;
-  onPriceArrowClick: (operation: string) => void;
-  onQuantityArrowClick: (operation: string) => void;
-  onPriceChange: (value: string) => void;
-  onQuantityChange: (value: string) => void;
+  handlePriceArrowClick: (operation: string) => void;
+  handleQuantityArrowClick: (operation: string) => void;
+  handlePriceChange: (value: string) => void;
+  handleQuantityChange: (value: string) => void;
   setMarket: (value: OrderType) => void;
   setSide: (side: Side) => void;
   currentMarket: OrderType;
@@ -106,7 +105,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   };
 
   applyOrder = (
-    action: string,
+    action: Side,
     quantity: string,
     baseAssetId: string,
     price: string
@@ -159,7 +158,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
   };
 
-  updatePercentageState = (field: string) => {
+  updatePercentageState = (field: OrderInputs) => {
     const {currentMarket} = this.props;
     const tempObj: any = {};
     if (currentMarket === LIMIT && field === OrderInputs.Quantity) {
@@ -259,10 +258,10 @@ class Order extends React.Component<OrderProps, OrderState> {
       quantityValue,
       currentMarket,
       isCurrentSideSell,
-      onPriceChange,
-      onQuantityChange,
-      onPriceArrowClick,
-      onQuantityArrowClick
+      handlePriceChange,
+      handleQuantityChange,
+      handlePriceArrowClick,
+      handleQuantityArrowClick
     } = this.props;
     const {percents} = this.state;
     const currentPrice =
@@ -283,7 +282,9 @@ class Order extends React.Component<OrderProps, OrderState> {
         quoteAssetBalance
       );
 
-    const available = isCurrentSideSell ? baseAssetBalance : quoteAssetBalance;
+    const availableBalance = isCurrentSideSell
+      ? baseAssetBalance
+      : quoteAssetBalance;
 
     const balanceAccuracy = isCurrentSideSell
       ? baseAssetAccuracy
@@ -330,10 +331,10 @@ class Order extends React.Component<OrderProps, OrderState> {
             price={priceValue}
             quantityAccuracy={quantityAccuracy}
             priceAccuracy={priceAccuracy}
-            onPriceChange={onPriceChange}
-            onQuantityChange={onQuantityChange}
-            onPriceArrowClick={onPriceArrowClick}
-            onQuantityArrowClick={onQuantityArrowClick}
+            onPriceChange={handlePriceChange}
+            onQuantityChange={handleQuantityChange}
+            onPriceArrowClick={handlePriceArrowClick}
+            onQuantityArrowClick={handleQuantityArrowClick}
             baseAssetAccuracy={baseAssetAccuracy}
             percents={percents}
             onHandlePercentageChange={this.handlePercentageChange}
@@ -343,7 +344,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             amount={formattedNumber(roundedAmount || 0, quoteAssetAccuracy)}
             isDisable={isLimitInvalid}
             onReset={this.reset}
-            balance={available}
+            balance={availableBalance}
             buttonMessage={`${
               isCurrentSideSell ? Side.Sell : Side.Buy
             } ${formattedNumber(
@@ -364,11 +365,11 @@ class Order extends React.Component<OrderProps, OrderState> {
             quoteAssetName={quoteAssetName}
             percents={percents}
             onHandlePercentageChange={this.handlePercentageChange}
-            onQuantityChange={onQuantityChange}
+            onQuantityChange={handleQuantityChange}
             onReset={this.reset}
             isDisable={isMarketInvalid}
             onSubmit={this.handleButtonClick}
-            balance={available}
+            balance={availableBalance}
             isSell={isCurrentSideSell}
             // tslint:disable-next-line:jsx-no-lambda
             onResetPercentage={() => resetPercentage(percentage)}

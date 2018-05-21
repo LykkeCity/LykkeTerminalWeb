@@ -111,6 +111,18 @@ describe('uiOrder store', () => {
       expect(uiOrderStore.getQuantityAccuracy()).toBe(3);
     });
 
+    it('should change price', () => {
+      expect(uiOrderStore.getComputedPriceValue).toBe('0');
+      uiOrderStore.handlePriceChange('1');
+      expect(uiOrderStore.getComputedPriceValue).toBe('1');
+    });
+
+    it('should change quantity', () => {
+      expect(uiOrderStore.getComputedQuantityValue).toBe('0');
+      uiOrderStore.handleQuantityChange('1');
+      expect(uiOrderStore.getComputedQuantityValue).toBe('1');
+    });
+
     // describe('edge prices', () => {
     //   it('should be valid if the total price mathematically the same as available amount and direction is buy', () => {
     //     quantityValue = (2050.352 / 5848.989).toFixed(8);
