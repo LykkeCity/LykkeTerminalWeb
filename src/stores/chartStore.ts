@@ -91,12 +91,20 @@ class ChartStore extends BaseStore {
 
       if (this.isAuth) {
         this.widget.subscribe('onAutoSaveNeeded', () => {
-          this.widget.save(this.save);
+          setTimeout(() => this.widget.save(this.save), 1000);
         });
 
         this.widget.subscribe('onIntervalChange', () => {
           setTimeout(() => this.widget.save(this.save), 1000);
         });
+
+        setTimeout(
+          () =>
+            this.widget
+              .chart()
+              .setVisibleRange(this.settings.charts[0].visibleRange),
+          1000
+        );
       }
 
       chartContainerExists.style.display = 'block';
@@ -104,6 +112,7 @@ class ChartStore extends BaseStore {
   };
 
   save = (settings: any) => {
+    settings.charts[0].visibleRange = this.widget.chart().getVisibleRange();
     this.api.save({Data: JSON.stringify(settings)});
   };
 
