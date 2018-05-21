@@ -95,11 +95,6 @@ class ChartDataFeed {
       to * 1000,
       resolution
     );
-    // console.log('________interval: : ', resolution);
-    // console.log('___From: ', new Date(from * 1000));
-    // console.log('_U_From: ', new Date(correctFrom));
-    // console.log('To     : ', new Date(to * 1000));
-
     const timePeriods = dateFns.splitter(correctFrom, to * 1000, resolution);
     const interval = mappers.mapChartResolutionToWampInterval(resolution);
     const promises = timePeriods!.map(period =>
