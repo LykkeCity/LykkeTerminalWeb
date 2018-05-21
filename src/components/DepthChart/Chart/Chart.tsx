@@ -51,10 +51,10 @@ class Chart extends React.Component<ChartProps> {
       ? this.asks[index - 1].price
       : this.mid;
     const length =
-      (Math.log10(ask.price) - Math.log10(prevPrice)) *
+      (Math.log10(ask.price + 1) - Math.log10(prevPrice + 1)) *
       this.midXAsks /
-      (Math.log10(this.asks[this.asks.length - 1].price) -
-        Math.log10(this.mid));
+      (Math.log10(this.asks[this.asks.length - 1].price + 1) -
+        Math.log10(this.mid + 1));
     return length;
   }
 
@@ -136,14 +136,12 @@ class Chart extends React.Component<ChartProps> {
       ? this.bids[index - 1].price
       : this.mid;
     const length =
-      (Math.log10(bid.price) - Math.log10(prevPrice)) *
+      Math.abs(Math.log10(bid.price + 1) - Math.log10(prevPrice + 1)) *
       this.midXBids /
-      (Math.log10(
-        this.bids[this.bids.length - 1].price === 0
-          ? 1
-          : this.bids[this.bids.length - 1].price
-      ) -
-        Math.log10(this.mid));
+      Math.abs(
+        Math.log10(this.bids[this.bids.length - 1].price + 1) -
+          Math.log10(this.mid + 1)
+      );
     return length;
   }
 
