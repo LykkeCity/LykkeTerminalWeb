@@ -56,7 +56,7 @@ class ConfirmModal extends React.Component<
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <Modal>
           <ModalHeader title={'Confirm'} onClick={this.handleCancel} />
           <ModalContent>
@@ -78,7 +78,7 @@ class ConfirmModal extends React.Component<
             </CancelButton>
           </Flex>
         </Modal>
-      </div>
+      </React.Fragment>
     );
   }
 }
