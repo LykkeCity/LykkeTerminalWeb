@@ -2,6 +2,7 @@ import {curry, ifElse} from 'rambda';
 import {OrderModel} from '../models';
 import {mapToLevelCell} from '../models/mappers';
 import OrderBookCellType from '../models/orderBookCellType';
+import Side from '../models/side';
 import {switchcase} from '../utils/fn';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
@@ -59,9 +60,10 @@ class UiOrderBookStore extends BaseStore {
       order[displayType] * order.price,
       this.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
     );
+    const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
     this.rootStore.uiOrderStore.handleVolumeClickFromOrderBook(
       volume,
-      order.side
+      orderSide
     );
   };
 

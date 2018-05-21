@@ -99,16 +99,36 @@ class UiOrderStore extends BaseStore {
 
   handlePriceClickFromOrderBook = (price: number, side: Side) => {
     this.setPriceValueWithFixed(price);
-    this.setQuantityValueWithFixed(0);
-    this.setMarket(OrderType.Limit);
+    if (this.market !== OrderType.Limit) {
+      this.setQuantityValueWithFixed(0);
+      this.setMarket(OrderType.Limit);
+    }
     this.setSide(side);
   };
 
   handleVolumeClickFromOrderBook = (volume: number, side: Side) => {
-    const orderSide = side === Side.Sell ? Side.Buy : Side.Sell;
     this.setQuantityValue(`${volume}`);
     this.setMarket(OrderType.Market);
-    this.setSide(orderSide);
+    this.setSide(side);
+  };
+
+  handlePercentageChange = (config: any) => {
+    const {balance, baseAssetId, quoteAssetId, percents} = config;
+
+    if (this.market === OrderType.Limit) {
+      this.setQuantityValueWithFixed(
+        this.onPercentChangeForLimit(percents, balance, this.side)
+      );
+    } else {
+      this.setQuantityValueWithFixed(
+        this.onPercentChangeForMarket(
+          percents,
+          balance,
+          quoteAssetId,
+          baseAssetId
+        )
+      );
+    }
   };
 
   onPercentChangeForMarket = (
@@ -131,26 +151,6 @@ class UiOrderStore extends BaseStore {
       convertedBalance,
       this.getQuantityAccuracy()
     );
-  };
-
-  handlePercentageChange = (config: any) => {
-    const {balance, baseAssetId, quoteAssetId, percents} = config;
-
-    const isLimitActive = this.market === OrderType.Limit;
-    if (isLimitActive) {
-      this.setQuantityValueWithFixed(
-        this.onPercentChangeForLimit(percents, balance, this.side)
-      );
-    } else {
-      this.setQuantityValueWithFixed(
-        this.onPercentChangeForMarket(
-          percents,
-          balance,
-          quoteAssetId,
-          baseAssetId
-        )
-      );
-    }
   };
 
   isLimitInvalid = (baseAssetBalance: number, quoteAssetBalance: number) => {

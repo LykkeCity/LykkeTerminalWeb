@@ -223,12 +223,13 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   };
 
   render() {
-    const isOrderInvalid = this.state.pendingOrder || this.isLimitInvalid();
-
     const roundedAmount = precisionFloor(
       parseFloat(this.state.quantityValue) * parseFloat(this.state.priceValue),
       this.accuracy.quoteAssetAccuracy
     );
+
+    const isOrderInvalid =
+      this.state.pendingOrder || !roundedAmount || this.isLimitInvalid();
 
     return (
       <EditModal isSell={this.action === Side.Sell.toLowerCase()}>

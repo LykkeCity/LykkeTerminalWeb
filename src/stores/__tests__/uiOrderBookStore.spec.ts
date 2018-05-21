@@ -1,11 +1,10 @@
 import {equals} from 'rambda';
-import {RootStore, UiOrderBookStore} from '../index';
-import {AssetModel, InstrumentModel, OrderModel} from '../../models';
-import Side from '../../models/side';
-import OrderBookCellType from '../../models/orderBookCellType';
+import {AssetModel, InstrumentModel, OrderModel, Side} from '../../models';
 import {mapToLevelCell} from '../../models/mappers';
-import {LevelCellInterface} from '../uiOrderBookStore';
+import OrderBookCellType from '../../models/orderBookCellType';
 import {precisionFloor} from '../../utils/math';
+import {RootStore, UiOrderBookStore} from '../index';
+import {LevelCellInterface} from '../uiOrderBookStore';
 
 describe('UiOrderBook store', () => {
   let store: UiOrderBookStore;
@@ -156,10 +155,12 @@ describe('UiOrderBook store', () => {
       store.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
     );
 
+    const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
+
     store.handleAskLevelCellsClick(clickedCoords.x, clickedCoords.y);
     expect(
       store.rootStore.uiOrderStore.handleVolumeClickFromOrderBook
-    ).toHaveBeenCalledWith(value, cell!.order.side);
+    ).toHaveBeenCalledWith(value, orderSide);
   });
 
   it('should call handleVolumeClickFromOrderBook for depth type of cell', () => {
@@ -168,7 +169,10 @@ describe('UiOrderBook store', () => {
     attrs.type = OrderBookCellType.Depth;
     store.storeAskLevelCellInfo(levelAskCell);
 
-    let cell = store.findAskLevelCellByCoords(clickedCoords.x, clickedCoords.y);
+    const cell = store.findAskLevelCellByCoords(
+      clickedCoords.x,
+      clickedCoords.y
+    );
 
     const {order, type: displayType} = cell!;
     const value = precisionFloor(
@@ -176,9 +180,11 @@ describe('UiOrderBook store', () => {
       store.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
     );
 
+    const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
+
     store.handleAskLevelCellsClick(clickedCoords.x, clickedCoords.y);
     expect(
       store.rootStore.uiOrderStore.handleVolumeClickFromOrderBook
-    ).toHaveBeenCalledWith(value, cell!.order.side);
+    ).toHaveBeenCalledWith(value, orderSide);
   });
 });

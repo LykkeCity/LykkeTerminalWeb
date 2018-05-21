@@ -82,6 +82,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     };
   }
 
+  componentDidMount() {
+    this.props.resetOrder();
+  }
+
   handleSideClick = (side: Side) => () => {
     resetPercentage(percentage);
     this.props.setSide(side);
@@ -110,6 +114,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     baseAssetId: string,
     price: string
   ) => {
+    this.disableButton(true);
     const orderType = this.props.currentMarket;
     const body: any = {
       AssetId: baseAssetId,
@@ -121,22 +126,20 @@ class Order extends React.Component<OrderProps, OrderState> {
     if (this.props.currentMarket === LIMIT) {
       body.Price = parseFloat(price);
     }
-
+    this.closeConfirmModal();
     this.props
       .placeOrder(orderType, body)
       .then(() => this.disableButton(false))
       .catch(() => this.disableButton(false));
   };
 
-  cancelOrder = () => {
+  closeConfirmModal = () => {
     this.setState({
       isConfirmModalOpen: false
     });
-    this.disableButton(false);
   };
 
   handleButtonClick = () => {
-    this.disableButton(true);
     const {
       quantityValue,
       priceValue,
@@ -269,12 +272,19 @@ class Order extends React.Component<OrderProps, OrderState> {
         ? isCurrentSideSell ? bid : ask
         : parseFloat(priceValue)) || 0;
 
+    const roundedAmount = precisionFloor(
+      currentPrice * parseFloat(quantityValue),
+      quoteAssetAccuracy
+    );
+
     const isLimitInvalid =
       this.state.pendingOrder ||
+      !roundedAmount ||
       this.props.isLimitInvalid(baseAssetBalance, quoteAssetBalance);
 
     const isMarketInvalid =
       this.state.pendingOrder ||
+      !roundedAmount ||
       this.props.isMarketInvalid(
         baseAssetId,
         quoteAssetId,
@@ -289,11 +299,6 @@ class Order extends React.Component<OrderProps, OrderState> {
     const balanceAccuracy = isCurrentSideSell
       ? baseAssetAccuracy
       : quoteAssetAccuracy;
-
-    const roundedAmount = precisionFloor(
-      currentPrice * parseFloat(quantityValue),
-      quoteAssetAccuracy
-    );
 
     return (
       <React.Fragment>
@@ -375,7 +380,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             onResetPercentage={() => resetPercentage(percentage)}
             priceAccuracy={priceAccuracy}
             balanceAccuracy={balanceAccuracy}
-            onQuantityArrowClick={onQuantityArrowClick}
+            onQuantityArrowClick={handleQuantityArrowClick}
             updatePercentageState={this.updatePercentageState}
           />
         )}
@@ -390,7 +395,7 @@ class Order extends React.Component<OrderProps, OrderState> {
                 priceValue
               )
             }
-            onClose={this.cancelOrder}
+            onClose={this.closeConfirmModal}
             message={this.getConfirmMessage()}
           />
         )}

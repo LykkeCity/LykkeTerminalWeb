@@ -48,7 +48,6 @@ class ConfirmModal extends React.Component<
     confirmStorage.set(!this.state.isReminderChecked);
 
     this.props.onApply();
-    this.props.onClose();
   };
 
   handleCancel = () => {

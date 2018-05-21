@@ -25,6 +25,8 @@ describe('Test math functions', () => {
     const percents = 20;
     const value = 100;
     const accuracy = 0;
-    expect(getPercentsOf(percents, value, accuracy)).toBe(20);
+    expect(getPercentsOf(percents, value, accuracy)).toBe(
+      precisionFloor(percents / 100 * value, accuracy)
+    );
   });
 });
