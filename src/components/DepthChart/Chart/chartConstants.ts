@@ -63,7 +63,7 @@ const chart = {
   strokeWidth: 2,
   fillOpacity: 0.2,
 
-  labelsWidth: 50,
+  labelsWidth: 60,
   labelsHeight: 25,
 
   scaleFactor: 0.9
