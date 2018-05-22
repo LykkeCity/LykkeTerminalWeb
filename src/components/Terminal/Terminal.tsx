@@ -157,7 +157,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   async start() {
     if (this.authStore.isAuth) {
-      this.referenceStore.fetchReferenceData();
+      await this.referenceStore.fetchReferenceData();
 
       await Promise.all([
         this.authStore.fetchUserInfo(),

@@ -121,9 +121,9 @@ class RootStore {
 
   start = async () => {
     const instruments = this.referenceStore.getInstruments();
-
     const assets = this.referenceStore.getAssets();
-    this.marketStore.init(instruments, assets);
+
+    await this.marketStore.init(instruments, assets);
 
     this.referenceStore.fetchRates().catch(console.error);
 
@@ -135,7 +135,7 @@ class RootStore {
     this.settingsStore.init();
     this.watchlistStore.fetchAll();
 
-    this.referenceStore
+    await this.referenceStore
       .fetchBaseAsset()
       .then(() => {
         this.orderListStore.fetchAll();
