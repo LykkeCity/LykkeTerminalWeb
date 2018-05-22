@@ -7,7 +7,7 @@ class AssetModel {
   category: AssetCategoryModel;
   accuracy: number;
 
-  isBase?: boolean = false;
+  canBeBase?: boolean = false;
   iconUrl?: string = '';
 
   constructor(asset: Partial<AssetModel>) {
