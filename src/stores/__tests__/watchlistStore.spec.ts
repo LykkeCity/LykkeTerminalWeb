@@ -44,7 +44,7 @@ describe('watchlist store', () => {
 
   describe('allInstrumentsWatchlists', () => {
     it('should return instruments given', () => {
-      expect(watchlistStore.allInstrumentsWatchlist.assetIds).toHaveLength(
+      expect(watchlistStore.allInstrumentsWatchlist.assetPairIds).toHaveLength(
         getInstruments().length
       );
     });

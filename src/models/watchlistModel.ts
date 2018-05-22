@@ -3,7 +3,7 @@ import {observable} from 'mobx';
 class WatchlistModel {
   id: string;
   @observable name: string;
-  @observable assetIds: string[];
+  @observable assetPairIds: string[];
   @observable readOnly: boolean;
   @observable order?: number;
 

@@ -16,7 +16,7 @@ export interface WatchlistItemProps {
 
 const connectedWatchlist = connect(
   ({watchlistStore: {activeWatchlists: {[0]: watchlist}}}) => ({
-    assets: (watchlist && watchlist.assetIds) || [] // TODO: spike just to make it work, need to refactor
+    assets: (watchlist && watchlist.assetPairIds) || [] // TODO: spike just to make it work, need to refactor
   }),
   Watchlist
 );

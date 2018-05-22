@@ -86,7 +86,7 @@ class ReferenceStore extends BaseStore {
       const instrumentsByWatchlist = getWatchlistByName(watchlistName);
       if (instrumentsByWatchlist) {
         return filter(
-          i => instrumentsByWatchlist.assetIds.indexOf(i.id) > -1,
+          i => instrumentsByWatchlist.assetPairIds.indexOf(i.id) > -1,
           instrumentsByName
         );
       }

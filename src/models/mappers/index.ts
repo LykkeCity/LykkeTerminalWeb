@@ -125,12 +125,11 @@ export const mapToWatchlist = ({
   Id,
   Name,
   AssetPairIds,
-  AssetIds,
   ReadOnly,
   Order
 }: any) =>
   new WatchlistModel({
-    assetIds: AssetPairIds || AssetIds,
+    assetPairIds: AssetPairIds,
     id: Id,
     name: Name,
     readOnly: ReadOnly,
