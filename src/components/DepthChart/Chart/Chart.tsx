@@ -132,16 +132,16 @@ class Chart extends React.Component<ChartProps> {
 
   calculateBidsStepLength(bid: Order, index: number) {
     bid.price === 0 ? (bid.price = 1) : (bid.price = bid.price);
-    const prevPrice = this.bids[index - 1]
-      ? this.bids[index - 1].price
-      : this.mid;
+    const mid =
+      this.mid > this.bids[0].price
+        ? this.mid
+        : this.bids[0].price + this.bids[0].price / 2;
+    const prevPrice = this.bids[index - 1] ? this.bids[index - 1].price : mid;
     const length =
-      Math.abs(Math.log10(bid.price + 1) - Math.log10(prevPrice + 1)) *
+      (Math.log10(bid.price + 1) - Math.log10(prevPrice + 1)) *
       this.midXBids /
-      Math.abs(
-        Math.log10(this.bids[this.bids.length - 1].price + 1) -
-          Math.log10(this.mid + 1)
-      );
+      (Math.log10(this.bids[this.bids.length - 1].price + 1) -
+        Math.log10(mid + 1));
     return length;
   }
 
@@ -242,6 +242,7 @@ class Chart extends React.Component<ChartProps> {
     this.mid = this.props.mid;
     this.minDepth = Math.min(...this.bids.concat(this.asks).map(x => x.depth));
     this.maxDepth = Math.max(...this.bids.concat(this.asks).map(x => x.depth));
+
     this.coef = this.calculateCoef();
   }
 
