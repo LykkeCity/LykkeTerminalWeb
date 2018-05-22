@@ -89,29 +89,20 @@ class ChartStore extends BaseStore {
       this.bindClickOutside();
 
       if (this.isAuth) {
-        this.widget.subscribe('onAutoSaveNeeded', () => {
-          setTimeout(() => this.widget.save(this.save), 1000);
-        });
+        this.widget.subscribe('onAutoSaveNeeded', () =>
+          this.widget.save(this.save)
+        );
 
         this.widget.subscribe('onIntervalChange', () => {
-          setTimeout(() => this.widget.save(this.save), 1000);
+          setTimeout(() => this.widget.save(this.save), 100);
         });
 
-        setTimeout(
-          () =>
-            this.widget
-              .chart()
-              .setVisibleRange(this.settings.charts[0].visibleRange),
-          1000
-        );
+        chartContainerExists.style.display = 'block';
       }
-
-      chartContainerExists.style.display = 'block';
     });
   };
 
   save = (settings: any) => {
-    settings.charts[0].visibleRange = this.widget.chart().getVisibleRange();
     this.api.save({Data: JSON.stringify(settings)});
   };
 
@@ -132,6 +123,7 @@ class ChartStore extends BaseStore {
       this.settings.charts[0].timeScale.m_rightOffset < 0
         ? this.settings.charts[0].timeScale.m_rightOffset
         : 0;
+    const barSpacing = this.settings.charts[0].timeScale.m_barSpacing;
 
     this.widget = new (window as any).TradingView.widget({
       customFormatters: {
@@ -194,10 +186,12 @@ class ChartStore extends BaseStore {
         'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
 
         'timeScale.rightOffset': rightOffset,
+        'timeScale.barSpacing': barSpacing,
         timezone
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css',
-      saved_data: this.updateSettings(this.settings)
+      saved_data: this.updateSettings(this.settings),
+      auto_save_delay: 2
     });
   };
 
