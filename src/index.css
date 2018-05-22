@@ -1,5 +1,4 @@
 @import '~react-mosaic-component/react-mosaic-component.css';
-@import 'icons.css';
 
 .mosaic {
   height: calc(100% - 60px);

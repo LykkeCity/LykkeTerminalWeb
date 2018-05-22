@@ -23,7 +23,6 @@ const addFont = (name: string) => (f: any) =>
 
 const addBaseFont: any = addFont('Proxima Nova');
 const addAkrobatFont: any = addFont('Akrobat');
-const addIconFont: any = addFont('icomoon');
 
 const proximaFonts = [
   {weight: 200, name: 'ProximaNovaThin'},
@@ -42,13 +41,11 @@ const akrobatFonts = [
   {weight: 800, name: 'Akrobat-ExtraBold', formats: ['otf']},
   {weight: 1000, name: 'Akrobat-Black', formats: ['otf']}
 ];
-const iconFonts = [{weight: 'normal', name: 'icomoon'}];
 
 // tslint:disable-next-line:no-unused-expression
 injectGlobal`
   ${proximaFonts.map(addBaseFont)};
   ${akrobatFonts.map(addAkrobatFont)};
-  ${iconFonts.map(addIconFont)}
   ${normalize() as any};
   * {
     border-collapse: collapse;

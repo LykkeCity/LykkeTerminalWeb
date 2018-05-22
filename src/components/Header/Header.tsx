@@ -80,7 +80,7 @@ const Header: React.SFC<HeaderProps> = ({
                     className="hidden-xs settings"
                     onClick={handleToggleSettings}
                   >
-                    <Icon name={'cog'} />
+                    <Icon name={'cogwheel'} color={'#8c94a0'} />
                   </span>
                   {settingsStore.showSettings ? <SettingsModal /> : null}
                 </HeaderItem>
@@ -90,11 +90,11 @@ const Header: React.SFC<HeaderProps> = ({
               <Link>
                 {authStore.isAuth ? (
                   <span className="hidden-xs" onClick={signOut}>
-                    <Icon name={'logout'} />
+                    <Icon name={'logout'} color={'#8c94a0'} />
                   </span>
                 ) : (
                   <span className="hidden-xs" onClick={signIn}>
-                    <Icon name={'login'} />
+                    <Icon name={'login'} color={'#8c94a0'} />
                   </span>
                 )}
                 <i className="icon icon--participate visible-xs" />
