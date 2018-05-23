@@ -123,9 +123,9 @@ class RootStore {
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
-    await this.marketStore.init(instruments, assets);
+    await this.referenceStore.fetchRates().catch(console.error);
 
-    this.referenceStore.fetchRates().catch(console.error);
+    this.marketStore.init(instruments, assets);
 
     const defaultInstrument = this.referenceStore.getInstrumentById(
       UiStore.DEFAULT_INSTRUMENT
