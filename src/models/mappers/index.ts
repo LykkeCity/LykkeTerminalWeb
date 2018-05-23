@@ -50,7 +50,7 @@ export const mapToChartSymbol = ({
   supported_resolutions: ChartStore.config.supported_resolutions,
   has_intraday: true,
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
-  has_empty_bars: true,
+  has_empty_bars: false,
   volume_precision: pathOr(0, ['accuracy'], baseAsset),
   ticker: name,
   has_daily: true,

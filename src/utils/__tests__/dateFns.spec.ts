@@ -188,6 +188,7 @@ describe('Date functions', () => {
       '15': to - dates.week,
       '30': to - dates.week * 1.5,
       '60': to - dates.week * 3,
+      '240': to - dates.month * 3,
       '360': to - dates.month * 6,
       '720': to - dates.month * 7,
       '1D': to - dates.year * 1.5
@@ -230,6 +231,13 @@ describe('Date functions', () => {
       resolution = '60';
       expect(dateFns.candlesLimit(from, to, resolution)).toBe(
         updatedFromOptions[60]
+      );
+    });
+
+    it('range for 240 minutes resolution should starts from 3 months before now', () => {
+      resolution = '240';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[240]
       );
     });
 
