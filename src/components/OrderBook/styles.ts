@@ -95,7 +95,6 @@ export const FigureList = styled.div`
   top: 0;
   bottom: 0;
   z-index: 2;
-  margin-right: 0.7rem;
 `;
 
 export const Figure = styled.div`

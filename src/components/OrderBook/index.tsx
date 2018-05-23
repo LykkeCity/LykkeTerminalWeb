@@ -144,7 +144,8 @@ const ConnectedOrderbook = connect(
         <Scrollbars
           style={{
             height: `100%`,
-            width: 'calc(100% + 1rem)'
+            width: 'calc(100% + 1rem)',
+            marginLeft: '-0.5rem'
           }}
           ref={(node: any) => {
             // tslint:disable-next-line:no-unused-expression
@@ -157,12 +158,12 @@ const ConnectedOrderbook = connect(
         >
           <ConnectedAsks
             height={LEVELS_COUNT * LEVEL_HEIGHT}
-            width={contentRect.client.width || 300}
+            width={contentRect.client.width + LEFT_PADDING || 300}
           />
           {loading ? null : <ConnectedFigures />}
           <ConnectedBids
             height={LEVELS_COUNT * LEVEL_HEIGHT}
-            width={contentRect.client.width || 300}
+            width={contentRect.client.width + LEFT_PADDING || 300}
           />
         </Scrollbars>
       </div>
