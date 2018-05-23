@@ -96,9 +96,9 @@ class ChartStore extends BaseStore {
         this.widget.subscribe('onIntervalChange', () => {
           setTimeout(() => this.widget.save(this.save), 100);
         });
-
-        chartContainerExists.style.display = 'block';
       }
+
+      chartContainerExists.style.display = 'block';
     });
   };
 
