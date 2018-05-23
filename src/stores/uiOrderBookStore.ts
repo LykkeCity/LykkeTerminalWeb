@@ -4,7 +4,6 @@ import {mapToLevelCell} from '../models/mappers';
 import OrderBookCellType from '../models/orderBookCellType';
 import Side from '../models/side';
 import {switchcase} from '../utils/fn';
-import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 
 export interface LevelCellInterface {
@@ -56,13 +55,12 @@ class UiOrderBookStore extends BaseStore {
 
   setOrderVolume = (cell: LevelCellInterface) => {
     const {order, type: displayType} = cell;
-    const volume = precisionFloor(
-      order[displayType] * order.price,
+    const volume = (order[displayType] * order.price).toFixed(
       this.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
     );
     const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
     this.rootStore.uiOrderStore.handleVolumeClickFromOrderBook(
-      volume,
+      +volume,
       orderSide
     );
   };

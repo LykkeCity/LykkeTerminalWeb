@@ -2,7 +2,6 @@ import {equals} from 'rambda';
 import {AssetModel, InstrumentModel, OrderModel, Side} from '../../models';
 import {mapToLevelCell} from '../../models/mappers';
 import OrderBookCellType from '../../models/orderBookCellType';
-import {precisionFloor} from '../../utils/math';
 import {RootStore, UiOrderBookStore} from '../index';
 import {LevelCellInterface} from '../uiOrderBookStore';
 
@@ -150,8 +149,7 @@ describe('UiOrderBook store', () => {
     );
 
     const {order, type: displayType} = cell!;
-    const value = precisionFloor(
-      order[displayType] * order.price,
+    const value = (order[displayType] * order.price).toFixed(
       store.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
     );
 
@@ -160,7 +158,7 @@ describe('UiOrderBook store', () => {
     store.handleAskLevelCellsClick(clickedCoords.x, clickedCoords.y);
     expect(
       store.rootStore.uiOrderStore.handleVolumeClickFromOrderBook
-    ).toHaveBeenCalledWith(value, orderSide);
+    ).toHaveBeenCalledWith(+value, orderSide);
   });
 
   it('should call handleVolumeClickFromOrderBook for depth type of cell', () => {
@@ -175,8 +173,8 @@ describe('UiOrderBook store', () => {
     );
 
     const {order, type: displayType} = cell!;
-    const value = precisionFloor(
-      order[displayType] * order.price,
+    order[displayType] = 1;
+    const value = (order[displayType] * order.price).toFixed(
       store.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
     );
 
@@ -185,6 +183,6 @@ describe('UiOrderBook store', () => {
     store.handleAskLevelCellsClick(clickedCoords.x, clickedCoords.y);
     expect(
       store.rootStore.uiOrderStore.handleVolumeClickFromOrderBook
-    ).toHaveBeenCalledWith(value, orderSide);
+    ).toHaveBeenCalledWith(+value, orderSide);
   });
 });
