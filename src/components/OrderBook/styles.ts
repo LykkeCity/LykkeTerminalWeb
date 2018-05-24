@@ -101,7 +101,6 @@ export const Figure = styled.div`
   cursor: ${(p: any) => (p.isAuth ? 'pointer' : 'initial')};
   cursor: initial;
   font-size: ${rem(fonts.normal)};
-  cursor: pointer;
 ` as any;
 
 export const FigureValue = styled.div`
@@ -123,7 +122,6 @@ export const LastPriceValue = FigureValue.extend.attrs({
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(fonts.extraLarge)};
   font-weight: bold;
-  cursor: pointer;
 ` as any;
 
 export const MidPrice = Figure.extend.attrs({
@@ -132,7 +130,6 @@ export const MidPrice = Figure.extend.attrs({
   })
 })`
   margin-left: auto;
-  cursor: pointer;
 ` as any;
 
 export const Spread = Figure.extend`
