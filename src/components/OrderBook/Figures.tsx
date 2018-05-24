@@ -20,6 +20,7 @@ export interface FigureListProps {
   spreadRelative: number;
   format: (num: number, accuracy: number, opts?: object) => string;
   handlePriceClickFromOrderBook: (price: number, side: Side) => void;
+  isReadOnly: boolean;
 }
 
 export default ({
@@ -29,11 +30,13 @@ export default ({
   mid,
   spreadRelative,
   format,
-  handlePriceClickFromOrderBook
+  handlePriceClickFromOrderBook,
+  isReadOnly
 }: FigureListProps) => (
   <FigureList>
     <Figure isAuth={isAuth}>
       <LastPriceValue
+        clickable={!isReadOnly}
         // tslint:disable-next-line:jsx-no-lambda
         onClick={() => handlePriceClickFromOrderBook(lastTradePrice, Side.Buy)}
       >
@@ -41,7 +44,7 @@ export default ({
       </LastPriceValue>
       <FigureHint>Last price</FigureHint>
     </Figure>
-    <MidPrice isAuth={isAuth}>
+    <MidPrice isAuth={isAuth} clickable={!isReadOnly}>
       <FigureValue
         // tslint:disable-next-line:jsx-no-lambda
         onClick={() => handlePriceClickFromOrderBook(mid, Side.Buy)}

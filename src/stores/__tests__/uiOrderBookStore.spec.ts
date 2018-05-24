@@ -148,17 +148,13 @@ describe('UiOrderBook store', () => {
       clickedCoords.y
     );
 
-    const {order, type: displayType} = cell!;
-    const value = (order[displayType] * order.price).toFixed(
-      store.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
-    );
-
+    const {order} = cell!;
     const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
 
     store.handleAskLevelCellsClick(clickedCoords.x, clickedCoords.y);
     expect(
       store.rootStore.uiOrderStore.handleVolumeClickFromOrderBook
-    ).toHaveBeenCalledWith(+value, orderSide);
+    ).toHaveBeenCalledWith(order[OrderBookCellType.Depth], orderSide);
   });
 
   it('should call handleVolumeClickFromOrderBook for depth type of cell', () => {
@@ -174,15 +170,11 @@ describe('UiOrderBook store', () => {
 
     const {order, type: displayType} = cell!;
     order[displayType] = 1;
-    const value = (order[displayType] * order.price).toFixed(
-      store.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
-    );
-
     const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
 
     store.handleAskLevelCellsClick(clickedCoords.x, clickedCoords.y);
     expect(
       store.rootStore.uiOrderStore.handleVolumeClickFromOrderBook
-    ).toHaveBeenCalledWith(+value, orderSide);
+    ).toHaveBeenCalledWith(order[OrderBookCellType.Depth], orderSide);
   });
 });

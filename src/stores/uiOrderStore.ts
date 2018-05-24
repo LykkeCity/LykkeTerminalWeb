@@ -107,7 +107,7 @@ class UiOrderStore extends BaseStore {
   };
 
   handleVolumeClickFromOrderBook = (volume: number, side: Side) => {
-    this.setQuantityValue(`${volume}`);
+    this.setQuantityValueWithFixed(volume);
     this.setMarket(OrderType.Market);
     this.setSide(side);
   };

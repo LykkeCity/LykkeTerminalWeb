@@ -55,7 +55,7 @@ const ConnectedBar = connect<BarProps>(
 const ConnectedAsks = connect<LevelListProps>(
   ({
     orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType},
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
     uiOrderBookStore: {handleAskLevelCellsClick, storeAskLevelCellInfo}
   }) => {
     const levels = concat(asks, bids);
@@ -70,7 +70,8 @@ const ConnectedAsks = connect<LevelListProps>(
       format: formatWithAccuracy,
       normalize,
       handleOrderBookClick: handleAskLevelCellsClick,
-      storeLevelCellInfo: storeAskLevelCellInfo
+      storeLevelCellInfo: storeAskLevelCellInfo,
+      isReadOnly: readOnlyMode
     };
   },
   observer(LevelList)
@@ -79,7 +80,7 @@ const ConnectedAsks = connect<LevelListProps>(
 const ConnectedBids = connect<LevelListProps>(
   ({
     orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType},
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
     uiOrderBookStore: {handleBidLevelCellsClick, storeBidLevelCellInfo}
   }) => {
     const vals = map(prop(toLower(orderbookDisplayType)), [
@@ -96,7 +97,8 @@ const ConnectedBids = connect<LevelListProps>(
       format: formatWithAccuracy,
       normalize,
       handleOrderBookClick: handleBidLevelCellsClick,
-      storeLevelCellInfo: storeBidLevelCellInfo
+      storeLevelCellInfo: storeBidLevelCellInfo,
+      isReadOnly: readOnlyMode
     };
   },
   observer(LevelList)
@@ -114,7 +116,7 @@ const ConnectedFigures = connect<FigureListProps>(
     orderBookStore: {mid, spreadRelative},
     priceStore: {lastTradePrice},
     authStore: {isAuth},
-    uiStore: {selectedInstrument},
+    uiStore: {selectedInstrument, readOnlyMode},
     uiOrderStore: {handlePriceClickFromOrderBook}
   }) => ({
     lastTradePrice,
@@ -123,7 +125,8 @@ const ConnectedFigures = connect<FigureListProps>(
     spreadRelative,
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
     format: formatWithAccuracy,
-    handlePriceClickFromOrderBook
+    handlePriceClickFromOrderBook,
+    isReadOnly: readOnlyMode
   }),
   Figures
 );

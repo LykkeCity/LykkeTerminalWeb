@@ -142,6 +142,7 @@ export const Amount = styled.div`
 `;
 
 export const Available = styled(Amount)`
+  text-align: right;
   &:hover {
     cursor: pointer;
   }

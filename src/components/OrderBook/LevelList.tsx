@@ -14,12 +14,16 @@ export interface LevelListProps {
   width: number;
   handleOrderBookClick: (x: number, y: number) => void;
   storeLevelCellInfo: (level: void) => any;
+  isReadOnly: boolean;
 }
 
 export class LevelList extends React.Component<LevelListProps> {
   private fakeStage: any;
 
   handleMouseUp = (e: any) => {
+    if (this.props.isReadOnly) {
+      return;
+    }
     const {x, y} = e.currentTarget.pointerPos;
     this.props.handleOrderBookClick(x, y);
     this.togglePointerEvents('auto');
@@ -34,13 +38,15 @@ export class LevelList extends React.Component<LevelListProps> {
     const {levels, width, height, ...rest} = this.props;
     return (
       <div>
-        <FakeOrderBookStage
-          width={width}
-          height={height}
-          // tslint:disable-next-line:jsx-no-lambda
-          onMouseDown={() => this.togglePointerEvents('none')}
-          ref={(div: any) => (this.fakeStage = div)}
-        />
+        {!this.props.isReadOnly && (
+          <FakeOrderBookStage
+            width={width}
+            height={height}
+            // tslint:disable-next-line:jsx-no-lambda
+            onMouseDown={() => this.togglePointerEvents('none')}
+            ref={(div: any) => (this.fakeStage = div)}
+          />
+        )}
         <Stage width={width} height={height} onMouseUp={this.handleMouseUp}>
           <Layer hitGraphEnabled={false}>
             {levels.map((o, idx) => (

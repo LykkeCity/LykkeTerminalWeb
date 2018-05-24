@@ -12,7 +12,7 @@ import {
   resetPercentage,
   setActivePercentage
 } from '../../utils/order';
-import EditOrderForm from '../Order/EditOrderForm/EditOrderForm';
+import OrderLimit from '../Order/OrderLimit';
 import ModalHeader from './ModalHeader/ModalHeader';
 import {EditActionTitle, EditModal, EditTitle} from './styles';
 
@@ -232,14 +232,14 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       this.state.pendingOrder || !roundedAmount || this.isLimitInvalid();
 
     return (
-      <EditModal isSell={this.action === Side.Sell.toLowerCase()}>
+      <EditModal isSell={this.isSellActive}>
         <ModalHeader onClick={this.handleClose}>
-          <EditActionTitle isSell={this.action === Side.Sell.toLowerCase()}>
+          <EditActionTitle isSell={this.isSellActive}>
             {this.action}
           </EditActionTitle>
           <EditTitle>Edit Limit Order</EditTitle>
         </ModalHeader>
-        <EditOrderForm
+        <OrderLimit
           action={this.action}
           onSubmit={this.handleEditOrder}
           quantity={this.state.quantityValue}

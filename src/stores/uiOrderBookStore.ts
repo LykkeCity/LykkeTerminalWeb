@@ -54,13 +54,10 @@ class UiOrderBookStore extends BaseStore {
   };
 
   setOrderVolume = (cell: LevelCellInterface) => {
-    const {order, type: displayType} = cell;
-    const volume = (order[displayType] * order.price).toFixed(
-      this.rootStore.uiStore.selectedInstrument!.baseAsset.accuracy
-    );
+    const {order} = cell;
     const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
     this.rootStore.uiOrderStore.handleVolumeClickFromOrderBook(
-      +volume,
+      order[OrderBookCellType.Depth],
       orderSide
     );
   };

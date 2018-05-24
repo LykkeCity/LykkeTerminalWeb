@@ -106,7 +106,6 @@ export const Figure = styled.div`
 
 export const FigureValue = styled.div`
   text-align: right;
-  cursor: pointer;
 `;
 
 export const FigureHint = styled.div`
@@ -116,15 +115,25 @@ export const FigureHint = styled.div`
   opacity: 0.4;
 `;
 
-export const LastPriceValue = FigureValue.extend`
+export const LastPriceValue = FigureValue.extend.attrs({
+  style: (props: any) => ({
+    cursor: props.clickable ? 'pointer' : 'default'
+  })
+})`
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(fonts.extraLarge)};
   font-weight: bold;
-`;
+  cursor: pointer;
+` as any;
 
-export const MidPrice = Figure.extend`
+export const MidPrice = Figure.extend.attrs({
+  style: (props: any) => ({
+    cursor: props.clickable ? 'pointer' : 'default'
+  })
+})`
   margin-left: auto;
-`;
+  cursor: pointer;
+` as any;
 
 export const Spread = Figure.extend`
   cursor: initial;

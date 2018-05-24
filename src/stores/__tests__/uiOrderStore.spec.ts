@@ -193,7 +193,9 @@ describe('uiOrder store', () => {
 
       uiOrderStore.handleVolumeClickFromOrderBook(newQuantity, Side.Buy);
       expect(uiOrderStore.isCurrentSideSell).toBeFalsy();
-      expect(uiOrderStore.getComputedQuantityValue).toBe(`${newQuantity}`);
+      expect(uiOrderStore.getComputedQuantityValue).toBe(
+        newQuantity.toFixed(uiOrderStore.getQuantityAccuracy())
+      );
       expect(uiOrderStore.currentMarket).toBe(OrderType.Market);
     });
 
