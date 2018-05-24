@@ -35,8 +35,10 @@ class Mesh extends React.Component<MeshProps> {
   generateAsksLabels = (): string[] => {
     const asksLabels = [];
     if (this.asks.length > 0) {
-      const step =
-        (this.asks[0].price - this.mid) / chart.mesh.verticalLinesAmount;
+      const minAskPrice = Math.min(...this.asks.map(a => a.price));
+      const maxAskPrice = Math.max(...this.asks.map(a => a.price));
+      const start = (minAskPrice + this.mid) / 2;
+      const step = (maxAskPrice - start) / chart.mesh.verticalLinesAmount;
       for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
         if (i % 2 === 1) {
           const label = formattedNumber(
@@ -53,13 +55,11 @@ class Mesh extends React.Component<MeshProps> {
   generateBidsLabels = (): string[] => {
     const bidsLabels = [];
     if (this.bids.length > 0) {
-      const mid =
-        this.mid > this.bids[0].price
-          ? this.mid
-          : this.bids[0].price + this.bids[0].price / 2;
-      const step =
-        (mid - this.bids[this.bids.length - 1].price) /
-        chart.mesh.verticalLinesAmount;
+      const minBidPrice = Math.min(...this.bids.map(a => a.price));
+      const maxBidPrice = Math.max(...this.bids.map(a => a.price));
+      const start =
+        this.mid > maxBidPrice ? (maxBidPrice + this.mid) / 2 : maxBidPrice;
+      const step = (start - minBidPrice) / chart.mesh.verticalLinesAmount;
       for (let i = chart.mesh.verticalLinesAmount; i > 0; i--) {
         if (i % 2 === 1) {
           const label = formattedNumber(
