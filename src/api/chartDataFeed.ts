@@ -73,6 +73,10 @@ class ChartDataFeed {
     ) => void
   ) {}
 
+  get getTimeRange() {
+    return this.timeRange;
+  }
+
   onReady = (cb: any) => {
     setTimeout(() => cb(this.config), 0);
   };
@@ -202,7 +206,7 @@ class ChartDataFeed {
     cb(Math.round(Date.now() / 1000));
   };
 
-  private filterAndLimitBars = (bars: any[]) => {
+  filterAndLimitBars = (bars: any[]) => {
     let brs = bars.filter(x => {
       return x.volume !== 0;
     });
@@ -211,15 +215,13 @@ class ChartDataFeed {
       brs = brs.splice(brs.length - (candlesLimit - this.timeRange.barsCount));
     }
 
-    // console.log(brs.map(i => new Date(i.time)));
-
     this.timeRange.barsCount += brs.length;
     this.timeRange.isLimitReached = this.timeRange.barsCount >= candlesLimit;
 
     return brs;
   };
 
-  private resetTimeRange = (symbol: string, resolution: string) => {
+  resetTimeRange = (symbol: string, resolution: string) => {
     this.timeRange = {
       barsCount: 0,
       isLimitReached: false,
