@@ -103,10 +103,10 @@ export const Table = styled.table`
       color: #f5f6f7;
       font-weight: 600;
       text-align: left;
-      padding-left: 0;
+      padding-left: ${rem(4)};
     }
     &:last-child {
-      padding-right: 0;
+      padding-right: ${rem(4)};
     }
   }
 
