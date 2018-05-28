@@ -35,7 +35,10 @@ class ChartStore extends BaseStore {
   };
 
   private widget: any;
+  private settings: any = defaultSettings;
   private shouldHandleOutsideClick = false;
+
+  private isAuth: boolean = this.rootStore.authStore.isAuth;
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
@@ -56,12 +59,73 @@ class ChartStore extends BaseStore {
     });
   };
 
-  renderChart = (instrument: InstrumentModel) => {
+  renderChart = async (instrument: InstrumentModel) => {
     this.shouldHandleOutsideClick = false;
+    this.settings = defaultSettings;
+
     const chartContainerExists = document.getElementById('tv_chart_container');
     if (!chartContainerExists || !(window as any).TradingView) {
       return;
     }
+
+    chartContainerExists.style.display = 'none';
+
+    this.settings = defaultSettings;
+    if (this.isAuth) {
+      await this.load()
+        .then((res: any) => {
+          this.settings = JSON.parse(res.Data);
+          this.settings.charts[0].timezone = timezone;
+        })
+        .catch(err => {
+          if (err.status === 404) {
+            this.settings = defaultSettings;
+          }
+        });
+    }
+
+    this.createWidget(instrument);
+
+    this.widget.onChartReady(() => {
+      this.bindClickOutside();
+
+      if (this.isAuth) {
+        this.widget.subscribe('onAutoSaveNeeded', () =>
+          this.widget.save(this.save)
+        );
+
+        this.widget.subscribe('onIntervalChange', () => {
+          setTimeout(() => this.widget.save(this.save), 100);
+        });
+      }
+
+      chartContainerExists.style.display = 'block';
+    });
+  };
+
+  save = (settings: any) => {
+    this.api.save({Data: JSON.stringify(settings)});
+  };
+
+  load = () => this.api.load();
+
+  resetToDefault = () => {
+    if (this.widget) {
+      this.widget.load(defaultSettings);
+    }
+  };
+
+  reset = () => {
+    return;
+  };
+
+  private createWidget = (instrument: InstrumentModel) => {
+    const rightOffset =
+      this.settings.charts[0].timeScale.m_rightOffset < 0
+        ? this.settings.charts[0].timeScale.m_rightOffset
+        : 0;
+    const barSpacing = this.settings.charts[0].timeScale.m_barSpacing;
+
     this.widget = new (window as any).TradingView.widget({
       customFormatters: {
         timeFormatter: {
@@ -121,59 +185,14 @@ class ChartStore extends BaseStore {
           'rgba(140, 148, 160, 0.4)',
         'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
 
-        'timeScale.rightOffset': 0,
+        'timeScale.rightOffset': rightOffset,
+        'timeScale.barSpacing': barSpacing,
         timezone
       },
-      custom_css_url: process.env.PUBLIC_URL + '/chart.css'
+      custom_css_url: process.env.PUBLIC_URL + '/chart.css',
+      saved_data: this.settings,
+      auto_save_delay: 2
     });
-    chartContainerExists.style.display = 'none';
-    if (this.rootStore.authStore.isAuth) {
-      this.widget.onChartReady(() => {
-        this.bindClickOutside();
-        this.load()
-          .then((res: any) => {
-            if (res && res.Data) {
-              const settings = JSON.parse(res.Data);
-              settings.charts[0].timezone = timezone;
-
-              this.widget.load(settings);
-            }
-            chartContainerExists.style.display = 'block';
-          })
-          .catch(err => {
-            if (err.status === 404) {
-              this.widget.load(defaultSettings);
-            }
-            chartContainerExists.style.display = 'block';
-          });
-        this.widget.subscribe('onAutoSaveNeeded', () => {
-          this.widget.save(this.save);
-        });
-      });
-    } else {
-      this.widget.onChartReady(() => {
-        this.bindClickOutside();
-        this.widget.load(CHART_DEFAULT_SETTINGS);
-
-        chartContainerExists.style.display = 'block';
-      });
-    }
-  };
-
-  save = (settings: any) => {
-    this.api.save({Data: JSON.stringify(settings)});
-  };
-
-  load = () => this.api.load();
-
-  resetToDefault = () => {
-    if (this.widget) {
-      this.widget.load(defaultSettings);
-    }
-  };
-
-  reset = () => {
-    return;
   };
 }
 
