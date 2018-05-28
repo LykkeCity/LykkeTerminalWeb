@@ -172,8 +172,10 @@ class OrderBookStore extends BaseStore {
     if (selectedInstrument && selectedInstrument.id === AssetPair) {
       const mapToOrders = map(toOrder);
       if (IsBuy) {
+        this.rootStore.uiOrderBookStore.clearBidLevelsCells();
         this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
       } else {
+        this.rootStore.uiOrderBookStore.clearAskLevelsCells();
         this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
       }
     }

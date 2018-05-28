@@ -110,6 +110,11 @@ class UiOrderBookStore extends BaseStore {
     }
   };
 
+  clearAskLevelsCells = () =>
+    this.askLevelsCells.splice(0, this.askLevelsCells.length);
+  clearBidLevelsCells = () =>
+    this.bidLevelsCells.splice(0, this.bidLevelsCells.length);
+
   handleAskLevelCellsClick = (x: number, y: number) =>
     this.triggerOrderUpdate(this.findAskLevelCellByCoords(x, y));
 

@@ -112,7 +112,7 @@ describe('UiOrderBook store', () => {
   it('should add level to array', () => {
     const arr: LevelCellInterface[] = [];
     store.addLevelCellInfo(levelAskCell, arr);
-    expect(equals(arr[0] as any, mapToLevelCell(levelBidCell))).toBeTruthy();
+    expect(equals(arr[0] as any, mapToLevelCell(levelAskCell))).toBeTruthy();
   });
 
   it('should return boolean if cell presented or not', () => {
