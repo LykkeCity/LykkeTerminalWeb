@@ -112,6 +112,7 @@ export const FigureHint = styled.div`
   font-weight: normal;
   text-align: right;
   opacity: 0.4;
+  cursor: default;
 `;
 
 export const LastPriceValue = FigureValue.extend.attrs({
