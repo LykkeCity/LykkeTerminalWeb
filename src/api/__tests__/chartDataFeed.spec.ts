@@ -54,7 +54,13 @@ let barsQty: number;
 
 fdescribe('chart data feed', () => {
   beforeEach(() => {
-    chartDataFeed = new ChartDataFeed(config, instrument, api, null);
+    chartDataFeed = new ChartDataFeed(
+      config,
+      instrument,
+      api,
+      null,
+      () => null
+    );
   });
 
   it('getBars, filterAndLimitBars and resetTimeRange methods should be defined', () => {
