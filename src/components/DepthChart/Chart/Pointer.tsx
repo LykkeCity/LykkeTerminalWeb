@@ -1,11 +1,9 @@
 import * as React from 'react';
-
 import {Circle, Line, Text} from 'react-konva';
-
 import {Order} from '../../../models';
-import {PointerProps} from './Models';
-
+import formattedNumber from '../../../utils/localFormatted/localFormatted';
 import chart from './chartConstants';
+import {PointerProps} from './Models';
 
 const measureText = (text: string, size: number, font: string) => {
   const ctx = document.createElement('canvas').getContext('2d');
@@ -200,18 +198,16 @@ class Pointer extends React.Component<PointerProps> {
       const price = this.orders[this.orderIndex].price;
       const depth = this.orders[this.orderIndex].depth;
 
-      const priceLabel = `${price.toLocaleString(undefined, {
-        maximumFractionDigits: this.props.priceAccuracy,
-        minimumFractionDigits: this.props.priceAccuracy
-      })} ${this.props.quoteAsset}`;
-      const depthLabel = `${depth.toLocaleString(undefined, {
-        maximumFractionDigits: this.props.baseAccuracy,
-        minimumFractionDigits: this.props.baseAccuracy
-      })} ${this.props.baseAsset}`;
-      const totalOfLabel = `${(price * depth).toLocaleString(undefined, {
-        maximumFractionDigits: this.props.quoteAccuracy,
-        minimumFractionDigits: this.props.quoteAccuracy
-      })} ${this.props.quoteAsset}`;
+      const priceLabel = `${formattedNumber(price, this.props.priceAccuracy)} ${
+        this.props.quoteAsset
+      }`;
+      const depthLabel = `${formattedNumber(depth, this.props.baseAccuracy)} ${
+        this.props.baseAsset
+      }`;
+      const totalOfLabel = `${formattedNumber(
+        price * depth,
+        this.props.quoteAccuracy
+      )} ${this.props.quoteAsset}`;
 
       const depthLabelWidth = measureText(
         depthLabel,
