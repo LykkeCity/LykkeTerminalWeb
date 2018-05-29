@@ -67,6 +67,11 @@ export const Table = styled.table`
   thead {
     border-bottom: solid 1px #272727;
   }
+  tbody {
+    tr:hover {
+      background-color: ${colors.graphiteBorder};
+    }
+  }
   th,
   td {
     text-align: right;
@@ -98,10 +103,10 @@ export const Table = styled.table`
       color: #f5f6f7;
       font-weight: 600;
       text-align: left;
-      padding-left: 0;
+      padding-left: ${rem(4)};
     }
     &:last-child {
-      padding-right: 0;
+      padding-right: ${rem(4)};
     }
   }
 
