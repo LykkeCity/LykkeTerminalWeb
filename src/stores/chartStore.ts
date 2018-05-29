@@ -190,7 +190,7 @@ class ChartStore extends BaseStore {
         timezone
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css',
-      saved_data: this.updateSettings(this.settings),
+      saved_data: this.settings,
       auto_save_delay: 2
     });
   };
