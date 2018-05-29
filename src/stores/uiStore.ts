@@ -105,7 +105,7 @@ class UiStore extends BaseStore {
     selectedInstrument: InstrumentModel,
     assetId: string
   ): boolean => {
-    return selectedInstrument.name.split('/').indexOf(assetId) !== -1;
+    return selectedInstrument.displayName!.split('/').indexOf(assetId) !== -1;
   };
 
   @action
