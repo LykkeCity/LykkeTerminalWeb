@@ -30,6 +30,7 @@ class UiStore extends BaseStore {
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
+  @observable showDisclaimer: boolean = false;
   @observable private isReadOnlyMode: boolean;
 
   constructor(store: RootStore) {
@@ -99,6 +100,13 @@ class UiStore extends BaseStore {
       }
     );
   }
+
+  hasAsset = (
+    selectedInstrument: InstrumentModel,
+    assetId: string
+  ): boolean => {
+    return selectedInstrument.name.split('/').indexOf(assetId) !== -1;
+  };
 
   @action
   readonly toggleAssetsSelect = () =>

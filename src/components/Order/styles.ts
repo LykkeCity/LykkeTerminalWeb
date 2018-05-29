@@ -180,3 +180,25 @@ export const StyledOrderButton = styled.div`
   margin-top: ${rem(32)};
   margin-bottom: ${rem(10)};
 `;
+
+export const DisclaimerNotification = styled.div`
+  border-radius: ${rem(6)};
+  box-shadow: 0 10px 10px 0 ${colors.darkGraphite};
+  padding: ${rem(24)} ${rem(16)} ${rem(16)};
+  position: relative;
+  background-color: ${colors.red};
+`;
+
+export const Body = styled.div`
+  font-size: ${rem(16)};
+  color: ${colors.white};
+  margin-top: ${rem(14)};
+`;
+
+export const Title = styled.div`
+  font-family: Akrobat;
+  font-size: ${rem(20)};
+  font-weight: bold;
+  line-height: 0.8;
+  color: ${colors.white};
+`;
