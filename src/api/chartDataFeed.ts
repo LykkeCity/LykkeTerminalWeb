@@ -1,3 +1,4 @@
+import {ISubscription} from 'autobahn';
 import {
   addDays,
   addHours,
@@ -52,7 +53,10 @@ class ChartDataFeed {
     private readonly config: any,
     private readonly instrument: InstrumentModel,
     private readonly priceApi: PriceApi,
-    private readonly session: any
+    private readonly session: any,
+    private readonly subscribeToCandlesWithResolutions: (
+      s: ISubscription
+    ) => void
   ) {}
 
   onReady = (cb: any) => {
@@ -143,25 +147,27 @@ class ChartDataFeed {
     );
   };
 
-  subscribeBars = (
+  subscribeBars = async (
     symbolInfo: typeof mappers.mapToChartSymbol,
     resolution: string,
     onRealtimeCallback: any,
     subscriberUID: any,
     onResetCacheNeededCallback: any
   ) => {
-    this.session.subscribe(
-      topics.candle(
-        MarketType.Spot,
-        this.instrument.id,
-        PriceType.Trade,
-        mappers.mapChartResolutionToWampInterval(resolution)
-      ),
-      (args: any[]) => {
-        if (args) {
-          onRealtimeCallback(mappers.mapToBarFromWamp(args[0]));
+    this.subscribeToCandlesWithResolutions(
+      await this.session.subscribe(
+        topics.candle(
+          MarketType.Spot,
+          this.instrument.id,
+          PriceType.Trade,
+          mappers.mapChartResolutionToWampInterval(resolution)
+        ),
+        (args: any[]) => {
+          if (args) {
+            onRealtimeCallback(mappers.mapToBarFromWamp(args[0]));
+          }
         }
-      }
+      )
     );
   };
 

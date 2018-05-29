@@ -1,3 +1,4 @@
+import {ISubscription} from 'autobahn';
 import {pathOr} from 'rambda';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
@@ -37,6 +38,7 @@ class ChartStore extends BaseStore {
   private widget: any;
   private settings: any;
   private shouldHandleOutsideClick = false;
+  private subscriptions: Set<ISubscription> = new Set();
 
   private isAuth: boolean = this.rootStore.authStore.isAuth;
 
@@ -60,6 +62,7 @@ class ChartStore extends BaseStore {
   };
 
   renderChart = async () => {
+    await this.unsubscribeFromCandle();
     this.shouldHandleOutsideClick = false;
 
     const instrument = this.rootStore.uiStore.selectedInstrument;
@@ -114,8 +117,22 @@ class ChartStore extends BaseStore {
     }
   };
 
+  subscribeToCandlesWithResolutions = (s: ISubscription) =>
+    this.subscriptions.add(s);
+
+  unsubscribeFromCandle = async () => {
+    const subscriptions = Array.from(this.subscriptions).map(s => {
+      // tslint:disable-next-line:no-unused-expression
+      this.getWs() && this.getWs().unsubscribe(s);
+    });
+    await Promise.all(subscriptions);
+    if (this.subscriptions.size > 0) {
+      this.subscriptions.clear();
+    }
+  };
+
   reset = () => {
-    return;
+    this.unsubscribeFromCandle();
   };
 
   private createWidget = (instrument: InstrumentModel) => {
@@ -142,7 +159,8 @@ class ChartStore extends BaseStore {
         ChartStore.config,
         instrument!,
         new PriceApi(this),
-        this.getWs()
+        this.getWs(),
+        this.subscribeToCandlesWithResolutions
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
