@@ -191,7 +191,9 @@ describe('Date functions', () => {
       '240': to - dates.month * 3,
       '360': to - dates.month * 6,
       '720': to - dates.month * 7,
-      '1D': to - dates.year * 1.5
+      '1D': to - dates.year * 1.5,
+      '1W': to - dates.year * 15,
+      '1M': to - dates.year * 15
     };
     let resolution;
 
@@ -262,9 +264,11 @@ describe('Date functions', () => {
       );
     });
 
-    it('range for 1 week resolution should return from parameter as is', () => {
+    it('range for 1 week resolution should starts from 15 years before now', () => {
       resolution = '1W';
-      expect(dateFns.candlesLimit(from, to, resolution)).toBe(from);
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions['1W']
+      );
     });
   });
 });
