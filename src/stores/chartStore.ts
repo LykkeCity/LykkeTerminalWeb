@@ -2,6 +2,7 @@ import {pathOr} from 'rambda';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {timeZones} from '../constants/chartTimezones';
+import {InstrumentModel} from '../models/index';
 import {dateFns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -34,7 +35,10 @@ class ChartStore extends BaseStore {
   };
 
   private widget: any;
+  private settings: any;
   private shouldHandleOutsideClick = false;
+
+  private isAuth: boolean = this.rootStore.authStore.isAuth;
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
@@ -55,7 +59,7 @@ class ChartStore extends BaseStore {
     });
   };
 
-  renderChart = () => {
+  renderChart = async () => {
     this.shouldHandleOutsideClick = false;
 
     const instrument = this.rootStore.uiStore.selectedInstrument;
@@ -63,6 +67,63 @@ class ChartStore extends BaseStore {
     if (!chartContainerExists || !(window as any).TradingView || !instrument) {
       return;
     }
+
+    chartContainerExists.style.display = 'none';
+
+    this.settings = this.updateSettings(defaultSettings);
+    if (this.isAuth) {
+      await this.load()
+        .then((res: any) => {
+          this.settings = this.updateSettings(JSON.parse(res.Data));
+        })
+        .catch(err => {
+          if (err.status === 404) {
+            this.settings = this.updateSettings(defaultSettings);
+          }
+        });
+    }
+
+    this.createWidget(instrument);
+
+    this.widget.onChartReady(() => {
+      this.bindClickOutside();
+
+      if (this.isAuth) {
+        this.widget.subscribe('onAutoSaveNeeded', () =>
+          this.widget.save(this.save)
+        );
+
+        this.widget.subscribe('onIntervalChange', () => {
+          setTimeout(() => this.widget.save(this.save), 100);
+        });
+      }
+
+      chartContainerExists.style.display = 'block';
+    });
+  };
+
+  save = (settings: any) => {
+    this.api.save({Data: JSON.stringify(settings)});
+  };
+
+  load = () => this.api.load();
+
+  resetToDefault = () => {
+    if (this.widget) {
+      this.widget.load(this.updateSettings(defaultSettings));
+    }
+  };
+
+  reset = () => {
+    return;
+  };
+
+  private createWidget = (instrument: InstrumentModel) => {
+    const rightOffset =
+      this.settings.charts[0].timeScale.m_rightOffset < 0
+        ? this.settings.charts[0].timeScale.m_rightOffset
+        : 0;
+    const barSpacing = this.settings.charts[0].timeScale.m_barSpacing;
 
     this.widget = new (window as any).TradingView.widget({
       customFormatters: {
@@ -124,58 +185,14 @@ class ChartStore extends BaseStore {
           'rgba(140, 148, 160, 0.4)',
         'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
 
-        'timeScale.rightOffset': 0,
+        'timeScale.rightOffset': rightOffset,
+        'timeScale.barSpacing': barSpacing,
         timezone
       },
-      custom_css_url: process.env.PUBLIC_URL + '/chart.css'
+      custom_css_url: process.env.PUBLIC_URL + '/chart.css',
+      saved_data: this.settings,
+      auto_save_delay: 2
     });
-    chartContainerExists.style.display = 'none';
-    if (this.rootStore.authStore.isAuth) {
-      this.widget.onChartReady(() => {
-        this.bindClickOutside();
-        this.load()
-          .then((res: any) => {
-            if (res && res.Data) {
-              const settings = JSON.parse(res.Data);
-
-              this.widget.load(this.updateSettings(settings));
-            }
-            chartContainerExists.style.display = 'block';
-          })
-          .catch(err => {
-            if (err.status === 404) {
-              this.widget.load(this.updateSettings(defaultSettings));
-            }
-            chartContainerExists.style.display = 'block';
-          });
-        this.widget.subscribe('onAutoSaveNeeded', () => {
-          this.widget.save(this.save);
-        });
-      });
-    } else {
-      this.widget.onChartReady(() => {
-        this.bindClickOutside();
-        this.widget.load(this.updateSettings(defaultSettings));
-
-        chartContainerExists.style.display = 'block';
-      });
-    }
-  };
-
-  save = (settings: any) => {
-    this.api.save({Data: JSON.stringify(settings)});
-  };
-
-  load = () => this.api.load();
-
-  resetToDefault = () => {
-    if (this.widget) {
-      this.widget.load(this.updateSettings(defaultSettings));
-    }
-  };
-
-  reset = () => {
-    return;
   };
 
   private updateSettings = (settings: any) => {
