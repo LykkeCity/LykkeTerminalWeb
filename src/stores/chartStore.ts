@@ -117,8 +117,22 @@ class ChartStore extends BaseStore {
     }
   };
 
+  subscribeToCandlesWithResolutions = (s: ISubscription) =>
+    this.subscriptions.add(s);
+
+  unsubscribeFromCandle = async () => {
+    const subscriptions = Array.from(this.subscriptions).map(s => {
+      // tslint:disable-next-line:no-unused-expression
+      this.getWs() && this.getWs().unsubscribe(s);
+    });
+    await Promise.all(subscriptions);
+    if (this.subscriptions.size > 0) {
+      this.subscriptions.clear();
+    }
+  };
+
   reset = () => {
-    return;
+    this.unsubscribeFromCandle();
   };
 
   private createWidget = (instrument: InstrumentModel) => {
@@ -210,24 +224,6 @@ class ChartStore extends BaseStore {
     );
 
     return settings;
-  };
-
-  subscribeToCandlesWithResolutions = (s: ISubscription) =>
-    this.subscriptions.add(s);
-
-  unsubscribeFromCandle = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(s => {
-      // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe(s);
-    });
-    await Promise.all(subscriptions);
-    if (this.subscriptions.size > 0) {
-      this.subscriptions.clear();
-    }
-  };
-
-  reset = () => {
-    this.unsubscribeFromCandle();
   };
 }
 
