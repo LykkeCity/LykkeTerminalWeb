@@ -190,7 +190,10 @@ export const DisclaimerNotification = styled.div`
 `;
 
 export const Body = styled.div`
-  font-size: ${rem(16)};
+  font-family: 'Proxima Nova';
+  font-size: 12px;
+  line-height: 1.14;
+  margin-top: 12px;
   color: ${colors.white};
   margin-top: ${rem(14)};
 `;
@@ -201,4 +204,10 @@ export const Title = styled.div`
   font-weight: bold;
   line-height: 0.8;
   color: ${colors.white};
+`;
+
+export const Link = styled.a`
+  color: ${colors.white};
+  cursor: pointer;
+  text-decoration: underline;
 `;
