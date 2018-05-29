@@ -1,7 +1,7 @@
+import {ChartDataFeed} from '../';
 import {candlesLimit} from '../../constants/chartDefaultSettings';
 import dates from '../../constants/dateKeys';
 import {InstrumentModel} from '../../models';
-import {ChartDataFeed} from '../';
 
 const api: any = {
   fetchCandles: jest.fn()
@@ -69,7 +69,7 @@ fdescribe('chart data feed', () => {
     chartDataFeed.filterAndLimitBars(bars);
 
     expect(chartDataFeed.getTimeRange.barsCount).toBe(candlesLimit);
-    expect(chartDataFeed.getTimeRange.isLimitReached).toBeTruthy();
+    expect(chartDataFeed.getTimeRange.isCandlesLimitReached).toBeTruthy();
   });
 
   it('filterAndLimitBars method should count bars but limit is not reached', () => {
@@ -78,7 +78,7 @@ fdescribe('chart data feed', () => {
     chartDataFeed.filterAndLimitBars(bars);
 
     expect(chartDataFeed.getTimeRange.barsCount).toBe(300);
-    expect(chartDataFeed.getTimeRange.isLimitReached).toBeFalsy();
+    expect(chartDataFeed.getTimeRange.isCandlesLimitReached).toBeFalsy();
   });
 
   it('filterAndLimitBars method should set limit and count bars when getBars was called several times', () => {
@@ -88,7 +88,7 @@ fdescribe('chart data feed', () => {
     chartDataFeed.filterAndLimitBars(bars);
 
     expect(chartDataFeed.getTimeRange.barsCount).toBe(candlesLimit);
-    expect(chartDataFeed.getTimeRange.isLimitReached).toBeTruthy();
+    expect(chartDataFeed.getTimeRange.isCandlesLimitReached).toBeTruthy();
   });
 
   it('filterAndLimitBars method should set limit and count bars when getBars was called several times', () => {
@@ -111,7 +111,7 @@ fdescribe('chart data feed', () => {
     chartDataFeed.resetTimeRange('BTC/USD', '1W');
 
     expect(chartDataFeed.getTimeRange.barsCount).toBe(0);
-    expect(chartDataFeed.getTimeRange.isLimitReached).toBeFalsy();
+    expect(chartDataFeed.getTimeRange.isCandlesLimitReached).toBeFalsy();
     expect(chartDataFeed.getTimeRange.symbol).toBe('BTC/USD');
     expect(chartDataFeed.getTimeRange.resolution).toBe('1W');
   });
