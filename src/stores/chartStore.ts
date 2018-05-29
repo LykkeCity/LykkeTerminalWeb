@@ -35,7 +35,7 @@ class ChartStore extends BaseStore {
   };
 
   private widget: any;
-  private settings: any = defaultSettings;
+  private settings: any;
   private shouldHandleOutsideClick = false;
 
   private isAuth: boolean = this.rootStore.authStore.isAuth;
@@ -61,7 +61,6 @@ class ChartStore extends BaseStore {
 
   renderChart = async (instrument: InstrumentModel) => {
     this.shouldHandleOutsideClick = false;
-    this.settings = defaultSettings;
 
     const chartContainerExists = document.getElementById('tv_chart_container');
     if (!chartContainerExists || !(window as any).TradingView) {
