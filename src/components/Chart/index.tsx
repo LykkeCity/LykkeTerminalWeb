@@ -2,10 +2,9 @@ import {connect} from '../connect';
 import Chart, {ChartProps} from './Chart';
 
 const ConnectedChart = connect<ChartProps>(
-  ({chartStore, referenceStore, uiStore}) => ({
+  ({chartStore, referenceStore}) => ({
     onReset: chartStore.resetToDefault,
-    renderChart: chartStore.renderChart,
-    selectedInstrument: uiStore.selectedInstrument
+    renderChart: chartStore.renderChart
   }),
   Chart
 );

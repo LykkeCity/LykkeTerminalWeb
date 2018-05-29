@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {InstrumentModel} from '../../models';
 import {
   ChartContainer,
   ChartWrapper,
@@ -10,7 +9,6 @@ import {
 export interface ChartProps {
   onReset: () => void;
   renderChart: any;
-  selectedInstrument: InstrumentModel | null;
 }
 
 class Chart extends React.Component<ChartProps> {
@@ -19,9 +17,7 @@ class Chart extends React.Component<ChartProps> {
   }
 
   componentDidMount() {
-    if (this.props.selectedInstrument) {
-      this.props.renderChart(this.props.selectedInstrument);
-    }
+    this.props.renderChart();
   }
 
   render() {
