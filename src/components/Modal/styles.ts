@@ -55,7 +55,6 @@ export const SessionQRConfirm = styled(Modal)`
 
 export const Button = styled.button`
   color: ${colors.white};
-  width: ${rem(152)};
   height: ${rem(49)};
   border-radius: 4px;
   outline: none;
@@ -79,11 +78,13 @@ export const ModalReminder = styled.div`
 `;
 
 export const ApplyButton = styled(Button)`
+  width: 48%;
   background-color: #0388ef;
   border: solid 1px #0388ef;
 `;
 
 export const CancelButton = styled(Button)`
+  width: 48%;
   background: transparent;
   border: solid 1px ${greyButton.borderColor};
 `;
