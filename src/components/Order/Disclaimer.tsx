@@ -6,7 +6,7 @@ export const Disclaimer = () => (
     <Title>Attention</Title>
     <Body>
       Due to the EOS migration, deposits and withdrawals are disabled until
-      further notice.
+      further notice
     </Body>
   </DisclaimerNotification>
 );
