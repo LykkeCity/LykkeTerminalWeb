@@ -3,7 +3,7 @@ import {Body, DisclaimerNotification, Title} from './styles';
 
 export const Disclaimer = () => (
   <DisclaimerNotification>
-    <Title>Attention!</Title>
+    <Title>Attention</Title>
     <Body>
       Due to the EOS migration, deposits and withdrawals are disabled until
       further notice.
