@@ -30,7 +30,7 @@ class UiStore extends BaseStore {
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
-  @observable showDisclaimer: boolean = false;
+  @observable isDisclaimerShown: boolean = false;
   @observable private isReadOnlyMode: boolean;
 
   constructor(store: RootStore) {
@@ -127,6 +127,7 @@ class UiStore extends BaseStore {
     instrumentStorage.set(JSON.stringify(selectedInstrument));
     this.selectedInstrument = selectedInstrument!;
     this.rootStore.chartStore.renderChart();
+    this.isDisclaimerShown = this.hasAsset(selectedInstrument!, 'EOS');
   };
 
   @action search = (term: string) => (this.searchTerm = term);

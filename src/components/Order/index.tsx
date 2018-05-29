@@ -30,7 +30,7 @@ const ConnectedOrder = connect(
     balanceListStore: {tradingWalletBalances: getBalance},
     orderBookStore: {bestAsk, bestBid},
     orderStore: {placeOrder},
-    uiStore: {selectedInstrument: instrument, readOnlyMode, showDisclaimer},
+    uiStore: {selectedInstrument: instrument, readOnlyMode, isDisclaimerShown},
     referenceStore,
     uiOrderStore: {
       handlePriceArrowClick,
@@ -101,7 +101,7 @@ const ConnectedOrder = connect(
     isCurrentSideSell,
     setMarket,
     setSide,
-    showDisclaimer
+    isDisclaimerShown
   }),
   withAuth(Order)
 );
