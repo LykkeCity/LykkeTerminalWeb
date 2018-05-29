@@ -10,6 +10,7 @@ import {precisionFloor} from '../../utils/math';
 import {resetPercentage, setActivePercentage} from '../../utils/order';
 import ConfirmModal from '../Modal/ConfirmModal';
 import ActionChoiceButton from './ActionChoiceButton';
+import {Disclaimer} from './Disclaimer';
 import MarketChoiceButton from './MarketChoiceButton';
 import OrderLimit from './OrderLimit';
 import OrderMarket from './OrderMarket';
@@ -70,6 +71,7 @@ interface OrderProps {
   currentMarket: OrderType;
   isCurrentSideSell: boolean;
   resetOrder: () => void;
+  isDisclaimerShown: boolean;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -257,6 +259,9 @@ class Order extends React.Component<OrderProps, OrderState> {
       ask,
       baseAssetId,
       quoteAssetId,
+      isDisclaimerShown
+    } = this.props;
+    const {
       priceValue,
       quantityValue,
       currentMarket,
@@ -399,6 +404,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             message={this.getConfirmMessage()}
           />
         )}
+        {isDisclaimerShown && <Disclaimer />}
       </React.Fragment>
     );
   }

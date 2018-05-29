@@ -30,6 +30,7 @@ class UiStore extends BaseStore {
   @observable showOrdersSelect: boolean = false;
   @observable showSessionNotification: boolean = true;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
+  @observable isDisclaimerShown: boolean = false;
   @observable private isReadOnlyMode: boolean;
 
   constructor(store: RootStore) {
@@ -100,6 +101,13 @@ class UiStore extends BaseStore {
     );
   }
 
+  hasAsset = (
+    selectedInstrument: InstrumentModel,
+    assetId: string
+  ): boolean => {
+    return selectedInstrument.displayName!.split('/').indexOf(assetId) !== -1;
+  };
+
   @action
   readonly toggleAssetsSelect = () =>
     (this.showAssetsSelect = !this.showAssetsSelect);
@@ -119,6 +127,7 @@ class UiStore extends BaseStore {
     instrumentStorage.set(JSON.stringify(selectedInstrument));
     this.selectedInstrument = selectedInstrument!;
     this.rootStore.chartStore.renderChart();
+    this.isDisclaimerShown = this.hasAsset(selectedInstrument!, 'EOS');
   };
 
   @action search = (term: string) => (this.searchTerm = term);
