@@ -128,7 +128,9 @@ class Chart extends React.Component<ChartProps> {
     const minBidPrice = Math.min(...this.bids.map(a => a.price));
     const maxBidPrice = Math.max(...this.bids.map(a => a.price));
     const start =
-      this.mid > maxBidPrice ? (maxBidPrice + this.mid) / 2 : maxBidPrice;
+      this.mid > maxBidPrice
+        ? (maxBidPrice + this.mid) / 2
+        : maxBidPrice + this.mid / 2;
     const end = minBidPrice;
     const priceDifference = start - bid.price;
     const priceRange = start - end;
