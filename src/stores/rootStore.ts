@@ -34,6 +34,7 @@ import {
   SessionStore,
   SettingsStore,
   TradeStore,
+  UiOrderBookStore,
   UiOrderStore,
   UiStore,
   WatchlistStore
@@ -61,6 +62,7 @@ class RootStore {
   readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
+  readonly uiOrderBookStore: UiOrderBookStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -90,6 +92,7 @@ class RootStore {
       this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
+      this.uiOrderBookStore = new UiOrderBookStore(this);
     }
   }
 

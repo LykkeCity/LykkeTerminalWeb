@@ -1,4 +1,5 @@
 import {action, computed, observable, reaction} from 'mobx';
+import {pathOr} from 'rambda';
 import {keys} from '../models';
 import {
   InstrumentModel,
@@ -18,9 +19,6 @@ class UiStore extends BaseStore {
   }
 
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
-
-  stateFns: any = [];
-  initPriceUpdate: any;
 
   @observable showAssetsSelect: boolean = false;
   @observable searchTerm: string = '';
@@ -54,6 +52,17 @@ class UiStore extends BaseStore {
           subscribe(this.getWs());
 
           const {
+            setQuantityAccuracy,
+            setPriceAccuracy,
+            setPriceValueWithFixed,
+            setQuantityValueWithFixed
+          } = this.rootStore.uiOrderStore;
+          setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
+          setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
+          setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
+          setQuantityValueWithFixed(0);
+
+          const {
             resetTrades,
             fetchTrades,
             resetPublicTrades,
@@ -74,8 +83,6 @@ class UiStore extends BaseStore {
             subscribeToPublicTrades
           )();
 
-          this.stateFns.forEach((f: any) => f && f(instrument));
-
           const {
             fetchLastPrice,
             fetchDailyCandle,
@@ -92,10 +99,6 @@ class UiStore extends BaseStore {
       }
     );
   }
-
-  initPriceFn = (fn: any) => {
-    this.initPriceUpdate = fn;
-  };
 
   @action
   readonly toggleAssetsSelect = () =>
@@ -144,7 +147,6 @@ class UiStore extends BaseStore {
   reset = () => {
     this.searchTerm = '';
     this.searchWalletName = Watchlists.All;
-    this.stateFns = [];
   };
 }
 

@@ -25,12 +25,16 @@ export interface OrderLimitProps extends OrderBasicFormProps {
   price: string;
   buttonMessage: string;
   isEditForm?: boolean;
+  onPriceArrowClick: (operation: string) => void;
+  onPriceChange: (value: string) => void;
 }
 
 const OrderLimit: React.SFC<OrderLimitProps> = ({
   action,
-  onChange,
-  onArrowClick,
+  onPriceChange,
+  onQuantityChange,
+  onPriceArrowClick,
+  onQuantityArrowClick,
   quantity,
   quantityAccuracy,
   price,
@@ -47,8 +51,29 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   balance,
   isEditForm,
   baseAssetAccuracy,
-  balanceAccuracy
+  balanceAccuracy,
+  updatePercentageState
 }) => {
+  const handlePriceArrowClick = (operation: string) => () => {
+    onPriceArrowClick(operation);
+    updatePercentageState(OrderInputs.Price);
+  };
+
+  const handleQuantityArrowClick = (operation: string) => () => {
+    onQuantityArrowClick(operation);
+    updatePercentageState(OrderInputs.Quantity);
+  };
+
+  const handlePriceChange = () => (e: any) => {
+    onPriceChange(e.target.value);
+    updatePercentageState(OrderInputs.Price);
+  };
+
+  const handleQuantityChange = () => (e: any) => {
+    onQuantityChange(e.target.value);
+    updatePercentageState(OrderInputs.Quantity);
+  };
+
   return (
     <Form>
       <InputControl style={{borderBottom: '1px solid #333'}}>
@@ -58,8 +83,8 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         <NumberInput
           value={price}
           id={OrderInputs.Price}
-          onChange={onChange(priceAccuracy)}
-          onArrowClick={onArrowClick(priceAccuracy)}
+          onChange={handlePriceChange}
+          onArrowClick={handlePriceArrowClick}
         />
       </InputControl>
       <InputControl>
@@ -73,8 +98,8 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         <NumberInput
           value={quantity}
           id={OrderInputs.Quantity}
-          onChange={onChange(quantityAccuracy)}
-          onArrowClick={onArrowClick(quantityAccuracy)}
+          onChange={handleQuantityChange}
+          onArrowClick={handleQuantityArrowClick}
         />
       </InputControl>
       <Flex justify={'space-between'}>

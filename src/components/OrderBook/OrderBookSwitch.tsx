@@ -4,7 +4,6 @@ import * as React from 'react';
 import {OrderBookDisplayType} from '../../models';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
-// import {capitalize} from '../../utils';
 import {StyledSwitch} from './styles';
 
 interface OrderBookSwitchProps {

@@ -1,235 +1,196 @@
-import {precisionFloor} from '../utils/math';
+import {computed, observable} from 'mobx';
+import {curry} from 'rambda';
+import {OrderType} from '../models';
+import ArrowDirection from '../models/arrowDirection';
+import Side from '../models/side';
+import {onArrowClick, onValueChange} from '../utils/inputNumber';
+import {getPercentsOf, precisionFloor} from '../utils/math';
 import {
-  getPostDecimalsLength,
-  isOnlyNumbers,
-  substringLast,
-  substringMinus,
-  substringZero
-} from '../utils/string';
+  getPercentOfValueForLimit,
+  isAmountExceedLimitBalance
+} from '../utils/order';
 import {BaseStore, RootStore} from './index';
 
 class UiOrderStore extends BaseStore {
-  constructor(store: RootStore) {
-    super(store);
+  @computed
+  get getComputedPriceValue() {
+    return this.priceValue;
   }
 
-  onArrowClick = (options: {
-    field: string;
-    operation: string;
-    accuracy: number;
-    value: string;
-  }) => {
-    const {field, operation, accuracy, value} = options;
-    const tempObj = {};
+  @computed
+  get getComputedQuantityValue() {
+    return this.quantityValue;
+  }
 
-    switch (operation) {
-      case 'up':
-        tempObj[field] = (
-          parseFloat(value) + Math.pow(10, -1 * accuracy)
-        ).toFixed(accuracy);
-        break;
-      case 'down':
-        let newVal = parseFloat(value) - Math.pow(10, -1 * accuracy);
-        newVal = newVal < 0 ? 0 : newVal;
-        tempObj[field] = newVal.toFixed(accuracy);
-        break;
+  @computed
+  get currentMarket() {
+    return this.market;
+  }
+
+  @computed
+  get isCurrentSideSell() {
+    return this.side === Side.Sell;
+  }
+
+  handlePriceChange: (price: string) => void;
+  handleQuantityChange: (price: string) => void;
+  handlePriceArrowClick: (operation: ArrowDirection) => void;
+  handleQuantityArrowClick: (operation: ArrowDirection) => void;
+  onPercentChangeForLimit: (
+    percents: number,
+    value: number,
+    side: Side
+  ) => number;
+
+  @observable private priceValue: string = '0';
+  @observable private quantityValue: string = '0';
+  @observable private market: OrderType = OrderType.Limit;
+  @observable private side: Side = Side.Sell;
+  private priceAccuracy: number = 2;
+  private quantityAccuracy: number = 2;
+
+  constructor(store: RootStore) {
+    super(store);
+
+    this.handlePriceChange = curry(onValueChange)(
+      this.setPriceValue,
+      this.getPriceAccuracy
+    );
+    this.handleQuantityChange = curry(onValueChange)(
+      this.setQuantityValue,
+      this.getQuantityAccuracy
+    );
+    this.handlePriceArrowClick = curry(onArrowClick)(
+      this.getPriceValue,
+      this.getPriceAccuracy,
+      this.setPriceValueWithFixed
+    );
+    this.handleQuantityArrowClick = curry(onArrowClick)(
+      this.getQuantityValue,
+      this.getQuantityAccuracy,
+      this.setQuantityValueWithFixed
+    );
+
+    this.onPercentChangeForLimit = curry(getPercentOfValueForLimit)(
+      this.getPriceValue,
+      this.getQuantityAccuracy
+    );
+  }
+
+  setPriceValueWithFixed = (price: number) =>
+    (this.priceValue = price.toFixed(this.priceAccuracy));
+  setQuantityValueWithFixed = (quantity: number) =>
+    (this.quantityValue = quantity.toFixed(this.quantityAccuracy));
+
+  setPriceValue = (price: string) => (this.priceValue = price);
+  setQuantityValue = (quantity: string) => (this.quantityValue = quantity);
+
+  getPriceValue = () => this.priceValue;
+  getQuantityValue = () => this.quantityValue;
+
+  getPriceAccuracy = () => this.priceAccuracy;
+  getQuantityAccuracy = () => this.quantityAccuracy;
+  setPriceAccuracy = (priceAcc: number) => (this.priceAccuracy = priceAcc);
+  setQuantityAccuracy = (quantityAcc: number) =>
+    (this.quantityAccuracy = quantityAcc);
+
+  setMarket = (type: OrderType) => (this.market = type);
+  setSide = (side: Side) => (this.side = side);
+
+  handlePriceClickFromOrderBook = (price: number, side: Side) => {
+    this.setPriceValueWithFixed(price);
+    if (this.market !== OrderType.Limit) {
+      this.setQuantityValueWithFixed(0);
+      this.setMarket(OrderType.Limit);
     }
-
-    return tempObj;
+    this.setSide(side);
   };
 
-  onValueChange = (options: {
-    value: string;
-    field: string;
-    accuracy: number;
-  }) => {
-    let {value} = options;
-    const {field, accuracy} = options;
-    if (!isOnlyNumbers(value)) {
-      return;
+  handleVolumeClickFromOrderBook = (volume: number, side: Side) => {
+    this.setQuantityValueWithFixed(volume);
+    this.setMarket(OrderType.Market);
+    this.setSide(side);
+  };
+
+  handlePercentageChange = (config: any) => {
+    const {balance, baseAssetId, quoteAssetId, percents} = config;
+
+    if (this.market === OrderType.Limit) {
+      this.setQuantityValueWithFixed(
+        this.onPercentChangeForLimit(percents, balance, this.side)
+      );
+    } else {
+      this.setQuantityValueWithFixed(
+        this.onPercentChangeForMarket(
+          percents,
+          balance,
+          quoteAssetId,
+          baseAssetId
+        )
+      );
     }
-    value = substringZero(value);
-    value = substringMinus(value);
-
-    if (getPostDecimalsLength(value) > accuracy) {
-      value = substringLast(value);
-    }
-    value = value === '' ? '0' : value;
-
-    const tempObj = {};
-    tempObj[field] = value;
-    return tempObj;
   };
 
-  setActivePercentage = (percentage: any[], index?: number) => {
-    let value: number = 0;
-
-    if (index === undefined) {
-      value = 100;
-    }
-
-    percentage.forEach((item: any, i: number) => {
-      if (index === i) {
-        item.isActive = true;
-        value = item.percent;
-      } else {
-        item.isActive = false;
-      }
-    });
-
-    return {
-      value,
-      updatedPercentage: percentage
-    };
-  };
-
-  handlePercentageChange = async (config: any) => {
-    const {
-      isLimitActive = true,
-      isSellActive,
-      isMarketActive = false,
-      balance,
-      quantityAccuracy,
-      priceAccuracy,
-      isInverted,
-      baseAssetId,
-      quoteAssetId,
-      value,
-      currentPrice
-    } = config;
-
-    let quantityValue: any;
-    if (isLimitActive) {
-      if (isSellActive) {
-        quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
-      } else if (!isSellActive) {
-        const convertedBalance = balance / currentPrice;
-        quantityValue = this.getPartlyValue(
-          value,
-          convertedBalance,
-          quantityAccuracy
-        );
-      }
-    } else if (isMarketActive) {
-      if (isSellActive) {
-        if (!isInverted) {
-          quantityValue = this.getPartlyValue(value, balance, quantityAccuracy);
-        } else {
-          const convertedBalance = this.rootStore.marketStore.convert(
-            balance,
-            baseAssetId,
-            quoteAssetId,
-            this.rootStore.referenceStore.getInstrumentById
-          );
-          quantityValue = this.getPartlyValue(
-            value,
-            convertedBalance,
-            priceAccuracy
-          );
-        }
-      } else {
-        if (isInverted) {
-          quantityValue = this.getPartlyValue(value, balance, priceAccuracy);
-        } else {
-          const convertedBalance = this.rootStore.marketStore.convert(
-            balance,
-            quoteAssetId,
-            baseAssetId,
-            this.rootStore.referenceStore.getInstrumentById
-          );
-          quantityValue = this.getPartlyValue(
-            value,
-            convertedBalance,
-            quantityAccuracy
-          );
-        }
-      }
-    }
-    const tempObj: any = {};
-    if (quantityValue) {
-      tempObj.quantityValue = quantityValue;
-    }
-    return tempObj;
-  };
-
-  getPartlyValue = (percent: number, balance: number, accuracy: number) => {
-    return precisionFloor(percent / 100 * balance, accuracy);
-  };
-
-  updatePercentageState = (percentage: any[], index: number) => {
-    let value: number = 0;
-    percentage.forEach((item: any, i: number) => {
-      if (index === i) {
-        item.isActive = true;
-        value = item.percent;
-      } else {
-        item.isActive = false;
-      }
-    });
-    return value;
-  };
-
-  resetPercentage = (percentage: any[]) => {
-    percentage.forEach((item: any) => {
-      item.isActive = false;
-    });
-  };
-
-  isLimitInvalid = (
-    isSell: boolean,
-    quantityValue: string,
-    priceValue: string,
-    baseAssetBalance: number,
-    quoteAssetBalance: number,
-    priceAccuracy: number,
-    quantityAccuracy: number
+  onPercentChangeForMarket = (
+    percents: number,
+    value: number,
+    quoteAssetId: string,
+    baseAssetId: string
   ) => {
+    if (this.isCurrentSideSell) {
+      return getPercentsOf(percents, value, this.getQuantityAccuracy());
+    }
+    const convertedBalance = this.rootStore.marketStore.convert(
+      value,
+      quoteAssetId,
+      baseAssetId,
+      this.rootStore.referenceStore.getInstrumentById
+    );
+    return getPercentsOf(
+      percents,
+      convertedBalance,
+      this.getQuantityAccuracy()
+    );
+  };
+
+  isLimitInvalid = (baseAssetBalance: number, quoteAssetBalance: number) => {
     return (
-      !+priceValue ||
-      !+quantityValue ||
-      this.isAmountExceedLimitBalance(
-        isSell,
-        quantityValue,
-        priceValue,
+      !+this.priceValue ||
+      !+this.quantityValue ||
+      isAmountExceedLimitBalance(
+        this.isCurrentSideSell,
+        this.quantityValue,
+        this.priceValue,
         baseAssetBalance,
         quoteAssetBalance,
-        priceAccuracy,
-        quantityAccuracy
+        this.priceAccuracy,
+        this.quantityAccuracy
       )
     );
   };
 
   isMarketInvalid = (
-    isSell: boolean,
-    quantityValue: string,
     baseAssetId: string,
     quoteAssetId: string,
     baseAssetBalance: number,
-    quoteAssetBalance: number,
-    quantityAccuracy: number
+    quoteAssetBalance: number
   ) => {
     return (
-      !+quantityValue ||
+      !+this.quantityValue ||
       this.isAmountExceedMarketBalance(
-        isSell,
-        quantityValue,
         baseAssetBalance,
         quoteAssetBalance,
         baseAssetId,
-        quoteAssetId,
-        quantityAccuracy
+        quoteAssetId
       )
     );
   };
 
   isAmountExceedMarketBalance = (
-    isSell: boolean,
-    quantityValue: string,
     baseAssetBalance: number,
     quoteAssetBalance: number,
     baseAssetId: string,
-    quoteAssetId: string,
-    quantityAccuracy: number
+    quoteAssetId: string
   ) => {
     const convertedBalance = this.rootStore.marketStore.convert(
       quoteAssetBalance,
@@ -237,25 +198,16 @@ class UiOrderStore extends BaseStore {
       baseAssetId,
       this.rootStore.referenceStore.getInstrumentById
     );
-    return isSell
-      ? +quantityValue > baseAssetBalance
-      : +quantityValue > precisionFloor(+convertedBalance, quantityAccuracy);
+    return this.isCurrentSideSell
+      ? +this.quantityValue > baseAssetBalance
+      : +this.quantityValue >
+          precisionFloor(+convertedBalance, this.quantityAccuracy);
   };
 
-  isAmountExceedLimitBalance = (
-    isSell: boolean,
-    quantityValue: string,
-    priceValue: string,
-    baseAssetBalance: number,
-    quoteAssetBalance: number,
-    priceAccuracy: number,
-    quantityAccuracy: number
-  ) =>
-    isSell
-      ? +quantityValue > baseAssetBalance
-      : parseFloat(priceValue) *
-          precisionFloor(parseFloat(quantityValue), quantityAccuracy) >
-        quoteAssetBalance;
+  resetOrder = () => {
+    this.setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
+    this.setQuantityValueWithFixed(0);
+  };
 
   // tslint:disable-next-line:no-empty
   reset = () => {};

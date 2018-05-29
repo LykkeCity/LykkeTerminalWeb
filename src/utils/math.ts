@@ -41,3 +41,9 @@ export const decimalAdjust = (type: string, value: any, exp: number) => {
   value = value.toString().split('e');
   return +(value[0] + 'e' + (value[1] ? +value[1] + exp : exp));
 };
+
+export const getPercentsOf = (
+  percents: number,
+  value: number,
+  accuracy: number
+) => precisionFloor(percents / 100 * value, accuracy);

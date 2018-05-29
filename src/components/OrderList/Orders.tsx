@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {OrderModel, SortDirection} from '../../models';
-import Types from '../../models/modals';
 import {HBar} from '../Bar';
+import {EditOrder} from '../Modal';
 import {
   checkDataForSorting,
   sortData,
@@ -18,13 +18,20 @@ interface OrdersProps extends OrderActions {
   orders: OrderModel[];
 }
 
-class Blotter extends React.Component<OrdersProps, TableSortState> {
+interface OrdersState extends TableSortState {
+  isEditModal: boolean;
+}
+
+class Blotter extends React.Component<OrdersProps, OrdersState> {
+  private currentEditingOrder: OrderModel;
+
   constructor(props: OrdersProps) {
     super(props);
     this.state = {
       data: this.props.orders,
       sortByParam: '',
-      sortDirection: SortDirection.ASC
+      sortDirection: SortDirection.ASC,
+      isEditModal: false
     };
   }
 
@@ -40,18 +47,20 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
     );
   };
 
+  handleEditOrder = (order: OrderModel) => (id: string) => {
+    this.currentEditingOrder = order;
+    this.setState({
+      isEditModal: true
+    });
+  };
+
+  handleCloseEditModal = () => {
+    this.setState({
+      isEditModal: false
+    });
+  };
+
   render() {
-    const handleEditOrder = (order: any) => (id: string) => {
-      this.props.addModal(
-        id,
-        // tslint:disable-next-line:no-empty
-        () => {},
-        // tslint:disable-next-line:no-empty
-        () => {},
-        Types.EditOrder,
-        order
-      );
-    };
     const headers: any[] = [
       {
         sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
@@ -120,9 +129,15 @@ class Blotter extends React.Component<OrdersProps, TableSortState> {
         />
         <OrderList
           orders={this.state.data}
-          onEditOrder={handleEditOrder}
+          onEditOrder={this.handleEditOrder}
           onCancelOrder={this.props.cancelOrder}
         />
+        {this.state.isEditModal && (
+          <EditOrder
+            order={this.currentEditingOrder}
+            onClose={this.handleCloseEditModal}
+          />
+        )}
       </React.Fragment>
     );
   }

@@ -23,3 +23,4 @@ export {default as FeeType} from './feeType';
 export {default as SortDirection} from './sortDirection';
 export {default as KycStatuses} from './kycStatuses';
 export {default as ChartType} from './chartType';
+export {default as ArrowDirection} from './arrowDirection';

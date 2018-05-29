@@ -67,7 +67,7 @@ class OrderBookStore extends BaseStore {
 
   private subscriptions: Set<ISubscription> = new Set();
 
-  private isInitFetch: boolean = true;
+  // private isInitFetch: boolean = true;
 
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
@@ -139,7 +139,7 @@ class OrderBookStore extends BaseStore {
   };
 
   fetchAll = async () => {
-    const {selectedInstrument, initPriceUpdate} = this.rootStore.uiStore;
+    const {selectedInstrument} = this.rootStore.uiStore;
     if (selectedInstrument) {
       this.hasPendingItems = true;
       const orders = await this.api
@@ -150,10 +150,6 @@ class OrderBookStore extends BaseStore {
       this.hasPendingItems = false;
       runInAction(() => {
         orders.forEach((levels: any) => this.onNextOrders([levels]));
-        if (this.isInitFetch && initPriceUpdate) {
-          initPriceUpdate(this.bestBid(), selectedInstrument);
-          this.isInitFetch = false;
-        }
       });
     }
   };
@@ -176,8 +172,10 @@ class OrderBookStore extends BaseStore {
     if (selectedInstrument && selectedInstrument.id === AssetPair) {
       const mapToOrders = map(toOrder);
       if (IsBuy) {
+        this.rootStore.uiOrderBookStore.clearBidLevelsCells();
         this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
       } else {
+        this.rootStore.uiOrderBookStore.clearAskLevelsCells();
         this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
       }
     }
@@ -186,7 +184,7 @@ class OrderBookStore extends BaseStore {
   unsubscribe = () => {
     const promises = Array.from(this.subscriptions).map(s => {
       // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe;
+      this.getWs() && this.getWs().unsubscribe(s);
     });
     Promise.all(promises).then(() => {
       if (this.subscriptions.size > 0) {

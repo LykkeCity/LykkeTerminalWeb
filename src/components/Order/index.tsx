@@ -11,8 +11,6 @@ export interface OrderBasicFormProps {
   balance: number;
   isDisable: boolean;
   isSell: boolean;
-  onArrowClick: any;
-  onChange: any;
   onHandlePercentageChange: any;
   onReset?: any;
   onSubmit: any;
@@ -22,45 +20,44 @@ export interface OrderBasicFormProps {
   priceAccuracy: number;
   baseAssetAccuracy?: any;
   balanceAccuracy: number;
+  onQuantityArrowClick: (operation: string) => void;
+  onQuantityChange: (value: string) => void;
+  updatePercentageState: (field: string) => void;
 }
 
 const ConnectedOrder = connect(
   ({
     balanceListStore: {tradingWalletBalances: getBalance},
-    modalStore: {addModal},
-    orderBookStore: {bestAsk, bestBid, mid},
-    orderStore: {placeOrder, updatePriceFn, updateDepthFn},
-    uiStore: {
-      selectedInstrument: instrument,
-      stateFns,
-      initPriceFn,
-      readOnlyMode
-    },
+    orderBookStore: {bestAsk, bestBid},
+    orderStore: {placeOrder},
+    uiStore: {selectedInstrument: instrument, readOnlyMode},
     referenceStore,
     uiOrderStore: {
-      onArrowClick,
-      onValueChange,
+      handlePriceArrowClick,
+      handleQuantityArrowClick,
+      handlePriceChange,
+      handleQuantityChange,
       handlePercentageChange,
-      updatePercentageState,
-      resetPercentage,
-      setActivePercentage,
       isLimitInvalid,
-      isMarketInvalid
+      isMarketInvalid,
+      getPriceAccuracy,
+      getQuantityAccuracy,
+      getComputedPriceValue,
+      getComputedQuantityValue,
+      currentMarket,
+      isCurrentSideSell,
+      setMarket,
+      setSide,
+      resetOrder
     },
     authStore: {isAuth}
   }) => ({
     accuracy: {
-      priceAccuracy: pathOr(2, ['accuracy'], instrument),
-      get quantityAccuracy() {
-        const asset = referenceStore.getAssetById(
-          pathOr('', ['baseAsset', 'id'], instrument)
-        );
-        return asset ? asset.accuracy : 2;
-      },
+      priceAccuracy: getPriceAccuracy(),
+      quantityAccuracy: getQuantityAccuracy(),
       baseAssetAccuracy: pathOr(2, ['baseAsset', 'accuracy'], instrument),
       quoteAssetAccuracy: pathOr(2, ['quoteAsset', 'accuracy'], instrument)
     },
-    addModal,
     ask: bestAsk(),
     baseAssetId: pathOr('', ['baseAsset', 'id'], instrument),
     get baseAssetName() {
@@ -73,20 +70,11 @@ const ConnectedOrder = connect(
     currency: pathOr('', ['id'], instrument),
     isLimitInvalid,
     isMarketInvalid,
-    getAssetById: referenceStore.getAssetById,
     handlePercentageChange,
-    setActivePercentage,
-    initPriceFn,
-    mid: mid(),
-    onArrowClick,
-    onValueChange,
+    handlePriceArrowClick,
+    handleQuantityArrowClick,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
-    resetPercentage,
-    stateFns,
-    updateDepthFn,
-    updatePercentageState,
-    updatePriceFn,
     get baseAssetBalance() {
       const asset = getBalance.find((b: AssetBalanceModel) => {
         const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
@@ -103,7 +91,16 @@ const ConnectedOrder = connect(
     },
     isAuth,
     readOnlyMode,
-    instrument
+    instrument,
+    priceValue: getComputedPriceValue,
+    quantityValue: getComputedQuantityValue,
+    handlePriceChange,
+    handleQuantityChange,
+    resetOrder,
+    currentMarket,
+    isCurrentSideSell,
+    setMarket,
+    setSide
   }),
   withAuth(Order)
 );

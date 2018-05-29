@@ -1,34 +1,19 @@
 import {connect} from '../connect';
-import EditOrder from './EditOrder';
+import EditOrder, {EditOrderProps} from './EditOrder';
 import QRModal from './QRModal';
+import withModal from './withModal';
 
 const ConnectedEditOrderModal = connect(
   ({
     balanceListStore: {tradingWalletBalances: availableBalances},
-    orderListStore: {limitOrders: orders},
     referenceStore: {getInstrumentById},
-    uiOrderStore: {
-      onArrowClick,
-      onValueChange,
-      resetPercentage,
-      handlePercentageChange,
-      setActivePercentage,
-      isLimitInvalid
-    },
     orderStore: {editOrder}
   }) => ({
     editOrder,
     availableBalances,
-    getInstrumentById,
-    handlePercentageChange,
-    onArrowClick,
-    onValueChange,
-    orders,
-    resetPercentage,
-    setActivePercentage,
-    isLimitInvalid
+    getInstrumentById
   }),
-  EditOrder
+  withModal<EditOrderProps>(EditOrder)
 );
 
 const ConnectedQRModal = connect(

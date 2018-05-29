@@ -6,7 +6,6 @@ import {withContentRect} from 'react-measure';
 import {normalizeVolume} from '../../utils';
 import {HBar} from '../Bar';
 import {connect} from '../connect';
-import {withScroll} from '../CustomScrollbar';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
 import Figures, {FigureListProps} from './Figures';
@@ -14,10 +13,11 @@ import Header from './Header';
 import {LevelList, LevelListProps} from './LevelList';
 import LevelListItem from './LevelListItem';
 import MyOrders, {MyOrdersProps} from './MyOrders';
-import OrderBookItem from './OrderBookItem';
 
 const LEVEL_HEIGHT = 30;
 export const LEVELS_COUNT = 50;
+export const LEFT_PADDING = 8;
+export const TOP_PADDING = 10;
 
 const formatWithAccuracy = (
   num: number | string,
@@ -31,59 +31,6 @@ const formatWithAccuracy = (
       ...options
     })) ||
   '--';
-
-export const ConnectedOrderBook2 = connect(
-  ({
-    modalStore: {addModal},
-    orderBookStore: {
-      asks,
-      bids,
-      mid,
-      spreadRelative,
-      seedSpan,
-      span,
-      nextSpan,
-      prevSpan,
-      showMyOrders,
-      hasPendingItems
-    },
-    uiStore: {selectedInstrument},
-    orderStore: {cancelOrder, updatePrice, updatePriceAndDepth},
-    priceStore: {lastTradePrice},
-    authStore: {isAuth}
-  }) => {
-    const volumeAccuracy = pathOr(
-      0,
-      ['baseAsset', 'accuracy'],
-      selectedInstrument
-    );
-    const priceAccuracy = pathOr(0, ['accuracy'], selectedInstrument);
-    const midPrice = mid().toFixed(priceAccuracy);
-    return {
-      addModal,
-      asks,
-      bids,
-      cancelOrder,
-      mid: midPrice,
-      spreadRelative,
-      volumeAccuracy,
-      priceAccuracy,
-      updatePrice,
-      updatePriceAndDepth,
-      span,
-      onNextSpan: nextSpan,
-      onPrevSpan: prevSpan,
-      showMyOrders,
-      lastTradePrice,
-      loading: hasPendingItems,
-      isAuth,
-      selectedInstrument
-    };
-  },
-  compose(withScroll, withLoader())(LevelList)
-);
-
-const ConnectedOrderBookItem = observer(OrderBookItem);
 
 const ConnectedBar = connect<BarProps>(
   ({
@@ -108,7 +55,8 @@ const ConnectedBar = connect<BarProps>(
 const ConnectedAsks = connect<LevelListProps>(
   ({
     orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType}
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
+    uiOrderBookStore: {handleAskLevelCellsClick, storeAskLevelCellInfo}
   }) => {
     const levels = concat(asks, bids);
     const vals = map(prop(toLower(orderbookDisplayType)), levels) as number[];
@@ -120,7 +68,10 @@ const ConnectedAsks = connect<LevelListProps>(
       levels: asks,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      normalize
+      normalize,
+      handleOrderBookClick: handleAskLevelCellsClick,
+      storeLevelCellInfo: storeAskLevelCellInfo,
+      isReadOnly: readOnlyMode
     };
   },
   observer(LevelList)
@@ -129,7 +80,8 @@ const ConnectedAsks = connect<LevelListProps>(
 const ConnectedBids = connect<LevelListProps>(
   ({
     orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType}
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
+    uiOrderBookStore: {handleBidLevelCellsClick, storeBidLevelCellInfo}
   }) => {
     const vals = map(prop(toLower(orderbookDisplayType)), [
       ...asks,
@@ -143,7 +95,10 @@ const ConnectedBids = connect<LevelListProps>(
       levels: bids,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      normalize
+      normalize,
+      handleOrderBookClick: handleBidLevelCellsClick,
+      storeLevelCellInfo: storeBidLevelCellInfo,
+      isReadOnly: readOnlyMode
     };
   },
   observer(LevelList)
@@ -161,14 +116,17 @@ const ConnectedFigures = connect<FigureListProps>(
     orderBookStore: {mid, spreadRelative},
     priceStore: {lastTradePrice},
     authStore: {isAuth},
-    uiStore: {selectedInstrument}
+    uiStore: {selectedInstrument, readOnlyMode},
+    uiOrderStore: {handlePriceClickFromOrderBook}
   }) => ({
     lastTradePrice,
     mid: mid(),
     isAuth,
     spreadRelative,
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
-    format: formatWithAccuracy
+    format: formatWithAccuracy,
+    handlePriceClickFromOrderBook,
+    isReadOnly: readOnlyMode
   }),
   Figures
 );
@@ -203,12 +161,12 @@ const ConnectedOrderbook = connect(
         >
           <ConnectedAsks
             height={LEVELS_COUNT * LEVEL_HEIGHT}
-            width={contentRect.client.width || 300}
+            width={contentRect.client.width + LEFT_PADDING || 300}
           />
           {loading ? null : <ConnectedFigures />}
           <ConnectedBids
             height={LEVELS_COUNT * LEVEL_HEIGHT}
-            width={contentRect.client.width || 300}
+            width={contentRect.client.width + LEFT_PADDING || 300}
           />
         </Scrollbars>
       </div>
@@ -226,7 +184,4 @@ const ConnectedMyOrders = connect<MyOrdersProps>(
 );
 
 export default ConnectedOrderbook;
-export {ConnectedOrderBookItem as OrderBookItem};
-export {ConnectedFigures as Figures};
-export {ConnectedMyOrders as MyOrders};
 export {ConnectedLevelListItem as LevelListItem};

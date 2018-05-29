@@ -2,8 +2,9 @@ import {TextConfig} from 'konva';
 import {curry} from 'rambda';
 import React from 'react';
 import {Group, Line, Rect, Text} from 'react-konva';
-import {LEVELS_COUNT} from '.';
+import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from '.';
 import {InstrumentModel, Order, OrderBookDisplayType, Side} from '../../models';
+import OrderBookCellType from '../../models/orderBookCellType';
 import {colors} from '../styled';
 
 const toY = (side: Side, total: number, height: number, idx: number) =>
@@ -12,8 +13,21 @@ const toY = (side: Side, total: number, height: number, idx: number) =>
 const fillBySide = (side: Side) =>
   side === Side.Buy ? colors.buy : colors.sell;
 
-const LevelText: React.SFC<TextConfig> = (props: any) => (
-  <Text fontFamily="Proxima Nova" fontSize={12.25} {...props} />
+interface TextProps {
+  storeLevelCellInfo?: any;
+  order?: any;
+  type?: string;
+}
+
+const LevelText: React.SFC<TextConfig & TextProps> = (props: any) => (
+  <Text
+    fontFamily="Proxima Nova"
+    fontSize={12.25}
+    ref={(levelCell: any) =>
+      props.storeLevelCellInfo && props.storeLevelCellInfo(levelCell)
+    }
+    {...props}
+  />
 );
 
 interface LevelListItemProps {
@@ -25,6 +39,7 @@ interface LevelListItemProps {
   idx: number;
   height: number;
   width: number;
+  storeLevelCellInfo: (levelCell: any) => void;
 }
 
 const LevelListItem: React.SFC<LevelListItemProps> = ({
@@ -35,11 +50,13 @@ const LevelListItem: React.SFC<LevelListItemProps> = ({
   normalize,
   idx,
   height,
-  width
+  width,
+  storeLevelCellInfo
 }) => {
   const itemHeight = height / LEVELS_COUNT;
   const y = curry(toY)(order.side, LEVELS_COUNT, itemHeight);
   const fill = fillBySide(order.side);
+
   return (
     <Group x={0} y={y(idx)} width={width} height={itemHeight}>
       <Rect
@@ -65,26 +82,31 @@ const LevelListItem: React.SFC<LevelListItemProps> = ({
         strokeWidth={1}
       />
       <LevelText
-        x={8}
-        y={10}
+        x={LEFT_PADDING}
+        y={TOP_PADDING}
         width={width / 3}
-        height={height}
+        height={itemHeight}
         text={format(order.price, instrument.accuracy)}
         fill={fill}
+        storeLevelCellInfo={storeLevelCellInfo}
+        order={order}
+        type={OrderBookCellType.Price}
       />
       <LevelText
-        x={width / 3 + 8}
-        y={10}
+        x={width / 3 + LEFT_PADDING}
+        y={TOP_PADDING}
         width={width / 3}
-        height={height}
+        height={itemHeight}
         text={format(order[displayType], instrument.baseAsset.accuracy)}
         fill={fill}
+        storeLevelCellInfo={storeLevelCellInfo}
+        order={order}
+        type={displayType}
       />
       <LevelText
         x={width / 3 * 2}
-        y={10}
+        y={TOP_PADDING}
         width={width / 3}
-        height={height}
         text={format(
           order[displayType] * order.price,
           instrument.quoteAsset.accuracy
