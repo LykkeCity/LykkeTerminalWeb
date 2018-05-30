@@ -19,7 +19,7 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
   change
 }) => (
   <Box className={className}>
-    <Icon color={colors.coolGrey} name={`search`} />
+    <Icon name={'search'} />
     <input
       value={inputValue}
       type="search"
@@ -38,6 +38,7 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
     margin-left: 4%;
     width: 8%;
     text-align: center;
+    cursor: default;
   }
   & > input {
     background-color: #3c3c3c;
