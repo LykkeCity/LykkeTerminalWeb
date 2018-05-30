@@ -37,7 +37,7 @@ class Mesh extends React.Component<MeshProps> {
     if (this.asks.length > 0) {
       const minAskPrice = Math.min(...this.asks.map(a => a.price));
       const maxAskPrice = Math.max(...this.asks.map(a => a.price));
-      const start = (minAskPrice + this.mid) / 2;
+      const start = minAskPrice;
       const end = maxAskPrice;
       const step = (end - start) / chart.mesh.verticalLinesAmount;
       for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
@@ -58,8 +58,7 @@ class Mesh extends React.Component<MeshProps> {
     if (this.bids.length > 0) {
       const minBidPrice = Math.min(...this.bids.map(a => a.price));
       const maxBidPrice = Math.max(...this.bids.map(a => a.price));
-      const start =
-        this.mid > maxBidPrice ? (maxBidPrice + this.mid) / 2 : maxBidPrice;
+      const start = maxBidPrice;
       const end = minBidPrice;
       const step = (start - end) / chart.mesh.verticalLinesAmount;
       for (let i = chart.mesh.verticalLinesAmount; i > 0; i--) {

@@ -48,13 +48,15 @@ class Chart extends React.Component<ChartProps> {
   calculateAsksStepLength(ask: Order, index: number) {
     const minAskPrice = Math.min(...this.asks.map(a => a.price));
     const maxAskPrice = Math.max(...this.asks.map(a => a.price));
-    const start = (minAskPrice + this.mid) / 2;
+    const start = minAskPrice;
     const end = maxAskPrice;
-    const priceDifference = ask.price - start;
+    const priceDifference = this.asks[index + 1]
+      ? this.asks[index + 1].price - start
+      : this.asks[index].price - start;
     const priceRange = end - start;
     const asksWidth = this.width - this.midXAsks;
     const length = asksWidth * priceDifference / priceRange;
-    return length;
+    return isNaN(length) ? asksWidth : length;
   }
 
   calculateAsksStepHeight(ask: Order) {
@@ -127,16 +129,15 @@ class Chart extends React.Component<ChartProps> {
   calculateBidsStepLength(bid: Order, index: number) {
     const minBidPrice = Math.min(...this.bids.map(a => a.price));
     const maxBidPrice = Math.max(...this.bids.map(a => a.price));
-    const start =
-      this.mid > maxBidPrice
-        ? (maxBidPrice + this.mid) / 2
-        : maxBidPrice + this.mid / 2;
+    const start = maxBidPrice;
     const end = minBidPrice;
-    const priceDifference = start - bid.price;
+    const priceDifference = this.bids[index + 1]
+      ? start - this.bids[index + 1].price
+      : start - this.bids[index].price;
     const priceRange = start - end;
-    const asksWidth = this.midXBids;
-    const length = asksWidth * priceDifference / priceRange;
-    return length;
+    const bidsWidth = this.midXBids;
+    const length = bidsWidth * priceDifference / priceRange;
+    return isNaN(length) ? bidsWidth : length;
   }
 
   calculateBidsStepHeight(bid: Order) {
