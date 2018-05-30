@@ -1,7 +1,7 @@
 import {ArrowDirection, OrderType, Side} from '../../models';
+import {DEFAULT_INPUT_VALUE} from '../../utils/inputNumber';
 import {getPercentsOf, precisionFloor} from '../../utils/math';
 import {RootStore, UiOrderStore} from '../index';
-import {DEFAULT_INPUT_VALUE} from '../../utils/inputNumber';
 
 describe('uiOrder store', () => {
   let uiOrderStore: UiOrderStore;
