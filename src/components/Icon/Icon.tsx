@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icons from '../../constants/icons';
+import {Icons} from '../../models';
 import {StyledIcon} from './styles';
 
 interface IconProps {
