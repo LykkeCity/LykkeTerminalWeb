@@ -208,9 +208,7 @@ class ChartDataFeed {
   };
 
   filterAndLimitBars = (bars: any[]) => {
-    let brs = bars.filter(x => {
-      return x.volume !== 0;
-    });
+    let brs = bars.filter(x => x.volume !== 0);
 
     if (this.timeRange.barsCount + brs.length >= candlesLimit) {
       brs = brs.splice(brs.length - (candlesLimit - this.timeRange.barsCount));

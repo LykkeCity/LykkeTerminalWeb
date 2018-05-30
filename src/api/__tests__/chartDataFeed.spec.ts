@@ -52,7 +52,7 @@ let chartDataFeed: ChartDataFeed;
 let bars: any[];
 let barsQty: number;
 
-fdescribe('chart data feed', () => {
+describe('chart data feed', () => {
   beforeEach(() => {
     chartDataFeed = new ChartDataFeed(
       config,
@@ -83,7 +83,7 @@ fdescribe('chart data feed', () => {
     bars = generateBars(barsQty);
     chartDataFeed.filterAndLimitBars(bars);
 
-    expect(chartDataFeed.getTimeRange.barsCount).toBe(300);
+    expect(chartDataFeed.getTimeRange.barsCount).toBe(barsQty);
     expect(chartDataFeed.getTimeRange.isCandlesLimitReached).toBeFalsy();
   });
 
