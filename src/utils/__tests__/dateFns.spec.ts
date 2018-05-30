@@ -178,4 +178,97 @@ describe('Date functions', () => {
     const previousDate = new Date().getTime() - oneDay;
     expect(getDiffDays(currentDate, previousDate)).toBe(1);
   });
+
+  describe('Update from date to limit chart candles', () => {
+    const to = new Date().getTime();
+    const from = new Date().getTime() - dates.week * 5.5;
+    const updatedFromOptions = {
+      '1': to - dates.day,
+      '5': to - dates.day * 2,
+      '15': to - dates.week,
+      '30': to - dates.week * 1.5,
+      '60': to - dates.week * 3,
+      '240': to - dates.month * 3,
+      '360': to - dates.month * 6,
+      '720': to - dates.month * 7,
+      '1D': to - dates.year * 1.5,
+      '1W': to - dates.year * 15,
+      '1M': to - dates.year * 15
+    };
+    let resolution;
+
+    it('date candlesLimit function should be defined', () => {
+      expect(dateFns.candlesLimit).toBeDefined();
+    });
+
+    it('range for 1 minute resolution should starts from 1 day before now', () => {
+      resolution = '1';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[1]
+      );
+    });
+
+    it('range for 5 minutes resolution should starts from 2 days before now', () => {
+      resolution = '5';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[5]
+      );
+    });
+
+    it('range for 15 minutes resolution should starts from 1 week before now', () => {
+      resolution = '15';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[15]
+      );
+    });
+
+    it('range for 30 minutes resolution should starts from 1.5 weeks before now', () => {
+      resolution = '30';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[30]
+      );
+    });
+
+    it('range for 60 minutes resolution should starts from 3 weeks before now', () => {
+      resolution = '60';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[60]
+      );
+    });
+
+    it('range for 240 minutes resolution should starts from 3 months before now', () => {
+      resolution = '240';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[240]
+      );
+    });
+
+    it('range for 360 minutes resolution should starts from 6 months before now', () => {
+      resolution = '360';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[360]
+      );
+    });
+
+    it('range for 720 minutes resolution should starts from 7 months before now', () => {
+      resolution = '720';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions[720]
+      );
+    });
+
+    it('range for 1 day resolution should starts from 1.5 years before now', () => {
+      resolution = '1D';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions['1D']
+      );
+    });
+
+    it('range for 1 week resolution should starts from 15 years before now', () => {
+      resolution = '1W';
+      expect(dateFns.candlesLimit(from, to, resolution)).toBe(
+        updatedFromOptions['1W']
+      );
+    });
+  });
 });

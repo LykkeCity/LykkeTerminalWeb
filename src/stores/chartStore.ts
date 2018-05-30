@@ -142,9 +142,9 @@ class ChartStore extends BaseStore {
 
     this.widget = new (window as any).TradingView.widget({
       customFormatters: {
-        timeFormatter: {
-          format: (date: any) => date.toLocaleTimeString()
-        },
+        // timeFormatter: {
+        //   format: (date: any) => date.toLocaleTimeString()
+        // },
         dateFormatter: {
           format: (date: any) => date.toLocaleDateString()
         }
@@ -202,12 +202,12 @@ class ChartStore extends BaseStore {
         'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
 
         'timeScale.rightOffset': rightOffset,
-        'timeScale.barSpacing': barSpacing,
-        timezone
+        'timeScale.barSpacing': barSpacing
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart.css',
       saved_data: this.settings,
-      auto_save_delay: 2
+      auto_save_delay: 2,
+      timezone
     });
   };
 
