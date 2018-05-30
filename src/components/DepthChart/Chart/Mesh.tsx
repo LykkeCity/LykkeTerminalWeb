@@ -39,15 +39,6 @@ class Mesh extends React.Component<MeshProps> {
       const maxAskPrice = Math.max(...this.asks.map(a => a.price));
       const start = (minAskPrice + this.mid) / 2;
       const end = maxAskPrice;
-      // const priceDifference =
-      //  this.asks.length > 1
-      //    ? this.asks[this.asks.length - 2].price - start
-      //    : 1;
-      // const priceRange = end - start;
-      // const asksWidth = this.width / 2;
-      // const length = asksWidth * priceDifference / priceRange;
-      // const price = asksWidth * maxAskPrice / length;
-      // console.log(price);
       const step = (end - start) / chart.mesh.verticalLinesAmount;
       for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
         if (i % 2 === 1) {
@@ -69,7 +60,8 @@ class Mesh extends React.Component<MeshProps> {
       const maxBidPrice = Math.max(...this.bids.map(a => a.price));
       const start =
         this.mid > maxBidPrice ? (maxBidPrice + this.mid) / 2 : maxBidPrice;
-      const step = (start - minBidPrice) / chart.mesh.verticalLinesAmount;
+      const end = minBidPrice;
+      const step = (start - end) / chart.mesh.verticalLinesAmount;
       for (let i = chart.mesh.verticalLinesAmount; i > 0; i--) {
         if (i % 2 === 1) {
           const label = formattedNumber(
