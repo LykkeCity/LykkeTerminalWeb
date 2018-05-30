@@ -43,8 +43,9 @@ class DepthChartStore extends BaseStore {
   }
 
   reduceBidsArray = (bids: Order[]) => {
-    const mid = this.mid();
-    const lowerBound = mid - mid * this.multiplers[this.spanMultiplierIdx];
+    const maximum = Math.max(...bids.map(b => b.price));
+    const lowerBound =
+      maximum - maximum * this.multiplers[this.spanMultiplierIdx];
     const filteredBids = bids.filter(bid => {
       return bid.price > lowerBound;
     });
@@ -52,8 +53,9 @@ class DepthChartStore extends BaseStore {
   };
 
   reduceAsksArray = (asks: Order[]) => {
-    const mid = this.mid();
-    const upperBound = mid + mid * this.multiplers[this.spanMultiplierIdx];
+    const minimum = Math.min(...asks.map(b => b.price));
+    const upperBound =
+      minimum + minimum * this.multiplers[this.spanMultiplierIdx];
     const filteredAsks = asks.filter(ask => {
       return ask.price < upperBound;
     });
