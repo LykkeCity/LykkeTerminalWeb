@@ -8,6 +8,7 @@ import {
 } from '../models/index';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
+import {DEFAULT_INPUT_VALUE} from '../utils/inputNumber';
 import {BaseStore, RootStore} from './index';
 
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
@@ -55,12 +56,12 @@ class UiStore extends BaseStore {
             setQuantityAccuracy,
             setPriceAccuracy,
             setPriceValueWithFixed,
-            setQuantityValueWithFixed
+            setQuantityValue
           } = this.rootStore.uiOrderStore;
           setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
           setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
           setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
-          setQuantityValueWithFixed(0);
+          setQuantityValue(DEFAULT_INPUT_VALUE);
 
           const {
             resetTrades,
