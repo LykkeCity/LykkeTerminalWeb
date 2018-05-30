@@ -5,7 +5,6 @@ import ClickOutside from '../ClickOutside/ClickOutside';
 import {Icon} from '../Icon/index';
 import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
-import {Link} from '../Link/index';
 import {SettingsModal} from '../Settings';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
 import {HeaderFlex, HeaderItem, HeaderWrapper, Logo} from './styles';
@@ -87,18 +86,16 @@ const Header: React.SFC<HeaderProps> = ({
               </ClickOutside>
             ) : null}
             <HeaderItem>
-              <Link>
-                {authStore.isAuth ? (
-                  <span className="hidden-xs" onClick={signOut}>
-                    <Icon name={'logout'} color={'#8c94a0'} />
-                  </span>
-                ) : (
-                  <span className="hidden-xs" onClick={signIn}>
-                    <Icon name={'login'} color={'#8c94a0'} />
-                  </span>
-                )}
-                <i className="icon icon--participate visible-xs" />
-              </Link>
+              {authStore.isAuth ? (
+                <span className="hidden-xs" onClick={signOut}>
+                  <Icon name={'logout'} color={'#8c94a0'} />
+                </span>
+              ) : (
+                <span className="hidden-xs" onClick={signIn}>
+                  <Icon name={'login'} color={'#8c94a0'} />
+                </span>
+              )}
+              <i className="icon icon--participate visible-xs" />
             </HeaderItem>
           </Flex>
         </Box>
