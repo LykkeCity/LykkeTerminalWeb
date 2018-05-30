@@ -25,3 +25,4 @@ export {default as KycStatuses} from './kycStatuses';
 export {default as ChartType} from './chartType';
 export {default as ArrowDirection} from './arrowDirection';
 export {default as Icons} from './icons';
+export {default as WalletType} from './walletType';

@@ -2,8 +2,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {add, find, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import * as topics from '../api/topics';
-import tradingWalletKeys from '../constants/tradingWalletKeys';
-import {AssetBalanceModel, WalletModel} from '../models';
+import {AssetBalanceModel, WalletModel, WalletType} from '../models';
 import {BaseStore, RootStore} from './index';
 
 class BalanceListStore extends BaseStore {
@@ -46,13 +45,13 @@ class BalanceListStore extends BaseStore {
   get currentWallet() {
     return (
       this.walletList.find(w => w.id === this.currentWalletId) ||
-      this.walletList.find(w => w.type === tradingWalletKeys.trading)
+      this.walletList.find(w => w.type === WalletType.Trading)
     );
   }
 
   @computed
   get tradingWallet() {
-    return find(w => w.type === tradingWalletKeys.trading, this.walletList);
+    return find(w => w.type === WalletType.Trading, this.walletList);
   }
 
   @observable.shallow private walletList: WalletModel[] = [];
@@ -111,23 +110,25 @@ class BalanceListStore extends BaseStore {
     const dto = args[0];
     const {id, a, b, r} = dto;
     const wallet = this.walletList.find((w: WalletModel) => w.id === id)!;
-    const balance = wallet.balances.find(
-      (bc: AssetBalanceModel) => bc.id === a
-    );
-    if (balance) {
-      balance.balance = b;
-      balance.reserved = r;
-    } else {
-      wallet.balances.push(
-        new AssetBalanceModel({
-          AssetId: a,
-          Balance: b,
-          Reserved: r
-        })
+    if (wallet && wallet.type === WalletType.Trading) {
+      const balance = wallet.balances.find(
+        (bc: AssetBalanceModel) => bc.id === a
       );
-    }
+      if (balance) {
+        balance.balance = b;
+        balance.reserved = r;
+      } else {
+        wallet.balances.push(
+          new AssetBalanceModel({
+            AssetId: a,
+            Balance: b,
+            Reserved: r
+          })
+        );
+      }
 
-    this.updateWalletBalances();
+      this.updateWalletBalances();
+    }
   };
 
   reset = () => {
