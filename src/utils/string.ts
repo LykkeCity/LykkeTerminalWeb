@@ -4,7 +4,7 @@ export const getPostDecimalsLength = (str: string) => {
 };
 
 export const substringZero = (str: string) => {
-  if (str[0] === '0' && str[1] !== '.') {
+  if (str[0] === '0' && str[1] !== '.' && str.length > 1) {
     return str.substring(1);
   }
   return str;

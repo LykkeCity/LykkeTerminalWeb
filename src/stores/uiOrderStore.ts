@@ -3,7 +3,11 @@ import {curry} from 'rambda';
 import {OrderType} from '../models';
 import ArrowDirection from '../models/arrowDirection';
 import Side from '../models/side';
-import {onArrowClick, onValueChange} from '../utils/inputNumber';
+import {
+  DEFAULT_INPUT_VALUE,
+  onArrowClick,
+  onValueChange
+} from '../utils/inputNumber';
 import {getPercentsOf, precisionFloor} from '../utils/math';
 import {
   getPercentOfValueForLimit,
@@ -42,8 +46,8 @@ class UiOrderStore extends BaseStore {
     side: Side
   ) => number;
 
-  @observable private priceValue: string = '0';
-  @observable private quantityValue: string = '0';
+  @observable private priceValue: string = DEFAULT_INPUT_VALUE;
+  @observable private quantityValue: string = DEFAULT_INPUT_VALUE;
   @observable private market: OrderType = OrderType.Limit;
   @observable private side: Side = Side.Sell;
   private priceAccuracy: number = 2;
@@ -78,9 +82,13 @@ class UiOrderStore extends BaseStore {
   }
 
   setPriceValueWithFixed = (price: number) =>
-    (this.priceValue = price.toFixed(this.priceAccuracy));
+    (this.priceValue = !price
+      ? DEFAULT_INPUT_VALUE
+      : price.toFixed(this.priceAccuracy));
   setQuantityValueWithFixed = (quantity: number) =>
-    (this.quantityValue = quantity.toFixed(this.quantityAccuracy));
+    (this.quantityValue = !quantity
+      ? DEFAULT_INPUT_VALUE
+      : quantity.toFixed(this.quantityAccuracy));
 
   setPriceValue = (price: string) => (this.priceValue = price);
   setQuantityValue = (quantity: string) => (this.quantityValue = quantity);
@@ -206,7 +214,7 @@ class UiOrderStore extends BaseStore {
 
   resetOrder = () => {
     this.setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
-    this.setQuantityValueWithFixed(0);
+    this.setQuantityValue(DEFAULT_INPUT_VALUE);
   };
 
   // tslint:disable-next-line:no-empty

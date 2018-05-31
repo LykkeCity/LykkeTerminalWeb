@@ -3,7 +3,11 @@ import * as React from 'react';
 import {Percentage} from '../../constants/ordersPercentage';
 import {AssetBalanceModel, OrderInputs, OrderModel} from '../../models';
 import Side from '../../models/side';
-import {onArrowClick, onValueChange} from '../../utils/inputNumber';
+import {
+  DEFAULT_INPUT_VALUE,
+  onArrowClick,
+  onValueChange
+} from '../../utils/inputNumber';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../../utils/math';
 import {
@@ -131,13 +135,17 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
 
   setPriceValueWithFixed = (price: number) => {
     this.setState({
-      priceValue: price.toFixed(this.accuracy.priceAccuracy)
+      priceValue: !price
+        ? DEFAULT_INPUT_VALUE
+        : price.toFixed(this.accuracy.priceAccuracy)
     });
   };
 
   setQuantityValueWithFixed = (quantity: number) => {
     this.setState({
-      quantityValue: quantity.toFixed(this.accuracy.quantityAccuracy)
+      quantityValue: !quantity
+        ? DEFAULT_INPUT_VALUE
+        : quantity.toFixed(this.accuracy.quantityAccuracy)
     });
   };
 

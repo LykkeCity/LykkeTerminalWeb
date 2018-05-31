@@ -1,60 +1,12 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import ArrowDirection from '../../models/arrowDirection';
-
-const StyledInput = styled.input`
-  background-color: transparent;
-  border-radius: 4px;
-  border: solid 1px #56595e;
-  color: #f5f6f7;
-  padding-left: 8px;
-  padding-right: 20px;
-  height: 32px;
-  width: 100%;
-  box-sizing: border-box;
-
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    cursor: pointer;
-    display: block;
-    width: 10px;
-    background: transparent;
-  }
-`;
-
-const StyledInputNumberComponent = styled.div`
-  position: relative;
-
-  > span.up,
-  > span.down {
-    content: '';
-    position: absolute;
-    right: 5px;
-    border-left: 3px solid transparent;
-    border-right: 3px solid transparent;
-    border-bottom: 6px solid #f5f6f7;
-    z-index: 5;
-
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  > span.up {
-    top: 8px;
-  }
-
-  > span.down {
-    bottom: 8px;
-    transform: rotate(180deg);
-  }
-`;
+import {StyledInput, StyledInputNumberComponent} from './styles';
 
 interface NumberInput {
   id?: string;
   value?: string;
   onChange: any;
-  onArrowClick: any;
+  onArrowClick: (direction: ArrowDirection) => () => void;
 }
 
 const NumberInput: React.SFC<NumberInput> = ({
@@ -69,6 +21,8 @@ const NumberInput: React.SFC<NumberInput> = ({
         id={id}
         type="text"
         value={value}
+        placeholder={'0.00'}
+        autoComplete={'off'}
         onChange={onChange()}
         // tslint:disable-next-line:jsx-no-lambda
         onKeyDown={e => {
