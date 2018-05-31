@@ -3,6 +3,7 @@ import {Circle, Line, Text} from 'react-konva';
 
 import {AssetModel, Order} from '../../../models';
 
+import formattedNumber from '../../../utils/localFormatted/localFormatted';
 import chart from './chartConstants';
 import {measureText} from './chartHelpers';
 
@@ -25,17 +26,11 @@ class Pointer extends React.Component<PointerProps> {
   calcY: number = -chart.modal.height;
   mouseX: number = this.props.width * 2;
 
-  orders: Order[];
   orderIndex: number = 0;
 
   graphics: any = [];
-  points: number[] = [];
 
-  width: number = -1;
-  height: number = -1;
-
-  borders: number[] = [];
-  line: number[] = [0, 0, 0, this.height];
+  line: number[] = [0, 0, 0, this.props.height];
   modal: number[] = [];
   titleX: number;
   titleY: number;
@@ -62,8 +57,8 @@ class Pointer extends React.Component<PointerProps> {
       const fromMouseToRightSide =
         this.mouseX +
         (width - (chart.modal.arrowWidth / 2 + chart.modal.longBeforeArrow));
-      fromMouseToRightSide > this.width
-        ? (this.titleX = this.width - width + chart.modal.marginLeft)
+      fromMouseToRightSide > this.props.width
+        ? (this.titleX = this.props.width - width + chart.modal.marginLeft)
         : (this.titleX =
             this.mouseX -
             chart.modal.arrowWidth / 2 -
@@ -81,7 +76,7 @@ class Pointer extends React.Component<PointerProps> {
       this.text = 'Can be sold';
     }
 
-    const aboveMidHeight = this.calcY < this.height * 0.4;
+    const aboveMidHeight = this.calcY < this.props.height * 0.4;
 
     this.titleY = aboveMidHeight
       ? this.calcY + chart.modal.arrowHeight + 20
@@ -117,8 +112,8 @@ class Pointer extends React.Component<PointerProps> {
       const fromMouseToRightSide =
         this.mouseX +
         (width - (chart.modal.arrowWidth / 2 + chart.modal.longBeforeArrow));
-      fromMouseToRightSide > this.width
-        ? (leftX = this.width - width + chart.modal.arrowWidth / 2)
+      fromMouseToRightSide > this.props.width
+        ? (leftX = this.props.width - width + chart.modal.arrowWidth / 2)
         : (leftX =
             this.mouseX -
             chart.modal.arrowWidth / 2 -
@@ -129,7 +124,7 @@ class Pointer extends React.Component<PointerProps> {
       fromMouseToLeftSide < 0 ? (leftX = 0) : (leftX = fromMouseToLeftSide);
     }
 
-    const aboveMidHeight = this.calcY < this.height * 0.4;
+    const aboveMidHeight = this.calcY < this.props.height * 0.4;
 
     const rightX = leftX + width;
     const bottomY = aboveMidHeight
@@ -156,7 +151,7 @@ class Pointer extends React.Component<PointerProps> {
   }
 
   calculateCurrentY = (mouseX: number) => {
-    const xPoints = this.points.filter((value, index, ar) => {
+    const xPoints = this.props.points.filter((value, index, ar) => {
       return index % 2 === 0;
     });
 
@@ -180,12 +175,12 @@ class Pointer extends React.Component<PointerProps> {
 
     const yIndex = xIndex * 2 + 1;
 
-    return this.points[yIndex];
+    return this.props.points[yIndex];
   };
 
   updateLine = () => {
     this.calcY = this.calculateCurrentY(this.mouseX) || -chart.modal.height;
-    this.line = [this.mouseX, this.calcY, this.mouseX, this.height];
+    this.line = [this.mouseX, this.calcY, this.mouseX, this.props.height];
   };
 
   handleMouseMove = (event: any) => {
@@ -204,9 +199,9 @@ class Pointer extends React.Component<PointerProps> {
   };
 
   drawPointer = () => {
-    if (this.orders.length > 0) {
-      const price = this.orders[this.orderIndex].price;
-      const depth = this.orders[this.orderIndex].depth;
+    if (this.props.orders.length > 0) {
+      const price = this.props.orders[this.orderIndex].price;
+      const depth = this.props.orders[this.orderIndex].depth;
 
       const priceLabel = `${formattedNumber(price, this.props.priceAccuracy)} ${
         this.props.quoteAsset
@@ -238,14 +233,14 @@ class Pointer extends React.Component<PointerProps> {
         <Line
           key="border"
           points={[
-            this.borders[0],
-            this.borders[1],
-            this.borders[0],
-            this.borders[3],
-            this.borders[2],
-            this.borders[3],
-            this.borders[2],
-            this.borders[1]
+            this.props.borders[0],
+            this.props.borders[1],
+            this.props.borders[0],
+            this.props.borders[3],
+            this.props.borders[2],
+            this.props.borders[3],
+            this.props.borders[2],
+            this.props.borders[1]
           ]}
           closed={true}
           onMouseMove={this.handleMouseMove}
@@ -412,11 +407,6 @@ class Pointer extends React.Component<PointerProps> {
   initialize = () => {
     this.graphics = [];
     this.orderIndex = 0;
-    this.width = this.props.width;
-    this.height = this.props.height;
-    this.orders = this.props.orders;
-    this.borders = this.props.borders;
-    this.points = this.props.points;
   };
 
   render() {

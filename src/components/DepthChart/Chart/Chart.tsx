@@ -3,16 +3,13 @@ import * as React from 'react';
 import {Line} from 'react-konva';
 
 import {Order} from '../../../models';
-
 import {Pointer} from './index';
 
-import {reverse} from 'rambda';
 import chart from './chartConstants';
 
 interface ChartProps {
   asks: Order[];
   bids: Order[];
-  mid: number;
   width: number;
   height: number;
   quoteAccuracy: number;
@@ -25,54 +22,48 @@ class Chart extends React.Component<ChartProps> {
   pointsAsks: number[] = [];
   pointsBids: number[] = [];
 
-  width: number = -1;
-  height: number = -1;
-
-  asks: Order[];
-  bids: Order[];
-  mid: number;
-
   midXAsks: number;
   midXBids: number;
-  midY: number;
+
+  asksWidth: number;
 
   minDepth: number;
   maxDepth: number;
 
-  coef: number;
+  coefficient: number;
 
   constructor(props: ChartProps) {
     super(props);
   }
 
   calculateAsksStepLength(ask: Order, index: number) {
-    const minAskPrice = Math.min(...this.asks.map(a => a.price));
-    const maxAskPrice = Math.max(...this.asks.map(a => a.price));
-    const start = minAskPrice;
-    const end = maxAskPrice;
-    const priceDifference = this.asks[index + 1]
-      ? this.asks[index + 1].price - start
-      : this.asks[index].price - start;
+    const start = Math.min(...this.props.asks.map(a => a.price));
+    const end = Math.max(...this.props.asks.map(a => a.price));
+    const priceDifference = this.props.asks[index + 1]
+      ? this.props.asks[index + 1].price - start
+      : this.props.asks[index].price - start;
     const priceRange = end - start;
-    const asksWidth = this.width - this.midXAsks;
-    const length = asksWidth * priceDifference / priceRange;
-    return isNaN(length) ? asksWidth : length;
+    const length = this.asksWidth * priceDifference / priceRange;
+    return isNaN(length) ? this.asksWidth : length;
   }
 
   calculateAsksStepHeight(ask: Order) {
-    return this.coef * ask.depth;
+    return this.coefficient * ask.depth;
   }
 
   generateAsksPoints = () => {
     let currentX = this.midXAsks;
     let newX = this.midXAsks;
-    let newY = this.midY;
-    const points = [this.midXAsks, this.midY];
+    let newY = this.props.height;
+    const points = [this.midXAsks, this.props.height];
 
-    for (let index = 0; index < this.asks.length; index++) {
+    for (let index = 0; index < this.props.asks.length; index++) {
       newX =
-        this.midXAsks + this.calculateAsksStepLength(this.asks[index], index);
-      newY = this.midY - this.calculateAsksStepHeight(this.asks[index]);
+        this.midXAsks +
+        this.calculateAsksStepLength(this.props.asks[index], index);
+      newY =
+        this.props.height -
+        this.calculateAsksStepHeight(this.props.asks[index]);
       points.push(currentX, newY, newX, newY);
       currentX = newX;
     }
@@ -97,12 +88,13 @@ class Chart extends React.Component<ChartProps> {
     this.graphics.push(
       <Line
         key="asks-area"
-        points={this.pointsAsks.concat([
-          this.width,
-          this.height,
+        points={[
+          ...this.pointsAsks,
+          this.props.width,
+          this.props.height,
           this.midXBids,
-          this.height
-        ])}
+          this.props.height
+        ]}
         closed={true}
         fill={chart.asks.fillColor}
         strokeEnabled={false}
@@ -119,41 +111,41 @@ class Chart extends React.Component<ChartProps> {
         key="asks-pointer"
         side={'asks'}
         color={chart.asks.lineColor}
-        orders={this.asks}
+        orders={this.props.asks}
         points={this.pointsAsks}
-        borders={[this.midXAsks, this.midY, this.width, 0]}
+        borders={[this.midXAsks, this.props.height, this.props.width, 0]}
       />
     );
   };
 
   calculateBidsStepLength(bid: Order, index: number) {
-    const minBidPrice = Math.min(...this.bids.map(a => a.price));
-    const maxBidPrice = Math.max(...this.bids.map(a => a.price));
-    const start = maxBidPrice;
-    const end = minBidPrice;
-    const priceDifference = this.bids[index + 1]
-      ? start - this.bids[index + 1].price
-      : start - this.bids[index].price;
+    const start = Math.max(...this.props.bids.map(b => b.price));
+    const end = Math.min(...this.props.bids.map(b => b.price));
+    const priceDifference = this.props.bids[index + 1]
+      ? start - this.props.bids[index + 1].price
+      : start - this.props.bids[index].price;
     const priceRange = start - end;
-    const bidsWidth = this.midXBids;
-    const length = bidsWidth * priceDifference / priceRange;
-    return isNaN(length) ? bidsWidth : length;
+    const length = this.midXBids * priceDifference / priceRange;
+    return isNaN(length) ? this.midXBids : length;
   }
 
   calculateBidsStepHeight(bid: Order) {
-    return this.coef * bid.depth;
+    return this.coefficient * bid.depth;
   }
 
   generateBidsPoints = () => {
     let currentX = this.midXBids;
     let newX = this.midXBids;
-    let newY = this.midY;
-    const points = [this.midXBids, this.midY];
+    let newY = this.props.height;
+    const points = [this.midXBids, this.props.height];
 
-    for (let index = 0; index < this.bids.length; index++) {
+    for (let index = 0; index < this.props.bids.length; index++) {
       newX =
-        this.midXBids - this.calculateBidsStepLength(this.bids[index], index);
-      newY = this.midY - this.calculateBidsStepHeight(this.bids[index]);
+        this.midXBids -
+        this.calculateBidsStepLength(this.props.bids[index], index);
+      newY =
+        this.props.height -
+        this.calculateBidsStepHeight(this.props.bids[index]);
       points.push(currentX, newY, newX, newY);
       currentX = newX;
     }
@@ -179,12 +171,13 @@ class Chart extends React.Component<ChartProps> {
     this.graphics.push(
       <Line
         key="bids-area"
-        points={this.pointsBids.concat([
+        points={[
+          ...this.pointsBids,
           0,
-          this.midY,
+          this.props.height,
           this.midXBids,
-          this.midY
-        ])}
+          this.props.height
+        ]}
         closed={true}
         fill={chart.bids.fillColor}
         strokeEnabled={false}
@@ -202,37 +195,35 @@ class Chart extends React.Component<ChartProps> {
         key="bids-pointer"
         side={'bids'}
         color={chart.bids.lineColor}
-        orders={this.bids}
+        orders={this.props.bids}
         points={this.pointsBids}
-        borders={[0, this.midY, this.midXBids, 0]}
+        borders={[0, this.props.height, this.midXBids, 0]}
       />
     );
   };
 
-  calculateCoef() {
+  calculatecoefficient() {
     if (this.minDepth && this.maxDepth) {
       if (this.minDepth === this.maxDepth) {
-        return this.height / this.minDepth * chart.scaleFactor;
+        return this.props.height / this.minDepth * chart.scaleFactor;
       }
-      return this.height / this.maxDepth * chart.scaleFactor;
+      return this.props.height / this.maxDepth * chart.scaleFactor;
     }
     return 1;
   }
 
   initilaize() {
     this.graphics = [];
-    this.width = this.props.width;
-    this.height = this.props.height;
     this.midXAsks = this.props.width / 2 + Math.round(chart.strokeWidth / 2);
     this.midXBids = this.props.width / 2 - Math.round(chart.strokeWidth / 2);
-    this.midY = this.height;
-    this.asks = reverse(this.props.asks);
-    this.bids = this.props.bids;
-    this.mid = this.props.mid;
-    this.minDepth = Math.min(...this.bids.concat(this.asks).map(x => x.depth));
-    this.maxDepth = Math.max(...this.bids.concat(this.asks).map(x => x.depth));
-
-    this.coef = this.calculateCoef();
+    this.asksWidth = this.props.width - this.midXAsks;
+    this.minDepth = Math.min(
+      ...this.props.bids.concat(this.props.asks).map(x => x.depth)
+    );
+    this.maxDepth = Math.max(
+      ...this.props.bids.concat(this.props.asks).map(x => x.depth)
+    );
+    this.coefficient = this.calculatecoefficient();
   }
 
   render() {
@@ -241,10 +232,10 @@ class Chart extends React.Component<ChartProps> {
     this.drawAsks();
     this.drawBids();
 
-    if (this.asks.length > 0) {
+    if (this.props.asks.length > 0) {
       this.drawAsksPointerPadding();
     }
-    if (this.bids.length > 0) {
+    if (this.props.bids.length > 0) {
       this.drawBidsPointerPadding();
     }
 

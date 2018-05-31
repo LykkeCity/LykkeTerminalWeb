@@ -1,3 +1,4 @@
+import {reverse} from 'rambda';
 import {connect} from '../../connect';
 import Chart from './Chart';
 import ChartWrapper from './ChartWrapper';
@@ -20,21 +21,12 @@ const ConnectedChartWrapper: any = connect(
 
 const ConnectedMesh = connect(
   ({
-    depthChartStore: {
-      asks,
-      bids,
-      mid,
-      height,
-      width,
-      setLabelsWidth,
-      labelsWidth
-    },
+    depthChartStore: {asks, bids, height, width, setLabelsWidth, labelsWidth},
     uiStore: {selectedInstrument}
   }) => {
     return {
       asks,
       bids,
-      mid: mid(),
       height: height - chart.labelsHeight,
       width: width - labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
@@ -50,13 +42,12 @@ const ConnectedMesh = connect(
 
 const ConnectedChart = connect(
   ({
-    depthChartStore: {asks, bids, mid, height, width, labelsWidth},
+    depthChartStore: {asks, bids, height, width, labelsWidth},
     uiStore: {selectedInstrument}
   }) => {
     return {
-      asks,
+      asks: reverse(asks),
       bids,
-      mid: mid(),
       height: height - chart.labelsHeight,
       width: width - labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
