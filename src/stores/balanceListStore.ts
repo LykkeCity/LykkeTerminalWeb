@@ -110,7 +110,7 @@ class BalanceListStore extends BaseStore {
     const dto = args[0];
     const {id, a, b, r} = dto;
     const wallet = this.walletList.find((w: WalletModel) => w.id === id)!;
-    if (wallet && wallet.type === WalletType.Trading) {
+    if (wallet) {
       const balance = wallet.balances.find(
         (bc: AssetBalanceModel) => bc.id === a
       );

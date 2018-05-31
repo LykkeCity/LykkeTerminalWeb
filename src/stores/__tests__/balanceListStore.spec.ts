@@ -64,28 +64,6 @@ describe('balanceList store', () => {
       expect(balance!.reserved).toBe(dto[0].r);
     });
 
-    it('should not update wallet if its not a trading type', async () => {
-      balanceListStore.updateWalletBalances = jest.fn();
-      const dto = [
-        {
-          a: 'BTC',
-          b: 32046.87829743,
-          id: '03f71ce1-31e4-4c64-be33-06e4e1ff4327',
-          r: 1.37872652
-        }
-      ];
-      await balanceListStore.fetchAll();
-      balanceListStore.changeWallet(dto[0].id);
-      const wallet = balanceListStore.currentWallet;
-      expect(wallet!.type).not.toBe(WalletType.Trading);
-      expect(wallet!.id).toBe(dto[0].id);
-      const balance = wallet!.balances.find(b => b.id === dto[0].a);
-
-      balanceListStore.onUpdateBalance(dto);
-      expect(balance!.balance).not.toBe(dto[0].b);
-      expect(balance!.reserved).not.toBe(dto[0].r);
-    });
-
     it('should be no funds on balance after fetching from empty balances', async () => {
       balanceListStore = new BalanceListStore(
         new RootStore(false),
