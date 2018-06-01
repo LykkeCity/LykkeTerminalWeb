@@ -1,21 +1,9 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Layer, Stage} from 'react-konva';
-import {InstrumentModel, Order} from '../../models';
 import {LevelListItem} from './';
+import {LevelListProps} from './OrderbookCanvas';
 import {FakeOrderBookStage} from './styles';
-
-export interface LevelListProps {
-  levels: Order[];
-  instrument: InstrumentModel;
-  format: (num: number, accuracy: number) => string;
-  normalize: (num: number) => number;
-  height: number;
-  width: number;
-  handleOrderBookClick: (x: number, y: number) => void;
-  storeLevelCellInfo: (level: void) => any;
-  isReadOnly: boolean;
-}
 
 export class LevelList extends React.Component<LevelListProps> {
   private fakeStage: any;

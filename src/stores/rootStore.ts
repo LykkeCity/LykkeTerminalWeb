@@ -40,6 +40,8 @@ import {
   WatchlistStore
 } from './index';
 
+import * as autobahn from 'autobahn';
+
 const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
@@ -152,7 +154,7 @@ class RootStore {
 
         this.uiStore.setWs(ws);
         this.depthChartStore.setWs(ws);
-        this.orderBookStore.setWs(ws);
+        // this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
         this.priceStore.setWs(ws);
@@ -171,6 +173,24 @@ class RootStore {
         this.tradeStore.subscribe(ws);
         this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
+
+        const conn = new autobahn.Connection({
+          url: 'wss://wamp.lykke.com/ws/',
+          realm: 'prices'
+        });
+
+        conn.onopen = (session, details) => {
+          session.subscribe(
+            'orderbook.spot.etheur.sell',
+            this.orderBookStore.onNextOrders
+          );
+          session.subscribe(
+            'orderbook.spot.etheur.buy',
+            this.orderBookStore.onNextOrders
+          );
+        };
+
+        conn.open();
 
         return Promise.resolve();
       })

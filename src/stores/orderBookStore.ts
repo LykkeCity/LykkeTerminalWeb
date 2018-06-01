@@ -15,8 +15,10 @@ const headArr: <T = Order>(l: T[]) => T = head;
 const sortByPrice = sortBy(x => x.price);
 
 class OrderBookStore extends BaseStore {
-  @observable rawBids: Order[] = [];
-  @observable rawAsks: Order[] = [];
+  rawBids: Order[] = [];
+  rawAsks: Order[] = [];
+  drawAsks: any;
+  drawBids: any;
 
   @observable
   myOrders = {
@@ -67,11 +69,12 @@ class OrderBookStore extends BaseStore {
 
   private subscriptions: Set<ISubscription> = new Set();
 
-  // private isInitFetch: boolean = true;
-
   constructor(store: RootStore, private readonly api: OrderBookApi) {
     super(store);
   }
+
+  setCbForDrawAsks = (cb: any) => (this.drawAsks = cb);
+  setCbForDrawBids = (cb: any) => (this.drawBids = cb);
 
   @computed
   get bids() {
@@ -100,6 +103,32 @@ class OrderBookStore extends BaseStore {
       )
     );
   }
+
+  getAsks = () => {
+    const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
+    return take(
+      LEVELS_COUNT,
+      connectLimitOrders(
+        aggregateOrders(this.rawAsks, this.span, true),
+        limitOrders,
+        this.span,
+        true
+      )
+    );
+  };
+
+  getBids = () => {
+    const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
+    return take(
+      LEVELS_COUNT,
+      connectLimitOrders(
+        aggregateOrders(this.rawBids, this.span, false),
+        limitOrders,
+        this.span,
+        false
+      )
+    );
+  };
 
   bestBid = () =>
     this.rawBids.length && last(sortBy(x => x.price, this.rawBids)).price;
@@ -149,7 +178,9 @@ class OrderBookStore extends BaseStore {
         });
       this.hasPendingItems = false;
       runInAction(() => {
-        orders.forEach((levels: any) => this.onNextOrders([levels]));
+        orders.forEach((levels: any) => {
+          return;
+        });
       });
     }
   };
@@ -167,18 +198,20 @@ class OrderBookStore extends BaseStore {
   };
 
   onNextOrders = (args: any) => {
-    const {AssetPair, IsBuy, Levels} = args[0];
-    const {selectedInstrument} = this.rootStore.uiStore;
-    if (selectedInstrument && selectedInstrument.id === AssetPair) {
-      const mapToOrders = map(toOrder);
-      if (IsBuy) {
-        this.rootStore.uiOrderBookStore.clearBidLevelsCells();
-        this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
-      } else {
-        this.rootStore.uiOrderBookStore.clearAskLevelsCells();
-        this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
-      }
+    const {IsBuy, Levels} = args[0];
+    // const {selectedInstrument} = this.rootStore.uiStore;
+    // if (selectedInstrument && selectedInstrument.id === AssetPair) {
+    const mapToOrders = map(toOrder);
+    if (IsBuy) {
+      this.rootStore.uiOrderBookStore.clearBidLevelsCells();
+      this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
+      this.drawBids();
+    } else {
+      this.rootStore.uiOrderBookStore.clearAskLevelsCells();
+      this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
+      this.drawAsks();
     }
+    // }
   };
 
   unsubscribe = async () => {
