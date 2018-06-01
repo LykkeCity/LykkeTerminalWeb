@@ -166,7 +166,7 @@ class ChartStore extends BaseStore {
       disabled_features: [
         'widget_logo',
         'link_to_tradingview',
-        'left_toolbar',
+        // 'left_toolbar',
         'header_symbol_search',
         'header_screenshot',
         'compare_symbol',
