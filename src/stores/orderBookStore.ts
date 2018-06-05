@@ -10,6 +10,8 @@ import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
+import LevelType from '../models/levelType';
+
 // help tsc to infer correct type
 const headArr: <T = Order>(l: T[]) => T = head;
 const sortByPrice = sortBy(x => x.price);
@@ -19,6 +21,7 @@ class OrderBookStore extends BaseStore {
   rawAsks: Order[] = [];
   drawAsks: any;
   drawBids: any;
+  spreadUpdateFn: any;
 
   @observable
   myOrders = {
@@ -29,8 +32,6 @@ class OrderBookStore extends BaseStore {
   };
 
   @observable hasPendingItems: boolean = true;
-
-  spanMultipliers = [1, 5, 2, 5, 2, 2.5, 2, 2, 5, 2];
   @observable spanMultiplierIdx = 0;
 
   @computed
@@ -73,36 +74,9 @@ class OrderBookStore extends BaseStore {
     super(store);
   }
 
-  setCbForDrawAsks = (cb: any) => (this.drawAsks = cb);
-  setCbForDrawBids = (cb: any) => (this.drawBids = cb);
-
-  @computed
-  get bids() {
-    const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
-    return take(
-      LEVELS_COUNT,
-      connectLimitOrders(
-        aggregateOrders(this.rawBids, this.span, false),
-        limitOrders,
-        this.span,
-        false
-      )
-    );
-  }
-
-  @computed
-  get asks() {
-    const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
-    return take(
-      LEVELS_COUNT,
-      connectLimitOrders(
-        aggregateOrders(this.rawAsks, this.span, true),
-        limitOrders,
-        this.span,
-        true
-      )
-    );
-  }
+  setAsksDrawingHandler = (cb: any) => (this.drawAsks = cb);
+  setBidsDrawingHandler = (cb: any) => (this.drawBids = cb);
+  setSpreadHandler = (cb: any) => (this.spreadUpdateFn = cb);
 
   getAsks = () => {
     const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
@@ -143,7 +117,6 @@ class OrderBookStore extends BaseStore {
     return this.bestAsk() - this.bestBid();
   }
 
-  @computed
   get spreadRelative() {
     return (this.bestAsk() - this.bestBid()) / this.bestAsk();
   }
@@ -153,6 +126,8 @@ class OrderBookStore extends BaseStore {
     if (this.spanMultiplierIdx < this.maxMultiplierIdx) {
       this.spanMultiplierIdx++;
     }
+    this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
+    this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
   };
 
   @action
@@ -160,6 +135,8 @@ class OrderBookStore extends BaseStore {
     if (this.spanMultiplierIdx > 0) {
       this.spanMultiplierIdx--;
     }
+    this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
+    this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
   };
 
   @action
@@ -178,9 +155,7 @@ class OrderBookStore extends BaseStore {
         });
       this.hasPendingItems = false;
       runInAction(() => {
-        orders.forEach((levels: any) => {
-          return;
-        });
+        orders.forEach((levels: any) => this.onNextOrders([levels]));
       });
     }
   };
@@ -198,20 +173,21 @@ class OrderBookStore extends BaseStore {
   };
 
   onNextOrders = (args: any) => {
-    const {IsBuy, Levels} = args[0];
-    // const {selectedInstrument} = this.rootStore.uiStore;
-    // if (selectedInstrument && selectedInstrument.id === AssetPair) {
-    const mapToOrders = map(toOrder);
-    if (IsBuy) {
-      this.rootStore.uiOrderBookStore.clearBidLevelsCells();
-      this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
-      this.drawBids();
-    } else {
-      this.rootStore.uiOrderBookStore.clearAskLevelsCells();
-      this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
-      this.drawAsks();
+    const {AssetPair, IsBuy, Levels} = args[0];
+    const {selectedInstrument} = this.rootStore.uiStore;
+    if (selectedInstrument && selectedInstrument.id === AssetPair) {
+      const mapToOrders = map(toOrder);
+      if (IsBuy) {
+        this.rootStore.uiOrderBookStore.clearBidLevelsCells();
+        this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
+        this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
+      } else {
+        this.rootStore.uiOrderBookStore.clearAskLevelsCells();
+        this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
+        this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
+      }
+      this.spreadUpdateFn();
     }
-    // }
   };
 
   unsubscribe = async () => {

@@ -181,11 +181,11 @@ class RootStore {
 
         conn.onopen = (session, details) => {
           session.subscribe(
-            'orderbook.spot.etheur.sell',
+            'orderbook.spot.ethbtc.sell',
             this.orderBookStore.onNextOrders
           );
           session.subscribe(
-            'orderbook.spot.etheur.buy',
+            'orderbook.spot.ethbtc.buy',
             this.orderBookStore.onNextOrders
           );
         };

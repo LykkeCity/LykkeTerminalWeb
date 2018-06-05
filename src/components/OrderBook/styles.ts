@@ -218,7 +218,7 @@ export const MyOrdersCancelButton = styled.button`
 export const FakeOrderBookStage = styled.div.attrs({
   style: (props: any) => ({
     height: props.height,
-    width: props.width / 3 * 2
+    width: props.width
   })
 })`
   position: absolute;

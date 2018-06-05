@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react';
-import {compose, pathOr, toLower} from 'rambda';
+import {compose, pathOr} from 'rambda';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import {withContentRect} from 'react-measure';
@@ -9,11 +9,13 @@ import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
 import Figures, {FigureListProps} from './Figures';
 import Header from './Header';
-import {LevelListProps} from './OrderbookCanvas';
+import {LevelListProps} from './LevelList';
 
-import LevelListItem from './LevelListItem';
 import MyOrders, {MyOrdersProps} from './MyOrders';
-import OrderBookCanvas from './OrderbookCanvas';
+
+import LevelList from './LevelList';
+
+import LevelType from '../../models/levelType';
 
 export const LEVEL_HEIGHT = 30;
 export const LEVELS_COUNT = 50;
@@ -53,62 +55,51 @@ const ConnectedBar = connect<BarProps>(
   Bar
 );
 
-const ConnectedOrderBookCanvasAsk = connect<LevelListProps>(
+const ConnectedAskLevels = connect<LevelListProps>(
   ({
-    orderBookStore: {getAsks, getBids, setCbForDrawAsks},
+    orderBookStore: {getAsks, getBids, setAsksDrawingHandler},
     uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
-    uiOrderBookStore: {handleAskLevelCellsClick, storeAskLevelCellInfo}
+    uiOrderBookStore: {triggerOrderUpdate}
   }) => {
     return {
-      getLevels: getAsks,
       getBids,
       getAsks,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      handleOrderBookClick: handleAskLevelCellsClick,
-      storeLevelCellInfo: storeAskLevelCellInfo,
       isReadOnly: readOnlyMode,
       displayType: orderbookDisplayType.toLowerCase(),
-      handleDrawLevels: setCbForDrawAsks,
-      levelsType: 'ask'
+      setLevelsDrawingHandler: setAsksDrawingHandler,
+      triggerOrderUpdate,
+      type: LevelType.Asks
     };
   },
-  observer(OrderBookCanvas)
+  observer(LevelList)
 );
 
-const ConnectedOrderBookCanvasBid = connect<LevelListProps>(
+const ConnectedBidLevels = connect<LevelListProps>(
   ({
-    orderBookStore: {getBids, getAsks, setCbForDrawBids},
+    orderBookStore: {getBids, getAsks, setBidsDrawingHandler},
     uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
-    uiOrderBookStore: {handleBidLevelCellsClick, storeBidLevelCellInfo}
+    uiOrderBookStore: {triggerOrderUpdate}
   }) => {
     return {
-      getLevels: getBids,
       getBids,
       getAsks,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      handleOrderBookClick: handleBidLevelCellsClick,
-      storeLevelCellInfo: storeBidLevelCellInfo,
       isReadOnly: readOnlyMode,
       displayType: orderbookDisplayType.toLowerCase(),
-      handleDrawLevels: setCbForDrawBids,
-      levelsType: 'bid'
+      setLevelsDrawingHandler: setBidsDrawingHandler,
+      triggerOrderUpdate,
+      type: LevelType.Bids
     };
   },
-  observer(OrderBookCanvas)
-);
-
-const ConnectedLevelListItem = connect(
-  ({uiStore: {orderbookDisplayType}}) => ({
-    displayType: toLower(orderbookDisplayType)
-  }),
-  observer(LevelListItem)
+  observer(LevelList)
 );
 
 const ConnectedFigures = connect<FigureListProps>(
   ({
-    orderBookStore: {mid, spreadRelative},
+    orderBookStore: {mid, spreadRelative, setSpreadHandler},
     priceStore: {lastTradePrice},
     authStore: {isAuth},
     uiStore: {selectedInstrument, readOnlyMode},
@@ -121,7 +112,8 @@ const ConnectedFigures = connect<FigureListProps>(
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
     format: formatWithAccuracy,
     handlePriceClickFromOrderBook,
-    isReadOnly: readOnlyMode
+    isReadOnly: readOnlyMode,
+    setSpreadHandler
   }),
   Figures
 );
@@ -154,12 +146,12 @@ const ConnectedOrderbook = connect(
               );
           }}
         >
-          <ConnectedOrderBookCanvasAsk
+          <ConnectedAskLevels
             height={LEVELS_COUNT * LEVEL_HEIGHT}
             width={contentRect.client.width + LEFT_PADDING || 300}
           />
           {loading ? null : <ConnectedFigures />}
-          <ConnectedOrderBookCanvasBid
+          <ConnectedBidLevels
             height={LEVELS_COUNT * LEVEL_HEIGHT}
             width={contentRect.client.width + LEFT_PADDING || 300}
           />
@@ -179,4 +171,3 @@ const ConnectedMyOrders = connect<MyOrdersProps>(
 );
 
 export default ConnectedOrderbook;
-export {ConnectedLevelListItem as LevelListItem};

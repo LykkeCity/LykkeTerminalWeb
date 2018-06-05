@@ -45,19 +45,14 @@ class UiOrderBookStore extends BaseStore {
     );
   }
 
-  setOrderPrice = (cell: LevelCellInterface) => {
-    const {order} = cell;
-    this.rootStore.uiOrderStore.handlePriceClickFromOrderBook(
-      order.price,
-      order.side
-    );
+  setOrderPrice = (value: number, side: Side) => {
+    this.rootStore.uiOrderStore.handlePriceClickFromOrderBook(value, side);
   };
 
-  setOrderVolume = (cell: LevelCellInterface) => {
-    const {order} = cell;
-    const orderSide = order.side === Side.Sell ? Side.Buy : Side.Sell;
+  setOrderVolume = (value: number, side: Side) => {
+    const orderSide = side === Side.Sell ? Side.Buy : Side.Sell;
     this.rootStore.uiOrderStore.handleVolumeClickFromOrderBook(
-      order[OrderBookCellType.Depth],
+      value,
       orderSide
     );
   };
@@ -100,26 +95,18 @@ class UiOrderBookStore extends BaseStore {
       c => c.x.start <= x && x <= c.x.end && c.y.start <= y && y <= c.y.end
     );
 
-  triggerOrderUpdate = (cell: LevelCellInterface | undefined) => {
-    if (cell) {
-      switchcase({
-        [OrderBookCellType.Price]: this.setOrderPrice,
-        [OrderBookCellType.Volume]: this.setOrderVolume,
-        [OrderBookCellType.Depth]: this.setOrderVolume
-      })(cell.type)(cell);
-    }
+  triggerOrderUpdate = ({type, value, side}: any) => {
+    switchcase({
+      [OrderBookCellType.Price]: this.setOrderPrice,
+      [OrderBookCellType.Volume]: this.setOrderVolume,
+      [OrderBookCellType.Depth]: this.setOrderVolume
+    })(type)(value, side);
   };
 
   clearAskLevelsCells = () =>
     this.askLevelsCells.splice(0, this.askLevelsCells.length);
   clearBidLevelsCells = () =>
     this.bidLevelsCells.splice(0, this.bidLevelsCells.length);
-
-  handleAskLevelCellsClick = (x: number, y: number) =>
-    this.triggerOrderUpdate(this.findAskLevelCellByCoords(x, y));
-
-  handleBidLevelCellsClick = (x: number, y: number) =>
-    this.triggerOrderUpdate(this.findBidLevelCellByCoords(x, y));
 
   reset = () => {
     this.askLevelsCells = [];
