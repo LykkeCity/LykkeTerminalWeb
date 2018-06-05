@@ -37,7 +37,7 @@ const formatWithAccuracy = (
 
 const ConnectedBar = connect<BarProps>(
   ({
-    orderBookStore: {spreadRelative, span, nextSpan, prevSpan},
+    orderBookStore: {span, nextSpan, prevSpan},
     uiStore: {
       orderbookDisplayType,
       changeOrderbookDisplayType,
@@ -57,9 +57,13 @@ const ConnectedBar = connect<BarProps>(
 
 const ConnectedAskLevels = connect<LevelListProps>(
   ({
-    orderBookStore: {getAsks, getBids, setAsksDrawingHandler},
-    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
-    uiOrderBookStore: {triggerOrderUpdate}
+    orderBookStore: {
+      getAsks,
+      getBids,
+      setAsksDrawingHandler,
+      triggerOrderUpdate
+    },
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
   }) => {
     return {
       getBids,
@@ -78,9 +82,13 @@ const ConnectedAskLevels = connect<LevelListProps>(
 
 const ConnectedBidLevels = connect<LevelListProps>(
   ({
-    orderBookStore: {getBids, getAsks, setBidsDrawingHandler},
-    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
-    uiOrderBookStore: {triggerOrderUpdate}
+    orderBookStore: {
+      getBids,
+      getAsks,
+      setBidsDrawingHandler,
+      triggerOrderUpdate
+    },
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
   }) => {
     return {
       getBids,
@@ -99,7 +107,7 @@ const ConnectedBidLevels = connect<LevelListProps>(
 
 const ConnectedFigures = connect<FigureListProps>(
   ({
-    orderBookStore: {mid, spreadRelative, setSpreadHandler},
+    orderBookStore: {mid, getSpreadRelative, setSpreadHandler},
     priceStore: {lastTradePrice},
     authStore: {isAuth},
     uiStore: {selectedInstrument, readOnlyMode},
@@ -108,7 +116,7 @@ const ConnectedFigures = connect<FigureListProps>(
     lastTradePrice,
     mid: mid(),
     isAuth,
-    spreadRelative,
+    getSpreadRelative,
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
     format: formatWithAccuracy,
     handlePriceClickFromOrderBook,

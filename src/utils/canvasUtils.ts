@@ -61,6 +61,25 @@ export const drawLine = ({
   ctx.stroke();
 };
 
+export const drawVerticalLine = ({
+  ctx,
+  x,
+  y,
+  height,
+  lineWidth,
+  color,
+  lineCap
+}: any) => {
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = lineCap;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x, height);
+  ctx.stroke();
+};
+
 export const drawText = ({
   ctx,
   color,
@@ -78,8 +97,7 @@ export const drawText = ({
   ctx.fillText(text, x, y);
 };
 
-export const defineCanvasScale = (ctx: any) => {
-  // finally query the various pixel ratios
+export const defineCanvasScale = (ctx: any, canvas: any) => {
   const devicePixelRatio = window.devicePixelRatio || 1;
   const backingStoreRatio =
     ctx.webkitBackingStorePixelRatio ||
@@ -95,6 +113,15 @@ export const defineCanvasScale = (ctx: any) => {
   }
 
   if (auto && devicePixelRatio !== backingStoreRatio) {
+    const oldWidth = canvas.width;
+    const oldHeight = canvas.height;
+
+    canvas.width = oldWidth * ratio;
+    canvas.height = oldHeight * ratio;
+
+    canvas.style.width = oldWidth + 'px';
+    canvas.style.height = oldHeight + 'px';
+
     ctx.scale(ratio, ratio);
   }
 };

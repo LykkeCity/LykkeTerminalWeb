@@ -17,7 +17,7 @@ export interface FigureListProps {
   lastTradePrice: number;
   priceAccuracy: number;
   mid: number;
-  spreadRelative: number;
+  getSpreadRelative: () => number;
   format: (num: number, accuracy: number, opts?: object) => string;
   handlePriceClickFromOrderBook: (price: number, side: Side) => void;
   isReadOnly: boolean;
@@ -31,7 +31,9 @@ class Figures extends React.Component<FigureListProps> {
   }
 
   handleSpreadChange = () => {
-    this.forceUpdate();
+    window.requestAnimationFrame(() => {
+      this.forceUpdate();
+    });
   };
 
   render() {
@@ -40,7 +42,7 @@ class Figures extends React.Component<FigureListProps> {
       lastTradePrice,
       priceAccuracy,
       mid,
-      spreadRelative,
+      getSpreadRelative,
       format,
       handlePriceClickFromOrderBook,
       isReadOnly
@@ -71,7 +73,7 @@ class Figures extends React.Component<FigureListProps> {
         </MidPrice>
         <Spread>
           <FigureValue>
-            {format(spreadRelative, 2, {
+            {format(getSpreadRelative(), 2, {
               style: 'percent'
             })}
           </FigureValue>

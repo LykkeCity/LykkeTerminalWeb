@@ -1,20 +1,39 @@
 import {ISubscription} from 'autobahn';
 import {action, computed, observable, runInAction} from 'mobx';
-import {compose, curry, head, last, map, reverse, sortBy, take} from 'rambda';
+import {compose, curry, head, last, reverse, sortBy, take} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {LEVELS_COUNT} from '../components/OrderBook';
 import {Order, Side} from '../models/index';
-import {toOrder} from '../models/mappers/orderMapper';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
 import LevelType from '../models/levelType';
+import {switchcase} from '../utils/fn';
+
+import OrderBookCellType from '../models/orderBookCellType';
+
+import greenlet from 'greenlet';
 
 // help tsc to infer correct type
 const headArr: <T = Order>(l: T[]) => T = head;
 const sortByPrice = sortBy(x => x.price);
+
+const mapToOrderWorker = greenlet((levels: any, side: Side) => {
+  return levels.map((l: any) => {
+    return {
+      id: l.Id,
+      price: l.Price,
+      timestamp: l.DateTime,
+      volume: l.Volume,
+      depth: 0,
+      side,
+      orderVolume: 0,
+      connectedLimitOrders: []
+    };
+  });
+});
 
 class OrderBookStore extends BaseStore {
   rawBids: Order[] = [];
@@ -112,14 +131,9 @@ class OrderBookStore extends BaseStore {
 
   mid = () => (this.bestAsk() + this.bestBid()) / 2;
 
-  @computed
-  get spread() {
-    return this.bestAsk() - this.bestBid();
-  }
-
-  get spreadRelative() {
+  getSpreadRelative = () => {
     return (this.bestAsk() - this.bestBid()) / this.bestAsk();
-  }
+  };
 
   @action
   nextSpan = () => {
@@ -173,21 +187,22 @@ class OrderBookStore extends BaseStore {
   };
 
   onNextOrders = (args: any) => {
-    const {AssetPair, IsBuy, Levels} = args[0];
-    const {selectedInstrument} = this.rootStore.uiStore;
-    if (selectedInstrument && selectedInstrument.id === AssetPair) {
-      const mapToOrders = map(toOrder);
-      if (IsBuy) {
-        this.rootStore.uiOrderBookStore.clearBidLevelsCells();
-        this.rawBids = mapToOrders(Levels).map(o => ({...o, side: Side.Buy}));
+    const {IsBuy, Levels} = args[0];
+    // const {selectedInstrument} = this.rootStore.uiStore;
+    // if (selectedInstrument && selectedInstrument.id === AssetPair) {
+    if (IsBuy) {
+      mapToOrderWorker(Levels, Side.Buy).then((orders: any) => {
+        this.rawBids = orders.map((o: any) => Order.create(o));
         this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
-      } else {
-        this.rootStore.uiOrderBookStore.clearAskLevelsCells();
-        this.rawAsks = mapToOrders(Levels).map(o => ({...o, side: Side.Sell}));
+      });
+    } else {
+      mapToOrderWorker(Levels, Side.Sell).then((orders: any) => {
+        this.rawAsks = orders.map((o: any) => Order.create(o));
         this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
-      }
-      this.spreadUpdateFn();
+      });
     }
+    this.spreadUpdateFn();
+    // }
   };
 
   unsubscribe = async () => {
@@ -200,6 +215,26 @@ class OrderBookStore extends BaseStore {
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();
     }
+  };
+
+  setOrderPrice = (value: number, side: Side) => {
+    this.rootStore.uiOrderStore.handlePriceClickFromOrderBook(value, side);
+  };
+
+  setOrderVolume = (value: number, side: Side) => {
+    const orderSide = side === Side.Sell ? Side.Buy : Side.Sell;
+    this.rootStore.uiOrderStore.handleVolumeClickFromOrderBook(
+      value,
+      orderSide
+    );
+  };
+
+  triggerOrderUpdate = ({type, value, side}: any) => {
+    switchcase({
+      [OrderBookCellType.Price]: this.setOrderPrice,
+      [OrderBookCellType.Volume]: this.setOrderVolume,
+      [OrderBookCellType.Depth]: this.setOrderVolume
+    })(type)(value, side);
   };
 
   reset = () => {

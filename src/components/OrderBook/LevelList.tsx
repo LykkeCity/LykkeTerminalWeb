@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import {colors} from '../styled';
 
 import {InstrumentModel, Order, Side} from '../../models';
-import {LEFT_PADDING, LEVEL_HEIGHT, TOP_PADDING} from './index';
+import {LEFT_PADDING, LEVEL_HEIGHT, LEVELS_COUNT, TOP_PADDING} from './index';
 
 import {curry, map, prop, toLower} from 'rambda';
 import {normalizeVolume} from '../../utils';
@@ -12,7 +12,8 @@ import {
   defineCanvasScale,
   drawLine,
   drawRect,
-  drawText
+  drawText,
+  drawVerticalLine
 } from '../../utils/canvasUtils';
 
 import LevelType from '../../models/levelType';
@@ -28,6 +29,9 @@ const getCellType = (type: string) =>
   type === OrderBookCellType.Depth
     ? OrderBookCellType.Depth
     : OrderBookCellType.Volume;
+
+const getY = (side: Side, idx: number) =>
+  (side === Side.Buy ? idx : LEVELS_COUNT - idx - 1) * LEVEL_HEIGHT;
 
 export interface LevelListProps {
   levels: Order[];
@@ -52,14 +56,16 @@ class LevelList extends React.Component<LevelListProps> {
   canvas: HTMLCanvasElement | null;
   canvasCtx: CanvasRenderingContext2D | null;
   levelsCells: any[] = [];
-  canvasHeight: number = 0;
+  levelsLength: number = 0;
   fakeStage: any;
 
+  memoWidth: number = 0;
+
   handleLevelsDrawing = (asks: Order[], bids: Order[], type: LevelType) => {
-    // window.requestAnimationFrame(() => {
-    //   this.renderCanvas(asks, bids, type);
-    //   this.forceUpdate();
-    // });
+    window.requestAnimationFrame(() => {
+      this.renderCanvas(asks, bids, type);
+      this.forceUpdate();
+    });
   };
 
   togglePointerEvents = (value: string) =>
@@ -68,16 +74,16 @@ class LevelList extends React.Component<LevelListProps> {
     ] = value);
 
   componentDidMount() {
-    const runLoop = () => {
-      this.renderCanvas(
-        this.props.getAsks(),
-        this.props.getBids(),
-        this.props.type
-      );
-      this.forceUpdate();
-      window.requestAnimationFrame(runLoop);
-    };
-    window.requestAnimationFrame(runLoop);
+    // const runLoop = () => {
+    //   this.renderCanvas(
+    //     this.props.getAsks(),
+    //     this.props.getBids(),
+    //     this.props.type
+    //   );
+    //   this.forceUpdate();
+    //   window.requestAnimationFrame(runLoop);
+    // };
+    // window.requestAnimationFrame(runLoop);
 
     const {setLevelsDrawingHandler} = this.props;
     setLevelsDrawingHandler(this.handleLevelsDrawing);
@@ -104,15 +110,15 @@ class LevelList extends React.Component<LevelListProps> {
       false
     );
 
-    defineCanvasScale(this.canvasCtx);
+    defineCanvasScale(this.canvasCtx, this.canvas);
   }
 
-  drawLevels = (asks: Order[], bids: Order[], type: LevelType) => {
+  drawLevels = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
     this.levelsCells = [];
     const {displayType, instrument, format, width} = this.props;
 
     const levels = type === LevelType.Asks ? asks : bids;
-    this.canvasHeight = levels.length;
+    this.levelsLength = levels.length;
 
     const vals = map(prop(toLower(displayType)), [
       ...asks,
@@ -124,24 +130,40 @@ class LevelList extends React.Component<LevelListProps> {
     );
 
     levels.forEach((l, i: number) => {
+      const y = getY(l.side, i);
+      const canvasY = getY(l.side, l.side === Side.Sell ? i - 1 : i + 1);
       const value = format(
         l[displayType] * l.price,
         instrument.quoteAsset.accuracy
       );
+      const color = fillBySide(l.side);
 
       drawRect({
         ctx: this.canvasCtx,
-        color: fillBySide(l.side),
+        color,
         x: width / 3,
-        y: (i + 1) * LEVEL_HEIGHT,
+        y,
         width: normalize(l[displayType]),
         height: LEVEL_HEIGHT,
         opacity: 0.16
       });
+
+      if (l.connectedLimitOrders.length > 0) {
+        drawVerticalLine({
+          ctx: this.canvasCtx,
+          x: width / 3 + 1,
+          y: y + 2,
+          height: y + LEVEL_HEIGHT - 2,
+          lineWidth: 2,
+          color,
+          lineCap: 'round'
+        });
+      }
+
       drawLine({
         ctx: this.canvasCtx,
         width,
-        y: (i + 1) * LEVEL_HEIGHT,
+        y: canvasY,
         x: LEFT_PADDING,
         color: colors.graphiteBorder,
         lineWidth: 1
@@ -149,17 +171,17 @@ class LevelList extends React.Component<LevelListProps> {
 
       drawText({
         ctx: this.canvasCtx,
-        color: fillBySide(l.side),
+        color,
         text: format(l.price, instrument.accuracy),
         x: LEFT_PADDING,
-        y: (i + 1) * LEVEL_HEIGHT - TOP_PADDING,
+        y: canvasY - TOP_PADDING,
         font: LEVELS_FONT,
         align: 'start'
       });
       this.levelsCells.push({
         left: LEFT_PADDING,
-        top: i * LEVEL_HEIGHT,
-        width: width / 3,
+        top: y,
+        width: width / 3 - LEFT_PADDING,
         height: LEVEL_HEIGHT,
         type: OrderBookCellType.Price,
         value: l.price,
@@ -168,16 +190,16 @@ class LevelList extends React.Component<LevelListProps> {
 
       drawText({
         ctx: this.canvasCtx,
-        color: fillBySide(l.side),
+        color,
         text: format(l[displayType], instrument.baseAsset.accuracy),
         x: width / 3 + LEFT_PADDING,
-        y: (i + 1) * LEVEL_HEIGHT - TOP_PADDING,
+        y: canvasY - TOP_PADDING,
         font: LEVELS_FONT,
         align: 'start'
       });
       this.levelsCells.push({
-        left: width / 3 + LEFT_PADDING,
-        top: i * LEVEL_HEIGHT,
+        left: width / 3,
+        top: y,
         width: width / 3,
         height: LEVEL_HEIGHT,
         type: getCellType(displayType),
@@ -190,30 +212,37 @@ class LevelList extends React.Component<LevelListProps> {
         color: colors.white,
         text: value,
         x: width,
-        y: (i + 1) * LEVEL_HEIGHT - TOP_PADDING,
+        y: canvasY - TOP_PADDING,
         font: LEVELS_FONT,
         align: 'end'
       });
     });
   };
 
+  componentWillReceiveProps() {
+    window.requestAnimationFrame(() => {
+      this.renderCanvas(
+        this.props.getAsks(),
+        this.props.getBids(),
+        this.props.type
+      );
+      this.forceUpdate();
+    });
+  }
+
   renderCanvas = (asks: Order[], bids: Order[], type: LevelType) => {
-    this.canvasCtx!.clearRect(
-      0,
-      0,
-      this.props.width,
-      this.canvasHeight * LEVEL_HEIGHT
-    );
+    this.canvas!.width = this.canvas!.width;
     this.drawLevels(asks, bids, type);
   };
 
   render() {
+    this.memoWidth = this.props.width;
     return (
       <React.Fragment>
         {!this.props.isReadOnly && (
           <FakeOrderBookStage
             width={this.props.width / 3 * 2}
-            height={this.canvasHeight * LEVEL_HEIGHT}
+            height={this.props.height}
             // tslint:disable-next-line:jsx-no-lambda
             onMouseDown={() => this.togglePointerEvents('none')}
             ref={(div: any) => (this.fakeStage = div)}
@@ -221,7 +250,7 @@ class LevelList extends React.Component<LevelListProps> {
         )}
         <canvas
           width={this.props.width}
-          height={this.canvasHeight * LEVEL_HEIGHT}
+          height={this.props.height}
           ref={(canvas: any) => (this.canvas = canvas)}
         />
       </React.Fragment>
