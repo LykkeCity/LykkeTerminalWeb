@@ -64,6 +64,8 @@ class RootStore {
   readonly marketStore: MarketStore;
   readonly uiOrderBookStore: UiOrderBookStore;
 
+  private ws: WampApi;
+
   private readonly stores = new Set<BaseStore>();
 
   private readonly wampUrl = process.env.REACT_APP_WAMP_URL || '';
@@ -97,18 +99,21 @@ class RootStore {
   }
 
   startPublicMode = async (defaultInstrument: any) => {
-    const ws = new WampApi();
-    return ws.connect(this.wampUrl, this.wampRealm).then(session => {
-      this.uiStore.setWs(ws);
-      this.depthChartStore.setWs(ws);
-      this.orderBookStore.setWs(ws);
-      this.chartStore.setWs(ws);
-      this.tradeStore.setWs(ws);
-      this.priceStore.setWs(ws);
+    this.ws = new WampApi();
+    return this.ws.connect(this.wampUrl, this.wampRealm).then(session => {
+      this.uiStore.setWs(this.ws);
+      this.depthChartStore.setWs(this.ws);
+      this.orderBookStore.setWs(this.ws);
+      this.chartStore.setWs(this.ws);
+      this.tradeStore.setWs(this.ws);
+      this.priceStore.setWs(this.ws);
       this.referenceStore.getInstruments().forEach((x: any) => {
-        ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-        ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-        ws.subscribe(
+        this.ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+        this.ws.subscribe(
+          topics.quoteAsk(x.id),
+          this.referenceStore.onQuoteAsk
+        );
+        this.ws.subscribe(
           topics.candle('spot', x.id, PriceType.Trade, 'day'),
           this.referenceStore.onCandle
         );
@@ -143,40 +148,59 @@ class RootStore {
         this.balanceListStore.updateWalletBalances();
       }, reject => Promise.resolve)
       .then(async () => {
-        const ws = new WampApi();
-        await ws.connect(
+        this.ws = new WampApi();
+        await this.ws.connect(
           this.wampUrl,
           this.wampRealm,
           tokenStorage.get() as string
         );
 
-        this.uiStore.setWs(ws);
-        this.depthChartStore.setWs(ws);
-        this.orderBookStore.setWs(ws);
-        this.chartStore.setWs(ws);
-        this.tradeStore.setWs(ws);
-        this.priceStore.setWs(ws);
+        this.uiStore.setWs(this.ws);
+        this.depthChartStore.setWs(this.ws);
+        this.orderBookStore.setWs(this.ws);
+        this.chartStore.setWs(this.ws);
+        this.tradeStore.setWs(this.ws);
+        this.priceStore.setWs(this.ws);
         instruments.forEach(x => {
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-          ws.subscribe(
+          this.ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          this.ws.subscribe(
+            topics.quoteAsk(x.id),
+            this.referenceStore.onQuoteAsk
+          );
+          this.ws.subscribe(
             topics.candle('spot', x.id, PriceType.Trade, 'day'),
             this.referenceStore.onCandle
           );
         });
-        this.orderListStore.setWs(ws);
+        this.orderListStore.setWs(this.ws);
         this.uiStore.selectInstrument(
           this.lastOrDefaultInstrument(defaultInstrument)!.id
         );
-        this.tradeStore.subscribe(ws);
-        this.orderStore.subscribe(ws);
-        this.balanceListStore.subscribe(ws);
+        this.tradeStore.subscribe(this.ws);
+        this.orderStore.subscribe(this.ws);
+        this.balanceListStore.subscribe(this.ws);
 
         return Promise.resolve();
       })
       .catch(e => {
         this.startPublicMode(defaultInstrument);
       });
+  };
+
+  pause = () => {
+    if (this.ws) {
+      this.ws.close();
+    }
+  };
+
+  continue = async () => {
+    if (this.ws) {
+      await this.ws.connect(
+        this.wampUrl,
+        this.wampRealm,
+        tokenStorage.get() as string
+      );
+    }
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
