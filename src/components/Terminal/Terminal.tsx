@@ -33,6 +33,9 @@ const MAX_LEFT_PADDING = 20;
 const MAX_RIGHT_PADDING = 75;
 const MIN_PANE_SIZE_PERCENTAGE = 20;
 
+const VISIBLE = 'visible';
+const HIDDEN = 'hidden';
+
 const {
   ChartWidget,
   OrderWidget,
@@ -103,6 +106,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
     this.props.rootStore.uiStore.setPageVisibility(
       document.visibilityState === 'visible'
     );
+    this.props.rootStore.uiStore.getPageVisibility() ? this.props.rootStore.pause() : this.props.rootStore.continue();
   };
 
   componentDidMount() {
