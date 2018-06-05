@@ -189,7 +189,7 @@ class RootStore {
 
   pause = () => {
     if (this.ws) {
-      this.ws.close();
+      this.ws.pause();
     }
   };
 

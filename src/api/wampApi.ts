@@ -44,8 +44,20 @@ export class WampApi {
     }
   };
 
+  temporaryUnsubscribe = async (subscription: Subscription) => {
+    const topic = subscription.topic;
+    if (this.subscriptions.has(topic)) {
+      await this.subscriptions.get(topic)!.unsubscribe();
+    }
+  };
+
   close = () => {
-    this.unsubscribeFromAll();
+    this.unsubscribeFromAll(this.unsubscribe);
+    this.connection.close();
+  };
+
+  pause = async () => {
+    this.unsubscribeFromAll(this.temporaryUnsubscribe);
     this.connection.close();
   };
 
@@ -83,8 +95,8 @@ export class WampApi {
     );
   };
 
-  private unsubscribeFromAll = () => {
-    this.subscriptions.forEach(this.unsubscribe);
+  private unsubscribeFromAll = (unsubscribe: any) => {
+    this.subscriptions.forEach(unsubscribe);
   };
 
   private handleChallenge: OnChallengeHandler = (session, method) => {
