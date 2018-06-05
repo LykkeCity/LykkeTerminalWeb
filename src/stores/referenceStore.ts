@@ -78,8 +78,10 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string, watchlistName: string) => {
     const {getWatchlistByName} = this.rootStore.watchlistStore;
-    const instrumentsByName = this.instruments.filter(instrument =>
-      includes(normalize(term), normalize(instrument.displayName!))
+    const instrumentsByName = this.instruments.filter(
+      instrument =>
+        includes(normalize(term), normalize(instrument.displayName!)) ||
+        includes(normalize(term), normalize(instrument.baseAsset.fullName!))
     );
 
     if (watchlistName) {
@@ -115,32 +117,46 @@ class ReferenceStore extends BaseStore {
     }
   };
 
+  @action
   fetchAssets = () => {
-    return this.api
-      .fetchAll()
-      .then((resp: any) => {
-        if (resp) {
-          const dtoAssets = resp.Assets || resp;
-          if (!dtoAssets) {
-            return;
-          }
-          runInAction(() => {
-            this.assets = dtoAssets.map((x: any) =>
-              mappers.mapToAsset(x, this.categories)
-            );
+    const requests: any[] = [
+      this.api.fetchAll(),
+      this.api.fetchAssetsDescriptions()
+    ];
+
+    return Promise.all(requests).then(data => {
+      const assets = data[0];
+      const descriptions = data[1];
+      if (
+        assets &&
+        descriptions &&
+        assets.Assets &&
+        descriptions.Descriptions
+      ) {
+        runInAction(() => {
+          this.assets = assets.Assets.map((x: any) => {
+            const description =
+              descriptions.Descriptions.find((desc: any) => desc.Id === x.Id) ||
+              {};
+            return mappers.mapToAsset(x, this.categories, description);
           });
-        }
-        return Promise.resolve();
-      })
-      .catch(Promise.reject);
+        });
+      }
+      return Promise.resolve();
+    });
   };
 
   fetchAssetById = (id: string) => {
     return this.api.fetchAssetById(id).then((resp: any) => {
-      const dtoAsset = resp.Asset || resp;
-      const asset = mappers.mapToAsset(dtoAsset, this.categories);
-      this.assets.push(asset);
-      return Promise.resolve(asset);
+      this.api.fetchAssetDescriptionById(id).then((description: any) => {
+        const asset = mappers.mapToAsset(
+          resp.Asset || resp,
+          this.categories,
+          description
+        );
+        this.assets.push(asset);
+        return Promise.resolve(asset);
+      });
     });
   };
 
