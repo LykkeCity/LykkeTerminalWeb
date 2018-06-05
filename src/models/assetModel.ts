@@ -9,6 +9,7 @@ class AssetModel {
 
   isBase?: boolean = false;
   iconUrl?: string = '';
+  fullName?: string = '';
 
   constructor(asset: Partial<AssetModel>) {
     extendObservable(this, asset);
