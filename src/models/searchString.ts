@@ -1,7 +1,8 @@
 enum SearchString {
   Delimiter = '/',
   All = '*',
-  Empty = ''
+  Empty = '',
+  Space = ' '
 }
 
 export default SearchString;
