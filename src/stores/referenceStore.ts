@@ -120,10 +120,7 @@ class ReferenceStore extends BaseStore {
 
   @action
   fetchAssets = () => {
-    const requests: any[] = [
-      this.api.fetchAll(),
-      this.api.fetchAssetsDescriptions()
-    ];
+    const requests = [this.api.fetchAll(), this.api.fetchAssetsDescriptions()];
 
     return Promise.all(requests).then(data => {
       const assets = data[0];
@@ -148,16 +145,21 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchAssetById = (id: string) => {
-    return this.api.fetchAssetById(id).then((resp: any) => {
-      this.api.fetchAssetDescriptionById(id).then((description: any) => {
+    const requests = [
+      this.api.fetchAssetById(id),
+      this.api.fetchAssetDescriptionById(id)
+    ];
+
+    return Promise.all(requests).then(data => {
+      if (data.length === 2 && data[0].Asset) {
         const asset = mappers.mapToAsset(
-          resp.Asset,
+          data[0].Asset,
           this.categories,
-          description
+          data[1]
         );
         this.assets.push(asset);
-        return Promise.resolve(asset);
-      });
+      }
+      return Promise.resolve();
     });
   };
 
