@@ -16,23 +16,41 @@ export interface FigureListProps {
   isAuth: boolean;
   lastTradePrice: number;
   priceAccuracy: number;
-  mid: number;
-  getSpreadRelative: () => number;
+  setMidPriceUpdateHandler: (cb: any) => void;
+  getSpreadRelative: () => Promise<number>;
   format: (num: number, accuracy: number, opts?: object) => string;
   handlePriceClickFromOrderBook: (price: number, side: Side) => void;
   isReadOnly: boolean;
   setSpreadHandler: (cb: () => void) => void;
 }
 
-class Figures extends React.Component<FigureListProps> {
+interface FigureListState {
+  spreadRelative: number;
+  mid: number;
+}
+
+class Figures extends React.Component<FigureListProps, FigureListState> {
   constructor(props: FigureListProps) {
     super(props);
+    this.state = {
+      spreadRelative: 0,
+      mid: 0
+    };
     this.props.setSpreadHandler(this.handleSpreadChange);
+    this.props.setMidPriceUpdateHandler(this.handleMidPriceChange);
   }
 
-  handleSpreadChange = () => {
-    window.requestAnimationFrame(() => {
-      this.forceUpdate();
+  handleMidPriceChange = async (mid: () => number) => {
+    const midPrice = await mid();
+    this.setState({
+      mid: midPrice
+    });
+  };
+
+  handleSpreadChange = async () => {
+    const spreadRelative = await this.props.getSpreadRelative();
+    this.setState({
+      spreadRelative
     });
   };
 
@@ -41,8 +59,6 @@ class Figures extends React.Component<FigureListProps> {
       isAuth,
       lastTradePrice,
       priceAccuracy,
-      mid,
-      getSpreadRelative,
       format,
       handlePriceClickFromOrderBook,
       isReadOnly
@@ -65,15 +81,17 @@ class Figures extends React.Component<FigureListProps> {
         <MidPrice isAuth={isAuth} clickable={!isReadOnly}>
           <FigureValue
             // tslint:disable-next-line:jsx-no-lambda
-            onClick={() => handlePriceClickFromOrderBook(mid, Side.Buy)}
+            onClick={() =>
+              handlePriceClickFromOrderBook(this.state.mid, Side.Buy)
+            }
           >
-            {format(mid, priceAccuracy)}
+            {format(this.state.mid, priceAccuracy)}
           </FigureValue>
           <FigureHint>Mid price</FigureHint>
         </MidPrice>
         <Spread>
           <FigureValue>
-            {format(getSpreadRelative(), 2, {
+            {format(this.state.spreadRelative, 2, {
               style: 'percent'
             })}
           </FigureValue>

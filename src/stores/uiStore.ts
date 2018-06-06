@@ -42,7 +42,7 @@ class UiStore extends BaseStore {
         if (instrument) {
           this.toggleInstrumentPerformanceData(false);
 
-          const {reset, fetchAll} = this.rootStore.orderBookStore;
+          const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
           reset();
 
           try {
@@ -51,7 +51,7 @@ class UiStore extends BaseStore {
             return;
           }
 
-          // subscribe(this.getWs());
+          subscribe(this.getWs());
 
           const {
             setQuantityAccuracy,
@@ -61,7 +61,8 @@ class UiStore extends BaseStore {
           } = this.rootStore.uiOrderStore;
           setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
           setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
-          setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
+          const mid = await this.rootStore.orderBookStore.mid();
+          setPriceValueWithFixed(mid);
           setQuantityValue(DEFAULT_INPUT_VALUE);
 
           const {

@@ -20,7 +20,7 @@ import LevelType from '../../models/levelType';
 import OrderBookCellType from '../../models/orderBookCellType';
 import {FakeOrderBookStage} from './styles';
 
-const LEVELS_FONT = '12.25px Proxima Nova';
+const LEVELS_FONT = '12px Proxima Nova';
 
 const fillBySide = (side: Side) =>
   side === Side.Buy ? colors.buy : colors.sell;
@@ -244,7 +244,10 @@ class LevelList extends React.Component<LevelListProps> {
   }
 
   renderCanvas = (asks: Order[], bids: Order[], type: LevelType) => {
-    this.canvas!.width = this.canvas!.width;
+    if (this.canvas) {
+      this.canvas!.width = this.canvas!.width;
+    }
+
     this.drawLevels(asks, bids, type);
   };
 

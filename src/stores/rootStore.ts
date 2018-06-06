@@ -39,7 +39,7 @@ import {
   WatchlistStore
 } from './index';
 
-import * as autobahn from 'autobahn';
+// import * as autobahn from 'autobahn';
 
 const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
@@ -151,7 +151,7 @@ class RootStore {
 
         this.uiStore.setWs(ws);
         this.depthChartStore.setWs(ws);
-        // this.orderBookStore.setWs(ws);
+        this.orderBookStore.setWs(ws);
         this.chartStore.setWs(ws);
         this.tradeStore.setWs(ws);
         this.priceStore.setWs(ws);
@@ -171,23 +171,23 @@ class RootStore {
         this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
 
-        const conn = new autobahn.Connection({
-          url: 'wss://wamp.lykke.com/ws/',
-          realm: 'prices'
-        });
-
-        conn.onopen = (session, details) => {
-          session.subscribe(
-            'orderbook.spot.ethchf.sell',
-            this.orderBookStore.onNextOrders
-          );
-          session.subscribe(
-            'orderbook.spot.ethchf.buy',
-            this.orderBookStore.onNextOrders
-          );
-        };
-
-        conn.open();
+        // const conn = new autobahn.Connection({
+        //   url: 'wss://wamp.lykke.com/ws/',
+        //   realm: 'prices'
+        // });
+        //
+        // conn.onopen = (session, details) => {
+        //   session.subscribe(
+        //     'orderbook.spot.ethchf.sell',
+        //     this.orderBookStore.onNextOrders
+        //   );
+        //   session.subscribe(
+        //     'orderbook.spot.ethchf.buy',
+        //     this.orderBookStore.onNextOrders
+        //   );
+        // };
+        //
+        // conn.open();
 
         return Promise.resolve();
       })

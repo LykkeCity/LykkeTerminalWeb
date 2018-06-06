@@ -107,14 +107,18 @@ const ConnectedBidLevels = connect<LevelListProps>(
 
 const ConnectedFigures = connect<FigureListProps>(
   ({
-    orderBookStore: {mid, getSpreadRelative, setSpreadHandler},
+    orderBookStore: {
+      setMidPriceUpdateHandler,
+      getSpreadRelative,
+      setSpreadHandler
+    },
     priceStore: {lastTradePrice},
     authStore: {isAuth},
     uiStore: {selectedInstrument, readOnlyMode},
     uiOrderStore: {handlePriceClickFromOrderBook}
   }) => ({
     lastTradePrice,
-    mid: mid(),
+    setMidPriceUpdateHandler,
     isAuth,
     getSpreadRelative,
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,

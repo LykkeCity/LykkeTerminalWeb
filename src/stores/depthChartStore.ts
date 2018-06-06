@@ -92,15 +92,12 @@ class DepthChartStore extends BaseStore {
     );
   }
 
-  mid = () => this.rootStore.orderBookStore.mid();
+  mid = async () => await this.rootStore.orderBookStore.mid();
 
-  spread = () => {
-    return (
-      (this.rootStore.orderBookStore.bestAsk() -
-        this.rootStore.orderBookStore.bestBid()) /
-      this.rootStore.orderBookStore.bestAsk() *
-      100
-    );
+  spread = async () => {
+    const bestAsk = await this.rootStore.orderBookStore.bestAsk();
+    const bestBid = await this.rootStore.orderBookStore.bestBid();
+    return (bestAsk - bestBid) / bestAsk * 100;
   };
 
   lastTradePrice = () => {

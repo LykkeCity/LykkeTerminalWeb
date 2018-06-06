@@ -1,6 +1,6 @@
 import {ISubscription} from 'autobahn';
-import {action, computed, observable, runInAction} from 'mobx';
-import {compose, curry, head, last, reverse, sortBy, take} from 'rambda';
+import {action, computed, observable} from 'mobx';
+import {compose, curry, head, reverse, sortBy, take} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {LEVELS_COUNT} from '../components/OrderBook';
@@ -35,12 +35,17 @@ const mapToOrderWorker = greenlet((levels: any, side: Side) => {
   });
 });
 
+const getBestLevel = greenlet((levels: any, index: number) => {
+  return levels.sort((a: any, b: any) => a.price - b.price)[index];
+});
+
 class OrderBookStore extends BaseStore {
   rawBids: Order[] = [];
   rawAsks: Order[] = [];
   drawAsks: any;
   drawBids: any;
   spreadUpdateFn: any;
+  midPriceUpdaters: any[] = [];
 
   @observable
   myOrders = {
@@ -96,6 +101,7 @@ class OrderBookStore extends BaseStore {
   setAsksDrawingHandler = (cb: any) => (this.drawAsks = cb);
   setBidsDrawingHandler = (cb: any) => (this.drawBids = cb);
   setSpreadHandler = (cb: any) => (this.spreadUpdateFn = cb);
+  setMidPriceUpdateHandler = (cb: any) => this.midPriceUpdaters.push(cb);
 
   getAsks = () => {
     const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
@@ -123,16 +129,26 @@ class OrderBookStore extends BaseStore {
     );
   };
 
-  bestBid = () =>
-    this.rawBids.length && last(sortBy(x => x.price, this.rawBids)).price;
+  bestBid = async () => {
+    const bestBid = await getBestLevel(this.rawBids, this.rawBids.length - 1);
+    return !!bestBid ? bestBid.price : 0;
+  };
 
-  bestAsk = () =>
-    this.rawAsks.length && head(sortBy(x => x.price, this.rawAsks)).price;
+  bestAsk = async () => {
+    const bestAsk = await getBestLevel(this.rawAsks, 0);
+    return !!bestAsk ? bestAsk.price : 0;
+  };
 
-  mid = () => (this.bestAsk() + this.bestBid()) / 2;
+  mid = async () => {
+    const bestAsk = await this.bestAsk();
+    const bestBid = await this.bestBid();
+    return (bestAsk + bestBid) / 2;
+  };
 
-  getSpreadRelative = () => {
-    return (this.bestAsk() - this.bestBid()) / this.bestAsk();
+  getSpreadRelative = async () => {
+    const bestAsk = await this.bestAsk();
+    const bestBid = await this.bestBid();
+    return (bestAsk - bestBid) / bestAsk;
   };
 
   @action
@@ -168,10 +184,14 @@ class OrderBookStore extends BaseStore {
           this.hasPendingItems = false;
         });
       this.hasPendingItems = false;
-      runInAction(() => {
-        orders.forEach((levels: any) => this.onNextOrders([levels]));
-      });
+      const promises = orders.map(
+        async (levels: any) => await this.onNextOrders([levels])
+      );
+      return Promise.all(promises).then(() =>
+        this.midPriceUpdaters.forEach((fn: any) => fn(this.mid))
+      );
     }
+    return Promise.resolve();
   };
 
   subscribe = async (ws: any) => {
@@ -186,23 +206,21 @@ class OrderBookStore extends BaseStore {
     );
   };
 
-  onNextOrders = (args: any) => {
-    const {IsBuy, Levels} = args[0];
-    // const {selectedInstrument} = this.rootStore.uiStore;
-    // if (selectedInstrument && selectedInstrument.id === AssetPair) {
-    if (IsBuy) {
-      mapToOrderWorker(Levels, Side.Buy).then((orders: any) => {
-        this.rawBids = orders.map((o: any) => Order.create(o));
+  onNextOrders = async (args: any) => {
+    const {AssetPair, IsBuy, Levels} = args[0];
+    const {selectedInstrument} = this.rootStore.uiStore;
+    if (selectedInstrument && selectedInstrument.id === AssetPair) {
+      if (IsBuy) {
+        const bids = await mapToOrderWorker(Levels, Side.Buy);
+        this.rawBids = bids.map((b: any) => Order.create(b));
         this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
-      });
-    } else {
-      mapToOrderWorker(Levels, Side.Sell).then((orders: any) => {
-        this.rawAsks = orders.map((o: any) => Order.create(o));
+      } else {
+        const asks = await mapToOrderWorker(Levels, Side.Sell);
+        this.rawAsks = asks.map((a: any) => Order.create(a));
         this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
-      });
+      }
+      this.spreadUpdateFn();
     }
-    this.spreadUpdateFn();
-    // }
   };
 
   unsubscribe = async () => {

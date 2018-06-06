@@ -309,7 +309,7 @@ describe('uiOrder store', () => {
 
     it('should reset price and quantity', () => {
       const midPrice = 1256.58;
-      uiOrderStore.rootStore.orderBookStore.mid = () => midPrice;
+      uiOrderStore.rootStore.orderBookStore.mid = async () => midPrice;
 
       uiOrderStore.setQuantityValue('123');
       uiOrderStore.setPriceValue('123');

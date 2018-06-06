@@ -97,8 +97,10 @@ describe('orderBook store', () => {
     expect(mid()).toBe((40 + 30) / 2);
   });
 
-  test('best bid should be less that best ask', () => {
-    expect(bestBid()).toBeLessThan(bestAsk());
+  test('best bid should be less that best ask', async () => {
+    const bid = await bestBid();
+    const ask = await bestAsk();
+    expect(bid).toBeLessThan(ask);
   });
 
   describe('group by price', () => {
