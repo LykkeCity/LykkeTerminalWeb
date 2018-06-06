@@ -46,6 +46,7 @@ class OrderBookStore extends BaseStore {
   drawBids: any;
   spreadUpdateFn: any;
   midPriceUpdaters: any[] = [];
+  updateDepthChart: any;
 
   @observable
   myOrders = {
@@ -102,6 +103,7 @@ class OrderBookStore extends BaseStore {
   setBidsDrawingHandler = (cb: any) => (this.drawBids = cb);
   setSpreadHandler = (cb: any) => (this.spreadUpdateFn = cb);
   setMidPriceUpdateHandler = (cb: any) => this.midPriceUpdaters.push(cb);
+  setDepthChartUpdatingHandler = (cb: any) => (this.updateDepthChart = cb);
 
   getAsks = () => {
     const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
@@ -207,20 +209,22 @@ class OrderBookStore extends BaseStore {
   };
 
   onNextOrders = async (args: any) => {
-    const {AssetPair, IsBuy, Levels} = args[0];
-    const {selectedInstrument} = this.rootStore.uiStore;
-    if (selectedInstrument && selectedInstrument.id === AssetPair) {
-      if (IsBuy) {
-        const bids = await mapToOrderWorker(Levels, Side.Buy);
-        this.rawBids = bids.map((b: any) => Order.create(b));
-        this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
-      } else {
-        const asks = await mapToOrderWorker(Levels, Side.Sell);
-        this.rawAsks = asks.map((a: any) => Order.create(a));
-        this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
-      }
-      this.spreadUpdateFn();
+    const {IsBuy, Levels} = args[0];
+    // const {selectedInstrument} = this.rootStore.uiStore;
+    // if (selectedInstrument && selectedInstrument.id === AssetPair) {
+    if (IsBuy) {
+      const bids = await mapToOrderWorker(Levels, Side.Buy);
+      this.rawBids = bids.map((b: any) => Order.create(b));
+      this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
+    } else {
+      const asks = await mapToOrderWorker(Levels, Side.Sell);
+      this.rawAsks = asks.map((a: any) => Order.create(a));
+      this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
     }
+    // tslint:disable-next-line:no-unused-expression
+    this.updateDepthChart && this.updateDepthChart();
+    this.spreadUpdateFn();
+    // }
   };
 
   unsubscribe = async () => {

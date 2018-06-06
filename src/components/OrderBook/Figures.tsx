@@ -49,9 +49,11 @@ class Figures extends React.Component<FigureListProps, FigureListState> {
 
   handleSpreadChange = async () => {
     const spreadRelative = await this.props.getSpreadRelative();
-    this.setState({
-      spreadRelative
-    });
+    if (spreadRelative !== this.state.spreadRelative) {
+      this.setState({
+        spreadRelative
+      });
+    }
   };
 
   render() {
