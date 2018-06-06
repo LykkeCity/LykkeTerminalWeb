@@ -175,7 +175,7 @@ class RootStore {
         //   url: 'wss://wamp.lykke.com/ws/',
         //   realm: 'prices'
         // });
-        //
+
         // conn.onopen = (session, details) => {
         //   session.subscribe(
         //     'orderbook.spot.ethchf.sell',
@@ -186,7 +186,7 @@ class RootStore {
         //     this.orderBookStore.onNextOrders
         //   );
         // };
-        //
+
         // conn.open();
 
         return Promise.resolve();
