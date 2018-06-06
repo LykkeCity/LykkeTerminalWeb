@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import {colors} from '../styled';
 
 import {InstrumentModel, Order, Side} from '../../models';
-import {LEFT_PADDING, LEVEL_HEIGHT, LEVELS_COUNT, TOP_PADDING} from './index';
+import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 
 import {curry, map, prop, toLower} from 'rambda';
 import {normalizeVolume} from '../../utils';
@@ -30,8 +30,8 @@ const getCellType = (type: string) =>
     ? OrderBookCellType.Depth
     : OrderBookCellType.Volume;
 
-const getY = (side: Side, idx: number) =>
-  (side === Side.Buy ? idx : LEVELS_COUNT - idx - 1) * LEVEL_HEIGHT;
+const getY = (side: Side, idx: number, levelHeight: number) =>
+  (side === Side.Buy ? idx : LEVELS_COUNT - idx - 1) * levelHeight;
 
 export interface LevelListProps {
   levels: Order[];
@@ -58,6 +58,7 @@ class LevelList extends React.Component<LevelListProps> {
   levelsCells: any[] = [];
   levelsLength: number = 0;
   fakeStage: any;
+  ratio: number = 1;
 
   memoWidth: number = 0;
 
@@ -73,26 +74,17 @@ class LevelList extends React.Component<LevelListProps> {
       'pointer-events'
     ] = value);
 
-  componentDidMount() {
-    // const runLoop = () => {
-    //   this.renderCanvas(
-    //     this.props.getAsks(),
-    //     this.props.getBids(),
-    //     this.props.type
-    //   );
-    //   this.forceUpdate();
-    //   window.requestAnimationFrame(runLoop);
-    // };
-    // window.requestAnimationFrame(runLoop);
+  handleRatioChange = (ratio: number) => (this.ratio = ratio);
 
+  componentDidMount() {
     const {setLevelsDrawingHandler} = this.props;
     setLevelsDrawingHandler(this.handleLevelsDrawing);
     this.canvasCtx = this.canvas!.getContext('2d');
     this.canvas!.addEventListener(
       'mouseup',
       (event: any) => {
-        const x = event.layerX;
-        const y = event.layerY;
+        const x = event.layerX * this.ratio;
+        const y = event.layerY * this.ratio;
 
         const clickedLevelElement = this.levelsCells.find(
           (el: any) =>
@@ -110,7 +102,13 @@ class LevelList extends React.Component<LevelListProps> {
       false
     );
 
-    defineCanvasScale(this.canvasCtx, this.canvas);
+    defineCanvasScale(
+      this.canvasCtx,
+      this.canvas,
+      this.props.width,
+      this.props.height,
+      this.handleRatioChange
+    );
   }
 
   drawLevels = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
@@ -120,6 +118,7 @@ class LevelList extends React.Component<LevelListProps> {
     const levels = type === LevelType.Asks ? asks : bids;
     this.levelsLength = levels.length;
 
+    const levelHeight = this.canvas!.height / LEVELS_COUNT;
     const vals = map(prop(toLower(displayType)), [
       ...asks,
       ...bids
@@ -130,8 +129,12 @@ class LevelList extends React.Component<LevelListProps> {
     );
 
     levels.forEach((l, i: number) => {
-      const y = getY(l.side, i);
-      const canvasY = getY(l.side, l.side === Side.Sell ? i - 1 : i + 1);
+      const y = getY(l.side, i, levelHeight);
+      const canvasY = getY(
+        l.side,
+        l.side === Side.Sell ? i - 1 : i + 1,
+        levelHeight
+      );
       const value = format(
         l[displayType] * l.price,
         instrument.quoteAsset.accuracy
@@ -144,7 +147,7 @@ class LevelList extends React.Component<LevelListProps> {
         x: width / 3,
         y,
         width: normalize(l[displayType]),
-        height: LEVEL_HEIGHT,
+        height: levelHeight,
         opacity: 0.16
       });
 
@@ -153,7 +156,7 @@ class LevelList extends React.Component<LevelListProps> {
           ctx: this.canvasCtx,
           x: width / 3 + 1,
           y: y + 2,
-          height: y + LEVEL_HEIGHT - 2,
+          height: y + levelHeight - 2,
           lineWidth: 2,
           color,
           lineCap: 'round'
@@ -174,7 +177,7 @@ class LevelList extends React.Component<LevelListProps> {
         color,
         text: format(l.price, instrument.accuracy),
         x: LEFT_PADDING,
-        y: canvasY - TOP_PADDING,
+        y: canvasY - TOP_PADDING * this.ratio,
         font: LEVELS_FONT,
         align: 'start'
       });
@@ -182,7 +185,7 @@ class LevelList extends React.Component<LevelListProps> {
         left: LEFT_PADDING,
         top: y,
         width: width / 3 - LEFT_PADDING,
-        height: LEVEL_HEIGHT,
+        height: levelHeight,
         type: OrderBookCellType.Price,
         value: l.price,
         side: l.side
@@ -193,7 +196,7 @@ class LevelList extends React.Component<LevelListProps> {
         color,
         text: format(l[displayType], instrument.baseAsset.accuracy),
         x: width / 3 + LEFT_PADDING,
-        y: canvasY - TOP_PADDING,
+        y: canvasY - TOP_PADDING * this.ratio,
         font: LEVELS_FONT,
         align: 'start'
       });
@@ -201,7 +204,7 @@ class LevelList extends React.Component<LevelListProps> {
         left: width / 3,
         top: y,
         width: width / 3,
-        height: LEVEL_HEIGHT,
+        height: levelHeight,
         type: getCellType(displayType),
         value: l.depth,
         side: l.side
@@ -212,14 +215,24 @@ class LevelList extends React.Component<LevelListProps> {
         color: colors.white,
         text: value,
         x: width,
-        y: canvasY - TOP_PADDING,
+        y: canvasY - TOP_PADDING * this.ratio,
         font: LEVELS_FONT,
         align: 'end'
       });
     });
   };
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps({width}: any) {
+    if (width !== this.memoWidth) {
+      this.memoWidth = width;
+      defineCanvasScale(
+        this.canvasCtx,
+        this.canvas,
+        width,
+        this.props.height,
+        this.handleRatioChange
+      );
+    }
     window.requestAnimationFrame(() => {
       this.renderCanvas(
         this.props.getAsks(),
@@ -236,7 +249,6 @@ class LevelList extends React.Component<LevelListProps> {
   };
 
   render() {
-    this.memoWidth = this.props.width;
     return (
       <React.Fragment>
         {!this.props.isReadOnly && (

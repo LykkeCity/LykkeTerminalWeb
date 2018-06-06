@@ -97,7 +97,13 @@ export const drawText = ({
   ctx.fillText(text, x, y);
 };
 
-export const defineCanvasScale = (ctx: any, canvas: any) => {
+export const defineCanvasScale = (
+  ctx: any,
+  canvas: any,
+  oldWidth: number,
+  oldHeight: number,
+  setRatio: (ratio: number) => void
+) => {
   const devicePixelRatio = window.devicePixelRatio || 1;
   const backingStoreRatio =
     ctx.webkitBackingStorePixelRatio ||
@@ -113,9 +119,6 @@ export const defineCanvasScale = (ctx: any, canvas: any) => {
   }
 
   if (auto && devicePixelRatio !== backingStoreRatio) {
-    const oldWidth = canvas.width;
-    const oldHeight = canvas.height;
-
     canvas.width = oldWidth * ratio;
     canvas.height = oldHeight * ratio;
 
@@ -124,4 +127,5 @@ export const defineCanvasScale = (ctx: any, canvas: any) => {
 
     ctx.scale(ratio, ratio);
   }
+  setRatio(ratio);
 };
