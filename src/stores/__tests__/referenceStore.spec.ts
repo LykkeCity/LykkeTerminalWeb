@@ -11,6 +11,8 @@ describe('referenceStore', () => {
     fetchAll: jest.fn(),
     fetchAssetCategories: jest.fn(),
     fetchAssetInstruments: jest.fn(),
+    fetchAssetsDescriptions: jest.fn(),
+    fetchAssetDescriptionById: jest.fn(),
     fetchBaseAsset: jest.fn()
   };
   let assetStore: ReferenceStore;
@@ -103,6 +105,20 @@ describe('referenceStore', () => {
           ]
         })
       );
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve({
+          Descriptions: [
+            {
+              Id: '1',
+              FullName: 'Lykke'
+            },
+            {
+              Id: '2',
+              FullName: 'Lykke 2'
+            }
+          ]
+        })
+      );
 
       await assetStore.fetchAssets();
 
@@ -147,7 +163,8 @@ describe('referenceStore', () => {
         id: '1',
         name: 'LKK',
         accuracy: 2,
-        category: ctg
+        category: ctg,
+        fullName: 'Lykke'
       });
       jest.resetAllMocks();
       api.fetchAll = jest.fn(() =>
@@ -164,6 +181,17 @@ describe('referenceStore', () => {
           ]
         })
       );
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve({
+          Descriptions: [
+            {
+              Id: '1',
+              FullName: 'Lykke'
+            }
+          ]
+        })
+      );
+
       api.fetchAssetCategories = jest.fn(() =>
         Promise.resolve({
           AssetCategories: [{Id: '1', Name: 'Lykke'}]
@@ -185,6 +213,16 @@ describe('referenceStore', () => {
             {
               Id: '1',
               Name: name
+            }
+          ]
+        })
+      );
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve({
+          Descriptions: [
+            {
+              Id: '1',
+              FullName: 'Lykke'
             }
           ]
         })
