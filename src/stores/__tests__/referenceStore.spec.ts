@@ -4,6 +4,7 @@ import {
   InstrumentModel
 } from '../../models/index';
 import {ReferenceStore, RootStore} from '../index';
+import WatchlistStore from '../watchlistStore';
 
 // tslint:disable:object-literal-sort-keys
 describe('referenceStore', () => {
@@ -314,6 +315,52 @@ describe('referenceStore', () => {
       expect(assetStore.getInstruments()[0].baseAsset.id).not.toBe('CHF');
       expect(assetStore.getInstruments()[0].quoteAsset.id).toBe('CHF');
       expect(assetStore.getInstruments()[0].quoteAsset.id).not.toBe('BTC');
+    });
+  });
+
+  describe('search for an instrument', () => {
+    it('should find instruments', async () => {
+      jest.resetAllMocks();
+      const rootStore = new RootStore(false);
+      const watchlistApi: any = {
+        fetchAll: jest.fn()
+      };
+      watchlistApi.getWatchlistByName = jest.fn();
+      rootStore.watchlistStore = new WatchlistStore(rootStore, watchlistApi);
+      const refStore = new ReferenceStore(rootStore, api);
+      refStore.addInstrument(
+        new InstrumentModel({
+          id: '1',
+          name: 'BTC/CHF',
+          baseAsset: {
+            id: '1',
+            name: 'BTC',
+            accuracy: 2,
+            category: expect.any(AssetCategoryModel),
+            fullName: 'Bitcoin'
+          },
+          quoteAsset: {
+            id: '2',
+            name: 'CHF',
+            accuracy: 2,
+            category: expect.any(AssetCategoryModel),
+            fullName: 'Swiss Franc'
+          },
+          accuracy: 3,
+          invertedAccuracy: 8,
+          price: 1000,
+          bid: 1,
+          ask: 1,
+          volumeInBase: 0,
+          change24h: 0,
+          volume: 0
+        })
+      );
+
+      expect(refStore.findInstruments('BTC', '').length).not.toEqual(0);
+      expect(refStore.findInstruments('Bitcoin', '').length).not.toEqual(0);
+      expect(refStore.findInstruments('Swiss Franc', '').length).toEqual(0);
+      expect(refStore.findInstruments('Randomness', '').length).toEqual(0);
     });
   });
 });
