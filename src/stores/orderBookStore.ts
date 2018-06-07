@@ -42,9 +42,9 @@ const getBestLevel = greenlet((levels: any, index: number) => {
 class OrderBookStore extends BaseStore {
   rawBids: Order[] = [];
   rawAsks: Order[] = [];
-  drawAsks: any;
-  drawBids: any;
-  spreadUpdateFn: any;
+  drawAsks: (asks: Order[], bids: Order[], type: LevelType) => void;
+  drawBids: (asks: Order[], bids: Order[], type: LevelType) => void;
+  spreadUpdateFn: () => void;
   midPriceUpdaters: any[] = [];
   updateDepthChart: any;
 
@@ -104,6 +104,7 @@ class OrderBookStore extends BaseStore {
   setSpreadHandler = (cb: any) => (this.spreadUpdateFn = cb);
   setMidPriceUpdateHandler = (cb: any) => this.midPriceUpdaters.push(cb);
   setDepthChartUpdatingHandler = (cb: any) => (this.updateDepthChart = cb);
+  handleDepthChartUnmount = () => (this.updateDepthChart = null);
 
   getAsks = () => {
     const {limitOrdersForThePair: limitOrders} = this.rootStore.orderListStore;
@@ -221,9 +222,9 @@ class OrderBookStore extends BaseStore {
       this.rawAsks = asks.map((a: any) => Order.create(a));
       this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
     }
-    // tslint:disable-next-line:no-unused-expression
+    // tslint:disable:no-unused-expression
     this.updateDepthChart && this.updateDepthChart();
-    this.spreadUpdateFn();
+    this.spreadUpdateFn && this.spreadUpdateFn();
     // }
   };
 

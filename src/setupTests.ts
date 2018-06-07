@@ -13,3 +13,4 @@ const localStorage = {
 
 (window as any).TradingView = tradingView;
 (window as any).localStorage = localStorage;
+(window as any).Worker = jest.fn();
