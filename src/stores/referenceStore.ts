@@ -152,15 +152,16 @@ class ReferenceStore extends BaseStore {
     return Promise.all(requests).then(data => {
       const asset = data[0];
       const description = data[1];
-      if (asset && description) {
-        const mappedAsset = mappers.mapToAsset(
+      let mappedAsset;
+      if (asset && description && asset.Asset) {
+        mappedAsset = mappers.mapToAsset(
           asset.Asset || asset,
           this.categories,
           description.Description || description
         );
         this.assets.push(mappedAsset);
       }
-      return Promise.resolve();
+      return Promise.resolve(mappedAsset);
     });
   };
 
