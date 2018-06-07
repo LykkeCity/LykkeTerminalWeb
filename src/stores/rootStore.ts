@@ -44,7 +44,7 @@ const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class RootStore {
-  readonly watchlistStore: WatchlistStore;
+  watchlistStore: WatchlistStore;
   readonly tradeStore: TradeStore;
   readonly depthChartStore: DepthChartStore;
   readonly orderBookStore: OrderBookStore;
