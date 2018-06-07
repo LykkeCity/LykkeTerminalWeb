@@ -101,8 +101,7 @@ export const defineCanvasScale = (
   ctx: any,
   canvas: any,
   oldWidth: number,
-  oldHeight: number,
-  setRatio: (ratio: number) => void
+  oldHeight: number
 ) => {
   const devicePixelRatio = window.devicePixelRatio || 1;
   const backingStoreRatio =
@@ -127,5 +126,4 @@ export const defineCanvasScale = (
 
     ctx.scale(ratio, ratio);
   }
-  setRatio(ratio);
 };
