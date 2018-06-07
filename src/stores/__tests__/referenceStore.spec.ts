@@ -10,6 +10,7 @@ import WatchlistStore from '../watchlistStore';
 describe('referenceStore', () => {
   const api: any = {
     fetchAll: jest.fn(),
+    fetchAssetById: jest.fn(),
     fetchAssetCategories: jest.fn(),
     fetchAssetInstruments: jest.fn(),
     fetchAssetsDescriptions: jest.fn(),
@@ -125,6 +126,44 @@ describe('referenceStore', () => {
 
       expect(assetStore.getAssets()).not.toBeNull();
       expect(assetStore.getAssets().length).toBe(2);
+    });
+  });
+
+  describe('fetch asset by id', () => {
+    it('should call api get asset pairs', () => {
+      jest.resetAllMocks();
+
+      assetStore.fetchAssetById('1');
+
+      expect(api.fetchAssetById).toHaveBeenCalled();
+      expect(api.fetchAssetDescriptionById).toHaveBeenCalled();
+      expect(api.fetchAssetById).toHaveBeenCalledTimes(1);
+      expect(api.fetchAssetDescriptionById).toHaveBeenCalledTimes(1);
+    });
+
+    it('should map valid response to asset', async () => {
+      jest.resetAllMocks();
+      api.fetchAssetById = jest.fn(() =>
+        Promise.resolve({
+          Asset: {
+            Id: '1',
+            DisplayId: 'LKK',
+            Accuracy: 4,
+            CategoryId: 'ctg1'
+          }
+        })
+      );
+      api.fetchAssetDescriptionById = jest.fn(() =>
+        Promise.resolve({
+          Id: '1',
+          FullName: 'Lykke'
+        })
+      );
+
+      await assetStore.fetchAssetById('1');
+
+      expect(assetStore.getAssets()).not.toBeNull();
+      expect(assetStore.getAssets().length).toBe(1);
     });
   });
 

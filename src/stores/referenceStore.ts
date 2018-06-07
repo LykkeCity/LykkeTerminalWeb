@@ -151,13 +151,15 @@ class ReferenceStore extends BaseStore {
     ];
 
     return Promise.all(requests).then(data => {
-      if (data.length === 2 && data[0].Asset) {
-        const asset = mappers.mapToAsset(
-          data[0].Asset,
+      const asset = data[0];
+      const description = data[1];
+      if (asset && description && asset.Asset) {
+        const mappedAsset = mappers.mapToAsset(
+          asset.Asset,
           this.categories,
-          data[1]
+          description
         );
-        this.assets.push(asset);
+        this.assets.push(mappedAsset);
       }
       return Promise.resolve();
     });
