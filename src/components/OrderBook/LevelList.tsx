@@ -20,7 +20,7 @@ import LevelType from '../../models/levelType';
 import OrderBookCellType from '../../models/orderBookCellType';
 import {FakeOrderBookStage} from './styles';
 
-const LEVELS_FONT = '12px Proxima Nova';
+const LEVEL_FONT = `12.25px Proxima Nova`;
 
 const fillBySide = (side: Side) =>
   side === Side.Buy ? colors.buy : colors.sell;
@@ -45,7 +45,7 @@ export interface LevelListProps {
   getBids: any;
   displayType: string;
   getLevels: () => Order[];
-  setLevelsDrawingHandler: (
+  setLevelsUpdatingHandler: (
     fn: (asks: Order[], bids: Order[], type: LevelType) => void
   ) => void;
   triggerOrderUpdate: (clickedEl: any) => void;
@@ -56,11 +56,10 @@ class LevelList extends React.Component<LevelListProps> {
   canvas: HTMLCanvasElement | null;
   canvasCtx: CanvasRenderingContext2D | null;
   levelsCells: any[] = [];
-  levelsLength: number = 0;
   fakeStage: any;
   memoWidth: number = 0;
 
-  handleLevelsDrawing = (asks: Order[], bids: Order[], type: LevelType) => {
+  handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
     window.requestAnimationFrame(() => {
       this.renderCanvas(asks, bids, type);
       this.forceUpdate();
@@ -73,8 +72,8 @@ class LevelList extends React.Component<LevelListProps> {
     ] = value);
 
   componentDidMount() {
-    const {setLevelsDrawingHandler} = this.props;
-    setLevelsDrawingHandler(this.handleLevelsDrawing);
+    const {setLevelsUpdatingHandler} = this.props;
+    setLevelsUpdatingHandler(this.handleLevelsUpdating);
     this.canvasCtx = this.canvas!.getContext('2d');
     this.canvas!.addEventListener(
       'mouseup',
@@ -111,7 +110,6 @@ class LevelList extends React.Component<LevelListProps> {
     const {displayType, instrument, format, width, height} = this.props;
 
     const levels = type === LevelType.Asks ? asks : bids;
-    this.levelsLength = levels.length;
 
     const levelHeight = height / LEVELS_COUNT;
     const vals = map(prop(toLower(displayType)), [

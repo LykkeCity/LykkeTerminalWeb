@@ -1,14 +1,17 @@
 import {add, range, times} from 'rambda';
 import {AssetModel, InstrumentModel, Side} from '../../models';
 import {Order} from '../../models/index';
+import {workerMock} from '../../workers/worker';
 import {OrderBookStore, RootStore} from '../index';
 import {
   aggregateOrders,
   connectLimitOrders,
+  getLevel,
   getMultiplier,
   getNextIdx,
   getPrevIdx,
-  groupOrdersByPrice
+  groupOrdersByPrice,
+  mapToOrder
 } from '../orderBookHelpers';
 
 describe('orderBook store', () => {
@@ -28,7 +31,7 @@ describe('orderBook store', () => {
     quoteAsset: new AssetModel({name: 'USD'})
   });
 
-  const store = new OrderBookStore(rootStore, {} as any);
+  const store = new OrderBookStore(rootStore, {} as any, workerMock);
   const {bestBid, bestAsk, mid} = store;
 
   test('order should contain users volume with equal price', () => {
@@ -61,27 +64,29 @@ describe('orderBook store', () => {
     expect(connOrders[0].orderVolume).toBe(ownVolume);
   });
 
-  test('best bid should have highest price', () => {
+  test('best bid should have highest price', async () => {
     store.rawBids = [
       {price: 10, volume: 1},
       {price: 20, volume: 2},
       {price: 30, volume: 3}
     ] as Order[];
 
-    expect(store.bestBid()).toBe(30);
+    const bid = await store.bestBid();
+    expect(bid).toBe(30);
   });
 
-  test('best ask should have lowest price', () => {
+  test('best ask should have lowest price', async () => {
     store.rawAsks = [
       {price: 10, volume: 1},
       {price: 20, volume: 2},
       {price: 30, volume: 3}
     ] as Order[];
 
-    expect(bestAsk()).toBe(10);
+    const ask = await bestAsk();
+    expect(ask).toBe(10);
   });
 
-  test('mid should be as an average between bestBid and bestAsk', () => {
+  test('mid should be as an average between bestBid and bestAsk', async () => {
     store.rawAsks = [
       {price: 40, volume: 1},
       {price: 50, volume: 2},
@@ -94,7 +99,8 @@ describe('orderBook store', () => {
       {price: 30, volume: 3}
     ] as Order[];
 
-    expect(mid()).toBe((40 + 30) / 2);
+    const midPrice = await mid();
+    expect(midPrice).toBe((40 + 30) / 2);
   });
 
   test('best bid should be less that best ask', async () => {
@@ -135,6 +141,15 @@ describe('orderBook store', () => {
 
       expect(newOrders).toHaveLength(1);
       expect(newOrders[0]).toEqual(orders[0]);
+    });
+
+    it('should sort levels by price and return it by index', () => {
+      const levels = [
+        {price: 10, volume: 1},
+        {price: 20, volume: 2},
+        {price: 30, volume: 3}
+      ] as Order[];
+      expect(getLevel(levels, 0)).toBe(levels[0]);
     });
   });
 
@@ -231,6 +246,30 @@ describe('orderBook store', () => {
         expect(getMultiplier(0, list)).toBe(1);
         expect(getMultiplier(1, list)).toBe(1 * 2);
         expect(getMultiplier(5, list)).toBe(1 * 2 * 3 * 4 * 5 * 6);
+      });
+    });
+
+    describe('mapping', () => {
+      const levels = [
+        {
+          Id: '3b9af4bb-7985-443b-9716-dbb23024248d',
+          Price: 4198.99,
+          Volume: 0.00238153,
+          DateTime: new Date()
+        }
+      ];
+
+      const mappedLevel = mapToOrder(levels, Side.Buy)[0];
+
+      it('should map to order level model', () => {
+        expect(mappedLevel.id).toBe(levels[0].Id);
+        expect(mappedLevel.price).toBe(levels[0].Price);
+        expect(mappedLevel.volume).toBe(levels[0].Volume);
+        expect(mappedLevel.timestamp).toBe(levels[0].DateTime);
+        expect(mappedLevel.depth).toBe(0);
+        expect(mappedLevel.orderVolume).toBe(0);
+        expect(mappedLevel.connectedLimitOrders.length).toBe(0);
+        expect(Array.isArray(mappedLevel.connectedLimitOrders)).toBe(true);
       });
     });
   });

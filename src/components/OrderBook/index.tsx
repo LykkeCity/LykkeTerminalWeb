@@ -60,7 +60,7 @@ const ConnectedAskLevels = connect<LevelListProps>(
     orderBookStore: {
       getAsks,
       getBids,
-      setAsksDrawingHandler,
+      setAsksUpdatingHandler,
       triggerOrderUpdate
     },
     uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
@@ -72,7 +72,7 @@ const ConnectedAskLevels = connect<LevelListProps>(
       format: formatWithAccuracy,
       isReadOnly: readOnlyMode,
       displayType: orderbookDisplayType.toLowerCase(),
-      setLevelsDrawingHandler: setAsksDrawingHandler,
+      setLevelsUpdatingHandler: setAsksUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Asks
     };
@@ -85,7 +85,7 @@ const ConnectedBidLevels = connect<LevelListProps>(
     orderBookStore: {
       getBids,
       getAsks,
-      setBidsDrawingHandler,
+      setBidsUpdatingHandler,
       triggerOrderUpdate
     },
     uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
@@ -97,7 +97,7 @@ const ConnectedBidLevels = connect<LevelListProps>(
       format: formatWithAccuracy,
       isReadOnly: readOnlyMode,
       displayType: orderbookDisplayType.toLowerCase(),
-      setLevelsDrawingHandler: setBidsDrawingHandler,
+      setLevelsUpdatingHandler: setBidsUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Bids
     };

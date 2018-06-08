@@ -17,6 +17,7 @@ import {levels} from '../models';
 import {keys} from '../models';
 import {PriceType} from '../models/index';
 import {StorageUtils} from '../utils/index';
+import {workerMock} from '../workers/worker';
 import {
   AuthStore,
   BalanceListStore,
@@ -38,8 +39,6 @@ import {
   UiStore,
   WatchlistStore
 } from './index';
-
-import * as autobahn from 'autobahn';
 
 const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
@@ -69,7 +68,7 @@ class RootStore {
   private readonly wampUrl = process.env.REACT_APP_WAMP_URL || '';
   private readonly wampRealm = process.env.REACT_APP_WAMP_REALM || '';
 
-  constructor(shouldStartImmediately = true) {
+  constructor(shouldStartImmediately = true, worker = workerMock) {
     if (shouldStartImmediately) {
       this.referenceStore = new ReferenceStore(this, new AssetApi(this));
       this.modalStore = new ModalStore(this);
@@ -77,7 +76,11 @@ class RootStore {
       this.watchlistStore = new WatchlistStore(this, new WatchlistApi(this));
       this.tradeStore = new TradeStore(this, new TradeApi(this));
       this.depthChartStore = new DepthChartStore(this);
-      this.orderBookStore = new OrderBookStore(this, new OrderBookApi(this));
+      this.orderBookStore = new OrderBookStore(
+        this,
+        new OrderBookApi(this),
+        worker
+      );
       this.balanceListStore = new BalanceListStore(
         this,
         new BalanceListApi(this)
@@ -170,24 +173,6 @@ class RootStore {
         this.tradeStore.subscribe(ws);
         this.orderStore.subscribe(ws);
         this.balanceListStore.subscribe(ws);
-
-        const conn = new autobahn.Connection({
-          url: 'wss://wamp.lykke.com/ws/',
-          realm: 'prices'
-        });
-
-        conn.onopen = (session, details) => {
-          session.subscribe(
-            'orderbook.spot.ethchf.sell',
-            this.orderBookStore.onNextOrders
-          );
-          session.subscribe(
-            'orderbook.spot.ethchf.buy',
-            this.orderBookStore.onNextOrders
-          );
-        };
-
-        conn.open();
 
         return Promise.resolve();
       })

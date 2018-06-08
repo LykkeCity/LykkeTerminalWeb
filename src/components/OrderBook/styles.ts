@@ -74,6 +74,11 @@ export const StyledSwitch = styled.div`
 export const StyledHeader = Table.extend`
   margin: ${rem(16)} 0 ${rem(8)};
   width: 100%;
+  tr {
+    &:hover {
+      background: transparent !important;
+    }
+  }
   th {
     text-align: left;
     padding: 0;

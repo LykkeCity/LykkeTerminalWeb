@@ -99,3 +99,22 @@ export const connectLimitOrders = (
   });
   return orders;
 };
+
+export const getLevel = (levels: any, index: number) => {
+  return levels.sort((a: any, b: any) => a.price - b.price)[index];
+};
+
+export const mapToOrder = (levels: any, side: Side) => {
+  return levels.map((l: any) => {
+    return {
+      id: l.Id,
+      price: l.Price,
+      timestamp: l.DateTime,
+      volume: l.Volume,
+      depth: 0,
+      side,
+      orderVolume: 0,
+      connectedLimitOrders: []
+    };
+  });
+};
