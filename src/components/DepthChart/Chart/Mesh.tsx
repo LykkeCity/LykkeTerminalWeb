@@ -25,6 +25,8 @@ class Mesh extends React.Component<MeshProps> {
   width: number;
   height: number;
 
+  labels: string[] = [];
+
   emptyLabels: string[] = ['', '', '', ''];
 
   constructor(props: MeshProps) {
@@ -212,9 +214,8 @@ class Mesh extends React.Component<MeshProps> {
   drawHorizontalLabels = () => {
     const stepHorizontal = this.props.height / chart.mesh.horizontalLinesAmount;
     const startHorizontal = stepHorizontal / 2;
-    const labels = this.generateHorizontalLabels();
-    if (labels.length > 0) {
-      this.setHorizontalLabelsBarWidth(labels);
+    this.labels = this.generateHorizontalLabels();
+    if (this.labels.length > 0) {
       for (
         let startY = startHorizontal, index = 0;
         startY < this.props.height;
@@ -228,7 +229,7 @@ class Mesh extends React.Component<MeshProps> {
             fill={chart.mesh.color}
             fontFamily={chart.mesh.fontFamily}
             fontSize={chart.mesh.horizontalFontSize}
-            text={`${labels[index]}`}
+            text={`${this.labels[index]}`}
             listening={false}
           />
         );
@@ -249,9 +250,16 @@ class Mesh extends React.Component<MeshProps> {
 
   render() {
     this.mesh = [];
+    this.labels = [];
     this.renderMesh();
     this.renderLabels();
     return this.mesh;
+  }
+
+  componentDidUpdate() {
+    if (this.labels.length > 0) {
+      this.setHorizontalLabelsBarWidth(this.labels);
+    }
   }
 }
 

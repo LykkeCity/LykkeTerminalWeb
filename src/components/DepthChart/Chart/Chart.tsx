@@ -30,6 +30,11 @@ class Chart extends React.Component<ChartProps> {
   minDepth: number;
   maxDepth: number;
 
+  asksStart: number;
+  asksEnd: number;
+  bidsStart: number;
+  bidsEnd: number;
+
   coefficient: number;
 
   constructor(props: ChartProps) {
@@ -37,12 +42,10 @@ class Chart extends React.Component<ChartProps> {
   }
 
   calculateAsksStepLength(ask: Order, index: number) {
-    const start = Math.min(...this.props.asks.map(a => a.price));
-    const end = Math.max(...this.props.asks.map(a => a.price));
     const priceDifference = this.props.asks[index + 1]
-      ? this.props.asks[index + 1].price - start
-      : this.props.asks[index].price - start;
-    const priceRange = end - start;
+      ? this.props.asks[index + 1].price - this.asksStart
+      : this.props.asks[index].price - this.asksStart;
+    const priceRange = this.asksEnd - this.asksStart;
     const length = this.asksWidth * priceDifference / priceRange;
     return isNaN(length) ? this.asksWidth : length;
   }
@@ -119,12 +122,10 @@ class Chart extends React.Component<ChartProps> {
   };
 
   calculateBidsStepLength(bid: Order, index: number) {
-    const start = Math.max(...this.props.bids.map(b => b.price));
-    const end = Math.min(...this.props.bids.map(b => b.price));
     const priceDifference = this.props.bids[index + 1]
-      ? start - this.props.bids[index + 1].price
-      : start - this.props.bids[index].price;
-    const priceRange = start - end;
+      ? this.bidsStart - this.props.bids[index + 1].price
+      : this.bidsStart - this.props.bids[index].price;
+    const priceRange = this.bidsStart - this.bidsEnd;
     const length = this.midXBids * priceDifference / priceRange;
     return isNaN(length) ? this.midXBids : length;
   }
@@ -202,7 +203,7 @@ class Chart extends React.Component<ChartProps> {
     );
   };
 
-  calculatecoefficient() {
+  calculateCoefficient() {
     if (this.minDepth && this.maxDepth) {
       if (this.minDepth === this.maxDepth) {
         return this.props.height / this.minDepth * chart.scaleFactor;
@@ -223,7 +224,11 @@ class Chart extends React.Component<ChartProps> {
     this.maxDepth = Math.max(
       ...this.props.bids.concat(this.props.asks).map(x => x.depth)
     );
-    this.coefficient = this.calculatecoefficient();
+    this.asksStart = Math.min(...this.props.asks.map(a => a.price));
+    this.asksEnd = Math.max(...this.props.asks.map(a => a.price));
+    this.bidsStart = Math.max(...this.props.bids.map(b => b.price));
+    this.bidsEnd = Math.min(...this.props.bids.map(b => b.price));
+    this.coefficient = this.calculateCoefficient();
   }
 
   render() {
