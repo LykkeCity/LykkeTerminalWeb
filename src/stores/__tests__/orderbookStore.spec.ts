@@ -6,10 +6,10 @@ import {OrderBookStore, RootStore} from '../index';
 import {
   aggregateOrders,
   connectLimitOrders,
-  getLevel,
   getMultiplier,
   getNextIdx,
   getPrevIdx,
+  getSortedByPriceLevel,
   groupOrdersByPrice,
   mapToOrder
 } from '../orderBookHelpers';
@@ -32,7 +32,7 @@ describe('orderBook store', () => {
   });
 
   const store = new OrderBookStore(rootStore, {} as any, workerMock);
-  const {bestBid, bestAsk, mid} = store;
+  const {getBestBid, getBestAsk, mid} = store;
 
   test('order should contain users volume with equal price', () => {
     const limitOrders = [
@@ -71,7 +71,7 @@ describe('orderBook store', () => {
       {price: 30, volume: 3}
     ] as Order[];
 
-    const bid = await store.bestBid();
+    const bid = await store.getBestBid();
     expect(bid).toBe(30);
   });
 
@@ -82,7 +82,7 @@ describe('orderBook store', () => {
       {price: 30, volume: 3}
     ] as Order[];
 
-    const ask = await bestAsk();
+    const ask = await getBestAsk();
     expect(ask).toBe(10);
   });
 
@@ -104,8 +104,8 @@ describe('orderBook store', () => {
   });
 
   test('best bid should be less that best ask', async () => {
-    const bid = await bestBid();
-    const ask = await bestAsk();
+    const bid = await getBestBid();
+    const ask = await getBestAsk();
     expect(bid).toBeLessThan(ask);
   });
 
@@ -149,7 +149,7 @@ describe('orderBook store', () => {
         {price: 20, volume: 2},
         {price: 30, volume: 3}
       ] as Order[];
-      expect(getLevel(levels, 0)).toBe(levels[0]);
+      expect(getSortedByPriceLevel(levels, 0)).toBe(levels[0]);
     });
   });
 

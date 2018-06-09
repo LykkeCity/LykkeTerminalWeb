@@ -100,7 +100,7 @@ export const connectLimitOrders = (
   return orders;
 };
 
-export const getLevel = (levels: any, index: number) => {
+export const getSortedByPriceLevel = (levels: any, index: number) => {
   return levels.sort((a: any, b: any) => a.price - b.price)[index];
 };
 

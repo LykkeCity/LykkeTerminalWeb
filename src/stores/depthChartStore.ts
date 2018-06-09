@@ -95,8 +95,8 @@ class DepthChartStore extends BaseStore {
   mid = async () => await this.rootStore.orderBookStore.mid();
 
   spread = async () => {
-    const bestAsk = await this.rootStore.orderBookStore.bestAsk();
-    const bestBid = await this.rootStore.orderBookStore.bestBid();
+    const bestAsk = await this.rootStore.orderBookStore.getBestAsk();
+    const bestBid = await this.rootStore.orderBookStore.getBestBid();
     return (bestAsk - bestBid) / bestAsk * 100;
   };
 
