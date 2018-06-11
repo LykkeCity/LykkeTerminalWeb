@@ -131,11 +131,12 @@ class ReferenceStore extends BaseStore {
         descriptions.Descriptions
       ) {
         runInAction(() => {
-          this.assets = assets.Assets.map((x: any) => {
+          this.assets = assets.Assets.map((asset: any) => {
             const description =
-              descriptions.Descriptions.find((desc: any) => desc.Id === x.Id) ||
-              {};
-            return mappers.mapToAsset(x, this.categories, description);
+              descriptions.Descriptions.find(
+                (desc: any) => desc.Id === asset.Id
+              ) || {};
+            return mappers.mapToAsset(asset, this.categories, description);
           });
         });
       }
@@ -153,7 +154,7 @@ class ReferenceStore extends BaseStore {
       const asset = data[0];
       const description = data[1];
       let mappedAsset;
-      if (asset && description && asset.Asset) {
+      if (asset && description) {
         mappedAsset = mappers.mapToAsset(
           asset.Asset || asset,
           this.categories,
