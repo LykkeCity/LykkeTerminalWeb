@@ -155,7 +155,7 @@ export const mapHistoryTypeToOrderType = (type: string) => {
 export const mapToAsset = (
   {Id, Name, DisplayId, CategoryId, Accuracy, IsBase, IconUrl}: any,
   categories: AssetCategoryModel[],
-  description?: any
+  {FullName}: any
 ) =>
   new AssetModel({
     accuracy: Accuracy,
@@ -164,7 +164,7 @@ export const mapToAsset = (
     iconUrl: IconUrl,
     id: Id,
     isBase: IsBase,
-    fullName: description.FullName || '',
+    fullName: FullName || '',
     name: DisplayId || Name
   });
 
