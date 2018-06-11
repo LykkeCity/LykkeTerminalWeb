@@ -104,13 +104,13 @@ export const Figure = styled.div`
 ` as any;
 
 export const FigureValue = styled.div`
-  text-align: right;
+  text-align: center;
 `;
 
 export const FigureHint = styled.div`
   font-size: ${rem(fonts.small)};
   font-weight: normal;
-  text-align: right;
+  text-align: center;
   opacity: 0.4;
   cursor: default;
 `;

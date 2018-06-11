@@ -1,5 +1,6 @@
 import {action, computed, observable} from 'mobx';
 import {reverse} from 'rambda';
+import chart from '../components/DepthChart/Chart/chartConstants';
 import {Order, TradeModel} from '../models';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
@@ -9,6 +10,9 @@ class DepthChartStore extends BaseStore {
   multiplers: number[] = [0, 1, 0.75, 0.5, 0.25, 0.1, 0.05, 0.025];
   maxMultiplier = this.multiplers.length - 1;
   @observable spanMultiplierIdx = 3;
+  @observable width: number = 1024;
+  @observable height: number = 512;
+  @observable labelsWidth: number = chart.labelsWidth;
 
   @computed
   get span() {
@@ -39,20 +43,18 @@ class DepthChartStore extends BaseStore {
   }
 
   reduceBidsArray = (bids: Order[]) => {
-    const mid = this.mid();
-    const lowerBound = mid - mid * this.multiplers[this.spanMultiplierIdx];
-    const filteredBids = bids.filter(bid => {
-      return bid.price > lowerBound;
-    });
+    const maximum = Math.max(...bids.map(b => b.price));
+    const lowerBound =
+      maximum - maximum * this.multiplers[this.spanMultiplierIdx];
+    const filteredBids = bids.filter(bid => bid.price > lowerBound);
     return filteredBids.length ? filteredBids : bids.slice(0, 1);
   };
 
   reduceAsksArray = (asks: Order[]) => {
-    const mid = this.mid();
-    const upperBound = mid + mid * this.multiplers[this.spanMultiplierIdx];
-    const filteredAsks = asks.filter(ask => {
-      return ask.price < upperBound;
-    });
+    const minimum = Math.min(...asks.map(a => a.price));
+    const upperBound =
+      minimum + minimum * this.multiplers[this.spanMultiplierIdx];
+    const filteredAsks = asks.filter(ask => ask.price < upperBound);
     return filteredAsks.length
       ? filteredAsks
       : asks.slice(asks.length - 1, asks.length);
@@ -119,6 +121,34 @@ class DepthChartStore extends BaseStore {
       this.spanMultiplierIdx--;
     }
   };
+
+  @action
+  setWidth = (width: number) => {
+    this.width = width;
+  };
+
+  @action
+  setHeight = (height: number) => {
+    this.height = height;
+  };
+
+  @action
+  setLabelsWidth = (width: number) => {
+    this.labelsWidth = width > chart.labelsWidth ? width : chart.labelsWidth;
+  };
+
+  @computed
+  get isMaxZoom(): boolean {
+    return (
+      this.multiplers[this.spanMultiplierIdx] ===
+      this.multiplers[this.multiplers.length - 1]
+    );
+  }
+
+  @computed
+  get isMinZoom(): boolean {
+    return this.multiplers[this.spanMultiplierIdx] === this.multiplers[1];
+  }
 
   reset = () => {
     this.spanMultiplierIdx = 0;
