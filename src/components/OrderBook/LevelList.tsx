@@ -243,6 +243,10 @@ class LevelList extends React.Component<LevelListProps> {
     this.drawLevels(asks, bids, type);
   };
 
+  setFakeStageRef = (div: any) => (this.fakeStage = div);
+  setCanvasRef = (canvas: any) => (this.canvas = canvas);
+  handleMouseDownOnFakeStage = () => this.togglePointerEvents('none');
+
   render() {
     return (
       <React.Fragment>
@@ -250,15 +254,14 @@ class LevelList extends React.Component<LevelListProps> {
           <FakeOrderBookStage
             width={this.props.width / 3 * 2}
             height={this.props.height}
-            // tslint:disable-next-line:jsx-no-lambda
-            onMouseDown={() => this.togglePointerEvents('none')}
-            ref={(div: any) => (this.fakeStage = div)}
+            onMouseDown={this.handleMouseDownOnFakeStage}
+            ref={this.setFakeStageRef}
           />
         )}
         <canvas
           width={this.props.width}
           height={this.props.height}
-          ref={(canvas: any) => (this.canvas = canvas)}
+          ref={this.setCanvasRef}
         />
       </React.Fragment>
     );
