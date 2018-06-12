@@ -28,7 +28,7 @@ class OrderBookStore extends BaseStore {
   drawAsks: (asks: Order[], bids: Order[], type: LevelType) => void;
   drawBids: (asks: Order[], bids: Order[], type: LevelType) => void;
   spreadUpdateFn: () => void;
-  midPriceUpdaters: any[] = [];
+  midPriceUpdaters: Map<string, () => void> = new Map();
   updateDepthChart: any;
   getSortedByPriceLevel: (l: any[], idx: number) => Promise<Order>;
   mapToOrderInWorker: (l: any[], side: Side) => Promise<OrderLevel[]>;
@@ -103,9 +103,12 @@ class OrderBookStore extends BaseStore {
   setAsksUpdatingHandler = (cb: any) => (this.drawAsks = cb);
   setBidsUpdatingHandler = (cb: any) => (this.drawBids = cb);
   setSpreadHandler = (cb: any) => (this.spreadUpdateFn = cb);
-  setMidPriceUpdateHandler = (cb: any) => this.midPriceUpdaters.push(cb);
+  setMidPriceUpdateHandler = (componentName: string, cb: any) =>
+    this.midPriceUpdaters.set(componentName, cb);
   setDepthChartUpdatingHandler = (cb: any) => (this.updateDepthChart = cb);
   handleDepthChartUnmount = () => (this.updateDepthChart = null);
+  removeMidPriceUpdateHandler = (componentName: string) =>
+    this.midPriceUpdaters.delete(componentName);
 
   drawOrderBook = () => {
     this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
@@ -228,7 +231,7 @@ class OrderBookStore extends BaseStore {
       } else {
         const asks = await this.mapToOrderInWorker(Levels, Side.Sell);
         this.rawAsks = asks.map((a: any) => Order.create(a));
-        // this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
+        this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
         this.bestAskPrice = await this.getBestAsk();
       }
       // tslint:disable:no-unused-expression

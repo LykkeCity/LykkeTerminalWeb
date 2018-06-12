@@ -16,12 +16,16 @@ export interface FigureListProps {
   isAuth: boolean;
   lastTradePrice: number;
   priceAccuracy: number;
-  setMidPriceUpdateHandler: (cb: any) => void;
+  setMidPriceUpdateHandler: (
+    componentName: string,
+    fn: (mid: () => number) => Promise<void>
+  ) => void;
   getSpreadRelative: () => Promise<number>;
   format: (num: number, accuracy: number, opts?: object) => string;
   handlePriceClickFromOrderBook: (price: number, side: Side) => void;
   isReadOnly: boolean;
   setSpreadHandler: (cb: () => void) => void;
+  removeMidPriceUpdateHandler: (componentName: string) => void;
 }
 
 interface FigureListState {
@@ -37,7 +41,11 @@ class Figures extends React.Component<FigureListProps, FigureListState> {
       mid: 0
     };
     this.props.setSpreadHandler(this.handleSpreadChange);
-    this.props.setMidPriceUpdateHandler(this.handleMidPriceChange);
+    this.props.setMidPriceUpdateHandler('figures', this.handleMidPriceChange);
+  }
+
+  componentWillUnmount() {
+    this.props.removeMidPriceUpdateHandler('figures');
   }
 
   handleMidPriceChange = async (mid: () => number) => {

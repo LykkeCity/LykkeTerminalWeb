@@ -110,7 +110,8 @@ const ConnectedFigures = connect<FigureListProps>(
     orderBookStore: {
       setMidPriceUpdateHandler,
       getSpreadRelative,
-      setSpreadHandler
+      setSpreadHandler,
+      removeMidPriceUpdateHandler
     },
     priceStore: {lastTradePrice},
     authStore: {isAuth},
@@ -125,7 +126,8 @@ const ConnectedFigures = connect<FigureListProps>(
     format: formatWithAccuracy,
     handlePriceClickFromOrderBook,
     isReadOnly: readOnlyMode,
-    setSpreadHandler
+    setSpreadHandler,
+    removeMidPriceUpdateHandler
   }),
   Figures
 );
