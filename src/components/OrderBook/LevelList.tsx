@@ -78,8 +78,8 @@ class LevelList extends React.Component<LevelListProps> {
     this.canvas!.addEventListener(
       'mouseup',
       (event: any) => {
-        const x = event.layerX;
-        const y = event.layerY;
+        const x = event.offsetX;
+        const y = event.offsetY;
 
         const clickedLevelElement = this.levelsCells.find(
           (el: any) =>
