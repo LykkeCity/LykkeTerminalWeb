@@ -97,7 +97,7 @@ class Mesh extends React.Component<MeshProps> {
       const step = maximum / chart.mesh.horizontalLinesAmount;
       for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
         labels.push(
-          formattedNumber(step * (i + 1) - step / 2, this.props.baseAccuracy)
+          formattedNumber(step * (i + 1) - step / 2, chart.labelsAccuracy)
         );
       }
     }
