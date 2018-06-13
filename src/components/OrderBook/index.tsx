@@ -7,7 +7,7 @@ import {HBar} from '../Bar';
 import {connect} from '../connect';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
-import Figures, {FigureListProps} from './Figures';
+import {FigureListProps, Figures} from './Figures';
 import Header from './Header';
 import {LevelListProps} from './LevelList';
 
