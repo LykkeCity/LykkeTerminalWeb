@@ -63,7 +63,12 @@ const ConnectedAskLevels = connect<LevelListProps>(
       setAsksUpdatingHandler,
       triggerOrderUpdate
     },
-    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
+    uiStore: {
+      selectedInstrument,
+      orderbookDisplayType,
+      readOnlyMode,
+      getPageVisibility
+    }
   }) => {
     return {
       getBids,
@@ -74,7 +79,8 @@ const ConnectedAskLevels = connect<LevelListProps>(
       displayType: orderbookDisplayType.toLowerCase(),
       setLevelsUpdatingHandler: setAsksUpdatingHandler,
       triggerOrderUpdate,
-      type: LevelType.Asks
+      type: LevelType.Asks,
+      isPageHidden: getPageVisibility
     };
   },
   observer(LevelList)
@@ -88,7 +94,12 @@ const ConnectedBidLevels = connect<LevelListProps>(
       setBidsUpdatingHandler,
       triggerOrderUpdate
     },
-    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
+    uiStore: {
+      selectedInstrument,
+      orderbookDisplayType,
+      readOnlyMode,
+      getPageVisibility
+    }
   }) => {
     return {
       getBids,
@@ -99,7 +110,8 @@ const ConnectedBidLevels = connect<LevelListProps>(
       displayType: orderbookDisplayType.toLowerCase(),
       setLevelsUpdatingHandler: setBidsUpdatingHandler,
       triggerOrderUpdate,
-      type: LevelType.Bids
+      type: LevelType.Bids,
+      isPageHidden: getPageVisibility
     };
   },
   observer(LevelList)
@@ -107,27 +119,20 @@ const ConnectedBidLevels = connect<LevelListProps>(
 
 const ConnectedFigures = connect<FigureListProps>(
   ({
-    orderBookStore: {
-      setMidPriceUpdateHandler,
-      getSpreadRelative,
-      setSpreadHandler,
-      removeMidPriceUpdateHandler
-    },
+    orderBookStore: {spread, midPrice},
     priceStore: {lastTradePrice},
     authStore: {isAuth},
     uiStore: {selectedInstrument, readOnlyMode},
     uiOrderStore: {handlePriceClickFromOrderBook}
   }) => ({
     lastTradePrice,
-    setMidPriceUpdateHandler,
     isAuth,
-    getSpreadRelative,
+    spreadRelative: spread,
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
     format: formatWithAccuracy,
     handlePriceClickFromOrderBook,
     isReadOnly: readOnlyMode,
-    setSpreadHandler,
-    removeMidPriceUpdateHandler
+    mid: midPrice
   }),
   Figures
 );

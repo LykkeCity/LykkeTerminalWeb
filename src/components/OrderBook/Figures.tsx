@@ -16,55 +16,35 @@ export interface FigureListProps {
   isAuth: boolean;
   lastTradePrice: number;
   priceAccuracy: number;
-  setMidPriceUpdateHandler: (
-    componentName: string,
-    fn: (mid: () => number) => Promise<void>
-  ) => void;
-  getSpreadRelative: () => Promise<number>;
   format: (num: number, accuracy: number, opts?: object) => string;
   handlePriceClickFromOrderBook: (price: number, side: Side) => void;
   isReadOnly: boolean;
-  setSpreadHandler: (cb: () => void) => void;
-  removeMidPriceUpdateHandler: (componentName: string) => void;
-}
-
-interface FigureListState {
   spreadRelative: number;
   mid: number;
 }
 
-class Figures extends React.Component<FigureListProps, FigureListState> {
+class Figures extends React.Component<FigureListProps> {
   constructor(props: FigureListProps) {
     super(props);
-    this.state = {
-      spreadRelative: 0,
-      mid: 0
-    };
-    this.props.setSpreadHandler(this.handleSpreadChange);
-    this.props.setMidPriceUpdateHandler('figures', this.handleMidPriceChange);
   }
 
-  componentWillUnmount() {
-    this.props.removeMidPriceUpdateHandler('figures');
+  shouldComponentUpdate(nextProps: any) {
+    const {
+      spreadRelative: oldSpread,
+      mid: oldMid,
+      lastTradePrice: oldLastPrice
+    } = this.props;
+    const {
+      spreadRelative: nextSpread,
+      mid: nextMid,
+      lastTradePrice: nextLastPrice
+    } = nextProps;
+    return (
+      oldSpread !== nextSpread ||
+      oldMid !== nextMid ||
+      oldLastPrice !== nextLastPrice
+    );
   }
-
-  handleMidPriceChange = async (mid: () => number) => {
-    const midPrice = await mid();
-    if (midPrice !== this.state.mid) {
-      this.setState({
-        mid: midPrice
-      });
-    }
-  };
-
-  handleSpreadChange = async () => {
-    const spreadRelative = await this.props.getSpreadRelative();
-    if (spreadRelative !== this.state.spreadRelative) {
-      this.setState({
-        spreadRelative
-      });
-    }
-  };
 
   render() {
     const {
@@ -94,16 +74,16 @@ class Figures extends React.Component<FigureListProps, FigureListState> {
           <FigureValue
             // tslint:disable-next-line:jsx-no-lambda
             onClick={() =>
-              handlePriceClickFromOrderBook(this.state.mid, Side.Buy)
+              handlePriceClickFromOrderBook(this.props.mid, Side.Buy)
             }
           >
-            {format(this.state.mid, priceAccuracy)}
+            {format(this.props.mid, priceAccuracy)}
           </FigureValue>
           <FigureHint>Mid price</FigureHint>
         </MidPrice>
         <Spread>
           <FigureValue>
-            {format(this.state.spreadRelative, 2, {
+            {format(this.props.spreadRelative, 2, {
               style: 'percent'
             })}
           </FigureValue>

@@ -50,6 +50,7 @@ export interface LevelListProps {
   ) => void;
   triggerOrderUpdate: (clickedEl: any) => void;
   type: LevelType;
+  isPageHidden: () => boolean;
 }
 
 class LevelList extends React.Component<LevelListProps> {
@@ -60,6 +61,10 @@ class LevelList extends React.Component<LevelListProps> {
   memoWidth: number = 0;
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
+    if (this.props.isPageHidden()) {
+      // TODO delete after disconnect from wamp implementing
+      return;
+    }
     window.requestAnimationFrame(() => {
       this.renderCanvas(asks, bids, type);
       this.forceUpdate();
