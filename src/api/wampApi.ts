@@ -56,9 +56,16 @@ export class WampApi {
     this.connection.close();
   };
 
-  pause = async () => {
-    this.unsubscribeFromAll(this.temporaryUnsubscribe);
-    this.connection.close();
+  pause = () => {
+    if (this.connection) {
+      this.connection.close();
+    }
+  };
+
+  continue = () => {
+    if (this.connection) {
+      this.connection.open();
+    }
   };
 
   publish = (topic: string, event: [any]) => this.session.publish(topic, event);
