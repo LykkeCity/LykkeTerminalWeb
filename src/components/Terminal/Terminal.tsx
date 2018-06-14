@@ -33,9 +33,6 @@ const MAX_LEFT_PADDING = 20;
 const MAX_RIGHT_PADDING = 75;
 const MIN_PANE_SIZE_PERCENTAGE = 20;
 
-const VISIBLE = 'visible';
-const HIDDEN = 'hidden';
-
 const {
   ChartWidget,
   OrderWidget,

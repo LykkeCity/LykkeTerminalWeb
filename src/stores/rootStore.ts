@@ -44,6 +44,8 @@ const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class RootStore {
+  visibility: string;
+
   readonly watchlistStore: WatchlistStore;
   readonly tradeStore: TradeStore;
   readonly depthChartStore: DepthChartStore;
@@ -181,6 +183,10 @@ class RootStore {
         this.tradeStore.subscribe(this.ws);
         this.orderStore.subscribe(this.ws);
         this.balanceListStore.subscribe(this.ws);
+
+        if (this.uiStore.getPageVisibility()) {
+          this.pause();
+        }
 
         return Promise.resolve();
       })
