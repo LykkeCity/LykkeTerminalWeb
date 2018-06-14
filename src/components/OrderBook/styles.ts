@@ -1,5 +1,12 @@
 import {rem} from 'polished';
-import styled, {colors, dims, fonts, padding} from '../styled';
+import styled, {
+  buttonBackgrounds,
+  buttonColors,
+  colors,
+  dims,
+  fonts,
+  padding
+} from '../styled';
 import {Table} from '../Table';
 
 export const StyledBar = styled.div`
@@ -225,3 +232,42 @@ export const FakeOrderBookStage = styled.div.attrs({
   z-index: 1;
   cursor: pointer;
 ` as any;
+
+export const Button = styled.button`
+  cursor: pointer;
+  background: ${(props: any) =>
+    !props.disabled ? buttonBackgrounds.normal : buttonBackgrounds.disabled};
+  border: none;
+  border-radius: 4px;
+  color: ${(props: any) =>
+    !props.disabled ? buttonColors.normal : buttonColors.disabled};
+  outline: none;
+  padding: 0;
+  margin: 0 1rem;
+  height: 24px;
+  width: 24px;
+
+  i {
+    font-size: ${rem(fonts.small)};
+  }
+
+  &:hover {
+    background: ${(props: any) =>
+      !props.disabled ? buttonBackgrounds.hovered : buttonBackgrounds.disabled};
+  }
+
+  &:active {
+    background: ${(props: any) =>
+      !props.disabled ? buttonBackgrounds.pressed : buttonBackgrounds.disabled};
+  }
+
+  &:hover svg {
+    color: ${(props: any) =>
+      !props.disabled ? buttonColors.hovered : buttonColors.disabled};
+  }
+
+  &:active svg {
+    color: ${(props: any) =>
+      !props.disabled ? buttonColors.pressed : buttonColors.disabled};
+  }
+`;

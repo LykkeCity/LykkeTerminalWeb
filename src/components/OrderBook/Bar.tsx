@@ -3,7 +3,7 @@ import {OrderBookDisplayType} from '../../models';
 import {VBar} from '../Bar';
 import {Icon} from '../Icon';
 import OrderBookSwitch from './OrderBookSwitch';
-import {StyledBar, StyledGrouping} from './styles';
+import {Button, StyledBar, StyledGrouping} from './styles';
 
 export interface BarProps {
   span: number;
@@ -27,13 +27,13 @@ export default ({
   <StyledBar>
     <StyledGrouping>
       Grouping:{' '}
-      <button onClick={onPrevSpan}>
+      <Button onClick={onPrevSpan}>
         <Icon name={'minus'} />
-      </button>
+      </Button>
       <div>{format(span, priceAccuracy)}</div>
-      <button onClick={onNextSpan}>
+      <Button onClick={onNextSpan}>
         <Icon name={'plus'} />
-      </button>
+      </Button>
     </StyledGrouping>
     <VBar />
     <OrderBookSwitch value={displayType} onChange={onChangeDisplayType} />

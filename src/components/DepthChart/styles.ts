@@ -29,21 +29,22 @@ export const Bar = styled.div`
 `;
 
 export const Button = styled.button`
+  cursor: pointer;
   background: ${(props: any) =>
     !props.disabled ? buttonBackgrounds.normal : buttonBackgrounds.disabled};
   border: none;
   border-radius: 4px;
   color: ${(props: any) =>
     !props.disabled ? buttonColors.normal : buttonColors.disabled};
-  font-size: ${rem(fonts.small)};
-  font-weight: normal;
-  opacity: 0.88;
-  cursor: pointer;
   outline: none;
   padding: 0;
   margin: 0 1rem;
   height: 24px;
   width: 24px;
+
+  i {
+    font-size: ${rem(fonts.small)};
+  }
 
   &:hover {
     background: ${(props: any) =>
