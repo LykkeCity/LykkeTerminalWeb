@@ -62,7 +62,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
     if (this.props.isPageHidden()) {
-      // TODO delete after disconnect from wamp implementing
+      // TODO delete after disconnect from wamp task will be implement
       return;
     }
     window.requestAnimationFrame(() => {

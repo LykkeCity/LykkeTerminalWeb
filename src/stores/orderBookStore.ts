@@ -92,8 +92,6 @@ class OrderBookStore extends BaseStore {
 
   setAsksUpdatingHandler = (cb: any) => (this.drawAsks = cb);
   setBidsUpdatingHandler = (cb: any) => (this.drawBids = cb);
-  setDepthChartUpdatingHandler = (cb: any) => (this.updateDepthChart = cb);
-  handleDepthChartUnmount = () => (this.updateDepthChart = null);
 
   drawOrderBook = () => {
     this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
@@ -204,17 +202,17 @@ class OrderBookStore extends BaseStore {
         const bids = await this.mapToOrderInWorker(Levels, Side.Buy);
         this.rawBids = bids.map((b: any) => Order.create(b));
         this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
+        this.rootStore.depthChartStore.updateBids(this.rawBids);
         this.bestBidPrice = await this.getBestBid();
       } else {
         const asks = await this.mapToOrderInWorker(Levels, Side.Sell);
         this.rawAsks = asks.map((a: any) => Order.create(a));
         this.drawAsks(this.getAsks(), this.getBids(), LevelType.Asks);
+        this.rootStore.depthChartStore.updateAsks(this.rawAsks);
         this.bestAskPrice = await this.getBestAsk();
       }
-      // tslint:disable:no-unused-expression
       this.spread = (this.bestAskPrice - this.bestBidPrice) / this.bestAskPrice;
       this.midPrice = (this.bestAskPrice + this.bestBidPrice) / 2;
-      this.updateDepthChart && this.updateDepthChart();
     }
   };
 
