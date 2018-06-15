@@ -53,11 +53,21 @@ export interface LevelListProps {
   isPageHidden: () => boolean;
 }
 
+interface ILevelsCells {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  type: OrderBookCellType;
+  value: number;
+  side: Side;
+}
+
 class LevelList extends React.Component<LevelListProps> {
   canvas: HTMLCanvasElement | null;
   canvasCtx: CanvasRenderingContext2D | null;
-  levelsCells: any[] = [];
-  fakeStage: any;
+  levelsCells: ILevelsCells[] = [];
+  fakeStage: HTMLDivElement;
   memoWidth: number = 0;
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
@@ -77,7 +87,7 @@ class LevelList extends React.Component<LevelListProps> {
     ] = value);
 
   componentDidMount() {
-    const {setLevelsUpdatingHandler} = this.props;
+    const {setLevelsUpdatingHandler, triggerOrderUpdate} = this.props;
     setLevelsUpdatingHandler(this.handleLevelsUpdating);
     this.canvasCtx = this.canvas!.getContext('2d');
     this.canvas!.addEventListener(
@@ -87,7 +97,7 @@ class LevelList extends React.Component<LevelListProps> {
         const y = event.offsetY;
 
         const clickedLevelElement = this.levelsCells.find(
-          (el: any) =>
+          el =>
             y > el.top &&
             y < el.top + el.height &&
             x > el.left &&
@@ -95,7 +105,7 @@ class LevelList extends React.Component<LevelListProps> {
         );
 
         if (clickedLevelElement) {
-          this.props.triggerOrderUpdate(clickedLevelElement);
+          triggerOrderUpdate(clickedLevelElement);
         }
         this.togglePointerEvents('auto');
       },

@@ -1,4 +1,3 @@
-import {reverse} from 'rambda';
 import {connect} from '../../connect';
 import Chart from './Chart';
 import ChartWrapper from './ChartWrapper';
@@ -53,7 +52,7 @@ const ConnectedChart = connect(
     uiStore: {selectedInstrument}
   }) => {
     return {
-      asks: reverse(getAsks),
+      asks: getAsks,
       bids: getBids,
       height: height - chart.labelsHeight,
       width: width - labelsWidth,
