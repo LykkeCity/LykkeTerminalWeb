@@ -1,5 +1,3 @@
-export const candlesLimit = 500;
-
 export const CHART_DEFAULT_SETTINGS = {
   charts: [
     {
