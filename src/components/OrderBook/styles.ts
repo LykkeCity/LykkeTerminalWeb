@@ -74,6 +74,11 @@ export const StyledSwitch = styled.div`
 export const StyledHeader = Table.extend`
   margin: ${rem(16)} 0 ${rem(8)};
   width: 100%;
+  tr {
+    &:hover {
+      background: transparent !important;
+    }
+  }
   th {
     text-align: left;
     padding: 0;
@@ -218,7 +223,7 @@ export const MyOrdersCancelButton = styled.button`
 export const FakeOrderBookStage = styled.div.attrs({
   style: (props: any) => ({
     height: props.height,
-    width: props.width / 3 * 2
+    width: props.width
   })
 })`
   position: absolute;

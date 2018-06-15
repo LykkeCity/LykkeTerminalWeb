@@ -307,9 +307,10 @@ describe('uiOrder store', () => {
       ).toBeTruthy();
     });
 
-    it('should reset price and quantity', () => {
+    it('should reset price and quantity', async () => {
       const midPrice = 1256.58;
-      uiOrderStore.rootStore.orderBookStore.mid = () => midPrice;
+      uiOrderStore.rootStore.orderBookStore.mid = () =>
+        Promise.resolve(midPrice);
 
       uiOrderStore.setQuantityValue('123');
       uiOrderStore.setPriceValue('123');
@@ -318,7 +319,7 @@ describe('uiOrder store', () => {
         midPrice.toFixed(uiOrderStore.getPriceAccuracy())
       );
 
-      uiOrderStore.resetOrder();
+      await uiOrderStore.resetOrder();
       expect(uiOrderStore.getComputedQuantityValue).toBe(DEFAULT_INPUT_VALUE);
       expect(uiOrderStore.getComputedPriceValue).toBe(
         midPrice.toFixed(uiOrderStore.getPriceAccuracy())

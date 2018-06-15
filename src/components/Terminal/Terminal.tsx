@@ -99,7 +99,14 @@ class Terminal extends React.Component<TerminalProps, {}> {
     .balanceListStore;
   private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
 
+  handleVisibilityChange = () => {
+    this.props.rootStore.uiStore.setPageVisibility(
+      document.visibilityState === 'hidden'
+    );
+  };
+
   componentDidMount() {
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
     this.start().then(resp => {
       if (!resp) {
         return;

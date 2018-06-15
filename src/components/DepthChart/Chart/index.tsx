@@ -21,12 +21,19 @@ const ConnectedChartWrapper: any = connect(
 
 const ConnectedMesh = connect(
   ({
-    depthChartStore: {asks, bids, height, width, setLabelsWidth, labelsWidth},
+    depthChartStore: {
+      getAsks,
+      getBids,
+      height,
+      width,
+      setLabelsWidth,
+      labelsWidth
+    },
     uiStore: {selectedInstrument}
   }) => {
     return {
-      asks,
-      bids,
+      asks: getAsks,
+      bids: getBids,
       height: height - chart.labelsHeight,
       width: width - labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,
@@ -42,12 +49,12 @@ const ConnectedMesh = connect(
 
 const ConnectedChart = connect(
   ({
-    depthChartStore: {asks, bids, height, width, labelsWidth},
+    depthChartStore: {getAsks, getBids, height, width, labelsWidth},
     uiStore: {selectedInstrument}
   }) => {
     return {
-      asks: reverse(asks),
-      bids,
+      asks: reverse(getAsks),
+      bids: getBids,
       height: height - chart.labelsHeight,
       width: width - labelsWidth,
       baseAsset: selectedInstrument!.baseAsset.name,

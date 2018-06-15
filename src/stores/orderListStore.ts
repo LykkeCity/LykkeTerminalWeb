@@ -79,7 +79,7 @@ class OrderListStore extends BaseStore {
       return null;
     }
     const mappedOrder = mappers.mapToLimitOrder(addedOrder);
-    this.orders.push(mappedOrder);
+    this.orders = [...this.orders, mappedOrder];
     return mappedOrder;
   };
 

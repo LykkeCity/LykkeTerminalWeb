@@ -43,13 +43,11 @@ class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
           <Chart />
         </TileContent>
 
-        <TileContent
-          style={{
-            display: this.selectedTab === ChartType.Depth ? 'block' : 'none'
-          }}
-        >
-          <DepthChart />
-        </TileContent>
+        {this.selectedTab === ChartType.Depth && (
+          <TileContent>
+            <DepthChart />
+          </TileContent>
+        )}
       </React.Fragment>
     );
   }

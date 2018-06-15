@@ -1,5 +1,5 @@
 // tslint:disable:no-console
-// In production, we register a service worker to serve assets from local cache.
+// In production, we register a service workers to serve assets from local cache.
 
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
@@ -27,7 +27,7 @@ export default function register() {
       window.location.toString()
     );
     if (publicUrl.origin !== window.location.origin) {
-      // Our service worker won't work if PUBLIC_URL is on a different origin
+      // Our service workers won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
       // serve assets; see https://github.com/facebookincubator/create-react-app/issues/2374
       return;
@@ -37,10 +37,10 @@ export default function register() {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       if (!isLocalhost) {
-        // Is not local host. Just register service worker
+        // Is not local host. Just register service workers
         registerValidSW(swUrl);
       } else {
-        // This is running on localhost. Lets check if a service worker still exists or not.
+        // This is running on localhost. Lets check if a service workers still exists or not.
         checkValidServiceWorker(swUrl);
       }
     });
@@ -74,27 +74,27 @@ function registerValidSW(swUrl: string) {
       };
     })
     .catch(error => {
-      console.error('Error during service worker registration:', error);
+      console.error('Error during service workers registration:', error);
     });
 }
 
 function checkValidServiceWorker(swUrl: string) {
-  // Check if the service worker can be found. If it can't reload the page.
+  // Check if the service workers can be found. If it can't reload the page.
   fetch(swUrl)
     .then(response => {
-      // Ensure service worker exists, and that we really are getting a JS file.
+      // Ensure service workers exists, and that we really are getting a JS file.
       if (
         response.status === 404 ||
         response.headers.get('content-type')!.indexOf('javascript') === -1
       ) {
-        // No service worker found. Probably a different app. Reload the page.
+        // No service workers found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready.then(registration => {
           registration.unregister().then(() => {
             window.location.reload();
           });
         });
       } else {
-        // Service worker found. Proceed as normal.
+        // Service workers found. Proceed as normal.
         registerValidSW(swUrl);
       }
     })

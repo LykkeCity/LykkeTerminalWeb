@@ -1,20 +1,23 @@
 import {observer} from 'mobx-react';
-import {compose, concat, curry, map, pathOr, prop, toLower} from 'rambda';
+import {compose, pathOr} from 'rambda';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import {withContentRect} from 'react-measure';
-import {normalizeVolume} from '../../utils';
 import {HBar} from '../Bar';
 import {connect} from '../connect';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
-import Figures, {FigureListProps} from './Figures';
+import {FigureListProps, Figures} from './Figures';
 import Header from './Header';
-import {LevelList, LevelListProps} from './LevelList';
-import LevelListItem from './LevelListItem';
+import {LevelListProps} from './LevelList';
+
 import MyOrders, {MyOrdersProps} from './MyOrders';
 
-const LEVEL_HEIGHT = 30;
+import LevelList from './LevelList';
+
+import LevelType from '../../models/levelType';
+
+export const LEVEL_HEIGHT = 30;
 export const LEVELS_COUNT = 50;
 export const LEFT_PADDING = 8;
 export const TOP_PADDING = 10;
@@ -34,7 +37,7 @@ const formatWithAccuracy = (
 
 const ConnectedBar = connect<BarProps>(
   ({
-    orderBookStore: {spreadRelative, span, nextSpan, prevSpan},
+    orderBookStore: {span, nextSpan, prevSpan},
     uiStore: {
       orderbookDisplayType,
       changeOrderbookDisplayType,
@@ -52,81 +55,84 @@ const ConnectedBar = connect<BarProps>(
   Bar
 );
 
-const ConnectedAsks = connect<LevelListProps>(
+const ConnectedAskLevels = connect<LevelListProps>(
   ({
-    orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
-    uiOrderBookStore: {handleAskLevelCellsClick, storeAskLevelCellInfo}
+    orderBookStore: {
+      getAsks,
+      getBids,
+      setAsksUpdatingHandler,
+      triggerOrderUpdate
+    },
+    uiStore: {
+      selectedInstrument,
+      orderbookDisplayType,
+      readOnlyMode,
+      getPageVisibility
+    }
   }) => {
-    const levels = concat(asks, bids);
-    const vals = map(prop(toLower(orderbookDisplayType)), levels) as number[];
-    const normalize = curry(normalizeVolume)(
-      Math.min(...vals),
-      Math.max(...vals)
-    );
     return {
-      levels: asks,
+      getBids,
+      getAsks,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      normalize,
-      handleOrderBookClick: handleAskLevelCellsClick,
-      storeLevelCellInfo: storeAskLevelCellInfo,
-      isReadOnly: readOnlyMode
+      isReadOnly: readOnlyMode,
+      displayType: orderbookDisplayType.toLowerCase(),
+      setLevelsUpdatingHandler: setAsksUpdatingHandler,
+      triggerOrderUpdate,
+      type: LevelType.Asks,
+      isPageHidden: getPageVisibility
     };
   },
   observer(LevelList)
 );
 
-const ConnectedBids = connect<LevelListProps>(
+const ConnectedBidLevels = connect<LevelListProps>(
   ({
-    orderBookStore: {asks, bids},
-    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode},
-    uiOrderBookStore: {handleBidLevelCellsClick, storeBidLevelCellInfo}
+    orderBookStore: {
+      getBids,
+      getAsks,
+      setBidsUpdatingHandler,
+      triggerOrderUpdate
+    },
+    uiStore: {
+      selectedInstrument,
+      orderbookDisplayType,
+      readOnlyMode,
+      getPageVisibility
+    }
   }) => {
-    const vals = map(prop(toLower(orderbookDisplayType)), [
-      ...asks,
-      ...bids
-    ]) as number[];
-    const normalize = curry(normalizeVolume)(
-      Math.min(...vals),
-      Math.max(...vals)
-    );
     return {
-      levels: bids,
+      getBids,
+      getAsks,
       instrument: selectedInstrument!,
       format: formatWithAccuracy,
-      normalize,
-      handleOrderBookClick: handleBidLevelCellsClick,
-      storeLevelCellInfo: storeBidLevelCellInfo,
-      isReadOnly: readOnlyMode
+      isReadOnly: readOnlyMode,
+      displayType: orderbookDisplayType.toLowerCase(),
+      setLevelsUpdatingHandler: setBidsUpdatingHandler,
+      triggerOrderUpdate,
+      type: LevelType.Bids,
+      isPageHidden: getPageVisibility
     };
   },
   observer(LevelList)
-);
-
-const ConnectedLevelListItem = connect(
-  ({uiStore: {orderbookDisplayType}}) => ({
-    displayType: toLower(orderbookDisplayType)
-  }),
-  observer(LevelListItem)
 );
 
 const ConnectedFigures = connect<FigureListProps>(
   ({
-    orderBookStore: {mid, spreadRelative},
+    orderBookStore: {spread, midPrice},
     priceStore: {lastTradePrice},
     authStore: {isAuth},
     uiStore: {selectedInstrument, readOnlyMode},
     uiOrderStore: {handlePriceClickFromOrderBook}
   }) => ({
     lastTradePrice,
-    mid: mid(),
     isAuth,
-    spreadRelative,
+    spreadRelative: spread,
     priceAccuracy: (selectedInstrument && selectedInstrument!.accuracy) || 0,
     format: formatWithAccuracy,
     handlePriceClickFromOrderBook,
-    isReadOnly: readOnlyMode
+    isReadOnly: readOnlyMode,
+    mid: midPrice
   }),
   Figures
 );
@@ -159,12 +165,12 @@ const ConnectedOrderbook = connect(
               );
           }}
         >
-          <ConnectedAsks
+          <ConnectedAskLevels
             height={LEVELS_COUNT * LEVEL_HEIGHT}
             width={contentRect.client.width + LEFT_PADDING || 300}
           />
           {loading ? null : <ConnectedFigures />}
-          <ConnectedBids
+          <ConnectedBidLevels
             height={LEVELS_COUNT * LEVEL_HEIGHT}
             width={contentRect.client.width + LEFT_PADDING || 300}
           />
@@ -184,4 +190,3 @@ const ConnectedMyOrders = connect<MyOrdersProps>(
 );
 
 export default ConnectedOrderbook;
-export {ConnectedLevelListItem as LevelListItem};

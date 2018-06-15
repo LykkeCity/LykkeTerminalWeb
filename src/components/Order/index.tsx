@@ -28,7 +28,7 @@ export interface OrderBasicFormProps {
 const ConnectedOrder = connect(
   ({
     balanceListStore: {tradingWalletBalances: getBalance},
-    orderBookStore: {bestAsk, bestBid},
+    orderBookStore: {bestAskPrice, bestBidPrice},
     orderStore: {placeOrder},
     uiStore: {selectedInstrument: instrument, readOnlyMode, isDisclaimerShown},
     referenceStore,
@@ -58,7 +58,7 @@ const ConnectedOrder = connect(
       baseAssetAccuracy: pathOr(2, ['baseAsset', 'accuracy'], instrument),
       quoteAssetAccuracy: pathOr(2, ['quoteAsset', 'accuracy'], instrument)
     },
-    ask: bestAsk(),
+    ask: bestAskPrice,
     baseAssetId: pathOr('', ['baseAsset', 'id'], instrument),
     get baseAssetName() {
       return pathOr('', ['baseAsset', 'name'], instrument);
@@ -66,7 +66,7 @@ const ConnectedOrder = connect(
     get quoteAssetName() {
       return pathOr('', ['quoteAsset', 'name'], instrument);
     },
-    bid: bestBid(),
+    bid: bestBidPrice,
     currency: pathOr('', ['id'], instrument),
     isLimitInvalid,
     isMarketInvalid,

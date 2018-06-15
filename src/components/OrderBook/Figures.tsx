@@ -16,22 +16,22 @@ export interface FigureListProps {
   isAuth: boolean;
   lastTradePrice: number;
   priceAccuracy: number;
-  mid: number;
-  spreadRelative: number;
   format: (num: number, accuracy: number, opts?: object) => string;
   handlePriceClickFromOrderBook: (price: number, side: Side) => void;
   isReadOnly: boolean;
+  spreadRelative: number;
+  mid: number;
 }
 
-export default ({
+export const Figures = ({
   isAuth,
   lastTradePrice,
   priceAccuracy,
-  mid,
-  spreadRelative,
   format,
   handlePriceClickFromOrderBook,
-  isReadOnly
+  isReadOnly,
+  mid,
+  spreadRelative
 }: FigureListProps) => (
   <FigureList>
     <Figure isAuth={isAuth}>

@@ -33,6 +33,7 @@ class UiStore extends BaseStore {
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
   @observable private isReadOnlyMode: boolean;
+  private isPageHidden: boolean = false;
 
   constructor(store: RootStore) {
     super(store);
@@ -61,7 +62,8 @@ class UiStore extends BaseStore {
           } = this.rootStore.uiOrderStore;
           setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
           setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
-          setPriceValueWithFixed(this.rootStore.orderBookStore.mid());
+          const mid = await this.rootStore.orderBookStore.mid();
+          setPriceValueWithFixed(mid);
           setQuantityValue(DEFAULT_INPUT_VALUE);
 
           const {
@@ -101,6 +103,9 @@ class UiStore extends BaseStore {
       }
     );
   }
+
+  setPageVisibility = (isHidden: boolean) => (this.isPageHidden = isHidden);
+  getPageVisibility = () => this.isPageHidden;
 
   hasAsset = (
     selectedInstrument: InstrumentModel,
