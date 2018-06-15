@@ -91,14 +91,16 @@ class Mesh extends React.Component<MeshProps> {
 
   generateHorizontalLabels = () => {
     const labels = [];
-
     if (this.props.asks.length > 0 || this.props.bids.length > 0) {
       const maximum = this.calculateMaxDepth() / chart.scaleFactor;
       const step = maximum / chart.mesh.horizontalLinesAmount;
       for (let i = 0; i < chart.mesh.horizontalLinesAmount; i++) {
-        labels.push(
-          formattedNumber(step * (i + 1) - step / 2, this.props.baseAccuracy)
-        );
+        const value = step * (i + 1) - step / 2;
+        let formattedLabel;
+        value < 1000
+          ? (formattedLabel = formattedNumber(value, chart.labelsAccuracy))
+          : (formattedLabel = `${formattedNumber(value / 1000, 1)}k`);
+        labels.push(formattedLabel);
       }
     }
     return labels.reverse();
@@ -199,16 +201,15 @@ class Mesh extends React.Component<MeshProps> {
   };
 
   setHorizontalLabelsBarWidth = (labels: React.ReactText[]) => {
-    const longestLabelWidth = Math.max(
-      ...labels.map(label =>
-        measureText(
-          label.toString(),
-          chart.mesh.horizontalFontSize,
-          chart.mesh.fontFamily
-        )
-      )
+    const longestLabelLength = Math.max(
+      ...labels.map(label => label.toString().length)
     );
-    this.props.setLabelsWidth(longestLabelWidth + 10);
+    const labelsWidth = measureText(
+      '8'.repeat(longestLabelLength),
+      chart.mesh.horizontalFontSize,
+      chart.mesh.fontFamily
+    );
+    this.props.setLabelsWidth(labelsWidth + 10);
   };
 
   drawHorizontalLabels = () => {

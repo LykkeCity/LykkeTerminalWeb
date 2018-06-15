@@ -10,7 +10,7 @@ const chart = {
     fontFamily: 'Proxima Nova',
 
     verticalLinesAmount: 8,
-    horizontalLinesAmount: 16
+    horizontalLinesAmount: 10
   },
   asks: {
     lineColor: '#ff6161',
@@ -63,8 +63,10 @@ const chart = {
   strokeWidth: 2,
   fillOpacity: 0.2,
 
-  labelsWidth: 60,
+  labelsWidth: 40,
   labelsHeight: 25,
+
+  labelsAccuracy: 2,
 
   scaleFactor: 0.9
 };
