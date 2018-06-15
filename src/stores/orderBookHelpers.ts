@@ -18,10 +18,11 @@ export const priceBetween = (min: number, max: number) => (
 ) => x.price >= min && x.price < max;
 
 export const closestPrice = (num: number, span: number, isAsk: boolean) => {
-  const mod = Big(num).mod(span);
+  const bigNum = new Big(num);
+  const mod = bigNum.mod(span);
   const price = mod.eq(0)
     ? num
-    : isAsk ? Big(num).plus(Big(span).minus(mod)) : Big(num).minus(mod);
+    : isAsk ? bigNum.plus(Big(span).minus(mod)) : bigNum.minus(mod);
   return Number(price);
 };
 
