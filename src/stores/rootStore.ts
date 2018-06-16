@@ -195,9 +195,21 @@ class RootStore {
       });
   };
 
+  simulateReloading = (time: number) => {
+    this.orderListStore.hasPendingOrders = true;
+    this.orderBookStore.hasPendingItems = true;
+    setTimeout(() => {
+      this.orderListStore.hasPendingOrders = false;
+      this.orderBookStore.hasPendingItems = false;
+    }, time);
+  };
+
   pause = () => this.ws.pause();
 
-  continue = () => this.ws.continue();
+  continue = () => {
+    this.simulateReloading(1000);
+    this.ws.continue();
+  };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
 

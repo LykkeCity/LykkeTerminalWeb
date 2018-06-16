@@ -10,12 +10,17 @@ import {StorageUtils} from '../utils/index';
 
 const tokenStorage = StorageUtils(keys.token);
 
+const TIMEOUT = 10000;
+
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
   private session: Session;
   private connection: Connection;
 
   private subscriptions: Map<string, Subscription> = new Map();
+
+  private timer: any;
+  private isDebounced: boolean = false;
 
   connect = (url: string, realm: string, authId?: string) => {
     let options: IConnectionOptions = {url, realm, max_retries: -1};
@@ -58,12 +63,17 @@ export class WampApi {
 
   pause = () => {
     if (this.connection) {
-      this.connection.close();
+      this.isDebounced = true;
+      this.timer = setTimeout(() => {
+        this.connection.close();
+        this.isDebounced = false;
+      }, TIMEOUT);
     }
   };
 
   continue = () => {
-    if (this.connection) {
+    clearTimeout(this.timer);
+    if (this.connection && this.isDebounced === false) {
       this.connection.open();
     }
   };
