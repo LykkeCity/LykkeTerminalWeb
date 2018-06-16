@@ -243,7 +243,6 @@ export const Button = styled.button`
     !props.disabled ? buttonColors.normal : buttonColors.disabled};
   outline: none;
   padding: 0;
-  margin: 0 1rem;
   height: 24px;
   width: 24px;
 
