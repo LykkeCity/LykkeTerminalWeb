@@ -76,6 +76,7 @@ export class WampApi {
     if (this.connection && this.isDebounced === false) {
       this.connection.open();
     }
+    return this.isDebounced;
   };
 
   publish = (topic: string, event: [any]) => this.session.publish(topic, event);

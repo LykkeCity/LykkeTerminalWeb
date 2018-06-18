@@ -195,20 +195,16 @@ class RootStore {
       });
   };
 
-  simulateReloading = (time: number) => {
-    this.orderListStore.hasPendingOrders = true;
-    this.orderBookStore.hasPendingItems = true;
-    setTimeout(() => {
-      this.orderListStore.hasPendingOrders = false;
-      this.orderBookStore.hasPendingItems = false;
-    }, time);
-  };
-
   pause = () => this.ws.pause();
 
   continue = () => {
-    this.simulateReloading(1000);
-    this.ws.continue();
+    const isDebounced = this.ws.continue();
+    if (!isDebounced) {
+      this.balanceListStore.fetchAll();
+      this.orderListStore.fetchAll();
+      this.orderBookStore.fetchAll();
+      this.tradeStore.fetchPublicTrades();
+    }
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
