@@ -2,7 +2,7 @@ import {AssetModel, InstrumentModel, OrderBookDisplayType} from '../../models';
 import Watchlists from '../../models/watchlists';
 import {RootStore, UiStore} from '../index';
 
-describe(' uiStore', () => {
+describe('uiStore', () => {
   let uiStore: UiStore;
 
   beforeEach(() => {
