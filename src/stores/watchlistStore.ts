@@ -17,7 +17,7 @@ class WatchlistStore extends BaseStore {
       this.rootStore.referenceStore.getInstruments();
     return new WatchlistModel({
       name: Watchlists.All,
-      assetIds: instruments.map(i => i.id),
+      assetPairIds: instruments.map(i => i.id),
       readOnly: true
     });
   }

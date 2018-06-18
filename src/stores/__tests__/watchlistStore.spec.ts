@@ -1,4 +1,3 @@
-import {MockWatchlistApi} from '../../api/watchlistApi';
 import {InstrumentModel} from '../../models';
 import WatchlistModel from '../../models/watchlistModel';
 import Watchlists from '../../models/watchlists';
@@ -11,12 +10,16 @@ describe('watchlist store', () => {
       name: 'LKK/USD'
     })
   ]);
+
+  const api = {
+    fetchAll: jest.fn(() => [])
+  };
+
   const watchlistStore = new WatchlistStore(
     new RootStore(),
-    new MockWatchlistApi(),
+    api as any,
     getInstruments
   );
-  watchlistStore.fetchAll = jest.fn(() => []);
 
   describe('state', () => {
     it('watchlists should be defined after instantiation', () => {
@@ -44,7 +47,7 @@ describe('watchlist store', () => {
 
   describe('allInstrumentsWatchlists', () => {
     it('should return instruments given', () => {
-      expect(watchlistStore.allInstrumentsWatchlist.assetIds).toHaveLength(
+      expect(watchlistStore.allInstrumentsWatchlist.assetPairIds).toHaveLength(
         getInstruments().length
       );
     });
