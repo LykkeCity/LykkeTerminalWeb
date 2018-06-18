@@ -50,7 +50,7 @@ export interface LevelListProps {
   ) => void;
   triggerOrderUpdate: (clickedEl: any) => void;
   type: LevelType;
-  isPageHidden: () => boolean;
+  isPageVisible: () => boolean;
 }
 
 interface ILevelsCells {
@@ -71,7 +71,7 @@ class LevelList extends React.Component<LevelListProps> {
   memoWidth: number = 0;
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
-    if (this.props.isPageHidden()) {
+    if (!this.props.isPageVisible()) {
       // TODO delete after disconnect from wamp task will be implement
       return;
     }

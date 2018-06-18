@@ -33,7 +33,7 @@ class UiStore extends BaseStore {
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
   @observable private isReadOnlyMode: boolean;
-  private isPageHidden: boolean = false;
+  private isPageVisible: boolean = true;
 
   constructor(store: RootStore) {
     super(store);
@@ -104,8 +104,8 @@ class UiStore extends BaseStore {
     );
   }
 
-  setPageVisibility = (isHidden: boolean) => (this.isPageHidden = isHidden);
-  getPageVisibility = () => this.isPageHidden;
+  setPageVisibility = (isVisible: boolean) => (this.isPageVisible = isVisible);
+  getPageVisibility = () => this.isPageVisible;
 
   hasAsset = (
     selectedInstrument: InstrumentModel,
