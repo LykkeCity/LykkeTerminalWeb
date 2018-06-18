@@ -1,12 +1,12 @@
 enum Icons {
-  cogwheel = 'settings',
-  close = 'close',
-  login = 'login',
-  logout = 'logout',
-  minus = 'reduce',
-  'edit-alt' = 'edit',
-  plus = 'increase',
-  search = 'search'
+  cogwheel = 'Settings',
+  close = 'Cancel',
+  login = 'Login',
+  logout = 'Logout',
+  minus = 'Reduce',
+  'edit-alt' = 'Edit',
+  plus = 'Increase',
+  search = 'Search'
 }
 
 export default Icons;
