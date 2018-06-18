@@ -80,7 +80,7 @@ const ConnectedAskLevels = connect<LevelListProps>(
       setLevelsUpdatingHandler: setAsksUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Asks,
-      isPageHidden: getPageVisibility
+      isPageVisible: getPageVisibility
     };
   },
   observer(LevelList)
@@ -111,7 +111,7 @@ const ConnectedBidLevels = connect<LevelListProps>(
       setLevelsUpdatingHandler: setBidsUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Bids,
-      isPageHidden: getPageVisibility
+      isPageVisible: getPageVisibility
     };
   },
   observer(LevelList)
