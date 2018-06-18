@@ -4,7 +4,6 @@ import {Order} from '../../../models';
 
 import formattedNumber from '../../../utils/localFormatted/localFormatted';
 import chart from './chartConstants';
-import {measureText} from './chartHelpers';
 
 interface MeshProps {
   asks: Order[];
@@ -14,7 +13,6 @@ interface MeshProps {
   quoteAccuracy: number;
   baseAccuracy: number;
   priceAccuracy: number;
-  setLabelsWidth: (width: number) => {};
 }
 
 class Mesh extends React.Component<MeshProps> {
@@ -200,18 +198,6 @@ class Mesh extends React.Component<MeshProps> {
     }
   };
 
-  setHorizontalLabelsBarWidth = (labels: React.ReactText[]) => {
-    const longestLabelLength = Math.max(
-      ...labels.map(label => label.toString().length)
-    );
-    const labelsWidth = measureText(
-      '8'.repeat(longestLabelLength),
-      chart.mesh.horizontalFontSize,
-      chart.mesh.fontFamily
-    );
-    this.props.setLabelsWidth(labelsWidth + 10);
-  };
-
   drawHorizontalLabels = () => {
     const stepHorizontal = this.props.height / chart.mesh.horizontalLinesAmount;
     const startHorizontal = stepHorizontal / 2;
@@ -255,12 +241,6 @@ class Mesh extends React.Component<MeshProps> {
     this.renderMesh();
     this.renderLabels();
     return this.mesh;
-  }
-
-  componentDidUpdate() {
-    if (this.labels.length > 0) {
-      this.setHorizontalLabelsBarWidth(this.labels);
-    }
   }
 }
 
