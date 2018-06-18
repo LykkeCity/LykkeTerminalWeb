@@ -135,7 +135,7 @@ class RootStore {
 
     this.sessionStore.initUserSession();
     this.settingsStore.init();
-    await this.watchlistStore.fetchAll();
+    this.watchlistStore.fetchAll();
 
     await this.referenceStore
       .fetchBaseAsset()

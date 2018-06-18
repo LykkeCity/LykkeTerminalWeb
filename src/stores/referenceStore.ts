@@ -105,7 +105,6 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchReferenceData = async () => {
-    await this.fetchCategories();
     await this.fetchAssets();
 
     if (!this.rootStore.authStore.isAuth) {

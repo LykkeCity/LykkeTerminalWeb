@@ -153,7 +153,7 @@ class DepthChartStore extends BaseStore {
   }
 
   reset = () => {
-    this.spanMultiplierIdx = 0;
+    this.spanMultiplierIdx = 1;
   };
 }
 

@@ -170,6 +170,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         this.authStore.fetchUserInfo(),
         this.balanceListStore.fetchAll()
       ]);
+
       if (this.authStore.noKycAndFunds) {
         this.props.history.push(paths.kycAndFundsCheck);
         return false;
