@@ -80,7 +80,9 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       pendingOrder: false,
       percents: percentage,
       priceValue: order.price.toFixed(this.accuracy.priceAccuracy),
-      quantityValue: order.volume.toFixed(this.accuracy.quantityAccuracy)
+      quantityValue: order.remainingVolume.toFixed(
+        this.accuracy.quantityAccuracy
+      )
     };
 
     this.handlePriceArrowClick = curry(onArrowClick)(
