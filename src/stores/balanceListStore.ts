@@ -73,17 +73,22 @@ class BalanceListStore extends BaseStore {
   };
 
   @action
-  updateWalletBalances = () => {
+  updateWalletBalances = async () => {
     const {
       baseAssetId,
       getInstrumentById,
-      getAssetById
+      getAssetById,
+      fetchAssetById
     } = this.rootStore.referenceStore;
     this.walletList.forEach(wallet => {
-      wallet.balances.forEach((assetBalance: AssetBalanceModel) => {
+      wallet.balances.forEach(async (assetBalance: AssetBalanceModel) => {
         const {balance, id} = assetBalance;
 
-        const asset = getAssetById(id);
+        let asset = getAssetById(id);
+
+        if (!asset) {
+          asset = await fetchAssetById(id);
+        }
 
         assetBalance.name = pathOr('', ['name'], asset);
         assetBalance.accuracy = pathOr('', ['accuracy'], asset);

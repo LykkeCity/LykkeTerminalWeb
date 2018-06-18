@@ -153,7 +153,7 @@ export const mapHistoryTypeToOrderType = (type: string) => {
 };
 
 export const mapToAsset = (
-  {Id, Name, DisplayId, CategoryId, Accuracy, IsBase, IconUrl}: any,
+  {Id, Name, DisplayId, CategoryId, Accuracy, IconUrl, CanBeBase}: any,
   categories: AssetCategoryModel[]
 ) =>
   new AssetModel({
@@ -162,7 +162,7 @@ export const mapToAsset = (
       categories.find(x => x.id === CategoryId) || AssetCategoryModel.Other(),
     iconUrl: IconUrl,
     id: Id,
-    isBase: IsBase,
+    canBeBase: CanBeBase,
     name: DisplayId || Name
   });
 
@@ -170,17 +170,7 @@ export const mapToAssetCategory = ({Id: id, Name: name}: any) =>
   new AssetCategoryModel({id, name});
 
 export const mapToInstrument = (
-  {
-    Id,
-    Accuracy,
-    BaseAssetId,
-    IsDisabled,
-    InvertedAccuracy,
-    Name,
-    QuotingAssetId,
-    Source,
-    Source2
-  }: any,
+  {Id, Accuracy, BaseAssetId, InvertedAccuracy, Name, QuotingAssetId}: any,
   getAssetById: (assetId: string) => AssetModel | undefined
 ) =>
   new InstrumentModel({
@@ -193,17 +183,7 @@ export const mapToInstrument = (
   });
 
 export const mapToPublicInstrument = (
-  {
-    Id,
-    Accuracy,
-    BaseAssetId,
-    IsDisabled,
-    InvertedAccuracy,
-    Name,
-    QuotingAssetId,
-    Source,
-    Source2
-  }: any,
+  {Id, Accuracy, BaseAssetId, InvertedAccuracy, Name, QuotingAssetId}: any,
   getAssetById: (assetId: string) => AssetModel | undefined
 ) =>
   new InstrumentModel({

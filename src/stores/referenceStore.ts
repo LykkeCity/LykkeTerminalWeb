@@ -33,7 +33,7 @@ class ReferenceStore extends BaseStore {
   get baseAssets() {
     return this.assets
       .filter(a => this.availableAssets.indexOf(a.id) > -1)
-      .filter(a => a.isBase);
+      .filter(a => a.canBeBase);
   }
 
   @computed
@@ -120,8 +120,12 @@ class ReferenceStore extends BaseStore {
       .fetchAll()
       .then((resp: any) => {
         if (resp && resp.Assets) {
+          const dtoAssets = resp.Assets || resp;
+          if (!dtoAssets) {
+            return;
+          }
           runInAction(() => {
-            this.assets = resp.Assets.map((x: any) =>
+            this.assets = dtoAssets.map((x: any) =>
               mappers.mapToAsset(x, this.categories)
             );
           });
@@ -133,7 +137,8 @@ class ReferenceStore extends BaseStore {
 
   fetchAssetById = (id: string) => {
     return this.api.fetchAssetById(id).then((resp: any) => {
-      const asset = mappers.mapToAsset(resp.Asset, this.categories);
+      const dtoAsset = resp.Asset || resp;
+      const asset = mappers.mapToAsset(dtoAsset, this.categories);
       this.assets.push(asset);
       return Promise.resolve(asset);
     });
@@ -150,11 +155,13 @@ class ReferenceStore extends BaseStore {
     return this.api
       .fetchAssetCategories()
       .then((resp: any) => {
-        if (resp && resp.AssetCategories) {
+        if (resp) {
+          const assetCategories = resp.AssetCategories || resp;
+          if (!assetCategories) {
+            return;
+          }
           runInAction(() => {
-            this.categories = resp.AssetCategories.map(
-              mappers.mapToAssetCategory
-            );
+            this.categories = assetCategories.map(mappers.mapToAssetCategory);
           });
         }
         return Promise.resolve();
@@ -164,9 +171,13 @@ class ReferenceStore extends BaseStore {
 
   fetchInstruments = async () => {
     const resp = await this.api.fetchAssetInstruments();
-    if (resp && resp.AssetPairs) {
+    if (resp) {
+      const assetPairs = resp.AssetPairs || resp;
+      if (!assetPairs) {
+        return;
+      }
       runInAction(() => {
-        this.instruments = resp.AssetPairs.map((x: any) =>
+        this.instruments = assetPairs.map((x: any) =>
           mappers.mapToInstrument(x, this.getAssetById)
         );
       });
@@ -175,9 +186,13 @@ class ReferenceStore extends BaseStore {
 
   fetchPublicInstruments = async () => {
     const resp = await this.api.fetchPublicAssetInstruments();
-    if (resp && resp.AssetPairs) {
+    if (resp) {
+      const assetPairs = resp.AssetPairs || resp;
+      if (!assetPairs) {
+        return;
+      }
       runInAction(() => {
-        this.instruments = resp.AssetPairs.map((x: any) =>
+        this.instruments = assetPairs.map((x: any) =>
           mappers.mapToPublicInstrument(x, this.getAssetById)
         );
       });
