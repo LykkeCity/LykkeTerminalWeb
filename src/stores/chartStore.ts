@@ -162,11 +162,10 @@ class ChartStore extends BaseStore {
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
-      enabled_features: ['hide_last_na_study_output'],
+      enabled_features: ['hide_last_na_study_output', 'left_toolbar'],
       disabled_features: [
         'widget_logo',
         'link_to_tradingview',
-        'left_toolbar',
         'header_symbol_search',
         'header_screenshot',
         'compare_symbol',

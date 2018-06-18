@@ -105,3 +105,47 @@ button._tv-button {
   width: 100%;
   box-sizing: border-box;
 }
+
+.tv-side-toolbar {
+  border-right: 1px solid #272727 !important;
+}
+
+.tv-side-toolbar .tv-close-panel.left {
+  display: none !important;
+}
+
+.tv-side-toolbar .tools-group::before {
+  background: #272727 !important;
+}
+
+.tv-side-toolbar svg {
+  height: 25px;
+}
+
+.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical {
+  margin: 5px 0 0;
+}
+
+.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical {
+  height: 25px;
+}
+
+.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical:hover,
+.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.selected {
+  border-radius: 3px;
+  border-color: #56595e !important;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.subgroup > span {
+  height: 25px;
+  background: none !important;
+}
+
+.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.subgroup > span.side {
+  border-left: 1px solid #56595e;
+}
+
+.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.subgroup > span.side svg{
+  height: 5px;
+}
