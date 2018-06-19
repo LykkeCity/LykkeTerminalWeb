@@ -74,17 +74,10 @@ class Mesh extends React.Component<MeshProps> {
   };
 
   calculateMaxDepth = () => {
-    if (this.props.asks.length > 0 && this.props.bids.length > 0) {
-      return Math.max(
-        ...this.props.asks.map(a => a.depth),
-        ...this.props.bids.map(b => b.depth)
-      );
-    } else if (this.props.asks.length > 0) {
-      return Math.max(...this.props.asks.map(a => a.depth));
-    } else if (this.props.bids.length > 0) {
-      return Math.max(...this.props.bids.map(b => b.depth));
-    }
-    return 1;
+    return Math.max(
+      ...this.props.asks.map(a => a.depth),
+      ...this.props.bids.map(b => b.depth)
+    );
   };
 
   generateHorizontalLabels = () => {
