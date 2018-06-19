@@ -110,8 +110,10 @@ button._tv-button {
   border-right: 1px solid #272727 !important;
 }
 
-.tv-side-toolbar .tv-close-panel.left {
-  display: none !important;
+.tv-close-panel {
+  border: 1px solid #272727;
+  border-left: none;
+  background-color: #464646;
 }
 
 .tv-side-toolbar .tools-group::before {
