@@ -4,6 +4,8 @@ import withAuth from '../Auth/withAuth';
 import {connect} from '../connect';
 import Order from './Order';
 
+const DEFAULT_BALANCE = 0;
+
 export interface OrderBasicFormProps {
   action: string;
   baseAssetName: string;
@@ -80,14 +82,14 @@ const ConnectedOrder = connect(
         const baseAssetId = pathOr('', ['baseAsset', 'id'], instrument);
         return b.id === baseAssetId;
       });
-      return (asset && asset.available) || 0;
+      return asset ? asset.available : DEFAULT_BALANCE;
     },
     get quoteAssetBalance() {
       const asset = balances.find((b: AssetBalanceModel) => {
         const quoteAssetId = pathOr('', ['quoteAsset', 'id'], instrument);
         return b.id === quoteAssetId;
       });
-      return (asset && asset.available) || 0;
+      return asset ? asset.available : DEFAULT_BALANCE;
     },
     isAuth,
     readOnlyMode,
