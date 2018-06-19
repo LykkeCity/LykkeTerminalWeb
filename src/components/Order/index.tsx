@@ -27,7 +27,7 @@ export interface OrderBasicFormProps {
 
 const ConnectedOrder = connect(
   ({
-    balanceListStore: {tradingWalletBalances: getBalance},
+    balanceListStore: {tradingWalletBalances: balances},
     orderBookStore: {bestAskPrice, bestBidPrice},
     orderStore: {placeOrder},
     uiStore: {selectedInstrument: instrument, readOnlyMode, isDisclaimerShown},
@@ -76,18 +76,18 @@ const ConnectedOrder = connect(
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
     get baseAssetBalance() {
-      const asset = getBalance.find((b: AssetBalanceModel) => {
-        const baseAssetName = pathOr('', ['baseAsset', 'id'], instrument);
-        return b.id === baseAssetName;
+      const asset = balances.find((b: AssetBalanceModel) => {
+        const baseAssetId = pathOr('', ['baseAsset', 'id'], instrument);
+        return b.id === baseAssetId;
       });
-      return asset && asset.available;
+      return (asset && asset.available) || 0;
     },
     get quoteAssetBalance() {
-      const asset = getBalance.find((b: AssetBalanceModel) => {
-        const quoteAssetName = pathOr('', ['quoteAsset', 'id'], instrument);
-        return b.id === quoteAssetName;
+      const asset = balances.find((b: AssetBalanceModel) => {
+        const quoteAssetId = pathOr('', ['quoteAsset', 'id'], instrument);
+        return b.id === quoteAssetId;
       });
-      return asset && asset.available;
+      return (asset && asset.available) || 0;
     },
     isAuth,
     readOnlyMode,
