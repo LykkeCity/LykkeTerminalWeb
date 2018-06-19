@@ -33,8 +33,13 @@ class Trades extends React.Component<TradesProps, TableSortState> {
   }
 
   componentWillReceiveProps(args: any) {
+    const sortedData = sortData(
+      args.trades,
+      this.state.sortByParam,
+      this.state.sortDirection
+    );
     this.setState({
-      data: args.trades
+      data: sortedData.data
     });
   }
 
