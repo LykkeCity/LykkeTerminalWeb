@@ -68,12 +68,16 @@ class TradeStore extends BaseStore {
 
   @action
   addTrade = (trade: TradeModel) => {
-    this.trades.push(trade);
+    if (this.isTradeVisible(trade)) {
+      this.trades.push(trade);
+    }
   };
 
   @action
   addTrades = (trades: TradeModel[]) => {
-    this.trades = this.trades.concat(trades);
+    this.trades = this.trades.concat(
+      trades.filter(trade => this.isTradeVisible(trade))
+    );
   };
 
   @action
@@ -188,6 +192,17 @@ class TradeStore extends BaseStore {
     this.resetTrades();
     this.resetPublicTrades();
   };
+
+  private isTradeVisible(trade: TradeModel) {
+    return (
+      this.filter === TradeFilter.All ||
+      this.isTradeAvailableForCurrentInstrument(trade)
+    );
+  }
+
+  private isTradeAvailableForCurrentInstrument(trade: TradeModel) {
+    return trade.instrument!.id === this.instrumentIdByFilter;
+  }
 }
 
 export default TradeStore;
