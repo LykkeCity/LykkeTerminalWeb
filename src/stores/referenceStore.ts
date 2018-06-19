@@ -119,7 +119,7 @@ class ReferenceStore extends BaseStore {
     return this.api
       .fetchAll()
       .then((resp: any) => {
-        if (resp && resp.Assets) {
+        if (resp) {
           const dtoAssets = resp.Assets || resp;
           if (!dtoAssets) {
             return;
