@@ -23,12 +23,44 @@ const StyledSpan = styled.span`
   }
 `;
 
-const Export: React.SFC<ExportProps> = ({exportHistory}) => {
-  return (
-    <StyledSpan className={'clickable'} onClick={exportHistory}>
-      Export history (csv)
-    </StyledSpan>
-  );
-};
+const extension = '.csv';
+const documentType = 'text/csv';
+
+class Export extends React.Component<ExportProps> {
+  constructor(props: ExportProps) {
+    super(props);
+  }
+
+  destroyClickedElement = (event: any) => {
+    document.body.removeChild(event.target);
+  };
+
+  downloadFile = (objectUrl: string) => {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = objectUrl;
+    downloadLink.style.display = 'none';
+    downloadLink.download = `${new Date().getTime()}-transactions${extension}`;
+    downloadLink.innerHTML = 'Download File';
+    downloadLink.onclick = this.destroyClickedElement;
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
+  };
+
+  saveFile = async () => {
+    const data = await this.props.exportHistory();
+    const dataToSave = new Blob([data], {type: documentType});
+    const objectUrl = window.URL.createObjectURL(dataToSave);
+    this.downloadFile(objectUrl);
+  };
+
+  render() {
+    return (
+      <StyledSpan className={'clickable'} onClick={this.saveFile}>
+        Export history (csv)
+      </StyledSpan>
+    );
+  }
+}
 
 export default Export;

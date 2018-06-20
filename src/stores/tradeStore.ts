@@ -187,6 +187,7 @@ class TradeStore extends BaseStore {
   exportHistory = () => {
     // tslint:disable-next-line:no-console
     console.log('exporting');
+    return Promise.resolve(['hello', 'wow']);
   };
 
   @action
