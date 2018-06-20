@@ -133,8 +133,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
     )[0];
     const rowSplitters = document.getElementsByClassName('mosaic-split -row');
     const splitters = [...Array.from(rowSplitters), firstColSplitter];
-    const mouseUp = (e: any) => {
-      e.stopPropagation();
+    const mouseUp = (event: MouseEvent) => {
+      event.stopPropagation();
       document.body.removeEventListener('mouseup', mouseUp);
 
       this.toggleChartOverlayHelper(false);
