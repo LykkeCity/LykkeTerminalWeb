@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableSortState
 } from '../Table';
-import {TradeFilter, TradeList, TradesCellWidth} from './index';
+import {Export, TradeFilter, TradeList, TradesCellWidth} from './index';
 import {TradeListToolbar} from './styles';
 
 interface TradesProps {
@@ -101,6 +101,7 @@ class Trades extends React.Component<TradesProps, TableSortState> {
       <React.Fragment>
         <TradeListToolbar>
           <TradeFilter />
+          <Export />
         </TradeListToolbar>
         <HBar />
         <TableHeader

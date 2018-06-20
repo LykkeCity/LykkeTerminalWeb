@@ -4,6 +4,7 @@ import styled, {colors, dims, fonts, padding} from '../styled';
 export const TradeListToolbar = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   min-height: 45px;
   padding: ${padding(8, 0)};
   width: 100%;

@@ -5,6 +5,7 @@ import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
+import Export from './Export';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
@@ -82,6 +83,13 @@ const ConnectedTradeLog = connect(
   TradeLog
 );
 
+const ConnectedExport = connect(
+  ({tradeStore: {exportHistory}}) => ({
+    exportHistory
+  }),
+  Export
+);
+
 export {ConnectedTrades as Trades};
 export {ConnectedTradeList as TradeList};
 export {ConnectedPublicTradeList as PublicTradeList};
@@ -89,3 +97,4 @@ export {TradeListItem};
 export {PublicTradeListItem};
 export {ConnectedTradeFilter as TradeFilter};
 export {ConnectedTradeLog as TradeLog};
+export {ConnectedExport as Export};
