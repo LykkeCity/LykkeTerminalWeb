@@ -184,6 +184,11 @@ class TradeStore extends BaseStore {
     }
   };
 
+  exportHistory = () => {
+    // tslint:disable-next-line:no-console
+    console.log('exporting');
+  };
+
   @action
   resetTrades = () => {
     this.trades = [];

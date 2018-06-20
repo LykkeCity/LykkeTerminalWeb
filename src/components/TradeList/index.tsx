@@ -9,6 +9,7 @@ import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import {withKyc} from '../Kyc';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
+import Export from './Export';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
 import TradeList, {TradeListProps} from './TradeList';
 import TradeListItem from './TradeListItem';
@@ -109,8 +110,16 @@ const ConnectedTradeLogCanvas = connect(
   TradeLog
 );
 
+const ConnectedExport = connect(
+  ({tradeStore: {exportHistory}}) => ({
+    exportHistory
+  }),
+  Export
+);
+
 export {ConnectedTrades as Trades};
 export {ConnectedTradeList as TradeList};
 export {TradeListItem};
 export {ConnectedTradeFilter as TradeFilter};
 export {ConnectedTradeLog as TradeLog};
+export {ConnectedExport as Export};
