@@ -4,7 +4,6 @@ import {Order} from '../../../models';
 
 import formattedNumber from '../../../utils/localFormatted/localFormatted';
 import chart from './chartConstants';
-import {measureText} from './chartHelpers';
 
 interface MeshProps {
   asks: Order[];
@@ -14,7 +13,6 @@ interface MeshProps {
   quoteAccuracy: number;
   baseAccuracy: number;
   priceAccuracy: number;
-  setLabelsWidth: (width: number) => {};
 }
 
 class Mesh extends React.Component<MeshProps> {
@@ -76,17 +74,10 @@ class Mesh extends React.Component<MeshProps> {
   };
 
   calculateMaxDepth = () => {
-    if (this.props.asks.length > 0 && this.props.bids.length > 0) {
-      return Math.max(
-        this.props.asks[0].depth,
-        this.props.bids[this.props.bids.length - 1].depth
-      );
-    } else if (this.props.asks.length > 0) {
-      return this.props.asks[0].depth;
-    } else if (this.props.bids.length > 0) {
-      return this.props.bids[this.props.bids.length - 1].depth;
-    }
-    return 1;
+    return Math.max(
+      ...this.props.asks.map(a => a.depth),
+      ...this.props.bids.map(b => b.depth)
+    );
   };
 
   generateHorizontalLabels = () => {
@@ -200,18 +191,6 @@ class Mesh extends React.Component<MeshProps> {
     }
   };
 
-  setHorizontalLabelsBarWidth = (labels: React.ReactText[]) => {
-    const longestLabelLength = Math.max(
-      ...labels.map(label => label.toString().length)
-    );
-    const labelsWidth = measureText(
-      '8'.repeat(longestLabelLength),
-      chart.mesh.horizontalFontSize,
-      chart.mesh.fontFamily
-    );
-    this.props.setLabelsWidth(labelsWidth + 10);
-  };
-
   drawHorizontalLabels = () => {
     const stepHorizontal = this.props.height / chart.mesh.horizontalLinesAmount;
     const startHorizontal = stepHorizontal / 2;
@@ -255,12 +234,6 @@ class Mesh extends React.Component<MeshProps> {
     this.renderMesh();
     this.renderLabels();
     return this.mesh;
-  }
-
-  componentDidUpdate() {
-    if (this.labels.length > 0) {
-      this.setHorizontalLabelsBarWidth(this.labels);
-    }
   }
 }
 
