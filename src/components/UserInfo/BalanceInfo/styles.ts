@@ -15,20 +15,13 @@ export const BalanceValue = styled.span`
   text-align: left;
 `;
 
-export const Button = styled.button`
-  background: none;
-  border: none;
+export const BaseAssetLabel = styled.span`
   font-family: 'Akrobat', sans-serif;
-  font-size: ${rem(16)};
   font-weight: bold;
+  font-size: ${rem(16)};
   line-height: 1;
-  text-align: right;
   color: #0388ef;
-  padding-right: 0;
-  outline: none;
-  &:hover {
-    cursor: pointer;
-  }
+  padding: 1px 0 1px 8px;
 `;
 
 export const BalanceLabel = styled.div`

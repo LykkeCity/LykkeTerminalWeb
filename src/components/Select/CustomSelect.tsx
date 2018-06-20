@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {withStyledScroll} from '../CustomScrollbar';
-import {css} from '../styled';
+import {colors, css} from '../styled';
 
 import {rem} from 'polished';
 
@@ -23,12 +23,12 @@ const StyledList = styled.div`
 
 const StyledItem = styled.li.attrs({
   style: (props: any) => ({
-    background: props.isActive ? '#0388ef' : 'transparent'
+    background: props.isActive ? colors.blue : 'transparent'
   })
 })`
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.625rem;
+  padding: ${rem(10)};
 
   ${(p: any) =>
     p.isActive ||

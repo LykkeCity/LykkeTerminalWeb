@@ -5,8 +5,8 @@ import {keys} from '../models';
 import ModalModel from '../models/modalModel';
 import Types from '../models/modals';
 import {
-  convertMinutesToMs,
-  convertMsToMinutes,
+  convertHoursToMs,
+  convertMsToHours,
   convertMsToSeconds,
   convertSecondsToMs,
   getDiffDays
@@ -20,7 +20,7 @@ const SESSION_WARNING_REMAINING = 60; // seconds
 
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 
-const DEFAULT_SESSION_DURATION = 900000;
+const DEFAULT_SESSION_DURATION = 1800000;
 
 class SessionStore extends BaseStore {
   @computed
@@ -47,7 +47,7 @@ class SessionStore extends BaseStore {
 
   @computed
   get sessionCurrentDuration() {
-    return convertMsToMinutes(this.sessionDuration); // returns minutes
+    return convertMsToHours(this.sessionDuration); // returns hours
   }
 
   @observable private isSessionNotificationShown: boolean = false;
@@ -258,9 +258,15 @@ class SessionStore extends BaseStore {
     this.closeReadOnlyModeNotification();
   };
 
-  handleSetDuration = (value: number) => {
-    this.sessionDuration = convertMinutesToMs(value);
+  handleSetDuration = async (value: number) => {
+    this.sessionDuration = convertHoursToMs(value);
     this.api.saveSessionDuration(this.sessionDuration);
+
+    const sessionStatus = await this.api.getSessionStatus();
+    const {Enabled} = sessionStatus.TradingSession;
+    if (Enabled) {
+      await this.extendSession();
+    }
   };
 
   reset = () => {

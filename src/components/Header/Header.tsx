@@ -1,11 +1,11 @@
 import * as React from 'react';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
-import ClickOutside from '../ClickOutside/ClickOutside';
 import {Icon} from '../Icon/index';
 import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {SettingsModal} from '../Settings';
+import {colors} from '../styled';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
 import {HeaderFlex, HeaderItem, HeaderWrapper, Logo} from './styles';
 
@@ -73,26 +73,26 @@ const Header: React.SFC<HeaderProps> = ({
               </HeaderItem>
             ) : null}
             {authStore.isAuth && !readOnlyMode ? (
-              <ClickOutside onClickOutside={handleCloseSettings}>
-                <HeaderItem>
-                  <span
-                    className="hidden-xs settings"
-                    onClick={handleToggleSettings}
-                  >
-                    <Icon name={'cogwheel'} color={'#8c94a0'} />
-                  </span>
-                  {settingsStore.showSettings ? <SettingsModal /> : null}
-                </HeaderItem>
-              </ClickOutside>
+              <HeaderItem>
+                <span
+                  className="hidden-xs settings"
+                  onClick={handleToggleSettings}
+                >
+                  <Icon name={'cogwheel'} color={colors.coolGrey} />
+                </span>
+                {settingsStore.showSettings ? (
+                  <SettingsModal handleCloseSettings={handleCloseSettings} />
+                ) : null}
+              </HeaderItem>
             ) : null}
             <HeaderItem>
               {authStore.isAuth ? (
                 <span className="hidden-xs" onClick={signOut}>
-                  <Icon name={'logout'} color={'#8c94a0'} />
+                  <Icon name={'logout'} color={colors.coolGrey} />
                 </span>
               ) : (
                 <span className="hidden-xs" onClick={signIn}>
-                  <Icon name={'login'} color={'#8c94a0'} />
+                  <Icon name={'login'} color={colors.coolGrey} />
                 </span>
               )}
               <i className="icon icon--participate visible-xs" />

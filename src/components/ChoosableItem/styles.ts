@@ -52,4 +52,8 @@ export const Item = styled.div`
       border-left: 1px solid transparent;
     }
   }
+
+  &.active:hover {
+    cursor: default;
+  }
 `;

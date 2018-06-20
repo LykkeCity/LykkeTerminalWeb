@@ -50,12 +50,14 @@ injectGlobal`
   * {
     border-collapse: collapse;
   }
-  :root {
+  body, :root {
     height: auto;
     min-height: 100%;
     font: normal 14px "Proxima Nova", sans-serif;
     color: #f5f6f7;
     line-height: normal;
+    padding: 0;
+    margin: 0;
 
     /* Adjust font size */
     -webkit-text-size-adjust: 100%;
@@ -81,6 +83,14 @@ injectGlobal`
   }
   button {
     font-family: 'Proxima Nova',sans-serif;
+  }
+  label {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
   }
 `;
 

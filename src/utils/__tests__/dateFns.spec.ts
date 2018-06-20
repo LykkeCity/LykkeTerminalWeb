@@ -1,8 +1,7 @@
 import {timeZones} from '../../constants/chartTimezones';
 import dates from '../../constants/dateKeys';
 import {
-  convertMinutesToMs,
-  convertMsToMinutes,
+  convertHoursToMs,
   convertMsToSeconds,
   convertSecondsToMs,
   getDiffDays
@@ -156,14 +155,9 @@ describe('Date functions', () => {
     expect(convertMsToSeconds(milliseconds)).toBe(milliseconds / 1000);
   });
 
-  it('should convert milliseconds to minutes', () => {
-    const milliseconds = 120000;
-    expect(convertMsToMinutes(milliseconds)).toBe(milliseconds / 60000);
-  });
-
-  it('should convert minutes to milliseconds', () => {
-    const minutes = 2;
-    expect(convertMinutesToMs(minutes)).toBe(minutes * 60000);
+  it('should convert hours to milliseconds', () => {
+    const hours = 2;
+    expect(convertHoursToMs(hours)).toBe(hours * 3600000);
   });
 
   it('should return 0 as no difference between two dates in days', () => {

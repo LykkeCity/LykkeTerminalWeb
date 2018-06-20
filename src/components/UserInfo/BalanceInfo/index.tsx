@@ -1,11 +1,10 @@
-import {ReferenceStore, UiStore} from '../../../stores/index';
+import {ReferenceStore} from '../../../stores/index';
 import {connect} from '../../connect';
 import BalanceInfo from './BalanceInfo';
 
 export interface BalanceInfoProps {
   totalBalance: number;
   referenceStore: ReferenceStore;
-  uiStore: UiStore;
 }
 
 const ConnectedBalanceInfo = connect(
@@ -15,8 +14,7 @@ const ConnectedBalanceInfo = connect(
     uiStore
   }) => ({
     referenceStore,
-    totalBalance,
-    uiStore
+    totalBalance
   }),
   BalanceInfo
 );

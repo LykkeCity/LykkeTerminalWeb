@@ -9,6 +9,7 @@ const StyledLabel = styled.label`
   margin-bottom: 12px;
   cursor: pointer;
   font-size: ${rem(14)};
+  font-weight: normal;
   line-height: 1.43;
   text-align: left;
   -webkit-user-select: none;
@@ -36,8 +37,6 @@ const StyledCustomCheckbox = styled.span`
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  /* border: solid 1px rgba(140, 148, 160, 0.4); */
-  /* background-color: transparent; */
   background-color: #0388ef;
 
   &:after {
@@ -45,7 +44,7 @@ const StyledCustomCheckbox = styled.span`
     position: absolute;
     display: none;
     left: 6px;
-    top: 2px;
+    top: 4px;
     width: 5px;
     height: 9px;
     border: solid white;
