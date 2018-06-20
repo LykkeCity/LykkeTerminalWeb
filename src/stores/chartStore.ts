@@ -162,7 +162,11 @@ class ChartStore extends BaseStore {
       ),
       toolbar_bg: '#333',
       library_path: 'charting_library/',
-      enabled_features: ['hide_last_na_study_output', 'left_toolbar'],
+      enabled_features: [
+        'hide_last_na_study_output',
+        'left_toolbar',
+        'keep_left_toolbar_visible_on_small_screens'
+      ],
       disabled_features: [
         'widget_logo',
         'link_to_tradingview',
@@ -203,7 +207,7 @@ class ChartStore extends BaseStore {
         'timeScale.rightOffset': rightOffset,
         'timeScale.barSpacing': barSpacing
       },
-      custom_css_url: process.env.PUBLIC_URL + '/chart.css',
+      custom_css_url: process.env.PUBLIC_URL + '/chart_custom.css',
       saved_data: this.settings,
       auto_save_delay: 2,
       timezone
