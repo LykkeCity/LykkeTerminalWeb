@@ -1,64 +1,51 @@
 import * as React from 'react';
-
-import {rem} from 'polished';
-import styled from 'styled-components';
-import {colors, dims, fonts, padding} from '../styled';
+import {ExportButton} from './styles';
 
 interface ExportProps {
   exportHistory: any;
 }
 
-const StyledSpan = styled.span`
-  font-size: ${rem(fonts.normal)};
-  border-radius: 4px;
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  color: #ccc;
-  color: #8c94a0;
-  padding: ${padding(...dims.padding)};
-  cursor: not-allowed;
-
-  &.clickable {
-    color: ${colors.white};
-    cursor: pointer;
-  }
-`;
-
 const extension = '.csv';
-const documentType = 'text/csv';
+const documentType = 'text/csv;charset=utf-8;';
+
+const downloadLink = document.createElement('a');
+downloadLink.style.display = 'none';
+downloadLink.target = '_blank';
+downloadLink.onclick = (event: any) => {
+  document.body.removeChild(event.target);
+};
 
 class Export extends React.Component<ExportProps> {
   constructor(props: ExportProps) {
     super(props);
   }
 
-  destroyClickedElement = (event: any) => {
-    document.body.removeChild(event.target);
-  };
+  generateId = () => new Date().getTime();
 
-  downloadFile = (objectUrl: string) => {
-    const downloadLink = document.createElement('a');
+  downloadFile = (objectUrl: string, filename: string) => {
+    downloadLink.download = filename;
     downloadLink.href = objectUrl;
-    downloadLink.style.display = 'none';
-    downloadLink.download = `${new Date().getTime()}-transactions${extension}`;
-    downloadLink.innerHTML = 'Download File';
-    downloadLink.onclick = this.destroyClickedElement;
     document.body.appendChild(downloadLink);
-
     downloadLink.click();
   };
 
   saveFile = async () => {
+    const filename = `trades-${this.generateId()}${extension}`;
     const data = await this.props.exportHistory();
     const dataToSave = new Blob([data], {type: documentType});
-    const objectUrl = window.URL.createObjectURL(dataToSave);
-    this.downloadFile(objectUrl);
+    if (navigator.msSaveBlob) {
+      navigator.msSaveBlob(dataToSave, filename);
+    } else {
+      const objectUrl = window.URL.createObjectURL(dataToSave);
+      this.downloadFile(objectUrl, filename);
+    }
   };
 
   render() {
     return (
-      <StyledSpan className={'clickable'} onClick={this.saveFile}>
+      <ExportButton className={'clickable'} onClick={this.saveFile}>
         Export history (csv)
-      </StyledSpan>
+      </ExportButton>
     );
   }
 }
