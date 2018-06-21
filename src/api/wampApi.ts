@@ -10,7 +10,7 @@ import {StorageUtils} from '../utils/index';
 
 const tokenStorage = StorageUtils(keys.token);
 
-const TIMEOUT = 10000;
+const DEFAULT_THROTTLE_DURATION = 10000;
 
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
@@ -62,13 +62,13 @@ export class WampApi {
   };
 
   pause = () => {
-    if (this.connection && this.isThrottled === false) {
-      this.throttle(() => this.connection.close(), TIMEOUT);
+    if (this.connection && !this.isThrottled) {
+      this.throttle(() => this.connection.close(), DEFAULT_THROTTLE_DURATION);
     }
   };
 
   continue = () => {
-    if (this.connection && this.isThrottled === false) {
+    if (this.connection && !this.isThrottled) {
       this.connection.open();
     }
   };
