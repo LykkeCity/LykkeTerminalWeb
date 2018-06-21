@@ -182,7 +182,7 @@ class RootStore {
         this.orderStore.subscribe(this.ws);
         this.balanceListStore.subscribe(this.ws);
 
-        if (this.uiStore.getPageVisibility()) {
+        if (!this.uiStore.getPageVisibility()) {
           this.pause();
         }
 
@@ -203,8 +203,8 @@ class RootStore {
   pause = () => this.ws.pause();
 
   continue = () => {
-    const isDebounced = this.ws.continue();
-    if (!isDebounced) {
+    this.ws.continue();
+    if (!this.ws.isThrottled) {
       this.updateData();
     }
   };

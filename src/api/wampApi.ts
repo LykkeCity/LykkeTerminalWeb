@@ -14,13 +14,12 @@ const TIMEOUT = 10000;
 
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
+  isThrottled: boolean = false;
+
   private session: Session;
   private connection: Connection;
 
   private subscriptions: Map<string, Subscription> = new Map();
-
-  private timer: any;
-  private isDebounced: boolean = false;
 
   connect = (url: string, realm: string, authId?: string) => {
     let options: IConnectionOptions = {url, realm, max_retries: -1};
@@ -54,22 +53,24 @@ export class WampApi {
     this.connection.close();
   };
 
+  throttle = (callback: any, duration: number) => {
+    this.isThrottled = true;
+    setTimeout(() => {
+      callback.call();
+      this.isThrottled = false;
+    }, duration);
+  };
+
   pause = () => {
-    if (this.connection) {
-      this.isDebounced = true;
-      this.timer = setTimeout(() => {
-        this.connection.close();
-        this.isDebounced = false;
-      }, TIMEOUT);
+    if (this.connection && this.isThrottled === false) {
+      this.throttle(() => this.connection.close(), TIMEOUT);
     }
   };
 
   continue = () => {
-    clearTimeout(this.timer);
-    if (this.connection && this.isDebounced === false) {
+    if (this.connection && this.isThrottled === false) {
       this.connection.open();
     }
-    return this.isDebounced;
   };
 
   publish = (topic: string, event: [any]) => this.session.publish(topic, event);
