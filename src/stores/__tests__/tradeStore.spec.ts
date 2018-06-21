@@ -292,4 +292,28 @@ describe('trade store', () => {
       expect(tradeStore.getPublicTrades).toHaveLength(999);
     });
   });
+
+  describe('exporting feature', () => {
+    describe('canExport method', () => {
+      it('should check if trades are not empty', async () => {
+        expect(tradeStore.canExport()).toBeFalsy();
+        await tradeStore.addTrades([
+          new TradeModel({
+            side: 'Buy',
+            symbol: 'LKKUSD',
+            volume: 1,
+            timestamp: new Date().toLocaleString()
+          })
+        ]);
+        expect(tradeStore.canExport()).toBeTruthy();
+      });
+    });
+
+    describe('exportHistory method', () => {
+      it('should promise exported data', async () => {
+        expect(tradeStore.exportHistory()).toBeInstanceOf(Promise);
+        expect(await tradeStore.exportHistory()).not.toBeUndefined();
+      });
+    });
+  });
 });
