@@ -47,3 +47,7 @@ export const getPercentsOf = (
   value: number,
   accuracy: number
 ) => precisionFloor(percents / 100 * value, accuracy);
+
+export const subtraction = (value: number, decrement: number) => {
+  return +new Big(value).minus(decrement).valueOf();
+};
