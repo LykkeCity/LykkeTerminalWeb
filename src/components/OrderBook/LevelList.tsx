@@ -87,12 +87,21 @@ class LevelList extends React.Component<LevelListProps> {
     ] = value);
 
   componentDidMount() {
-    const {setLevelsUpdatingHandler, triggerOrderUpdate} = this.props;
+    const {
+      setLevelsUpdatingHandler,
+      triggerOrderUpdate,
+      width,
+      height
+    } = this.props;
     setLevelsUpdatingHandler(this.handleLevelsUpdating);
     this.canvasCtx = this.canvas!.getContext('2d');
     this.canvas!.addEventListener(
       'mouseup',
       (event: any) => {
+        if (this.props.isReadOnly) {
+          return;
+        }
+
         const x = event.offsetX;
         const y = event.offsetY;
 
@@ -112,12 +121,7 @@ class LevelList extends React.Component<LevelListProps> {
       false
     );
 
-    defineCanvasScale(
-      this.canvasCtx,
-      this.canvas,
-      this.props.width,
-      this.props.height
-    );
+    defineCanvasScale(this.canvasCtx, this.canvas, width, height);
   }
 
   drawLevels = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
@@ -263,21 +267,18 @@ class LevelList extends React.Component<LevelListProps> {
   handleMouseDownOnFakeStage = () => this.togglePointerEvents('none');
 
   render() {
+    const {isReadOnly, width, height} = this.props;
     return (
       <React.Fragment>
-        {!this.props.isReadOnly && (
+        {!isReadOnly && (
           <FakeOrderBookStage
-            width={this.props.width / 3 * 2}
-            height={this.props.height}
+            width={width / 3 * 2}
+            height={height}
             onMouseDown={this.handleMouseDownOnFakeStage}
             ref={this.setFakeStageRef}
           />
         )}
-        <canvas
-          width={this.props.width}
-          height={this.props.height}
-          ref={this.setCanvasRef}
-        />
+        <canvas width={width} height={height} ref={this.setCanvasRef} />
       </React.Fragment>
     );
   }
