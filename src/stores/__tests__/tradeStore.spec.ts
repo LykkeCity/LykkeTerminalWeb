@@ -1,11 +1,36 @@
-import {OrderType, TradeModel} from '../../models/index';
+import {
+  AssetModel,
+  InstrumentModel,
+  OrderType,
+  TradeFilter,
+  TradeModel
+} from '../../models/index';
 import {RootStore, TradeStore} from '../index';
 
 describe('trade store', () => {
   let tradeStore: TradeStore;
+
+  const rootStore = new RootStore();
   const api: any = {
     fetchPublicTrades: jest.fn(),
     fetchTrades: jest.fn()
+  };
+
+  const getTestInstrument = (params?: Partial<InstrumentModel>) => {
+    return new InstrumentModel({
+      id: 'BTCUSD',
+      baseAsset: new AssetModel({id: 'BTC'}),
+      quoteAsset: new AssetModel({id: 'USD'}),
+      bid: 9500,
+      ask: 9600,
+      ...params
+    });
+  };
+  const getTestTrade = (params?: Partial<TradeModel>) => {
+    return new TradeModel({
+      instrument: getTestInstrument(),
+      ...params
+    });
   };
 
   beforeEach(() => {
@@ -34,7 +59,7 @@ describe('trade store', () => {
       ])
     );
 
-    tradeStore = new TradeStore(new RootStore(), api);
+    tradeStore = new TradeStore(rootStore, api);
     tradeStore.unsubscribeFromPublicTrades = jest.fn();
   });
 
@@ -60,9 +85,54 @@ describe('trade store', () => {
     });
   });
 
+  describe('add trade', () => {
+    beforeEach(() => {
+      tradeStore.filter = TradeFilter.CurrentAsset;
+      rootStore.uiStore.selectedInstrument = getTestInstrument();
+    });
+
+    it('should add trade if trade filter set to All value', () => {
+      tradeStore.filter = TradeFilter.All;
+      tradeStore.addTrade(getTestTrade());
+      expect(tradeStore.getAllTrades).toHaveLength(1);
+    });
+
+    it('should not add trade if instrument from filter not equal to trade instrument', () => {
+      tradeStore.addTrade(
+        getTestTrade({
+          instrument: getTestInstrument({id: 'LKKUSD'})
+        })
+      );
+      expect(tradeStore.getAllTrades).toHaveLength(0);
+    });
+  });
+
+  describe('add trades', () => {
+    beforeEach(() => {
+      tradeStore.filter = TradeFilter.CurrentAsset;
+      rootStore.uiStore.selectedInstrument = getTestInstrument();
+    });
+
+    it('should add trades if trade filter set to All value', () => {
+      tradeStore.filter = TradeFilter.All;
+      tradeStore.addTrades([getTestTrade(), getTestTrade()]);
+      expect(tradeStore.getAllTrades).toHaveLength(2);
+    });
+
+    it('should not add trades if instrument from filter not equal to trade instrument', () => {
+      const correctTrade = getTestTrade();
+      const incorrectTrade = getTestTrade({
+        instrument: getTestInstrument({id: 'LKKUSD'})
+      });
+      tradeStore.addTrades([correctTrade, incorrectTrade]);
+      expect(tradeStore.getAllTrades).toHaveLength(1);
+      expect(tradeStore.getAllTrades).toEqual([correctTrade]);
+    });
+  });
+
   describe('reset', () => {
     it('should clear trades', async () => {
-      await tradeStore.addTrades([new TradeModel({})]);
+      await tradeStore.addTrades([getTestTrade()]);
       expect(tradeStore.getAllTrades.length).toBeGreaterThan(0);
 
       tradeStore.reset();
@@ -73,7 +143,7 @@ describe('trade store', () => {
 
   describe('fetch trades', () => {
     it('should populate tradeList collection', async () => {
-      await tradeStore.addTrades([new TradeModel({})]);
+      await tradeStore.addTrades([getTestTrade()]);
       expect(tradeStore.getAllTrades.length).toBeGreaterThan(0);
     });
   });
@@ -81,7 +151,7 @@ describe('trade store', () => {
   describe('trade item', () => {
     it('should contain the following fields', async () => {
       await tradeStore.addTrades([
-        new TradeModel({
+        getTestTrade({
           side: 'Buy',
           symbol: 'LKKUSD',
           volume: 1,
