@@ -190,6 +190,10 @@ class TradeStore extends BaseStore {
     return Promise.resolve(['hello', 'wow']);
   };
 
+  canExport = (): boolean => {
+    return this.trades.length !== 0;
+  };
+
   @action
   resetTrades = () => {
     this.trades = [];

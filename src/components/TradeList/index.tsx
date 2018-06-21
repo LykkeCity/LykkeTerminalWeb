@@ -111,8 +111,9 @@ const ConnectedTradeLogCanvas = connect(
 );
 
 const ConnectedExport = connect(
-  ({tradeStore: {exportHistory}}) => ({
-    exportHistory
+  ({tradeStore: {exportHistory, canExport}}) => ({
+    exportHistory,
+    canExport
   }),
   Export
 );

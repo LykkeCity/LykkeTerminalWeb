@@ -3,6 +3,7 @@ import {ExportButton} from './styles';
 
 interface ExportProps {
   exportHistory: any;
+  canExport: any;
 }
 
 const extension = '.csv';
@@ -43,7 +44,10 @@ class Export extends React.Component<ExportProps> {
 
   render() {
     return (
-      <ExportButton className={'clickable'} onClick={this.saveFile}>
+      <ExportButton
+        className={this.props.canExport() ? 'clickable' : ''}
+        onClick={this.props.canExport() && this.saveFile}
+      >
         Export history (csv)
       </ExportButton>
     );
