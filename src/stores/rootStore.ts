@@ -44,8 +44,6 @@ const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
 class RootStore {
-  visibility: string;
-
   readonly watchlistStore: WatchlistStore;
   readonly tradeStore: TradeStore;
   readonly depthChartStore: DepthChartStore;
@@ -195,15 +193,19 @@ class RootStore {
       });
   };
 
+  updateData = () => {
+    this.orderListStore.fetchAll();
+    this.orderBookStore.fetchAll();
+    this.tradeStore.updatePublicTrades();
+    this.balanceListStore.updateWalletBalances();
+  };
+
   pause = () => this.ws.pause();
 
   continue = () => {
     const isDebounced = this.ws.continue();
     if (!isDebounced) {
-      this.orderListStore.fetchAll();
-      this.orderBookStore.fetchAll();
-      this.tradeStore.fetchPublicTrades();
-      this.balanceListStore.updateWalletBalances();
+      this.updateData();
     }
   };
 

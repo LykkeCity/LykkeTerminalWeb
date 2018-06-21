@@ -49,15 +49,8 @@ export class WampApi {
     }
   };
 
-  temporaryUnsubscribe = async (subscription: Subscription) => {
-    const topic = subscription.topic;
-    if (this.subscriptions.has(topic)) {
-      await this.subscriptions.get(topic)!.unsubscribe();
-    }
-  };
-
   close = () => {
-    this.unsubscribeFromAll(this.unsubscribe);
+    this.unsubscribeFromAll();
     this.connection.close();
   };
 
@@ -113,8 +106,8 @@ export class WampApi {
     );
   };
 
-  private unsubscribeFromAll = (unsubscribe: any) => {
-    this.subscriptions.forEach(unsubscribe);
+  private unsubscribeFromAll = () => {
+    this.subscriptions.forEach(this.unsubscribe);
   };
 
   private handleChallenge: OnChallengeHandler = (session, method) => {

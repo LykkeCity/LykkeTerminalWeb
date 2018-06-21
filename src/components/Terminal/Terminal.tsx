@@ -103,7 +103,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
     this.props.rootStore.uiStore.setPageVisibility(
       document.visibilityState === 'visible'
     );
-    this.props.rootStore.uiStore.getPageVisibility() ? this.props.rootStore.pause() : this.props.rootStore.continue();
+    this.props.rootStore.uiStore.getPageVisibility()
+      ? this.props.rootStore.continue()
+      : this.props.rootStore.pause();
   };
 
   componentDidMount() {
