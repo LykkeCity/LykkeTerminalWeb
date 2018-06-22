@@ -5,9 +5,11 @@ import {keys} from '../models';
 import {
   AssetCategoryModel,
   AssetModel,
+  DescriptionResponseModel,
   InstrumentModel,
   SearchString
 } from '../models';
+import AssetResponseModel from '../models/assetResponseModel';
 import * as mappers from '../models/mappers';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -78,10 +80,11 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string, watchlistName: string) => {
     const {getWatchlistByName} = this.rootStore.watchlistStore;
+    const normalizedTerm = normalize(term);
     const instrumentsByName = this.instruments.filter(
       instrument =>
-        includes(normalize(term), normalize(instrument.displayName!)) ||
-        includes(normalize(term), normalize(instrument.baseAsset.fullName!))
+        includes(normalizedTerm, normalize(instrument.displayName!)) ||
+        includes(normalizedTerm, normalize(instrument.baseAsset.fullName!))
     );
 
     if (watchlistName) {
@@ -117,26 +120,36 @@ class ReferenceStore extends BaseStore {
     }
   };
 
+  findAppropriateDescriptionById = (
+    descriptions: any[],
+    assetId: string
+  ): DescriptionResponseModel => {
+    return (
+      descriptions.find(
+        (rawDescription: any) => rawDescription.Id === assetId
+      ) || {}
+    );
+  };
+
   @action
   fetchAssets = () => {
     const requests = [this.api.fetchAll(), this.api.fetchAssetsDescriptions()];
 
     return Promise.all(requests).then(data => {
-      const assets = data[0];
-      const descriptions = data[1];
-      if (
-        assets &&
-        descriptions &&
-        assets.Assets &&
-        descriptions.Descriptions
-      ) {
+      const assets = data[0].Assets || data[0];
+      const descriptions = data[1].Descriptions || data[1];
+      if (assets && descriptions) {
         runInAction(() => {
-          this.assets = assets.Assets.map((asset: any) => {
-            const description =
-              descriptions.Descriptions.find(
-                (desc: any) => desc.Id === asset.Id
-              ) || {};
-            return mappers.mapToAsset(asset, this.categories, description);
+          this.assets = assets.map((rawAsset: AssetResponseModel) => {
+            const appropriateDescription = this.findAppropriateDescriptionById(
+              descriptions,
+              rawAsset.Id
+            );
+            return mappers.mapToAsset(
+              rawAsset,
+              this.categories,
+              appropriateDescription
+            );
           });
         });
       }
@@ -151,14 +164,14 @@ class ReferenceStore extends BaseStore {
     ];
 
     return Promise.all(requests).then(data => {
-      const asset = data[0];
-      const description = data[1];
+      const asset = data[0].Asset || data[0];
+      const description = data[1].Description || data[1];
       let mappedAsset;
       if (asset && description) {
         mappedAsset = mappers.mapToAsset(
-          asset.Asset || asset,
+          asset as AssetResponseModel,
           this.categories,
-          description.Description || description
+          description as DescriptionResponseModel
         );
         this.assets.push(mappedAsset);
       }
