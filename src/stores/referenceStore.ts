@@ -84,6 +84,7 @@ class ReferenceStore extends BaseStore {
     const instrumentsByName = this.instruments.filter(
       instrument =>
         includes(normalizedTerm, normalize(instrument.displayName!)) ||
+        includes(normalizedTerm, normalize(instrument.invertedDisplayName!)) ||
         includes(normalizedTerm, normalize(instrument.baseAsset.fullName!))
     );
 
