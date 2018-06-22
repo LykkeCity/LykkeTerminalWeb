@@ -25,6 +25,14 @@ class InstrumentModel {
     return undefined;
   }
 
+  @computed
+  get invertedDisplayName() {
+    if (this.baseAsset && this.quoteAsset) {
+      return join('/', [this.quoteAsset.name, this.baseAsset.name]);
+    }
+    return undefined;
+  }
+
   constructor(instrument: Partial<InstrumentModel>) {
     extendObservable(this, instrument);
   }
