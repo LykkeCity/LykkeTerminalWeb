@@ -2,12 +2,7 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import {InstrumentModel, SortDirection, TradeModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
-import {
-  checkDataForSorting,
-  sortData,
-  TableHeader,
-  TableSortState
-} from '../Table';
+import {sortData, TableHeader, TableSortState} from '../Table';
 import {PublicTradeList} from './';
 
 export interface TradeLogProps extends LoaderProps {
@@ -40,7 +35,7 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
   render() {
     const headers: any[] = [
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        sortDisabled: true,
         key: 'price',
         value: `Price (${pathOr(
           '',
@@ -49,13 +44,13 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
         )})`
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        sortDisabled: true,
         className: 'right-align',
         key: 'volume',
         value: 'Trade size'
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'timestamp'),
+        sortDisabled: true,
         className: 'right-align',
         key: 'timestamp',
         value: 'Time'
