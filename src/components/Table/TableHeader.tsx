@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {HeaderCell, Table, TableHeaderItem} from '.';
+import {HeaderCell, Table, TableHeaderItem, TableHeaderNoSortItem} from '.';
 
 interface TableHeaderProps {
   className?: string;
@@ -9,7 +9,12 @@ interface TableHeaderProps {
   onSort: any;
 }
 
-const TableHeader: React.SFC<TableHeaderProps> = ({
+interface TableHeaderNoSortProps {
+  className?: string;
+  headers: any[];
+}
+
+export const TableHeader: React.SFC<TableHeaderProps> = ({
   className,
   currentSortDirection,
   currentSortByParam,
@@ -40,4 +45,23 @@ const TableHeader: React.SFC<TableHeaderProps> = ({
   );
 };
 
-export default TableHeader;
+export const TableHeaderNoSort: React.SFC<TableHeaderNoSortProps> = ({
+  className,
+  headers
+}) => {
+  return (
+    <Table className={`header ${className || ''}`}>
+      <thead>
+        <tr>
+          {headers.map((header, index) => (
+            <HeaderCell w={header.width} key={index}>
+              <TableHeaderNoSortItem className={header.className}>
+                {header.value}
+              </TableHeaderNoSortItem>
+            </HeaderCell>
+          ))}
+        </tr>
+      </thead>
+    </Table>
+  );
+};
