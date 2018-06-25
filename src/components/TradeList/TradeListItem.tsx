@@ -48,15 +48,15 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
       <ColoredTitledCell side={side}>
         {formattedNumber(price, accuracy)}
       </ColoredTitledCell>
-      <TitledCell>
+      <ColoredTitledCell side={side}>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
-      </TitledCell>
-      <TitledCell>
+      </ColoredTitledCell>
+      <ColoredTitledCell side={side}>
         {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
-      </TitledCell>
-      <TitledCell>
+      </ColoredTitledCell>
+      <ColoredTitledCell side={side}>
         {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
-      </TitledCell>
+      </ColoredTitledCell>
       <Cell w={TradesCellWidth.OrderType}>{orderType}</Cell>
       <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>
     </tr>
