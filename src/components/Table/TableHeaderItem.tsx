@@ -51,7 +51,7 @@ export const TableHeaderNoSortItem: React.SFC<TableHeaderNoSortItemProps> = ({
   className,
   children
 }) => (
-  <TableHeaderItemEl className={className || ''}>
+  <TableHeaderItemEl className={`${className || ''} disabled`}>
     <TruncatedText data-tip={children}>{children}</TruncatedText>
 
     <ReactTooltip effect={'solid'} />
