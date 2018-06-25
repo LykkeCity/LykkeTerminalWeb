@@ -1,6 +1,5 @@
 import {rem} from 'polished';
 import styled, {colorFromSide, colors, dims, fonts, padding} from '../styled';
-import {Cell} from '../Table/styles';
 
 export const TradeListToolbar = styled.div`
   display: flex;
@@ -53,8 +52,4 @@ export const StyledLoadMoreButton = styled.span`
 
 export const TradeRow = styled.tr`
   ${p => colorFromSide(p)};
-` as any;
-
-export const SideCell = Cell.extend`
-  ${(p: any) => colorFromSide(p)};
 ` as any;
