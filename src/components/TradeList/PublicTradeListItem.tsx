@@ -1,9 +1,9 @@
 import {isToday} from 'date-fns';
 import * as React from 'react';
-import {PublicTradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import {SideCell} from './styles';
+import ColoredTitledCell from '../Table/ColoredTitledCell';
+import TitledCell from '../Table/TitledCell';
 
 // tslint:disable-next-line:no-empty-interface
 export interface PublicTradeListItemProps extends TradeModel {}
@@ -18,14 +18,15 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   const date = new Date(timestamp);
   return (
     <tr>
-      <td>{formattedNumber(price, instrument!.accuracy)}</td>
-      <td>{formattedNumber(volume, instrument!.baseAsset.accuracy)}</td>
-      <SideCell w={PublicTradesCellWidth.Side} side={side}>
-        {side}
-      </SideCell>
-      <td title={date.toLocaleString()}>
+      <ColoredTitledCell side={side}>
+        {formattedNumber(price, instrument!.accuracy)}
+      </ColoredTitledCell>
+      <TitledCell>
+        {formattedNumber(volume, instrument!.baseAsset.accuracy)}
+      </TitledCell>
+      <TitledCell title={date.toLocaleString()}>
         {isToday(date) ? date.toLocaleTimeString() : date.toLocaleString()}
-      </td>
+      </TitledCell>
     </tr>
   );
 };
