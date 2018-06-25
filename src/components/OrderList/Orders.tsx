@@ -69,13 +69,6 @@ class Blotter extends React.Component<OrdersProps, OrdersState> {
         width: OrderCellWidth.Symbol
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'side'),
-        className: 'right-align',
-        key: 'side',
-        value: 'Side',
-        width: OrderCellWidth.Side
-      },
-      {
         sortDisabled: checkDataForSorting(this.state.data, 'price'),
         className: 'right-align',
         key: 'price',

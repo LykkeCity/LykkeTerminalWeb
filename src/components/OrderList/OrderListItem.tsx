@@ -3,9 +3,9 @@ import {InstrumentModel, OrderModel, Side} from '../../models';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil, precisionFloor} from '../../utils/math';
 import {Icon} from '../Icon/index';
+import ColoredTitledCell from '../Table/ColoredTitledCell';
 import {Cell} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
-import {SideCell} from '../TradeList/styles';
 import {OrderActions, OrderCellWidth} from './index';
 
 interface OrderListItemProps {
@@ -57,10 +57,9 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       >
         {displayName}
       </Cell>
-      <SideCell w={OrderCellWidth.Side} side={side}>
-        {side}
-      </SideCell>
-      <TitledCell>{formattedNumber(price, accuracy)}</TitledCell>
+      <ColoredTitledCell side={side}>
+        {formattedNumber(price, accuracy)}
+      </ColoredTitledCell>
       <TitledCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
