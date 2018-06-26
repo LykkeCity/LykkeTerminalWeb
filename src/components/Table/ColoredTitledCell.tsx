@@ -4,6 +4,7 @@ import {Cell} from './styles';
 
 export const Colored = styled.div`
   ${(side: string) => colorFromSide(side)};
+  font-weight: 500;
 ` as any;
 
 export const withTitle = (Component: React.ComponentType<any>) => ({
