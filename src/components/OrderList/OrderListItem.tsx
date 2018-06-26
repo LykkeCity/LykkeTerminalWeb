@@ -60,19 +60,19 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <ColoredTitledCell side={side}>
         {formattedNumber(price, accuracy)}
       </ColoredTitledCell>
-      <ColoredTitledCell side={side}>
+      <TitledCell side={side}>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
-      </ColoredTitledCell>
-      <ColoredTitledCell side={side}>
+      </TitledCell>
+      <TitledCell side={side}>
         {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
           filledPercent,
           2,
           {style: 'percent'}
         )})
-      </ColoredTitledCell>
-      <ColoredTitledCell side={side}>
+      </TitledCell>
+      <TitledCell side={side}>
         {formattedNumber(roundedValue, quoteAssetAccuracy)} {quoteAssetName}
-      </ColoredTitledCell>
+      </TitledCell>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>

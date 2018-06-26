@@ -75,6 +75,7 @@ export const Table = styled.table`
   th,
   td {
     text-align: right;
+    font-weight: 500;
   }
   th {
     position: relative;
