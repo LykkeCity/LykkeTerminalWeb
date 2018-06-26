@@ -184,6 +184,7 @@ export const StyledOrderButton = styled.div`
 export const DisclaimerNotification = styled.div`
   border-radius: ${rem(6)};
   box-shadow: 0 10px 10px 0 ${colors.darkGraphite};
+  margin: 0 0 ${rem(16)};
   padding: ${rem(24)} ${rem(16)} ${rem(16)};
   position: relative;
   background-color: ${colors.red};
