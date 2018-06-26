@@ -20,7 +20,7 @@ import {
 import LevelType from '../../models/levelType';
 import OrderBookCellType from '../../models/orderBookCellType';
 import {
-  getTrailingZeroStartPosition,
+  getTrailingZeroOppositePosition,
   hasTrailingZeroes
 } from '../../utils/string';
 import {FakeOrderBookStage} from './styles';
@@ -289,7 +289,7 @@ class LevelList extends React.Component<LevelListProps> {
 
       if (hasTrailingZeroes(volume)) {
         let drownSymbolsWidth = 0;
-        const trailingZeroPosition = getTrailingZeroStartPosition(volume);
+        const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
 
         volume.split('').forEach((symbol: string, index: number) => {
           const symbolColor =
