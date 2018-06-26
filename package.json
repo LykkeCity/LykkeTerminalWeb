@@ -13,6 +13,7 @@
     "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
     "big.js": "^5.0.3",
     "date-fns": "^1.29.0",
+    "detect-browser": "^2.5.1",
     "formik": "^0.10.5",
     "greenlet": "^1.0.1",
     "grid-styled": "^2.0.0-11",
