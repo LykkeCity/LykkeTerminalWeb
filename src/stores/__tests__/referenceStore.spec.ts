@@ -14,7 +14,6 @@ describe('referenceStore', () => {
     fetchAssetCategories: jest.fn(),
     fetchAssetInstruments: jest.fn(),
     fetchAssetsDescriptions: jest.fn(),
-    fetchAssetDescriptionById: jest.fn(),
     fetchBaseAsset: jest.fn()
   };
   let assetStore: ReferenceStore;
@@ -30,7 +29,7 @@ describe('referenceStore', () => {
     });
 
     it('should be empty after store instantiation', () => {
-      expect(assetStore.getAssets().length).toBe(0);
+      expect(assetStore.getAssets()).toHaveLength(0);
     });
   });
 
@@ -41,7 +40,29 @@ describe('referenceStore', () => {
     });
 
     it('should be empty after store instantiation', () => {
-      expect(assetStore.getCategories().length).toBe(0);
+      expect(assetStore.getCategories()).toHaveLength(0);
+    });
+  });
+
+  describe('findAppropriateDescriptionById method', () => {
+    it('should find description by id', () => {
+      const idToFind = '1';
+      const descriptionToFind = {
+        Id: idToFind,
+        AssetClass: '',
+        Description: '',
+        IssuerName: '',
+        NumberOfCoins: '',
+        AssetDescriptionUrl: '',
+        FullName: 'Lykke'
+      };
+
+      const foundDescription = assetStore.findAppropriateDescriptionById(
+        [descriptionToFind],
+        idToFind
+      );
+
+      expect(foundDescription).toBeDefined();
     });
   });
 
@@ -50,27 +71,15 @@ describe('referenceStore', () => {
       jest.resetAllMocks();
     });
 
-    it('should call api get assets', () => {
+    it('should call api to get assets & descriptions', async () => {
       api.fetchAll = jest.fn(() => Promise.resolve({Assets: []}));
       api.fetchAssetsDescriptions = jest.fn(() =>
         Promise.resolve({Descriptions: []})
       );
 
-      assetStore.fetchAssets();
+      await assetStore.fetchAssets();
 
       expect(api.fetchAll).toHaveBeenCalledTimes(1);
-    });
-
-    it('should map empty but valid response to assets', () => {
-      api.fetchAll = jest.fn(() => Promise.resolve({Assets: []}));
-      api.fetchAssetsDescriptions = jest.fn(() =>
-        Promise.resolve({Descriptions: []})
-      );
-
-      assetStore.fetchAssets();
-
-      expect(assetStore.getAssets()).not.toBeNull();
-      expect(assetStore.getAssets().length).toBe(0);
     });
 
     it('should map valid response to assets', async () => {
@@ -97,10 +106,20 @@ describe('referenceStore', () => {
           Descriptions: [
             {
               Id: '1',
+              AssetClass: '',
+              Description: '',
+              IssuerName: '',
+              NumberOfCoins: '',
+              AssetDescriptionUrl: '',
               FullName: 'Lykke'
             },
             {
               Id: '2',
+              AssetClass: '',
+              Description: '',
+              IssuerName: '',
+              NumberOfCoins: '',
+              AssetDescriptionUrl: '',
               FullName: 'Lykke 2'
             }
           ]
@@ -110,7 +129,7 @@ describe('referenceStore', () => {
       await assetStore.fetchAssets();
 
       expect(assetStore.getAssets()).not.toBeNull();
-      expect(assetStore.getAssets().length).toBe(2);
+      expect(assetStore.getAssets()).toHaveLength(2);
     });
 
     it('should accept response with no Assets & Descriptions fields', async () => {
@@ -146,23 +165,32 @@ describe('referenceStore', () => {
       await assetStore.fetchAssets();
 
       expect(assetStore.getAssets()).not.toBeNull();
-      expect(assetStore.getAssets().length).toBe(2);
+      expect(assetStore.getAssets()).toHaveLength(2);
     });
   });
 
   describe('fetch asset by id', () => {
     beforeEach(() => {
       jest.resetAllMocks();
+      assetStore.descriptions = [
+        {
+          Id: '1',
+          AssetClass: '',
+          Description: '',
+          IssuerName: '',
+          NumberOfCoins: '',
+          AssetDescriptionUrl: '',
+          FullName: 'Lykke'
+        }
+      ];
     });
 
-    it('should call api get asset pairs', () => {
-      api.fetchAssetById = jest.fn(() => Promise.resolve({}));
-      api.fetchAssetDescriptionById = jest.fn(() => Promise.resolve({}));
+    it('should call api get asset pairs', async () => {
+      api.fetchAssetById = jest.fn(() => Promise.resolve({Asset: []}));
 
-      assetStore.fetchAssetById('1');
+      await assetStore.fetchAssetById('1');
 
       expect(api.fetchAssetById).toHaveBeenCalledTimes(1);
-      expect(api.fetchAssetDescriptionById).toHaveBeenCalledTimes(1);
     });
 
     it('should map valid response to asset', async () => {
@@ -176,14 +204,6 @@ describe('referenceStore', () => {
           }
         })
       );
-      api.fetchAssetDescriptionById = jest.fn(() =>
-        Promise.resolve({
-          Description: {
-            Id: '1',
-            FullName: 'Lykke'
-          }
-        })
-      );
 
       await assetStore.fetchAssetById('1');
 
@@ -191,19 +211,13 @@ describe('referenceStore', () => {
       expect(assetStore.getAssets()).toHaveLength(1);
     });
 
-    it('should accept response with no Asset & Description fields', async () => {
+    it('should accept response with no Asset field', async () => {
       api.fetchAssetById = jest.fn(() =>
         Promise.resolve({
           Id: '1',
           DisplayId: 'LKK',
           Accuracy: 4,
           CategoryId: 'ctg1'
-        })
-      );
-      api.fetchAssetDescriptionById = jest.fn(() =>
-        Promise.resolve({
-          Id: '1',
-          FullName: 'Lykke'
         })
       );
 
@@ -219,10 +233,10 @@ describe('referenceStore', () => {
       jest.resetAllMocks();
     });
 
-    it('should call api get categories', () => {
+    it('should call api get categories', async () => {
       api.fetchAssetCategories = jest.fn(() => Promise.resolve());
 
-      assetStore.fetchCategories();
+      await assetStore.fetchCategories();
 
       expect(api.fetchAssetCategories).toHaveBeenCalled();
       expect(api.fetchAssetCategories).toHaveBeenCalledTimes(1);
