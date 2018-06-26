@@ -13,6 +13,8 @@ import {PublicTradeList, PublicTradesCellWidth} from './';
 export interface TradeLogProps extends LoaderProps {
   selectedInstrument: InstrumentModel;
   trades: TradeModel[];
+  getIsWampTradesProcessed: () => boolean;
+  setIsWampTradesProcessed: (isProcessing: boolean) => void;
 }
 
 class TradeLog extends React.Component<TradeLogProps, TableSortState> {
@@ -29,6 +31,13 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
     this.setState({
       data: args.trades
     });
+  }
+
+  componentDidUpdate() {
+    const {getIsWampTradesProcessed, setIsWampTradesProcessed} = this.props;
+    if (getIsWampTradesProcessed()) {
+      setIsWampTradesProcessed(false);
+    }
   }
 
   sort = (sortByParam: string, sortDirectionDefault: string) => {
@@ -77,7 +86,10 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
           headers={headers}
           onSort={this.sort}
         />
-        <PublicTradeList trades={this.state.data} />
+        <PublicTradeList
+          trades={this.state.data}
+          isProcessingWampTrades={this.props.getIsWampTradesProcessed()}
+        />
       </React.Fragment>
     );
   }

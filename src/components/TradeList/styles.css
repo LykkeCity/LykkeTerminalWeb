@@ -1,0 +1,51 @@
+.sell-enter-active {
+  animation: color-sell-in 0.3s alternate;
+}
+
+.sell-enter-done {
+  animation: color-sell-out 0.3s alternate;
+}
+
+@keyframes color-sell-in {
+  0% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: #ff6161;
+  }
+}
+
+@keyframes color-sell-out {
+  0% {
+    background-color: #ff6161;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.buy-enter-active {
+  animation: color-buy-in 0.3s alternate;
+}
+
+.buy-enter-done {
+  animation: color-buy-out 0.3s alternate;
+}
+
+@keyframes color-buy-in {
+  0% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: #46eb6a;
+  }
+}
+
+@keyframes color-buy-out {
+  0% {
+    background-color: #46eb6a;
+  }
+  100% {
+    background-color: transparent;
+  }
+}

@@ -58,6 +58,15 @@ describe('trade store', () => {
       expect(tradeStore.getPublicTrades instanceof Array).toBeTruthy();
       expect(tradeStore.getPublicTrades.length).toBe(0);
     });
+
+    it('isWampTradesProcessed should be false by default', () => {
+      expect(tradeStore.getIsWampTradesProcessed()).toBeFalsy();
+    });
+
+    it('should change value of isWampTradesProcessed', () => {
+      tradeStore.setIsWampTradesProcessed(true);
+      expect(tradeStore.getIsWampTradesProcessed()).toBeTruthy();
+    });
   });
 
   describe('reset', () => {

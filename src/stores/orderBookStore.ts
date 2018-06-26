@@ -8,6 +8,7 @@ import {LevelType, Order, OrderBookCellType, Side} from '../models/index';
 import {OrderLevel} from '../models/order';
 import {switchcase} from '../utils/fn';
 import {precisionFloor} from '../utils/math';
+import {getDigits} from '../utils/number';
 import {BaseStore, RootStore} from './index';
 import {
   aggregateOrders,
@@ -20,12 +21,13 @@ import {
 const headArr: <T = Order>(l: T[]) => T = head;
 const sortByPrice = sortBy(x => x.price);
 
+const DEFAULT_ACCURACY = 2;
+
 class OrderBookStore extends BaseStore {
   rawBids: Order[] = [];
   rawAsks: Order[] = [];
   drawAsks: (asks: Order[], bids: Order[], type: LevelType) => void;
   drawBids: (asks: Order[], bids: Order[], type: LevelType) => void;
-  updateDepthChart: any;
   getSortedByPriceLevel: (l: any[], idx: number) => Promise<Order>;
   mapToOrderInWorker: (l: any[], side: Side) => Promise<OrderLevel[]>;
 
@@ -78,7 +80,19 @@ class OrderBookStore extends BaseStore {
     return 0;
   }
 
+  @computed
+  get spanAccuracy() {
+    if (!!this.spanHandlers.size) {
+      this.spanHandlers.forEach((cb: () => void) => cb());
+    }
+
+    return this.rootStore.uiStore.selectedInstrument
+      ? getDigits(this.seedSpan * this.spanMultiplier)
+      : DEFAULT_ACCURACY;
+  }
+
   private subscriptions: Set<ISubscription> = new Set();
+  private spanHandlers: Map<LevelType, () => void> = new Map();
 
   constructor(
     store: RootStore,
@@ -90,8 +104,14 @@ class OrderBookStore extends BaseStore {
     this.mapToOrderInWorker = this.worker(mapToOrder);
   }
 
-  setAsksUpdatingHandler = (cb: any) => (this.drawAsks = cb);
-  setBidsUpdatingHandler = (cb: any) => (this.drawBids = cb);
+  setAsksUpdatingHandler = (
+    cb: (a: Order[], b: Order[], t: LevelType) => void
+  ) => (this.drawAsks = cb);
+  setBidsUpdatingHandler = (
+    cb: (a: Order[], b: Order[], t: LevelType) => void
+  ) => (this.drawBids = cb);
+  setSpanUpdatingHandler = (t: LevelType, cb: () => void) =>
+    this.spanHandlers.set(t, cb);
 
   drawOrderBook = () => {
     this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);
