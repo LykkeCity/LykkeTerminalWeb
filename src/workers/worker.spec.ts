@@ -7,7 +7,7 @@ describe('worker', () => {
   const first = 1;
   const second = 2;
 
-  it('mock should wrapped a function with promise ', async () => {
+  it('mock should wrapped function with promise ', async () => {
     const summarisedInWorker = workerMock(summarised);
     const result = await summarisedInWorker(first, second);
 
