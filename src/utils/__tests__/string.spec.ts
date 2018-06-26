@@ -1,7 +1,7 @@
 import {
   getPostDecimalsLength,
   getRestErrorMessage,
-  getTrailingZeroStartPosition,
+  getTrailingZeroOppositePosition,
   getWampErrorMessage,
   hasTrailingZeroes,
   isOnlyNumbers,
@@ -75,23 +75,25 @@ describe('string utils', () => {
     );
   });
 
-  it('should return true if trailing zero is not present', () => {
-    const s = '0.12340';
-    expect(hasTrailingZeroes(s)).toBeTruthy();
-  });
+  describe('trailing zeroes checking', () => {
+    it('should return true if trailing zero is present', () => {
+      const s = '0.12340';
+      expect(hasTrailingZeroes(s)).toBeTruthy();
+    });
 
-  it('should return false if trailing zero is not present', () => {
-    const s = '0.1234';
-    expect(hasTrailingZeroes(s)).toBeFalsy();
-  });
+    it('should return false if trailing zero is not present', () => {
+      const s = '0.1234';
+      expect(hasTrailingZeroes(s)).toBeFalsy();
+    });
 
-  it('should return start position for trailing zeroes', () => {
-    const s = '0.100';
-    expect(getTrailingZeroStartPosition(s)).toBe(3);
-  });
+    it('should return opposite position for trailing zeroes', () => {
+      const s = '100.0010';
+      expect(getTrailingZeroOppositePosition(s)).toBe(7);
+    });
 
-  it('should return position is equal to string length if trailing zeroes is not present', () => {
-    const s = '0.123';
-    expect(getTrailingZeroStartPosition(s)).toBe(s.length);
+    it('should return position is equal to string length if trailing zeroes is not present', () => {
+      const s = '0.123';
+      expect(getTrailingZeroOppositePosition(s)).toBe(s.length);
+    });
   });
 });

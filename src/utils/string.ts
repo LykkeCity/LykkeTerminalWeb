@@ -50,7 +50,7 @@ export const toLocaleStringWithAccuracy = (
 
 export const hasTrailingZeroes = (s: string) => s[s.length - 1] === '0';
 
-export const getTrailingZeroStartPosition = (s: string) => {
+export const getTrailingZeroOppositePosition = (s: string) => {
   const reversePosition = s
     .split('')
     .reverse()
