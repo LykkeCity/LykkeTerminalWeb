@@ -61,7 +61,9 @@ const ConnectedAskLevels = connect<LevelListProps>(
       getAsks,
       getBids,
       setAsksUpdatingHandler,
-      triggerOrderUpdate
+      triggerOrderUpdate,
+      spanAccuracy,
+      setSpanUpdatingHandler
     },
     uiStore: {
       selectedInstrument,
@@ -80,7 +82,9 @@ const ConnectedAskLevels = connect<LevelListProps>(
       setLevelsUpdatingHandler: setAsksUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Asks,
-      isPageVisible: getPageVisibility
+      isPageVisible: getPageVisibility,
+      spanAccuracy,
+      setSpanUpdatingHandler
     };
   },
   observer(LevelList)
@@ -92,7 +96,9 @@ const ConnectedBidLevels = connect<LevelListProps>(
       getBids,
       getAsks,
       setBidsUpdatingHandler,
-      triggerOrderUpdate
+      triggerOrderUpdate,
+      spanAccuracy,
+      setSpanUpdatingHandler
     },
     uiStore: {
       selectedInstrument,
@@ -111,7 +117,9 @@ const ConnectedBidLevels = connect<LevelListProps>(
       setLevelsUpdatingHandler: setBidsUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Bids,
-      isPageVisible: getPageVisibility
+      isPageVisible: getPageVisibility,
+      spanAccuracy,
+      setSpanUpdatingHandler
     };
   },
   observer(LevelList)

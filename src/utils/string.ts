@@ -54,3 +54,13 @@ export const toLocaleStringWithAccuracy = (
     maximumFractionDigits: accuracy,
     ...options
   });
+
+export const hasTrailingZeroes = (s: string) => s[s.length - 1] === '0';
+
+export const getTrailingZeroStartPosition = (s: string) => {
+  const reversePosition = s
+    .split('')
+    .reverse()
+    .findIndex((smb: string) => smb !== '0');
+  return s.length - reversePosition;
+};

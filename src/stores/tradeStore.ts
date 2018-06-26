@@ -63,6 +63,7 @@ class TradeStore extends BaseStore {
 
   private skip: number = TradeQuantity.Skip;
   private receivedFromWamp: number = 0;
+  private isWampTradesProcessed: boolean = false;
 
   constructor(store: RootStore, private readonly api: TradeApi) {
     super(store);
@@ -97,6 +98,10 @@ class TradeStore extends BaseStore {
     this.resetTrades();
     this.fetchTrades();
   };
+
+  getIsWampTradesProcessed = () => this.isWampTradesProcessed;
+  setIsWampTradesProcessed = (isProcessing: boolean) =>
+    (this.isWampTradesProcessed = isProcessing);
 
   fetchTrades = async () => {
     if (this.selectedInstrument) {
@@ -170,6 +175,7 @@ class TradeStore extends BaseStore {
   };
 
   onPublicTrades = (args: any[]) => {
+    this.setIsWampTradesProcessed(true);
     this.addPublicTrades(args.map(map.fromWampToPublicTrade));
   };
 
@@ -202,6 +208,7 @@ class TradeStore extends BaseStore {
   reset = () => {
     this.resetTrades();
     this.resetPublicTrades();
+    this.setIsWampTradesProcessed(false);
   };
 
   private getWalletId = () => this.rootStore.balanceListStore.tradingWallet!.id;
