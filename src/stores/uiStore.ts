@@ -1,5 +1,6 @@
 import {action, computed, observable, reaction} from 'mobx';
 import {pathOr} from 'rambda';
+import {disclaimedAssets} from '../constants/assetDisclaimer';
 import {keys} from '../models';
 import {
   InstrumentModel,
@@ -32,6 +33,7 @@ class UiStore extends BaseStore {
   @observable showSessionNotification: boolean = true;
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
+  @observable disclaimedAssets: string[] = [];
   @observable private isReadOnlyMode: boolean;
   private isPageVisible: boolean = true;
 
@@ -133,7 +135,11 @@ class UiStore extends BaseStore {
     instrumentStorage.set(JSON.stringify(selectedInstrument));
     this.selectedInstrument = selectedInstrument!;
     this.rootStore.chartStore.renderChart();
-    this.isDisclaimerShown = this.hasAsset(selectedInstrument!, 'EOS');
+
+    this.resetDisclaimedAssets();
+    disclaimedAssets.forEach(asset =>
+      this.checkAssetToDisclaim(selectedInstrument, asset)
+    );
   };
 
   @action search = (term: string) => (this.searchTerm = term);
@@ -163,6 +169,19 @@ class UiStore extends BaseStore {
     this.searchTerm = '';
     this.searchWalletName = Watchlists.All;
   };
+
+  private checkAssetToDisclaim = (
+    selectedInstrument: InstrumentModel | undefined,
+    asset: string
+  ) => {
+    const disclaimed = this.hasAsset(selectedInstrument!, asset);
+    if (disclaimed) {
+      this.disclaimedAssets.push(asset);
+    }
+    this.isDisclaimerShown = !!this.disclaimedAssets.length;
+  };
+
+  private resetDisclaimedAssets = () => (this.disclaimedAssets = []);
 }
 
 export default UiStore;
