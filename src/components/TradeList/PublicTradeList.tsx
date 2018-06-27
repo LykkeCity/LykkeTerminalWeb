@@ -5,6 +5,8 @@ import {Table} from '../Table/index';
 import {PublicTradeListItem} from './index';
 import './styles.css';
 
+const ANIMATION_TIMEOUT = 300;
+
 interface PublicTradeListProps {
   trades: TradeModel[];
   isProcessingWampTrades: boolean;
@@ -19,7 +21,7 @@ export const PublicTradeList: React.SFC<PublicTradeListProps> = ({
       {trades.map(trade => (
         <CSSTransition
           key={trade.id}
-          timeout={300}
+          timeout={ANIMATION_TIMEOUT}
           classNames={isProcessingWampTrades ? trade.side.toLowerCase() : ''}
         >
           <PublicTradeListItem key={trade.id} {...trade} />

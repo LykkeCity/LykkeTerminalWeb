@@ -29,6 +29,7 @@ const DEFAULT_OPACITY = 1;
 const STEP_OPACITY = 0.05;
 const START_ANIMATED_OPACITY = 0.5;
 const UPDATE_ANIMATION_INTERVAL = 50;
+const CELLS_NUMBER = 3;
 
 const fillBySide = (side: Side) =>
   side === Side.Buy ? colors.buy : colors.sell;
@@ -42,7 +43,7 @@ const getY = (side: Side, idx: number, levelHeight: number) =>
   (side === Side.Buy ? idx : LEVELS_COUNT - idx - 1) * levelHeight;
 
 const updateAnimatingLevelsWithNewLevel = (
-  arr: IAnimatingLevels[],
+  animatingLevels: IAnimatingLevels[],
   price: number
 ): IAnimatingLevels[] => {
   const levelForAnimation: IAnimatingLevels = {
@@ -50,8 +51,31 @@ const updateAnimatingLevelsWithNewLevel = (
     currentOpacity: START_ANIMATED_OPACITY,
     isAnimated: false
   };
-  return [...arr, levelForAnimation];
+  return [...animatingLevels, levelForAnimation];
 };
+
+const getColorAndOpacityForAnimation = (
+  animatingLevel: IAnimatingLevels,
+  price: number,
+  color: string
+) => {
+  if (animatingLevel.currentOpacity < DEFAULT_OPACITY) {
+    animatingLevel.currentOpacity += STEP_OPACITY;
+  } else {
+    animatingLevel.isAnimated = true;
+  }
+
+  return {
+    animatedColor: animatingLevel!.isAnimated ? colors.white : color,
+    animatedOpacity: animatingLevel!.currentOpacity
+  };
+};
+
+const colorizedSymbol = (volumeColor: string) => (
+  trailingZeroPosition: number,
+  currentSymbolPosition: number
+) =>
+  currentSymbolPosition < trailingZeroPosition ? volumeColor : colors.coolGrey;
 
 export interface LevelListProps {
   levels: Order[];
@@ -71,7 +95,7 @@ export interface LevelListProps {
   type: LevelType;
   isPageVisible: () => boolean;
   spanAccuracy: number;
-  setSpanUpdatingHandler: (t: LevelType, fn: () => void) => void;
+  setSpanUpdatingHandler: (levelType: LevelType, fn: () => void) => void;
 }
 
 interface ILevelsCells {
@@ -112,7 +136,7 @@ class LevelList extends React.Component<LevelListProps> {
       clearInterval(this.cancelColorAnimationIntervalId);
 
       this.cancelColorAnimationIntervalId = setInterval(() => {
-        if (!!this.animatingLevels.length) {
+        if (this.animatingLevels.length) {
           this.renderCanvas(asks, bids, type);
           this.forceUpdate();
         } else {
@@ -173,80 +197,74 @@ class LevelList extends React.Component<LevelListProps> {
     );
   }
 
-  drawLevels = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
-    this.levelsCells = [];
-    const {displayType, instrument, format, width, height} = this.props;
-
-    const levels = type === LevelType.Asks ? asks : bids;
-
-    const levelHeight = height / LEVELS_COUNT;
-    const vals = map(prop(toLower(displayType)), [
-      ...asks,
-      ...bids
-    ]) as number[];
-    const normalize = curry(normalizeVolume)(
-      Math.min(...vals),
-      Math.max(...vals)
-    );
-
+  prepareLevelForDrawing = (normalize: any, levelHeight: number) => {
+    const {displayType, instrument, format, width} = this.props;
     const isAnimationPrevented = !this.cachedLevels.length;
 
-    levels.forEach((l, i: number) => {
-      const existedLevel = this.cachedLevels.find(ml => ml.price === l.price);
-      const color = fillBySide(l.side);
+    return (levelOrder: Order, index: number) => {
+      const existedLevel = this.cachedLevels.find(
+        cl => cl.price === levelOrder.price
+      );
+      const color = fillBySide(levelOrder.side);
 
       let volumeColor = colors.white;
       let volumeOpacity = DEFAULT_OPACITY;
 
       if (!isAnimationPrevented) {
-        if (!existedLevel || existedLevel[displayType] !== l[displayType]) {
+        if (
+          !existedLevel ||
+          existedLevel[displayType] !== levelOrder[displayType]
+        ) {
           this.animatingLevels = updateAnimatingLevelsWithNewLevel(
             this.animatingLevels,
-            l.price
+            levelOrder.price
           );
         }
 
         const animatingLevel = this.animatingLevels.find(
-          al => al.price === l.price
+          al => al.price === levelOrder.price
         );
 
         if (animatingLevel) {
-          if (animatingLevel.currentOpacity < DEFAULT_OPACITY) {
-            animatingLevel.currentOpacity += STEP_OPACITY;
-          } else {
-            animatingLevel.isAnimated = true;
-          }
-          volumeColor = animatingLevel.isAnimated ? colors.white : color;
-          volumeOpacity = animatingLevel.currentOpacity;
+          const {
+            animatedColor,
+            animatedOpacity
+          } = getColorAndOpacityForAnimation(
+            animatingLevel,
+            levelOrder.price,
+            color
+          );
+          volumeColor = animatedColor;
+          volumeOpacity = animatedOpacity;
         }
       }
 
-      const y = getY(l.side, i, levelHeight);
+      const y = getY(levelOrder.side, index, levelHeight);
       const canvasY = getY(
-        l.side,
-        l.side === Side.Sell ? i - 1 : i + 1,
+        levelOrder.side,
+        levelOrder.side === Side.Sell ? index - 1 : index + 1,
         levelHeight
       );
 
       const value = format(
-        l[displayType] * l.price,
+        levelOrder[displayType] * levelOrder.price,
         instrument.quoteAsset.accuracy
       );
 
       drawRect({
         ctx: this.canvasCtx,
         color,
-        x: width / 3,
+        x: width / CELLS_NUMBER,
         y,
-        width: normalize(l[displayType]),
+        width: normalize(levelOrder[displayType]),
         height: levelHeight,
         opacity: 0.16
       });
 
-      if (l.connectedLimitOrders.length > 0) {
+      if (levelOrder.connectedLimitOrders.length > 0) {
         drawVerticalLine({
           ctx: this.canvasCtx,
-          x: width / 3 + 1,
+          x: width / CELLS_NUMBER + 1,
           y: y + 2,
           height: y + levelHeight - 2,
           lineWidth: 2,
@@ -267,7 +285,7 @@ class LevelList extends React.Component<LevelListProps> {
       drawText({
         ctx: this.canvasCtx,
         color,
-        text: format(l.price, this.props.spanAccuracy),
+        text: format(levelOrder.price, this.props.spanAccuracy),
         x: LEFT_PADDING,
         y: canvasY - TOP_PADDING,
         font: LEVEL_FONT,
@@ -276,27 +294,31 @@ class LevelList extends React.Component<LevelListProps> {
       this.levelsCells.push({
         left: LEFT_PADDING,
         top: y,
-        width: width / 3 - LEFT_PADDING,
+        width: width / CELLS_NUMBER - LEFT_PADDING,
         height: levelHeight,
         type: OrderBookCellType.Price,
-        value: l.price,
-        side: l.side
+        value: levelOrder.price,
+        side: levelOrder.side
       });
 
-      const volume = format(l[displayType], instrument.baseAsset.accuracy);
+      const volume = format(
+        levelOrder[displayType],
+        instrument.baseAsset.accuracy
+      );
 
       if (hasTrailingZeroes(volume)) {
         let drownSymbolsWidth = 0;
         const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
+        const symbols = volume.split('');
+        const getSymbolColor = colorizedSymbol(volumeColor);
 
-        volume.split('').forEach((symbol: string, index: number) => {
-          const symbolColor =
-            index < trailingZeroPosition ? volumeColor : colors.coolGrey;
+        symbols.forEach((symbol: string, i: number) => {
+          const symbolColor = getSymbolColor(trailingZeroPosition, i);
           drawText({
             ctx: this.canvasCtx,
             color: symbolColor,
             text: symbol,
-            x: width / 3 + LEFT_PADDING + drownSymbolsWidth,
+            x: width / CELLS_NUMBER + LEFT_PADDING + drownSymbolsWidth,
             y: canvasY - TOP_PADDING,
             font: LEVEL_FONT,
             align: 'start',
@@ -309,7 +331,7 @@ class LevelList extends React.Component<LevelListProps> {
           ctx: this.canvasCtx,
           color: volumeColor,
           text: volume,
-          x: width / 3 + LEFT_PADDING,
+          x: width / CELLS_NUMBER + LEFT_PADDING,
           y: canvasY - TOP_PADDING,
           font: LEVEL_FONT,
           align: 'start',
@@ -318,13 +340,13 @@ class LevelList extends React.Component<LevelListProps> {
       }
 
       this.levelsCells.push({
-        left: width / 3,
+        left: width / CELLS_NUMBER,
         top: y,
-        width: width / 3,
+        width: width / CELLS_NUMBER,
         height: levelHeight,
         type: getCellType(displayType),
-        value: l.depth,
-        side: l.side
+        value: levelOrder.depth,
+        side: levelOrder.side
       });
 
       drawText({
@@ -336,7 +358,28 @@ class LevelList extends React.Component<LevelListProps> {
         font: LEVEL_FONT,
         align: 'end'
       });
-    });
+    };
+  };
+
+  drawCanvas = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
+    this.levelsCells = [];
+    const {displayType, height} = this.props;
+
+    const levels = type === LevelType.Asks ? asks : bids;
+
+    const levelHeight = height / LEVELS_COUNT;
+    const vals = map(prop(toLower(displayType)), [
+      ...asks,
+      ...bids
+    ]) as number[];
+    const normalize = curry(normalizeVolume)(
+      Math.min(...vals),
+      Math.max(...vals)
+    );
+
+    const drawLevel = this.prepareLevelForDrawing(normalize, levelHeight);
+
+    levels.forEach(drawLevel);
     this.animatingLevels = this.animatingLevels.filter(al => !al.isAnimated);
     this.cachedLevels = [...levels];
   };
@@ -375,7 +418,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   renderCanvas = (asks: Order[], bids: Order[], type: LevelType) => {
     this.clearCanvas();
-    this.drawLevels(asks, bids, type);
+    this.drawCanvas(asks, bids, type);
   };
 
   setFakeStageRef = (div: any) => (this.fakeStage = div);
@@ -387,7 +430,7 @@ class LevelList extends React.Component<LevelListProps> {
       <React.Fragment>
         {!this.props.isReadOnly && (
           <FakeOrderBookStage
-            width={this.props.width / 3 * 2}
+            width={this.props.width / CELLS_NUMBER * 2}
             height={this.props.height}
             onMouseDown={this.handleMouseDownOnFakeStage}
             ref={this.setFakeStageRef}
