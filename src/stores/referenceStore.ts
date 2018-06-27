@@ -5,9 +5,11 @@ import {keys} from '../models';
 import {
   AssetCategoryModel,
   AssetModel,
+  DescriptionResponseModel,
   InstrumentModel,
   SearchString
 } from '../models';
+import AssetResponseModel from '../models/assetResponseModel';
 import * as mappers from '../models/mappers';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -23,7 +25,9 @@ const normalize = compose(
 const baseAssetStorage = StorageUtils(keys.baseAsset);
 
 class ReferenceStore extends BaseStore {
-  @observable private assets: AssetModel[] = [];
+  descriptions: DescriptionResponseModel[];
+
+  @observable assets: AssetModel[] = [];
   @observable.shallow private availableAssets: string[] = [];
   @observable private categories: AssetCategoryModel[] = [];
   @observable.shallow private instruments: InstrumentModel[] = [];
@@ -78,8 +82,12 @@ class ReferenceStore extends BaseStore {
 
   findInstruments = (term: string, watchlistName: string) => {
     const {getWatchlistByName} = this.rootStore.watchlistStore;
-    const instrumentsByName = this.instruments.filter(instrument =>
-      includes(normalize(term), normalize(instrument.displayName!))
+    const normalizedTerm = normalize(term);
+    const instrumentsByName = this.instruments.filter(
+      instrument =>
+        includes(normalizedTerm, normalize(instrument.displayName!)) ||
+        includes(normalizedTerm, normalize(instrument.invertedDisplayName!)) ||
+        includes(normalizedTerm, normalize(instrument.baseAsset.fullName!))
     );
 
     if (watchlistName) {
@@ -115,32 +123,60 @@ class ReferenceStore extends BaseStore {
     }
   };
 
+  findAppropriateDescriptionById = (
+    descriptions: any[],
+    assetId: string
+  ): DescriptionResponseModel => {
+    return (
+      descriptions.find(
+        (rawDescription: any) => rawDescription.Id === assetId
+      ) || {}
+    );
+  };
+
+  @action
   fetchAssets = () => {
-    return this.api
-      .fetchAll()
-      .then((resp: any) => {
-        if (resp) {
-          const dtoAssets = resp.Assets || resp;
-          if (!dtoAssets) {
-            return;
-          }
-          runInAction(() => {
-            this.assets = dtoAssets.map((x: any) =>
-              mappers.mapToAsset(x, this.categories)
+    const requests = [this.api.fetchAll(), this.api.fetchAssetsDescriptions()];
+
+    return Promise.all(requests).then(data => {
+      const assets = data[0].Assets || data[0];
+      this.descriptions = data[1].Descriptions || data[1];
+      if (assets && assets.length > 0) {
+        runInAction(() => {
+          this.assets = assets.map((rawAsset: AssetResponseModel) => {
+            const appropriateDescription = this.findAppropriateDescriptionById(
+              this.descriptions,
+              rawAsset.Id
+            );
+            return mappers.mapToAsset(
+              rawAsset,
+              this.categories,
+              appropriateDescription
             );
           });
-        }
-        return Promise.resolve();
-      })
-      .catch(Promise.reject);
+        });
+      }
+      return Promise.resolve();
+    });
   };
 
   fetchAssetById = (id: string) => {
-    return this.api.fetchAssetById(id).then((resp: any) => {
-      const dtoAsset = resp.Asset || resp;
-      const asset = mappers.mapToAsset(dtoAsset, this.categories);
-      this.assets.push(asset);
-      return Promise.resolve(asset);
+    return this.api.fetchAssetById(id).then(asset => {
+      let mappedAsset;
+      asset = asset.Asset || asset;
+      if (asset) {
+        const appropriateDescription = this.findAppropriateDescriptionById(
+          this.descriptions,
+          asset.Id
+        );
+        mappedAsset = mappers.mapToAsset(
+          asset as AssetResponseModel,
+          this.categories,
+          appropriateDescription as DescriptionResponseModel
+        );
+        this.assets.push(mappedAsset);
+      }
+      return Promise.resolve(mappedAsset);
     });
   };
 

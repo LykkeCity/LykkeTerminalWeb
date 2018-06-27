@@ -23,6 +23,7 @@ export class RestAssetApi extends RestApi implements AssetApi {
   fetchAssetById = (id: string) => this.get(`/assets/${id}`);
   fetchRates = () => this.get('/assetpairs/rates');
   fetchMarket = () => this.get('/markets');
+  fetchAssetsDescriptions = () => this.get('/assets/description');
 }
 
 // tslint:disable-next-line:max-classes-per-file
