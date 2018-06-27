@@ -58,13 +58,6 @@ class Trades extends React.Component<TradesProps, TableSortState> {
         width: TradesCellWidth.Symbol
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'side'),
-        className: 'right-align',
-        key: 'side',
-        value: 'Side',
-        width: TradesCellWidth.Side
-      },
-      {
         sortDisabled: checkDataForSorting(this.state.data, 'price'),
         className: 'right-align',
         key: 'price',

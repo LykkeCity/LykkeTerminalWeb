@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableSortState
 } from '../Table';
-import {PublicTradeList, PublicTradesCellWidth} from './';
+import {PublicTradeList} from './';
 
 export interface TradeLogProps extends LoaderProps {
   selectedInstrument: InstrumentModel;
@@ -53,13 +53,6 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
         className: 'right-align',
         key: 'volume',
         value: 'Trade size'
-      },
-      {
-        sortDisabled: checkDataForSorting(this.state.data, 'side'),
-        className: 'right-align',
-        key: 'side',
-        value: 'Side',
-        width: PublicTradesCellWidth.Side
       },
       {
         sortDisabled: checkDataForSorting(this.state.data, 'timestamp'),

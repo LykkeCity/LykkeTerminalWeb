@@ -12,7 +12,6 @@ import Orders from './Orders';
 
 export const OrderCellWidth = {
   Symbol: 100,
-  Side: 70,
   Actions: 110
 };
 
