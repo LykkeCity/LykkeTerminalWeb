@@ -105,13 +105,13 @@ class OrderBookStore extends BaseStore {
   }
 
   setAsksUpdatingHandler = (
-    cb: (a: Order[], b: Order[], t: LevelType) => void
+    cb: (asks: Order[], bids: Order[], levelType: LevelType) => void
   ) => (this.drawAsks = cb);
   setBidsUpdatingHandler = (
-    cb: (a: Order[], b: Order[], t: LevelType) => void
+    cb: (asks: Order[], bids: Order[], levelType: LevelType) => void
   ) => (this.drawBids = cb);
-  setSpanUpdatingHandler = (t: LevelType, cb: () => void) =>
-    this.spanHandlers.set(t, cb);
+  setSpanUpdatingHandler = (levelType: LevelType, cb: () => void) =>
+    this.spanHandlers.set(levelType, cb);
 
   drawOrderBook = () => {
     this.drawBids(this.getAsks(), this.getBids(), LevelType.Bids);

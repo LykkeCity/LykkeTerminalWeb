@@ -203,7 +203,7 @@ class LevelList extends React.Component<LevelListProps> {
 
     return (levelOrder: Order, index: number) => {
       const existedLevel = this.cachedLevels.find(
-        cl => cl.price === levelOrder.price
+        cachedLevel => cachedLevel.price === levelOrder.price
       );
       const color = fillBySide(levelOrder.side);
 
@@ -221,16 +221,16 @@ class LevelList extends React.Component<LevelListProps> {
           );
         }
 
-        const animatingLevel = this.animatingLevels.find(
-          al => al.price === levelOrder.price
+        const existedAnimatingLevel = this.animatingLevels.find(
+          animatingLevel => animatingLevel.price === levelOrder.price
         );
 
-        if (animatingLevel) {
+        if (existedAnimatingLevel) {
           const {
             animatedColor,
             animatedOpacity
           } = getColorAndOpacityForAnimation(
-            animatingLevel,
+            existedAnimatingLevel,
             levelOrder.price,
             color
           );
