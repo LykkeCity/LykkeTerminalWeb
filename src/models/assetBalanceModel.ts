@@ -1,4 +1,5 @@
 import {computed, observable} from 'mobx';
+import {subtraction} from '../utils/math';
 
 class AssetBalanceModel {
   accuracy: number;
@@ -10,7 +11,7 @@ class AssetBalanceModel {
 
   @computed
   get available() {
-    return this.balance - this.reserved;
+    return subtraction(this.balance, this.reserved);
   }
 
   constructor(dto: any) {
