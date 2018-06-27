@@ -12,6 +12,6 @@ export const disclaimerMessages = {
   },
   ICX: {
     message:
-      'Due to the EOS migration, deposits and withdrawals are disabled until further notice.'
+      'Due to the ICON mainnet migration, deposits and withdrawals will be disabled on June 29th until further notice.'
   }
 };
