@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colorFromSide, colors, dims, fonts, padding} from '../styled';
+import styled, {colors, dims, fonts, padding} from '../styled';
 
 export const TradeListToolbar = styled.div`
   display: flex;
@@ -49,7 +49,3 @@ export const StyledLoadMoreButton = styled.span`
     cursor: pointer;
   }
 `;
-
-export const TradeRow = styled.tr`
-  ${p => colorFromSide(p)};
-` as any;

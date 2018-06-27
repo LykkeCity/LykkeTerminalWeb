@@ -3,8 +3,7 @@ import {InstrumentModel, OrderModel, Side} from '../../models';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil, precisionFloor} from '../../utils/math';
 import {Icon} from '../Icon/index';
-import ColoredTitledCell from '../Table/ColoredTitledCell';
-import {Cell} from '../Table/styles';
+import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 import {OrderActions, OrderCellWidth} from './index';
 
@@ -57,20 +56,22 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       >
         {displayName}
       </Cell>
-      <ColoredTitledCell side={side}>
-        {formattedNumber(price, accuracy)}
-      </ColoredTitledCell>
-      <TitledCell side={side}>
+      <TitledCell title={formattedNumber(price, accuracy)}>
+        <ColoredText side={side}>
+          {formattedNumber(price, accuracy)}
+        </ColoredText>
+      </TitledCell>
+      <TitledCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
-      <TitledCell side={side}>
+      <TitledCell>
         {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
           filledPercent,
           2,
           {style: 'percent'}
         )})
       </TitledCell>
-      <TitledCell side={side}>
+      <TitledCell>
         {formattedNumber(roundedValue, quoteAssetAccuracy)} {quoteAssetName}
       </TitledCell>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
