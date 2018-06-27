@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors, tableScrollMargin} from '../styled';
+import styled, {colorFromSide, colors, tableScrollMargin} from '../styled';
 
 interface CellProps {
   w?: string | number;
@@ -25,6 +25,11 @@ export const TruncatedText = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
+
+export const ColoredText = styled.div`
+  ${(side: string) => colorFromSide(side)};
+  font-weight: 500;
+` as any;
 
 export const TableHeaderItemEl = styled.div`
   display: flex;
@@ -75,7 +80,6 @@ export const Table = styled.table`
   th,
   td {
     text-align: right;
-    font-weight: 500;
   }
   th {
     position: relative;

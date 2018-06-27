@@ -2,7 +2,7 @@ import {isToday} from 'date-fns';
 import * as React from 'react';
 import {TradeModel} from '../../models/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import ColoredTitledCell from '../Table/ColoredTitledCell';
+import {ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 
 // tslint:disable-next-line:no-empty-interface
@@ -18,9 +18,11 @@ export const PublicTradeListItem: React.SFC<PublicTradeListItemProps> = ({
   const date = new Date(timestamp);
   return (
     <tr>
-      <ColoredTitledCell side={side}>
-        {formattedNumber(price, instrument!.accuracy)}
-      </ColoredTitledCell>
+      <TitledCell title={formattedNumber(price, instrument!.accuracy)}>
+        <ColoredText side={side}>
+          {formattedNumber(price, instrument!.accuracy)}
+        </ColoredText>
+      </TitledCell>
       <TitledCell>
         {formattedNumber(volume, instrument!.baseAsset.accuracy)}
       </TitledCell>
