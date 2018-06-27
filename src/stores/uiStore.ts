@@ -137,8 +137,8 @@ class UiStore extends BaseStore {
     this.rootStore.chartStore.renderChart();
 
     this.resetDisclaimedAssets();
-    disclaimedAssets.forEach(d =>
-      this.checkAssetToDisclaim(selectedInstrument, d)
+    disclaimedAssets.forEach(asset =>
+      this.checkAssetToDisclaim(selectedInstrument, asset)
     );
   };
 

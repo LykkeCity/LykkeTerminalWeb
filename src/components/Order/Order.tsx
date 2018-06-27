@@ -407,8 +407,8 @@ class Order extends React.Component<OrderProps, OrderState> {
           />
         )}
         {isDisclaimerShown &&
-          disclaimedAssets.map((da, index) => (
-            <Disclaimer asset={da} key={`${da}_${index}`} />
+          disclaimedAssets.map((asset, index) => (
+            <Disclaimer asset={asset} key={`${asset}_${index}`} />
           ))}
       </React.Fragment>
     );

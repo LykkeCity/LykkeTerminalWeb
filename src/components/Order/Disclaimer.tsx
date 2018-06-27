@@ -7,13 +7,13 @@ interface DisclaimerProps {
 }
 
 export const Disclaimer: React.SFC<DisclaimerProps> = ({asset}) => {
-  const content = disclaimerMessages[asset];
+  const content = disclaimerMessages[asset] || {};
 
   return (
     <DisclaimerNotification>
       <Title>Attention</Title>
       <Body>
-        <p>{content.message}</p>
+        {content.message && <p>{content.message}</p>}
         {content.link && (
           <Link target="_blank" href={content.link}>
             Read more

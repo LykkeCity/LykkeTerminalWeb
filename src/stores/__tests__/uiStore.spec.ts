@@ -196,5 +196,53 @@ describe('uiStore', () => {
       expect(uiStore.selectedInstrument).toBeDefined();
       expect(uiStore.selectedInstrument).toBe(newInstrument);
     });
+
+    it('should not activate disclaimer for BTC/USD instrument', () => {
+      const newInstrument = new InstrumentModel({
+        baseAsset: new AssetModel({name: 'BTC'}),
+        id: 'BTCUSD',
+        quoteAsset: new AssetModel({name: 'USD'})
+      });
+      uiStore.rootStore.referenceStore.getInstrumentById = (id: string) =>
+        [newInstrument].find(i => i.id === id);
+      uiStore.selectInstrument('BTCUSD');
+
+      expect(uiStore.disclaimedAssets.length).toBe(0);
+      expect(uiStore.isDisclaimerShown).toBeFalsy();
+    });
+
+    it('should activate disclaimer for EOS asset', () => {
+      const disclaimed = 'EOS';
+      const newInstrument = new InstrumentModel({
+        baseAsset: new AssetModel({name: 'BTC'}),
+        id: 'BTCEOS',
+        quoteAsset: new AssetModel({name: disclaimed})
+      });
+      uiStore.rootStore.referenceStore.getInstrumentById = (id: string) =>
+        [newInstrument].find(i => i.id === id);
+      uiStore.selectInstrument('BTCEOS');
+
+      expect(uiStore.disclaimedAssets.length).not.toBe(0);
+      expect(uiStore.disclaimedAssets[0]).toBe(disclaimed);
+      expect(uiStore.isDisclaimerShown).toBeTruthy();
+    });
+
+    it('should activate disclaimer for both VET and ICX assets', () => {
+      const disclaimed1 = 'VET';
+      const disclaimed2 = 'ICX';
+      const newInstrument = new InstrumentModel({
+        baseAsset: new AssetModel({name: disclaimed1}),
+        id: disclaimed1 + disclaimed2,
+        quoteAsset: new AssetModel({name: disclaimed2})
+      });
+      uiStore.rootStore.referenceStore.getInstrumentById = (id: string) =>
+        [newInstrument].find(i => i.id === id);
+      uiStore.selectInstrument(disclaimed1 + disclaimed2);
+
+      expect(uiStore.disclaimedAssets.length).not.toBe(0);
+      expect(uiStore.disclaimedAssets[0]).toBe(disclaimed1);
+      expect(uiStore.disclaimedAssets[1]).toBe(disclaimed2);
+      expect(uiStore.isDisclaimerShown).toBeTruthy();
+    });
   });
 });
