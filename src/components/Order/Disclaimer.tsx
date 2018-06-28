@@ -17,7 +17,7 @@ export const Disclaimer: React.SFC<DisclaimerProps> = ({asset}) => {
     <DisclaimerNotification>
       <Title>Attention</Title>
       <Body>
-        {content.message && <p>{content.message}</p>}
+        <p>{content.message}</p>
         {content.link && (
           <Link target="_blank" href={content.link}>
             Read more
