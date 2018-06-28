@@ -23,3 +23,12 @@ jest.mock('applicationinsights-js', () => {
     }
   };
 });
+
+jest.mock('raven-js', () => {
+  return {
+    config: jest.fn().mockReturnValue({
+      install: jest.fn()
+    }),
+    captureException: jest.fn()
+  };
+});

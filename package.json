@@ -1,6 +1,6 @@
 {
   "name": "lykke-terminal-web",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "private": true,
   "dependencies": {
     "@types/applicationinsights-js": "^1.0.5",
@@ -29,6 +29,7 @@
     "qrcode.react": "^0.8.0",
     "raf": "^3.4.0",
     "rambda": "0.9.8",
+    "raven-js": "^3.26.3",
     "react": "^16.2.0",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.2.0",
