@@ -2,7 +2,7 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import {InstrumentModel, TradeModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
-import {TableHeaderNoSort} from '../Table';
+import {HeaderProps, TableHeaderWithoutSort} from '../Table';
 import {PublicTradeList, PublicTradesCellWidth} from './';
 
 export interface TradeLogProps extends LoaderProps {
@@ -11,7 +11,7 @@ export interface TradeLogProps extends LoaderProps {
 }
 
 const TradeLog: React.SFC<TradeLogProps> = ({selectedInstrument, trades}) => {
-  const headers: any[] = [
+  const headers: HeaderProps[] = [
     {
       key: 'price',
       value: `Price (${pathOr('', ['quoteAsset', 'name'], selectedInstrument)})`
@@ -36,7 +36,7 @@ const TradeLog: React.SFC<TradeLogProps> = ({selectedInstrument, trades}) => {
 
   return (
     <React.Fragment>
-      <TableHeaderNoSort headers={headers} />
+      <TableHeaderWithoutSort headers={headers} />
       <PublicTradeList trades={trades} />
     </React.Fragment>
   );

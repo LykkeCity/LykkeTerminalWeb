@@ -1,17 +1,30 @@
 import * as React from 'react';
-import {HeaderCell, Table, TableHeaderItem, TableHeaderNoSortItem} from '.';
+import {
+  HeaderCell,
+  Table,
+  TableHeaderItem,
+  TableHeaderWithoutSortItem
+} from '.';
+
+export interface HeaderProps {
+  key: string;
+  value?: string;
+  width?: number;
+  className?: string;
+  sortDisabled?: boolean;
+}
 
 interface TableHeaderProps {
   className?: string;
   currentSortDirection: string;
   currentSortByParam: string;
-  headers: any[];
+  headers: HeaderProps[];
   onSort: any;
 }
 
-interface TableHeaderNoSortProps {
+interface TableHeaderWithoutSortProps {
   className?: string;
-  headers: any[];
+  headers: HeaderProps[];
 }
 
 export const TableHeader: React.SFC<TableHeaderProps> = ({
@@ -45,7 +58,7 @@ export const TableHeader: React.SFC<TableHeaderProps> = ({
   );
 };
 
-export const TableHeaderNoSort: React.SFC<TableHeaderNoSortProps> = ({
+export const TableHeaderWithoutSort: React.SFC<TableHeaderWithoutSortProps> = ({
   className,
   headers
 }) => {
@@ -55,9 +68,9 @@ export const TableHeaderNoSort: React.SFC<TableHeaderNoSortProps> = ({
         <tr>
           {headers.map((header, index) => (
             <HeaderCell w={header.width} key={index}>
-              <TableHeaderNoSortItem className={header.className}>
+              <TableHeaderWithoutSortItem className={header.className}>
                 {header.value}
-              </TableHeaderNoSortItem>
+              </TableHeaderWithoutSortItem>
             </HeaderCell>
           ))}
         </tr>

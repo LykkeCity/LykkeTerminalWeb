@@ -11,7 +11,7 @@ interface TableHeaderItemProps {
   sortDisabled?: boolean;
 }
 
-interface TableHeaderNoSortItemProps {
+interface TableHeaderWithoutSortItemProps {
   className?: string;
 }
 
@@ -47,10 +47,9 @@ export const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
   );
 };
 
-export const TableHeaderNoSortItem: React.SFC<TableHeaderNoSortItemProps> = ({
-  className,
-  children
-}) => (
+export const TableHeaderWithoutSortItem: React.SFC<
+  TableHeaderWithoutSortItemProps
+> = ({className, children}) => (
   <TableHeaderItemEl className={`${className || ''} disabled`}>
     <TruncatedText data-tip={children}>{children}</TruncatedText>
 
