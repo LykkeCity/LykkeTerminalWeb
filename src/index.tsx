@@ -1,12 +1,15 @@
-import greenlet from 'greenlet';
 import {Provider} from 'mobx-react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
 import {RootStore} from './stores/index';
+import {getWorkerByCurrentBrowser} from './workers/worker';
 
-const rootStore = new RootStore(true, greenlet);
+// tslint:disable-next-line:no-var-requires
+const {detect} = require('detect-browser');
+
+const rootStore = new RootStore(true, getWorkerByCurrentBrowser(detect().name));
 
 const render = (AppComponent: any) => {
   ReactDOM.render(
