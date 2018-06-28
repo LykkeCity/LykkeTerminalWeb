@@ -1,3 +1,4 @@
+import {HistoryResponseModel} from '../models';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
@@ -7,6 +8,12 @@ export interface HistoryApi {
 
 export class RestHistoryApi extends RestApi implements HistoryApi {
   fetchHistory = (walletId: string, query: any) =>
+    this.getWithQuery<any[]>(`/History/wallet/${walletId}`, query);
+
+  fetchHistoryByWalletId = (
+    walletId: string,
+    query: any
+  ): Promise<HistoryResponseModel[]> =>
     this.getWithQuery<any[]>(`/History/wallet/${walletId}`, query);
 
   fetchTradesByInstrument = (

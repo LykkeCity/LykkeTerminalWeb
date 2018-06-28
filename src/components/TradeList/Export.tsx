@@ -1,8 +1,9 @@
 import * as React from 'react';
+import {HistoryResponseModel} from '../../models';
 import {ExportButton} from './styles';
 
 interface ExportProps {
-  exportHistory: any;
+  exportHistory: () => Promise<HistoryResponseModel[]>;
   canExport: any;
 }
 
@@ -30,10 +31,35 @@ class Export extends React.Component<ExportProps> {
     downloadLink.click();
   };
 
+  toCsvRow = (record: HistoryResponseModel) => {
+    const row = [
+      record.DateTime,
+      record.Type,
+      'Lykke',
+      record.Price,
+      record.Asset,
+      record.Amount,
+      record.AssetPair!.replace(record.Asset!, ''),
+      record.FeeSize,
+      record.FeeType
+    ];
+    return row.join('\t') + '\r\n';
+  };
+
+  exportToCsv = (rawData: HistoryResponseModel[]) => {
+    let csv =
+      'Date	Type\tExchange\tBase amount\tBase currency\tQuote amount\tQuote currency\tFee\tFee currency\n';
+    rawData.forEach(record => {
+      csv += this.toCsvRow(record);
+    });
+    return csv;
+  };
+
   saveFile = async () => {
     const filename = `trades-${this.generateId()}${extension}`;
-    const data = await this.props.exportHistory();
-    const dataToSave = new Blob([data], {type: documentType});
+    const rawData = await this.props.exportHistory();
+    const csv = this.exportToCsv(rawData);
+    const dataToSave = new Blob([csv], {type: documentType});
     if (navigator.msSaveBlob) {
       navigator.msSaveBlob(dataToSave, filename);
     } else {

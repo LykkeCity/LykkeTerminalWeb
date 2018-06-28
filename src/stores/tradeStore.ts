@@ -3,7 +3,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
-import {TradeFilter, TradeModel} from '../models/index';
+import {OperationType, TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {nextSkip} from '../utils';
@@ -123,6 +123,22 @@ class TradeStore extends BaseStore {
     }
   };
 
+  fetchAllTrades = () => {
+    const types = [
+      OperationType.CashOut,
+      OperationType.CashIn,
+      OperationType.Trade,
+      OperationType.LimitTrade
+    ] as string[];
+    const walletId = this.rootStore.balanceListStore.currentWallet!.id;
+
+    return this.api
+      .fetchHistory(walletId, types, this.instrumentIdByFilter)
+      .then(data => {
+        return Promise.resolve(data);
+      });
+  };
+
   fetchNextTrades = async () => {
     this.skip = nextSkip(this.skip, TradeQuantity.Take, this.receivedFromWamp);
     this.fetchTrades();
@@ -186,9 +202,7 @@ class TradeStore extends BaseStore {
   };
 
   exportHistory = () => {
-    // tslint:disable-next-line:no-console
-    console.log('exporting');
-    return Promise.resolve(['hello', 'wow']);
+    return this.fetchAllTrades();
   };
 
   canExport = (): boolean => {
