@@ -7,6 +7,7 @@ import {
 import {HBar} from '../Bar';
 import {
   checkDataForSorting,
+  HeaderProps,
   sortData,
   TableHeader,
   TableSortState
@@ -45,7 +46,7 @@ class Trades extends React.Component<TradesProps, TableSortState> {
   };
 
   render() {
-    const headers: any[] = [
+    const headers: HeaderProps[] = [
       {
         sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
         key: 'symbol',
