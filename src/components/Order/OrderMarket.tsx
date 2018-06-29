@@ -2,7 +2,7 @@ import {Form, FormikProps, withFormik} from 'formik';
 import * as React from 'react';
 import {OrderInputs} from '../../models';
 import {capitalize} from '../../utils';
-import formattedNumber from '../../utils/localFormatted/localFormatted';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderBasicFormProps} from './index';
 import OrderButton from './OrderButton';

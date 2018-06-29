@@ -1,3 +1,4 @@
+import {buildDijkstra} from '@lykkex/lykke.js';
 import {AssetModel, InstrumentModel} from '../models';
 import {BaseStore} from './index';
 
@@ -8,7 +9,7 @@ class MarketStore extends BaseStore {
   init = (insturments: InstrumentModel[], assets: AssetModel[]) => {
     const {g, d, u} = this.initData(insturments);
     for (const asset of assets) {
-      this.result[asset.id] = this.buildDijkstra(asset.id, g, {...d}, {...u});
+      this.result[asset.id] = buildDijkstra(asset.id, g, {...d}, {...u});
     }
     this.graph = g;
   };
@@ -117,36 +118,6 @@ class MarketStore extends BaseStore {
     }
     return 1.1111;
   }
-
-  private buildDijkstra = (start: string, g: any, d: any, u: any) => {
-    d[start] = 0;
-    const keys = Object.keys(g);
-    const result = {};
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < keys.length; i++) {
-      let v = '';
-
-      for (const j of keys) {
-        if (!u[j] && (!v || d[j] < d[v])) {
-          v = j;
-        }
-      }
-      if (d[v] === Infinity) {
-        break;
-      }
-      u[v] = true;
-      // tslint:disable-next-line:forin
-      for (const j in g[v]) {
-        const to = j;
-        const weight = g[v][j].weight;
-        if (d[v] + weight < d[to]) {
-          d[to] = d[v] + weight;
-          result[to] = v;
-        }
-      }
-    }
-    return result;
-  };
 }
 
 export default MarketStore;

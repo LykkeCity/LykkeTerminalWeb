@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Line, Text} from 'react-konva';
 import {Order} from '../../../models';
 
-import formattedNumber from '../../../utils/localFormatted/localFormatted';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import chart from './chartConstants';
 
 interface MeshProps {
