@@ -12,7 +12,7 @@ export interface OrderLevel {
   connectedLimitOrders: string[];
 }
 
-export class Order implements Order {
+export class Order {
   static create = (order: Partial<Order>) => Object.assign(new Order(), order);
 
   id: string;
