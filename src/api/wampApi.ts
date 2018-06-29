@@ -21,6 +21,8 @@ export class WampApi {
 
   private subscriptions: Map<string, Subscription> = new Map();
 
+  private timer: any;
+
   connect = (url: string, realm: string, authId?: string) => {
     let options: IConnectionOptions = {url, realm, max_retries: -1};
     if (authId) {
@@ -55,7 +57,7 @@ export class WampApi {
 
   throttle = (callback: any, duration: number) => {
     this.isThrottled = true;
-    setTimeout(() => {
+    this.timer = setTimeout(() => {
       callback.call();
       this.isThrottled = false;
     }, duration);
@@ -68,7 +70,9 @@ export class WampApi {
   };
 
   continue = () => {
-    if (this.connection && !this.isThrottled) {
+    if (this.connection) {
+      clearTimeout(this.timer);
+      this.isThrottled = false;
       this.connection.open();
     }
   };
