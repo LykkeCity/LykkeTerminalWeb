@@ -5,7 +5,7 @@ import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
-import Export from './Export';
+import Export from './Export/Export';
 import PublicTradeList from './PublicTradeList';
 import PublicTradeListItem from './PublicTradeListItem';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
