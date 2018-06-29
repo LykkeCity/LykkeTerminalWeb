@@ -19,7 +19,8 @@ describe('trade store', () => {
   const rootStore = new RootStore();
   const api: any = {
     fetchPublicTrades: jest.fn(),
-    fetchTrades: jest.fn()
+    fetchTrades: jest.fn(),
+    fetchHistory: jest.fn()
   };
 
   const getTestInstrument = (params?: Partial<InstrumentModel>) => {
@@ -241,6 +242,13 @@ describe('trade store', () => {
   });
 
   describe('exporting feature', () => {
+    beforeEach(() => {
+      tradeStore.filter = TradeFilter.All;
+      tradeStore.rootStore.balanceListStore.getCurrentWalletId = jest.fn(
+        () => '1'
+      );
+    });
+
     describe('canExport method', () => {
       it('should check if trades are not empty', async () => {
         expect(tradeStore.canExport()).toBeFalsy();
@@ -256,10 +264,27 @@ describe('trade store', () => {
       });
     });
 
-    describe('exportHistory method', () => {
-      it('should return exported data', async () => {
-        // expect(tradeStore.exportHistory()).toBeInstanceOf(Array);
-        // expect(await tradeStore.exportHistory()).not.toBeUndefined();
+    describe('fetchHistory method', () => {
+      it('getCurrentWalletId() method should be called', () => {
+        tradeStore.fetchHistory();
+
+        expect(
+          tradeStore.rootStore.balanceListStore.getCurrentWalletId
+        ).toBeCalled();
+      });
+
+      it('api method fetchHistory() method should be called', () => {
+        tradeStore.fetchHistory();
+
+        expect(api.fetchHistory).toBeCalled();
+      });
+
+      it('should return trades history', async () => {
+        const history = await tradeStore.fetchHistory();
+
+        expect(history).toBeDefined();
+        expect(history).toBeInstanceOf(Array);
+        expect(history).toHaveLength(1);
       });
     });
   });
