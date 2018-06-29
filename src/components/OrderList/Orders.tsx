@@ -4,6 +4,7 @@ import {HBar} from '../Bar';
 import {EditOrder} from '../Modal';
 import {
   checkDataForSorting,
+  HeaderProps,
   sortData,
   TableHeader,
   TableSortState
@@ -61,7 +62,7 @@ class Blotter extends React.Component<OrdersProps, OrdersState> {
   };
 
   render() {
-    const headers: any[] = [
+    const headers: HeaderProps[] = [
       {
         sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
         key: 'symbol',
