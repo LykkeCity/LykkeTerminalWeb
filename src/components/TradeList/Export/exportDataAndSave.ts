@@ -20,9 +20,25 @@ downloadLink.onclick = (event: MouseEvent) => {
 
 const generateId = (): number => new Date().getTime();
 
-const generateCsvRow = (record: HistoryResponseModel) => {
+const parseType = (record: HistoryResponseModel): string => {
+  if (record.AssetPair) {
+    return record.Amount! < 0 ? Types.Sell : Types.Buy;
+  } else {
+    return record.Type;
+  }
+};
+
+const parsePriceAsset = (assetPair: string, asset: string) => {
+  if (assetPair && asset) {
+    return assetPair.replace(asset, '');
+  }
+  return '';
+};
+
+const generateCsvRow = (record: HistoryResponseModel): string => {
   const isZeroFee = record.FeeSize === 0;
-  const type = record.Amount! < 0 ? Types.Sell : Types.Buy;
+  const type = parseType(record);
+  const priceAsset = parsePriceAsset(record.AssetPair!, record.Asset!);
   const row = [
     record.DateTime,
     type,
@@ -30,7 +46,7 @@ const generateCsvRow = (record: HistoryResponseModel) => {
     Math.abs(record.Amount),
     record.Asset,
     record.Price,
-    record.AssetPair!.replace(record.Asset!, ''),
+    priceAsset,
     isZeroFee ? '' : record.FeeSize,
     isZeroFee ? '' : record.Asset
   ];
