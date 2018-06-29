@@ -12,6 +12,11 @@ export const toOrder = (dto: any, side: Side = Side.Buy) =>
     connectedLimitOrders: []
   });
 
+const getValueForAvailableVolume = (order: Order) => order.price * order.volume;
+
+const getAvailableVolume = (amount: number, order: Order) =>
+  amount * order.volume / order.price;
+
 export const mapToMarketEffectivePrice = (
   volume: number,
   displayType: OrderBookDisplayType,
@@ -39,4 +44,25 @@ export const mapToMarketEffectivePrice = (
   }
 
   return price;
+};
+
+export const getMaxAvailableVolume = (amount: number, orders: Order[]) => {
+  let expendedPrice: number = 0;
+
+  return orders.reduce((maxVolume, order) => {
+    if (expendedPrice >= amount) {
+      return maxVolume;
+    }
+
+    const amountLeft = amount - expendedPrice;
+    const valueForAvailableVolume = getValueForAvailableVolume(order);
+    const isValueAvailable = valueForAvailableVolume < amountLeft;
+    if (isValueAvailable) {
+      expendedPrice += valueForAvailableVolume;
+      return maxVolume + order.volume;
+    }
+
+    expendedPrice = amount;
+    return maxVolume + getAvailableVolume(amountLeft, order);
+  }, 0);
 };
