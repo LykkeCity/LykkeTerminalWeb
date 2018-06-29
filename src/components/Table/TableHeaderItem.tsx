@@ -1,7 +1,6 @@
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
-import {TruncatedText} from '../Table/styles';
-import {TableHeaderItemEl} from './styles';
+import {TableHeaderItemEl, TruncatedText} from './styles';
 
 interface TableHeaderItemProps {
   className?: string;
@@ -12,7 +11,11 @@ interface TableHeaderItemProps {
   sortDisabled?: boolean;
 }
 
-const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
+interface TableHeaderWithoutSortItemProps {
+  className?: string;
+}
+
+export const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
   onSort,
   sortDisabled,
   sortByParam,
@@ -44,4 +47,12 @@ const TableHeaderItem: React.SFC<TableHeaderItemProps> = ({
   );
 };
 
-export default TableHeaderItem;
+export const TableHeaderWithoutSortItem: React.SFC<
+  TableHeaderWithoutSortItemProps
+> = ({className, children}) => (
+  <TableHeaderItemEl className={`${className || ''} disabled`}>
+    <TruncatedText data-tip={children}>{children}</TruncatedText>
+
+    <ReactTooltip effect={'solid'} />
+  </TableHeaderItemEl>
+);

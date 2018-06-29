@@ -6,5 +6,5 @@ export interface TableSortState {
 
 export * from './styles';
 export * from './sortFn';
-export {default as TableHeader} from './TableHeader';
-export {default as TableHeaderItem} from './TableHeaderItem';
+export * from './TableHeader';
+export * from './TableHeaderItem';
