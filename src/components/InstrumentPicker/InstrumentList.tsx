@@ -3,6 +3,7 @@ import * as React from 'react';
 import {SortDirection} from '../../models';
 import {
   checkDataForSorting,
+  HeaderProps,
   sortData,
   TableHeader,
   TableSortState
@@ -46,7 +47,7 @@ class InstrumentList extends React.Component<
   };
 
   render() {
-    const headers = [
+    const headers: HeaderProps[] = [
       {
         sortDisabled: checkDataForSorting(this.state.data, 'displayName'),
         key: 'displayName',
