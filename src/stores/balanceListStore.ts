@@ -79,6 +79,11 @@ class BalanceListStore extends BaseStore {
     session.subscribe(topics.balances, this.onUpdateBalance);
   };
 
+  getCurrentWalletId = () => {
+    const currentWallet = this.currentWallet;
+    return currentWallet ? currentWallet.id : '';
+  };
+
   onUpdateBalance = async (args: any) => {
     const dto = args[0];
     const {id, a, b, r} = dto;

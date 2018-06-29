@@ -123,14 +123,14 @@ class TradeStore extends BaseStore {
     }
   };
 
-  fetchAllTrades = () => {
+  fetchHistory = () => {
     const types = [
       OperationType.CashOut,
       OperationType.CashIn,
       OperationType.Trade,
       OperationType.LimitTrade
-    ] as string[];
-    const walletId = this.rootStore.balanceListStore.currentWallet!.id;
+    ];
+    const walletId = this.rootStore.balanceListStore.getCurrentWalletId();
 
     return this.api
       .fetchHistory(walletId, types, this.instrumentIdByFilter)
@@ -199,10 +199,6 @@ class TradeStore extends BaseStore {
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();
     }
-  };
-
-  exportHistory = () => {
-    return this.fetchAllTrades();
   };
 
   canExport = (): boolean => {

@@ -3,7 +3,7 @@ import {HistoryResponseModel} from '../../models';
 import {ExportButton} from './styles';
 
 interface ExportProps {
-  exportHistory: () => Promise<HistoryResponseModel[]>;
+  fetchHistory: () => Promise<HistoryResponseModel[]>;
   canExport: any;
 }
 
@@ -57,7 +57,7 @@ class Export extends React.Component<ExportProps> {
 
   saveFile = async () => {
     const filename = `trades-${this.generateId()}${extension}`;
-    const rawData = await this.props.exportHistory();
+    const rawData = await this.props.fetchHistory();
     const csv = this.exportToCsv(rawData);
     const dataToSave = new Blob([csv], {type: documentType});
     if (navigator.msSaveBlob) {
