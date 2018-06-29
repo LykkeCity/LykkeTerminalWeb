@@ -73,6 +73,13 @@ interface OrderProps {
   resetOrder: () => void;
   isDisclaimerShown: boolean;
   disclaimedAssets: string[];
+  setMarketTotal: (
+    operationVolume?: string | number,
+    operationType?: string,
+    debounce?: boolean
+  ) => any;
+  marketTotalPrice: number;
+  resetMarketTotal: () => void;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -95,6 +102,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState({
       percents: percentage
     });
+    this.props.setMarketTotal(undefined, side);
   };
 
   handleMarketClick = (market: OrderType) => () => {
@@ -238,6 +246,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   reset = () => {
     resetPercentage(percentage);
+    this.props.resetMarketTotal();
     this.props.resetOrder();
     this.setState({
       percents: percentage
@@ -261,7 +270,9 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetId,
       quoteAssetId,
       isDisclaimerShown,
-      disclaimedAssets
+      disclaimedAssets,
+      setMarketTotal,
+      marketTotalPrice
     } = this.props;
     const {
       priceValue,
@@ -306,6 +317,8 @@ class Order extends React.Component<OrderProps, OrderState> {
     const balanceAccuracy = isCurrentSideSell
       ? baseAssetAccuracy
       : quoteAssetAccuracy;
+
+    const enoughLiquidity = marketTotalPrice !== undefined;
 
     return (
       <React.Fragment>
@@ -370,6 +383,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
         {currentMarket === MARKET && (
           <OrderMarket
+            amount={formattedNumber(marketTotalPrice || 0, quoteAssetAccuracy)}
             quantityAccuracy={quantityAccuracy}
             action={isCurrentSideSell ? Side.Sell : Side.Buy}
             quantity={quantityValue}
@@ -389,6 +403,8 @@ class Order extends React.Component<OrderProps, OrderState> {
             balanceAccuracy={balanceAccuracy}
             onQuantityArrowClick={handleQuantityArrowClick}
             updatePercentageState={this.updatePercentageState}
+            setMarketTotal={setMarketTotal}
+            enoughLiquidity={enoughLiquidity}
           />
         )}
         {this.state.isConfirmModalOpen && (

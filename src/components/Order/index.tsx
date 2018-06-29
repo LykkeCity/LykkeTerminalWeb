@@ -55,7 +55,10 @@ const ConnectedOrder = connect(
       isCurrentSideSell,
       setMarket,
       setSide,
-      resetOrder
+      resetOrder,
+      marketTotalPrice,
+      setMarketTotal,
+      resetMarketTotal
     },
     authStore: {isAuth}
   }) => ({
@@ -109,7 +112,10 @@ const ConnectedOrder = connect(
     setMarket,
     setSide,
     isDisclaimerShown,
-    disclaimedAssets
+    disclaimedAssets,
+    setMarketTotal,
+    marketTotalPrice,
+    resetMarketTotal
   }),
   withAuth(Order)
 );

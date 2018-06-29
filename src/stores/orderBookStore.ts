@@ -214,6 +214,7 @@ class OrderBookStore extends BaseStore {
       this.spread = (this.bestAskPrice - this.bestBidPrice) / this.bestAskPrice;
       this.midPrice = (this.bestAskPrice + this.bestBidPrice) / 2;
     }
+    this.rootStore.uiOrderStore.setMarketTotal();
   };
 
   unsubscribe = async () => {

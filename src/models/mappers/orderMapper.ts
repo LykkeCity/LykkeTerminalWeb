@@ -11,3 +11,27 @@ export const toOrder = (dto: any, side: Side = Side.Buy) =>
     orderVolume: 0,
     connectedLimitOrders: []
   });
+
+export const mapToMarketEffectivePrice = (volume: number, orders: Order[]) => {
+  let price: number = 0;
+
+  const volumeSum = orders.reduce((sum, order) => {
+    if (sum < volume) {
+      if (order.volume < volume - sum) {
+        price += order.volume * order.price;
+        return sum + order.volume;
+      } else {
+        price = price + (volume - sum) * order.price;
+        return volume;
+      }
+    } else {
+      return sum;
+    }
+  }, 0);
+
+  if (volumeSum < volume) {
+    return undefined;
+  }
+
+  return price;
+};
