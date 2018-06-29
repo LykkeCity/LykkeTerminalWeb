@@ -14,18 +14,11 @@ const csvHeader =
 const downloadLink = document.createElement('a');
 downloadLink.style.display = 'none';
 downloadLink.target = '_blank';
-downloadLink.onclick = (event: any) => {
-  document.body.removeChild(event.target);
+downloadLink.onclick = (event: MouseEvent) => {
+  document.body.removeChild(event.target as Node);
 };
 
-const generateId = () => new Date().getTime();
-
-const downloadFile = (objectUrl: string, filename: string) => {
-  downloadLink.download = filename;
-  downloadLink.href = objectUrl;
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-};
+const generateId = (): number => new Date().getTime();
 
 const generateCsvRow = (record: HistoryResponseModel) => {
   const isZeroFee = record.FeeSize === 0;
@@ -44,12 +37,19 @@ const generateCsvRow = (record: HistoryResponseModel) => {
   return row.join('\t') + '\r\n';
 };
 
-const mapToCsv = (rawData: HistoryResponseModel[]) => {
+const mapToCsv = (rawData: HistoryResponseModel[]): string => {
   let csv = csvHeader;
   rawData.forEach(record => {
     csv += generateCsvRow(record);
   });
   return csv;
+};
+
+const downloadFile = (objectUrl: string, filename: string) => {
+  downloadLink.download = filename;
+  downloadLink.href = objectUrl;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
 };
 
 const saveFile = async (
