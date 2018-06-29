@@ -123,7 +123,7 @@ export const Total = Flex.extend`
 `;
 
 export const TotalHint = styled.small`
-  color: #8c94a0;
+  color: ${colors.coolGrey};
   font-size: ${rem(12)};
   display: block;
 `;

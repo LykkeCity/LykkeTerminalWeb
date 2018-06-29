@@ -272,6 +272,7 @@ class UiOrderStore extends BaseStore {
 
     this.marketTotal.price = mapToMarketEffectivePrice(
       this.marketTotal.operationVolume,
+      this.rootStore.uiStore.orderbookDisplayType,
       orders
     );
   };

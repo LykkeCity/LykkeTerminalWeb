@@ -336,30 +336,26 @@ describe('uiOrder store', () => {
     };
     const orders: Order[] = [
       {
-        connectedLimitOrders: [],
+        connectedLimitOrders: [''],
         depth: 0.00016667,
         id: '970fcdd7-8483-4096-a1b3-69f0a7c23dc6',
         orderVolume: 0,
         price: 6148.874,
-        side: 'Buy',
+        side: Side.Buy,
         timestamp: undefined,
         volume: 1.2
       },
       {
-        connectedLimitOrders: [],
+        connectedLimitOrders: [''],
         depth: 0.00137778,
         id: 'ac983f4e-024a-40ab-bc29-319715ba8a7b',
         orderVolume: 0,
         price: 6143.658,
-        side: 'Buy',
+        side: Side.Buy,
         timestamp: undefined,
         volume: 0.5
       }
-    ].map((a: any) => Order.create(a));
-
-    let volume;
-    let nextVolume;
-    let type;
+    ].map((a: Partial<Order>) => Order.create(a));
 
     beforeEach(() => {
       uiOrderStore.resetMarketTotal();
@@ -377,8 +373,8 @@ describe('uiOrder store', () => {
     });
 
     it('should not block market total price for manual update', () => {
-      volume = 1;
-      type = Side.Sell;
+      const volume = 1;
+      const type = Side.Sell;
 
       uiOrderStore.setMarketTotal();
       uiOrderStore.setMarketTotal(volume, type);
@@ -388,21 +384,21 @@ describe('uiOrder store', () => {
     });
 
     it('should block market total price when debounce parameter injected', () => {
-      volume = 1;
-      type = Side.Sell;
+      const volume = 1;
+      const type = Side.Sell;
 
       uiOrderStore.setMarketTotal(volume, type, true);
 
-      nextVolume = 2;
-      uiOrderStore.setMarketTotal(volume, type, true);
+      const nextVolume = 2;
+      uiOrderStore.setMarketTotal(nextVolume, type, true);
 
       expect(uiOrderStore.marketTotal.canBeUpdated).toBeFalsy();
       expect(uiOrderStore.marketTotal.operationVolume).toBe(volume);
     });
 
     it('should reset market total parameters', () => {
-      volume = 1;
-      type = Side.Sell;
+      const volume = 1;
+      const type = Side.Sell;
 
       uiOrderStore.rootStore.orderBookStore.getBids = jest.fn(() => orders);
       uiOrderStore.setMarketTotal(volume, type);

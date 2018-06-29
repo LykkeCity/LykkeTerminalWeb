@@ -1,4 +1,4 @@
-import {Order, Side} from '..';
+import {Order, OrderBookDisplayType, Side} from '..';
 
 export const toOrder = (dto: any, side: Side = Side.Buy) =>
   Order.create({
@@ -12,14 +12,19 @@ export const toOrder = (dto: any, side: Side = Side.Buy) =>
     connectedLimitOrders: []
   });
 
-export const mapToMarketEffectivePrice = (volume: number, orders: Order[]) => {
+export const mapToMarketEffectivePrice = (
+  volume: number,
+  displayType: OrderBookDisplayType,
+  orders: Order[]
+) => {
   let price: number = 0;
+  const type = displayType.toLowerCase();
 
   const volumeSum = orders.reduce((sum, order) => {
     if (sum < volume) {
-      if (order.volume < volume - sum) {
-        price += order.volume * order.price;
-        return sum + order.volume;
+      if (order[type] < volume - sum) {
+        price += order[type] * order.price;
+        return sum + order[type];
       } else {
         price = price + (volume - sum) * order.price;
         return volume;
