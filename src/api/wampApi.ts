@@ -15,6 +15,7 @@ const DEFAULT_THROTTLE_DURATION = 10000;
 // tslint:disable:object-literal-sort-keys
 export class WampApi {
   isThrottled: boolean = false;
+  isConnected: boolean = false;
 
   private session: Session;
   private connection: Connection;
@@ -64,13 +65,13 @@ export class WampApi {
   };
 
   pause = () => {
-    if (this.connection && !this.isThrottled) {
+    if (this.connection && this.isConnected && !this.isThrottled) {
       this.throttle(() => this.connection.close(), DEFAULT_THROTTLE_DURATION);
     }
   };
 
   continue = () => {
-    if (this.connection) {
+    if (this.connection && !this.isConnected) {
       clearTimeout(this.timer);
       this.isThrottled = false;
       this.connection.open();
@@ -94,9 +95,15 @@ export class WampApi {
       this.connection = new autobahn.Connection(options);
 
       this.connection.onopen = (session: Session) => {
+        this.isConnected = true;
         this.session = session;
         this.subscribeToAll();
         resolve(session);
+      };
+
+      this.connection.onclose = () => {
+        this.isConnected = false;
+        return this.isConnected;
       };
 
       this.connection.open();

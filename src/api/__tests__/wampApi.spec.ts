@@ -19,6 +19,7 @@ describe('wamp service', () => {
     describe('pausing', () => {
       it('should throttle the connection closing', () => {
         wamp.connect('', '');
+        wamp.isConnected = true;
         wamp.pause();
         expect(wamp.throttle).toBeDefined();
         expect(wamp.throttle).toBeCalled();
