@@ -1,13 +1,14 @@
+import {curry, map, prop, toLower} from 'rambda';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-
-import {colors} from '../styled';
-
-import {InstrumentModel, Order, OrderBookDisplayType, Side} from '../../models';
+import {
+  InstrumentModel,
+  LevelType,
+  Order,
+  OrderBookCellType,
+  Side
+} from '../../models';
 import {mapToEffectivePrice} from '../../models/mappers/orderMapper';
-import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
-
-import {curry, map, prop, toLower} from 'rambda';
 import {normalizeVolume} from '../../utils';
 import {
   defineCanvasScale,
@@ -16,67 +17,27 @@ import {
   drawText,
   drawVerticalLine
 } from '../../utils/canvasUtils';
-
-import LevelType from '../../models/levelType';
-import OrderBookCellType from '../../models/orderBookCellType';
 import {
   getTrailingZeroOppositePosition,
   hasTrailingZeroes
 } from '../../utils/string';
+import {colors} from '../styled';
+import {
+  colorizedSymbol,
+  DEFAULT_OPACITY,
+  fillBySide,
+  findAndDeleteDuplicatedAnimatedLevel,
+  getCellType,
+  getColorAndOpacityForAnimation,
+  getY,
+  updateAnimatingLevelsWithNewLevel
+} from './helpers/LevelListHelpers';
+import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 import {FakeOrderBookStage} from './styles';
 
 const LEVEL_FONT = `12.25px Proxima Nova`;
-const DEFAULT_OPACITY = 1;
-const STEP_OPACITY = 0.05;
-const START_ANIMATED_OPACITY = 0.5;
 const UPDATE_ANIMATION_INTERVAL = 50;
 const CELLS_NUMBER = 3;
-
-const fillBySide = (side: Side) =>
-  side === Side.Buy ? colors.buy : colors.sell;
-
-const getCellType = (type: string) =>
-  type === OrderBookCellType.Depth
-    ? OrderBookCellType.Depth
-    : OrderBookCellType.Volume;
-
-const getY = (side: Side, idx: number, levelHeight: number) =>
-  (side === Side.Buy ? idx : LEVELS_COUNT - idx - 1) * levelHeight;
-
-const updateAnimatingLevelsWithNewLevel = (
-  animatingLevels: IAnimatingLevels[],
-  price: number
-): IAnimatingLevels[] => {
-  const levelForAnimation: IAnimatingLevels = {
-    price,
-    currentOpacity: START_ANIMATED_OPACITY,
-    isAnimated: false
-  };
-  return [...animatingLevels, levelForAnimation];
-};
-
-const getColorAndOpacityForAnimation = (
-  animatingLevel: IAnimatingLevels,
-  price: number,
-  color: string
-) => {
-  if (animatingLevel.currentOpacity < DEFAULT_OPACITY) {
-    animatingLevel.currentOpacity += STEP_OPACITY;
-  } else {
-    animatingLevel.isAnimated = true;
-  }
-
-  return {
-    animatedColor: animatingLevel!.isAnimated ? colors.white : color,
-    animatedOpacity: animatingLevel!.currentOpacity
-  };
-};
-
-const colorizedSymbol = (volumeColor: string) => (
-  trailingZeroPosition: number,
-  currentSymbolPosition: number
-) =>
-  currentSymbolPosition < trailingZeroPosition ? volumeColor : colors.coolGrey;
 
 export interface LevelListProps {
   levels: Order[];
@@ -109,7 +70,7 @@ interface ILevelsCells {
   side: Side;
 }
 
-interface IAnimatingLevels {
+export interface IAnimatingLevels {
   isAnimated: boolean;
   currentOpacity: number;
   price: number;
@@ -211,6 +172,15 @@ class LevelList extends React.Component<LevelListProps> {
 
       let volumeColor = colors.white;
       let volumeOpacity = DEFAULT_OPACITY;
+      const isChangingLevel =
+        existedLevel && existedLevel[displayType] !== levelOrder[displayType];
+
+      if (isChangingLevel) {
+        this.animatingLevels = findAndDeleteDuplicatedAnimatedLevel(
+          this.animatingLevels,
+          levelOrder.price
+        );
+      }
 
       if (!isAnimationPrevented) {
         if (
@@ -231,11 +201,7 @@ class LevelList extends React.Component<LevelListProps> {
           const {
             animatedColor,
             animatedOpacity
-          } = getColorAndOpacityForAnimation(
-            existedAnimatingLevel,
-            levelOrder.price,
-            color
-          );
+          } = getColorAndOpacityForAnimation(existedAnimatingLevel, color);
           volumeColor = animatedColor;
           volumeOpacity = animatedOpacity;
         }
