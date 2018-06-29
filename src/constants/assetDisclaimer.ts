@@ -8,10 +8,10 @@ export const disclaimerMessages = {
   },
   VET: {
     message:
-      'Due to the Vechain mainnet migration, deposits and withdrawals will be disabled on June 29th until further notice.'
+      'Due to the Vechain mainnet migration, deposits and withdrawals are disabled until further notice.'
   },
   ICX: {
     message:
-      'Due to the ICON mainnet migration, deposits and withdrawals will be disabled on June 29th until further notice.'
+      'Due to the ICON mainnet migration, deposits and withdrawals are disabled until further notice.'
   }
 };
