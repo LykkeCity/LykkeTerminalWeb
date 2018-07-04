@@ -14,14 +14,16 @@ class Export extends React.Component<ExportProps> {
   }
 
   saveFile = () => {
-    saveFile(this.props.fetchHistory);
+    if (this.props.canExport()) {
+      saveFile(this.props.fetchHistory);
+    }
   };
 
   render() {
     return (
       <ExportButton
         className={this.props.canExport() ? 'clickable' : ''}
-        onClick={this.props.canExport && this.saveFile}
+        onClick={this.saveFile}
       >
         Export history (csv)
       </ExportButton>
