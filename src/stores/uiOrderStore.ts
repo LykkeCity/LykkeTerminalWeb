@@ -1,7 +1,7 @@
 import {computed, observable} from 'mobx';
 import {curry} from 'rambda';
 import {ArrowDirection, Order, OrderType, Side} from '../models';
-import {mapToMarketEffectivePrice} from '../models/mappers/orderMapper';
+import {getMaxAvailableVolume, mapToMarketEffectivePrice} from '../models/mappers/orderMapper';
 import {
   DEFAULT_INPUT_VALUE,
   onArrowClick,
@@ -163,12 +163,11 @@ class UiOrderStore extends BaseStore {
     if (this.isCurrentSideSell) {
       return getPercentsOf(percents, value, this.getQuantityAccuracy());
     }
-    const convertedBalance = this.rootStore.marketStore.convert(
+    const convertedBalance = getMaxAvailableVolume(
       value,
-      quoteAssetId,
-      baseAssetId,
-      this.rootStore.referenceStore.getInstrumentById
+      this.rootStore.orderBookStore.getAsks()
     );
+
     return getPercentsOf(
       percents,
       convertedBalance,
