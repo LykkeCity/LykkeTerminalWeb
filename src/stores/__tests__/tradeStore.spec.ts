@@ -167,24 +167,33 @@ describe('trade store', () => {
   });
 
   describe('add public trade', () => {
+    let testObject: TradeModel;
+
+    beforeEach(() => {
+      testObject = {
+        asset: '',
+        symbol: 'LKKUSD',
+        volume: 1,
+        timestamp: Date.now().toString(),
+        side: 'Buy',
+        tradeId: 't1',
+        id: '1',
+        price: 1,
+        oppositeVolume: 1,
+        orderType: OrderType.Market,
+        fee: 0
+      };
+    });
+
     it('should add to public trades collection', () => {
-      tradeStore.addPublicTrades([
-        {
-          asset: '',
-          symbol: 'LKKUSD',
-          volume: 1,
-          timestamp: Date.now().toString(),
-          side: 'Buy',
-          tradeId: 't1',
-          id: '1',
-          price: 1,
-          oppositeVolume: 1,
-          orderType: OrderType.Market,
-          fee: 0
-        }
-      ]);
+      tradeStore.addPublicTrades([testObject]);
       expect(tradeStore.getPublicTrades).toHaveLength(1);
       expect(tradeStore.getAllTrades).toHaveLength(0);
+    });
+
+    it('should limit number of items by 999', () => {
+      tradeStore.addPublicTrades(new Array(1010).fill(testObject));
+      expect(tradeStore.getPublicTrades).toHaveLength(999);
     });
   });
 });
