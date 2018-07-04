@@ -28,13 +28,10 @@ interface OrderMarketState {
 
 export interface OrderMarketProps extends OrderBasicFormProps {
   amount?: any;
-  setMarketTotal: (
-    volume?: string | number,
-    action?: string,
-    debounce?: boolean
-  ) => any;
+  setMarketTotal: (volume?: any, action?: string, debounce?: boolean) => any;
   onResetPercentage: any;
   enoughLiquidity: boolean;
+  onMarketQuantityArrowClick: (operation: string) => void;
 }
 
 class OrderMarket extends React.Component<
@@ -79,11 +76,8 @@ class OrderMarket extends React.Component<
   };
 
   handleArrowClick = (operation: string) => () => {
-    this.props.onQuantityArrowClick(operation);
+    this.props.onMarketQuantityArrowClick(operation);
     this.props.updatePercentageState(OrderInputs.Quantity);
-    setTimeout(() =>
-      this.props.setMarketTotal(this.props.quantity, this.props.action, true)
-    );
   };
 
   handleChange = () => (e: any) => {

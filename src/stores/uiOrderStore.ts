@@ -1,15 +1,9 @@
 import {computed, observable} from 'mobx';
 import {curry} from 'rambda';
-import {
-  ArrowDirection,
-  Order,
-  OrderBookDisplayType,
-  OrderType,
-  Side
-} from '../models';
+import {ArrowDirection, OrderType, Side} from '../models';
 import {
   getMaxAvailableVolume,
-  mapToMarketEffectivePrice
+  mapToEffectivePrice
 } from '../models/mappers/orderMapper';
 import {
   DEFAULT_INPUT_VALUE,
@@ -163,6 +157,11 @@ class UiOrderStore extends BaseStore {
     }
   };
 
+  handleMarketQuantityArrowClick = (operation: ArrowDirection) => {
+    this.handleQuantityArrowClick(operation);
+    this.setMarketTotal(this.quantityValue, this.side, true);
+  };
+
   onPercentChangeForMarket = (
     percents: number,
     value: number,
@@ -174,7 +173,6 @@ class UiOrderStore extends BaseStore {
     }
     const convertedBalance = getMaxAvailableVolume(
       value,
-      OrderBookDisplayType.Volume,
       this.rootStore.orderBookStore.getAsks()
     );
 
@@ -237,27 +235,23 @@ class UiOrderStore extends BaseStore {
   };
 
   setMarketTotal = (
-    operationVolume?: string | number,
+    operationVolume?: any,
     operationType?: Side,
     debounce?: boolean
   ) => {
-    if (
-      (!operationVolume && !operationType && !this.marketTotal.canBeUpdated) ||
-      (operationVolume &&
-        operationType &&
-        !this.marketTotal.canBeUpdated &&
-        debounce)
-    ) {
+    const areNewValues = operationVolume && operationType;
+    const areNotNewValues = !operationVolume && !operationType;
+    const isDebounceByWamp = areNotNewValues && !this.marketTotal.canBeUpdated;
+    const isDebounceManually =
+      areNewValues && !this.marketTotal.canBeUpdated && debounce;
+
+    if (isDebounceByWamp || isDebounceManually) {
       return;
-    } else if ((!operationVolume && !operationType) || debounce) {
-      this.marketTotal.canBeUpdated = false;
-      setTimeout(
-        () => (this.marketTotal.canBeUpdated = true),
-        MARKET_TOTAL_DEBOUNCE
-      );
+    } else if (areNotNewValues || debounce) {
+      this.setDebounce();
     }
 
-    if (operationVolume || operationVolume === 0) {
+    if (operationVolume) {
       this.marketTotal.operationVolume =
         typeof operationVolume === 'number'
           ? operationVolume
@@ -267,22 +261,9 @@ class UiOrderStore extends BaseStore {
       this.marketTotal.operationType = operationType;
     }
 
-    let orders: Order[] = [];
-
-    switch (this.marketTotal.operationType) {
-      case Side.Sell:
-        orders = this.rootStore.orderBookStore.getBids();
-        break;
-      case Side.Buy:
-        orders = this.rootStore.orderBookStore.getAsks();
-        break;
-      default:
-    }
-
-    this.marketTotal.price = mapToMarketEffectivePrice(
+    this.marketTotal.price = mapToEffectivePrice(
       this.marketTotal.operationVolume,
-      this.rootStore.uiStore.orderbookDisplayType,
-      orders
+      this.getOrdersByOperationType()
     );
   };
 
@@ -303,6 +284,25 @@ class UiOrderStore extends BaseStore {
 
   // tslint:disable-next-line:no-empty
   reset = () => {};
+
+  private setDebounce = () => {
+    this.marketTotal.canBeUpdated = false;
+    setTimeout(
+      () => (this.marketTotal.canBeUpdated = true),
+      MARKET_TOTAL_DEBOUNCE
+    );
+  };
+
+  private getOrdersByOperationType = () => {
+    switch (this.marketTotal.operationType) {
+      case Side.Sell:
+        return this.rootStore.orderBookStore.getBids();
+      case Side.Buy:
+        return this.rootStore.orderBookStore.getAsks();
+      default:
+        return [];
+    }
+  };
 }
 
 export default UiOrderStore;

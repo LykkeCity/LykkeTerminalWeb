@@ -1,12 +1,12 @@
-import {Order, OrderBookDisplayType, Side} from '../..';
+import {Order, Side} from '../..';
 import {
   getMaxAvailableVolume,
-  mapToMarketEffectivePrice,
+  mapToEffectivePrice,
   toOrder
 } from '../orderMapper';
 
 describe('orderMapper', () => {
-  describe('method mapToMarketEffectivePrice', () => {
+  describe('method mapToEffectivePrice', () => {
     const orders: Order[] = [
       {
         connectedLimitOrders: [''],
@@ -40,37 +40,28 @@ describe('orderMapper', () => {
       }
     ].map((a: Partial<Order>) => Order.create(a));
 
-    it('mapToMarketEffectivePrice should be defined', () => {
-      expect(mapToMarketEffectivePrice).toBeDefined();
+    it('mapToEffectivePrice should be defined', () => {
+      expect(mapToEffectivePrice).toBeDefined();
     });
 
     it('should map orders price to effective price, 2 levels', () => {
       const volume = 1.5;
-      const displayType = OrderBookDisplayType.Volume;
       const price = 9221.7462;
 
-      expect(mapToMarketEffectivePrice(volume, displayType, orders)).toBe(
-        price
-      );
+      expect(mapToEffectivePrice(volume, orders)).toBe(price);
     });
 
     it('should map orders price to effective price, 3 levels', () => {
       const volume = 3;
-      const displayType = OrderBookDisplayType.Volume;
       const price = 18433.302;
 
-      expect(mapToMarketEffectivePrice(volume, displayType, orders)).toBe(
-        price
-      );
+      expect(mapToEffectivePrice(volume, orders)).toBe(price);
     });
 
     it('should return undefined when requested amount over total orders volume', () => {
       const volume = 4;
-      const displayType = OrderBookDisplayType.Volume;
 
-      expect(
-        mapToMarketEffectivePrice(volume, displayType, orders)
-      ).toBeUndefined();
+      expect(mapToEffectivePrice(volume, orders)).toBeUndefined();
     });
   });
 
@@ -102,11 +93,7 @@ describe('orderMapper', () => {
 
   describe('method getMaxAvailableVolume', () => {
     it('should return 0 is no orders available', () => {
-      const maxVolume = getMaxAvailableVolume(
-        10000,
-        OrderBookDisplayType.Volume,
-        []
-      );
+      const maxVolume = getMaxAvailableVolume(10000, []);
       expect(maxVolume).toBe(0);
     });
 
@@ -117,54 +104,13 @@ describe('orderMapper', () => {
         Order.create({price: 12000, volume: 0.5})
       ];
 
-      let maxVolume = getMaxAvailableVolume(
-        4000,
-        OrderBookDisplayType.Volume,
-        orders
-      );
+      let maxVolume = getMaxAvailableVolume(4000, orders);
       expect(maxVolume).toBe(0.25);
 
-      maxVolume = getMaxAvailableVolume(
-        10000,
-        OrderBookDisplayType.Volume,
-        orders
-      );
+      maxVolume = getMaxAvailableVolume(10000, orders);
       expect(maxVolume).toBe(1.1);
 
-      maxVolume = getMaxAvailableVolume(
-        30000,
-        OrderBookDisplayType.Volume,
-        orders
-      );
-      expect(maxVolume).toBe(2);
-    });
-
-    it('should return max available volume for passed price with test orders for depth', () => {
-      const orders = [
-        Order.create({price: 8000, volume: 10, depth: 0.5}),
-        Order.create({price: 10000, volume: 10, depth: 1}),
-        Order.create({price: 12000, volume: 10, depth: 0.5})
-      ];
-
-      let maxVolume = getMaxAvailableVolume(
-        4000,
-        OrderBookDisplayType.Depth,
-        orders
-      );
-      expect(maxVolume).toBe(0.25);
-
-      maxVolume = getMaxAvailableVolume(
-        10000,
-        OrderBookDisplayType.Depth,
-        orders
-      );
-      expect(maxVolume).toBe(1.1);
-
-      maxVolume = getMaxAvailableVolume(
-        30000,
-        OrderBookDisplayType.Depth,
-        orders
-      );
+      maxVolume = getMaxAvailableVolume(30000, orders);
       expect(maxVolume).toBe(2);
     });
 
@@ -184,39 +130,19 @@ describe('orderMapper', () => {
 
       const convertVolumeToString = (volume: number) => volume.toFixed(8);
 
-      let maxVolume = getMaxAvailableVolume(
-        98828.14,
-        OrderBookDisplayType.Volume,
-        orders
-      );
+      let maxVolume = getMaxAvailableVolume(98828.14, orders);
       expect(convertVolumeToString(maxVolume)).toBe('7.28421153');
 
-      maxVolume = getMaxAvailableVolume(
-        2500,
-        OrderBookDisplayType.Volume,
-        orders
-      );
+      maxVolume = getMaxAvailableVolume(2500, orders);
       expect(convertVolumeToString(maxVolume)).toBe('0.38557527');
 
-      maxVolume = getMaxAvailableVolume(
-        1000,
-        OrderBookDisplayType.Volume,
-        orders
-      );
+      maxVolume = getMaxAvailableVolume(1000, orders);
       expect(convertVolumeToString(maxVolume)).toBe('0.06442669');
 
-      maxVolume = getMaxAvailableVolume(
-        200,
-        OrderBookDisplayType.Volume,
-        orders
-      );
+      maxVolume = getMaxAvailableVolume(200, orders);
       expect(convertVolumeToString(maxVolume)).toBe('0.00165447');
 
-      maxVolume = getMaxAvailableVolume(
-        10,
-        OrderBookDisplayType.Volume,
-        orders
-      );
+      maxVolume = getMaxAvailableVolume(10, orders);
       expect(convertVolumeToString(maxVolume)).toBe('0.00008272');
     });
   });

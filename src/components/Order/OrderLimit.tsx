@@ -27,6 +27,7 @@ export interface OrderLimitProps extends OrderBasicFormProps {
   isEditForm?: boolean;
   onPriceArrowClick: (operation: string) => void;
   onPriceChange: (value: string) => void;
+  onQuantityArrowClick: (operation: string) => void;
 }
 
 const OrderLimit: React.SFC<OrderLimitProps> = ({

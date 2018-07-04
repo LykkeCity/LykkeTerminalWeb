@@ -1,4 +1,4 @@
-import {Order, OrderBookDisplayType, Side} from '..';
+import {Order, Side} from '..';
 
 export const toOrder = (dto: any, side: Side = Side.Buy) =>
   Order.create({
@@ -12,27 +12,23 @@ export const toOrder = (dto: any, side: Side = Side.Buy) =>
     connectedLimitOrders: []
   });
 
-const getValueForAvailableVolume = (order: Order, type: string) =>
-  order.price * order[type];
+const getValueForAvailableVolume = (order: Order) => order.price * order.volume;
 
-const getAvailableVolume = (amount: number, order: Order, type: string) =>
-  amount * order[type] / order.price;
+const getAvailableVolume = (amount: number, order: Order) =>
+  amount * order.volume / order.price;
 
-export const mapToMarketEffectivePrice = (
-  volume: number,
-  displayType: OrderBookDisplayType,
-  orders: Order[]
-) => {
+export const mapToEffectivePrice = (volume: number, orders: Order[]) => {
   let price: number = 0;
-  const type = displayType.toLowerCase();
 
   const volumeSum = orders.reduce((sum, order) => {
+    const remain = volume - sum;
+
     if (sum < volume) {
-      if (order[type] < volume - sum) {
-        price += order[type] * order.price;
-        return sum + order[type];
+      if (order.volume < remain) {
+        price += order.volume * order.price;
+        return sum + order.volume;
       } else {
-        price = price + (volume - sum) * order.price;
+        price = price + remain * order.price;
         return volume;
       }
     } else {
@@ -47,13 +43,8 @@ export const mapToMarketEffectivePrice = (
   return price;
 };
 
-export const getMaxAvailableVolume = (
-  amount: number,
-  displayType: OrderBookDisplayType,
-  orders: Order[]
-) => {
+export const getMaxAvailableVolume = (amount: number, orders: Order[]) => {
   let expendedPrice: number = 0;
-  const type = displayType.toLowerCase();
 
   return orders.reduce((maxVolume, order) => {
     if (expendedPrice >= amount) {
@@ -61,14 +52,14 @@ export const getMaxAvailableVolume = (
     }
 
     const amountLeft = amount - expendedPrice;
-    const valueForAvailableVolume = getValueForAvailableVolume(order, type);
+    const valueForAvailableVolume = getValueForAvailableVolume(order);
     const isValueAvailable = valueForAvailableVolume < amountLeft;
     if (isValueAvailable) {
       expendedPrice += valueForAvailableVolume;
-      return maxVolume + order[type];
+      return maxVolume + order.volume;
     }
 
     expendedPrice = amount;
-    return maxVolume + getAvailableVolume(amountLeft, order, type);
+    return maxVolume + getAvailableVolume(amountLeft, order);
   }, 0);
 };
