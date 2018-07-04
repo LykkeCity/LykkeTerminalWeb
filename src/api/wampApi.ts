@@ -10,7 +10,7 @@ import {StorageUtils} from '../utils/index';
 
 const tokenStorage = StorageUtils(keys.token);
 
-const DEFAULT_THROTTLE_DURATION = 10000;
+const DEFAULT_THROTTLE_DURATION = 60000;
 
 class ConnectionWrapper extends Connection {
   isConnectionOpened: boolean = false;
