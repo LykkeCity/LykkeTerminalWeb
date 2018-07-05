@@ -27,7 +27,7 @@ interface OrderMarketState {
 }
 
 export interface OrderMarketProps extends OrderBasicFormProps {
-  amount?: any;
+  amount: string;
   setMarketTotal: (volume?: any, action?: string, debounce?: boolean) => any;
   onResetPercentage: any;
   enoughLiquidity: boolean;
