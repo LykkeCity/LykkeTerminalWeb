@@ -3,6 +3,7 @@ import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
+import {AnalyticsService} from '../../services/analyticsService';
 import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {getHashCode} from '../../utils/hashcode';
 import {StorageUtils} from '../../utils/index';
@@ -128,6 +129,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
       this.updateLayoutFromLocalStorage();
       this.bindChartOverlayHandler();
     });
+
+    AnalyticsService.handleOpenMyFunds();
   }
 
   updateLayoutFromLocalStorage() {

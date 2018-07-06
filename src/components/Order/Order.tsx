@@ -4,6 +4,7 @@ import {keys} from '../../models';
 import {OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Side from '../../models/side';
+import {AnalyticsIds, AnalyticsService} from '../../services/analyticsService';
 import {StorageUtils} from '../../utils/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../../utils/math';
@@ -97,6 +98,8 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   componentDidMount() {
     this.props.resetOrder();
+    AnalyticsService.handleSwitchToLimitOrder();
+    AnalyticsService.handleSwitchToMarketOrder();
   }
 
   handleSideClick = (side: Side) => () => {
@@ -327,11 +330,13 @@ class Order extends React.Component<OrderProps, OrderState> {
       <React.Fragment>
         <Markets>
           <MarketChoiceButton
+            id={AnalyticsIds.LimitOrderButton}
             title={LIMIT}
             isActive={currentMarket === LIMIT}
             click={this.handleMarketClick(LIMIT)}
           />
           <MarketChoiceButton
+            id={AnalyticsIds.MarketOrderButton}
             title={MARKET}
             isActive={currentMarket === MARKET}
             click={this.handleMarketClick(MARKET)}

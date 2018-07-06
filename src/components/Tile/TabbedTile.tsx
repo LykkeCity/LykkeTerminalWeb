@@ -1,6 +1,7 @@
 import {observable} from 'mobx';
 import {equals} from 'rambda';
 import * as React from 'react';
+import {AnalyticsIds} from '../../services/analyticsService';
 import {TileContent, TileHeader, TileTab} from './styles';
 import {TileProps} from './Tile';
 
@@ -22,6 +23,7 @@ class TabbedTile extends React.Component<TabbedTileProps> {
         <TileHeader>
           {tabs.map((tab, idx) => (
             <TileTab
+              id={tab === 'My funds' ? AnalyticsIds.MyFundsTab : ''}
               key={tab}
               selected={equals(idx, this.selectedIndex)}
               onClick={this.handleSelectTab(idx)}
