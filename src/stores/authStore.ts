@@ -10,6 +10,7 @@ const tokenStorage = StorageUtils(keys.token);
 const stateStorage = StorageUtils(keys.state);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 const kycStatusStorage = StorageUtils(keys.isKycPassed);
+const refreshTokenStorage = StorageUtils(keys.refreshToken);
 
 class AuthStore extends BaseStore {
   @computed
@@ -47,9 +48,13 @@ class AuthStore extends BaseStore {
       })
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
-  fetchToken = async (accessToken: string, state: string) => {
+  fetchToken = async (code: string, state: string) => {
     if (state === stateStorage.get()) {
-      const {token, authId} = await this.api.fetchToken(accessToken);
+      const {token, authId} = await this.api.fetchToken(
+        code,
+        'accessToken',
+        'authorization_code'
+      );
       sessionTokenStorage.set(authId);
       this.token = token;
       tokenStorage.set(token);
@@ -66,12 +71,23 @@ class AuthStore extends BaseStore {
     kycStatusStorage.set(KycStatus);
   };
 
-  catchUnauthorized = () => {
-    this.rootStore.notificationStore.addNotification(
-      levels.information,
-      messages.expired
-    );
-    this.signOut();
+  catchUnauthorized = async () => {
+    try {
+      const {token, authId} = await this.api.fetchToken(
+        refreshTokenStorage.get(),
+        'accessToken',
+        'refresh_token'
+      );
+      sessionTokenStorage.set(authId);
+      this.token = token;
+      tokenStorage.set(token);
+    } catch (e) {
+      this.rootStore.notificationStore.addNotification(
+        levels.information,
+        messages.expired
+      );
+      this.signOut();
+    }
   };
 
   signIn = () => {
@@ -85,7 +101,7 @@ class AuthStore extends BaseStore {
     stateStorage.set(state);
 
     location.replace(
-      `${url}/connect/authorize?client_id=${clientId}&scope=profile email address&response_type=token&redirect_uri=${encodeURIComponent(
+      `${url}/connect/authorize?client_id=${clientId}&scope=profile email address offline_access&response_type=code&redirect_uri=${encodeURIComponent(
         callbackUrl!
       )}&nonce=${nonce}&state=${state}`
     );
