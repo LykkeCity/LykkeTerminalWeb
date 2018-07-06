@@ -21,5 +21,4 @@ export class RestHistoryApi extends RestApi implements HistoryApi {
       .json<any[]>();
 }
 
-const instance = new RestHistoryApi();
-export default instance;
+export default RestHistoryApi;

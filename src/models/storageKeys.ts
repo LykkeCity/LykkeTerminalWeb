@@ -10,7 +10,8 @@ enum keys {
   token = 'lwt-token',
   sessionNote = 'lwt-sessionNote',
   sessionToken = 'lwt-session-token',
-  sessionDuration = 'lwt-session-duration'
+  sessionDuration = 'lwt-session-duration',
+  refreshToken = 'lwt-refresh-token'
 }
 
 export default keys;

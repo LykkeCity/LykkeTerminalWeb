@@ -1,4 +1,5 @@
 import {OperationType} from '../models/index';
+import {RootStore} from '../stores';
 import {HistoryApi} from './index';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
@@ -16,8 +17,15 @@ export interface TradeApi {
 }
 
 export class RestTradeApi extends RestApi implements TradeApi {
+  private historyApi: HistoryApi;
+
+  constructor(rootStore: RootStore) {
+    super(rootStore);
+    this.historyApi = new HistoryApi(rootStore);
+  }
+
   fetchTrades = (instrumentId: string, skip: number, take: number) =>
-    HistoryApi.fetchHistory({
+    this.historyApi.fetchHistory({
       assetPairId: instrumentId,
       skip,
       take,
@@ -25,7 +33,7 @@ export class RestTradeApi extends RestApi implements TradeApi {
     });
 
   fetchLimitTrades = (instrumentId: string, skip: number, take: number) =>
-    HistoryApi.fetchHistory({
+    this.historyApi.fetchHistory({
       assetPairId: instrumentId,
       skip,
       take,
@@ -33,7 +41,7 @@ export class RestTradeApi extends RestApi implements TradeApi {
     });
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
-    HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
+    this.historyApi.fetchTradesByInstrument(instrumentId, skip, take);
 }
 
 export default TradeApi;

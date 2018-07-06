@@ -110,21 +110,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
     this.props.rootStore.uiStore.setPageVisibility(
       document.visibilityState === 'visible'
     );
-    this.start().then(resp => {
-      if (!resp) {
-        return;
-      }
-      const layout = layoutStorage.get();
-      if (layout) {
-        this.setState({
-          initialValue: Object.assign(
-            this.state.initialValue,
-            JSON.parse(layout)
-          )
-        });
-      }
-      this.bindChartOverlayHandler();
-    });
+    this.start();
   }
 
   bindChartOverlayHandler() {
@@ -170,19 +156,31 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
   async start() {
     if (this.authStore.isAuth) {
-      await this.referenceStore.fetchReferenceData();
-
-      await Promise.all([
-        this.authStore.fetchUserInfo(),
-        this.balanceListStore.fetchAll()
-      ]);
-
-      if (this.authStore.noKycAndFunds) {
-        this.props.history.push(paths.kycAndFundsCheck);
-        return false;
-      } else {
-        this.props.rootStore.start();
-      }
+      return this.referenceStore
+        .fetchReferenceData()
+        .then(this.authStore.fetchUserInfo)
+        .then(this.balanceListStore.fetchAll)
+        .catch(e => {
+          this.start();
+          return Promise.reject(e);
+        })
+        .then(() => {
+          if (this.authStore.noKycAndFunds) {
+            this.props.history.push(paths.kycAndFundsCheck);
+          } else {
+            this.props.rootStore.start();
+            const layout = layoutStorage.get();
+            if (layout) {
+              this.setState({
+                initialValue: Object.assign(
+                  this.state.initialValue,
+                  JSON.parse(layout)
+                )
+              });
+            }
+            this.bindChartOverlayHandler();
+          }
+        });
     } else {
       this.authStore.signIn();
     }

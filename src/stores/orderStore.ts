@@ -2,7 +2,7 @@ import OrderApi from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import messages from '../constants/notificationMessages';
-import {levels} from '../models';
+import {levels, OrderOperation} from '../models';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
@@ -68,7 +68,9 @@ class OrderStore extends BaseStore {
     this.api
       .cancelOrder(id)
       .then(() => this.api.placeLimit(body))
-      .catch(this.orderPlacedUnsuccessfully);
+      .catch((e: any) =>
+        this.orderPlacedUnsuccessfully(e, OrderOperation.Edit)
+      );
 
   cancelOrder = async (id: string) => {
     try {
@@ -78,7 +80,7 @@ class OrderStore extends BaseStore {
         this.orderCancelledSuccessfully(id);
       }
     } catch (e) {
-      this.orderPlacedUnsuccessfully(e);
+      this.orderPlacedUnsuccessfully(e, OrderOperation.Cancel);
     }
   };
 
@@ -152,7 +154,10 @@ class OrderStore extends BaseStore {
     );
   };
 
-  private orderPlacedUnsuccessfully = (error: any) => {
+  private orderPlacedUnsuccessfully = (
+    error: any,
+    orderOperation: OrderOperation = OrderOperation.Place
+  ) => {
     const errorObject = errorOrNoop(error.message);
     if (!errorObject) {
       if (error.message === 'Session confirmation is required') {
@@ -163,10 +168,17 @@ class OrderStore extends BaseStore {
           Types.Expired
         );
       } else {
-        this.notificationStore.addNotification(
-          levels.error,
-          `${error.message}`
-        );
+        if (error.status === 401) {
+          this.notificationStore.addNotification(
+            levels.information,
+            `Your session has been expired. Please, ${orderOperation} your order again`
+          );
+        } else {
+          this.notificationStore.addNotification(
+            levels.error,
+            `${error.message}`
+          );
+        }
       }
     } else {
       const key = Object.keys(errorObject)[0];
