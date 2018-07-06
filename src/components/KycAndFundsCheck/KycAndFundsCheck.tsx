@@ -2,13 +2,12 @@ import * as React from 'react';
 import ModalMessages from '../../constants/modalMessages';
 import ModalHeader from '../Modal/ModalHeader/ModalHeader';
 import {
-  KycAndFundsBack,
   MobileAppLink,
   ModalContentWrapper,
   ModalWrapper,
   OkButton
 } from '../Modal/styles';
-import {CheckBody} from './styles';
+import {CheckBackground, CheckBody} from './styles';
 
 interface NoFundsAndKycModalProps {
   reset: () => void;
@@ -21,7 +20,7 @@ const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = ({reset}) => {
   };
 
   return (
-    <KycAndFundsBack>
+    <CheckBackground>
       <ModalWrapper>
         <ModalHeader onClick={redirect}>
           {ModalMessages.NoFundsAndKyc.title}
@@ -43,7 +42,7 @@ const KycAndFundsCheck: React.SFC<NoFundsAndKycModalProps> = ({reset}) => {
         </ModalContentWrapper>
         <OkButton onClick={redirect}>Got it!</OkButton>
       </ModalWrapper>
-    </KycAndFundsBack>
+    </CheckBackground>
   );
 };
 

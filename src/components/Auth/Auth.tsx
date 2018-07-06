@@ -4,6 +4,7 @@ import * as React from 'react';
 import {RouteComponentProps} from 'react-router';
 import paths from '../../constants/paths';
 import {AuthStore, BalanceListStore} from '../../stores/index';
+import CommonLoader from '../Loader/СommonLoader';
 
 interface AuthProps extends RouteComponentProps<any> {
   authStore: AuthStore;
@@ -41,7 +42,7 @@ class Auth extends React.Component<AuthProps> {
   }
 
   render() {
-    return null;
+    return <CommonLoader loadingDescription={'Authorization...'} />;
   }
 }
 
