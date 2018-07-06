@@ -1,6 +1,7 @@
+import {SynchronizedHistory} from 'mobx-react-router';
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {Route, Router, Switch} from 'react-router-dom';
 import {Auth} from './components/Auth';
 import {KycAndFundsCheck} from './components/KycAndFundsCheck';
 import {injectGlobal} from './components/styled';
@@ -94,10 +95,14 @@ injectGlobal`
   }
 `;
 
-class App extends React.Component {
+interface AppProps {
+  routerHistory: SynchronizedHistory;
+}
+
+class App extends React.Component<AppProps> {
   render() {
     return (
-      <Router>
+      <Router history={this.props.routerHistory}>
         <Switch>
           <Route exact={true} path={paths.auth} component={Auth} />
           <Route
@@ -106,6 +111,7 @@ class App extends React.Component {
             component={KycAndFundsCheck}
           />
           <Route exact={true} path={paths.main} component={Terminal} />
+          <Route exact={true} path={paths.trade} component={Terminal} />
         </Switch>
       </Router>
     );

@@ -47,6 +47,7 @@ class UiStore extends BaseStore {
   };
 
   @observable userInfo: UserInfoModel | null;
+  @observable userSelectedInstrument: string;
   @observable private isReadOnlyMode: boolean;
 
   private isPageVisible: boolean = true;
@@ -142,15 +143,17 @@ class UiStore extends BaseStore {
   @action
   selectInstrument = (id: string) => {
     const {getInstrumentById} = this.rootStore.referenceStore;
-    const selectedInstrument = getInstrumentById(id);
-    instrumentStorage.set(JSON.stringify(selectedInstrument));
-    this.selectedInstrument = selectedInstrument!;
+    const selectedOrDefaultInstrument =
+      getInstrumentById(id) || getInstrumentById(UiStore.DEFAULT_INSTRUMENT);
+    instrumentStorage.set(JSON.stringify(selectedOrDefaultInstrument));
+    this.selectedInstrument = selectedOrDefaultInstrument!;
     this.rootStore.chartStore.renderChart();
 
     this.resetDisclaimedAssets();
     disclaimedAssets.forEach(asset =>
-      this.checkAssetToDisclaim(selectedInstrument, asset)
+      this.checkAssetToDisclaim(selectedOrDefaultInstrument, asset)
     );
+    this.rootStore.routerStore.replace(`${selectedOrDefaultInstrument!.id}`);
   };
 
   @action search = (term: string) => (this.searchTerm = term);

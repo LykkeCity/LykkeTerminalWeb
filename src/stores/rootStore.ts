@@ -1,3 +1,4 @@
+import {RouterStore} from 'mobx-react-router';
 import {
   AssetApi,
   AuthApi,
@@ -63,6 +64,7 @@ class RootStore {
   readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
+  readonly routerStore: RouterStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -96,6 +98,7 @@ class RootStore {
       this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
+      this.routerStore = new RouterStore();
     }
   }
 
@@ -122,7 +125,8 @@ class RootStore {
           );
         });
         this.uiStore.selectInstrument(
-          this.lastOrDefaultInstrument(defaultInstrument)!.id
+          this.uiStore.userSelectedInstrument ||
+            this.lastOrDefaultInstrument(defaultInstrument)!.id
         );
       });
   };
@@ -136,8 +140,8 @@ class RootStore {
 
     this.marketStore.init(instruments, assets);
 
-    const defaultInstrument = this.referenceStore.getInstrumentById(
-      UiStore.DEFAULT_INSTRUMENT
+    const selectedOrDefaultInstrument = this.referenceStore.getInstrumentById(
+      this.uiStore.userSelectedInstrument || UiStore.DEFAULT_INSTRUMENT
     );
 
     this.sessionStore.initUserSession();
@@ -175,7 +179,8 @@ class RootStore {
         });
         this.orderListStore.setWs(ws);
         this.uiStore.selectInstrument(
-          this.lastOrDefaultInstrument(defaultInstrument)!.id
+          this.uiStore.userSelectedInstrument ||
+            this.lastOrDefaultInstrument(selectedOrDefaultInstrument)!.id
         );
         this.tradeStore.subscribe(ws);
         this.orderStore.subscribe(ws);
@@ -184,7 +189,7 @@ class RootStore {
         return Promise.resolve();
       })
       .catch(e => {
-        this.startPublicMode(defaultInstrument);
+        this.startPublicMode(selectedOrDefaultInstrument);
       });
   };
 

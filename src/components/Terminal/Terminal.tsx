@@ -1,9 +1,15 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection} from 'react-mosaic-component';
+import {RouteComponentProps} from 'react-router-dom';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
-import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
+import {
+  AuthStore,
+  BalanceListStore,
+  ReferenceStore,
+  UiStore
+} from '../../stores';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Header} from '../Header';
@@ -69,7 +75,10 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   )
 };
 
-class Terminal extends React.Component<TerminalProps, {}> {
+class Terminal extends React.Component<
+  TerminalProps & RouteComponentProps<TerminalProps>,
+  {}
+> {
   state = {
     initialValue: {
       direction: 'row' as MosaicDirection,
@@ -110,6 +119,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
     this.props.rootStore.uiStore.setPageVisibility(
       document.visibilityState === 'visible'
     );
+
+    this.setUserInstrument();
+    this.updateRouteBySelectedInstrument();
+
     this.start().then(resp => {
       if (!resp) {
         return;
@@ -125,6 +138,18 @@ class Terminal extends React.Component<TerminalProps, {}> {
       }
       this.bindChartOverlayHandler();
     });
+  }
+
+  setUserInstrument() {
+    if (this.props.match.params.instrument) {
+      this.props.rootStore.uiStore.userSelectedInstrument = this.props.match.params.instrument;
+    }
+  }
+
+  updateRouteBySelectedInstrument() {
+    const selectedInstrument =
+      this.props.match.params.instrument || UiStore.DEFAULT_INSTRUMENT;
+    this.props.history.push(`/trade/${selectedInstrument}`);
   }
 
   bindChartOverlayHandler() {
