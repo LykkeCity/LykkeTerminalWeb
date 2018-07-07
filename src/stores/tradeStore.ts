@@ -141,6 +141,11 @@ class TradeStore extends BaseStore {
     await this.fetchPublicTrades();
   };
 
+  updateTrades = async () => {
+    this.trades = [];
+    await this.fetchTrades();
+  };
+
   subscribe = (ws: any) => {
     ws.subscribe(topics.trades, this.onTrades);
   };
