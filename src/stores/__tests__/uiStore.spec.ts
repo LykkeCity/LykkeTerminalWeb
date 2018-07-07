@@ -244,5 +244,21 @@ describe('uiStore', () => {
       expect(uiStore.disclaimedAssets[1]).toBe(disclaimed2);
       expect(uiStore.isDisclaimerShown).toBeTruthy();
     });
+
+    it('should activate disclaimer for REP asset', () => {
+      const disclaimed = 'REP';
+      const newInstrument = new InstrumentModel({
+        baseAsset: new AssetModel({name: 'BTC'}),
+        id: 'BTCREP',
+        quoteAsset: new AssetModel({name: disclaimed})
+      });
+      uiStore.rootStore.referenceStore.getInstrumentById = (id: string) =>
+        [newInstrument].find(i => i.id === id);
+      uiStore.selectInstrument('BTCREP');
+
+      expect(uiStore.disclaimedAssets.length).not.toBe(0);
+      expect(uiStore.disclaimedAssets[0]).toBe(disclaimed);
+      expect(uiStore.isDisclaimerShown).toBeTruthy();
+    });
   });
 });

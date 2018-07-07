@@ -1,4 +1,4 @@
-export const disclaimedAssets = ['EOS', 'VET', 'ICX'];
+export const disclaimedAssets = ['EOS', 'VET', 'ICX', 'REP'];
 
 export const disclaimerMessages = {
   EOS: {
@@ -13,5 +13,9 @@ export const disclaimerMessages = {
   ICX: {
     message:
       'Due to the ICON mainnet migration, deposits and withdrawals are disabled until further notice.'
+  },
+  REP: {
+    message:
+      'Due to the REP contract migration, trading, deposits and withdrawals will be disabled from July 8th to July 10th, 2018.'
   }
 };
