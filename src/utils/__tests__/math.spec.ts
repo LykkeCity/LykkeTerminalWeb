@@ -1,4 +1,9 @@
-import {getPercentsOf, precisionCeil, precisionFloor} from '../math';
+import {
+  getPercentsOf,
+  precisionCeil,
+  precisionFloor,
+  subtraction
+} from '../math';
 
 describe('Test math functions', () => {
   it('should cut number with precision without rounding', () => {
@@ -28,5 +33,19 @@ describe('Test math functions', () => {
     expect(getPercentsOf(percents, value, accuracy)).toBe(
       precisionFloor(percents / 100 * value, accuracy)
     );
+  });
+
+  it('should subtract decrement from number and return correct value', () => {
+    let value = 0.3;
+    let decrement = 0.1;
+    let result = 0.2;
+
+    expect(subtraction(value, decrement)).toBe(result);
+
+    value = 88.12868568;
+    decrement = 86.6328244;
+    result = 1.49586128;
+
+    expect(subtraction(value, decrement)).toBe(result);
   });
 });
