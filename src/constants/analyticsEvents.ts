@@ -29,8 +29,8 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       type: 'Change Tab'
     }
   },
-  SignOut: {
-    title: 'Sign Out',
+  LogOut: {
+    title: 'Log Out',
     details: {
       category,
       location: 'Header',

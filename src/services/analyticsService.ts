@@ -10,7 +10,10 @@ declare global {
 export const AnalyticsIds = {
   LimitOrderButton: 'limit-order-button',
   MarketOrderButton: 'market-order-button',
-  MyFundsTab: 'my-funds-click'
+  MyFundsTab: 'my-funds-click',
+  LogoutButton: 'logout-button',
+  VolumeButton: 'volume',
+  DepthButton: 'depth'
 };
 
 export abstract class AnalyticsService {
@@ -37,6 +40,27 @@ export abstract class AnalyticsService {
     AnalyticsService.handleClick(
       AnalyticsIds.MyFundsTab,
       AnalyticsEvents.OpenMyFunds
+    );
+  };
+
+  static handleLogout = (): void => {
+    AnalyticsService.handleClick(
+      AnalyticsIds.LogoutButton,
+      AnalyticsEvents.LogOut
+    );
+  };
+
+  static handleSwitchToVolume = (): void => {
+    AnalyticsService.handleClick(
+      AnalyticsIds.VolumeButton,
+      AnalyticsEvents.SwitchToVolume
+    );
+  };
+
+  static handleSwitchToDepth = (): void => {
+    AnalyticsService.handleClick(
+      AnalyticsIds.DepthButton,
+      AnalyticsEvents.SwitchToDepth
     );
   };
 

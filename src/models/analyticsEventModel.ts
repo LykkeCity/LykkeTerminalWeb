@@ -14,7 +14,7 @@ export interface AnalyticsEventsModel {
   SwitchToLimitOrder: AnalyticsEventModel;
   SwitchToMarketOrder: AnalyticsEventModel;
   OpenMyFunds: AnalyticsEventModel;
-  SignOut: AnalyticsEventModel;
+  LogOut: AnalyticsEventModel;
   SwitchToDepth: AnalyticsEventModel;
   SwitchToVolume: AnalyticsEventModel;
   TradelogScrolledToBottom: AnalyticsEventModel;
