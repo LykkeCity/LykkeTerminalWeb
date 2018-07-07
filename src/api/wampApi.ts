@@ -82,10 +82,11 @@ export class WampApi {
     }
   };
 
-  continue = () => {
+  continue = (updateData: () => void) => {
     this.resetTimer();
     if (this.connection && !this.connection.isConnectionOpened) {
       this.connection.open();
+      updateData();
     }
   };
 

@@ -202,12 +202,7 @@ class RootStore {
 
   pause = () => this.ws.pause();
 
-  continue = () => {
-    this.ws.continue();
-    if (!this.ws.isThrottled) {
-      this.updateData();
-    }
-  };
+  continue = () => this.ws.continue(this.updateData);
 
   registerStore = (store: BaseStore) => this.stores.add(store);
 
