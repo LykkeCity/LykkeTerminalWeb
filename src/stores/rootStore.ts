@@ -196,8 +196,8 @@ class RootStore {
   updateData = () => {
     this.orderListStore.fetchAll();
     this.orderBookStore.fetchAll();
-    this.balanceListStore.updateWalletBalances();
-    this.tradeStore.updateTrades();
+    this.balanceListStore.refetchBalances();
+    this.tradeStore.refetchAllTrades();
   };
 
   pause = () => this.ws.pause();
