@@ -72,6 +72,7 @@ interface OrderProps {
   isCurrentSideSell: boolean;
   resetOrder: () => void;
   isDisclaimerShown: boolean;
+  disclaimedAssets: string[];
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -259,7 +260,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       ask,
       baseAssetId,
       quoteAssetId,
-      isDisclaimerShown
+      isDisclaimerShown,
+      disclaimedAssets
     } = this.props;
     const {
       priceValue,
@@ -404,7 +406,10 @@ class Order extends React.Component<OrderProps, OrderState> {
             message={this.getConfirmMessage()}
           />
         )}
-        {isDisclaimerShown && <Disclaimer />}
+        {isDisclaimerShown &&
+          disclaimedAssets.map((asset, index) => (
+            <Disclaimer asset={asset} key={`${asset}_${index}`} />
+          ))}
       </React.Fragment>
     );
   }
