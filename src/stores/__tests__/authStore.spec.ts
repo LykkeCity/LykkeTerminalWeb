@@ -2,13 +2,15 @@ import {AuthStore, RootStore} from '../index';
 
 describe('auth store', () => {
   let authStore: AuthStore;
+  let rootStore: RootStore;
   const api: any = {
     fetchBearerToken: jest.fn(),
     fetchUserInfo: jest.fn()
   };
 
   beforeEach(() => {
-    authStore = new AuthStore(new RootStore(false), api);
+    rootStore = new RootStore(true);
+    authStore = new AuthStore(rootStore, api);
   });
 
   describe('store', () => {
@@ -48,6 +50,26 @@ describe('auth store', () => {
 
       expect(authStore.isAuth).toBeFalsy();
       expect(authStore.isKycPassed).toBeFalsy();
+    });
+  });
+
+  describe('method fetchUserInfo', () => {
+    let userInfo: object;
+    beforeEach(() => {
+      userInfo = {
+        KycStatus: 'Ok',
+        FirstName: 'First',
+        LastName: 'Second'
+      };
+      api.fetchUserInfo = jest.fn(() => Promise.resolve(userInfo));
+    });
+
+    it('should set UserInfo in uiStore', async () => {
+      rootStore.uiStore.setUserInfo = jest.fn();
+
+      await authStore.fetchUserInfo();
+
+      expect(rootStore.uiStore.setUserInfo).toHaveBeenCalled();
     });
   });
 });

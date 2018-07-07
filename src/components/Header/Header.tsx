@@ -6,6 +6,7 @@ import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {SettingsModal} from '../Settings';
 import {colors} from '../styled';
+import {UserName} from '../UserInfo';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
 import {HeaderFlex, HeaderItem, HeaderWrapper, Logo} from './styles';
 
@@ -83,6 +84,13 @@ const Header: React.SFC<HeaderProps> = ({
                 {settingsStore.showSettings ? (
                   <SettingsModal handleCloseSettings={handleCloseSettings} />
                 ) : null}
+              </HeaderItem>
+            ) : null}
+            {authStore.isAuth ? (
+              <HeaderItem>
+                <Flex>
+                  <UserName />
+                </Flex>
               </HeaderItem>
             ) : null}
             <HeaderItem>
