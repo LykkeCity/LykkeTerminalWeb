@@ -3,9 +3,8 @@ import {TradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
 import {feeAssetFromSide} from '../../models/tradeModel.mapper';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import {Cell} from '../Table/styles';
+import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
-import {SideCell} from './styles';
 
 interface TradeListItemProps extends TradeModel {
   className?: string;
@@ -45,10 +44,11 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
       >
         {instrument!.displayName}
       </Cell>
-      <SideCell w={TradesCellWidth.Side} side={side}>
-        {side}
-      </SideCell>
-      <TitledCell>{formattedNumber(price, accuracy)}</TitledCell>
+      <TitledCell title={formattedNumber(price, accuracy)}>
+        <ColoredText side={side}>
+          {formattedNumber(price, accuracy)}
+        </ColoredText>
+      </TitledCell>
       <TitledCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
