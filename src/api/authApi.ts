@@ -1,4 +1,4 @@
-import {keys} from '../models';
+import {GrantType, keys} from '../models';
 import {StorageUtils} from '../utils/index';
 import {RestApi} from './index';
 import {ApiResponse} from './types';
@@ -24,7 +24,7 @@ const getUrlObjectForAccessToken = (
     client_secret: 'cebfeb21-e6c3-488c-873f-950c31f8386c',
     redirect_uri: process.env.REACT_APP_CALLBACK_URL
   };
-  if (grantType === 'refresh_token') {
+  if (grantType === GrantType.RefreshToken) {
     urlObj = {
       ...urlObj,
       refresh_token: code
@@ -51,13 +51,8 @@ export class RestAuthApi extends RestApi implements AuthApi {
       Password: password
     });
 
-  fetchToken = async (
-    code: string | null,
-    accessToken: string,
-    grantType: string
-  ) => {
-    let token: string;
-    token = await this.fetchAccessToken(
+  fetchToken = async (code: string | null, grantType: string) => {
+    const token = await this.fetchAccessToken(
       getUrlObjectForAccessToken(grantType, code)
     );
     return this.wretcher()

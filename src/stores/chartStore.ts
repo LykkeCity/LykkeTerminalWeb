@@ -73,15 +73,16 @@ class ChartStore extends BaseStore {
 
     this.settings = this.updateSettings(defaultSettings);
     if (this.rootStore.authStore.isAuth) {
-      await this.load()
-        .then((res: any) => {
-          this.settings = this.updateSettings(JSON.parse(res.Data));
-        })
-        .catch(err => {
-          if (err.status === 404) {
-            this.settings = this.updateSettings(defaultSettings);
-          }
-        });
+      try {
+        await this.loadAndSetCustomChartData();
+      } catch (error) {
+        if (error.status === 404) {
+          this.settings = this.updateSettings(defaultSettings);
+        }
+        if (error.status === 401) {
+          await this.loadAndSetCustomChartData();
+        }
+      }
     }
 
     this.createWidget(instrument);
@@ -107,7 +108,11 @@ class ChartStore extends BaseStore {
     this.api.save({Data: JSON.stringify(settings)});
   };
 
-  load = () => this.api.load();
+  loadAndSetCustomChartData = () => {
+    return this.api.load().then((res: any) => {
+      this.settings = this.updateSettings(JSON.parse(res.Data));
+    });
+  };
 
   resetToDefault = () => {
     if (this.widget) {

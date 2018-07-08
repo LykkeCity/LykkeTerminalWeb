@@ -9,12 +9,17 @@ export interface OrderApi {
 }
 
 export class RestOrderApi extends RestApi implements OrderApi {
-  placeMarket = (body: any) => this.fireAndForget('/Orders/market', body);
+  placeMarket = (body: any) =>
+    this.fireAndForgetAndCatchUnauthErrorInSilence('/Orders/market', body);
 
-  placeLimit = (body: any) => this.post('/Orders/limit', body);
+  placeLimit = (body: any) =>
+    this.fireAndCatchUnauthErrorInSilence('/Orders/limit', body);
 
   cancelOrder = (id: string) =>
-    this.fireAndForget(`/orders/limit/${id}/cancel`, {});
+    this.fireAndForgetAndCatchUnauthErrorInSilence(
+      `/orders/limit/${id}/cancel`,
+      {}
+    );
 
   fetchAll = () => this.get('/orders');
 }

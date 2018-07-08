@@ -1,7 +1,7 @@
 import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
 import messages from '../constants/notificationMessages';
-import {keys, KycStatuses, levels} from '../models';
+import {GrantType, keys, KycStatuses, levels} from '../models';
 import {RandomString, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -52,8 +52,7 @@ class AuthStore extends BaseStore {
     if (state === stateStorage.get()) {
       const {token, authId} = await this.api.fetchToken(
         code,
-        'accessToken',
-        'authorization_code'
+        GrantType.AuthorizationCode
       );
       sessionTokenStorage.set(authId);
       this.token = token;
@@ -75,12 +74,12 @@ class AuthStore extends BaseStore {
     try {
       const {token, authId} = await this.api.fetchToken(
         refreshTokenStorage.get(),
-        'accessToken',
-        'refresh_token'
+        GrantType.RefreshToken
       );
       sessionTokenStorage.set(authId);
       this.token = token;
       tokenStorage.set(token);
+      return Promise.resolve();
     } catch (e) {
       this.rootStore.notificationStore.addNotification(
         levels.information,

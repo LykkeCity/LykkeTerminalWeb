@@ -25,7 +25,9 @@ export class RestApi {
       .headers(headers)
       .url(url)
       .get()
-      .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .unauthorized((err: WretcherError) =>
+        this.catchUnauthorized(err, () => this.get(url, headers))
+      )
       .json();
 
   protected getWithQuery = <T = any>(
@@ -36,7 +38,9 @@ export class RestApi {
       .url(url)
       .query(query)
       .get()
-      .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .unauthorized((err: WretcherError) =>
+        this.catchUnauthorized(err, () => this.getWithQuery(url, query))
+      )
       .json<T>();
 
   protected getPublic = (url: string) =>
@@ -50,12 +54,23 @@ export class RestApi {
   protected fireAndForget = (url: string, body: any, headers: any = {}) =>
     this._post(url, body, headers).res();
 
+  protected fireAndForgetAndCatchUnauthErrorInSilence = (
+    url: string,
+    body: any,
+    headers: any = {}
+  ) => this._postInSilence(url, body, headers).res();
+
+  protected fireAndCatchUnauthErrorInSilence = (url: string, body: any) =>
+    this._postInSilence(url, body).json();
+
   protected patch = (url: string, body: any) =>
     this.wretcher()
       .url(url)
       .json(body)
       .patch()
-      .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .unauthorized((err: WretcherError) =>
+        this.catchUnauthorized(err, () => this.patch(url, body))
+      )
       .res();
 
   protected put = (url: string, body: any) =>
@@ -63,18 +78,32 @@ export class RestApi {
       .url(url)
       .json(body)
       .put()
-      .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .unauthorized((err: WretcherError) =>
+        this.catchUnauthorized(err, () => this.put(url, body))
+      )
       .json();
 
   protected delete = (url: string) =>
     this.wretcher()
       .url(url)
       .delete()
-      .unauthorized((err: WretcherError) => this.catchUnauthorized(err))
+      .unauthorized((err: WretcherError) =>
+        this.catchUnauthorized(err, () => this.delete(url))
+      )
       .res();
 
-  private readonly catchUnauthorized = (err: WretcherError) => {
-    this.rootStore!.authStore.catchUnauthorized();
+  private readonly catchUnauthorized = async (
+    err: WretcherError,
+    recallApi: any
+  ) => {
+    await this.rootStore!.authStore.catchUnauthorized();
+    await this.rootStore!.reconnectToWs();
+    return recallApi();
+  };
+
+  private readonly catchUnauthorizedInSilence = async (err: WretcherError) => {
+    await this.rootStore!.authStore.catchUnauthorized();
+    await this.rootStore!.reconnectToWs();
     throw err;
   };
 
@@ -85,7 +114,22 @@ export class RestApi {
       .headers(headers)
       .json(body)
       .post()
-      .unauthorized((err: WretcherError) => this.catchUnauthorized(err));
+      .unauthorized((err: WretcherError) =>
+        this.catchUnauthorized(err, () => this._post(url, body, headers))
+      );
+
+  // tslint:disable-next-line:variable-name
+  private readonly _postInSilence = (
+    url: string,
+    body: any,
+    headers: any = {}
+  ) =>
+    this.wretcher()
+      .url(url)
+      .headers(headers)
+      .json(body)
+      .post()
+      .unauthorized(this.catchUnauthorizedInSilence);
 }
 
 export default RestApi;

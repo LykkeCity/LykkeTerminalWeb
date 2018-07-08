@@ -76,7 +76,7 @@ class SessionStore extends BaseStore {
     const session = await this.api.getSessionStatus();
     const {Confirmed, Ttl, Enabled} = session.TradingSession;
 
-    if (Enabled) {
+    if (!Enabled) {
       this.rootStore.uiStore.stopReadOnlyMode();
       return;
     }

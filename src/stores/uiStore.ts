@@ -127,12 +127,12 @@ class UiStore extends BaseStore {
     (this.showOrdersSelect = !this.showOrdersSelect);
 
   @action
-  selectInstrument = (id: string) => {
+  selectInstrument = async (id: string) => {
     const {getInstrumentById} = this.rootStore.referenceStore;
     const selectedInstrument = getInstrumentById(id);
     instrumentStorage.set(JSON.stringify(selectedInstrument));
     this.selectedInstrument = selectedInstrument!;
-    this.rootStore.chartStore.renderChart();
+    await this.rootStore.chartStore.renderChart();
     this.isDisclaimerShown = this.hasAsset(selectedInstrument!, 'EOS');
   };
 
