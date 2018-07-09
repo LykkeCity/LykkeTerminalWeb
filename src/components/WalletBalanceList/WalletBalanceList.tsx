@@ -21,13 +21,16 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   <Table>
     <tbody>
       {wallet &&
-        wallet.balances.map(assetBalance => (
-          <WalletBalanceItem
-            key={assetBalance.id}
-            assetBalance={assetBalance}
-            baseAsset={baseAsset}
-          />
-        ))}
+        wallet.balances.map(
+          assetBalance =>
+            !!assetBalance.balance && (
+              <WalletBalanceItem
+                key={assetBalance.id}
+                assetBalance={assetBalance}
+                baseAsset={baseAsset}
+              />
+            )
+        )}
     </tbody>
   </Table>
 );
