@@ -11,13 +11,13 @@
     background-color: transparent;
   }
   100% {
-    background-color: #ff6161;
+    background-color: rgba(255, 97, 97, 0.4);
   }
 }
 
 @keyframes color-sell-out {
   0% {
-    background-color: #ff6161;
+    background-color: rgba(255, 97, 97, 0.4);
   }
   100% {
     background-color: transparent;
@@ -37,13 +37,13 @@
     background-color: transparent;
   }
   100% {
-    background-color: #46eb6a;
+    background-color: rgba(70, 235, 106, 0.4);
   }
 }
 
 @keyframes color-buy-out {
   0% {
-    background-color: #46eb6a;
+    background-color: rgba(70, 235, 106, 0.4);
   }
   100% {
     background-color: transparent;

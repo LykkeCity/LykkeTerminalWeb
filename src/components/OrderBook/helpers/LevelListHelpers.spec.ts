@@ -4,6 +4,7 @@ import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 import {
   colorizedSymbol,
+  DEFAULT_TRAILING_ZERO_OPACITY,
   fillBySide,
   findAndDeleteDuplicatedAnimatedLevel,
   getCellType,
@@ -47,20 +48,22 @@ describe('level list helpers', () => {
   });
 
   it('should return default color if currentSymbolPosition is less than trailingZeroPosition', () => {
-    const getSymbolColor = colorizedSymbol(colors.white);
+    const currentOpacity = 1;
+    const getSymbolColor = colorizedSymbol(currentOpacity);
     const currentSymbolPosition = 0;
     const trailingZeroPosition = 5;
     expect(getSymbolColor(trailingZeroPosition, currentSymbolPosition)).toBe(
-      colors.white
+      currentOpacity
     );
   });
 
   it('should return grey color if currentSymbolPosition is more than trailingZeroPosition', () => {
-    const getSymbolColor = colorizedSymbol(colors.white);
+    const currentOpacity = 1;
+    const getSymbolColor = colorizedSymbol(currentOpacity);
     const currentSymbolPosition = 6;
     const trailingZeroPosition = 5;
     expect(getSymbolColor(trailingZeroPosition, currentSymbolPosition)).toBe(
-      colors.coolGrey
+      DEFAULT_TRAILING_ZERO_OPACITY
     );
   });
 
@@ -100,7 +103,8 @@ describe('level list helpers', () => {
 
       const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
         existedLevel!,
-        color
+        color,
+        Side.Buy
       );
       expect(animatedColor).toBe(color);
       expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
@@ -119,9 +123,10 @@ describe('level list helpers', () => {
 
       const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
         existedLevel!,
-        color
+        color,
+        Side.Buy
       );
-      expect(animatedColor).toBe(colors.white);
+      expect(animatedColor).toBe(colors.buy);
       expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
     });
 
