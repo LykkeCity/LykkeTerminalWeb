@@ -124,13 +124,14 @@ class ReferenceStore extends BaseStore {
   };
 
   findAppropriateDescriptionById = (
-    descriptions: any[],
+    descriptions: DescriptionResponseModel[],
     assetId: string
   ): DescriptionResponseModel => {
     return (
       descriptions.find(
-        (rawDescription: any) => rawDescription.Id === assetId
-      ) || {}
+        (rawDescription: DescriptionResponseModel) =>
+          rawDescription.Id === assetId
+      ) || ({} as DescriptionResponseModel)
     );
   };
 
@@ -139,9 +140,10 @@ class ReferenceStore extends BaseStore {
     const requests = [this.api.fetchAll(), this.api.fetchAssetsDescriptions()];
 
     return Promise.all(requests).then(data => {
+      // TODO: Remove variability when new endpoint releases
       const assets = data[0].Assets || data[0];
       this.descriptions = data[1].Descriptions || data[1];
-      if (assets && assets.length > 0) {
+      if (assets.length > 0) {
         runInAction(() => {
           this.assets = assets.map((rawAsset: AssetResponseModel) => {
             const appropriateDescription = this.findAppropriateDescriptionById(
@@ -161,16 +163,16 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchAssetById = (id: string) => {
-    return this.api.fetchAssetById(id).then(asset => {
+    return this.api.fetchAssetById(id).then(data => {
       let mappedAsset;
-      asset = asset.Asset || asset;
-      if (asset) {
+      const rawAsset = data.Asset || data;
+      if (rawAsset) {
         const appropriateDescription = this.findAppropriateDescriptionById(
           this.descriptions,
-          asset.Id
+          rawAsset.Id
         );
         mappedAsset = mappers.mapToAsset(
-          asset as AssetResponseModel,
+          rawAsset as AssetResponseModel,
           this.categories,
           appropriateDescription as DescriptionResponseModel
         );
