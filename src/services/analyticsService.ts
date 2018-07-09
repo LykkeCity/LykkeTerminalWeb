@@ -64,6 +64,10 @@ export abstract class AnalyticsService {
     );
   };
 
+  static emitTrackEvent = (event: AnalyticsEventModel) => {
+    window.analytics.track(event.title, event.details);
+  };
+
   private static handleClick = (
     id: string,
     event: AnalyticsEventModel

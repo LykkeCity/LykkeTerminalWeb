@@ -71,7 +71,7 @@ const CustomSelect: React.SFC<CustomSelectProps> = ({
           return (
             <StyledItem
               key={item.value}
-              onClick={click(item.value, item.index)}
+              onClick={click(item.value)}
               isActive={isActiveMarked && activeValue === item.value}
             >
               {item.label}

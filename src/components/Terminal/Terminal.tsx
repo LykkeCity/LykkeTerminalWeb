@@ -131,6 +131,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
     });
 
     AnalyticsService.handleOpenMyFunds();
+    AnalyticsService.handleLogout();
   }
 
   updateLayoutFromLocalStorage() {

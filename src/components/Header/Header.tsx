@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {AnalyticsIds} from '../../services/analyticsService';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
 import {Icon} from '../Icon/index';
@@ -95,7 +96,11 @@ const Header: React.SFC<HeaderProps> = ({
             ) : null}
             <HeaderItem>
               {authStore.isAuth ? (
-                <span className="hidden-xs" onClick={signOut}>
+                <span
+                  id={AnalyticsIds.LogoutButton}
+                  className="hidden-xs"
+                  onClick={signOut}
+                >
                   <Icon name={'logout'} color={colors.coolGrey} />
                 </span>
               ) : (

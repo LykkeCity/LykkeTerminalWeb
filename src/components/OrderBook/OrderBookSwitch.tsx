@@ -1,7 +1,9 @@
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {OrderBookDisplayType} from '../../models';
+import {AnalyticsService} from '../../services/analyticsService';
 import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
 import {StyledSwitch} from './styles';
@@ -24,7 +26,17 @@ const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
   const handleClick = (val: string) => (e: any) => {
     toggle();
     onChange(val);
+    if (val === OrderBookDisplayType.Volume) {
+      AnalyticsService.emitTrackEvent(AnalyticsEvents.SwitchToVolume);
+    } else {
+      AnalyticsService.emitTrackEvent(AnalyticsEvents.SwitchToDepth);
+    }
   };
+
+  const items = Object.keys(OrderBookDisplayType).map(x => ({
+    label: x,
+    value: x
+  }));
 
   return (
     <StyledSwitch>
@@ -39,10 +51,7 @@ const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
               minWidth: '150px',
               top: '45px'
             }}
-            items={Object.keys(OrderBookDisplayType).map(x => ({
-              label: x,
-              value: x
-            }))}
+            items={items}
             isActiveMarked={true}
             activeValue={value}
             click={handleClick}
