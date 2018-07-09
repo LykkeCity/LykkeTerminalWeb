@@ -10,14 +10,18 @@ import {StorageUtils} from '../utils/index';
 
 const tokenStorage = StorageUtils(keys.token);
 
-const DEFAULT_THROTTLE_DURATION = 10000;
+const DEFAULT_THROTTLE_DURATION = 60000;
 
-// tslint:disable:object-literal-sort-keys
+class ConnectionWrapper extends Connection {
+  isConnectionOpened: boolean = false;
+}
+
+// tslint:disable-next-line:max-classes-per-file
 export class WampApi {
   isThrottled: boolean = false;
 
   private session: Session;
-  private connection: Connection;
+  private connection: ConnectionWrapper;
 
   private subscriptions: Map<string, Subscription> = new Map();
 
@@ -55,25 +59,34 @@ export class WampApi {
     this.connection.close();
   };
 
+  resetTimer = () => {
+    this.isThrottled = false;
+    clearTimeout(this.timer);
+  };
+
   throttle = (callback: any, duration: number) => {
     this.isThrottled = true;
     this.timer = setTimeout(() => {
       callback.call();
-      this.isThrottled = false;
+      this.resetTimer();
     }, duration);
   };
 
   pause = () => {
-    if (this.connection && !this.isThrottled) {
+    if (
+      this.connection &&
+      this.connection.isConnectionOpened &&
+      !this.isThrottled
+    ) {
       this.throttle(() => this.connection.close(), DEFAULT_THROTTLE_DURATION);
     }
   };
 
-  continue = () => {
-    if (this.connection) {
-      clearTimeout(this.timer);
-      this.isThrottled = false;
+  continue = (updateData: () => void) => {
+    this.resetTimer();
+    if (this.connection && !this.connection.isConnectionOpened) {
       this.connection.open();
+      updateData();
     }
   };
 
@@ -84,6 +97,14 @@ export class WampApi {
 
   call = (topic: string, procedure: any) => this.session.call(topic, procedure);
 
+  get isConnectionOpened(): boolean {
+    return this.connection.isConnectionOpened;
+  }
+
+  set isConnectionOpened(isConnectionOpened: boolean) {
+    this.connection.isConnectionOpened = isConnectionOpened;
+  }
+
   // tslint:disable-next-line:variable-name
   private _connect = (options: IConnectionOptions) =>
     new Promise<Session>(resolve => {
@@ -91,12 +112,18 @@ export class WampApi {
         resolve(this.session);
       }
 
-      this.connection = new autobahn.Connection(options);
+      this.connection = new autobahn.Connection(options) as ConnectionWrapper;
 
       this.connection.onopen = (session: Session) => {
+        this.isConnectionOpened = true;
         this.session = session;
         this.subscribeToAll();
         resolve(session);
+      };
+
+      this.connection.onclose = () => {
+        this.isConnectionOpened = false;
+        return false;
       };
 
       this.connection.open();

@@ -140,9 +140,19 @@ class TradeStore extends BaseStore {
     }
   };
 
-  updatePublicTrades = async () => {
+  refetchPublicTrades = () => {
     this.publicTrades = [];
-    await this.fetchPublicTrades();
+    this.fetchPublicTrades();
+  };
+
+  refetchTrades = () => {
+    this.trades = [];
+    this.fetchTrades();
+  };
+
+  refetchAllTrades = () => {
+    this.refetchPublicTrades();
+    this.refetchTrades();
   };
 
   subscribe = (ws: any) => {

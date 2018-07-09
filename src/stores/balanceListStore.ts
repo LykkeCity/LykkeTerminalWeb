@@ -136,6 +136,11 @@ class BalanceListStore extends BaseStore {
     }
   };
 
+  refetchBalances = () => {
+    this.reset();
+    this.fetchAll();
+  };
+
   reset = () => {
     this.walletList = [];
   };

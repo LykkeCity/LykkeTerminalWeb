@@ -196,18 +196,13 @@ class RootStore {
   updateData = () => {
     this.orderListStore.fetchAll();
     this.orderBookStore.fetchAll();
-    this.tradeStore.updatePublicTrades();
-    this.balanceListStore.updateWalletBalances();
+    this.balanceListStore.refetchBalances();
+    this.tradeStore.refetchAllTrades();
   };
 
   pause = () => this.ws.pause();
 
-  continue = () => {
-    this.ws.continue();
-    if (!this.ws.isThrottled) {
-      this.updateData();
-    }
-  };
+  continue = () => this.ws.continue(this.updateData);
 
   registerStore = (store: BaseStore) => this.stores.add(store);
 
