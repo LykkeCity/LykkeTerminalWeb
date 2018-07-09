@@ -90,7 +90,10 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <InputControl>
         <Flex justify={'space-between'} style={{marginBottom: '7px'}}>
           <Action>{`Amount (${baseAssetName})`}</Action>
-          <Available onClick={onHandlePercentageChange()}>
+          <Available
+            onClick={onHandlePercentageChange()}
+            className={!balance ? 'disabled' : ''}
+          >
             {formattedNumber(balance || 0, balanceAccuracy)}{' '}
             {isSell ? baseAssetName : quoteAssetName} available
           </Available>

@@ -1,7 +1,7 @@
 import {rem} from 'polished';
 import styled, {css} from 'styled-components';
 import {Side} from '../../models';
-import {colors} from '../styled';
+import {colors, greyButton} from '../styled';
 
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
@@ -144,7 +144,9 @@ export const Amount = styled.div`
 export const Available = styled(Amount)`
   text-align: right;
   &:hover {
-    cursor: pointer;
+    &:not(.disabled) {
+      cursor: pointer;
+    }
   }
 `;
 
@@ -211,4 +213,87 @@ export const Link = styled.a`
   color: ${colors.white};
   cursor: pointer;
   text-decoration: underline;
+`;
+
+export const Percent = styled.div`
+  color: #f5f6f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+  padding: ${rem(8)} 0;
+  border: 1px solid transparent;
+  font-size: ${rem(14)};
+  display: flex;
+  justify-content: center;
+  margin-bottom: ${rem(4)};
+  opacity: 1;
+
+  div {
+    border-left: 1px solid ${greyButton.borderColor};
+    width: 100%;
+    text-align: center;
+  }
+
+  &.active {
+    border: 1px solid ${greyButton.borderColor};
+    border-radius: ${greyButton.borderRadius};
+
+    div {
+      border-left: 1px solid transparent;
+    }
+  }
+
+  &:first-child {
+    div {
+      border-left: 1px solid transparent;
+    }
+  }
+
+  &:hover,
+  &.active + div:hover {
+    border: 1px solid ${greyButton.borderColor};
+    border-left: 1px solid ${greyButton.borderColor};
+    border-radius: ${greyButton.borderRadius};
+    cursor: pointer;
+
+    div {
+      border-left: 1px solid transparent;
+    }
+  }
+
+  &:hover + div,
+  &.active + div {
+    div {
+      border-left: 1px solid transparent;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: auto;
+
+    &.active,
+    &.active + div {
+      border: 1px solid transparent;
+
+      div {
+        border-left: 1px solid ${greyButton.borderColor};
+      }
+    }
+
+    &:hover,
+    &.disabled + div {
+      border: 1px solid transparent;
+      cursor: auto;
+
+      div {
+        border-left: 1px solid ${greyButton.borderColor};
+      }
+
+      &:first-child div {
+        border-left: 1px solid transparent;
+      }
+    }
+  }
 `;
