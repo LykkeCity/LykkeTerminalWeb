@@ -26,6 +26,7 @@ import {
   colorizedSymbol,
   DEFAULT_OPACITY,
   fillBySide,
+  fillVolumeBySide,
   findAndDeleteDuplicatedAnimatedLevel,
   getCellType,
   getColorAndOpacityForAnimation,
@@ -169,8 +170,9 @@ class LevelList extends React.Component<LevelListProps> {
         cachedLevel => cachedLevel.price === levelOrder.price
       );
       const color = fillBySide(levelOrder.side);
+      const volumeActiveColor = fillVolumeBySide(levelOrder.side);
 
-      let volumeColor = colors.white;
+      let volumeColor = color;
       let volumeOpacity = DEFAULT_OPACITY;
       const isChangingLevel =
         existedLevel && existedLevel[displayType] !== levelOrder[displayType];
@@ -201,7 +203,11 @@ class LevelList extends React.Component<LevelListProps> {
           const {
             animatedColor,
             animatedOpacity
-          } = getColorAndOpacityForAnimation(existedAnimatingLevel, color);
+          } = getColorAndOpacityForAnimation(
+            existedAnimatingLevel,
+            volumeActiveColor,
+            levelOrder.side
+          );
           volumeColor = animatedColor;
           volumeOpacity = animatedOpacity;
         }
@@ -278,19 +284,19 @@ class LevelList extends React.Component<LevelListProps> {
         let drownSymbolsWidth = 0;
         const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
         const symbols = volume.split('');
-        const getSymbolColor = colorizedSymbol(volumeColor);
+        const getSymbolOpacity = colorizedSymbol(volumeOpacity);
 
         symbols.forEach((symbol: string, i: number) => {
-          const symbolColor = getSymbolColor(trailingZeroPosition, i);
+          const symbolOpacity = getSymbolOpacity(trailingZeroPosition, i);
           drawText({
             ctx: this.canvasCtx,
-            color: symbolColor,
+            color: volumeColor,
             text: symbol,
             x: width / CELLS_NUMBER + LEFT_PADDING + drownSymbolsWidth,
             y: canvasY - TOP_PADDING,
             font: LEVEL_FONT,
             align: 'start',
-            opacity: volumeOpacity
+            opacity: symbolOpacity
           });
           drownSymbolsWidth += this.canvasCtx!.measureText(symbol).width;
         });

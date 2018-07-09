@@ -38,6 +38,9 @@ export const colors = {
   mango: '#fb8f01',
   lightWhite: 'rgba(255, 255, 255, 0.4)',
   snowWhite: '#fff',
+  activeBuy: '#8ccb4d',
+  activeSell: '#ca4c4c',
+  snowWhite: '#fff',
   whiteText: '#f5f6f7',
   graphiteBackground: '#3e3e3e'
 };
