@@ -25,7 +25,9 @@ const normalize = compose(
 const baseAssetStorage = StorageUtils(keys.baseAsset);
 
 class ReferenceStore extends BaseStore {
-  @observable private assets: AssetModel[] = [];
+  descriptions: DescriptionResponseModel[];
+
+  @observable assets: AssetModel[] = [];
   @observable.shallow private availableAssets: string[] = [];
   @observable private categories: AssetCategoryModel[] = [];
   @observable.shallow private instruments: InstrumentModel[] = [];
@@ -138,12 +140,12 @@ class ReferenceStore extends BaseStore {
 
     return Promise.all(requests).then(data => {
       const assets = data[0].Assets || data[0];
-      const descriptions = data[1].Descriptions || data[1];
-      if (assets && descriptions) {
+      this.descriptions = data[1].Descriptions || data[1];
+      if (assets && assets.length > 0) {
         runInAction(() => {
           this.assets = assets.map((rawAsset: AssetResponseModel) => {
             const appropriateDescription = this.findAppropriateDescriptionById(
-              descriptions,
+              this.descriptions,
               rawAsset.Id
             );
             return mappers.mapToAsset(
@@ -159,20 +161,18 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchAssetById = (id: string) => {
-    const requests = [
-      this.api.fetchAssetById(id),
-      this.api.fetchAssetDescriptionById(id)
-    ];
-
-    return Promise.all(requests).then(data => {
-      const asset = data[0].Asset || data[0];
-      const description = data[1].Description || data[1];
+    return this.api.fetchAssetById(id).then(asset => {
       let mappedAsset;
-      if (asset && description) {
+      asset = asset.Asset || asset;
+      if (asset) {
+        const appropriateDescription = this.findAppropriateDescriptionById(
+          this.descriptions,
+          asset.Id
+        );
         mappedAsset = mappers.mapToAsset(
           asset as AssetResponseModel,
           this.categories,
-          description as DescriptionResponseModel
+          appropriateDescription as DescriptionResponseModel
         );
         this.assets.push(mappedAsset);
       }
