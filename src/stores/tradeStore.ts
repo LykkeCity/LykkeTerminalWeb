@@ -133,6 +133,21 @@ class TradeStore extends BaseStore {
     }
   };
 
+  refetchPublicTrades = () => {
+    this.publicTrades = [];
+    this.fetchPublicTrades();
+  };
+
+  refetchTrades = () => {
+    this.trades = [];
+    this.fetchTrades();
+  };
+
+  refetchAllTrades = () => {
+    this.refetchPublicTrades();
+    this.refetchTrades();
+  };
+
   subscribe = (ws: any) => {
     ws.subscribe(topics.trades, this.onTrades);
   };
