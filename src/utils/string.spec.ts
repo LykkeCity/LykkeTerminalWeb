@@ -3,7 +3,8 @@ import {
   getRestErrorMessage,
   getWampErrorMessage,
   isOnlyNumbers,
-  substringLast,
+  substringDot,
+  substringLastSome,
   substringMinus,
   substringZero
 } from './string';
@@ -25,9 +26,9 @@ describe('string utils', () => {
     expect(substringZero(customNumber)).toBe('2');
   });
 
-  it('should return string without leading 0', () => {
-    const customNumber = '02';
-    expect(substringZero(customNumber)).toBe('2');
+  it('should return string without last dot symbol', () => {
+    const customNumber = '123.';
+    expect(substringDot(customNumber)).toBe('123');
   });
 
   it('should return the same string', () => {
@@ -37,10 +38,11 @@ describe('string utils', () => {
     expect(substringZero(customNumber2)).toBe(customNumber2);
   });
 
-  it('should substring last symbol', () => {
-    const customNumber = '0.23';
-    const subStr = customNumber.substring(0, customNumber.length - 1);
-    expect(substringLast(customNumber)).toBe(subStr);
+  it('should substring last several symbols', () => {
+    const customNumber = '0.2345799';
+    const qty = 3;
+    const subStr = customNumber.substring(0, customNumber.length - qty);
+    expect(substringLastSome(customNumber, qty)).toBe(subStr);
   });
 
   it('should return true for for only numbers value', () => {

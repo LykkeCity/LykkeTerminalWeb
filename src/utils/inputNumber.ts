@@ -1,8 +1,10 @@
 import ArrowDirection from '../models/arrowDirection';
+import {addition, subtraction} from '../utils/math';
 import {
   getPostDecimalsLength,
   isOnlyNumbers,
-  substringLast,
+  substringDot,
+  substringLastSome,
   substringMinus,
   substringZero
 } from './string';
@@ -18,10 +20,10 @@ export const onArrowClick = (
   const value = !getValue() ? '0' : getValue();
   switch (operation) {
     case ArrowDirection.Up:
-      setValue(parseFloat(value) + Math.pow(10, -1 * getAcc()));
+      setValue(addition(value, Math.pow(10, -1 * getAcc())));
       break;
     case ArrowDirection.Down:
-      const newVal = parseFloat(value) - Math.pow(10, -1 * getAcc());
+      const newVal = subtraction(value, Math.pow(10, -1 * getAcc()));
       const sentVal = newVal <= 0 ? 0 : newVal;
       setValue(sentVal);
       break;
@@ -34,9 +36,12 @@ export const onValueChange = (setValue: any, getAcc: any, value: string) => {
   }
   value = substringZero(value);
   value = substringMinus(value);
+  if (getAcc() === 0) {
+    value = substringDot(value);
+  }
 
   if (getPostDecimalsLength(value) > getAcc()) {
-    value = substringLast(value);
+    value = substringLastSome(value, getPostDecimalsLength(value) - getAcc());
   }
   const newVal = value === DEFAULT_INPUT_VALUE ? DEFAULT_INPUT_VALUE : value;
   setValue(newVal);

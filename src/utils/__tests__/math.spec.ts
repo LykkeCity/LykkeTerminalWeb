@@ -1,4 +1,5 @@
 import {
+  addition,
   getPercentsOf,
   precisionCeil,
   precisionFloor,
@@ -35,16 +36,24 @@ describe('Test math functions', () => {
     );
   });
 
+  it('should add term2 to term1 and return correct value', () => {
+    const term1 = '1111111111';
+    const term2 = '0.00000001';
+    const result = '1111111111.00000001';
+
+    expect(addition(term1, term2)).toBe(result);
+  });
+
   it('should subtract decrement from number and return correct value', () => {
-    let value = 0.3;
-    let decrement = 0.1;
-    let result = 0.2;
+    let value = '0.3';
+    let decrement = '0.1';
+    let result = '0.2';
 
     expect(subtraction(value, decrement)).toBe(result);
 
-    value = 88.12868568;
-    decrement = 86.6328244;
-    result = 1.49586128;
+    value = '88.12868568';
+    decrement = '86.6328244';
+    result = '1.49586128';
 
     expect(subtraction(value, decrement)).toBe(result);
   });
