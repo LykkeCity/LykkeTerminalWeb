@@ -173,7 +173,7 @@ class UiOrderStore extends BaseStore {
     }
     const convertedBalance = getMaxAvailableVolume(
       value,
-      this.rootStore.orderBookStore.getAsks()
+      this.rootStore.orderBookStore.rawAsks
     );
 
     return getPercentsOf(
@@ -296,9 +296,9 @@ class UiOrderStore extends BaseStore {
   private getOrdersByOperationType = () => {
     switch (this.marketTotal.operationType) {
       case Side.Sell:
-        return this.rootStore.orderBookStore.getBids();
+        return this.rootStore.orderBookStore.rawBids;
       case Side.Buy:
-        return this.rootStore.orderBookStore.getAsks();
+        return this.rootStore.orderBookStore.rawAsks;
       default:
         return [];
     }
