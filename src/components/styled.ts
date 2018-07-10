@@ -2,6 +2,7 @@ import {darken, lighten, rem, rgb} from 'polished';
 import * as styledComponents from 'styled-components';
 import {ThemedStyledComponentsModule} from 'styled-components';
 import {Side} from '../models/index';
+import {IRGB} from './OrderBook/helpers/LevelListHelpers';
 import ThemeInterface from './theme';
 
 const {
@@ -18,7 +19,7 @@ export const colorFromSide = (sideOrProps: any) => css`
     : colors.sell};
 `;
 
-export const colors = {
+export let colors = {
   blue: '#0388ef',
   green: '#46eb6a',
   red: '#ff6161',
@@ -86,7 +87,51 @@ export const greyButton = {
   borderRadius: '4px'
 };
 
+export let sellRGB = {
+  r: 255,
+  g: 97,
+  b: 97
+};
+
+export let buyRGB = {
+  r: 70,
+  g: 235,
+  b: 106
+};
+
+export let orderBookAnimatedSellRGB = {
+  r: 167,
+  g: 63,
+  b: 63
+};
+
+export let orderBookAnimatedBuyRGB = {
+  r: 46,
+  g: 123,
+  b: 46
+};
+
 export const tableScrollMargin = '1rem';
 
 export {css, injectGlobal, keyframes, ThemeProvider};
 export default styled;
+
+(window as any).setBuyRBG = (defaultColors: IRGB, finishedColors: IRGB) => {
+  buyRGB = {
+    ...defaultColors
+  };
+  orderBookAnimatedBuyRGB = {
+    ...finishedColors
+  };
+  colors.buy = rgb(defaultColors.r, defaultColors.g, defaultColors.b);
+};
+
+(window as any).setSellRBG = (defaultColors: IRGB, finishedColors: IRGB) => {
+  sellRGB = {
+    ...defaultColors
+  };
+  orderBookAnimatedSellRGB = {
+    ...finishedColors
+  };
+  colors.sell = rgb(defaultColors.r, defaultColors.g, defaultColors.b);
+};

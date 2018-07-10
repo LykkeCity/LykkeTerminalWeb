@@ -1,12 +1,36 @@
 import {OrderBookCellType, Side} from '../../../models/index';
-import {colors} from '../../styled';
+import {
+  buyRGB,
+  colors,
+  orderBookAnimatedBuyRGB,
+  orderBookAnimatedSellRGB,
+  sellRGB
+} from '../../styled';
 import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 
-export const STEP_OPACITY = 0.05;
+export interface IRGB {
+  r: number;
+  g: number;
+  b: number;
+}
+
 export const START_ANIMATED_OPACITY = 0.5;
 export const DEFAULT_OPACITY = 1;
 export const DEFAULT_TRAILING_ZERO_OPACITY = 0.4;
+export const ANIMATION_TICK = 15;
+
+export const animatedSellSteps = () => ({
+  r: (sellRGB.r - orderBookAnimatedSellRGB.r) / ANIMATION_TICK,
+  g: (sellRGB.g - orderBookAnimatedSellRGB.g) / ANIMATION_TICK,
+  b: (sellRGB.b - orderBookAnimatedSellRGB.b) / ANIMATION_TICK
+});
+
+export const animatedBuySteps = () => ({
+  r: (buyRGB.r - orderBookAnimatedBuyRGB.r) / ANIMATION_TICK,
+  g: (buyRGB.g - orderBookAnimatedBuyRGB.g) / ANIMATION_TICK,
+  b: (buyRGB.b - orderBookAnimatedBuyRGB.b) / ANIMATION_TICK
+});
 
 export const fillBySide = (side: Side) =>
   side === Side.Buy ? colors.buy : colors.sell;
@@ -24,31 +48,62 @@ export const getY = (side: Side, idx: number, levelHeight: number) =>
 
 export const updateAnimatingLevelsWithNewLevel = (
   animatingLevels: IAnimatingLevels[],
-  price: number
+  price: number,
+  side: Side
 ): IAnimatingLevels[] => {
   const levelForAnimation: IAnimatingLevels = {
     price,
     currentOpacity: START_ANIMATED_OPACITY,
-    isAnimated: false
+    isAnimated: false,
+    currentColorState: side === Side.Buy ? {...buyRGB} : {...sellRGB}
   };
   return [...animatingLevels, levelForAnimation];
 };
 
-export const getColorAndOpacityForAnimation = (
+export const isColorNeedAnimation = (
+  currentColorState: IRGB,
+  orderBookAnimatedRBG: IRGB
+) =>
+  currentColorState.r > orderBookAnimatedRBG.r &&
+  currentColorState.g > orderBookAnimatedRBG.g &&
+  currentColorState.b > orderBookAnimatedRBG.b;
+
+export const updateLevelColor = (
+  currentColorState: IRGB,
+  animationSteps: IRGB
+) => {
+  return {
+    r: currentColorState.r - animationSteps.r,
+    g: currentColorState.g - animationSteps.g,
+    b: currentColorState.b - animationSteps.b
+  };
+};
+
+export const getColorForAnimation = (
   animatingLevel: IAnimatingLevels,
   color: string,
   side: Side
 ) => {
-  if (animatingLevel.currentOpacity < DEFAULT_OPACITY) {
-    animatingLevel.currentOpacity += STEP_OPACITY;
+  const {currentColorState} = animatingLevel;
+  const orderBookAnimatedRBG =
+    side === Side.Buy ? orderBookAnimatedBuyRGB : orderBookAnimatedSellRGB;
+
+  if (isColorNeedAnimation(currentColorState, orderBookAnimatedRBG)) {
+    const animationSteps =
+      side === Side.Buy ? animatedBuySteps() : animatedSellSteps();
+    animatingLevel.currentColorState = updateLevelColor(
+      currentColorState,
+      animationSteps
+    );
   } else {
     animatingLevel.isAnimated = true;
   }
 
-  return {
-    animatedColor: animatingLevel!.isAnimated ? fillBySide(side) : color,
-    animatedOpacity: animatingLevel!.currentOpacity
-  };
+  const {r, g, b} = animatingLevel.currentColorState;
+
+  return animatingLevel!.isAnimated
+    ? fillBySide(side)
+    : `rgb(${r}, ${g}, ${b})`;
 };
 
 export const findAndDeleteDuplicatedAnimatedLevel = (

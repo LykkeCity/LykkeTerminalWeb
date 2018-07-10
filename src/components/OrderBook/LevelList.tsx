@@ -28,8 +28,9 @@ import {
   fillVolumeBySide,
   findAndDeleteDuplicatedAnimatedLevel,
   getCellType,
-  getColorAndOpacityForAnimation,
+  getColorForAnimation,
   getY,
+  IRGB,
   updateAnimatingLevelsWithNewLevel
 } from './helpers/LevelListHelpers';
 import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
@@ -74,6 +75,7 @@ export interface IAnimatingLevels {
   isAnimated: boolean;
   currentOpacity: number;
   price: number;
+  currentColorState: IRGB;
 }
 
 class LevelList extends React.Component<LevelListProps> {
@@ -171,7 +173,6 @@ class LevelList extends React.Component<LevelListProps> {
       const volumeActiveColor = fillVolumeBySide(levelOrder.side);
 
       let volumeColor = color;
-      let volumeOpacity = DEFAULT_OPACITY;
       const isChangingLevel =
         existedLevel && existedLevel[displayType] !== levelOrder[displayType];
 
@@ -189,7 +190,8 @@ class LevelList extends React.Component<LevelListProps> {
         ) {
           this.animatingLevels = updateAnimatingLevelsWithNewLevel(
             this.animatingLevels,
-            levelOrder.price
+            levelOrder.price,
+            levelOrder.side
           );
         }
 
@@ -198,16 +200,11 @@ class LevelList extends React.Component<LevelListProps> {
         );
 
         if (existedAnimatingLevel) {
-          const {
-            animatedColor,
-            animatedOpacity
-          } = getColorAndOpacityForAnimation(
+          volumeColor = getColorForAnimation(
             existedAnimatingLevel,
             volumeActiveColor,
             levelOrder.side
           );
-          volumeColor = animatedColor;
-          volumeOpacity = animatedOpacity;
         }
       }
 
@@ -282,7 +279,7 @@ class LevelList extends React.Component<LevelListProps> {
         let drownSymbolsWidth = 0;
         const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
         const symbols = volume.split('');
-        const getSymbolOpacity = colorizedSymbol(volumeOpacity);
+        const getSymbolOpacity = colorizedSymbol(DEFAULT_OPACITY);
 
         symbols.forEach((symbol: string, i: number) => {
           const symbolOpacity = getSymbolOpacity(trailingZeroPosition, i);
@@ -307,7 +304,7 @@ class LevelList extends React.Component<LevelListProps> {
           y: canvasY - TOP_PADDING,
           font: LEVEL_FONT,
           align: 'start',
-          opacity: volumeOpacity
+          opacity: DEFAULT_OPACITY
         });
       }
 
