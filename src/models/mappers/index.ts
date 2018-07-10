@@ -1,5 +1,4 @@
 import {pathOr} from 'rambda';
-import {LEFT_PADDING, TOP_PADDING} from '../../components/OrderBook';
 import {ChartStore} from '../../stores/index';
 import {
   AssetCategoryModel,
@@ -39,7 +38,6 @@ export const mapToBarFromWamp = ({t, c, o, h, l, v}: any) => ({
 export const mapToChartSymbol = ({
   name,
   accuracy,
-  invertedAccuracy,
   baseAsset
 }: InstrumentModel) => ({
   name,
@@ -193,23 +191,3 @@ export const mapToPublicInstrument = (
     accuracy: Accuracy,
     invertedAccuracy: InvertedAccuracy
   });
-
-export const mapToLevelCell = (lc: any) => {
-  const {x, width, y, height} = lc.getClientRect();
-  const {order, type} = lc.getAttrs();
-  const {parent: {index: parentIndex}, index: cellIndex} = lc;
-  return {
-    x: {
-      start: x - LEFT_PADDING,
-      end: x + width - LEFT_PADDING
-    },
-    y: {
-      start: y - TOP_PADDING,
-      end: y - TOP_PADDING + height
-    },
-    order,
-    type,
-    parentIndex,
-    cellIndex
-  };
-};

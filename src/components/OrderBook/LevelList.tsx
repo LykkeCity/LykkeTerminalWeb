@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import {colors} from '../styled';
 
 import {InstrumentModel, Order, Side} from '../../models';
+import {mapToEffectivePrice} from '../../models/mappers/orderMapper';
 import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 
 import {curry, map, prop, toLower} from 'rambda';
@@ -141,16 +142,23 @@ class LevelList extends React.Component<LevelListProps> {
     );
 
     levels.forEach((l, i: number) => {
+      let val;
+
       const y = getY(l.side, i, levelHeight);
       const canvasY = getY(
         l.side,
         l.side === Side.Sell ? i - 1 : i + 1,
         levelHeight
       );
-      const value = format(
-        l[displayType] * l.price,
-        instrument.quoteAsset.accuracy
-      );
+      if (displayType === 'depth') {
+        const arr = levels.slice(0, i + 1);
+        const volume = arr.reduce((sum, cur) => sum + cur.volume, 0);
+
+        val = mapToEffectivePrice(volume, arr)!;
+      } else {
+        val = l.volume * l.price;
+      }
+      const value = format(val, instrument.quoteAsset.accuracy);
       const color = fillBySide(l.side);
 
       drawRect({
