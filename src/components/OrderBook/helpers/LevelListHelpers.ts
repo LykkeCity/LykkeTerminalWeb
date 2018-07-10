@@ -18,18 +18,21 @@ export interface IRGB {
 export const START_ANIMATED_OPACITY = 0.5;
 export const DEFAULT_OPACITY = 1;
 export const DEFAULT_TRAILING_ZERO_OPACITY = 0.4;
-export const ANIMATION_TICK = 15;
+export let ANIMATION_TICK = 5;
+
+const getAnimationTick = () => ANIMATION_TICK;
+(window as any).setAnimationTick = (tick: number) => (ANIMATION_TICK = tick);
 
 export const animatedSellSteps = () => ({
-  r: (sellRGB.r - orderBookAnimatedSellRGB.r) / ANIMATION_TICK,
-  g: (sellRGB.g - orderBookAnimatedSellRGB.g) / ANIMATION_TICK,
-  b: (sellRGB.b - orderBookAnimatedSellRGB.b) / ANIMATION_TICK
+  r: (sellRGB.r - orderBookAnimatedSellRGB.r) / getAnimationTick(),
+  g: (sellRGB.g - orderBookAnimatedSellRGB.g) / getAnimationTick(),
+  b: (sellRGB.b - orderBookAnimatedSellRGB.b) / getAnimationTick()
 });
 
 export const animatedBuySteps = () => ({
-  r: (buyRGB.r - orderBookAnimatedBuyRGB.r) / ANIMATION_TICK,
-  g: (buyRGB.g - orderBookAnimatedBuyRGB.g) / ANIMATION_TICK,
-  b: (buyRGB.b - orderBookAnimatedBuyRGB.b) / ANIMATION_TICK
+  r: (buyRGB.r - orderBookAnimatedBuyRGB.r) / getAnimationTick(),
+  g: (buyRGB.g - orderBookAnimatedBuyRGB.g) / getAnimationTick(),
+  b: (buyRGB.b - orderBookAnimatedBuyRGB.b) / getAnimationTick()
 });
 
 export const fillBySide = (side: Side) =>
