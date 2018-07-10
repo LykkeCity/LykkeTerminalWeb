@@ -27,9 +27,9 @@ const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
     toggle();
     onChange(val);
     if (val === OrderBookDisplayType.Volume) {
-      AnalyticsService.emitTrackEvent(AnalyticsEvents.SwitchToVolume);
+      AnalyticsService.handleClick(AnalyticsEvents.SwitchToVolume);
     } else {
-      AnalyticsService.emitTrackEvent(AnalyticsEvents.SwitchToDepth);
+      AnalyticsService.handleClick(AnalyticsEvents.SwitchToDepth);
     }
   };
 

@@ -1,7 +1,7 @@
 import {observable} from 'mobx';
 import {equals} from 'rambda';
 import * as React from 'react';
-import {AnalyticsIds} from '../../services/analyticsService';
+import AnalyticsIds from '../../constants/analyticsIds';
 import {TileContent, TileHeader, TileTab} from './styles';
 import {TileProps} from './Tile';
 

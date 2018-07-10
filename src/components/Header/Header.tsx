@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AnalyticsIds} from '../../services/analyticsService';
+import AnalyticsIds from '../../constants/analyticsIds';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
 import {Icon} from '../Icon/index';

@@ -1,10 +1,12 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import AnalyticsIds from '../../constants/analyticsIds';
 import {Percentage} from '../../constants/ordersPercentage';
 import {keys} from '../../models';
 import {OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Side from '../../models/side';
-import {AnalyticsIds, AnalyticsService} from '../../services/analyticsService';
+import {AnalyticsService} from '../../services/analyticsService';
 import {StorageUtils} from '../../utils/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../../utils/math';
@@ -98,8 +100,14 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   componentDidMount() {
     this.props.resetOrder();
-    AnalyticsService.handleSwitchToLimitOrder();
-    AnalyticsService.handleSwitchToMarketOrder();
+    AnalyticsService.handleClicksOnElement(
+      AnalyticsIds.LimitOrderButton,
+      AnalyticsEvents.SwitchToLimitOrder
+    );
+    AnalyticsService.handleClicksOnElement(
+      AnalyticsIds.MarketOrderButton,
+      AnalyticsEvents.SwitchToMarketOrder
+    );
   }
 
   handleSideClick = (side: Side) => () => {
