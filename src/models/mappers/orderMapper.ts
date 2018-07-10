@@ -18,29 +18,28 @@ const getAvailableVolume = (amount: number, order: Order) =>
   amount * order.volume / order.price;
 
 export const mapToEffectivePrice = (volume: number, orders: Order[]) => {
-  let price: number = 0;
+  let effectivePrice: number = 0;
 
-  const volumeSum = orders.reduce((sum, order) => {
-    const remain = volume - sum;
-
-    if (sum < volume) {
-      if (order.volume < remain) {
-        price += order.volume * order.price;
-        return sum + order.volume;
-      } else {
-        price = price + remain * order.price;
-        return volume;
-      }
-    } else {
+  const availableVolume = orders.reduce((sum, order) => {
+    if (sum > volume) {
       return sum;
+    }
+
+    const remainingVolume = volume - sum;
+    if (order.volume < remainingVolume) {
+      effectivePrice += order.volume * order.price;
+      return sum + order.volume;
+    } else {
+      effectivePrice = effectivePrice + remainingVolume * order.price;
+      return volume;
     }
   }, 0);
 
-  if (volumeSum < volume) {
-    return undefined;
+  if (availableVolume < volume) {
+    return null;
   }
 
-  return price;
+  return effectivePrice;
 };
 
 export const getMaxAvailableVolume = (amount: number, orders: Order[]) => {

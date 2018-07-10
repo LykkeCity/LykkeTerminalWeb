@@ -80,6 +80,7 @@ interface OrderProps {
     debounce?: boolean
   ) => any;
   marketTotalPrice: number;
+  isNotEnoughLiquidity: boolean;
   resetMarketTotal: () => void;
 }
 
@@ -273,7 +274,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       isDisclaimerShown,
       disclaimedAssets,
       setMarketTotal,
-      marketTotalPrice
+      marketTotalPrice,
+      isNotEnoughLiquidity
     } = this.props;
     const {
       priceValue,
@@ -319,8 +321,6 @@ class Order extends React.Component<OrderProps, OrderState> {
     const balanceAccuracy = isCurrentSideSell
       ? baseAssetAccuracy
       : quoteAssetAccuracy;
-
-    const enoughLiquidity = marketTotalPrice !== undefined;
 
     return (
       <React.Fragment>
@@ -406,7 +406,7 @@ class Order extends React.Component<OrderProps, OrderState> {
             onMarketQuantityArrowClick={handleMarketQuantityArrowClick}
             updatePercentageState={this.updatePercentageState}
             setMarketTotal={setMarketTotal}
-            enoughLiquidity={enoughLiquidity}
+            isNotEnoughLiquidity={isNotEnoughLiquidity}
           />
         )}
         {this.state.isConfirmModalOpen && (

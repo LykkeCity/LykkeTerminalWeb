@@ -56,6 +56,7 @@ const ConnectedOrder = connect(
       setSide,
       resetOrder,
       marketTotalPrice,
+      isNotEnoughLiquidity,
       setMarketTotal,
       resetMarketTotal,
       handleMarketQuantityArrowClick
@@ -116,6 +117,7 @@ const ConnectedOrder = connect(
     disclaimedAssets,
     setMarketTotal,
     marketTotalPrice,
+    isNotEnoughLiquidity,
     resetMarketTotal
   }),
   withAuth(Order)

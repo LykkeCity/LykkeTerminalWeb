@@ -45,6 +45,11 @@ class UiOrderStore extends BaseStore {
     return this.marketTotal.price;
   }
 
+  @computed
+  get isNotEnoughLiquidity() {
+    return this.marketTotal.isNotEnoughLiquidity;
+  }
+
   handlePriceChange: (price: string) => void;
   handleQuantityChange: (price: string) => void;
   handlePriceArrowClick: (operation: ArrowDirection) => void;
@@ -60,6 +65,7 @@ class UiOrderStore extends BaseStore {
     canBeUpdated: true,
     operationType: '',
     operationVolume: 0,
+    isNotEnoughLiquidity: false,
     price: 0
   };
   @observable private priceValue: string = DEFAULT_INPUT_VALUE;
@@ -269,6 +275,8 @@ class UiOrderStore extends BaseStore {
       this.marketTotal.operationVolume,
       this.getOrdersByOperationType()
     );
+
+    this.marketTotal.isNotEnoughLiquidity = this.marketTotal.price === null;
   };
 
   resetMarketTotal = () => {
@@ -276,7 +284,8 @@ class UiOrderStore extends BaseStore {
       canBeUpdated: true,
       operationType: '',
       operationVolume: 0,
-      price: 0
+      price: 0,
+      isNotEnoughLiquidity: false
     };
   };
 
