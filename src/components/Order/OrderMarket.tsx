@@ -9,10 +9,14 @@ import OrderButton from './OrderButton';
 import OrderPercentage from './OrderPercentage';
 import {
   Action,
+  Amount,
   Available,
   InputControl,
   MarketConfirmButton,
-  Reset
+  OrderTitle,
+  Reset,
+  Total,
+  TotalHint
 } from './styles';
 
 // tslint:disable-next-line:no-var-requires
@@ -23,7 +27,11 @@ interface OrderMarketState {
 }
 
 export interface OrderMarketProps extends OrderBasicFormProps {
+  amount: string;
+  setMarketTotal: (volume?: any, action?: string, debounce?: boolean) => any;
   onResetPercentage: any;
+  enoughLiquidity: boolean;
+  onMarketQuantityArrowClick: (operation: string) => void;
 }
 
 class OrderMarket extends React.Component<
@@ -68,11 +76,12 @@ class OrderMarket extends React.Component<
   };
 
   handleArrowClick = (operation: string) => () => {
-    this.props.onQuantityArrowClick(operation);
+    this.props.onMarketQuantityArrowClick(operation);
     this.props.updatePercentageState(OrderInputs.Quantity);
   };
 
   handleChange = () => (e: any) => {
+    this.props.setMarketTotal(e.target.value, this.props.action);
     this.props.onQuantityChange(e.target.value);
     this.props.updatePercentageState(OrderInputs.Quantity);
   };
@@ -82,9 +91,15 @@ class OrderMarket extends React.Component<
   };
 
   render() {
-    const {baseAssetName, quoteAssetName, balanceAccuracy} = this.props;
+    const {
+      amount,
+      baseAssetName,
+      quoteAssetName,
+      balanceAccuracy,
+      enoughLiquidity
+    } = this.props;
     this.previousPropsAction = this.props.action;
-    const {quantityAccuracy, quantity} = this.props;
+    const {quantity, quantityAccuracy} = this.props;
 
     return (
       <div>
@@ -117,6 +132,19 @@ class OrderMarket extends React.Component<
             />
           ))}
         </Flex>
+        <Total>
+          <OrderTitle>
+            Total
+            <TotalHint title={'Your order may execute at a different price'}>
+              Indicative price *
+            </TotalHint>
+          </OrderTitle>
+          {enoughLiquidity && (
+            <Amount>
+              {amount} {quoteAssetName}
+            </Amount>
+          )}
+        </Total>
         <MarketConfirmButton>
           <OrderButton
             isDisable={this.props.isDisable}
