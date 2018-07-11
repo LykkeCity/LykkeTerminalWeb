@@ -97,12 +97,10 @@ class TradeStore extends BaseStore {
   fetchTrades = async () => {
     if (this.selectedInstrument) {
       this.hasPendingItems = true;
+
+      const walletId = this.rootStore.balanceListStore.tradingWallet!.id;
       const trades = await this.api.fetchTrades(
-        this.instrumentIdByFilter,
-        this.skip,
-        TradeQuantity.Take
-      );
-      const limitTrades = await this.api.fetchLimitTrades(
+        walletId,
         this.instrumentIdByFilter,
         this.skip,
         TradeQuantity.Take
@@ -110,14 +108,9 @@ class TradeStore extends BaseStore {
       this.hasPendingItems = false;
       runInAction(() => {
         this.addTrades(
-          map.aggregateTradesByTimestamp(
-            [...trades, ...limitTrades],
-            this.instruments
-          )
+          map.aggregateTradesByTimestamp([...trades], this.instruments)
         );
-        this.shouldFetchMore =
-          trades.length === TradeQuantity.Take ||
-          limitTrades.length === TradeQuantity.Take;
+        this.shouldFetchMore = trades.length === TradeQuantity.Take;
       });
     }
   };

@@ -4,6 +4,14 @@ import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
 type TradeRequest = (
+  walletId: string,
+  instrumentId: string,
+  skip: number,
+  take: number,
+  operationType: OperationType[]
+) => ApiResponse;
+
+type PublicTradeRequest = (
   instrumentId: string,
   skip: number,
   take: number
@@ -11,25 +19,21 @@ type TradeRequest = (
 
 export interface TradeApi {
   fetchTrades: TradeRequest;
-
-  fetchPublicTrades: TradeRequest;
+  fetchPublicTrades: PublicTradeRequest;
 }
 
 export class RestTradeApi extends RestApi implements TradeApi {
-  fetchTrades = (instrumentId: string, skip: number, take: number) =>
-    HistoryApi.fetchHistory({
+  fetchTrades = (
+    walletId: string,
+    instrumentId: string,
+    skip: number,
+    take: number
+  ) =>
+    HistoryApi.fetchHistory(walletId, {
       assetPairId: instrumentId,
       skip,
       take,
-      operationType: OperationType.Trade
-    });
-
-  fetchLimitTrades = (instrumentId: string, skip: number, take: number) =>
-    HistoryApi.fetchHistory({
-      assetPairId: instrumentId,
-      skip,
-      take,
-      operationType: OperationType.LimitTrade
+      operationType: [OperationType.Trade, OperationType.LimitTrade]
     });
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
