@@ -9,18 +9,6 @@ describe('uiStore', () => {
     uiStore = new UiStore(new RootStore());
   });
 
-  it('should set false to showAssetsSelect by default', () => {
-    expect(uiStore.showAssetsSelect).toBeFalsy();
-  });
-
-  it('should toggle showAssetsSelect', () => {
-    expect(uiStore.showAssetsSelect).toBeFalsy();
-    uiStore.toggleAssetsSelect();
-    expect(uiStore.showAssetsSelect).toBeTruthy();
-    uiStore.toggleAssetsSelect();
-    expect(uiStore.showAssetsSelect).toBeFalsy();
-  });
-
   it('should set false to showInstrumentPicker by default', () => {
     expect(uiStore.showInstrumentPicker).toBeFalsy();
   });

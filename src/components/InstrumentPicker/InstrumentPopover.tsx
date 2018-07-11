@@ -1,7 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import ClickOutside from '../ClickOutside/ClickOutside';
-import styled from '../styled';
+import styled, {colors} from '../styled';
 import {InstrumentPopoverProps} from './index';
 
 const InstrumentPopover: React.SFC<InstrumentPopoverProps> = ({
@@ -18,7 +18,7 @@ const InstrumentPopover: React.SFC<InstrumentPopoverProps> = ({
 
 const StyledInstrumentPopover = styled(InstrumentPopover)`
   border-radius: 6px;
-  background-color: rgb(60, 60, 60);
+  background-color: ${colors.graphiteBackground};
   box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
   border: solid 1px rgba(0, 0, 0, 0.2);
   position: absolute;

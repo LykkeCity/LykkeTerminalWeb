@@ -71,11 +71,7 @@ class SessionNotificationComponent extends React.Component<
           />
         )}
         {this.state.isSettingsShown && (
-          <Settings
-            onSettingsClose={this.handleSettingsClose}
-            handleDurationClick={this.props.handleSetDuration}
-            getCurrentSessionDuration={this.props.sessionCurrentDuration}
-          />
+          <Settings onSettingsClose={this.handleSettingsClose} />
         )}
       </SessionNotificationBlock>
     );

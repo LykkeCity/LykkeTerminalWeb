@@ -1,16 +1,38 @@
-import SettingsStore from '../../stores/settingsStore';
 import {connect} from '../connect';
+import BaseAssetSelection from './BaseAssetSelection';
+import ConfirmationWindowSetting from './ConfirmationWindowSetting';
+import SessionDurationSelection from './SessionDurationSelection';
 import SettingsModal from './SettingsModal';
 
-export interface SettingsModalProps {
-  settingsStore: SettingsStore;
-}
-
-const connectedSettingsModal = connect(
-  ({settingsStore}) => ({
-    settingsStore
-  }),
-  SettingsModal
+const connectedBaseAssetSelection = connect(
+  ({referenceStore}) => ({referenceStore}),
+  BaseAssetSelection
 );
 
-export {connectedSettingsModal as SettingsModal};
+const connectedConfirmationWindowSetting = connect(
+  ({settingsStore: {toggleConfirmations, confirmations}}) => ({
+    toggleConfirmations,
+    confirmations
+  }),
+  ConfirmationWindowSetting
+);
+
+const connectedSessionDurationSelection = connect(
+  ({
+    sessionStore: {
+      closeSessionNotification,
+      handleSetDuration,
+      sessionCurrentDuration
+    }
+  }) => ({
+    closeSessionNotification,
+    handleSetDuration,
+    sessionCurrentDuration
+  }),
+  SessionDurationSelection
+);
+
+export {connectedBaseAssetSelection as BaseAssetSelection};
+export {connectedConfirmationWindowSetting as ConfirmationWindowSetting};
+export {connectedSessionDurationSelection as SessionDurationSelection};
+export {SettingsModal};

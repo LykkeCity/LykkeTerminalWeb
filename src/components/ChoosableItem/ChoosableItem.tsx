@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Item} from './styles';
 
-interface ChoosableItemProps {
+export interface ChoosableItemProps {
   value: number;
   description: string;
   onClick: any;
