@@ -18,7 +18,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
       <BalanceInfoDiv>
         <BalanceValue>
           {formattedNumber(
-            this.props.totalBalance,
+            this.props.getTotalBalanceInBaseAsset(),
             this.referenceStore.getBaseAssetAccuracy
           )}
         </BalanceValue>

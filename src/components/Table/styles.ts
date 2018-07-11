@@ -137,3 +137,5 @@ export const Table = styled.table`
     }
   }
 `;
+
+Cell.displayName = 'Cell';

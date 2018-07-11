@@ -14,6 +14,7 @@ class TradeModel {
   fee: number;
   instrument?: InstrumentModel;
   index?: number;
+  walletId?: string;
 
   constructor(trade: Partial<TradeModel>) {
     Object.assign(this, trade);

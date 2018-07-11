@@ -6,7 +6,7 @@ import BalanceList from './BalanceList';
 export interface BalanceListProps {
   balances?: any[];
   baseAssetName: string;
-  total: number;
+  getTotalBalance: () => number;
   accuracy: number;
 }
 
@@ -22,15 +22,15 @@ export interface BalanceListItemProps {
 const ConnectedBalanceList = connect(
   ({
     balanceListStore: {
-      getWalletsWithPositiveBalances: balances,
-      totalBalance: total
+      tradingWallet: balances,
+      getTotalBalance: getTotalBalance
     },
     referenceStore: {getAssetById, baseAssetId}
   }) => ({
     accuracy: pathOr(0, ['accuracy'], getAssetById(baseAssetId)),
     balances,
     baseAssetName: pathOr('', ['name'], getAssetById(baseAssetId)),
-    total
+    getTotalBalance
   }),
   withScroll(BalanceList)
 );

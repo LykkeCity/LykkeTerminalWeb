@@ -3,14 +3,15 @@ import {TileContent, TileHeader, TileTitle} from './styles';
 
 export interface TileProps {
   title: string;
+  className?: string;
 }
 
-const Tile: React.SFC<TileProps> = ({title = '', children}) => (
+const Tile: React.SFC<TileProps> = ({title = '', className, children}) => (
   <React.Fragment>
-    <TileHeader>
+    <TileHeader className={className}>
       <TileTitle>{title} </TileTitle>
     </TileHeader>
-    <TileContent>{children}</TileContent>
+    <TileContent className={className}>{children}</TileContent>
   </React.Fragment>
 );
 

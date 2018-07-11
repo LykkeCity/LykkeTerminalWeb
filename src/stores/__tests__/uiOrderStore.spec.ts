@@ -208,7 +208,12 @@ describe('uiOrder store', () => {
       const balance = 100;
       const percents = 30;
       uiOrderStore.setSide(Side.Sell);
-      uiOrderStore.handlePercentageChange({balance, percents});
+      uiOrderStore.handlePercentageChange({
+        balance,
+        percents,
+        baseAssetId: '',
+        quoteAssetId: ''
+      });
       expect(uiOrderStore.getComputedQuantityValue).toBe(
         uiOrderStore
           .onPercentChangeForLimit(percents, balance, Side.Sell)
@@ -221,7 +226,12 @@ describe('uiOrder store', () => {
       const percents = 50;
       uiOrderStore.setSide(Side.Buy);
       uiOrderStore.setPriceValue('1000');
-      uiOrderStore.handlePercentageChange({balance, percents});
+      uiOrderStore.handlePercentageChange({
+        balance,
+        percents,
+        baseAssetId: '',
+        quoteAssetId: ''
+      });
       expect(uiOrderStore.getComputedQuantityValue).toBe(
         uiOrderStore
           .onPercentChangeForLimit(percents, balance, Side.Buy)
@@ -234,7 +244,12 @@ describe('uiOrder store', () => {
       const percents = 30;
       uiOrderStore.setSide(Side.Sell);
       uiOrderStore.setMarket(OrderType.Market);
-      uiOrderStore.handlePercentageChange({balance, percents});
+      uiOrderStore.handlePercentageChange({
+        balance,
+        percents,
+        baseAssetId: '',
+        quoteAssetId: ''
+      });
       expect(uiOrderStore.getComputedQuantityValue).toBe(
         getPercentsOf(
           percents,
@@ -253,8 +268,12 @@ describe('uiOrder store', () => {
       ];
       uiOrderStore.setSide(Side.Buy);
       uiOrderStore.setMarket(OrderType.Market);
-      uiOrderStore.handlePercentageChange({balance, percents});
-
+      uiOrderStore.handlePercentageChange({
+        balance,
+        percents,
+        baseAssetId: '',
+        quoteAssetId: ''
+      });
       expect(uiOrderStore.getComputedQuantityValue).toBe(
         getPercentsOf(
           percents,

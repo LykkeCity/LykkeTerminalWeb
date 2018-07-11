@@ -28,7 +28,7 @@ export interface OrderBasicFormProps {
 
 const ConnectedOrder = connect(
   ({
-    balanceListStore: {tradingWalletBalances: balances},
+    balanceListStore: {tradingWallet: {balances: balances}},
     orderBookStore: {bestAskPrice, bestBidPrice},
     orderStore: {placeOrder},
     uiStore: {

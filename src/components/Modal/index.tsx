@@ -5,7 +5,7 @@ import withModal from './withModal';
 
 const ConnectedEditOrderModal = connect(
   ({
-    balanceListStore: {tradingWalletBalances: availableBalances},
+    balanceListStore: {tradingWallet: {balances: availableBalances}},
     referenceStore: {getInstrumentById},
     orderStore: {editOrder}
   }) => ({

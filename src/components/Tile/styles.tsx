@@ -60,6 +60,10 @@ export const TileContent = styled.div`
   padding: ${padding(...dims.padding)};
   height: calc(100% - 40px) !important;
   overflow: hidden;
+
+  &.no-padding {
+    height: 100% !important;
+  }
 `;
 
 export const TileToolbar = styled.div`

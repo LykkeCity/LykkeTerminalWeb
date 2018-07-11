@@ -8,6 +8,7 @@ import {StorageUtils} from '../../utils/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../../utils/math';
 import {resetPercentage, setActivePercentage} from '../../utils/order';
+import withScroll from '../CustomScrollbar/withScroll';
 import ConfirmModal from '../Modal/ConfirmModal';
 import ActionChoiceButton from './ActionChoiceButton';
 import {Disclaimer} from './Disclaimer';
@@ -433,4 +434,4 @@ class Order extends React.Component<OrderProps, OrderState> {
   }
 }
 
-export default Order;
+export default withScroll(Order);

@@ -85,7 +85,7 @@ class TradeStore extends BaseStore {
   @action
   addPublicTrades = (trades: TradeModel[]) => {
     const updatedTrades = this.publicTrades.concat(
-      trades.map(t => ({...t, instrument: this.selectedInstrument!}))
+      trades.map(trade => ({...trade, instrument: this.selectedInstrument!}))
     );
 
     this.publicTrades = this.filterTrades(updatedTrades);
@@ -102,9 +102,8 @@ class TradeStore extends BaseStore {
     if (this.selectedInstrument) {
       this.hasPendingItems = true;
 
-      const walletId = this.rootStore.balanceListStore.tradingWallet!.id;
       const trades = await this.api.fetchTrades(
-        walletId,
+        this.getWalletId(),
         this.instrumentIdByFilter,
         this.skip,
         TradeQuantity.Take
@@ -190,11 +189,21 @@ class TradeStore extends BaseStore {
     this.resetPublicTrades();
   };
 
+  private getWalletId = () => this.rootStore.balanceListStore.tradingWallet!.id;
+
   private isTradeVisible(trade: TradeModel) {
+    if (!this.isTradeFromTradingWallet(trade)) {
+      return false;
+    }
+
     return (
       this.filter === TradeFilter.All ||
       this.isTradeAvailableForCurrentInstrument(trade)
     );
+  }
+
+  private isTradeFromTradingWallet(trade: TradeModel) {
+    return !trade.walletId || trade.walletId === this.getWalletId();
   }
 
   private isTradeAvailableForCurrentInstrument(trade: TradeModel) {

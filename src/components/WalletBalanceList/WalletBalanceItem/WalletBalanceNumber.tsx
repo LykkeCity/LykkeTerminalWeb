@@ -1,6 +1,7 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
-import styled from '../../styled';
+import styled, {colors} from '../../styled';
 
 const StyledNumber = styled.div`
   color: ${(p: any) => p.color};
@@ -10,28 +11,50 @@ const StyledNumber = styled.div`
   span {
     color: #f5f6f7;
   }
+
+  &.clickable {
+    cursor: pointer;
+  }
 `;
+StyledNumber.displayName = 'StyledNumber';
+
+const StyledTotalHint = styled.div`
+  font-size: ${rem(12)};
+  color: ${colors.lightGrey};
+  padding-top: 4px;
+`;
+StyledTotalHint.displayName = 'StyledTotalHint';
 
 interface WalletBalanceNumberProps {
-  num: number;
+  availableBalance: number;
+  totalBalance: number;
   accuracy: number;
   color?: string;
+  onClick?: () => void;
 }
 
 const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
-  num,
+  availableBalance,
+  totalBalance,
   accuracy,
   color = '#ffffff',
+  onClick,
   children
 }) => {
-  if (num === undefined || num === null) {
-    return null;
-  }
-  const formatterNum = formattedNumber(num, accuracy);
+  const formatterAvailableBalance = formattedNumber(availableBalance, accuracy);
+  const formatterTotalBalance = formattedNumber(totalBalance, accuracy);
   return (
-    <StyledNumber color={color} title={formatterNum}>
-      {formatterNum}
-      {children}
+    <StyledNumber
+      color={color}
+      title={formatterAvailableBalance}
+      onClick={onClick}
+      className={onClick ? 'clickable' : ''}
+    >
+      <div>
+        {formatterAvailableBalance}
+        {children}
+      </div>
+      <StyledTotalHint>{formatterTotalBalance} in total</StyledTotalHint>
     </StyledNumber>
   );
 };
