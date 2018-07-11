@@ -2,6 +2,7 @@ import OrderApi from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import messages from '../constants/notificationMessages';
+import logger from '../Logger';
 import {levels} from '../models';
 import {OrderModel, OrderType} from '../models';
 import Types from '../models/modals';
@@ -77,8 +78,10 @@ class OrderStore extends BaseStore {
       if (deletedOrder) {
         this.orderCancelledSuccessfully(id);
       }
-    } catch (e) {
-      this.orderPlacedUnsuccessfully(e);
+    } catch (error) {
+      this.orderPlacedUnsuccessfully(error);
+
+      logger.logException(error);
     }
   };
 

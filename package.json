@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/applicationinsights-js": "^1.0.5",
     "@types/qrcode.react": "^0.6.3",
     "@types/react-custom-scrollbars": "^4.0.1",
     "@types/react-measure": "^2.0.2",
@@ -10,6 +11,7 @@
     "@types/react-select": "^1.1.0",
     "@types/react-tooltip": "^3.3.4",
     "@types/yup": "^0.24.0",
+    "applicationinsights-js": "^1.0.18",
     "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
     "big.js": "^5.0.3",
     "date-fns": "^1.29.0",

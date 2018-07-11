@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/applicationinsights-js@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/applicationinsights-js/-/applicationinsights-js-1.0.5.tgz#b0bab755e67ed584ac3bf75869fc12589a338a2c"
+
 "@types/autobahn@^0.9.38":
   version "0.9.38"
   resolved "https://registry.yarnpkg.com/@types/autobahn/-/autobahn-0.9.38.tgz#ec160b4f0a8748a5442e0343523c98068cfb233b"
@@ -250,6 +254,10 @@ append-transform@^0.4.0:
   resolved "https://registry.yarnpkg.com/append-transform/-/append-transform-0.4.0.tgz#d76ebf8ca94d276e247a36bad44a4b74ab611991"
   dependencies:
     default-require-extensions "^1.0.0"
+
+applicationinsights-js@^1.0.18:
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/applicationinsights-js/-/applicationinsights-js-1.0.18.tgz#6ff2706236d78b46b39fd1b83fe0f6880071af70"
 
 aproba@^1.0.3:
   version "1.2.0"

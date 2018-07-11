@@ -13,6 +13,7 @@ import {
 } from '../api/index';
 import * as topics from '../api/topics';
 import messages from '../constants/notificationMessages';
+import logger from '../Logger';
 import {levels} from '../models';
 import {keys} from '../models';
 import {PriceType} from '../models/index';
@@ -200,7 +201,9 @@ class RootStore {
         );
       }
       return refInstrument || defaultInstrument;
-    } catch {
+    } catch (error) {
+      logger.logException(error);
+
       return defaultInstrument;
     }
   };
