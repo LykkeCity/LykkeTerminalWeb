@@ -1,11 +1,5 @@
 import {AnalyticsEventModel} from '../models/analyticsEventModel';
 
-declare global {
-  interface Window {
-    analytics: any;
-  }
-}
-
 export abstract class AnalyticsService {
   static handlePageLoading = () => {
     window.analytics.load(process.env.REACT_APP_SEGMENT_WRITE_KEY);
