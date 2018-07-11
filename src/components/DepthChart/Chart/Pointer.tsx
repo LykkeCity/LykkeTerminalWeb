@@ -198,6 +198,17 @@ class Pointer extends React.Component<PointerProps> {
     this.forceUpdate();
   };
 
+  calculateExactPrice = (): number => {
+    let exactPrice = 0;
+    for (let i = 0; i < this.orderIndex + 1; i++) {
+      const price = this.props.orders[i].price;
+      const volume = this.props.orders[i].volume;
+
+      exactPrice += price * volume;
+    }
+    return exactPrice;
+  };
+
   drawPointer = () => {
     if (this.props.orders.length > 0) {
       const price = this.props.orders[this.orderIndex].price;
@@ -210,7 +221,7 @@ class Pointer extends React.Component<PointerProps> {
         this.props.baseAsset
       }`;
       const totalOfLabel = `${formattedNumber(
-        price * depth,
+        this.calculateExactPrice(),
         this.props.quoteAccuracy
       )} ${this.props.quoteAsset}`;
 
