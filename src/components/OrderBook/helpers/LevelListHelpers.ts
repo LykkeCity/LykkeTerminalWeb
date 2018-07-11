@@ -3,8 +3,7 @@ import {colors} from '../../styled';
 import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 
-export const STEP_OPACITY = 0.05;
-export const START_ANIMATED_OPACITY = 0.5;
+export const START_ANIMATED_OPACITY = 0.16;
 export const DEFAULT_OPACITY = 1;
 export const DEFAULT_TRAILING_ZERO_OPACITY = 0.4;
 
@@ -24,12 +23,14 @@ export const getY = (side: Side, idx: number, levelHeight: number) =>
 
 export const updateAnimatingLevelsWithNewLevel = (
   animatingLevels: IAnimatingLevels[],
-  price: number
+  price: number,
+  volumeWidth: number
 ): IAnimatingLevels[] => {
   const levelForAnimation: IAnimatingLevels = {
     price,
     currentOpacity: START_ANIMATED_OPACITY,
-    isAnimated: false
+    isAnimated: false,
+    currentWidth: volumeWidth
   };
   return [...animatingLevels, levelForAnimation];
 };
@@ -37,17 +38,24 @@ export const updateAnimatingLevelsWithNewLevel = (
 export const getColorAndOpacityForAnimation = (
   animatingLevel: IAnimatingLevels,
   color: string,
-  side: Side
+  side: Side,
+  finalVolumeWidth: number
 ) => {
-  if (animatingLevel.currentOpacity < DEFAULT_OPACITY) {
-    animatingLevel.currentOpacity += STEP_OPACITY;
-  } else {
-    animatingLevel.isAnimated = true;
+  if (animatingLevel.currentWidth < finalVolumeWidth) {
+    animatingLevel.currentWidth += 3;
+    if (animatingLevel.currentWidth >= finalVolumeWidth) {
+      animatingLevel.isAnimated = true;
+    }
+  } else if (animatingLevel.currentWidth > finalVolumeWidth) {
+    animatingLevel.currentWidth -= 3;
+    if (animatingLevel.currentWidth <= finalVolumeWidth) {
+      animatingLevel.isAnimated = true;
+    }
   }
 
   return {
-    animatedColor: animatingLevel!.isAnimated ? fillBySide(side) : color,
-    animatedOpacity: animatingLevel!.currentOpacity
+    animatedCurrentWidth: animatingLevel.currentWidth,
+    animatedOpacity: animatingLevel.isAnimated ? 0.16 : 0.35
   };
 };
 

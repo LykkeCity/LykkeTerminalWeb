@@ -36,7 +36,7 @@ import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 import {FakeOrderBookStage} from './styles';
 
 const LEVEL_FONT = `12.25px Proxima Nova`;
-const UPDATE_ANIMATION_INTERVAL = 50;
+const UPDATE_ANIMATION_INTERVAL = 20;
 const CELLS_NUMBER = 3;
 
 export interface LevelListProps {
@@ -74,6 +74,7 @@ export interface IAnimatingLevels {
   isAnimated: boolean;
   currentOpacity: number;
   price: number;
+  currentWidth: number;
 }
 
 class LevelList extends React.Component<LevelListProps> {
@@ -164,6 +165,8 @@ class LevelList extends React.Component<LevelListProps> {
     const isAnimationPrevented = !this.cachedLevels.length;
 
     return (levelOrder: Order, index: number) => {
+      let volumeBackOpacity = 0.16;
+      let volumeWidth = normalize(levelOrder[displayType]);
       const existedLevel = this.cachedLevels.find(
         cachedLevel => cachedLevel.price === levelOrder.price
       );
@@ -171,7 +174,6 @@ class LevelList extends React.Component<LevelListProps> {
       const volumeActiveColor = fillVolumeBySide(levelOrder.side);
 
       let volumeColor = color;
-      let volumeOpacity = DEFAULT_OPACITY;
       const isChangingLevel =
         existedLevel && existedLevel[displayType] !== levelOrder[displayType];
 
@@ -189,7 +191,8 @@ class LevelList extends React.Component<LevelListProps> {
         ) {
           this.animatingLevels = updateAnimatingLevelsWithNewLevel(
             this.animatingLevels,
-            levelOrder.price
+            levelOrder.price,
+            !existedLevel ? 0 : normalize(existedLevel[displayType])
           );
         }
 
@@ -199,15 +202,17 @@ class LevelList extends React.Component<LevelListProps> {
 
         if (existedAnimatingLevel) {
           const {
-            animatedColor,
+            animatedCurrentWidth,
             animatedOpacity
           } = getColorAndOpacityForAnimation(
             existedAnimatingLevel,
             volumeActiveColor,
-            levelOrder.side
+            levelOrder.side,
+            volumeWidth
           );
-          volumeColor = animatedColor;
-          volumeOpacity = animatedOpacity;
+          volumeColor = volumeActiveColor;
+          volumeWidth = animatedCurrentWidth;
+          volumeBackOpacity = animatedOpacity;
         }
       }
 
@@ -228,9 +233,9 @@ class LevelList extends React.Component<LevelListProps> {
         color,
         x: width / CELLS_NUMBER,
         y,
-        width: normalize(levelOrder[displayType]),
+        width: volumeWidth,
         height: levelHeight,
-        opacity: 0.16
+        opacity: volumeBackOpacity
       });
 
       if (levelOrder.connectedLimitOrders.length > 0) {
@@ -282,7 +287,7 @@ class LevelList extends React.Component<LevelListProps> {
         let drownSymbolsWidth = 0;
         const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
         const symbols = volume.split('');
-        const getSymbolOpacity = colorizedSymbol(volumeOpacity);
+        const getSymbolOpacity = colorizedSymbol(DEFAULT_OPACITY);
 
         symbols.forEach((symbol: string, i: number) => {
           const symbolOpacity = getSymbolOpacity(trailingZeroPosition, i);
@@ -306,8 +311,7 @@ class LevelList extends React.Component<LevelListProps> {
           x: width / CELLS_NUMBER + LEFT_PADDING,
           y: canvasY - TOP_PADDING,
           font: LEVEL_FONT,
-          align: 'start',
-          opacity: volumeOpacity
+          align: 'start'
         });
       }
 

@@ -79,7 +79,8 @@ describe('level list helpers', () => {
       expect(animatingLevels.length).toBe(0);
       animatingLevels = updateAnimatingLevelsWithNewLevel(
         animatingLevels,
-        price
+        price,
+        1
       );
       expect(animatingLevels.length).toBe(1);
 
@@ -94,26 +95,28 @@ describe('level list helpers', () => {
     it('should return updated opacity and color for current animating level if opacity is less than DEFAULT_OPACITY', () => {
       animatingLevels = updateAnimatingLevelsWithNewLevel(
         animatingLevels,
-        price
+        price,
+        1
       );
       const existedLevel = animatingLevels.find(
         animatingLevel => animatingLevel.price === price
       );
       const color = colors.buy;
 
-      const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
+      const {animatedOpacity} = getColorAndOpacityForAnimation(
         existedLevel!,
         color,
-        Side.Buy
+        Side.Buy,
+        1
       );
-      expect(animatedColor).toBe(color);
       expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
     });
 
     it('should return updated opacity and color for current animating level if opacity is more than DEFAULT_OPACITY', () => {
       animatingLevels = updateAnimatingLevelsWithNewLevel(
         animatingLevels,
-        price
+        price,
+        1
       );
       const existedLevel = animatingLevels.find(
         animatingLevel => animatingLevel.price === price
@@ -121,12 +124,12 @@ describe('level list helpers', () => {
       const color = colors.buy;
       existedLevel!.currentOpacity = 2;
 
-      const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
+      const {animatedOpacity} = getColorAndOpacityForAnimation(
         existedLevel!,
         color,
-        Side.Buy
+        Side.Buy,
+        1
       );
-      expect(animatedColor).toBe(colors.buy);
       expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
     });
 
@@ -141,7 +144,8 @@ describe('level list helpers', () => {
       expect(animatingLevels.length).toBe(0);
       animatingLevels = updateAnimatingLevelsWithNewLevel(
         animatingLevels,
-        price
+        price,
+        1
       );
       expect(animatingLevels.length).toBe(1);
 
@@ -156,7 +160,8 @@ describe('level list helpers', () => {
       expect(animatingLevels.length).toBe(0);
       animatingLevels = updateAnimatingLevelsWithNewLevel(
         animatingLevels,
-        price
+        price,
+        1
       );
       expect(animatingLevels.length).toBe(1);
       expect(
