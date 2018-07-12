@@ -29,3 +29,4 @@ export {default as WalletType} from './walletType';
 export {default as LevelType} from './levelType';
 export {default as OrderBookCellType} from './orderBookCellType';
 export {default as Browser} from './browser';
+export {default as BigNumberModel} from './bigNumberModel';

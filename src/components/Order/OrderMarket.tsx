@@ -95,8 +95,8 @@ class OrderMarket extends React.Component<
               {!this.isInverted ? `(${baseAssetName})` : `(${quoteAssetName})`}
             </Action>
             <Available
+              disabled={!this.props.balance}
               onClick={this.handlePercentageChange()}
-              className={!this.props.balance ? 'disabled' : ''}
             >
               {formattedNumber(this.props.balance || 0, balanceAccuracy)}{' '}
               {this.props.isSell ? baseAssetName : quoteAssetName} available
