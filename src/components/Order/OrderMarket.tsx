@@ -133,15 +133,13 @@ class OrderMarket extends React.Component<
           ))}
         </Flex>
         <Total>
-          <OrderTitle>
-            Total
-            <TotalHint title={'Your order may execute at a different price'}>
-              Indicative price *
-            </TotalHint>
-          </OrderTitle>
+          <OrderTitle>Total</OrderTitle>
           {isEnoughLiquidity && (
             <Amount>
               {amount} {quoteAssetName}
+              <TotalHint title={'Your order may execute at a different price'}>
+                Indicative price *
+              </TotalHint>
             </Amount>
           )}
         </Total>

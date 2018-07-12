@@ -123,9 +123,11 @@ export const Total = Flex.extend`
 `;
 
 export const TotalHint = styled.small`
+  display: block;
+  margin-top: ${rem(2)};
   color: ${colors.coolGrey};
   font-size: ${rem(12)};
-  display: block;
+  text-align: right;
 `;
 
 export const OrderTitle = styled.div`
