@@ -141,14 +141,13 @@ export const Amount = styled.div`
   font-size: ${rem(14)};
 `;
 
-export const Available = styled(Amount)`
+export const Available = styled(Amount).attrs({
+  style: (props: any) => ({
+    cursor: `${props.disabled ? 'auto' : 'pointer'}`
+  })
+})`
   text-align: right;
-  &:hover {
-    &:not(.disabled) {
-      cursor: pointer;
-    }
-  }
-`;
+` as any;
 
 export const Action = styled.div`
   font-size: ${rem(16)};
@@ -216,7 +215,7 @@ export const Link = styled.a`
 `;
 
 export const Percent = styled.div`
-  color: #f5f6f7;
+  color: ${colors.whiteText};
   display: flex;
   justify-content: center;
   align-items: center;

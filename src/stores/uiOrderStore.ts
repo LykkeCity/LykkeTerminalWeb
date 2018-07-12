@@ -84,11 +84,11 @@ class UiOrderStore extends BaseStore {
   setPriceValueWithFixed = (price: number) =>
     (this.priceValue = !price
       ? DEFAULT_INPUT_VALUE
-      : bigToFixed(price, this.priceAccuracy));
-  setQuantityValueWithFixed = (quantity: any) =>
+      : bigToFixed(price, this.priceAccuracy).string);
+  setQuantityValueWithFixed = (quantity: number | string) =>
     (this.quantityValue = !quantity
       ? DEFAULT_INPUT_VALUE
-      : bigToFixed(quantity, this.quantityAccuracy));
+      : bigToFixed(quantity, this.quantityAccuracy).string);
 
   setPriceValue = (price: string) => (this.priceValue = price);
   setQuantityValue = (quantity: string) => (this.quantityValue = quantity);
