@@ -46,8 +46,8 @@ class UiOrderStore extends BaseStore {
   }
 
   @computed
-  get isNotEnoughLiquidity() {
-    return this.marketTotal.isNotEnoughLiquidity;
+  get isEnoughLiquidity() {
+    return this.marketTotal.isEnoughLiquidity;
   }
 
   handlePriceChange: (price: string) => void;
@@ -65,7 +65,7 @@ class UiOrderStore extends BaseStore {
     canBeUpdated: true,
     operationType: '',
     operationVolume: 0,
-    isNotEnoughLiquidity: false,
+    isEnoughLiquidity: true,
     price: 0
   };
   @observable private priceValue: string = DEFAULT_INPUT_VALUE;
@@ -250,14 +250,14 @@ class UiOrderStore extends BaseStore {
     }
 
     const areNewValues = operationVolume && operationType;
-    const areNotNewValues = !operationVolume && !operationType;
-    const isDebounceByWamp = areNotNewValues && !this.marketTotal.canBeUpdated;
+    const areOldValues = !operationVolume && !operationType;
+    const isDebounceByWamp = areOldValues && !this.marketTotal.canBeUpdated;
     const isDebounceManually =
       areNewValues && !this.marketTotal.canBeUpdated && debounce;
 
     if (isDebounceByWamp || isDebounceManually) {
       return;
-    } else if (areNotNewValues || debounce) {
+    } else if (areOldValues || debounce) {
       this.setDebounce();
     }
 
@@ -276,7 +276,7 @@ class UiOrderStore extends BaseStore {
       this.getOrdersByOperationType()
     );
 
-    this.marketTotal.isNotEnoughLiquidity = this.marketTotal.price === null;
+    this.marketTotal.isEnoughLiquidity = this.marketTotal.price !== null;
   };
 
   resetMarketTotal = () => {
@@ -285,7 +285,7 @@ class UiOrderStore extends BaseStore {
       operationType: '',
       operationVolume: 0,
       price: 0,
-      isNotEnoughLiquidity: false
+      isEnoughLiquidity: true
     };
   };
 
