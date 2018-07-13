@@ -9,7 +9,7 @@ import {
   onValueChange
 } from '../../utils/inputNumber';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import {precisionFloor} from '../../utils/math';
+import {bigToFixed, precisionFloor} from '../../utils/math';
 import {
   getPercentOfValueForLimit,
   isAmountExceedLimitBalance,
@@ -79,10 +79,14 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.state = {
       pendingOrder: false,
       percents: percentage,
-      priceValue: order.price.toFixed(this.accuracy.priceAccuracy),
-      quantityValue: order.remainingVolume.toFixed(
+      priceValue: bigToFixed(
+        order.price,
+        this.accuracy.priceAccuracy
+      ).toString(),
+      quantityValue: bigToFixed(
+        order.remainingVolume,
         this.accuracy.quantityAccuracy
-      )
+      ).toString()
     };
 
     this.handlePriceArrowClick = curry(onArrowClick)(
@@ -135,19 +139,19 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.balance = asset.available + reserved;
   }
 
-  setPriceValueWithFixed = (price: number) => {
+  setPriceValueWithFixed = (price: number | string) => {
     this.setState({
       priceValue: !price
         ? DEFAULT_INPUT_VALUE
-        : price.toFixed(this.accuracy.priceAccuracy)
+        : bigToFixed(price, this.accuracy.priceAccuracy).toString()
     });
   };
 
-  setQuantityValueWithFixed = (quantity: number) => {
+  setQuantityValueWithFixed = (quantity: number | string) => {
     this.setState({
       quantityValue: !quantity
         ? DEFAULT_INPUT_VALUE
-        : quantity.toFixed(this.accuracy.quantityAccuracy)
+        : bigToFixed(quantity, this.accuracy.quantityAccuracy).toString()
     });
   };
 

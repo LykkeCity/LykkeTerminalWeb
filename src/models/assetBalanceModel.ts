@@ -11,7 +11,7 @@ class AssetBalanceModel {
 
   @computed
   get available() {
-    return subtraction(this.balance, this.reserved).toNumber;
+    return subtraction(this.balance, this.reserved).toNumber();
   }
 
   constructor(dto: any) {

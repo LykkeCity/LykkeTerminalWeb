@@ -61,9 +61,6 @@ export const subtraction = (
   return new BigNumberModel(value).minus(decrement);
 };
 
-export const bigToFixed = (
-  value: number | string,
-  accuracy: number | string
-) => {
+export const bigToFixed = (value: number | string, accuracy: number) => {
   return new BigNumberModel(value).toFixed(accuracy);
 };

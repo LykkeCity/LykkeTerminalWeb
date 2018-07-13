@@ -1,21 +1,21 @@
-// tslint:disable-next-line:no-var-requires
-const Big = require('big.js');
+import Big from 'big.js';
 
 class BigNumberModel {
-  private bigNumber: any;
+  private bigNumber: Big;
   private calculationResult: string;
 
-  get toString() {
-    return this.calculationResult;
-  }
-
-  get toNumber() {
-    return +this.calculationResult;
-  }
-
   constructor(value: string | number) {
-    this.bigNumber = this.calculationResult = new Big(value);
+    this.bigNumber = new Big(value);
+    this.calculationResult = this.bigNumber.valueOf();
   }
+
+  toString = () => {
+    return this.calculationResult;
+  };
+
+  toNumber = () => {
+    return parseFloat(this.calculationResult);
+  };
 
   plus = (term: number | string) => {
     this.calculationResult = this.bigNumber.plus(term).valueOf();
@@ -27,7 +27,7 @@ class BigNumberModel {
     return this;
   };
 
-  toFixed = (accuracy: number | string) => {
+  toFixed = (accuracy: number) => {
     this.calculationResult = this.bigNumber.toFixed(accuracy);
     return this;
   };
