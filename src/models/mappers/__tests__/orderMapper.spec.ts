@@ -61,7 +61,7 @@ describe('orderMapper', () => {
     it('should return undefined when requested amount over total orders volume', () => {
       const volume = 4;
 
-      expect(mapToEffectivePrice(volume, orders)).toBeUndefined();
+      expect(mapToEffectivePrice(volume, orders)).toBe(null);
     });
   });
 
