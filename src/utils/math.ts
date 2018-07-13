@@ -1,3 +1,5 @@
+import {BigNumberModel} from '../models';
+
 // tslint:disable-next-line:no-var-requires
 const Big = require('big.js');
 
@@ -48,6 +50,20 @@ export const getPercentsOf = (
   accuracy: number
 ) => precisionFloor(percents / 100 * value, accuracy);
 
-export const subtraction = (value: number, decrement: number) => {
-  return +new Big(value).minus(decrement).valueOf();
+export const addition = (term1: number | string, term2: number | string) => {
+  return new BigNumberModel(new Big(term1).plus(term2).valueOf());
+};
+
+export const subtraction = (
+  value: number | string,
+  decrement: number | string
+) => {
+  return new BigNumberModel(new Big(value).minus(decrement).valueOf());
+};
+
+export const bigToFixed = (
+  value: number | string,
+  accuracy: number | string
+) => {
+  return new BigNumberModel(new Big(value).toFixed(accuracy));
 };

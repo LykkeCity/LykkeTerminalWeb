@@ -29,6 +29,7 @@ export const colors = {
   graphiteBorder: 'rgba(0, 0, 0, 0.1)',
   greyBorder: '#272727',
   white: 'rgb(245, 246, 247)',
+  whiteText: '#f5f6f7',
   buy: rgb(70, 235, 106),
   sell: rgb(255, 97, 97),
   grey: '#3c3c3c',

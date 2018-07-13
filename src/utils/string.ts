@@ -17,8 +17,15 @@ export const substringMinus = (str: string) => {
   return str;
 };
 
-export const substringLast = (str: string) => {
-  const subStr = str.substring(0, str.length - 1);
+export const substringDot = (str: string) => {
+  if (str[str.length - 1] === '.') {
+    return str.substring(0, str.length - 1);
+  }
+  return str;
+};
+
+export const substringLastSome = (str: string, qty: number) => {
+  const subStr = str.substring(0, str.length - qty);
   return subStr[subStr.length - 1] === '.'
     ? subStr.substring(0, subStr.length - 1)
     : subStr;

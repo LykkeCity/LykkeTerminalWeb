@@ -1,6 +1,10 @@
 import ArrowDirection from '../../models/arrowDirection';
 import {onArrowClick, onValueChange} from '../inputNumber';
-import {substringLast, substringZero} from '../string';
+import {
+  getPostDecimalsLength,
+  substringLastSome,
+  substringZero
+} from '../string';
 
 describe('input with type number functionality', () => {
   const accuracy = 8;
@@ -16,7 +20,9 @@ describe('input with type number functionality', () => {
       (value: number) => (result = value),
       ArrowDirection.Up
     );
-    expect(result).toBe(customNumber + Math.pow(10, -1 * accuracy));
+    expect(result).toBe(
+      (customNumber + Math.pow(10, -1 * accuracy)).toString()
+    );
   });
 
   it('should decrease value with one digit', () => {
@@ -26,7 +32,9 @@ describe('input with type number functionality', () => {
       (value: number) => (result = value),
       ArrowDirection.Down
     );
-    expect(result).toBe(customNumber - Math.pow(10, -1 * accuracy));
+    expect(result).toBe(
+      (customNumber - Math.pow(10, -1 * accuracy)).toString()
+    );
   });
 
   it('should return zero if value is zero and arrow direction is down', () => {
@@ -51,14 +59,15 @@ describe('input with type number functionality', () => {
     expect(result).toBe(customValue);
   });
 
-  it('should cut last digit if digits length greater than accuracy', () => {
-    const customValue = '0.123456789';
+  it('should cut last some digits if digits length greater than accuracy', () => {
+    const customValue = '0.1234567899';
+    const qty = getPostDecimalsLength(customValue) - getAccuracy();
     onValueChange(
       (value: string) => (result = value),
       getAccuracy,
       customValue
     );
-    expect(result).toBe(substringLast(customValue));
+    expect(result).toBe(substringLastSome(customValue, qty));
   });
 
   it('should return without odd zeroes before delimiter', () => {
