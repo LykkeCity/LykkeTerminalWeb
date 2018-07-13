@@ -22,7 +22,7 @@ export interface CustomDropdownProps {
   onClick: (value: string) => void;
 }
 
-interface CustomDropdownState {
+export interface CustomDropdownState {
   isOpened: boolean;
 }
 
