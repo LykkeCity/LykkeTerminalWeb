@@ -24,12 +24,11 @@ import {
 import {colors} from '../styled';
 import {
   colorizedSymbol,
-  DEFAULT_OPACITY,
+  DEFAULT_BAR_OPACITY,
   fillBySide,
-  fillVolumeBySide,
   findAndDeleteDuplicatedAnimatedLevel,
   getCellType,
-  getColorAndOpacityForAnimation,
+  getOpacityForAnimation,
   getY,
   updateAnimatingLevelsWithNewLevel
 } from './helpers/LevelListHelpers';
@@ -37,7 +36,6 @@ import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 import {FakeOrderBookStage} from './styles';
 
 const LEVEL_FONT = `12.25px Proxima Nova`;
-const UPDATE_ANIMATION_INTERVAL = 50;
 const CELLS_NUMBER = 3;
 
 export interface LevelListProps {
@@ -75,6 +73,7 @@ export interface IAnimatingLevels {
   isAnimated: boolean;
   currentOpacity: number;
   price: number;
+  isAnimationReached: boolean;
 }
 
 class LevelList extends React.Component<LevelListProps> {
@@ -84,7 +83,7 @@ class LevelList extends React.Component<LevelListProps> {
   fakeStage: HTMLDivElement;
   prevWidth: number = 0;
   cachedLevels: Order[] = [];
-  cancelColorAnimationIntervalId: any;
+  cancelColorAnimationFrameId: any;
   animatingLevels: IAnimatingLevels[] = [];
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
@@ -96,16 +95,23 @@ class LevelList extends React.Component<LevelListProps> {
       this.renderCanvas(asks, bids, type);
       this.forceUpdate();
 
-      clearInterval(this.cancelColorAnimationIntervalId);
+      window.cancelAnimationFrame(this.cancelColorAnimationFrameId);
 
-      this.cancelColorAnimationIntervalId = setInterval(() => {
+      const animationLoop = () => {
         if (this.animatingLevels.length) {
           this.renderCanvas(asks, bids, type);
           this.forceUpdate();
+          this.cancelColorAnimationFrameId = window.requestAnimationFrame(
+            animationLoop
+          );
         } else {
-          clearInterval(this.cancelColorAnimationIntervalId);
+          window.cancelAnimationFrame(this.cancelColorAnimationFrameId);
         }
-      }, UPDATE_ANIMATION_INTERVAL);
+      };
+
+      this.cancelColorAnimationFrameId = window.requestAnimationFrame(
+        animationLoop
+      );
     });
   };
 
@@ -170,10 +176,8 @@ class LevelList extends React.Component<LevelListProps> {
         cachedLevel => cachedLevel.price === levelOrder.price
       );
       const color = fillBySide(levelOrder.side);
-      const volumeActiveColor = fillVolumeBySide(levelOrder.side);
 
-      let volumeColor = color;
-      let volumeOpacity = DEFAULT_OPACITY;
+      let barOpacity = DEFAULT_BAR_OPACITY;
       const isChangingLevel =
         existedLevel && existedLevel[displayType] !== levelOrder[displayType];
 
@@ -200,16 +204,7 @@ class LevelList extends React.Component<LevelListProps> {
         );
 
         if (existedAnimatingLevel) {
-          const {
-            animatedColor,
-            animatedOpacity
-          } = getColorAndOpacityForAnimation(
-            existedAnimatingLevel,
-            volumeActiveColor,
-            levelOrder.side
-          );
-          volumeColor = animatedColor;
-          volumeOpacity = animatedOpacity;
+          barOpacity = getOpacityForAnimation(existedAnimatingLevel);
         }
       }
 
@@ -232,7 +227,7 @@ class LevelList extends React.Component<LevelListProps> {
         y,
         width: normalize(levelOrder[displayType]),
         height: levelHeight,
-        opacity: 0.16
+        opacity: barOpacity
       });
 
       if (levelOrder.connectedLimitOrders.length > 0) {
@@ -284,13 +279,13 @@ class LevelList extends React.Component<LevelListProps> {
         let drownSymbolsWidth = 0;
         const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
         const symbols = volume.split('');
-        const getSymbolOpacity = colorizedSymbol(volumeOpacity);
+        const getSymbolOpacity = colorizedSymbol(1);
 
         symbols.forEach((symbol: string, i: number) => {
           const symbolOpacity = getSymbolOpacity(trailingZeroPosition, i);
           drawText({
             ctx: this.canvasCtx,
-            color: volumeColor,
+            color,
             text: symbol,
             x: width / CELLS_NUMBER + LEFT_PADDING + drownSymbolsWidth,
             y: canvasY - TOP_PADDING,
@@ -303,13 +298,12 @@ class LevelList extends React.Component<LevelListProps> {
       } else {
         drawText({
           ctx: this.canvasCtx,
-          color: volumeColor,
+          color,
           text: volume,
           x: width / CELLS_NUMBER + LEFT_PADDING,
           y: canvasY - TOP_PADDING,
           font: LEVEL_FONT,
-          align: 'start',
-          opacity: volumeOpacity
+          align: 'start'
         });
       }
 

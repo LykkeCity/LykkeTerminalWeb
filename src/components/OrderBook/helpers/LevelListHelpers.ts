@@ -3,16 +3,13 @@ import {colors} from '../../styled';
 import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 
-export const STEP_OPACITY = 0.05;
-export const START_ANIMATED_OPACITY = 0.5;
-export const DEFAULT_OPACITY = 1;
+export const STEP_OPACITY = 0.03;
+export const DEFAULT_BAR_OPACITY = 0.16;
+export const ANIMATED_HIGH_OPACITY = 0.5;
 export const DEFAULT_TRAILING_ZERO_OPACITY = 0.4;
 
 export const fillBySide = (side: Side) =>
   side === Side.Buy ? colors.buy : colors.sell;
-
-export const fillVolumeBySide = (side: Side) =>
-  side === Side.Buy ? colors.activeBuy : colors.activeSell;
 
 export const getCellType = (type: string) =>
   type === OrderBookCellType.Depth
@@ -28,27 +25,32 @@ export const updateAnimatingLevelsWithNewLevel = (
 ): IAnimatingLevels[] => {
   const levelForAnimation: IAnimatingLevels = {
     price,
-    currentOpacity: START_ANIMATED_OPACITY,
-    isAnimated: false
+    currentOpacity: DEFAULT_BAR_OPACITY,
+    isAnimated: false,
+    isAnimationReached: false
   };
   return [...animatingLevels, levelForAnimation];
 };
 
-export const getColorAndOpacityForAnimation = (
-  animatingLevel: IAnimatingLevels,
-  color: string,
-  side: Side
-) => {
-  if (animatingLevel.currentOpacity < DEFAULT_OPACITY) {
-    animatingLevel.currentOpacity += STEP_OPACITY;
+export const getOpacityForAnimation = (animatingLevel: IAnimatingLevels) => {
+  if (animatingLevel.isAnimationReached) {
+    if (animatingLevel.currentOpacity <= ANIMATED_HIGH_OPACITY) {
+      animatingLevel.isAnimated = true;
+    } else {
+      animatingLevel.currentOpacity -= STEP_OPACITY;
+    }
   } else {
-    animatingLevel.isAnimated = true;
+    if (animatingLevel.currentOpacity < ANIMATED_HIGH_OPACITY) {
+      animatingLevel.currentOpacity += STEP_OPACITY;
+      if (animatingLevel.currentOpacity >= ANIMATED_HIGH_OPACITY) {
+        animatingLevel.isAnimationReached = true;
+      }
+    }
   }
 
-  return {
-    animatedColor: animatingLevel!.isAnimated ? fillBySide(side) : color,
-    animatedOpacity: animatingLevel!.currentOpacity
-  };
+  return animatingLevel.isAnimated
+    ? DEFAULT_BAR_OPACITY
+    : animatingLevel!.currentOpacity;
 };
 
 export const findAndDeleteDuplicatedAnimatedLevel = (
