@@ -1,8 +1,6 @@
+import classNames from 'classnames';
 import * as React from 'react';
 import {Percent} from './styles';
-
-// tslint:disable-next-line:no-var-requires
-const classNames = require('classnames');
 
 interface OrderPercentageProps {
   percent: number;

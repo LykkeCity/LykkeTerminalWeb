@@ -20,11 +20,11 @@ export const onArrowClick = (
   const value = !getValue() ? '0' : getValue();
   switch (operation) {
     case ArrowDirection.Up:
-      setValue(addition(value, Math.pow(10, -1 * getAcc())).string);
+      setValue(addition(value, Math.pow(10, -1 * getAcc())).toString);
       break;
     case ArrowDirection.Down:
       const newVal = subtraction(value, Math.pow(10, -1 * getAcc()));
-      const sentVal = newVal.number <= 0 ? 0 : newVal.string;
+      const sentVal = newVal.toNumber <= 0 ? 0 : newVal.toString;
       setValue(sentVal);
       break;
   }
