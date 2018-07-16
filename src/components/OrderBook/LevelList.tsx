@@ -36,6 +36,7 @@ import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 import {FakeOrderBookStage} from './styles';
 
 const LEVEL_FONT = `12.25px Proxima Nova`;
+const UPDATE_ANIMATION_INTERVAL = 80;
 const CELLS_NUMBER = 3;
 
 export interface LevelListProps {
@@ -83,7 +84,7 @@ class LevelList extends React.Component<LevelListProps> {
   fakeStage: HTMLDivElement;
   prevWidth: number = 0;
   cachedLevels: Order[] = [];
-  cancelColorAnimationFrameId: any;
+  cancelColorAnimationIntervalId: any;
   animatingLevels: IAnimatingLevels[] = [];
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
@@ -95,23 +96,16 @@ class LevelList extends React.Component<LevelListProps> {
       this.renderCanvas(asks, bids, type);
       this.forceUpdate();
 
-      window.cancelAnimationFrame(this.cancelColorAnimationFrameId);
+      clearInterval(this.cancelColorAnimationIntervalId);
 
-      const animationLoop = () => {
+      this.cancelColorAnimationIntervalId = setInterval(() => {
         if (this.animatingLevels.length) {
           this.renderCanvas(asks, bids, type);
           this.forceUpdate();
-          this.cancelColorAnimationFrameId = window.requestAnimationFrame(
-            animationLoop
-          );
         } else {
-          window.cancelAnimationFrame(this.cancelColorAnimationFrameId);
+          clearInterval(this.cancelColorAnimationIntervalId);
         }
-      };
-
-      this.cancelColorAnimationFrameId = window.requestAnimationFrame(
-        animationLoop
-      );
+      }, UPDATE_ANIMATION_INTERVAL);
     });
   };
 

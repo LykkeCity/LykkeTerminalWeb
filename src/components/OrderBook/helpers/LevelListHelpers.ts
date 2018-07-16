@@ -3,7 +3,7 @@ import {colors} from '../../styled';
 import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 
-export const STEP_OPACITY = 0.03;
+export const STEP_OPACITY = 0.16;
 export const DEFAULT_BAR_OPACITY = 0.16;
 export const ANIMATED_HIGH_OPACITY = 0.5;
 export const DEFAULT_TRAILING_ZERO_OPACITY = 0.4;
