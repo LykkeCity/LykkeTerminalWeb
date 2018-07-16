@@ -18,7 +18,7 @@ export interface IRGB {
 export const START_ANIMATED_OPACITY = 0.5;
 export const DEFAULT_OPACITY = 1;
 export const DEFAULT_TRAILING_ZERO_OPACITY = 0.4;
-export let ANIMATION_TICK = 5;
+export let ANIMATION_TICK = 2;
 
 const getAnimationTick = () => ANIMATION_TICK;
 (window as any).setAnimationTick = (tick: number) => (ANIMATION_TICK = tick);

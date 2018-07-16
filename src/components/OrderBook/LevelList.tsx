@@ -37,7 +37,7 @@ import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 import {FakeOrderBookStage} from './styles';
 
 const LEVEL_FONT = `12.25px Proxima Nova`;
-const UPDATE_ANIMATION_INTERVAL = 50;
+const UPDATE_ANIMATION_INTERVAL = 120;
 const CELLS_NUMBER = 3;
 
 export interface LevelListProps {
