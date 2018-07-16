@@ -1,6 +1,7 @@
 import {ISubscription} from 'autobahn';
 import {pathOr} from 'rambda';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
+import {chartPalette} from '../components/styled';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
 import {timeZones} from '../constants/chartTimezones';
 import {InstrumentModel} from '../models/index';
@@ -194,8 +195,8 @@ class ChartStore extends BaseStore {
 
         'scalesProperties.textColor': 'rgb(140, 148, 160)',
 
-        'mainSeriesProperties.candleStyle.upColor': 'rgb(19, 183, 42)',
-        'mainSeriesProperties.candleStyle.downColor': 'rgb(255, 62, 46)',
+        'mainSeriesProperties.candleStyle.upColor': chartPalette.candleUp,
+        'mainSeriesProperties.candleStyle.downColor': chartPalette.candleDown,
         'mainSeriesProperties.candleStyle.drawWick': true,
         'mainSeriesProperties.candleStyle.drawBorder': true,
         'mainSeriesProperties.candleStyle.wickUpColor':

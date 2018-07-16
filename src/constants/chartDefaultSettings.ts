@@ -1,3 +1,5 @@
+import {chartPalette} from '../components/styled';
+
 export const CHART_DEFAULT_SETTINGS = {
   charts: [
     {
@@ -36,38 +38,38 @@ export const CHART_DEFAULT_SETTINGS = {
                   showSymbolAsDescription: false
                 },
                 candleStyle: {
-                  upColor: 'rgb(19, 183, 42)',
-                  downColor: 'rgb(255, 62, 46)',
+                  upColor: chartPalette.candleUp,
+                  downColor: chartPalette.candleDown,
                   drawWick: true,
                   drawBorder: false,
                   borderColor: 'rgba(140, 148, 160, 0.4)',
-                  borderUpColor: 'rgb(19, 183, 42)',
-                  borderDownColor: 'rgb(255, 62, 46)',
+                  borderUpColor: chartPalette.candleUp,
+                  borderDownColor: chartPalette.candleDown,
                   wickColor: 'rgba(140, 148, 160, 0.4)',
                   wickUpColor: 'rgba(140, 148, 160, 0.4)',
                   wickDownColor: 'rgba(140, 148, 160, 0.4)',
                   barColorsOnPrevClose: false
                 },
                 hollowCandleStyle: {
-                  upColor: 'rgb(19, 183, 42)',
-                  downColor: 'rgb(255, 62, 46)',
+                  upColor: chartPalette.candleUp,
+                  downColor: chartPalette.candleDown,
                   drawWick: true,
                   drawBorder: false,
                   borderColor: 'rgba(140, 148, 160, 0.4)',
-                  borderUpColor: 'rgb(19, 183, 42)',
-                  borderDownColor: 'rgb(255, 62, 46)',
+                  borderUpColor: chartPalette.candleUp,
+                  borderDownColor: chartPalette.candleDown,
                   wickColor: 'rgba(140, 148, 160, 0.4)',
                   wickUpColor: 'rgba(140, 148, 160, 0.4)',
                   wickDownColor: 'rgba(140, 148, 160, 0.4)'
                 },
                 haStyle: {
-                  upColor: 'rgb(19, 183, 42)',
-                  downColor: 'rgb(255, 62, 46)',
+                  upColor: chartPalette.candleUp,
+                  downColor: chartPalette.candleDown,
                   drawWick: true,
                   drawBorder: false,
                   borderColor: 'rgba(140, 148, 160, 0.4)',
-                  borderUpColor: 'rgb(19, 183, 42)',
-                  borderDownColor: 'rgb(255, 62, 46)',
+                  borderUpColor: chartPalette.candleUp,
+                  borderDownColor: chartPalette.candleDown,
                   wickColor: 'rgba(140, 148, 160, 0.4)',
                   wickUpColor: 'rgba(140, 148, 160, 0.4)',
                   wickDownColor: 'rgba(140, 148, 160, 0.4)',
@@ -75,8 +77,8 @@ export const CHART_DEFAULT_SETTINGS = {
                   barColorsOnPrevClose: false
                 },
                 barStyle: {
-                  upColor: 'rgb(19, 183, 42)',
-                  downColor: 'rgb(255, 62, 46)',
+                  upColor: chartPalette.candleUp,
+                  downColor: chartPalette.candleDown,
                   barColorsOnPrevClose: false,
                   dontDrawOpen: false
                 },
@@ -108,8 +110,8 @@ export const CHART_DEFAULT_SETTINGS = {
                 renkoStyle: {
                   upColor: 'rgba( 107, 165, 131, 1)',
                   downColor: 'rgba( 215, 84, 66, 1)',
-                  borderUpColor: 'rgb(19, 183, 42)',
-                  borderDownColor: 'rgb(255, 62, 46)',
+                  borderUpColor: chartPalette.candleUp,
+                  borderDownColor: chartPalette.candleDown,
                   upColorProjection: 'rgba( 74, 214, 190, 1)',
                   downColorProjection: 'rgba( 214, 73, 207, 1)',
                   borderUpColorProjection: 'rgba( 34, 84, 55, 1)',
@@ -130,8 +132,8 @@ export const CHART_DEFAULT_SETTINGS = {
                 pbStyle: {
                   upColor: 'rgba( 107, 165, 131, 1)',
                   downColor: 'rgba( 215, 84, 66, 1)',
-                  borderUpColor: 'rgb(19, 183, 42)',
-                  borderDownColor: 'rgb(255, 62, 46)',
+                  borderUpColor: chartPalette.candleUp,
+                  borderDownColor: chartPalette.candleDown,
                   upColorProjection: 'rgba( 74, 214, 190, 1)',
                   downColorProjection: 'rgba( 214, 73, 207, 1)',
                   borderUpColorProjection: 'rgba( 34, 84, 55, 1)',
@@ -224,13 +226,13 @@ export const CHART_DEFAULT_SETTINGS = {
                   volumePalette: {
                     colors: {
                       '0': {
-                        color: '#FF0000',
+                        color: chartPalette.volumeDown,
                         width: 1,
                         style: 0,
                         name: 'Color 0'
                       },
                       '1': {
-                        color: '#008000',
+                        color: chartPalette.volumeUp,
                         width: 1,
                         style: 0,
                         name: 'Color 1'
@@ -344,8 +346,12 @@ export const CHART_DEFAULT_SETTINGS = {
                   palettes: {
                     volumePalette: {
                       colors: {
-                        '0': {color: '#FF0000', width: 1, style: 0},
-                        '1': {color: '#008000', width: 1, style: 0}
+                        '0': {
+                          color: chartPalette.volumeDown,
+                          width: 1,
+                          style: 0
+                        },
+                        '1': {color: chartPalette.volumeUp, width: 1, style: 0}
                       }
                     }
                   },
@@ -587,7 +593,7 @@ export const CHART_DEFAULT_SETTINGS = {
                       trackPrice: false,
                       transparency: 35,
                       visible: true,
-                      color: '#FF0000'
+                      color: chartPalette.volumeDown
                     },
                     plot_1: {
                       linestyle: 0,
@@ -605,7 +611,7 @@ export const CHART_DEFAULT_SETTINGS = {
                       trackPrice: false,
                       transparency: 35,
                       visible: true,
-                      color: '#FF0000'
+                      color: chartPalette.volumeDown
                     }
                   },
                   precision: 4,

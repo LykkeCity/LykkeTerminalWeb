@@ -87,6 +87,13 @@ export const greyButton = {
   borderRadius: '4px'
 };
 
+export const chartPalette = {
+  candleUp: 'rgb(70, 235, 106)',
+  candleDown: 'rgb(255, 97, 97)',
+  volumeUp: '#1C8C35',
+  volumeDown: '#B03C3C'
+};
+
 export const tableScrollMargin = '1rem';
 
 export {css, injectGlobal, keyframes, ThemeProvider};
