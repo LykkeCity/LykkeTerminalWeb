@@ -1,7 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
 
-import CustomDropdown, {CustomDropdownState} from '../CustomDropdown';
+import CustomDropdown from '../CustomDropdown';
 
 describe('<CustomDropdown>', () => {
   const controlButtonName = 'Test';
@@ -46,11 +46,10 @@ describe('<CustomDropdown>', () => {
   it('should change state when user click on control button', () => {
     const wrapper = mount(getTestCustomDropdown());
     const controlButton = wrapper.find('.dropdown__control');
-    const state = wrapper.state() as CustomDropdownState;
-    expect(state.isOpened).toBe(false);
+    wrapper.instance().setState = jest.fn();
     controlButton.simulate('click');
-    expect(state.isOpened).toBe(true);
+    expect(wrapper.instance().setState).toHaveBeenCalledWith({isOpened: true});
     controlButton.simulate('click');
-    expect(state.isOpened).toBe(false);
+    expect(wrapper.instance().setState).toHaveBeenCalledWith({isOpened: false});
   });
 });
