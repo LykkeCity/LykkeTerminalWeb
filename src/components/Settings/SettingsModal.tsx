@@ -1,9 +1,10 @@
 import * as React from 'react';
 import keycodes from '../../constants/keycodes';
-import {ModalHeaderTitle} from '../Modal/styles';
+import ClickOutside from '../ClickOutside/ClickOutside';
+import ModalHeader from '../Modal/ModalHeader/ModalHeader';
 import withModal from '../Modal/withModal';
 import {Tabs} from '../Tabs';
-import {OkButton, SettingsModalContent, StyledSettingsModal} from './styles';
+import {SettingsModalContent, StyledSettingsModal} from './styles';
 import {ProfileTab, SecurityTab} from './Tabs';
 
 interface SettingsModalProps {
@@ -46,18 +47,17 @@ class SettingsModal extends React.Component<SettingsModalProps> {
 
   render() {
     return (
-      <StyledSettingsModal>
-        <ModalHeaderTitle>Settings</ModalHeaderTitle>
-        <SettingsModalContent>
-          <Tabs>
-            <ProfileTab title={'Profile'} />
-            <SecurityTab title={'Security'} />
-          </Tabs>
-        </SettingsModalContent>
-        <OkButton type="button" onClick={this.handleCancel}>
-          Ok
-        </OkButton>
-      </StyledSettingsModal>
+      <ClickOutside onClickOutside={this.handleCancel}>
+        <StyledSettingsModal>
+          <ModalHeader title={'Settings'} onClick={this.handleCancel} />
+          <SettingsModalContent>
+            <Tabs>
+              <ProfileTab title={'Profile'} />
+              <SecurityTab title={'Security'} />
+            </Tabs>
+          </SettingsModalContent>
+        </StyledSettingsModal>
+      </ClickOutside>
     );
   }
 }

@@ -13,7 +13,7 @@ const SecurityTab: React.SFC<ProfileTabProps> = ({title}) => {
       <SettingsList>
         <SettingsListItem>
           <SettingsListItemTitle>Session</SettingsListItemTitle>
-          <SessionDurationSelection className="small-items" />
+          <SessionDurationSelection />
         </SettingsListItem>
         <SettingsListItem>
           <SettingsListItemTitle>Confirm window</SettingsListItemTitle>
