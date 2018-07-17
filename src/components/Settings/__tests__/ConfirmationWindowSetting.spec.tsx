@@ -1,4 +1,4 @@
-import {mount, shallow} from 'enzyme';
+import {mount} from 'enzyme';
 import React from 'react';
 
 import ConfirmationWindowSetting from '../ConfirmationWindowSetting';
@@ -17,16 +17,13 @@ describe('<ConfirmationWindowSetting>', () => {
   };
 
   it('should render content', () => {
-    const wrapper = shallow(getTestConfirmationWindowSetting());
-    expect(wrapper.find('CustomCheckbox')).toHaveLength(1);
+    const wrapper = mount(getTestConfirmationWindowSetting());
+    expect(wrapper.find('input[type="checkbox"]')).toHaveLength(1);
   });
 
   it('should call confirmation callback when user change checkbox state', () => {
     const wrapper = mount(getTestConfirmationWindowSetting());
-    wrapper
-      .find('CustomCheckbox')
-      .find('input[type="checkbox"]')
-      .simulate('change');
+    wrapper.find('input[type="checkbox"]').simulate('change');
     expect(toggleConfirmations).toHaveBeenCalled();
   });
 });

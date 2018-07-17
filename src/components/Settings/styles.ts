@@ -5,7 +5,7 @@ import styled, {colors} from '../styled';
 const {Flex} = require('grid-styled');
 
 export const StyledSettingsModal = styled(Modal)`
-  min-width: ${rem(730)};
+  min-width: ${rem(585)};
   padding: ${rem(29)} ${rem(28)};
   background-color: ${colors.graphiteBackground};
 `;
@@ -32,12 +32,6 @@ export const SettingsListItemTitle = styled.div`
 
 export const SessionDurations = styled(Flex)`
   margin-top: ${rem(19)};
-
-  &.small-items {
-    > div {
-      width: 12.5%;
-    }
-  }
 `;
 
 export const OkButton = styled(Button)`

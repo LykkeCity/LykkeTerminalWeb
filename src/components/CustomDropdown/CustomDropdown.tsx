@@ -1,4 +1,4 @@
-import {DropdownControl} from 'lykke-react-components';
+import {DropdownControl} from '@lykkex/react-components';
 import React from 'react';
 import {DynamicFAIcon} from '../Icon/Icon';
 import {
@@ -64,18 +64,9 @@ class CustomDropdown extends React.Component<
 
   renderControlButton() {
     return (
-      <React.Fragment>
-        <StyledDropdownControlParent
-          style={{display: this.state.isOpened ? 'block' : 'none'}}
-        >
-          <DynamicFAIcon name="angle-up" key="angle-up" />
-        </StyledDropdownControlParent>
-        <StyledDropdownControlParent
-          style={{display: this.state.isOpened ? 'none' : 'block'}}
-        >
-          <DynamicFAIcon name="angle-down" key="angle-down" />
-        </StyledDropdownControlParent>
-      </React.Fragment>
+      <StyledDropdownControlParent>
+        <DynamicFAIcon name="caret-down" key="caret-down" />
+      </StyledDropdownControlParent>
     );
   }
 
