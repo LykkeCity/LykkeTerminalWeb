@@ -8,6 +8,11 @@ import {
   OrderBookDisplayType,
   TradeFilter
 } from '../models/index';
+import {
+  ApiUserInfoModel,
+  toUserInfoModel
+} from '../models/mappers/userInfoMapper';
+import UserInfoModel from '../models/userInfoModel';
 import Watchlists from '../models/watchlists';
 import {fns, StorageUtils} from '../utils/index';
 import {DEFAULT_INPUT_VALUE} from '../utils/inputNumber';
@@ -34,6 +39,7 @@ class UiStore extends BaseStore {
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
   @observable disclaimedAssets: string[] = [];
+  @observable userInfo: UserInfoModel | null;
   @observable private isReadOnlyMode: boolean;
   private isPageVisible: boolean = true;
 
@@ -166,6 +172,11 @@ class UiStore extends BaseStore {
     this.searchTerm = '';
     this.searchWalletName = Watchlists.All;
   };
+
+  @action
+  setUserInfo = (userInfo: ApiUserInfoModel) =>
+    (this.userInfo = toUserInfoModel(userInfo));
+  getUserInfo = () => this.userInfo;
 
   private checkAssetToDisclaim = (
     selectedInstrument: InstrumentModel | undefined,
