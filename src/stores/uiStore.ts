@@ -35,6 +35,7 @@ class UiStore extends BaseStore {
   @observable isDisclaimerShown: boolean = false;
   @observable disclaimedAssets: string[] = [];
   @observable private isReadOnlyMode: boolean;
+  @observable private instrumentPickerScrollPosition: number = 0;
   private isPageVisible: boolean = true;
 
   constructor(store: RootStore) {
@@ -165,6 +166,16 @@ class UiStore extends BaseStore {
   reset = () => {
     this.searchTerm = '';
     this.searchWalletName = Watchlists.All;
+  };
+
+  @action
+  setInstrumentPickerScrollPosition = (scrollPosition: number) => {
+    this.instrumentPickerScrollPosition = scrollPosition;
+  };
+
+  @action
+  getInstrumentPickerScrollPosition = () => {
+    return this.instrumentPickerScrollPosition;
   };
 
   private checkAssetToDisclaim = (
