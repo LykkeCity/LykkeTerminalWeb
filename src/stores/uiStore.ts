@@ -41,6 +41,7 @@ class UiStore extends BaseStore {
   @observable disclaimedAssets: string[] = [];
   @observable userInfo: UserInfoModel | null;
   @observable private isReadOnlyMode: boolean;
+  @observable private instrumentPickerScrollPosition: number = 0;
   private isPageVisible: boolean = true;
 
   constructor(store: RootStore) {
@@ -177,6 +178,16 @@ class UiStore extends BaseStore {
   setUserInfo = (userInfo: ApiUserInfoModel) =>
     (this.userInfo = toUserInfoModel(userInfo));
   getUserInfo = () => this.userInfo;
+
+  @action
+  setInstrumentPickerScrollPosition = (scrollPosition: number) => {
+    this.instrumentPickerScrollPosition = scrollPosition;
+  };
+
+  @action
+  getInstrumentPickerScrollPosition = () => {
+    return this.instrumentPickerScrollPosition;
+  };
 
   private checkAssetToDisclaim = (
     selectedInstrument: InstrumentModel | undefined,
