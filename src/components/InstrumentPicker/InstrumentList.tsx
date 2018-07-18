@@ -29,6 +29,18 @@ class InstrumentList extends React.Component<
     };
   }
 
+  componentDidMount() {
+    this.props.change();
+    const {
+      sortByParam,
+      direction,
+      state
+    } = this.props.getInstrumentPickerSortingParameters();
+    this.setState(
+      sortData(this.props.instruments, sortByParam, direction, state)
+    );
+  }
+
   componentWillReceiveProps(args: any) {
     this.setState({
       data: args.instruments

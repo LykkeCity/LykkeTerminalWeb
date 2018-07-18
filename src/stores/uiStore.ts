@@ -204,6 +204,32 @@ class UiStore extends BaseStore {
     return this.instrumentPickerSortingParameters;
   };
 
+  @action
+  setInstrumentPickerSortingParameters = (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => {
+    this.setInstrumentPickerScrollPosition(0);
+    this.instrumentPickerSortingParameters = {
+      sortByParam,
+      direction,
+      state
+    };
+  };
+
+  @action
+  getInstrumentPickerSortingParameters = () => {
+    if (this.instrumentPickerSortingParameters) {
+      return this.instrumentPickerSortingParameters;
+    }
+    return {
+      sortByParam: '',
+      direction: '',
+      state: {}
+    };
+  };
+
   private checkAssetToDisclaim = (
     selectedInstrument: InstrumentModel | undefined,
     asset: string

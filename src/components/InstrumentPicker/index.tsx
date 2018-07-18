@@ -93,7 +93,11 @@ const connectedInstrumentPicker = connect(
       onSearch: uiStore.search,
       onSearchWalletName: uiStore.searchWallet,
       watchlistNames: watchlistStore.watchlistNames,
-      isAuth: authStore.isAuth
+      isAuth: authStore.isAuth,
+      setInstrumentPickerSortingParameters:
+        uiStore.setInstrumentPickerSortingParameters,
+      getInstrumentPickerSortingParameters:
+        uiStore.getInstrumentPickerSortingParameters
     };
   },
   InstrumentPicker
