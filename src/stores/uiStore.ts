@@ -35,7 +35,10 @@ class UiStore extends BaseStore {
   @observable isDisclaimerShown: boolean = false;
   @observable disclaimedAssets: string[] = [];
   @observable private isReadOnlyMode: boolean;
+
   @observable private instrumentPickerScrollPosition: number = 0;
+  @observable private instrumentPickerSortingParameters: any;
+
   private isPageVisible: boolean = true;
 
   constructor(store: RootStore) {
@@ -176,6 +179,32 @@ class UiStore extends BaseStore {
   @action
   getInstrumentPickerScrollPosition = () => {
     return this.instrumentPickerScrollPosition;
+  };
+
+  @action
+  setInstrumentPickerSortingParameters = (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => {
+    this.setInstrumentPickerScrollPosition(0);
+    this.instrumentPickerSortingParameters = {
+      sortByParam,
+      direction,
+      state
+    };
+  };
+
+  @action
+  getInstrumentPickerSortingParameters = () => {
+    if (this.instrumentPickerSortingParameters) {
+      return this.instrumentPickerSortingParameters;
+    }
+    return {
+      sortByParam: '',
+      direction: '',
+      state: {}
+    };
   };
 
   private checkAssetToDisclaim = (
