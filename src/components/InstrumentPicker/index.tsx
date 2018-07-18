@@ -24,6 +24,12 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   onToggleInstrumentSelection: any;
   watchlistNames: string[];
   isAuth: boolean;
+  setInstrumentPickerSortingParameters: (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => void;
+  getInstrumentPickerSortingParameters: () => any;
 }
 
 export interface InstrumentPopoverProps extends InstrumentPickerActions {
@@ -51,6 +57,12 @@ export interface InstrumentListProps {
   instruments: InstrumentModel[];
   onPick: any;
   isAuth: boolean;
+  setInstrumentPickerSortingParameters: (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => void;
+  getInstrumentPickerSortingParameters: () => any;
 }
 
 export interface InstrumentShortcutSelectionProps {
@@ -88,7 +100,11 @@ const connectedInstrumentPicker = connect(
       onSearch: uiStore.search,
       onSearchWalletName: uiStore.searchWallet,
       watchlistNames: watchlistStore.watchlistNames,
-      isAuth: authStore.isAuth
+      isAuth: authStore.isAuth,
+      setInstrumentPickerSortingParameters:
+        uiStore.setInstrumentPickerSortingParameters,
+      getInstrumentPickerSortingParameters:
+        uiStore.getInstrumentPickerSortingParameters
     };
   },
   InstrumentPicker
