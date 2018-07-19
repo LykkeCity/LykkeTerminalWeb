@@ -29,6 +29,12 @@ class InstrumentList extends React.Component<
     };
   }
 
+  componentWillReceiveProps(args: any) {
+    this.setState({
+      data: args.instruments
+    });
+  }
+
   componentDidMount() {
     this.props.change();
     const {
