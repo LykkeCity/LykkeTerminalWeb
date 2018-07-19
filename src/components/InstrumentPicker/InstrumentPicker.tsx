@@ -37,17 +37,11 @@ class InstrumentPicker extends React.Component<
 
   changeValue = (value: string = '') => {
     this.setState({
-      activeShortcut: 0,
-      searchValue: value,
-      searchWallet: Watchlists.All
+      searchValue: value
     });
 
     if (this.props.onSearch) {
       this.props.onSearch(value);
-    }
-
-    if (this.props.onSearchWalletName) {
-      this.props.onSearchWalletName(Watchlists.All);
     }
   };
 
