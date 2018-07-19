@@ -34,10 +34,15 @@ class UiStore extends BaseStore {
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
   @observable disclaimedAssets: string[] = [];
-  @observable private isReadOnlyMode: boolean;
+  @observable instrumentPickerScrollPosition: number = 0;
+  @observable
+  instrumentPickerSortingParameters: any = {
+    sortByParam: '',
+    direction: '',
+    state: {}
+  };
 
-  @observable private instrumentPickerScrollPosition: number = 0;
-  @observable private instrumentPickerSortingParameters: any;
+  @observable private isReadOnlyMode: boolean;
 
   private isPageVisible: boolean = true;
 
@@ -187,24 +192,17 @@ class UiStore extends BaseStore {
     direction: string,
     state: any
   ) => {
-    this.setInstrumentPickerScrollPosition(0);
     this.instrumentPickerSortingParameters = {
       sortByParam,
       direction,
       state
     };
+    this.setInstrumentPickerScrollPosition(0);
   };
 
   @action
   getInstrumentPickerSortingParameters = () => {
-    if (this.instrumentPickerSortingParameters) {
-      return this.instrumentPickerSortingParameters;
-    }
-    return {
-      sortByParam: '',
-      direction: '',
-      state: {}
-    };
+    return this.instrumentPickerSortingParameters;
   };
 
   private checkAssetToDisclaim = (
