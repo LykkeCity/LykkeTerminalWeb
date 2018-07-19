@@ -3,6 +3,7 @@ import {AssetModel, InstrumentModel} from '../../models/index';
 import {connect} from '../connect';
 import {withStyledTrackedScroll} from '../CustomScrollbar/withScroll';
 import {tableScrollMargin} from '../styled';
+import InstrumentList from './InstrumentList';
 import InstrumentPicker from './InstrumentPicker';
 import InstrumentTable from './InstrumentTable';
 
@@ -110,6 +111,19 @@ const connectedInstrumentPicker = connect(
   InstrumentPicker
 );
 
+const connectedInstrumentList = connect(
+  ({
+    uiStore: {
+      setInstrumentPickerSortingParameters,
+      getInstrumentPickerSortingParameters
+    }
+  }) => ({
+    setInstrumentPickerSortingParameters,
+    getInstrumentPickerSortingParameters
+  }),
+  InstrumentList
+);
+
 const connectedScrolledInstrumentTable = connect(
   ({
     uiStore: {
@@ -128,6 +142,8 @@ const connectedScrolledInstrumentTable = connect(
 
 export {connectedInstrumentPicker as InstrumentPicker};
 export {connectedScrolledInstrumentTable as InstrumentTable};
+export {connectedInstrumentList as InstrumentList};
+
 export {default as InstrumentListItem} from './InstrumentListItem';
 export {default as InstrumentSelect} from './InstrumentSelect';
 export {default as InstrumentPopover} from './InstrumentPopover';
@@ -135,5 +151,4 @@ export {default as InstrumentSearch} from './InstrumentSearch';
 export {
   default as InstrumentShortcutSelection
 } from './InstrumentShortcutSelection';
-export {default as InstrumentList} from './InstrumentList';
 export {default as InstrumentListNumber} from './InstrumentListNumber';
