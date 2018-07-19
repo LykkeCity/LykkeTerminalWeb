@@ -26,6 +26,12 @@ class InstrumentList extends React.Component<
     };
   }
 
+  componentWillReceiveProps(args: any) {
+    this.setState({
+      data: args.instruments
+    });
+  }
+
   componentDidMount() {
     this.props.change();
     const {
@@ -36,12 +42,6 @@ class InstrumentList extends React.Component<
     this.setState(
       sortData(this.props.instruments, sortByParam, direction, state)
     );
-  }
-
-  componentWillReceiveProps(args: any) {
-    this.setState({
-      data: args.instruments
-    });
   }
 
   sort = (sortByParam: string, sortDirection: string) => {
