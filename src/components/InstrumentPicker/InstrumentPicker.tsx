@@ -72,12 +72,6 @@ class InstrumentPicker extends React.Component<
               onPick={this.props.onPick}
               change={this.changeValue}
               isAuth={this.props.isAuth}
-              setInstrumentPickerSortingParameters={
-                this.props.setInstrumentPickerSortingParameters
-              }
-              getInstrumentPickerSortingParameters={
-                this.props.getInstrumentPickerSortingParameters
-              }
             />
           </InstrumentPopover>
         ) : null}
