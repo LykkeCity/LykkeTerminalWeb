@@ -19,8 +19,9 @@ import LevelType from '../../models/levelType';
 
 export const LEVEL_HEIGHT = 30;
 export const LEVELS_COUNT = 50;
-export const LEFT_PADDING = 8;
+export const BAR_WIDTH = 60;
 export const TOP_PADDING = 10;
+export const LEFT_PADDING = 8;
 
 const formatWithAccuracy = (
   num: number | string,

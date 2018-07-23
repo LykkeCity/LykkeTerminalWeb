@@ -40,6 +40,7 @@ export const colors = {
   snowWhite: '#fff',
   activeBuy: '#8ccb4d',
   activeSell: '#ca4c4c',
+  zeroGrey: '#4d5158',
   snowWhite: '#fff',
   whiteText: '#f5f6f7',
   graphiteBackground: '#3e3e3e'
@@ -91,6 +92,30 @@ export const greyButton = {
 };
 
 export const tableScrollMargin = '1rem';
+
+export let sellRGB = {
+  r: 255,
+  g: 255,
+  b: 255
+};
+
+export let buyRGB = {
+  r: 255,
+  g: 255,
+  b: 255
+};
+
+export let orderBookAnimatedSellRGB = {
+  r: 255,
+  g: 97,
+  b: 97
+};
+
+export let orderBookAnimatedBuyRGB = {
+  r: 70,
+  g: 235,
+  b: 106
+};
 
 export {css, injectGlobal, keyframes, ThemeProvider};
 export default styled;

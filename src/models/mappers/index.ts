@@ -1,4 +1,5 @@
 import {pathOr} from 'rambda';
+import {BAR_WIDTH, TOP_PADDING} from '../../components/OrderBook';
 import {ChartStore} from '../../stores/index';
 import {
   AssetCategoryModel,
@@ -203,3 +204,23 @@ export const mapToPublicInstrument = (
     accuracy: Accuracy,
     invertedAccuracy: InvertedAccuracy
   });
+
+export const mapToLevelCell = (lc: any) => {
+  const {x, width, y, height} = lc.getClientRect();
+  const {order, type} = lc.getAttrs();
+  const {parent: {index: parentIndex}, index: cellIndex} = lc;
+  return {
+    x: {
+      start: x - BAR_WIDTH,
+      end: x + width - BAR_WIDTH
+    },
+    y: {
+      start: y - TOP_PADDING,
+      end: y - TOP_PADDING + height
+    },
+    order,
+    type,
+    parentIndex,
+    cellIndex
+  };
+};

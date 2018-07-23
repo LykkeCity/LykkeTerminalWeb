@@ -3,16 +3,13 @@ import {colors} from '../../styled';
 import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 import {
-  ANIMATED_HIGH_OPACITY,
   colorizedSymbol,
-  DEFAULT_BAR_OPACITY,
-  DEFAULT_TRAILING_ZERO_OPACITY,
   fillBySide,
   findAndDeleteDuplicatedAnimatedLevel,
   getCellType,
-  getOpacityForAnimation,
+  getColorAndOpacityForAnimation,
   getY,
-  STEP_OPACITY,
+  START_ANIMATED_OPACITY,
   updateAnimatingLevelsWithNewLevel
 } from './LevelListHelpers';
 
@@ -50,22 +47,20 @@ describe('level list helpers', () => {
   });
 
   it('should return default color if currentSymbolPosition is less than trailingZeroPosition', () => {
-    const currentOpacity = 1;
-    const getSymbolColor = colorizedSymbol(currentOpacity);
+    const getSymbolColor = colorizedSymbol(colors.white);
     const currentSymbolPosition = 0;
     const trailingZeroPosition = 5;
     expect(getSymbolColor(trailingZeroPosition, currentSymbolPosition)).toBe(
-      currentOpacity
+      colors.white
     );
   });
 
   it('should return grey color if currentSymbolPosition is more than trailingZeroPosition', () => {
-    const currentOpacity = 1;
-    const getSymbolColor = colorizedSymbol(currentOpacity);
+    const getSymbolColor = colorizedSymbol(colors.white);
     const currentSymbolPosition = 6;
     const trailingZeroPosition = 5;
     expect(getSymbolColor(trailingZeroPosition, currentSymbolPosition)).toBe(
-      DEFAULT_TRAILING_ZERO_OPACITY
+      colors.zeroGrey
     );
   });
 
@@ -89,11 +84,11 @@ describe('level list helpers', () => {
         animatingLevel => animatingLevel.price === price
       );
       expect(existedLevel!.price).toBe(price);
-      expect(existedLevel!.currentOpacity).toBe(DEFAULT_BAR_OPACITY);
+      expect(existedLevel!.currentOpacity).toBe(START_ANIMATED_OPACITY);
       expect(existedLevel!.isAnimated).toBeFalsy();
     });
 
-    it('should return updated opacity for current animating level if opacity is less than DEFAULT_BAR_OPACITY', () => {
+    it('should return updated opacity and color for current animating level if opacity is less than DEFAULT_OPACITY', () => {
       animatingLevels = updateAnimatingLevelsWithNewLevel(
         animatingLevels,
         price
@@ -101,13 +96,17 @@ describe('level list helpers', () => {
       const existedLevel = animatingLevels.find(
         animatingLevel => animatingLevel.price === price
       );
+      const color = colors.buy;
 
-      const animatedOpacity = getOpacityForAnimation(existedLevel!);
-
+      const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
+        existedLevel!,
+        color
+      );
+      expect(animatedColor).toBe(color);
       expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
     });
 
-    it('should set isAnimated to true if animation was reached and current opacity is less than ANIMATED_HIGH_OPACITY', () => {
+    it('should return updated opacity and color for current animating level if opacity is more than DEFAULT_OPACITY', () => {
       animatingLevels = updateAnimatingLevelsWithNewLevel(
         animatingLevels,
         price
@@ -115,33 +114,15 @@ describe('level list helpers', () => {
       const existedLevel = animatingLevels.find(
         animatingLevel => animatingLevel.price === price
       );
-      existedLevel!.currentOpacity = 0;
-      existedLevel!.isAnimationReached = true;
-      expect(existedLevel!.currentOpacity).toBeLessThan(ANIMATED_HIGH_OPACITY);
+      const color = colors.buy;
+      existedLevel!.currentOpacity = 2;
 
-      expect(existedLevel!.isAnimated).toBeFalsy();
-
-      getOpacityForAnimation(existedLevel!);
-
-      expect(existedLevel!.isAnimated).toBeTruthy();
-    });
-
-    it('should set isAnimationReached to true', () => {
-      const opacity = ANIMATED_HIGH_OPACITY - STEP_OPACITY;
-      animatingLevels = updateAnimatingLevelsWithNewLevel(
-        animatingLevels,
-        price
+      const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
+        existedLevel!,
+        color
       );
-      const existedLevel = animatingLevels.find(
-        animatingLevel => animatingLevel.price === price
-      );
-
-      existedLevel!.currentOpacity = opacity;
-      existedLevel!.isAnimationReached = true;
-
-      getOpacityForAnimation(existedLevel!);
-
-      expect(existedLevel!.isAnimationReached).toBeTruthy();
+      expect(animatedColor).toBe(colors.white);
+      expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
     });
 
     it('should return empty array if animatingLevels is empty', () => {
@@ -176,60 +157,6 @@ describe('level list helpers', () => {
       expect(
         findAndDeleteDuplicatedAnimatedLevel(animatingLevels, price).length
       ).toBe(0);
-    });
-
-    describe('calculated opacity', () => {
-      it('should return DEFAULT_BAR_OPACITY', () => {
-        animatingLevels = updateAnimatingLevelsWithNewLevel(
-          animatingLevels,
-          price
-        );
-        const existedLevel = animatingLevels.find(
-          animatingLevel => animatingLevel.price === price
-        );
-
-        existedLevel!.currentOpacity = 0;
-        existedLevel!.isAnimated = true;
-
-        const animatedOpacity = getOpacityForAnimation(existedLevel!);
-
-        expect(animatedOpacity).toBe(DEFAULT_BAR_OPACITY);
-      });
-
-      it('should decrease opacity on STEP_OPACITY if animation was reached and current opacity is more than ANIMATED_HIGH_OPACITY', () => {
-        const opacity = 2;
-        animatingLevels = updateAnimatingLevelsWithNewLevel(
-          animatingLevels,
-          price
-        );
-        const existedLevel = animatingLevels.find(
-          animatingLevel => animatingLevel.price === price
-        );
-
-        existedLevel!.currentOpacity = opacity;
-        existedLevel!.isAnimationReached = true;
-
-        const animatedOpacity = getOpacityForAnimation(existedLevel!);
-
-        expect(animatedOpacity).toBe(opacity - STEP_OPACITY);
-      });
-
-      it('should increase opacity on STEP_OPACITY', () => {
-        animatingLevels = updateAnimatingLevelsWithNewLevel(
-          animatingLevels,
-          price
-        );
-        const existedLevel = animatingLevels.find(
-          animatingLevel => animatingLevel.price === price
-        );
-
-        existedLevel!.currentOpacity = DEFAULT_BAR_OPACITY;
-        existedLevel!.isAnimationReached = false;
-
-        const animatedOpacity = getOpacityForAnimation(existedLevel!);
-
-        expect(animatedOpacity).toBe(DEFAULT_BAR_OPACITY + STEP_OPACITY);
-      });
     });
   });
 });
