@@ -1,3 +1,4 @@
+import '@lykkex/react-components';
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
@@ -45,8 +46,8 @@ const akrobatFonts = [
 
 // tslint:disable-next-line:no-unused-expression
 injectGlobal`
-  ${proximaFonts.map(addBaseFont)};
-  ${akrobatFonts.map(addAkrobatFont)};
+  ${proximaFonts.map(addBaseFont) as any};
+  ${akrobatFonts.map(addAkrobatFont) as any};
   ${normalize() as any};
   * {
     border-collapse: collapse;

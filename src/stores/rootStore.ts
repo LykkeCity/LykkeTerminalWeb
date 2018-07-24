@@ -102,23 +102,23 @@ class RootStore {
   }
 
   startPublicMode = async (defaultInstrument: any) => {
-    this.ws = new WampApi();
-    return this.ws
+    const ws = new WampApi();
+    return ws
       .connect(
         this.wampUrl,
         this.wampRealm
       )
       .then(session => {
-        this.uiStore.setWs(this.ws);
-        this.depthChartStore.setWs(this.ws);
-        this.orderBookStore.setWs(this.ws);
-        this.chartStore.setWs(this.ws);
-        this.tradeStore.setWs(this.ws);
-        this.priceStore.setWs(this.ws);
+        this.uiStore.setWs(ws);
+        this.depthChartStore.setWs(ws);
+        this.orderBookStore.setWs(ws);
+        this.chartStore.setWs(ws);
+        this.tradeStore.setWs(ws);
+        this.priceStore.setWs(ws);
         this.referenceStore.getInstruments().forEach((x: any) => {
-          this.ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          this.ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-          this.ws.subscribe(
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+          ws.subscribe(
             topics.candle('spot', x.id, PriceType.Trade, 'day'),
             this.referenceStore.onCandle
           );
@@ -134,7 +134,7 @@ class RootStore {
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
-    // tslint:disable:no-console
+    // tslint:disable-next-line:no-console
     await this.referenceStore.fetchRates().catch(console.error);
 
     this.marketStore.init(instruments, assets);
