@@ -668,7 +668,7 @@ export const CHART_DEFAULT_SETTINGS = {
           mainSourceId: 'MFfupT'
         }
       ],
-      timeScale: {m_barSpacing: 5.763973016993665, m_rightOffset: 2},
+      timeScale: {m_barSpacing: 5.763973016993665, m_rightOffset: 5},
       chartProperties: {
         paneProperties: {
           background: 'rgb(51,51,51)',

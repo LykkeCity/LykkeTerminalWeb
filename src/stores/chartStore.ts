@@ -134,12 +134,6 @@ class ChartStore extends BaseStore {
   };
 
   private createWidget = (instrument: InstrumentModel) => {
-    const rightOffset =
-      this.settings.charts[0].timeScale.m_rightOffset < 0
-        ? this.settings.charts[0].timeScale.m_rightOffset
-        : 0;
-    const barSpacing = this.settings.charts[0].timeScale.m_barSpacing;
-
     this.widget = new (window as any).TradingView.widget({
       customFormatters: {
         // timeFormatter: {
@@ -202,10 +196,7 @@ class ChartStore extends BaseStore {
           'rgba(140, 148, 160, 0.4)',
         'mainSeriesProperties.candleStyle.wickDownColor':
           'rgba(140, 148, 160, 0.4)',
-        'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
-
-        'timeScale.rightOffset': rightOffset,
-        'timeScale.barSpacing': barSpacing
+        'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart_custom.css',
       saved_data: this.settings,
