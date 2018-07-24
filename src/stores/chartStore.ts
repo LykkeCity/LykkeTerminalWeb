@@ -2,9 +2,7 @@ import {ISubscription} from 'autobahn';
 import {pathOr} from 'rambda';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {CHART_DEFAULT_SETTINGS} from '../constants/chartDefaultSettings';
-import {timeZones} from '../constants/chartTimezones';
 import {InstrumentModel} from '../models/index';
-import {dateFns} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 export const LINESTYLE_DOTTED = 1;
@@ -12,7 +10,6 @@ export const LINESTYLE_DASHED = 2;
 export const LINESTYLE_SOLID = 0;
 export const LINESTYLE_LARGE_DASHED = 3;
 
-const timezone = dateFns.getTimeZone(timeZones);
 const defaultSettings = CHART_DEFAULT_SETTINGS;
 
 class ChartStore extends BaseStore {
@@ -209,15 +206,13 @@ class ChartStore extends BaseStore {
       },
       custom_css_url: process.env.PUBLIC_URL + '/chart_custom.css',
       saved_data: this.settings,
-      auto_save_delay: 2,
-      timezone
+      auto_save_delay: 2
     });
   };
 
   private updateSettings = (settings: any) => {
     const instrument = this.rootStore.uiStore.selectedInstrument;
 
-    settings.charts[0].timezone = timezone;
     settings.charts[0].panes[0].sources[1].state.precision = pathOr(
       0,
       ['accuracy'],
