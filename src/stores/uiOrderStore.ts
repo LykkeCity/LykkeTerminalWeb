@@ -49,7 +49,7 @@ class UiOrderStore extends BaseStore {
   @observable private priceValue: string = DEFAULT_INPUT_VALUE;
   @observable private quantityValue: string = DEFAULT_INPUT_VALUE;
   @observable private market: OrderType = OrderType.Limit;
-  @observable private side: Side = Side.Sell;
+  @observable private side: Side = Side.Buy;
   private priceAccuracy: number = 2;
   private quantityAccuracy: number = 2;
 

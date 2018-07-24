@@ -2,14 +2,14 @@ import * as React from 'react';
 import ArrowDirection from '../../models/arrowDirection';
 import {StyledInput, StyledInputNumberComponent} from './styles';
 
-interface NumberInput {
+interface NumberInputProps {
   id?: string;
   value?: string;
   onChange: any;
   onArrowClick: (direction: ArrowDirection) => () => void;
 }
 
-const NumberInput: React.SFC<NumberInput> = ({
+const NumberInput: React.SFC<NumberInputProps> = ({
   id,
   value,
   onChange,
@@ -41,8 +41,6 @@ const NumberInput: React.SFC<NumberInput> = ({
         }}
         name={value}
       />
-      <span className="up" onClick={onArrowClick(ArrowDirection.Up)} />
-      <span className="down" onClick={onArrowClick(ArrowDirection.Down)} />
     </StyledInputNumberComponent>
   );
 };
