@@ -20,7 +20,6 @@ class ChartStore extends BaseStore {
     supports_search: false,
     exchanges: [],
     supported_resolutions: [
-      '1',
       '5',
       '15',
       '30',
