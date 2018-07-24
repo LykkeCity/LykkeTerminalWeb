@@ -6,6 +6,7 @@ import {IAnimatingLevels} from '../LevelList';
 export const STEP_OPACITY = 0.43;
 export const START_ANIMATED_OPACITY = 0.16;
 export const DEFAULT_OPACITY = 1;
+export const DEFAULT_BAR_OPACITY = 0.16;
 
 export const fillBySide = (side: Side) =>
   side === Side.Buy ? colors.buy : colors.sell;

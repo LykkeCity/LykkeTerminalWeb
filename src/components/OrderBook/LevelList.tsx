@@ -24,6 +24,7 @@ import {
 import {colors} from '../styled';
 import {
   colorizedSymbol,
+  DEFAULT_BAR_OPACITY,
   DEFAULT_OPACITY,
   fillBySide,
   findAndDeleteDuplicatedAnimatedLevel,
@@ -161,6 +162,119 @@ class LevelList extends React.Component<LevelListProps> {
     defineCanvasScale(this.canvasCtx, this.canvas, width, height);
   }
 
+  drawBar = (color: string, y: number, normalizedWidth: number) => {
+    drawRect({
+      ctx: this.canvasCtx,
+      color,
+      x: LEFT_PADDING,
+      y,
+      width: normalizedWidth,
+      height: this.props.height / LEVELS_COUNT,
+      opacity: DEFAULT_BAR_OPACITY
+    });
+  };
+
+  drawConnectedOrders = (color: string, y: number) => {
+    drawVerticalLine({
+      ctx: this.canvasCtx,
+      x: 1 + LEFT_PADDING,
+      y: y + 2,
+      height: y + this.props.height / LEVELS_COUNT - 2,
+      lineWidth: 2,
+      color,
+      lineCap: 'round'
+    });
+  };
+
+  drawLevelBorder = (width: number, y: number) => {
+    drawLine({
+      ctx: this.canvasCtx,
+      width,
+      y,
+      x: LEFT_PADDING,
+      color: colors.graphiteBorder,
+      lineWidth: 1
+    });
+  };
+
+  drawAndSavePrice = (
+    color: string,
+    canvasY: number,
+    y: number,
+    price: number,
+    side: Side
+  ) => {
+    const {spanAccuracy, width, height, format} = this.props;
+    drawText({
+      ctx: this.canvasCtx,
+      color,
+      text: format(price, spanAccuracy),
+      x: BAR_WIDTH,
+      y: canvasY - TOP_PADDING,
+      font: LEVEL_FONT,
+      align: 'start'
+    });
+
+    this.levelsCells.push({
+      left: BAR_WIDTH,
+      top: y,
+      width: (width - BAR_WIDTH) / CELLS_NUMBER,
+      height: height / LEVELS_COUNT,
+      type: OrderBookCellType.Price,
+      value: price,
+      side
+    });
+  };
+
+  drawVolume = (
+    volumeColor: string,
+    volume: string,
+    volumeOpacity: number,
+    canvasY: number,
+    x: number
+  ) => {
+    drawText({
+      ctx: this.canvasCtx,
+      color: volumeColor,
+      text: volume,
+      x,
+      y: canvasY - TOP_PADDING,
+      font: LEVEL_FONT,
+      align: 'start',
+      opacity: volumeOpacity
+    });
+  };
+
+  saveVolume = (
+    displayType: OrderBookCellType,
+    depth: number,
+    side: Side,
+    y: number
+  ) => {
+    const {width, height} = this.props;
+    this.levelsCells.push({
+      left: (width - BAR_WIDTH) / CELLS_NUMBER + BAR_WIDTH,
+      top: y,
+      width: (width - BAR_WIDTH) / CELLS_NUMBER,
+      height: height / LEVELS_COUNT,
+      type: getCellType(displayType),
+      value: depth,
+      side
+    });
+  };
+
+  drawValue = (value: string, y: number) => {
+    drawText({
+      ctx: this.canvasCtx,
+      color: colors.white,
+      text: value,
+      x: this.props.width + LEFT_PADDING,
+      y: y - TOP_PADDING,
+      font: LEVEL_FONT,
+      align: 'end'
+    });
+  };
+
   prepareLevelForDrawing = (normalize: any, levelHeight: number) => {
     const {displayType, instrument, format, width} = this.props;
     const isAnimationPrevented = !this.cachedLevels.length;
@@ -224,55 +338,21 @@ class LevelList extends React.Component<LevelListProps> {
 
       const normalizedWidth = normalize(levelOrder[displayType]) / SCALE_BAR;
 
-      drawRect({
-        ctx: this.canvasCtx,
-        color,
-        x: LEFT_PADDING,
-        y,
-        width: normalizedWidth,
-        height: levelHeight,
-        opacity: 0.16
-      });
+      this.drawBar(color, y, normalizedWidth);
 
       if (levelOrder.connectedLimitOrders.length > 0) {
-        drawVerticalLine({
-          ctx: this.canvasCtx,
-          x: 1 + LEFT_PADDING,
-          y: y + 2,
-          height: y + levelHeight - 2,
-          lineWidth: 2,
-          color,
-          lineCap: 'round'
-        });
+        this.drawConnectedOrders(color, y);
       }
 
-      drawLine({
-        ctx: this.canvasCtx,
-        width,
-        y: canvasY,
-        x: LEFT_PADDING,
-        color: colors.graphiteBorder,
-        lineWidth: 1
-      });
+      this.drawLevelBorder(width, canvasY);
 
-      drawText({
-        ctx: this.canvasCtx,
+      this.drawAndSavePrice(
         color,
-        text: format(levelOrder.price, this.props.spanAccuracy),
-        x: BAR_WIDTH,
-        y: canvasY - TOP_PADDING,
-        font: LEVEL_FONT,
-        align: 'start'
-      });
-      this.levelsCells.push({
-        left: BAR_WIDTH,
-        top: y,
-        width: levelsWidth / CELLS_NUMBER,
-        height: levelHeight,
-        type: OrderBookCellType.Price,
-        value: levelOrder.price,
-        side: levelOrder.side
-      });
+        canvasY,
+        y,
+        levelOrder.price,
+        levelOrder.side
+      );
 
       const volume = format(
         levelOrder[displayType],
@@ -287,50 +367,24 @@ class LevelList extends React.Component<LevelListProps> {
 
         symbols.forEach((symbol: string, i: number) => {
           const symbolColor = getSymbolColor(trailingZeroPosition, i);
-          drawText({
-            ctx: this.canvasCtx,
-            color: symbolColor,
-            text: symbol,
-            x: levelsWidth / CELLS_NUMBER + BAR_WIDTH + drownSymbolsWidth,
-            y: canvasY - TOP_PADDING,
-            font: LEVEL_FONT,
-            align: 'start',
-            opacity: volumeOpacity
-          });
+          const x = levelsWidth / CELLS_NUMBER + BAR_WIDTH + drownSymbolsWidth;
+
+          this.drawVolume(symbolColor, symbol, volumeOpacity, canvasY, x);
           drownSymbolsWidth += this.canvasCtx!.measureText(symbol).width;
         });
       } else {
-        drawText({
-          ctx: this.canvasCtx,
-          color: volumeColor,
-          text: volume,
-          x: levelsWidth / CELLS_NUMBER + BAR_WIDTH,
-          y: canvasY - TOP_PADDING,
-          font: LEVEL_FONT,
-          align: 'start',
-          opacity: volumeOpacity
-        });
+        const x = levelsWidth / CELLS_NUMBER + BAR_WIDTH;
+        this.drawVolume(volumeColor, volume, volumeOpacity, canvasY, x);
       }
 
-      this.levelsCells.push({
-        left: levelsWidth / CELLS_NUMBER + BAR_WIDTH,
-        top: y,
-        width: levelsWidth / CELLS_NUMBER,
-        height: levelHeight,
-        type: getCellType(displayType),
-        value: levelOrder.depth,
-        side: levelOrder.side
-      });
+      this.saveVolume(
+        levelOrder[displayType],
+        levelOrder.depth,
+        levelOrder.side,
+        y
+      );
 
-      drawText({
-        ctx: this.canvasCtx,
-        color: colors.white,
-        text: value,
-        x: levelsWidth + BAR_WIDTH + LEFT_PADDING,
-        y: canvasY - TOP_PADDING,
-        font: LEVEL_FONT,
-        align: 'end'
-      });
+      this.drawValue(value, canvasY);
     };
   };
 
