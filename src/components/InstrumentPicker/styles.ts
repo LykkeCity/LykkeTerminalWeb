@@ -87,7 +87,7 @@ export const InstrumentNumber = styled.div.attrs({})`
     color: ${colors.green};
   }
   &.zero {
-    color: ${colors.green};
+    color: ${colors.lightGrey};
   }
   &.down {
     color: ${colors.red};

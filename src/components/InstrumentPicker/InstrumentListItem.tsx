@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
 import {AssetModel, InstrumentModel} from '../../models/index';
-import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import {formattedNumberWithDashes} from '../../utils/localFormatted/localFormatted';
 import {colors} from '../styled';
 import {InstrumentListNumber, InstrumentPickerActions} from './index';
 
@@ -28,33 +28,35 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td title={instrument.displayName}>{instrument.displayName}</td>
         <td>
           <InstrumentListNumber
-            num={formattedNumber(
-              instrument.price || 0,
+            num={formattedNumberWithDashes(
+              !!instrument.price ? instrument.price : null,
               instrument.accuracy || 0
             )}
+            color={!!instrument.price ? colors.white : colors.lightGrey}
           />
         </td>
         <td>
           <InstrumentListNumber
-            num={formattedNumber(
-              instrument.change24h || 0,
-              percentageAccuracy || 0
+            num={formattedNumberWithDashes(
+              !!instrument.change24h ? instrument.change24h : null,
+              percentageAccuracy
             )}
             dynamics={dynamics}
             sign={sign}
           >
-            %
+            {!!instrument.change24h && `%`}
           </InstrumentListNumber>
         </td>
         <td>
           {isAuth ? (
             <InstrumentListNumber
-              num={formattedNumber(
-                instrument.volume || 0,
+              num={formattedNumberWithDashes(
+                !!instrument.volume ? instrument.volume : null,
                 instrument.baseAsset.accuracy || 0
               )}
+              color={!!instrument.volume ? colors.white : colors.lightGrey}
             >
-              &nbsp;{instrument.baseAsset.name}
+              {!!instrument.volume && ` ${instrument.baseAsset.name}`}
             </InstrumentListNumber>
           ) : (
             ''
@@ -63,22 +65,23 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>
           {isAuth ? (
             <InstrumentListNumber
-              num={formattedNumber(
-                instrument.volumeInBase || 0,
+              num={formattedNumberWithDashes(
+                !!instrument.volumeInBase ? instrument.volumeInBase : null,
                 baseAsset.accuracy || 0
               )}
               color={colors.lightGrey}
             >
-              &nbsp;{baseAsset.name}
+              {!!instrument.volumeInBase && ` ${baseAsset.name}`}
             </InstrumentListNumber>
           ) : (
             <InstrumentListNumber
-              num={formattedNumber(
-                instrument.volume || 0,
+              num={formattedNumberWithDashes(
+                !!instrument.volume ? instrument.volume : null,
                 instrument.baseAsset.accuracy || 0
               )}
+              color={!!instrument.volume ? colors.white : colors.lightGrey}
             >
-              &nbsp;{instrument.baseAsset.name}
+              {!!instrument.volume && ` ${instrument.baseAsset.name}`}
             </InstrumentListNumber>
           )}
         </td>

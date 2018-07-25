@@ -70,14 +70,29 @@ class InstrumentList extends React.Component<
       this.state.sortByParam === sortByParam
         ? sortDirection
         : SortDirection.DESC;
-    this.setState(
-      sortData(this.props.instruments, sortByParam, direction, this.state)
+    const shouldBeSorted = this.props.instruments.filter(i => !!i[sortByParam]);
+    const shouldNotBeSorted = this.props.instruments.filter(
+      i => !i[sortByParam]
     );
+    const stateObjWithSortedInstruments = sortData(
+      shouldBeSorted,
+      sortByParam,
+      direction,
+      this.state
+    );
+    stateObjWithSortedInstruments.data = [
+      ...stateObjWithSortedInstruments.data,
+      ...shouldNotBeSorted
+    ];
+
+    this.setState(stateObjWithSortedInstruments);
+
     this.props.setInstrumentPickerSortingParameters(
       sortByParam,
       direction,
       this.state
     );
+
   };
 
   render() {
