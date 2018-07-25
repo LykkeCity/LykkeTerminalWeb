@@ -7,6 +7,7 @@ import autobahn, {
 } from 'autobahn';
 import {keys} from '../models';
 import {StorageUtils} from '../utils/index';
+import {Backoff, createBackoff} from './backoffApi';
 
 const tokenStorage = StorageUtils(keys.token);
 
@@ -22,7 +23,9 @@ export class WampApi {
 
   private session: Session;
   private connection: ConnectionWrapper;
+  private backoff: Backoff;
 
+  private listeners: Map<string, () => void> = new Map();
   private subscriptions: Map<string, Subscription> = new Map();
 
   private timer: any;
@@ -93,12 +96,30 @@ export class WampApi {
 
   call = (topic: string, procedure: any) => this.session.call(topic, procedure);
 
+  onBackoffReady() {
+    this.connection.open();
+  }
+
   get isConnectionOpened(): boolean {
     return this.connection.isConnectionOpened;
   }
 
   set isConnectionOpened(isConnectionOpened: boolean) {
     this.connection.isConnectionOpened = isConnectionOpened;
+  }
+
+  set onConnectionOpen(callback: () => void) {
+    this.listeners.set('onConnectionOpen', callback);
+  }
+  get onConnectionOpen() {
+    return this.listeners.get('onConnectionOpen') || (() => null);
+  }
+
+  set onConnectionClose(callback: () => void) {
+    this.listeners.set('onConnectionClose', callback);
+  }
+  get onConnectionClose() {
+    return this.listeners.get('onConnectionClose') || (() => null);
   }
 
   // tslint:disable-next-line:variable-name
@@ -108,17 +129,22 @@ export class WampApi {
         resolve(this.session);
       }
 
+      this.backoff = createBackoff(() => this.onBackoffReady());
+
       this.connection = new autobahn.Connection(options) as ConnectionWrapper;
 
       this.connection.onopen = (session: Session) => {
         this.isConnectionOpened = true;
         this.session = session;
         this.subscribeToAll();
+        this.onConnectionOpen();
         resolve(session);
       };
 
       this.connection.onclose = () => {
         this.isConnectionOpened = false;
+        this.onConnectionClose();
+        this.backoff.backoff();
         return false;
       };
 

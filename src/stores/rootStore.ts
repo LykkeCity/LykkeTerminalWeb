@@ -162,6 +162,7 @@ class RootStore {
         );
 
         this.uiStore.setWs(this.ws);
+        this.uiStore.setSocketWatcher();
         this.depthChartStore.setWs(this.ws);
         this.orderBookStore.setWs(this.ws);
         this.chartStore.setWs(this.ws);
