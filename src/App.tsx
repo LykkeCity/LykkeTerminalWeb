@@ -3,7 +3,6 @@ import {fontFace, normalize} from 'polished';
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {Auth} from './components/Auth';
-import {KycAndFundsCheck} from './components/KycAndFundsCheck';
 import {injectGlobal} from './components/styled';
 import {Terminal} from './components/Terminal';
 import paths from './constants/paths';
@@ -114,11 +113,6 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route exact={true} path={paths.auth} component={Auth} />
-          <Route
-            exact={true}
-            path={paths.kycAndFundsCheck}
-            component={KycAndFundsCheck}
-          />
           <Route exact={true} path={paths.main} component={Terminal} />
         </Switch>
       </Router>

@@ -9,7 +9,6 @@ import {
   LYKKE_STREAMS_ROUTE,
   TRADE_ROUTE
 } from '../../constants/lykkeRoutes';
-import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {AnalyticsService} from '../../services/analyticsService';
@@ -161,9 +160,11 @@ class Terminal extends React.Component<TerminalProps, {}> {
       this.updateLayoutFromLocalStorage();
       this.bindChartOverlayHandler();
 
-      AnalyticsService.handleIdentify(
-        AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
-      );
+      if (this.authStore.isAuth) {
+        AnalyticsService.handleIdentify(
+          AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
+        );
+      }
 
       AnalyticsService.track(AnalyticsEvents.LoadTerminal);
     });
@@ -242,22 +243,20 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   async start() {
-    if (this.authStore.isAuth) {
-      await this.referenceStore.fetchReferenceData();
+    await this.referenceStore.fetchReferenceData();
 
+    if (this.authStore.isAuth) {
       await Promise.all([
         this.authStore.fetchUserInfo(),
         this.balanceListStore.fetchAll()
       ]);
 
-      if (this.authStore.noKycAndFunds) {
-        this.props.history.push(paths.kycAndFundsCheck);
-        return false;
-      } else {
-        this.props.rootStore.start();
-      }
+      this.props.rootStore.start();
     } else {
-      this.authStore.signIn();
+      const defaultInstrument = this.referenceStore.getInstrumentById(
+        UiStore.DEFAULT_INSTRUMENT
+      );
+      this.props.rootStore.startPublicMode(defaultInstrument);
     }
     return true;
   }
