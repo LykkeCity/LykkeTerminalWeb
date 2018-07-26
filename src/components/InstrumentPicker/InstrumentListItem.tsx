@@ -29,7 +29,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>
           <InstrumentListNumber
             num={formattedNumberWithDashes(
-              !!instrument.price ? instrument.price : null,
+              instrument.price || null,
               instrument.accuracy || 0
             )}
             color={!!instrument.price ? colors.white : colors.lightGrey}
@@ -38,7 +38,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
         <td>
           <InstrumentListNumber
             num={formattedNumberWithDashes(
-              !!instrument.change24h ? instrument.change24h : null,
+              instrument.change24h || null,
               percentageAccuracy
             )}
             dynamics={dynamics}
@@ -51,7 +51,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           {isAuth ? (
             <InstrumentListNumber
               num={formattedNumberWithDashes(
-                !!instrument.volume ? instrument.volume : null,
+                instrument.volume || null,
                 instrument.baseAsset.accuracy || 0
               )}
               color={!!instrument.volume ? colors.white : colors.lightGrey}
@@ -66,7 +66,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           {isAuth ? (
             <InstrumentListNumber
               num={formattedNumberWithDashes(
-                !!instrument.volumeInBase ? instrument.volumeInBase : null,
+                instrument.volumeInBase || null,
                 baseAsset.accuracy || 0
               )}
               color={colors.lightGrey}
@@ -76,7 +76,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
           ) : (
             <InstrumentListNumber
               num={formattedNumberWithDashes(
-                !!instrument.volume ? instrument.volume : null,
+                instrument.volume || null,
                 instrument.baseAsset.accuracy || 0
               )}
               color={!!instrument.volume ? colors.white : colors.lightGrey}

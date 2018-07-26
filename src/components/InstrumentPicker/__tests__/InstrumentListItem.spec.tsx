@@ -43,14 +43,16 @@ describe('<InstrumentListItem>', () => {
     onPick = jest.fn();
   });
 
-  it('should render table row', () => {
-    const wrapper = shallow(getTestIntrumentListItem());
-    expect(wrapper.find('tr')).toHaveLength(1);
-  });
+  describe('method render', () => {
+    it('should render table row', () => {
+      const wrapper = shallow(getTestIntrumentListItem());
+      expect(wrapper.find('tr')).toHaveLength(1);
+    });
 
-  it('should contain 5 table divisions', () => {
-    const wrapper = shallow(getTestIntrumentListItem());
-    expect(wrapper.find('td')).toHaveLength(5);
+    it('should contain 5 table divisions', () => {
+      const wrapper = shallow(getTestIntrumentListItem());
+      expect(wrapper.find('td')).toHaveLength(5);
+    });
   });
 
   describe('table divisions', () => {
@@ -88,12 +90,7 @@ describe('<InstrumentListItem>', () => {
           .find('td')
           .at(1)
           .childAt(0);
-        expect((child.props() as any).num).toBe(
-          formattedNumberWithDashes(
-            !!instrument.price ? instrument.price : null,
-            instrument.accuracy || 0
-          )
-        );
+        expect((child.props() as any).num).toBe('--');
       });
     });
 
@@ -149,17 +146,13 @@ describe('<InstrumentListItem>', () => {
       });
 
       it('should contain child with num prop with formatted number', () => {
+        instrument.change24h = 123;
         const wrapper = shallow(getTestIntrumentListItem());
         const child = wrapper
           .find('td')
-          .at(1)
+          .at(2)
           .childAt(0);
-        expect((child.props() as any).num).toBe(
-          formattedNumberWithDashes(
-            !!instrument.change24h ? instrument.change24h : null,
-            2
-          )
-        );
+        expect((child.props() as any).num).toBe('123.00');
       });
 
       it('should contain % if change24h is not a null', () => {
@@ -184,17 +177,13 @@ describe('<InstrumentListItem>', () => {
       });
 
       it('should contain child with num prop with formatted number', () => {
+        instrument.volume = 123;
         const wrapper = shallow(getTestIntrumentListItem());
         const child = wrapper
           .find('td')
           .at(3)
           .childAt(0);
-        expect((child.props() as any).num).toBe(
-          formattedNumberWithDashes(
-            !!instrument.volume ? instrument.volume : null,
-            baseAsset.accuracy || 0
-          )
-        );
+        expect((child.props() as any).num).toBe('123');
       });
 
       it('should contain base asset name', () => {
@@ -241,17 +230,13 @@ describe('<InstrumentListItem>', () => {
       });
 
       it('should contain child with num prop with formatted number', () => {
+        instrument.volumeInBase = 2538;
         const wrapper = shallow(getTestIntrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
           .childAt(0);
-        expect((child.props() as any).num).toBe(
-          formattedNumberWithDashes(
-            !!instrument.volumeInBase ? instrument.volumeInBase : null,
-            baseAsset.accuracy || 0
-          )
-        );
+        expect((child.props() as any).num).toBe('2,538');
       });
 
       it('should contain base asset name', () => {
