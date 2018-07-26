@@ -213,9 +213,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   async start() {
-    if (this.authStore.isAuth) {
-      await this.referenceStore.fetchReferenceData();
+    await this.referenceStore.fetchReferenceData();
 
+    if (this.authStore.isAuth) {
       await Promise.all([
         this.authStore.fetchUserInfo(),
         this.balanceListStore.fetchAll()
@@ -228,7 +228,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
         this.props.rootStore.start();
       }
     } else {
-      this.authStore.signIn();
+      const defaultInstrument = this.referenceStore.getInstrumentById(
+        UiStore.DEFAULT_INSTRUMENT
+      );
+      this.props.rootStore.startPublicMode(defaultInstrument);
     }
     return true;
   }
