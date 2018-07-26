@@ -44,6 +44,7 @@ import {
 const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
+// tslint:disable:no-console
 class RootStore {
   watchlistStore: WatchlistStore;
   readonly tradeStore: TradeStore;
@@ -102,8 +103,13 @@ class RootStore {
   }
 
   startPublicMode = async (defaultInstrument: any) => {
+    await this.referenceStore.fetchRates().catch(console.error);
     return this.socketStore
-      .connect(this.wampUrl, this.wampRealm, tokenStorage.get() as string)
+      .connect(
+        this.wampUrl,
+        this.wampRealm,
+        tokenStorage.get() as string
+      )
       .then(() => {
         this.referenceStore.getInstruments().forEach((x: any) => {
           this.socketStore.subscribe(
@@ -129,7 +135,6 @@ class RootStore {
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
-    // tslint:disable-next-line:no-console
     await this.referenceStore.fetchRates().catch(console.error);
 
     this.marketStore.init(instruments, assets);
