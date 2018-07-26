@@ -16,7 +16,6 @@ export interface InstrumentPickerActions {
 
 export interface InstrumentPickerProps extends InstrumentPickerActions {
   baseAsset: AssetModel;
-  instruments: InstrumentModel[];
   value: string;
   instrumentId: string;
   show: boolean;
@@ -64,6 +63,7 @@ export interface InstrumentListProps {
     state: any
   ) => void;
   getInstrumentPickerSortingParameters: () => any;
+  defaultSortingField: string;
 }
 
 export interface InstrumentShortcutSelectionProps {
@@ -76,19 +76,11 @@ export interface InstrumentShortcutSelectionProps {
 
 const connectedInstrumentPicker = connect(
   ({authStore, referenceStore, uiStore, watchlistStore}) => {
-    const getSortedInstruments = (sortField: string) =>
-      referenceStore
-        .findInstruments(uiStore.searchTerm, uiStore.searchWalletName)
-        .sort((a, b) => (b[sortField] || 0) - (a[sortField] || 0));
-
     return {
       baseAsset:
         referenceStore.getAssetById(referenceStore.baseAssetId) ||
         new AssetModel({}),
       instrumentId: pathOr(undefined, ['selectedInstrument', 'id'], uiStore),
-      instruments: getSortedInstruments(
-        authStore.isAuth ? 'volumeInBase' : 'volume'
-      ),
       value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
       show: uiStore.showInstrumentPicker,
       showInstrumentSelection: uiStore.showInstrumentSelection,
@@ -101,11 +93,7 @@ const connectedInstrumentPicker = connect(
       onSearch: uiStore.search,
       onSearchWalletName: uiStore.searchWallet,
       watchlistNames: watchlistStore.watchlistNames,
-      isAuth: authStore.isAuth,
-      setInstrumentPickerSortingParameters:
-        uiStore.setInstrumentPickerSortingParameters,
-      getInstrumentPickerSortingParameters:
-        uiStore.getInstrumentPickerSortingParameters
+      isAuth: authStore.isAuth
     };
   },
   InstrumentPicker
@@ -115,12 +103,20 @@ const connectedInstrumentList = connect(
   ({
     uiStore: {
       setInstrumentPickerSortingParameters,
-      getInstrumentPickerSortingParameters
-    }
-  }) => ({
-    setInstrumentPickerSortingParameters,
-    getInstrumentPickerSortingParameters
-  }),
+      getInstrumentPickerSortingParameters,
+      searchTerm,
+      searchWalletName
+    },
+    referenceStore: {findInstruments},
+    authStore: {isAuth}
+  }) => {
+    return {
+      instruments: findInstruments(searchTerm, searchWalletName),
+      setInstrumentPickerSortingParameters,
+      getInstrumentPickerSortingParameters,
+      defaultSortingField: isAuth ? 'volumeInBase' : 'volume'
+    };
+  },
   InstrumentList
 );
 

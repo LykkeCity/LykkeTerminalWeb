@@ -69,7 +69,6 @@ class InstrumentPicker extends React.Component<
             <InstrumentList
               baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}
-              instruments={this.props.instruments}
               onPick={this.props.onPick}
               change={this.changeValue}
               isAuth={this.props.isAuth}
