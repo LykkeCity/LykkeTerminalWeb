@@ -7,9 +7,9 @@ const defaultHeight = `calc(100% - ${rem(dims.tileHeaderHeight)}`;
 
 export interface TrackedScrollbarProps {
   styles?: any;
-  setLastScrollPosition: (position: number) => void;
-  getLastScrollPosition: () => number;
 }
+
+let currentScrollPosition = 0;
 
 class TrackedScrollbar extends React.Component<TrackedScrollbarProps> {
   scrollbar: any;
@@ -19,15 +19,11 @@ class TrackedScrollbar extends React.Component<TrackedScrollbarProps> {
   }
 
   onScrollStop = () => {
-    if (this.props.setLastScrollPosition) {
-      this.props.setLastScrollPosition(this.scrollbar.getScrollTop());
-    }
+    currentScrollPosition = this.scrollbar.getScrollTop();
   };
 
   componentDidMount() {
-    if (this.props.getLastScrollPosition) {
-      this.scrollbar.scrollTop(this.props.getLastScrollPosition());
-    }
+    this.scrollbar.scrollTop(currentScrollPosition);
   }
 
   render() {

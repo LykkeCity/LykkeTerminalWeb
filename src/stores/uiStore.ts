@@ -39,7 +39,6 @@ class UiStore extends BaseStore {
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
   @observable disclaimedAssets: string[] = [];
-  @observable instrumentPickerScrollPosition: number = 0;
   @observable
   instrumentPickerSortingParameters: any = {
     sortByParam: '',
@@ -188,16 +187,6 @@ class UiStore extends BaseStore {
   getUserInfo = () => this.userInfo;
 
   @action
-  setInstrumentPickerScrollPosition = (scrollPosition: number) => {
-    this.instrumentPickerScrollPosition = scrollPosition;
-  };
-
-  @action
-  getInstrumentPickerScrollPosition = () => {
-    return this.instrumentPickerScrollPosition;
-  };
-
-  @action
   setInstrumentPickerSortingParameters = (
     sortByParam: string,
     direction: string,
@@ -208,7 +197,6 @@ class UiStore extends BaseStore {
       direction,
       state
     };
-    this.setInstrumentPickerScrollPosition(0);
   };
 
   @action

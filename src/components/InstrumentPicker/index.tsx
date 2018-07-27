@@ -120,21 +120,10 @@ const connectedInstrumentList = connect(
   InstrumentList
 );
 
-const connectedScrolledInstrumentTable = connect(
-  ({
-    uiStore: {
-      setInstrumentPickerScrollPosition,
-      getInstrumentPickerScrollPosition
-    }
-  }) => ({
-    setLastScrollPosition: setInstrumentPickerScrollPosition,
-    getLastScrollPosition: getInstrumentPickerScrollPosition
-  }),
-  withStyledTrackedScroll({
-    width: `calc(100% + ${tableScrollMargin})`,
-    height: 'calc(100% - 80px)'
-  })(InstrumentTable)
-);
+const connectedScrolledInstrumentTable = withStyledTrackedScroll({
+  width: `calc(100% + ${tableScrollMargin})`,
+  height: 'calc(100% - 80px)'
+})(InstrumentTable);
 
 export {connectedInstrumentPicker as InstrumentPicker};
 export {connectedScrolledInstrumentTable as InstrumentTable};

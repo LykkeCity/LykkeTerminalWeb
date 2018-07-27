@@ -250,30 +250,6 @@ describe('uiStore', () => {
     });
   });
 
-  describe('instrumentPickerScrollPosition', () => {
-    describe('getInstrumentPickerScrollPosition getter function', () => {
-      it('should be defined', () => {
-        expect(uiStore.getInstrumentPickerScrollPosition).toBeDefined();
-      });
-
-      it('should return value by default using getter function', () => {
-        expect(uiStore.getInstrumentPickerScrollPosition()).toBeDefined();
-      });
-    });
-
-    describe('setInstrumentPickerScrollPosition setter function', () => {
-      it('should be defined', () => {
-        expect(uiStore.setInstrumentPickerScrollPosition).toBeDefined();
-      });
-
-      it('should set value using setter function', () => {
-        const position = 200;
-        uiStore.setInstrumentPickerScrollPosition(position);
-        expect(uiStore.getInstrumentPickerScrollPosition()).toEqual(position);
-      });
-    });
-  });
-
   describe('instrumentPickerSortingParameters', () => {
     describe('getInstrumentPickerSortingParameters getter function', () => {
       it('should be defined', () => {
@@ -305,15 +281,6 @@ describe('uiStore', () => {
         expect(uiStore.getInstrumentPickerSortingParameters()).toEqual(
           parameters
         );
-      });
-
-      it('should also set scroll position to zero', () => {
-        uiStore.setInstrumentPickerSortingParameters(
-          parameters.sortByParam,
-          parameters.direction,
-          parameters.state
-        );
-        expect(uiStore.getInstrumentPickerScrollPosition()).toEqual(0);
       });
     });
   });

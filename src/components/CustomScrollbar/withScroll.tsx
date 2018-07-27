@@ -22,11 +22,7 @@ export const withStyledScroll = (styles: object) => <P extends {}>(
 export const withStyledTrackedScroll = (styles: object) => <P extends {}>(
   Component: React.ComponentType<P>
 ) => (props: P & ScrollbarProps & TrackedScrollbarProps) => (
-  <TrackedScrollbar
-    styles={styles}
-    setLastScrollPosition={props.setLastScrollPosition}
-    getLastScrollPosition={props.getLastScrollPosition}
-  >
+  <TrackedScrollbar styles={styles}>
     <Component {...props} />
   </TrackedScrollbar>
 );
