@@ -215,7 +215,6 @@ class UiStore extends BaseStore {
       direction,
       state
     };
-    this.setInstrumentPickerScrollPosition(0);
   };
 
   @action
