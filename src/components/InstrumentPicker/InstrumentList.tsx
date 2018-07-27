@@ -1,4 +1,3 @@
-import {prop, sortBy} from 'rambda';
 import * as React from 'react';
 import {SortDirection} from '../../models';
 import {
@@ -16,24 +15,36 @@ class InstrumentList extends React.Component<
 > {
   constructor(props: InstrumentListProps) {
     super(props);
-    const defaultSortField = this.props.instruments.some(x => !!x.volumeInBase)
-      ? 'volumeInBase'
-      : 'volume';
+
+    const {instruments, defaultSortingField} = this.props;
+
+    const sortedInstruments = instruments.sort(
+      (a, b) => (b[defaultSortingField] || 0) - (a[defaultSortingField] || 0)
+    );
+
     this.state = {
-      data: sortBy(prop(defaultSortField), this.props.instruments),
-      sortByParam: defaultSortField,
+      data: sortedInstruments,
+      sortByParam: defaultSortingField,
       sortDirection: SortDirection.DESC
     };
-  }
-
-  componentDidMount() {
-    this.props.change();
   }
 
   componentWillReceiveProps(args: any) {
     this.setState({
       data: args.instruments
     });
+  }
+
+  componentDidMount() {
+    this.props.change();
+    const {
+      sortByParam,
+      direction,
+      state
+    } = this.props.getInstrumentPickerSortingParameters();
+    this.setState(
+      sortData(this.props.instruments, sortByParam, direction, state)
+    );
   }
 
   sort = (sortByParam: string, sortDirection: string) => {
@@ -43,6 +54,11 @@ class InstrumentList extends React.Component<
         : SortDirection.DESC;
     this.setState(
       sortData(this.props.instruments, sortByParam, direction, this.state)
+    );
+    this.props.setInstrumentPickerSortingParameters(
+      sortByParam,
+      direction,
+      this.state
     );
   };
 

@@ -1,8 +1,9 @@
 import {pathOr} from 'rambda';
 import {AssetModel, InstrumentModel} from '../../models/index';
 import {connect} from '../connect';
-import {withStyledScroll} from '../CustomScrollbar/withScroll';
+import {withStyledTrackedScroll} from '../CustomScrollbar/withScroll';
 import {tableScrollMargin} from '../styled';
+import InstrumentList from './InstrumentList';
 import InstrumentPicker from './InstrumentPicker';
 import InstrumentTable from './InstrumentTable';
 
@@ -15,7 +16,6 @@ export interface InstrumentPickerActions {
 
 export interface InstrumentPickerProps extends InstrumentPickerActions {
   baseAsset: AssetModel;
-  instruments: InstrumentModel[];
   value: string;
   instrumentId: string;
   show: boolean;
@@ -24,6 +24,12 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   onToggleInstrumentSelection: any;
   watchlistNames: string[];
   isAuth: boolean;
+  setInstrumentPickerSortingParameters: (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => void;
+  getInstrumentPickerSortingParameters: () => any;
 }
 
 export interface InstrumentPopoverProps extends InstrumentPickerActions {
@@ -51,6 +57,13 @@ export interface InstrumentListProps {
   instruments: InstrumentModel[];
   onPick: any;
   isAuth: boolean;
+  setInstrumentPickerSortingParameters: (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => void;
+  getInstrumentPickerSortingParameters: () => any;
+  defaultSortingField: string;
 }
 
 export interface InstrumentShortcutSelectionProps {
@@ -63,19 +76,11 @@ export interface InstrumentShortcutSelectionProps {
 
 const connectedInstrumentPicker = connect(
   ({authStore, referenceStore, uiStore, watchlistStore}) => {
-    const getSortedInstruments = (sortField: string) =>
-      referenceStore
-        .findInstruments(uiStore.searchTerm, uiStore.searchWalletName)
-        .sort((a, b) => (b[sortField] || 0) - (a[sortField] || 0));
-
     return {
       baseAsset:
         referenceStore.getAssetById(referenceStore.baseAssetId) ||
         new AssetModel({}),
       instrumentId: pathOr(undefined, ['selectedInstrument', 'id'], uiStore),
-      instruments: getSortedInstruments(
-        authStore.isAuth ? 'volumeInBase' : 'volume'
-      ),
       value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
       show: uiStore.showInstrumentPicker,
       showInstrumentSelection: uiStore.showInstrumentSelection,
@@ -94,13 +99,36 @@ const connectedInstrumentPicker = connect(
   InstrumentPicker
 );
 
-const ScrolledInstrumentTable = withStyledScroll({
+const connectedInstrumentList = connect(
+  ({
+    uiStore: {
+      setInstrumentPickerSortingParameters,
+      getInstrumentPickerSortingParameters,
+      searchTerm,
+      searchWalletName
+    },
+    referenceStore: {findInstruments},
+    authStore: {isAuth}
+  }) => {
+    return {
+      instruments: findInstruments(searchTerm, searchWalletName),
+      setInstrumentPickerSortingParameters,
+      getInstrumentPickerSortingParameters,
+      defaultSortingField: isAuth ? 'volumeInBase' : 'volume'
+    };
+  },
+  InstrumentList
+);
+
+const connectedScrolledInstrumentTable = withStyledTrackedScroll({
   width: `calc(100% + ${tableScrollMargin})`,
   height: 'calc(100% - 80px)'
 })(InstrumentTable);
 
 export {connectedInstrumentPicker as InstrumentPicker};
-export {ScrolledInstrumentTable as InstrumentTable};
+export {connectedScrolledInstrumentTable as InstrumentTable};
+export {connectedInstrumentList as InstrumentList};
+
 export {default as InstrumentListItem} from './InstrumentListItem';
 export {default as InstrumentSelect} from './InstrumentSelect';
 export {default as InstrumentPopover} from './InstrumentPopover';
@@ -108,5 +136,4 @@ export {default as InstrumentSearch} from './InstrumentSearch';
 export {
   default as InstrumentShortcutSelection
 } from './InstrumentShortcutSelection';
-export {default as InstrumentList} from './InstrumentList';
 export {default as InstrumentListNumber} from './InstrumentListNumber';

@@ -39,8 +39,16 @@ class UiStore extends BaseStore {
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
   @observable disclaimedAssets: string[] = [];
+  @observable
+  instrumentPickerSortingParameters: any = {
+    sortByParam: '',
+    direction: '',
+    state: {}
+  };
+
   @observable userInfo: UserInfoModel | null;
   @observable private isReadOnlyMode: boolean;
+
   private isPageVisible: boolean = true;
 
   constructor(store: RootStore) {
@@ -177,6 +185,24 @@ class UiStore extends BaseStore {
   setUserInfo = (userInfo: ApiUserInfoModel) =>
     (this.userInfo = toUserInfoModel(userInfo));
   getUserInfo = () => this.userInfo;
+
+  @action
+  setInstrumentPickerSortingParameters = (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => {
+    this.instrumentPickerSortingParameters = {
+      sortByParam,
+      direction,
+      state
+    };
+  };
+
+  @action
+  getInstrumentPickerSortingParameters = () => {
+    return this.instrumentPickerSortingParameters;
+  };
 
   private checkAssetToDisclaim = (
     selectedInstrument: InstrumentModel | undefined,

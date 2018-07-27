@@ -249,4 +249,39 @@ describe('uiStore', () => {
       expect(uiStore.isDisclaimerShown).toBeTruthy();
     });
   });
+
+  describe('instrumentPickerSortingParameters', () => {
+    describe('getInstrumentPickerSortingParameters getter function', () => {
+      it('should be defined', () => {
+        expect(uiStore.getInstrumentPickerSortingParameters).toBeDefined();
+      });
+
+      it('should return value by default using getter function', () => {
+        expect(uiStore.getInstrumentPickerSortingParameters()).toBeDefined();
+      });
+    });
+
+    describe('setInstrumentPickerSortingParameters setter function', () => {
+      const parameters = {
+        sortByParam: 'Volume',
+        direction: 'ASC',
+        state: {}
+      };
+
+      it('should be defined', () => {
+        expect(uiStore.setInstrumentPickerSortingParameters).toBeDefined();
+      });
+
+      it('should set value using setter function', () => {
+        uiStore.setInstrumentPickerSortingParameters(
+          parameters.sortByParam,
+          parameters.direction,
+          parameters.state
+        );
+        expect(uiStore.getInstrumentPickerSortingParameters()).toEqual(
+          parameters
+        );
+      });
+    });
+  });
 });
