@@ -168,6 +168,8 @@ describe('uiStore', () => {
       uiStore.rootStore.priceStore.fetchDailyCandle = jest.fn();
       uiStore.rootStore.priceStore.subscribeToDailyCandle = jest.fn();
       uiStore.rootStore.priceStore.reset = jest.fn();
+
+      uiStore.rootStore.routerStore.replace = jest.fn();
     });
 
     it('should change selected instrument', () => {
@@ -183,6 +185,9 @@ describe('uiStore', () => {
       uiStore.selectInstrument('BTCUSD');
       expect(uiStore.selectedInstrument).toBeDefined();
       expect(uiStore.selectedInstrument).toBe(newInstrument);
+      expect(uiStore.rootStore.routerStore.replace).toHaveBeenCalledWith(
+        'BTCUSD'
+      );
     });
 
     it('should not activate disclaimer for BTC/USD instrument', () => {
@@ -197,6 +202,9 @@ describe('uiStore', () => {
 
       expect(uiStore.disclaimedAssets.length).toBe(0);
       expect(uiStore.isDisclaimerShown).toBeFalsy();
+      expect(uiStore.rootStore.routerStore.replace).toHaveBeenCalledWith(
+        'BTCUSD'
+      );
     });
 
     it('should activate disclaimer for EOS asset', () => {
@@ -213,6 +221,9 @@ describe('uiStore', () => {
       expect(uiStore.disclaimedAssets.length).not.toBe(0);
       expect(uiStore.disclaimedAssets[0]).toBe(disclaimed);
       expect(uiStore.isDisclaimerShown).toBeTruthy();
+      expect(uiStore.rootStore.routerStore.replace).toHaveBeenCalledWith(
+        'BTCEOS'
+      );
     });
 
     it('should activate disclaimer for both VET and ICX assets', () => {
@@ -231,6 +242,9 @@ describe('uiStore', () => {
       expect(uiStore.disclaimedAssets[0]).toBe(disclaimed1);
       expect(uiStore.disclaimedAssets[1]).toBe(disclaimed2);
       expect(uiStore.isDisclaimerShown).toBeTruthy();
+      expect(uiStore.rootStore.routerStore.replace).toHaveBeenCalledWith(
+        disclaimed1 + disclaimed2
+      );
     });
 
     it('should activate disclaimer for REP asset', () => {
@@ -247,6 +261,9 @@ describe('uiStore', () => {
       expect(uiStore.disclaimedAssets.length).not.toBe(0);
       expect(uiStore.disclaimedAssets[0]).toBe(disclaimed);
       expect(uiStore.isDisclaimerShown).toBeTruthy();
+      expect(uiStore.rootStore.routerStore.replace).toHaveBeenCalledWith(
+        'BTCREP'
+      );
     });
   });
 

@@ -5,6 +5,7 @@
   "dependencies": {
     "@lykkex/lykke.js": "^0.2.0",
     "@types/applicationinsights-js": "^1.0.5",
+    "@types/history": "^4.6.2",
     "@types/qrcode.react": "^0.6.3",
     "@types/react-custom-scrollbars": "^4.0.1",
     "@types/react-measure": "^2.0.2",
@@ -27,6 +28,7 @@
     "lint-staged": "^6.0.0",
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
+    "mobx-react-router": "^4.0.4",
     "polished": "^1.9.0",
     "prettier": "^1.10.2",
     "qrcode.react": "^0.8.0",
