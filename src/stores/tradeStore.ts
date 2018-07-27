@@ -9,6 +9,8 @@ import * as map from '../models/tradeModel.mapper';
 import {nextSkip} from '../utils';
 import {BaseStore, RootStore} from './index';
 
+const MAX_TRADE_COUNT = 999;
+
 const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
   reverse,
   sortBy((o: TradeModel) => new Date(o.timestamp).getTime())
@@ -82,9 +84,11 @@ class TradeStore extends BaseStore {
 
   @action
   addPublicTrades = (trades: TradeModel[]) => {
-    this.publicTrades = this.publicTrades.concat(
+    const updatedTrades = this.publicTrades.concat(
       trades.map(t => ({...t, instrument: this.selectedInstrument!}))
     );
+
+    this.publicTrades = this.filterTrades(updatedTrades);
   };
 
   @action
@@ -196,6 +200,17 @@ class TradeStore extends BaseStore {
   private isTradeAvailableForCurrentInstrument(trade: TradeModel) {
     return trade.instrument!.id === this.instrumentIdByFilter;
   }
+
+  private filterTrades = (trades: TradeModel[]) => {
+    if (trades.length > MAX_TRADE_COUNT) {
+      const numberOfOldTrades = trades.length - MAX_TRADE_COUNT;
+      for (let index = 0; index < numberOfOldTrades; index++) {
+        trades.shift();
+      }
+    }
+
+    return trades;
+  };
 }
 
 export default TradeStore;
