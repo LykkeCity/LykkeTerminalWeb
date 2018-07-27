@@ -1,5 +1,6 @@
 export {default as keys} from './storageKeys';
 export {default as AssetModel} from './assetModel';
+export {default as AssetResponseModel} from './assetResponseModel';
 export {default as AssetBalanceModel} from './assetBalanceModel';
 export {default as AssetCategoryModel} from './assetCategoryModel';
 export {default as InstrumentModel} from './instrumentModel';
@@ -30,3 +31,4 @@ export {default as LevelType} from './levelType';
 export {default as OrderBookCellType} from './orderBookCellType';
 export {default as Browser} from './browser';
 export {default as BigNumberModel} from './bigNumberModel';
+export {default as DescriptionResponseModel} from './descriptionResponseModel';

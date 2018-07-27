@@ -3,6 +3,8 @@ import {ChartStore} from '../../stores/index';
 import {
   AssetCategoryModel,
   AssetModel,
+  AssetResponseModel,
+  DescriptionResponseModel,
   InstrumentModel,
   Interval,
   OrderModel,
@@ -150,8 +152,17 @@ export const mapHistoryTypeToOrderType = (type: string) => {
 };
 
 export const mapToAsset = (
-  {Id, Name, DisplayId, CategoryId, Accuracy, IconUrl, CanBeBase}: any,
-  categories: AssetCategoryModel[]
+  {
+    Id,
+    Name,
+    DisplayId,
+    CategoryId,
+    Accuracy,
+    IconUrl,
+    CanBeBase
+  }: AssetResponseModel,
+  categories: AssetCategoryModel[],
+  {FullName}: DescriptionResponseModel
 ) =>
   new AssetModel({
     accuracy: Accuracy,
@@ -160,6 +171,7 @@ export const mapToAsset = (
     iconUrl: IconUrl,
     id: Id,
     canBeBase: CanBeBase,
+    fullName: FullName || '',
     name: DisplayId || Name
   });
 

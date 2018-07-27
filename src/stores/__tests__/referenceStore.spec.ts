@@ -4,13 +4,16 @@ import {
   InstrumentModel
 } from '../../models/index';
 import {ReferenceStore, RootStore} from '../index';
+import WatchlistStore from '../watchlistStore';
 
 // tslint:disable:object-literal-sort-keys
 describe('referenceStore', () => {
   const api: any = {
     fetchAll: jest.fn(),
+    fetchAssetById: jest.fn(),
     fetchAssetCategories: jest.fn(),
     fetchAssetInstruments: jest.fn(),
+    fetchAssetsDescriptions: jest.fn(),
     fetchBaseAsset: jest.fn()
   };
   let assetStore: ReferenceStore;
@@ -26,7 +29,7 @@ describe('referenceStore', () => {
     });
 
     it('should be empty after store instantiation', () => {
-      expect(assetStore.getAssets().length).toBe(0);
+      expect(assetStore.getAssets()).toHaveLength(0);
     });
   });
 
@@ -37,54 +40,49 @@ describe('referenceStore', () => {
     });
 
     it('should be empty after store instantiation', () => {
-      expect(assetStore.getCategories().length).toBe(0);
+      expect(assetStore.getCategories()).toHaveLength(0);
     });
   });
 
-  describe('find asset by id', () => {
-    it('should find and return known asset by id provided', () => {
-      // arrange
-      const newAsset = new AssetModel({
-        id: '1',
-        name: 'LKK',
-        category: AssetCategoryModel.Other(),
-        accuracy: 2
-      });
-      assetStore.fetchAssets = jest.fn(() => assetStore.addAsset(newAsset));
+  describe('findAppropriateDescriptionById method', () => {
+    it('should find description by id', () => {
+      const idToFind = '1';
+      const descriptionToFind = {
+        Id: idToFind,
+        AssetClass: '',
+        Description: '',
+        IssuerName: '',
+        NumberOfCoins: '',
+        AssetDescriptionUrl: '',
+        FullName: 'Lykke'
+      };
 
-      // act
-      assetStore.fetchAssets();
+      const foundDescription = assetStore.findAppropriateDescriptionById(
+        [descriptionToFind],
+        idToFind
+      );
 
-      // assert
-      expect(assetStore.getAssets()).not.toBeNull();
-      expect(assetStore.getAssets()).toContainEqual(newAsset);
-      expect(assetStore.getAssetById('1')).toBe(newAsset);
+      expect(foundDescription).toBeDefined();
     });
   });
 
   describe('fetch assets', () => {
-    it('should call api get assets', () => {
+    beforeEach(() => {
       jest.resetAllMocks();
-      api.fetchAll = jest.fn(() => Promise.resolve());
+    });
 
-      assetStore.fetchAssets();
+    it('should call api to get assets & descriptions', async () => {
+      api.fetchAll = jest.fn(() => Promise.resolve({Assets: []}));
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve({Descriptions: []})
+      );
 
-      expect(api.fetchAll).toHaveBeenCalled();
+      await assetStore.fetchAssets();
+
       expect(api.fetchAll).toHaveBeenCalledTimes(1);
     });
 
-    it('should map empty but valid response to assets', () => {
-      jest.resetAllMocks();
-      api.fetchAll = jest.fn(() => Promise.resolve({Assets: []}));
-
-      assetStore.fetchAssets();
-
-      expect(assetStore.getAssets()).not.toBeNull();
-      expect(assetStore.getAssets().length).toBe(0);
-    });
-
     it('should map valid response to assets', async () => {
-      jest.resetAllMocks();
       api.fetchAll = jest.fn(() =>
         Promise.resolve({
           Assets: [
@@ -103,27 +101,148 @@ describe('referenceStore', () => {
           ]
         })
       );
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve({
+          Descriptions: [
+            {
+              Id: '1',
+              AssetClass: '',
+              Description: '',
+              IssuerName: '',
+              NumberOfCoins: '',
+              AssetDescriptionUrl: '',
+              FullName: 'Lykke'
+            },
+            {
+              Id: '2',
+              AssetClass: '',
+              Description: '',
+              IssuerName: '',
+              NumberOfCoins: '',
+              AssetDescriptionUrl: '',
+              FullName: 'Lykke 2'
+            }
+          ]
+        })
+      );
 
       await assetStore.fetchAssets();
 
       expect(assetStore.getAssets()).not.toBeNull();
-      expect(assetStore.getAssets().length).toBe(2);
+      expect(assetStore.getAssets()).toHaveLength(2);
+    });
+
+    it('should accept response with no Assets & Descriptions fields', async () => {
+      api.fetchAll = jest.fn(() =>
+        Promise.resolve([
+          {
+            Id: '1',
+            DisplayId: 'LKK',
+            Accuracy: 4,
+            CategoryId: 'ctg1'
+          },
+          {
+            Id: '2',
+            DisplayId: 'LKK2',
+            Accuracy: 0,
+            CategoryId: null
+          }
+        ])
+      );
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve([
+          {
+            Id: '1',
+            FullName: 'Lykke'
+          },
+          {
+            Id: '2',
+            FullName: 'Lykke 2'
+          }
+        ])
+      );
+
+      await assetStore.fetchAssets();
+
+      expect(assetStore.getAssets()).not.toBeNull();
+      expect(assetStore.getAssets()).toHaveLength(2);
+    });
+  });
+
+  describe('fetch asset by id', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+      assetStore.descriptions = [
+        {
+          Id: '1',
+          AssetClass: '',
+          Description: '',
+          IssuerName: '',
+          NumberOfCoins: '',
+          AssetDescriptionUrl: '',
+          FullName: 'Lykke'
+        }
+      ];
+    });
+
+    it('should call api get asset pairs', async () => {
+      api.fetchAssetById = jest.fn(() => Promise.resolve({Asset: []}));
+
+      await assetStore.fetchAssetById('1');
+
+      expect(api.fetchAssetById).toHaveBeenCalledTimes(1);
+    });
+
+    it('should map valid response to asset', async () => {
+      api.fetchAssetById = jest.fn(() =>
+        Promise.resolve({
+          Asset: {
+            Id: '1',
+            DisplayId: 'LKK',
+            Accuracy: 4,
+            CategoryId: 'ctg1'
+          }
+        })
+      );
+
+      await assetStore.fetchAssetById('1');
+
+      expect(assetStore.getAssets()).not.toBeNull();
+      expect(assetStore.getAssets()).toHaveLength(1);
+    });
+
+    it('should accept response with no Asset field', async () => {
+      api.fetchAssetById = jest.fn(() =>
+        Promise.resolve({
+          Id: '1',
+          DisplayId: 'LKK',
+          Accuracy: 4,
+          CategoryId: 'ctg1'
+        })
+      );
+
+      await assetStore.fetchAssetById('1');
+
+      expect(assetStore.getAssets()).not.toBeNull();
+      expect(assetStore.getAssets()).toHaveLength(1);
     });
   });
 
   describe('fetch categories', () => {
-    it('should call api get categories', () => {
+    beforeEach(() => {
       jest.resetAllMocks();
+    });
+
+    it('should call api get categories', async () => {
       api.fetchAssetCategories = jest.fn(() => Promise.resolve());
 
-      assetStore.fetchCategories();
+      await assetStore.fetchCategories();
 
       expect(api.fetchAssetCategories).toHaveBeenCalled();
       expect(api.fetchAssetCategories).toHaveBeenCalledTimes(1);
     });
 
     it('should map valid response to categories', async () => {
-      jest.resetAllMocks();
       api.fetchAssetCategories = jest.fn(() =>
         Promise.resolve({
           AssetCategories: [{Id: '1', Name: 'Lykke'}]
@@ -133,7 +252,7 @@ describe('referenceStore', () => {
       await assetStore.fetchCategories();
 
       expect(assetStore.getCategories()).not.toBeNull();
-      expect(assetStore.getCategories().length).toBe(1);
+      expect(assetStore.getCategories()).toHaveLength(1);
       expect(assetStore.getCategories()[0]).toEqual(
         new AssetCategoryModel({id: '1', name: 'Lykke'})
       );
@@ -141,15 +260,19 @@ describe('referenceStore', () => {
   });
 
   describe('map asset from dto', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
     it('correctly maps from dto', async () => {
       const ctg = new AssetCategoryModel({id: '1', name: 'Lykke'});
       const expectedAsset = new AssetModel({
         id: '1',
         name: 'LKK',
         accuracy: 2,
-        category: ctg
+        category: ctg,
+        fullName: 'Lykke'
       });
-      jest.resetAllMocks();
       api.fetchAll = jest.fn(() =>
         Promise.resolve({
           Assets: [
@@ -164,6 +287,17 @@ describe('referenceStore', () => {
           ]
         })
       );
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve({
+          Descriptions: [
+            {
+              Id: '1',
+              FullName: 'Lykke'
+            }
+          ]
+        })
+      );
+
       api.fetchAssetCategories = jest.fn(() =>
         Promise.resolve({
           AssetCategories: [{Id: '1', Name: 'Lykke'}]
@@ -178,13 +312,22 @@ describe('referenceStore', () => {
 
     it('should use Name if DisplayId is not provided', async () => {
       const name = 'LKK';
-      jest.resetAllMocks();
       api.fetchAll = jest.fn(() =>
         Promise.resolve({
           Assets: [
             {
               Id: '1',
               Name: name
+            }
+          ]
+        })
+      );
+      api.fetchAssetsDescriptions = jest.fn(() =>
+        Promise.resolve({
+          Descriptions: [
+            {
+              Id: '1',
+              FullName: 'Lykke'
             }
           ]
         })
@@ -197,9 +340,11 @@ describe('referenceStore', () => {
   });
 
   describe('fetch instruments', () => {
-    it('should call api get asset pairs', () => {
+    beforeEach(() => {
       jest.resetAllMocks();
+    });
 
+    it('should call api get asset pairs', () => {
       assetStore.fetchInstruments();
 
       expect(api.fetchAssetInstruments).toHaveBeenCalled();
@@ -207,7 +352,6 @@ describe('referenceStore', () => {
     });
 
     it('should map valid response to instruments', async () => {
-      jest.resetAllMocks();
       api.fetchAssetInstruments = jest.fn(() => ({
         AssetPairs: [
           {
@@ -232,7 +376,7 @@ describe('referenceStore', () => {
       await assetStore.fetchInstruments();
 
       expect(assetStore.getInstruments()).not.toBeNull();
-      expect(assetStore.getInstruments().length).toBe(1);
+      expect(assetStore.getInstruments()).toHaveLength(1);
       expect(assetStore.getInstruments()[0]).toEqual(
         new InstrumentModel({
           id: 'BTCCHF',
@@ -247,8 +391,11 @@ describe('referenceStore', () => {
   });
 
   describe('map instrument from dto', () => {
-    it('should not mess up base and quoting asset', async () => {
+    beforeEach(() => {
       jest.resetAllMocks();
+    });
+
+    it('should not mess up base and quoting asset', async () => {
       api.fetchAssetInstruments = jest.fn(() => ({
         AssetPairs: [
           {
@@ -276,6 +423,51 @@ describe('referenceStore', () => {
       expect(assetStore.getInstruments()[0].baseAsset.id).not.toBe('CHF');
       expect(assetStore.getInstruments()[0].quoteAsset.id).toBe('CHF');
       expect(assetStore.getInstruments()[0].quoteAsset.id).not.toBe('BTC');
+    });
+  });
+
+  describe('search for an instrument', () => {
+    it('should find instruments', async () => {
+      const rootStore = new RootStore(false);
+      const watchlistApi: any = {
+        fetchAll: jest.fn()
+      };
+      watchlistApi.getWatchlistByName = jest.fn();
+      rootStore.watchlistStore = new WatchlistStore(rootStore, watchlistApi);
+      const refStore = new ReferenceStore(rootStore, api);
+      refStore.addInstrument(
+        new InstrumentModel({
+          id: '1',
+          name: 'BTC/CHF',
+          baseAsset: {
+            id: '1',
+            name: 'BTC',
+            accuracy: 2,
+            category: expect.any(AssetCategoryModel),
+            fullName: 'Bitcoin'
+          },
+          quoteAsset: {
+            id: '2',
+            name: 'CHF',
+            accuracy: 2,
+            category: expect.any(AssetCategoryModel),
+            fullName: 'Swiss Franc'
+          },
+          accuracy: 3,
+          invertedAccuracy: 8,
+          price: 1000,
+          bid: 1,
+          ask: 1,
+          volumeInBase: 0,
+          change24h: 0,
+          volume: 0
+        })
+      );
+
+      expect(refStore.findInstruments('BTC', '')).not.toHaveLength(0);
+      expect(refStore.findInstruments('Bitcoin', '')).not.toHaveLength(0);
+      expect(refStore.findInstruments('Swiss Franc', '')).toHaveLength(0);
+      expect(refStore.findInstruments('Randomness', '')).toHaveLength(0);
     });
   });
 });
