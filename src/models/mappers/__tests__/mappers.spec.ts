@@ -1,5 +1,5 @@
-import {InstrumentModel, OrderModel} from '../index';
-import {filterByInstrumentsAndMapToLimitOrder} from '../mappers';
+import {filterByInstrumentsAndMapToLimitOrder} from '../';
+import {InstrumentModel, OrderModel} from '../../index';
 
 describe('mappers', () => {
   it('should filter by instrument and map to limit order', () => {

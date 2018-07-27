@@ -22,7 +22,6 @@ export interface OrderBasicFormProps {
   priceAccuracy: number;
   baseAssetAccuracy?: any;
   balanceAccuracy: number;
-  onQuantityArrowClick: (operation: string) => void;
   onQuantityChange: (value: string) => void;
   updatePercentageState: (field: string) => void;
 }
@@ -55,7 +54,12 @@ const ConnectedOrder = connect(
       isCurrentSideSell,
       setMarket,
       setSide,
-      resetOrder
+      resetOrder,
+      marketTotalPrice,
+      isEnoughLiquidity,
+      setMarketTotal,
+      resetMarketTotal,
+      handleMarketQuantityArrowClick
     },
     authStore: {isAuth}
   }) => ({
@@ -80,6 +84,7 @@ const ConnectedOrder = connect(
     handlePercentageChange,
     handlePriceArrowClick,
     handleQuantityArrowClick,
+    handleMarketQuantityArrowClick,
     placeOrder,
     quoteAssetId: pathOr('', ['quoteAsset', 'id'], instrument),
     get baseAssetBalance() {
@@ -109,7 +114,11 @@ const ConnectedOrder = connect(
     setMarket,
     setSide,
     isDisclaimerShown,
-    disclaimedAssets
+    disclaimedAssets,
+    setMarketTotal,
+    marketTotalPrice,
+    isEnoughLiquidity,
+    resetMarketTotal
   }),
   withAuth(Order)
 );

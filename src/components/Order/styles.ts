@@ -114,7 +114,7 @@ export const ConfirmButton = styled.button.attrs({
   }
 `;
 
-export const LimitTotal = Flex.extend`
+export const Total = Flex.extend`
   justify-content: space-between;
   border-top: 1px solid rgb(45, 45, 45);
   border-bottom: 1px solid rgb(45, 45, 45);
@@ -122,7 +122,15 @@ export const LimitTotal = Flex.extend`
   margin: ${rem(23)} 0;
 `;
 
-export const LimitTitle = styled.div`
+export const TotalHint = styled.small`
+  display: block;
+  margin-top: ${rem(2)};
+  color: ${colors.coolGrey};
+  font-size: ${rem(12)};
+  text-align: right;
+`;
+
+export const OrderTitle = styled.div`
   font-size: ${rem(16)};
   font-weight: 600;
 `;

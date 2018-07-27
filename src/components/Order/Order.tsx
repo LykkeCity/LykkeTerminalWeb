@@ -64,6 +64,7 @@ interface OrderProps {
   quantityValue: string;
   handlePriceArrowClick: (operation: string) => void;
   handleQuantityArrowClick: (operation: string) => void;
+  handleMarketQuantityArrowClick: (operation: string) => void;
   handlePriceChange: (value: string) => void;
   handleQuantityChange: (value: string) => void;
   setMarket: (value: OrderType) => void;
@@ -73,6 +74,14 @@ interface OrderProps {
   resetOrder: () => void;
   isDisclaimerShown: boolean;
   disclaimedAssets: string[];
+  setMarketTotal: (
+    operationVolume?: any,
+    operationType?: string,
+    debounce?: boolean
+  ) => void;
+  marketTotalPrice: number;
+  isEnoughLiquidity: boolean;
+  resetMarketTotal: () => void;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -92,6 +101,7 @@ class Order extends React.Component<OrderProps, OrderState> {
   handleSideClick = (side: Side) => () => {
     resetPercentage(percentage);
     this.props.setSide(side);
+    this.props.setMarketTotal(null, side);
     this.setState({
       percents: percentage
     });
@@ -238,6 +248,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   reset = () => {
     resetPercentage(percentage);
+    this.props.resetMarketTotal();
     this.props.resetOrder();
     this.setState({
       percents: percentage
@@ -261,7 +272,10 @@ class Order extends React.Component<OrderProps, OrderState> {
       baseAssetId,
       quoteAssetId,
       isDisclaimerShown,
-      disclaimedAssets
+      disclaimedAssets,
+      setMarketTotal,
+      marketTotalPrice,
+      isEnoughLiquidity
     } = this.props;
     const {
       priceValue,
@@ -271,7 +285,8 @@ class Order extends React.Component<OrderProps, OrderState> {
       handlePriceChange,
       handleQuantityChange,
       handlePriceArrowClick,
-      handleQuantityArrowClick
+      handleQuantityArrowClick,
+      handleMarketQuantityArrowClick
     } = this.props;
     const {percents} = this.state;
     const currentPrice =
@@ -370,6 +385,7 @@ class Order extends React.Component<OrderProps, OrderState> {
 
         {currentMarket === MARKET && (
           <OrderMarket
+            amount={formattedNumber(marketTotalPrice || 0, quoteAssetAccuracy)}
             quantityAccuracy={quantityAccuracy}
             action={isCurrentSideSell ? Side.Sell : Side.Buy}
             quantity={quantityValue}
@@ -387,8 +403,10 @@ class Order extends React.Component<OrderProps, OrderState> {
             onResetPercentage={() => resetPercentage(percentage)}
             priceAccuracy={priceAccuracy}
             balanceAccuracy={balanceAccuracy}
-            onQuantityArrowClick={handleQuantityArrowClick}
+            onMarketQuantityArrowClick={handleMarketQuantityArrowClick}
             updatePercentageState={this.updatePercentageState}
+            setMarketTotal={setMarketTotal}
+            isEnoughLiquidity={isEnoughLiquidity}
           />
         )}
         {this.state.isConfirmModalOpen && (

@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 
 import {colors} from '../styled';
 
-import {InstrumentModel, Order, Side} from '../../models';
+import {InstrumentModel, Order, OrderBookDisplayType, Side} from '../../models';
+import {mapToEffectivePrice} from '../../models/mappers/orderMapper';
 import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 
 import {curry, map, prop, toLower} from 'rambda';
@@ -140,30 +141,38 @@ class LevelList extends React.Component<LevelListProps> {
       Math.max(...vals)
     );
 
-    levels.forEach((l, i: number) => {
-      const y = getY(l.side, i, levelHeight);
+    levels.forEach((level, index: number) => {
+      let value;
+
+      const color = fillBySide(level.side);
+      const y = getY(level.side, index, levelHeight);
       const canvasY = getY(
-        l.side,
-        l.side === Side.Sell ? i - 1 : i + 1,
+        level.side,
+        level.side === Side.Sell ? index - 1 : index + 1,
         levelHeight
       );
-      const value = format(
-        l[displayType] * l.price,
-        instrument.quoteAsset.accuracy
-      );
-      const color = fillBySide(l.side);
+
+      if (displayType === toLower(OrderBookDisplayType.Depth)) {
+        const arr = levels.slice(0, index + 1);
+        const volume = arr.reduce((sum, cur) => sum + cur.volume, 0);
+
+        value = mapToEffectivePrice(volume, arr)!;
+      } else {
+        value = level.volume * level.price;
+      }
+      value = format(value, instrument.quoteAsset.accuracy);
 
       drawRect({
         ctx: this.canvasCtx,
         color,
         x: width / 3,
         y,
-        width: normalize(l[displayType]),
+        width: normalize(level[displayType]),
         height: levelHeight,
         opacity: 0.16
       });
 
-      if (l.connectedLimitOrders.length > 0) {
+      if (level.connectedLimitOrders.length > 0) {
         drawVerticalLine({
           ctx: this.canvasCtx,
           x: width / 3 + 1,
@@ -187,7 +196,7 @@ class LevelList extends React.Component<LevelListProps> {
       drawText({
         ctx: this.canvasCtx,
         color,
-        text: format(l.price, instrument.accuracy),
+        text: format(level.price, instrument.accuracy),
         x: LEFT_PADDING,
         y: canvasY - TOP_PADDING,
         font: LEVEL_FONT,
@@ -199,14 +208,14 @@ class LevelList extends React.Component<LevelListProps> {
         width: width / 3 - LEFT_PADDING,
         height: levelHeight,
         type: OrderBookCellType.Price,
-        value: l.price,
-        side: l.side
+        value: level.price,
+        side: level.side
       });
 
       drawText({
         ctx: this.canvasCtx,
         color,
-        text: format(l[displayType], instrument.baseAsset.accuracy),
+        text: format(level[displayType], instrument.baseAsset.accuracy),
         x: width / 3 + LEFT_PADDING,
         y: canvasY - TOP_PADDING,
         font: LEVEL_FONT,
@@ -218,8 +227,8 @@ class LevelList extends React.Component<LevelListProps> {
         width: width / 3,
         height: levelHeight,
         type: getCellType(displayType),
-        value: l.depth,
-        side: l.side
+        value: level.depth,
+        side: level.side
       });
 
       drawText({
