@@ -8,7 +8,7 @@ import {
   onArrowClick,
   onValueChange
 } from '../utils/inputNumber';
-import {getPercentsOf, precisionFloor} from '../utils/math';
+import {bigToFixed, getPercentsOf, precisionFloor} from '../utils/math';
 import {
   getPercentOfValueForLimit,
   isAmountExceedLimitBalance
@@ -84,11 +84,11 @@ class UiOrderStore extends BaseStore {
   setPriceValueWithFixed = (price: number) =>
     (this.priceValue = !price
       ? DEFAULT_INPUT_VALUE
-      : price.toFixed(this.priceAccuracy));
-  setQuantityValueWithFixed = (quantity: number) =>
+      : bigToFixed(price, this.priceAccuracy).toString());
+  setQuantityValueWithFixed = (quantity: number | string) =>
     (this.quantityValue = !quantity
       ? DEFAULT_INPUT_VALUE
-      : quantity.toFixed(this.quantityAccuracy));
+      : bigToFixed(quantity, this.quantityAccuracy).toString());
 
   setPriceValue = (price: string) => (this.priceValue = price);
   setQuantityValue = (quantity: string) => (this.quantityValue = quantity);

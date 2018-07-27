@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/classnames": "^2.2.4",
     "@lykkex/lykke.js": "^0.2.0",
     "@types/applicationinsights-js": "^1.0.5",
     "@types/qrcode.react": "^0.6.3",
@@ -15,6 +16,7 @@
     "applicationinsights-js": "^1.0.18",
     "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
     "big.js": "^5.0.3",
+    "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
     "detect-browser": "^2.5.1",
     "enzyme": "^3.3.0",
