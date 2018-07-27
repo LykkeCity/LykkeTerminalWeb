@@ -204,24 +204,6 @@ class UiStore extends BaseStore {
     return this.instrumentPickerSortingParameters;
   };
 
-  @action
-  setInstrumentPickerSortingParameters = (
-    sortByParam: string,
-    direction: string,
-    state: any
-  ) => {
-    this.instrumentPickerSortingParameters = {
-      sortByParam,
-      direction,
-      state
-    };
-  };
-
-  @action
-  getInstrumentPickerSortingParameters = () => {
-    return this.instrumentPickerSortingParameters;
-  };
-
   private checkAssetToDisclaim = (
     selectedInstrument: InstrumentModel | undefined,
     asset: string
