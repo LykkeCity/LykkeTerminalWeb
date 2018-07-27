@@ -1,5 +1,5 @@
+import {Checkbox} from '@lykkex/react-components';
 import * as React from 'react';
-import CustomCheckbox from '../CustomCheckbox/CustomCheckbox';
 import {StyledConfirmationSetting} from './styles';
 
 interface ConfirmationWindowSettingProps {
@@ -21,10 +21,10 @@ class ConfirmationWindowSetting extends React.Component<
   render() {
     return (
       <StyledConfirmationSetting>
-        <CustomCheckbox
-          change={this.handleConfirm}
-          checked={this.props.confirmations}
-          label={`Warn me on next trades`}
+        <Checkbox
+          onToggle={this.handleConfirm}
+          checked={!this.props.confirmations}
+          label="Do not warn me on next trades"
         />
       </StyledConfirmationSetting>
     );
