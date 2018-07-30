@@ -16,6 +16,6 @@ export const disclaimerMessages = {
   },
   REP: {
     message:
-      'Due to the REP contract migration, trading, deposits and withdrawals will be disabled from July 8th to July 10th, 2018.'
+      'Due to the REP contract migration, trading, deposits and withdrawals are disabled until further notice.'
   }
 };

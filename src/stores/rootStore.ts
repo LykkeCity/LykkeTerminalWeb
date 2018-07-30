@@ -101,31 +101,37 @@ class RootStore {
 
   startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
-    return ws.connect(this.wampUrl, this.wampRealm).then(session => {
-      this.uiStore.setWs(ws);
-      this.depthChartStore.setWs(ws);
-      this.orderBookStore.setWs(ws);
-      this.chartStore.setWs(ws);
-      this.tradeStore.setWs(ws);
-      this.priceStore.setWs(ws);
-      this.referenceStore.getInstruments().forEach((x: any) => {
-        ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-        ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-        ws.subscribe(
-          topics.candle('spot', x.id, PriceType.Trade, 'day'),
-          this.referenceStore.onCandle
+    return ws
+      .connect(
+        this.wampUrl,
+        this.wampRealm
+      )
+      .then(session => {
+        this.uiStore.setWs(ws);
+        this.depthChartStore.setWs(ws);
+        this.orderBookStore.setWs(ws);
+        this.chartStore.setWs(ws);
+        this.tradeStore.setWs(ws);
+        this.priceStore.setWs(ws);
+        this.referenceStore.getInstruments().forEach((x: any) => {
+          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+          ws.subscribe(
+            topics.candle('spot', x.id, PriceType.Trade, 'day'),
+            this.referenceStore.onCandle
+          );
+        });
+        this.uiStore.selectInstrument(
+          this.lastOrDefaultInstrument(defaultInstrument)!.id
         );
       });
-      this.uiStore.selectInstrument(
-        this.lastOrDefaultInstrument(defaultInstrument)!.id
-      );
-    });
   };
 
   start = async () => {
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
+    // tslint:disable:no-console
     await this.referenceStore.fetchRates().catch(console.error);
 
     this.marketStore.init(instruments, assets);

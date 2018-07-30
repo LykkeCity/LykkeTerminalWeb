@@ -52,13 +52,6 @@ describe('<Header>', () => {
       const wrapper = shallow(getTestHeader());
       const icon = wrapper.find('Icon[name="login"]');
       expect(icon).toHaveLength(1);
-
-      it('should call signIn method on click', () => {
-        authStore.signIn = jest.fn();
-
-        icon.parent().simulate('click');
-        expect(authStore.signIn).toHaveBeenCalled();
-      });
     });
   });
 
@@ -80,13 +73,6 @@ describe('<Header>', () => {
       const wrapper = shallow(getTestHeader());
       const icon = wrapper.find('Icon[name="cogwheel"]');
       expect(icon).toHaveLength(1);
-
-      it('should toggle settings on click', () => {
-        settingsStore.toggleSettings = jest.fn();
-
-        icon.parent().simulate('click');
-        expect(settingsStore.toggleSettings).toHaveBeenCalled();
-      });
     });
 
     it('should show username', () => {
@@ -98,13 +84,6 @@ describe('<Header>', () => {
       const wrapper = shallow(getTestHeader());
       const icon = wrapper.find('Icon[name="logout"]');
       expect(icon).toHaveLength(1);
-
-      it('should call signIn method on click', () => {
-        authStore.signOut = jest.fn();
-
-        icon.parent().simulate('click');
-        expect(authStore.signOut).toHaveBeenCalled();
-      });
     });
 
     describe('Readonly mode', () => {

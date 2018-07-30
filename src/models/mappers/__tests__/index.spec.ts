@@ -1,5 +1,12 @@
 import * as orderMapper from '..';
-import {AssetCategoryModel, InstrumentModel, OrderType, Side} from '../..';
+import {
+  AssetCategoryModel,
+  AssetResponseModel,
+  DescriptionResponseModel,
+  InstrumentModel,
+  OrderType,
+  Side
+} from '../..';
 import {ChartStore} from '../../../stores';
 import AssetModel from '../../assetModel';
 import {Order} from '../../order';
@@ -228,7 +235,7 @@ describe('orderMapper', () => {
 
   describe('method mapToAsset', () => {
     it('should return mapped object', () => {
-      const rawObject = {
+      const rawObject = Object.assign(new AssetResponseModel(), {
         Id: '1',
         Name: 'Test',
         DisplayId: '2',
@@ -236,9 +243,16 @@ describe('orderMapper', () => {
         Accuracy: 8,
         IconUrl: '#',
         CanBeBase: true
-      };
+      });
+      const description = Object.assign(new DescriptionResponseModel(), {
+        FullName: 'Test'
+      });
 
-      const mappedAssetModel = orderMapper.mapToAsset(rawObject, []);
+      const mappedAssetModel = orderMapper.mapToAsset(
+        rawObject,
+        [],
+        description
+      );
       expect(mappedAssetModel.accuracy).toEqual(rawObject.Accuracy);
       expect(mappedAssetModel.category).toEqual(AssetCategoryModel.Other());
       expect(mappedAssetModel.iconUrl).toEqual(rawObject.IconUrl);
@@ -247,9 +261,11 @@ describe('orderMapper', () => {
       expect(mappedAssetModel.name).toEqual(rawObject.DisplayId);
 
       const assetCategoryModel = new AssetCategoryModel({id: '3'});
-      const mappedAssetModelWithCetegories = orderMapper.mapToAsset(rawObject, [
-        assetCategoryModel
-      ]);
+      const mappedAssetModelWithCetegories = orderMapper.mapToAsset(
+        rawObject,
+        [assetCategoryModel],
+        description
+      );
       expect(mappedAssetModelWithCetegories.category).toEqual(
         assetCategoryModel
       );
