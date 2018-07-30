@@ -102,6 +102,7 @@ class RootStore {
   }
 
   startPublicMode = async (defaultInstrument: any) => {
+    await this.referenceStore.fetchRates().catch(console.error);
     return this.socketStore
       .connect(this.wampUrl, this.wampRealm, tokenStorage.get() as string)
       .then(() => {
