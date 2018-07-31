@@ -17,4 +17,8 @@ export abstract class AnalyticsService {
     const element = document.getElementById(id);
     window.analytics.trackClick(element, event.title, event.details);
   };
+
+  static handleIdentify = (id: string, traits: any): void => {
+    window.analytics.identify(id, traits);
+  };
 }

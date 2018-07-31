@@ -112,6 +112,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private balanceListStore: BalanceListStore = this.props.rootStore
     .balanceListStore;
   private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
+  private isMosaicChanged: boolean = false;
 
   handleVisibilityChange = () => {
     this.props.rootStore.uiStore.setPageVisibility(
@@ -130,15 +131,16 @@ class Terminal extends React.Component<TerminalProps, {}> {
       }
       this.updateLayoutFromLocalStorage();
       this.bindChartOverlayHandler();
+
+      AnalyticsService.handleIdentify(
+        this.authStore.userInfo.email,
+        AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
+      );
     });
 
     AnalyticsService.handleClicksOnElement(
       AnalyticsIds.MyFundsTab,
       AnalyticsEvents.OpenMyFunds
-    );
-    AnalyticsService.handleClicksOnElement(
-      AnalyticsIds.LogoutButton,
-      AnalyticsEvents.LogOut
     );
   }
 
@@ -200,6 +202,13 @@ class Terminal extends React.Component<TerminalProps, {}> {
       initialValue: args
     });
     layoutStorage.set(JSON.stringify(args));
+
+    if (!this.isMosaicChanged) {
+      this.isMosaicChanged = true;
+      setTimeout(() => (this.isMosaicChanged = false), 1000);
+
+      AnalyticsService.handleClick(AnalyticsEvents.SectionSplitterMoved);
+    }
   };
 
   async start() {

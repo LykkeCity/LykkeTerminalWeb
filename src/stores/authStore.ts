@@ -1,7 +1,7 @@
 import {computed, observable} from 'mobx';
 import {AuthApi} from '../api/index';
 import messages from '../constants/notificationMessages';
-import {keys, KycStatuses, levels} from '../models';
+import {keys, KycStatuses, levels, UserInfoModel} from '../models';
 import {RandomString, StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
@@ -31,6 +31,8 @@ class AuthStore extends BaseStore {
       !this.isKycPassed || !this.rootStore.balanceListStore.hasFundsOnBalance()
     );
   }
+
+  @observable userInfo: UserInfoModel;
 
   @observable private token: string = tokenStorage.get() || '';
   @observable private kycStatus: string = kycStatusStorage.get() || '';
@@ -65,6 +67,8 @@ class AuthStore extends BaseStore {
   fetchUserInfo = async () => {
     const userInfo = await this.api.fetchUserInfo();
     const {KycStatus} = userInfo;
+
+    this.userInfo = new UserInfoModel(userInfo);
     this.kycStatus = KycStatus;
     kycStatusStorage.set(KycStatus);
     this.rootStore.uiStore.setUserInfo(userInfo);

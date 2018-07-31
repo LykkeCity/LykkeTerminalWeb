@@ -5,6 +5,11 @@ import {ChoosableItemProps} from '../../ChoosableItem/ChoosableItem';
 import SessionDurationSelection from '../SessionDurationSelection';
 
 describe('<SessionDurationSelection>', () => {
+  // tslint:disable-next-line
+  window.analytics = {
+    track: jest.fn()
+  };
+
   const closeSessionNotification = jest.fn();
   const handleSetDuration = jest.fn();
   const sessionCurrentDuration = 0.5;

@@ -117,6 +117,8 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState({
       percents: percentage
     });
+
+    AnalyticsService.handleClick(AnalyticsEvents.SideSwitch(side));
   };
 
   handleMarketClick = (market: OrderType) => () => {
@@ -154,7 +156,17 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.closeConfirmModal();
     this.props
       .placeOrder(orderType, body)
-      .then(() => this.disableButton(false))
+      .then(() => {
+        this.disableButton(false);
+
+        AnalyticsService.handleClick(
+          AnalyticsEvents.OrderPlaced(
+            quantity,
+            action,
+            this.props.currentMarket
+          )
+        );
+      })
       .catch(() => this.disableButton(false));
   };
 
