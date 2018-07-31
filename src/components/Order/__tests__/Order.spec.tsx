@@ -36,6 +36,7 @@ describe('<Order>', () => {
   let quantityValue: string;
   let handlePriceArrowClick: (operation: string) => void;
   let handleQuantityArrowClick: (operation: string) => void;
+  let handleMarketQuantityArrowClick: (operation: string) => void;
   let handlePriceChange: (value: string) => void;
   let handleQuantityChange: (value: string) => void;
   let setMarket: (value: OrderType) => void;
@@ -45,6 +46,14 @@ describe('<Order>', () => {
   let resetOrder: () => void;
   let isDisclaimerShown: boolean;
   let disclaimedAssets: string[];
+  let setMarketTotal: (
+    operationVolume?: any,
+    operationType?: string,
+    debounce?: boolean
+  ) => void;
+  let marketTotalPrice: number;
+  let isEnoughLiquidity: boolean;
+  let resetMarketTotal: () => void;
 
   const getTestOrder = () => (
     <Order
@@ -67,6 +76,7 @@ describe('<Order>', () => {
       quantityValue={quantityValue}
       handlePriceArrowClick={handlePriceArrowClick}
       handleQuantityArrowClick={handleQuantityArrowClick}
+      handleMarketQuantityArrowClick={handleMarketQuantityArrowClick}
       handlePriceChange={handlePriceChange}
       handleQuantityChange={handleQuantityChange}
       setMarket={setMarket}
@@ -76,6 +86,10 @@ describe('<Order>', () => {
       resetOrder={resetOrder}
       isDisclaimerShown={isDisclaimerShown}
       disclaimedAssets={disclaimedAssets}
+      setMarketTotal={setMarketTotal}
+      marketTotalPrice={marketTotalPrice}
+      isEnoughLiquidity={isEnoughLiquidity}
+      resetMarketTotal={resetMarketTotal}
     />
   );
 
@@ -104,6 +118,7 @@ describe('<Order>', () => {
     quantityValue = '3';
     handlePriceArrowClick = jest.fn();
     handleQuantityArrowClick = jest.fn();
+    handleMarketQuantityArrowClick = jest.fn();
     handlePriceChange = jest.fn();
     handleQuantityChange = jest.fn();
     setMarket = jest.fn();
@@ -113,6 +128,10 @@ describe('<Order>', () => {
     resetOrder = jest.fn();
     isDisclaimerShown = false;
     disclaimedAssets = [];
+    setMarketTotal = jest.fn();
+    marketTotalPrice = 1000;
+    isEnoughLiquidity = true;
+    resetMarketTotal = jest.fn();
   });
 
   describe('method render', () => {
