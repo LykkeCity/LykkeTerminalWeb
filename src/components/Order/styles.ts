@@ -31,7 +31,7 @@ export const ActionButton = styled.div`
   align-items: center;
   width: 50%;
   ${(p: any) =>
-    p.side === Side.Sell
+    p.side === Side.Buy
       ? css`
           padding-right: 4px;
         `
