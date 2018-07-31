@@ -27,3 +27,4 @@ export const Disclaimer: React.SFC<DisclaimerProps> = ({asset}) => {
     </DisclaimerNotification>
   );
 };
+Disclaimer.displayName = 'Disclaimer';

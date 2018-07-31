@@ -339,14 +339,14 @@ class Order extends React.Component<OrderProps, OrderState> {
 
         <Actions>
           <ActionChoiceButton
-            title={Side.Sell}
-            click={this.handleSideClick(Side.Sell)}
-            isActive={isCurrentSideSell}
-          />
-          <ActionChoiceButton
             title={Side.Buy}
             click={this.handleSideClick(Side.Buy)}
             isActive={!isCurrentSideSell}
+          />
+          <ActionChoiceButton
+            title={Side.Sell}
+            click={this.handleSideClick(Side.Sell)}
+            isActive={isCurrentSideSell}
           />
         </Actions>
 
