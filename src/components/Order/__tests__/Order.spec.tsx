@@ -4,6 +4,9 @@ import {InstrumentModel, OrderType, Side} from '../../../models';
 import Order from '../Order';
 
 describe('<Order>', () => {
+  window.analytics = {
+    trackClick: jest.fn()
+  };
   let ask: number;
   let bid: number;
   let accuracy: {
@@ -147,6 +150,7 @@ describe('<Order>', () => {
       const sellButtonProps = buttons.at(1).props() as any;
       expect(buyButtonProps.title).toBe('Buy');
       expect(sellButtonProps.title).toBe('Sell');
+      expect(window.analytics.trackClick).toHaveBeenCalled();
     });
   });
 });

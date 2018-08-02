@@ -5,7 +5,6 @@ import {ChoosableItemProps} from '../../ChoosableItem/ChoosableItem';
 import SessionDurationSelection from '../SessionDurationSelection';
 
 describe('<SessionDurationSelection>', () => {
-  // tslint:disable-next-line
   window.analytics = {
     track: jest.fn()
   };
@@ -55,5 +54,6 @@ describe('<SessionDurationSelection>', () => {
     const options = wrapper.find('ChoosableItem');
     options.last().simulate('click');
     expect(handleSetDuration).toHaveBeenCalledWith(24);
+    expect(window.analytics.track).toHaveBeenCalled();
   });
 });
