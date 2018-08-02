@@ -239,7 +239,8 @@ export const FakeOrderBookStage = styled.div.attrs({
   style: (props: any) => ({
     height: props.height,
     width: props.width,
-    marginLeft: rem(props.left)
+    marginLeft: rem(props.left),
+    marginBottom: rem(-props.bottom)
   })
 })`
   position: absolute;

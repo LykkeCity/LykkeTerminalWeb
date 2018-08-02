@@ -97,5 +97,10 @@ describe('string utils', () => {
       const s = '0.123';
       expect(getTrailingZeroOppositePosition(s)).toBe(s.length);
     });
+
+    it('should return position is equal to comma or dot position in case if only zeroes are presented', () => {
+      const s = '0.00';
+      expect(getTrailingZeroOppositePosition(s)).toBe(1);
+    });
   });
 });

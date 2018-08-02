@@ -62,5 +62,9 @@ export const getTrailingZeroOppositePosition = (s: string) => {
     .split('')
     .reverse()
     .findIndex((smb: string) => smb !== '0');
+  const symbolBeforeZero = s[s.length - reversePosition - 1];
+  if (isNaN(+symbolBeforeZero)) {
+    return s.length - reversePosition - 1;
+  }
   return s.length - reversePosition;
 };

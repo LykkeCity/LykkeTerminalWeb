@@ -70,4 +70,4 @@ export const colorizedSymbol = (volumeColor: string) => (
   trailingZeroPosition: number,
   currentSymbolPosition: number
 ) =>
-  currentSymbolPosition < trailingZeroPosition ? volumeColor : colors.zeroGrey;
+  currentSymbolPosition < trailingZeroPosition ? volumeColor : colors.lightGrey;

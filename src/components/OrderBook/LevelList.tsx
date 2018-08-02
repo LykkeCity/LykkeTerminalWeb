@@ -40,6 +40,7 @@ const LEVEL_FONT = `12.25px Proxima Nova`;
 const UPDATE_ANIMATION_INTERVAL = 250;
 const CELLS_NUMBER = 3;
 const SCALE_BAR = 3;
+const MARGIN_BOTTOM = 3;
 
 export interface LevelListProps {
   levels: Order[];
@@ -217,7 +218,7 @@ class LevelList extends React.Component<LevelListProps> {
 
     this.levelsCells.push({
       left: BAR_WIDTH,
-      top: y,
+      top: y + MARGIN_BOTTOM,
       width: (width - BAR_WIDTH) / CELLS_NUMBER,
       height: height / LEVELS_COUNT,
       type: OrderBookCellType.Price,
@@ -254,7 +255,7 @@ class LevelList extends React.Component<LevelListProps> {
     const {width, height} = this.props;
     this.levelsCells.push({
       left: (width - BAR_WIDTH) / CELLS_NUMBER + BAR_WIDTH,
-      top: y,
+      top: y + MARGIN_BOTTOM,
       width: (width - BAR_WIDTH) / CELLS_NUMBER,
       height: height / LEVELS_COUNT,
       type: getCellType(displayType),
@@ -268,7 +269,7 @@ class LevelList extends React.Component<LevelListProps> {
       ctx: this.canvasCtx,
       color: colors.white,
       text: value,
-      x: this.props.width + LEFT_PADDING,
+      x: this.props.width,
       y: y - TOP_PADDING,
       font: LEVEL_FONT,
       align: 'end'
@@ -291,6 +292,7 @@ class LevelList extends React.Component<LevelListProps> {
       let volumeOpacity = DEFAULT_OPACITY;
       const isChangingLevel =
         existedLevel && existedLevel[displayType] !== levelOrder[displayType];
+      let existedAnimatingLevel: IAnimatingLevels | undefined;
 
       if (isChangingLevel) {
         this.animatingLevels = findAndDeleteDuplicatedAnimatedLevel(
@@ -310,7 +312,7 @@ class LevelList extends React.Component<LevelListProps> {
           );
         }
 
-        const existedAnimatingLevel = this.animatingLevels.find(
+        existedAnimatingLevel = this.animatingLevels.find(
           animatingLevel => animatingLevel.price === levelOrder.price
         );
 
@@ -366,7 +368,10 @@ class LevelList extends React.Component<LevelListProps> {
         const getSymbolColor = colorizedSymbol(volumeColor);
 
         symbols.forEach((symbol: string, i: number) => {
-          const symbolColor = getSymbolColor(trailingZeroPosition, i);
+          const symbolColor =
+            existedAnimatingLevel && !existedAnimatingLevel.isAnimated
+              ? volumeColor
+              : getSymbolColor(trailingZeroPosition, i);
           const x = levelsWidth / CELLS_NUMBER + BAR_WIDTH + drownSymbolsWidth;
 
           this.drawVolume(symbolColor, symbol, volumeOpacity, canvasY, x);
@@ -463,9 +468,15 @@ class LevelList extends React.Component<LevelListProps> {
             onMouseDown={this.handleMouseDownOnFakeStage}
             ref={this.setFakeStageRef}
             left={BAR_WIDTH + LEFT_PADDING}
+            bottom={MARGIN_BOTTOM}
           />
         )}
-        <canvas width={width} height={height} ref={this.setCanvasRef} />
+        <canvas
+          width={width}
+          height={height}
+          ref={this.setCanvasRef}
+          style={{marginBottom: `-${MARGIN_BOTTOM}px`}}
+        />
       </React.Fragment>
     );
   }

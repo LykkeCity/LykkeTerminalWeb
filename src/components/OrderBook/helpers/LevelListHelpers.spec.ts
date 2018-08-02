@@ -60,7 +60,7 @@ describe('level list helpers', () => {
     const currentSymbolPosition = 6;
     const trailingZeroPosition = 5;
     expect(getSymbolColor(trailingZeroPosition, currentSymbolPosition)).toBe(
-      colors.zeroGrey
+      colors.lightGrey
     );
   });
 
