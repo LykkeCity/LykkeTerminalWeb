@@ -1,6 +1,6 @@
 import {mount} from 'enzyme';
 import React from 'react';
-import {InstrumentModel, OrderType, Side} from '../../../models';
+import {AssetModel, InstrumentModel, OrderType, Side} from '../../../models';
 import Order from '../Order';
 
 describe('<Order>', () => {
@@ -57,6 +57,14 @@ describe('<Order>', () => {
   let marketTotalPrice: number;
   let isEnoughLiquidity: boolean;
   let resetMarketTotal: () => void;
+  let baseAsset: AssetModel;
+  let convert: (
+    amount: number,
+    assetFrom: any,
+    assetTo: any,
+    getInstrumentById: (id: string) => InstrumentModel | undefined
+  ) => number;
+  let getInstrumentById: (id: string) => InstrumentModel | undefined;
 
   const getTestOrder = () => (
     <Order
@@ -93,6 +101,9 @@ describe('<Order>', () => {
       marketTotalPrice={marketTotalPrice}
       isEnoughLiquidity={isEnoughLiquidity}
       resetMarketTotal={resetMarketTotal}
+      baseAsset={baseAsset}
+      convert={convert}
+      getInstrumentById={getInstrumentById}
     />
   );
 
@@ -135,6 +146,9 @@ describe('<Order>', () => {
     marketTotalPrice = 1000;
     isEnoughLiquidity = true;
     resetMarketTotal = jest.fn();
+    baseAsset = new AssetModel({});
+    convert = jest.fn();
+    getInstrumentById = jest.fn();
   });
 
   describe('method render', () => {

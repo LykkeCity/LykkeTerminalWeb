@@ -3,7 +3,7 @@ import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import AnalyticsIds from '../../constants/analyticsIds';
 import {Percentage} from '../../constants/ordersPercentage';
 import {keys} from '../../models';
-import {OrderInputs, OrderType} from '../../models';
+import {AssetModel, OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Side from '../../models/side';
 import {AnalyticsService} from '../../services/analyticsService';
@@ -86,6 +86,14 @@ interface OrderProps {
   marketTotalPrice: number;
   isEnoughLiquidity: boolean;
   resetMarketTotal: () => void;
+  baseAsset: AssetModel;
+  convert: (
+    amount: number,
+    assetFrom: any,
+    assetTo: any,
+    getInstrumentById: (id: string) => InstrumentModel | undefined
+  ) => number;
+  getInstrumentById: (id: string) => InstrumentModel | undefined;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -142,29 +150,43 @@ class Order extends React.Component<OrderProps, OrderState> {
     price: string
   ) => {
     this.disableButton(true);
-    const orderType = this.props.currentMarket;
+
+    const {
+      baseAsset,
+      convert,
+      getInstrumentById,
+      currentMarket,
+      currency,
+      placeOrder,
+      quoteAssetId
+    } = this.props;
+    const orderType = currentMarket;
     const body: any = {
       AssetId: baseAssetId,
-      AssetPairId: this.props.currency,
+      AssetPairId: currency,
       OrderAction: action,
       Volume: parseFloat(quantity)
     };
 
-    if (this.props.currentMarket === LIMIT) {
+    if (currentMarket === LIMIT) {
       body.Price = parseFloat(price);
     }
     this.closeConfirmModal();
-    this.props
-      .placeOrder(orderType, body)
-      .then(() => {
+    placeOrder(orderType, body)
+      .then((a: any) => {
         this.disableButton(false);
 
+        const amountInBase = formattedNumber(
+          convert(
+            parseFloat(quantity) * parseFloat(price),
+            quoteAssetId,
+            baseAsset.id,
+            getInstrumentById
+          ),
+          baseAsset.accuracy
+        );
         AnalyticsService.handleClick(
-          AnalyticsEvents.OrderPlaced(
-            quantity,
-            action,
-            this.props.currentMarket
-          )
+          AnalyticsEvents.OrderPlaced(amountInBase, action, currentMarket)
         );
       })
       .catch(() => this.disableButton(false));
