@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {fonts} from '../styled';
 
 export const StyledUserName = styled.div`
-  max-width: 300px;
+  max-width: 30vw;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

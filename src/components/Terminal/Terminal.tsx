@@ -106,6 +106,15 @@ class Terminal extends React.Component<TerminalProps, {}> {
     }
   };
 
+  mobileState = {
+    initialValue: {
+      direction: 'column' as MosaicDirection,
+      first: MobileTop,
+      second: OrderListWidget,
+      splitPercentage: 70
+    }
+  };
+
   private authStore: AuthStore = this.props.rootStore.authStore;
   private balanceListStore: BalanceListStore = this.props.rootStore
     .balanceListStore;

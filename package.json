@@ -7,11 +7,19 @@
     "@lykkex/react-components": "^0.8.6",
     "@types/applicationinsights-js": "^1.0.5",
     "@types/classnames": "^2.2.4",
+<<<<<<< HEAD
     "@types/jquery": "^3.3.4",
     "@types/qrcode.react": "^0.6.3",
     "@types/react-custom-scrollbars": "^4.0.1",
     "@types/react-measure": "^2.0.2",
     "@types/react-router-dom": "^4.3.0",
+=======
+    "@types/qrcode.react": "^0.6.3",
+    "@types/react-custom-scrollbars": "^4.0.1",
+    "@types/react-measure": "^2.0.2",
+    "@types/react-responsive": "^3.0.1",
+    "@types/react-router-dom": "^4.2.3",
+>>>>>>> Naive mobile version of terminal
     "@types/react-select": "^1.1.0",
     "@types/react-tooltip": "^3.3.4",
     "@types/react-transition-group": "^2.0.11",
@@ -43,6 +51,7 @@
     "react-konva": "^1.7.2",
     "react-measure": "^2.0.2",
     "react-mosaic-component": "^1.0.3",
+    "react-responsive": "^5.0.0",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "^2.16.0",
     "react-tooltip": "^3.4.0",
