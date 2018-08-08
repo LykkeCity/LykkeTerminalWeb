@@ -1,4 +1,5 @@
-import {ISubscription} from 'autobahn';
+import {pathOr} from 'rambda';
+import {IWampSubscriptionItem} from 'socket-connection-wamp';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {BaseStore, RootStore} from './index';
 
@@ -21,7 +22,7 @@ class ChartStore extends BaseStore {
     supports_time: true
   };
 
-  private subscriptions: Set<ISubscription> = new Set();
+  private subscriptions: Set<IWampSubscriptionItem> = new Set();
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
@@ -33,14 +34,16 @@ class ChartStore extends BaseStore {
 
   loadSettings = () => this.api.load();
 
-  subscribeToCandlesWithResolutions = (s: ISubscription) =>
+  subscribeToCandlesWithResolutions = (s: IWampSubscriptionItem) =>
     this.subscriptions.add(s);
 
   unsubscribeFromCandle = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(s => {
-      // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe(s);
-    });
+    const subscriptions = Array.from(this.subscriptions).map(subscription =>
+      this.rootStore.socketStore.unsubscribe(
+        subscription.topic,
+        subscription.id
+      )
+    );
     await Promise.all(subscriptions);
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();

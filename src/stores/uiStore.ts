@@ -74,7 +74,7 @@ class UiStore extends BaseStore {
             return;
           }
 
-          subscribe(this.getWs());
+          subscribe();
 
           const {
             setQuantityAccuracy,

@@ -75,8 +75,8 @@ class BalanceListStore extends BaseStore {
     );
   };
 
-  subscribe = (session: any) => {
-    session.subscribe(topics.balances, this.onUpdateBalance);
+  subscribe = () => {
+    this.rootStore.socketStore.subscribe(topics.balances, this.onUpdateBalance);
   };
 
   onUpdateBalance = async (args: any) => {
