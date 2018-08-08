@@ -1,6 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
 import {AssetBalanceModel} from '../../../../models';
+import {ThemeProvider, themes} from '../../../styled';
 import WalletBalanceNumber from '../WalletBalanceNumber';
 
 describe('<WalletBalanceList>', () => {
@@ -16,12 +17,14 @@ describe('<WalletBalanceList>', () => {
   });
 
   const getTestWalletBalanceNumber = () => (
-    <WalletBalanceNumber
-      availableBalance={assetBalance.available}
-      totalBalance={assetBalance.balance}
-      accuracy={assetBalance.accuracy}
-      onClick={onClick}
-    />
+    <ThemeProvider theme={themes.dark}>
+      <WalletBalanceNumber
+        availableBalance={assetBalance.available}
+        totalBalance={assetBalance.balance}
+        accuracy={assetBalance.accuracy}
+        onClick={onClick}
+      />
+    </ThemeProvider>
   );
 
   describe('method render', () => {

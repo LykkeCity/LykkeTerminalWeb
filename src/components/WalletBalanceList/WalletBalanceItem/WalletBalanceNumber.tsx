@@ -1,15 +1,15 @@
 import {rem} from 'polished';
 import * as React from 'react';
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
-import styled, {colors} from '../../styled';
+import styled from '../../styled';
 
 const StyledNumber = styled.div`
-  color: ${(p: any) => p.color};
+  color: ${(props: any) => props.color || props.theme.colors.balanceNumberText};
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   span {
-    color: #f5f6f7;
+    color: ${props => props.theme.colors.defaultText};
   }
 
   &.clickable {
@@ -20,7 +20,7 @@ StyledNumber.displayName = 'StyledNumber';
 
 const StyledTotalHint = styled.div`
   font-size: ${rem(12)};
-  color: ${colors.lightGrey};
+  color: ${props => props.theme.colors.balanceTotalHintText};
   padding-top: 4px;
 `;
 StyledTotalHint.displayName = 'StyledTotalHint';
@@ -37,7 +37,7 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
   availableBalance,
   totalBalance,
   accuracy,
-  color = '#ffffff',
+  color,
   onClick,
   children
 }) => {

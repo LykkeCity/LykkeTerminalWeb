@@ -6,6 +6,7 @@ import chart, {
   POPUP_TEXT_PADDING
 } from '../../../constants/chartConstants';
 import {DepthArea, DepthText, Order} from '../../../models/index';
+import {Dictionary} from '../../../types';
 import {
   drawArea,
   drawCircle,
@@ -13,9 +14,8 @@ import {
   drawText,
   drawVerticalLine
 } from '../../../utils/canvasUtils';
-import {colors} from '../../styled';
 
-export const getAreaColor = (area: DepthArea) =>
+export const getAreaColor = (area: DepthArea, colors: Dictionary<string>) =>
   area === DepthArea.Bid ? colors.buy : colors.sell;
 
 export interface IPoint {

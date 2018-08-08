@@ -4,6 +4,7 @@ import React from 'react';
 import {AssetModel} from '../../../models';
 import {ReferenceStore, RootStore} from '../../../stores';
 import {CustomDropdownProps} from '../../CustomDropdown/CustomDropdown';
+import {ThemeProvider, themes} from '../../styled';
 import BaseAssetSelection from '../BaseAssetSelection';
 
 describe('<BaseAssetSelection>', () => {
@@ -34,7 +35,11 @@ describe('<BaseAssetSelection>', () => {
   });
 
   const getTestBaseAssetSelection = () => {
-    return <BaseAssetSelection referenceStore={referenceStore} />;
+    return (
+      <ThemeProvider theme={themes.dark}>
+        <BaseAssetSelection referenceStore={referenceStore} />
+      </ThemeProvider>
+    );
   };
 
   it('should render content', () => {

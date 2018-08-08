@@ -1,6 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
 import {AssetModel, InstrumentModel, OrderType, Side} from '../../../models';
+import {ThemeProvider, themes} from '../../styled';
 import Order from '../Order';
 
 describe('<Order>', () => {
@@ -64,44 +65,46 @@ describe('<Order>', () => {
   let getInstrumentById: (id: string) => InstrumentModel | undefined;
 
   const getTestOrder = () => (
-    <Order
-      ask={ask}
-      bid={bid}
-      accuracy={accuracy}
-      currency={currency}
-      placeOrder={placeOrder}
-      baseAssetName={baseAssetName}
-      quoteAssetName={quoteAssetName}
-      baseAssetBalance={baseAssetBalance}
-      quoteAssetBalance={quoteAssetBalance}
-      handlePercentageChange={handlePercentageChange}
-      baseAssetId={baseAssetId}
-      quoteAssetId={quoteAssetId}
-      isLimitInvalid={isLimitInvalid}
-      isMarketInvalid={isMarketInvalid}
-      instrument={instrument}
-      priceValue={priceValue}
-      quantityValue={quantityValue}
-      handlePriceArrowClick={handlePriceArrowClick}
-      handleQuantityArrowClick={handleQuantityArrowClick}
-      handleMarketQuantityArrowClick={handleMarketQuantityArrowClick}
-      handlePriceChange={handlePriceChange}
-      handleQuantityChange={handleQuantityChange}
-      setMarket={setMarket}
-      setSide={setSide}
-      currentMarket={currentMarket}
-      isCurrentSideSell={isCurrentSideSell}
-      resetOrder={resetOrder}
-      isDisclaimerShown={isDisclaimerShown}
-      disclaimedAssets={disclaimedAssets}
-      setMarketTotal={setMarketTotal}
-      marketTotalPrice={marketTotalPrice}
-      isEnoughLiquidity={isEnoughLiquidity}
-      resetMarketTotal={resetMarketTotal}
-      baseAsset={baseAsset}
-      convert={convert}
-      getInstrumentById={getInstrumentById}
-    />
+    <ThemeProvider theme={themes.dark}>
+      <Order
+        ask={ask}
+        bid={bid}
+        accuracy={accuracy}
+        currency={currency}
+        placeOrder={placeOrder}
+        baseAssetName={baseAssetName}
+        quoteAssetName={quoteAssetName}
+        baseAssetBalance={baseAssetBalance}
+        quoteAssetBalance={quoteAssetBalance}
+        handlePercentageChange={handlePercentageChange}
+        baseAssetId={baseAssetId}
+        quoteAssetId={quoteAssetId}
+        isLimitInvalid={isLimitInvalid}
+        isMarketInvalid={isMarketInvalid}
+        instrument={instrument}
+        priceValue={priceValue}
+        quantityValue={quantityValue}
+        handlePriceArrowClick={handlePriceArrowClick}
+        handleQuantityArrowClick={handleQuantityArrowClick}
+        handleMarketQuantityArrowClick={handleMarketQuantityArrowClick}
+        handlePriceChange={handlePriceChange}
+        handleQuantityChange={handleQuantityChange}
+        setMarket={setMarket}
+        setSide={setSide}
+        currentMarket={currentMarket}
+        isCurrentSideSell={isCurrentSideSell}
+        resetOrder={resetOrder}
+        isDisclaimerShown={isDisclaimerShown}
+        disclaimedAssets={disclaimedAssets}
+        setMarketTotal={setMarketTotal}
+        marketTotalPrice={marketTotalPrice}
+        isEnoughLiquidity={isEnoughLiquidity}
+        resetMarketTotal={resetMarketTotal}
+        baseAsset={baseAsset}
+        convert={convert}
+        getInstrumentById={getInstrumentById}
+      />
+    </ThemeProvider>
   );
 
   beforeEach(() => {

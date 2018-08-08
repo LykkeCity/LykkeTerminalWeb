@@ -3,8 +3,8 @@ import styled from 'styled-components';
 export const StyledInput = styled.input`
   background-color: transparent;
   border-radius: 4px;
-  border: solid 1px #56595e;
-  color: #f5f6f7;
+  border: solid 1px ${props => props.theme.colors.inputBorder};
+  color: ${props => props.theme.colors.inputText};
   padding-left: 8px;
   padding-right: 20px;
   height: 32px;
@@ -30,7 +30,7 @@ export const StyledInputNumberComponent = styled.div`
     right: 5px;
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
-    border-bottom: 6px solid #f5f6f7;
+    border-bottom: 6px solid ${props => props.theme.colors.inputText};
     z-index: 5;
 
     &:hover {

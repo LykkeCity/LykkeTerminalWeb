@@ -10,24 +10,11 @@ export const FooterWrapper = styled.footer`
   display: flex;
   align-items: center;
   padding: 0 ${rem(11)};
-  border-bottom: solid 1px #292929;
-  background: #333;
+  border-bottom: solid 1px ${props => props.theme.colors.footerBorder};
+  background: ${props => props.theme.colors.footerBackground};
 `;
 
 export const FooterItem = styled(Box)`
   font-size: ${rem(fonts.normal)};
   position: relative;
-
-  > span,
-  a {
-    padding: ${rem(6)} ${rem(10)} ${rem(9)};
-    margin: 0 ${rem(5)};
-    border-radius: 4px;
-    border: 0;
-    display: block;
-    cursor: pointer;
-    &.active {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
 `;

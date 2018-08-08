@@ -10,7 +10,7 @@ import chart, {
 import {DepthArea, DepthText, Order} from '../../../models';
 import {defineCanvasScale} from '../../../utils/canvasUtils';
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
-import {colors} from '../../styled';
+import {ThemeObject} from '../../styled';
 import {
   drawChartElements,
   generatePoints,
@@ -46,6 +46,7 @@ interface ChartProps {
   midXAsks: number;
   midXBids: number;
   askWidth: number;
+  theme: ThemeObject;
 }
 
 class Chart extends React.Component<ChartProps> {
@@ -202,7 +203,8 @@ class Chart extends React.Component<ChartProps> {
       quoteAssetName,
       baseAssetName,
       midXBids,
-      height
+      height,
+      theme
     } = this.props;
 
     this.drawTools.drawPointer(x, y);
@@ -288,7 +290,7 @@ class Chart extends React.Component<ChartProps> {
       drawText(
         priceMeasure,
         priceValue,
-        colors.white,
+        theme.colors.text,
         PRICE_FONT_SIZE,
         PRICE_PADDING
       );
@@ -297,7 +299,7 @@ class Chart extends React.Component<ChartProps> {
       drawText(
         depthLabelMeasure,
         depthLabel,
-        getAreaColor(this.currentArea),
+        getAreaColor(this.currentArea, theme.colors),
         FONT_SIZE,
         DEPTH_PADDING
       );
@@ -306,7 +308,7 @@ class Chart extends React.Component<ChartProps> {
       drawText(
         depthMeasure,
         depthValue,
-        colors.white,
+        theme.colors.text,
         FONT_SIZE,
         DEPTH_PADDING,
         depthLabelMeasure + VALUE_PADDING
@@ -316,7 +318,7 @@ class Chart extends React.Component<ChartProps> {
       drawText(
         costLabelMeasure,
         DepthText.Cost,
-        getAreaColor(this.currentArea),
+        getAreaColor(this.currentArea, theme.colors),
         FONT_SIZE,
         COST_PADDING
       );
@@ -325,7 +327,7 @@ class Chart extends React.Component<ChartProps> {
       drawText(
         costMeasure,
         costValue,
-        colors.white,
+        theme.colors.text,
         FONT_SIZE,
         COST_PADDING,
         costLabelMeasure + VALUE_PADDING

@@ -1,5 +1,6 @@
 import {mount} from 'enzyme';
 import React from 'react';
+import {ThemeProvider, themes} from '../../styled';
 import Wallet from '../Wallet';
 
 jest.mock('../../WalletBalanceList', () => {
@@ -10,7 +11,11 @@ jest.mock('../../WalletBalanceList', () => {
 
 describe('<Wallet>', () => {
   const getTestWallet = () => {
-    return <Wallet />;
+    return (
+      <ThemeProvider theme={themes.dark}>
+        <Wallet />
+      </ThemeProvider>
+    );
   };
 
   it('should render content', () => {

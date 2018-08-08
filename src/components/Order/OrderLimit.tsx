@@ -77,7 +77,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
 
   return (
     <Form>
-      <InputControl style={{borderBottom: '1px solid #333'}}>
+      <InputControl>
         <Flex justify={'space-between'} style={{marginBottom: '7px'}}>
           <OrderTitle>Price ({quoteAssetName})</OrderTitle>
         </Flex>

@@ -4,7 +4,7 @@ import chart, {
   POPUP_ALIGN
 } from '../../../constants/chartConstants';
 import {DepthArea, DepthText, Order, Side} from '../../../models';
-import {colors} from '../../styled';
+import {themes} from '../../styled';
 import {
   drawChartElements,
   drawMeshElements,
@@ -278,7 +278,7 @@ describe('chart helpers', () => {
         const area = DepthArea.Ask;
         const calculateStepLength = (index: number) => index + 1;
         const calculateStepHeight = (depth: number) => depth + 1;
-        const color = colors.white;
+        const color = themes.dark.colors.text;
         const additionalPoints = [{x: 0, y: 0}];
 
         const points = generatePoints(
@@ -378,11 +378,11 @@ describe('chart helpers', () => {
         it('should fill context with drawLevel options', () => {
           drawingChartTools.drawLevel(
             [{x: 1, y: 1}, {x: 2, y: 2}],
-            colors.green
+            themes.dark.colors.levelListBuy
           );
           expect(Math.round(context.globalAlpha * 100) / 100).toBe(1);
           expect(context.lineWidth).toBe(chart.strokeWidth);
-          expect(context.fillStyle).toBe(colors.green);
+          expect(context.fillStyle).toBe(themes.dark.colors.levelListBuy);
         });
 
         it('should fill context with drawPointerLine', () => {
@@ -410,7 +410,7 @@ describe('chart helpers', () => {
           drawingChartTools.drawText(1, 2, DepthArea.Ask, 1, 1, 1)(
             1,
             'text',
-            colors.green,
+            themes.dark.colors.levelListBuy,
             fontSize,
             10
           );
@@ -418,7 +418,7 @@ describe('chart helpers', () => {
           expect(context.font).toBe(
             `${fontSize}px ${chart.modal.label.fontFamily}`
           );
-          expect(context.fillStyle).toBe(colors.green);
+          expect(context.fillStyle).toBe(themes.dark.colors.levelListBuy);
           expect(context.textAlign).toBe(POPUP_ALIGN);
         });
       });

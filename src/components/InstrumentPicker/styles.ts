@@ -1,11 +1,11 @@
 import {rem} from 'polished';
-import styled, {colors} from '../styled';
+import styled from '../styled';
 import {Table, TruncatedText} from '../Table';
 // tslint:disable-next-line:no-var-requires
 const {Flex} = require('grid-styled');
 
 export const SearchWrap = styled(Flex)`
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+  border-bottom: solid 1px ${props => props.theme.colors.tabsHeaderBorder};
 `;
 
 export const ShortcutSelectionWrapper = styled.div`
@@ -21,21 +21,21 @@ export const ShortcutSelection = styled.div`
   position: relative;
   width: 100%;
   margin-left: ${rem(8)};
-  color: ${colors.coolGrey};
+  color: ${props => props.theme.colors.inactiveItemText};
 
   &:after {
     content: '';
     margin: 0 10px;
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;
-    border-top: 4px solid ${colors.coolGrey};
+    border-top: 4px solid ${props => props.theme.colors.tableHeaderSortIcon};
   }
 
   &.active {
-    color: ${colors.white};
+    color: ${props => props.theme.colors.activeItemText};
 
     > * {
-      box-shadow: inset 0 -3px 0 0 ${colors.blue};
+      box-shadow: inset 0 -3px 0 0 ${props => props.theme.colors.activeItemBorder};
     }
   }
 `;
@@ -60,12 +60,12 @@ export const OtherShortcuts = styled.div`
 export const Shortcut = styled(OtherShortcuts)`
   min-width: 0;
   margin: 0 ${rem(8)};
-  color: ${colors.coolGrey};
+  color: ${props => props.theme.colors.inactiveItemText};
   justify-content: center;
 
   &.active > * {
-    color: ${colors.white};
-    box-shadow: inset 0 -3px 0 0 ${colors.blue};
+    color: ${props => props.theme.colors.activeItemText};
+    box-shadow: inset 0 -3px 0 0 ${props => props.theme.colors.activeItemBorder};
   }
   &:first-child {
     margin: 0 ${rem(8)} 0 0;
@@ -84,13 +84,13 @@ export const InstrumentNumber = styled.div.attrs({})`
   color: ${(p: any) => p.color};
 
   &.up {
-    color: ${colors.green};
+    color: ${props => props.theme.colors.changePositivePerformanceText};
   }
   &.zero {
-    color: ${colors.lightGrey};
+    color: ${props => props.theme.colors.zeroNumberText};
   }
   &.down {
-    color: ${colors.red};
+    color: ${props => props.theme.colors.changeNegativePerformanceText};
   }
   &.up,
   &.down {
@@ -102,10 +102,12 @@ export const InstrumentNumber = styled.div.attrs({})`
     }
   }
   &.up:after {
-    border-bottom: 7px solid ${colors.green};
+    border-bottom: 7px solid
+      ${props => props.theme.colors.changePositivePerformanceText};
   }
   &.down:after {
-    border-top: 7px solid ${colors.red};
+    border-top: 7px solid
+      ${props => props.theme.colors.changeNegativePerformanceText};
   }
 `;
 
@@ -127,16 +129,18 @@ export const InstrumentTableEl = styled(Table)`
 
   tbody {
     tr {
-      border-bottom: 1px solid ${colors.graphiteBorder};
+      border-bottom: 1px solid ${props => props.theme.colors.tableRowBorder};
 
       &.active {
-        background-color: ${colors.darkGraphite};
+        background-color: ${props =>
+          props.theme.colors.headerActiveItemBackground};
       }
       &.inactive:hover {
         cursor: pointer;
       }
       &:not(.active):hover {
-        background-color: ${colors.darkGraphite};
+        background-color: ${props =>
+          props.theme.colors.headerActiveItemBackground};
       }
     }
   }
