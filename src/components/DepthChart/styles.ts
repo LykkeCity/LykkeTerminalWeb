@@ -1,6 +1,6 @@
 import {rem} from 'polished';
 import chartConstants from '../../constants/chartConstants';
-import styled, {buttonBackgrounds, buttonColors, fonts} from '../styled';
+import styled, {fonts} from '../styled';
 
 export const FillHeight = styled.div`
   height: 100%;
@@ -21,7 +21,7 @@ export const AbsoluteCentered = styled.div`
 
 export const Bar = styled.div`
   border-radius: ${rem(4)};
-  background: #333;
+  background: ${props => props.theme.colors.mainBackground};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,11 +31,15 @@ export const Bar = styled.div`
 export const Button = styled.button`
   cursor: pointer;
   background: ${(props: any) =>
-    !props.disabled ? buttonBackgrounds.normal : buttonBackgrounds.disabled};
+    !props.disabled
+      ? props.theme.buttonBackgrounds.normal
+      : props.theme.buttonBackgrounds.disabled};
   border: none;
   border-radius: 4px;
   color: ${(props: any) =>
-    !props.disabled ? buttonColors.normal : buttonColors.disabled};
+    !props.disabled
+      ? props.theme.buttonColors.normal
+      : props.theme.buttonColors.disabled};
   outline: none;
   padding: 0;
   margin: 0 1rem;
@@ -48,22 +52,30 @@ export const Button = styled.button`
 
   &:hover {
     background: ${(props: any) =>
-      !props.disabled ? buttonBackgrounds.hovered : buttonBackgrounds.disabled};
+      !props.disabled
+        ? props.theme.buttonBackgrounds.hovered
+        : props.theme.buttonBackgrounds.disabled};
   }
 
   &:active {
     background: ${(props: any) =>
-      !props.disabled ? buttonBackgrounds.pressed : buttonBackgrounds.disabled};
+      !props.disabled
+        ? props.theme.buttonBackgrounds.pressed
+        : props.theme.buttonBackgrounds.disabled};
   }
 
   &:hover svg {
     color: ${(props: any) =>
-      !props.disabled ? buttonColors.hovered : buttonColors.disabled};
+      !props.disabled
+        ? props.theme.buttonColors.hovered
+        : props.theme.buttonColors.disabled};
   }
 
   &:active svg {
     color: ${(props: any) =>
-      !props.disabled ? buttonColors.pressed : buttonColors.disabled};
+      !props.disabled
+        ? props.theme.buttonColors.pressed
+        : props.theme.buttonColors.disabled};
   }
 `;
 

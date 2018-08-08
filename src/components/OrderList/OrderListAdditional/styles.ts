@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors, dims, fonts, padding} from '../../styled';
+import styled, {dims, fonts, padding} from '../../styled';
 
 export const CancelAllButton = styled.span`
   font-size: ${rem(fonts.normal)};
@@ -11,7 +11,7 @@ export const CancelAllButton = styled.span`
   cursor: not-allowed;
 
   &.clickable {
-    color: ${colors.white};
+    color: ${props => props.theme.colors.text};
     cursor: pointer;
   }
 ` as any;

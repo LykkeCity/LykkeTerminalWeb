@@ -2,6 +2,6 @@ import {MarginedModalBody} from '../Modal/styles';
 
 export const CheckBody = MarginedModalBody.extend`
   a {
-    color: #0388ef;
+    color: ${props => props.theme.colors.linkText};
   }
 `;

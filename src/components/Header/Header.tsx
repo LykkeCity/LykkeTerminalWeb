@@ -7,7 +7,7 @@ import {Icon} from '../Icon/index';
 import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {SettingsModal} from '../Settings';
-import {colors} from '../styled';
+import {ThemeObject} from '../styled';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
 import {HeaderFlex, HeaderItem, HeaderWrapper} from './styles';
 
@@ -18,12 +18,14 @@ export interface HeaderProps {
   authStore: AuthStore;
   settingsStore: SettingsStore;
   readOnlyMode: boolean;
+  theme: ThemeObject;
 }
 
 const Header: React.SFC<HeaderProps> = ({
   authStore,
   settingsStore,
-  readOnlyMode
+  readOnlyMode,
+  theme
 }) => {
   const handleToggleSettings = (event?: any) => {
     if (event) {
@@ -58,7 +60,7 @@ const Header: React.SFC<HeaderProps> = ({
                   className="hidden-xs settings"
                   onClick={handleToggleSettings}
                 >
-                  <Icon name={'cogwheel'} color={colors.coolGrey} />
+                  <Icon name={'cogwheel'} color={theme.colors.headerIcon} />
                 </span>
                 {settingsStore.showSettings ? (
                   <SettingsModal handleCloseSettings={handleToggleSettings} />

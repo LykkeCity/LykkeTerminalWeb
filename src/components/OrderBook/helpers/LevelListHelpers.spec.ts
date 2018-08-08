@@ -1,5 +1,5 @@
 import {OrderBookCellType, Side} from '../../../models';
-import {colors} from '../../styled';
+import {themes} from '../../styled';
 import {IAnimatingLevels} from '../LevelList';
 import {
   colorizedSymbol,
@@ -14,11 +14,15 @@ import {
 
 describe('level list helpers', () => {
   it('should return color for Buy side', () => {
-    expect(fillBySide(Side.Buy)).toBe(colors.buy);
+    expect(fillBySide(Side.Buy, themes.dark.colors)).toBe(
+      themes.dark.colors.levelListBuy
+    );
   });
 
   it('should return color for Sell side', () => {
-    expect(fillBySide(Side.Sell)).toBe(colors.sell);
+    expect(fillBySide(Side.Sell, themes.dark.colors)).toBe(
+      themes.dark.colors.levelListSell
+    );
   });
 
   it('should return cell type by order type', () => {
@@ -46,21 +50,29 @@ describe('level list helpers', () => {
   });
 
   it('should return default color if currentSymbolPosition is less than trailingZeroPosition', () => {
-    const getSymbolColor = colorizedSymbol(colors.white);
+    const getSymbolColor = colorizedSymbol(themes.dark.colors.text);
     const currentSymbolPosition = 0;
     const trailingZeroPosition = 5;
-    expect(getSymbolColor(trailingZeroPosition, currentSymbolPosition)).toBe(
-      colors.white
-    );
+    expect(
+      getSymbolColor(
+        trailingZeroPosition,
+        currentSymbolPosition,
+        themes.dark.colors
+      )
+    ).toBe(themes.dark.colors.text);
   });
 
   it('should return grey color if currentSymbolPosition is more than trailingZeroPosition', () => {
-    const getSymbolColor = colorizedSymbol(colors.white);
+    const getSymbolColor = colorizedSymbol(themes.dark.colors.text);
     const currentSymbolPosition = 6;
     const trailingZeroPosition = 5;
-    expect(getSymbolColor(trailingZeroPosition, currentSymbolPosition)).toBe(
-      colors.lightGrey
-    );
+    expect(
+      getSymbolColor(
+        trailingZeroPosition,
+        currentSymbolPosition,
+        themes.dark.colors
+      )
+    ).toBe(themes.dark.colors.levelListTrailingZero);
   });
 
   describe('level animation', () => {
@@ -95,11 +107,12 @@ describe('level list helpers', () => {
       const existedLevel = animatingLevels.find(
         animatingLevel => animatingLevel.price === price
       );
-      const color = colors.buy;
+      const color = themes.dark.colors.levelListBuy;
 
       const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
         existedLevel!,
-        color
+        color,
+        themes.dark.colors
       );
       expect(animatedColor).toBe(color);
       expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
@@ -113,14 +126,15 @@ describe('level list helpers', () => {
       const existedLevel = animatingLevels.find(
         animatingLevel => animatingLevel.price === price
       );
-      const color = colors.buy;
+      const color = themes.dark.colors.levelListBuy;
       existedLevel!.currentOpacity = 2;
 
       const {animatedColor, animatedOpacity} = getColorAndOpacityForAnimation(
         existedLevel!,
-        color
+        color,
+        themes.dark.colors
       );
-      expect(animatedColor).toBe(colors.white);
+      expect(animatedColor).toBe(themes.dark.colors.levelListAnimatedColor);
       expect(animatedOpacity).toBe(existedLevel!.currentOpacity);
     });
 

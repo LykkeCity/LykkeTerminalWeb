@@ -1,6 +1,7 @@
 import {Header} from '@lykkex/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
+import {ThemeProvider} from 'styled-components';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
@@ -238,35 +239,38 @@ class Terminal extends React.Component<TerminalProps, {}> {
     const userName = userInfo ? userInfo.fullName : undefined;
     const email = userInfo ? userInfo.email : undefined;
     return (
-      <Shell>
-        <Header
-          // tslint:disable-next-line:jsx-no-lambda
-          onLogout={() => this.onLogout()}
-          userName={userName}
-          email={email}
-          activeMenuItem="trade"
-        />
-        <TerminalWrapper>
-          <NotificationList />
-          {this.props.rootStore.modalStore.isModals ? (
-            <div>
-              <Backdrop />
-              <Modal modals={this.props.rootStore.modalStore.modals} />
-            </div>
-          ) : null}
-          {this.props.rootStore.sessionStore.sessionNotificationsBlockShown && (
-            <SessionNotificationComponent />
-          )}
-          <SubHeader history={this.props.history} />
-          <Mosaic
-            renderTile={this.handleRenderTile}
-            onChange={this.handleChange}
-            resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
-            initialValue={this.state.initialValue}
+      <ThemeProvider theme={this.props.rootStore.uiStore.theme}>
+        <Shell>
+          <Header
+            // tslint:disable-next-line:jsx-no-lambda
+            onLogout={() => this.onLogout()}
+            userName={userName}
+            email={email}
+            activeMenuItem="trade"
           />
-          <Footer />
-        </TerminalWrapper>
-      </Shell>
+          <TerminalWrapper>
+            <NotificationList />
+            {this.props.rootStore.modalStore.isModals ? (
+              <div>
+                <Backdrop />
+                <Modal modals={this.props.rootStore.modalStore.modals} />
+              </div>
+            ) : null}
+            {this.props.rootStore.sessionStore.sessionNotificationsBlockShown && (
+              <SessionNotificationComponent />
+            )}
+            <SubHeader history={this.props.history} />
+            <Mosaic
+              className="mosaic-blueprint-theme"
+              renderTile={this.handleRenderTile}
+              onChange={this.handleChange}
+              resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
+              initialValue={this.state.initialValue}
+            />
+            <Footer />
+          </TerminalWrapper>
+        </Shell>
+      </ThemeProvider>
     );
   }
 

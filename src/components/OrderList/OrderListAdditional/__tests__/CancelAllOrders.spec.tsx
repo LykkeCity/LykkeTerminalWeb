@@ -1,20 +1,28 @@
 import {mount} from 'enzyme';
 import React from 'react';
 import OrdersDefaultSelection from '../../../../models/ordersDefaultSelection';
+import {ThemeProvider, themes} from '../../../styled';
 import CancelAllOrders from '../CancelAllOrders';
 
 describe('<CancelAllOrders>', () => {
-  const selectedOrderOptions = OrdersDefaultSelection.CurrentAsset;
-  const hasOrders = true;
   let cancelAll = jest.fn();
 
-  const getTestCancelAllOrders = () => {
+  const getTestCancelAllOrders = (
+    options: any = {
+      selectedOrderOptions: OrdersDefaultSelection.CurrentAsset,
+      hasOrders: true
+    }
+  ) => {
+    cancelAll = jest.fn();
+
     return (
-      <CancelAllOrders
-        cancelAll={cancelAll}
-        hasOrders={hasOrders}
-        selectedOrderOptions={selectedOrderOptions}
-      />
+      <ThemeProvider theme={themes.dark}>
+        <CancelAllOrders
+          cancelAll={cancelAll}
+          hasOrders={options.hasOrders}
+          selectedOrderOptions={options.selectedOrderOptions}
+        />
+      </ThemeProvider>
     );
   };
 
@@ -29,8 +37,7 @@ describe('<CancelAllOrders>', () => {
   });
 
   it('should not add .clickable class to span when hasOrders set to false', () => {
-    const wrapper = mount(getTestCancelAllOrders());
-    wrapper.setProps({hasOrders: false});
+    const wrapper = mount(getTestCancelAllOrders({hasOrders: false}));
     expect(wrapper.find('span').hasClass('clickable')).toEqual(false);
   });
 
@@ -41,16 +48,19 @@ describe('<CancelAllOrders>', () => {
   });
 
   it('should call cancelAll method with false argument when user click the element and hasOrders set to true', () => {
-    const wrapper = mount(getTestCancelAllOrders());
-    wrapper.setProps({selectedOrderOptions: OrdersDefaultSelection.All});
+    const wrapper = mount(
+      getTestCancelAllOrders({
+        selectedOrderOptions: OrdersDefaultSelection.All,
+        hasOrders: true
+      })
+    );
     wrapper.find('span').simulate('click');
     expect(cancelAll).toHaveBeenCalledWith(false);
   });
 
   it('should not call cancelAll method when user click the element and hasOrders set to false', () => {
-    const wrapper = mount(getTestCancelAllOrders());
+    const wrapper = mount(getTestCancelAllOrders({hasOrders: false}));
     cancelAll = jest.fn();
-    wrapper.setProps({hasOrders: false});
     wrapper.find('span').simulate('click');
     expect(cancelAll).not.toHaveBeenCalled();
   });

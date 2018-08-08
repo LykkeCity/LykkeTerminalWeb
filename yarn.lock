@@ -26,6 +26,17 @@
   dependencies:
     recharts "^1.1.0"
 
+"@lykkex/subzero-wamp@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@lykkex/subzero-wamp/-/subzero-wamp-0.0.8.tgz#e147a546d694a224ef4a415ca29182b9c432e2dc"
+  dependencies:
+    "@lykkex/subzero" "^0.0.4"
+    uniqid "^5.0.3"
+
+"@lykkex/subzero@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@lykkex/subzero/-/subzero-0.0.4.tgz#07a15ac6751476be843f4cb962eee4a27daa3dbd"
+
 "@types/applicationinsights-js@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/applicationinsights-js/-/applicationinsights-js-1.0.5.tgz#b0bab755e67ed584ac3bf75869fc12589a338a2c"
@@ -8155,6 +8166,10 @@ union-value@^1.0.0:
 uniq@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/uniq/-/uniq-1.0.1.tgz#b31c5ae8254844a3a8281541ce2b04b865a734ff"
+
+uniqid@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/uniqid/-/uniqid-5.0.3.tgz#917968310edc868d50df6c44f783f32c7d80fac1"
 
 uniqs@^2.0.0:
   version "2.0.0"
