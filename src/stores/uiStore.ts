@@ -1,5 +1,6 @@
 import {action, computed, observable, reaction} from 'mobx';
 import {pathOr} from 'rambda';
+import {ThemeObject, themes} from '../components/styled';
 import {disclaimedAssets} from '../constants/assetDisclaimer';
 import logger from '../Logger';
 import {keys} from '../models';
@@ -28,6 +29,7 @@ class UiStore extends BaseStore {
 
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
 
+  @observable theme: ThemeObject = themes.light;
   @observable searchTerm: string = '';
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;

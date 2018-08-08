@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors, fonts} from '../styled';
+import styled, {fonts} from '../styled';
 
 export const StyledInstrumentPerformance = styled.div`
   display: flex;
@@ -14,11 +14,11 @@ export const InstrumentPerformanceFigureValue = styled.div`
   font-size: ${rem(fonts.large)};
   font-weight: bold;
   font-family: 'Akrobat', sans-serif;
-  color: ${(p: any) => p.color || colors.white};
+  color: ${(props: any) => props.color || props.theme.colors.headerFigureValue};
   text-align: left;
 ` as any;
 
 export const InstrumentPerformanceFigureLabel = styled.small`
-  color: #8c94a0;
+  color: ${props => props.theme.colors.headerFigureLabel};
   font-size: ${rem(fonts.small)};
 `;

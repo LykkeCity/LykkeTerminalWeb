@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colorFromSide, colors, tableScrollMargin} from '../styled';
+import styled, {colorFromSide, tableScrollMargin} from '../styled';
 
 interface CellProps {
   w?: string | number;
@@ -34,7 +34,7 @@ export const ColoredText = styled.div`
 export const TableHeaderItemEl = styled.div`
   display: flex;
   align-items: center;
-  color: ${colors.coolGrey};
+  color: ${props => props.theme.colors.tableHeaderText};
 
   &.right-align {
     justify-content: flex-end;
@@ -54,11 +54,12 @@ export const TableHeaderItemEl = styled.div`
     }
     &.ASC:after {
       display: block;
-      border-bottom: 5px solid ${colors.coolGrey};
+      border-bottom: 5px solid
+        ${props => props.theme.colors.tableHeaderSortIcon};
     }
     &.DESC:after {
       display: block;
-      border-top: 5px solid ${colors.coolGrey};
+      border-top: 5px solid ${props => props.theme.colors.tableHeaderSortIcon};
     }
   }
 `;
@@ -70,11 +71,11 @@ export const Table = styled.table`
     line-height: 1;
   }
   thead {
-    border-bottom: solid 1px #272727;
+    border-bottom: solid 1px ${props => props.theme.colors.tableHeaderBorder};
   }
   tbody {
     tr:hover {
-      background-color: ${colors.graphiteBorder};
+      background-color: ${props => props.theme.colors.tableRowHoverBackground};
     }
   }
   th,
@@ -87,7 +88,7 @@ export const Table = styled.table`
     font-size: ${rem(14)};
     font-weight: normal;
     line-height: 1.14;
-    color: ${colors.lightGrey};
+    color: ${props => props.theme.colors.tableHeaderText};
 
     &:first-child {
       text-align: left;
@@ -105,7 +106,7 @@ export const Table = styled.table`
     text-overflow: ellipsis;
 
     &:first-child {
-      color: #f5f6f7;
+      color: ${props => props.theme.colors.tableFirstColumnText};
       font-weight: 600;
       text-align: left;
       padding-left: ${rem(4)};
@@ -131,7 +132,7 @@ export const Table = styled.table`
         }
 
         * {
-          color: ${colors.coolGrey};
+          color: ${props => props.theme.colors.tableHeaderText};
         }
       }
     }

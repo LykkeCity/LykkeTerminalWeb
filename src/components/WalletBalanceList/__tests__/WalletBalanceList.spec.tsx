@@ -1,4 +1,4 @@
-import {mount, shallow} from 'enzyme';
+import {mount} from 'enzyme';
 import React from 'react';
 import {
   AssetBalanceModel,
@@ -7,6 +7,7 @@ import {
   Side,
   WalletModel
 } from '../../../models';
+import {ThemeProvider, themes} from '../../styled';
 import WalletBalanceList from '../WalletBalanceList';
 
 jest.mock('../index', () => ({
@@ -32,12 +33,14 @@ describe('<WalletBalanceList>', () => {
   let handlePercentageChange: any;
 
   const getTestWalletBalanceList = () => (
-    <WalletBalanceList
-      wallet={wallet}
-      selectedInstrument={selectedInstrument}
-      setSide={setSide}
-      handlePercentageChange={handlePercentageChange}
-    />
+    <ThemeProvider theme={themes.dark}>
+      <WalletBalanceList
+        wallet={wallet}
+        selectedInstrument={selectedInstrument}
+        setSide={setSide}
+        handlePercentageChange={handlePercentageChange}
+      />
+    </ThemeProvider>
   );
 
   beforeEach(() => {
@@ -66,12 +69,12 @@ describe('<WalletBalanceList>', () => {
     it('not should render table if wallet is not available', () => {
       wallet = null;
 
-      const wrapper = shallow(getTestWalletBalanceList());
+      const wrapper = mount(getTestWalletBalanceList());
       expect(wrapper.find('WalletTable')).toHaveLength(0);
     });
 
     it('should render table', () => {
-      const wrapper = shallow(getTestWalletBalanceList());
+      const wrapper = mount(getTestWalletBalanceList());
       expect(wrapper.find('WalletTable')).toHaveLength(1);
     });
 

@@ -8,7 +8,7 @@ export const Button = styled.a.attrs({
       right: `${rem(props.right)}`
     } as any)
 })`
-  color: #f5f6f7;
+  color: ${props => props.theme.colors.closeButton};
   text-decoration: none;
   cursor: pointer;
   font-size: ${rem(20)};

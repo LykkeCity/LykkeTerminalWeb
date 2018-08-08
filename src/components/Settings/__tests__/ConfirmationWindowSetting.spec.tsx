@@ -1,6 +1,6 @@
 import {mount} from 'enzyme';
 import React from 'react';
-
+import {ThemeProvider, themes} from '../../styled';
 import ConfirmationWindowSetting from '../ConfirmationWindowSetting';
 
 describe('<ConfirmationWindowSetting>', () => {
@@ -9,10 +9,12 @@ describe('<ConfirmationWindowSetting>', () => {
 
   const getTestConfirmationWindowSetting = () => {
     return (
-      <ConfirmationWindowSetting
-        toggleConfirmations={toggleConfirmations}
-        confirmations={confirmations}
-      />
+      <ThemeProvider theme={themes.dark}>
+        <ConfirmationWindowSetting
+          toggleConfirmations={toggleConfirmations}
+          confirmations={confirmations}
+        />
+      </ThemeProvider>
     );
   };
 

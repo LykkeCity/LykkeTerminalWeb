@@ -47,7 +47,7 @@ const ConnectedChart = connect(
       getMidXBids,
       getAskWidth
     },
-    uiStore: {selectedInstrument}
+    uiStore: {selectedInstrument, theme}
   }) => {
     return {
       asks: reverse(getAsks),
@@ -67,7 +67,8 @@ const ConnectedChart = connect(
       calculateOrderYInterval: calculateOrderYInterval(getCoefficient()),
       midXAsks: getMidXAsks(),
       midXBids: getMidXBids(),
-      askWidth: getAskWidth()
+      askWidth: getAskWidth(),
+      theme
     };
   },
   Chart

@@ -1,6 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
 import {ArrowDirection} from '../../../models';
+import {ThemeProvider, themes} from '../../styled';
 import NumberInput from '../NumberInput';
 
 describe('<NumberInput>', () => {
@@ -10,12 +11,14 @@ describe('<NumberInput>', () => {
   let onArrowClick: (direction: ArrowDirection) => () => void;
 
   const getTestNumberInput = () => (
-    <NumberInput
-      id={id}
-      value={value}
-      onChange={onChange}
-      onArrowClick={onArrowClick}
-    />
+    <ThemeProvider theme={themes.dark}>
+      <NumberInput
+        id={id}
+        value={value}
+        onChange={onChange}
+        onArrowClick={onArrowClick}
+      />
+    </ThemeProvider>
   );
 
   beforeEach(() => {

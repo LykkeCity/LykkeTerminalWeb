@@ -1,4 +1,3 @@
-import {colors} from '../../components/styled';
 import {
   drawArea,
   drawCircle,
@@ -132,11 +131,11 @@ describe(' canvas utils', () => {
       x,
       y,
       lineWidth,
-      lineColor: colors.coolGrey
+      lineColor: 'black'
     });
 
     expect(context.lineWidth).toBe(lineWidth);
-    expect(context.strokeStyle).toBe(colors.coolGrey);
+    expect(context.strokeStyle).toBe('black');
     expect(context.fillStyle).toBe(color);
     expect(context.arc).toHaveBeenCalledWith(x, y, radius, 0, 2 * Math.PI);
     expect(context.beginPath).toHaveBeenCalled();

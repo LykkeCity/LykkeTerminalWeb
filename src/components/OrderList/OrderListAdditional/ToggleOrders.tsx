@@ -4,13 +4,13 @@ import * as React from 'react';
 import styled from 'styled-components';
 import {OrdersSelection} from '../../../constants/ordersSelection';
 import CustomSelect from '../../Select/CustomSelect';
-import {colors, fonts} from '../../styled';
+import {fonts} from '../../styled';
 import {ToggleOrdersProps} from './index';
 
 const StyledOrdersSelection = styled.div`
   position: relative;
   font-size: ${rem(fonts.normal)};
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
 
   &:first-letter {
     text-transform: capitalize;
@@ -24,7 +24,7 @@ const StyledOrdersSelection = styled.div`
     content: '';
     width: 0;
     height: 0;
-    border-top: 4px solid rgba(245, 246, 247, 0.4);
+    border-top: 4px solid ${props => props.theme.colors.dropdownControlIcon};
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     position: relative;

@@ -1,6 +1,8 @@
 import {mount} from 'enzyme';
 import React from 'react';
+import {ThemeProvider} from 'styled-components';
 import {AssetBalanceModel} from '../../../../models';
+import {themes} from '../../../styled';
 import WalletBalanceItem from '../WalletBalanceItem';
 
 describe('<WalletBalanceList>', () => {
@@ -12,11 +14,13 @@ describe('<WalletBalanceList>', () => {
   assetBalance.accuracy = 2;
 
   const getTestWalletBalanceItem = () => (
-    <table>
-      <tbody>
-        <WalletBalanceItem assetBalance={assetBalance} onClick={onClick} />
-      </tbody>
-    </table>
+    <ThemeProvider theme={themes.dark}>
+      <table>
+        <tbody>
+          <WalletBalanceItem assetBalance={assetBalance} onClick={onClick} />
+        </tbody>
+      </table>
+    </ThemeProvider>
   );
 
   beforeEach(() => {

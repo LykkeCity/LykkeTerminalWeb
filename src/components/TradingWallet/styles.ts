@@ -1,6 +1,5 @@
 import {rem} from 'polished';
 import styled from 'styled-components';
-import {colors} from '../styled';
 import {Table} from '../Table';
 
 export const WalletContainer = styled.div`
@@ -13,7 +12,7 @@ export const WalletContainer = styled.div`
 export const StyledWalletItem = styled.div`
   background-color: none;
   border-radius: 2px;
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   cursor: pointer;
   display: flex;
   height: 100%;
@@ -30,7 +29,7 @@ export const WalletBalanceListHeader = Table.extend`
   cursor: default;
 
   th {
-    color: ${colors.coolGrey};
+    color: ${props => props.theme.colors.tableHeaderText};
     text-align: left;
 
     &:first-child {

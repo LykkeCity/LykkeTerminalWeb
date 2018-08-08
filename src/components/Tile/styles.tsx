@@ -1,17 +1,17 @@
-import {margin, rem} from 'polished';
-import styled, {colors, css, dims, fonts, padding} from '../styled';
+import {rem} from 'polished';
+import styled, {dims, fonts, padding} from '../styled';
 
-const lightGraphite = (p: any) =>
-  p.selected ? colors.lightGraphite : 'transparent';
+const getTileBackground = (props: any) =>
+  props.selected ? props.theme.colors.tileBackground : 'transparent';
 
-const darkGraphite = (p: any) =>
-  p.selected ? colors.darkGraphite : 'transparent';
+const getTileBorder = (props: any) =>
+  props.selected ? props.theme.colors.tileBorder : 'transparent';
 
 export const TileHeader = styled.div`
   display: flex;
   align-items: center;
   border: none;
-  border-bottom: 1px solid ${colors.darkGraphite};
+  border-bottom: 1px solid ${props => props.theme.colors.tileBorder};
   font-size: ${rem(fonts.normal)};
   position: relative;
   z-index: 0;
@@ -19,7 +19,7 @@ export const TileHeader = styled.div`
   width: 100% !important;
   &:before {
     content: '';
-    background-color: #2f2f2f;
+    background-color: ${props => props.theme.colors.tileHeaderBackground};
     position: absolute;
     top: 0;
     left: 0;
@@ -32,22 +32,21 @@ export const TileHeader = styled.div`
 export const TileTitle = styled.div`
   display: flex;
   align-items: center;
-  background: ${colors.lightGraphite};
-  color: ${colors.white};
+  background: ${props => props.theme.colors.tileBackground};
+  color: ${props => props.theme.colors.tileTitle};
   border: none;
-  border-right: 1px solid ${colors.darkGraphite};
-  border-bottom: solid 1px ${colors.lightGraphite};
+  border-right: 1px solid ${props => props.theme.colors.tileBorder};
+  border-bottom: 0;
   padding: ${padding(...dims.padding)};
   margin-bottom: -1px;
   height: calc(100% + 1px);
 `;
 
 export const TileTab = TileTitle.extend`
-  background: ${p => lightGraphite(p)};
+  background: ${p => getTileBackground(p)};
   border: solid 1px transparent;
-  border-right-color: ${p => darkGraphite(p)};
-  border-left-color: ${p => darkGraphite(p)};
-  border-bottom-color: ${p => lightGraphite(p)};
+  border-right-color: ${p => getTileBorder(p)};
+  border-left-color: ${p => getTileBorder(p)};
   cursor: pointer;
 
   &:first-child {
@@ -72,24 +71,3 @@ export const TileToolbar = styled.div`
   padding: ${padding(8, 0)};
   width: 100%;
 `;
-
-export const Pills = styled.div`
-  display: flex;
-  align-items: center;
-  ${margin(rem(8), 0) as any};
-`;
-
-export const Pill = styled.span`
-  cursor: pointer;
-  text-align: center;
-  border-radius: ${rem(4)};
-  padding: ${padding(...dims.padding)};
-  border: solid 1px rgba(140, 148, 160, 0.4);
-  margin-right: ${rem(8)};
-  ${(p: any) =>
-    p.active &&
-    css`
-      border-color: #0388ef;
-      box-shadow: inset 0 0 0 1px #0388ef;
-    `};
-` as any;

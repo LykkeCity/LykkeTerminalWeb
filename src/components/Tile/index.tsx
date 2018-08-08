@@ -30,5 +30,3 @@ const ConnectedChartTabbedTile = connect(
 export {ConnectedTile as Tile};
 export {ConnectedChartTabbedTile as ChartTabbedTile};
 export {ConnectedTabbedTile as TabbedTile};
-export {default as TileMenu} from './TileMenu';
-// export {default as TileToolbar} from './TileToolbar';

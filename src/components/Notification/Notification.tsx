@@ -23,11 +23,11 @@ const StyledNotification = styled.div`
   border-radius: 6px;
   padding: 12px 16px;
   background-color: ${(p: any) => getBackground(p.level)};
-  box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 10px 0 ${props => props.theme.colors.boxShadow};
 ` as any;
 
 const StyledCloseBtn = styled.a`
-  color: #f5f6f7;
+  color: ${props => props.theme.colors.defaultText};
   text-decoration: none;
   cursor: pointer;
   font-size: 16px;

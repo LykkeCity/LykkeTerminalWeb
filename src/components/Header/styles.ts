@@ -14,7 +14,7 @@ export const HeaderItem = styled(Box)`
     top: 50%;
     height: 24px;
     margin-top: -12px;
-    border-left: solid 1px rgba(0, 0, 0, 0.2);
+    border-left: solid 1px ${props => props.theme.colors.headerItemSeparator};
   }
   &:first-child:after {
     border-left: 0;
@@ -28,7 +28,8 @@ export const HeaderItem = styled(Box)`
     display: block;
     cursor: pointer;
     &.active {
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: ${props =>
+        props.theme.colors.headerActiveItemBackground};
     }
   }
 `;
@@ -36,9 +37,9 @@ export const HeaderItem = styled(Box)`
 export const HeaderWrapper = styled.header`
   padding: ${rem(9)} ${rem(11)};
   height: 60px;
-  border-top: solid 1px #292929;
-  border-bottom: solid 1px #292929;
-  background: #333;
+  border-top: solid 1px ${props => props.theme.colors.headerBorder};
+  border-bottom: solid 1px ${props => props.theme.colors.headerBorder};
+  background: ${props => props.theme.colors.headerBackground};
 `;
 
 export const HeaderFlex = styled(Flex)`
