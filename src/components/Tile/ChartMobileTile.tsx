@@ -14,7 +14,6 @@ class ChartTabbedTile extends React.Component<any> {
         <ChartContainer>
           <Chart />
         </ChartContainer>
-
         <DepthChart />
       </React.Fragment>
     );
