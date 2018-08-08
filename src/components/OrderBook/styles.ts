@@ -1,16 +1,9 @@
 import {rem} from 'polished';
-import styled, {
-  buttonBackgrounds,
-  buttonColors,
-  colors,
-  dims,
-  fonts,
-  padding
-} from '../styled';
+import styled, {dims, fonts, padding} from '../styled';
 import {Table} from '../Table';
 
 export const StyledBar = styled.div`
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   font-size: ${rem(14)};
   font-weight: normal;
   text-align: left;
@@ -25,10 +18,10 @@ export const StyledGrouping = styled.div`
   min-height: 24px;
 
   button {
-    background: rgb(39, 39, 39);
+    background: ${props => props.theme.colors.switchButtonBackground};
     border: none;
     border-radius: 4px;
-    color: ${colors.white};
+    color: ${props => props.theme.colors.text};
     font-size: ${rem(fonts.small)};
     font-weight: normal;
     opacity: 0.88;
@@ -56,7 +49,7 @@ export const StyledGrouping = styled.div`
 `;
 
 export const StyledSwitch = styled.div`
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   display: flex;
   align-items: center;
 
@@ -68,7 +61,7 @@ export const StyledSwitch = styled.div`
       content: '';
       width: 0;
       height: 0;
-      border-top: 4px solid ${colors.lightGrey};
+      border-top: 4px solid ${props => props.theme.colors.dropdownControlIcon};
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
       position: relative;
@@ -159,7 +152,7 @@ export const Spread = Figure.extend`
 `;
 
 export const MidOverlay = styled.div`
-  background: ${colors.lightGraphite};
+  background: ${props => props.theme.colors.midOverlayBackground};
   border: solid 1px rgba(140, 148, 160, 0.4);
   border-radius: 4px;
   position: absolute;
@@ -171,7 +164,7 @@ export const MidOverlay = styled.div`
 `;
 
 export const MidOverlayBackground = MidOverlay.extend`
-  background: ${colors.lightGraphite};
+  background: ${props => props.theme.colors.midOverlayBackground};
   z-index: -2;
 `;
 
@@ -182,8 +175,8 @@ export const MyOrdersPopover = styled.div`
   z-index: 999;
   min-width: ${rem(180)};
   background-color: rgb(60, 60, 60);
-  border: solid 1px ${colors.darkGraphite};
-  box-shadow: 0 10px 10px 0 ${colors.darkGraphite};
+  border: solid 1px ${props => props.theme.colors.modalBorder};
+  box-shadow: 0 10px 10px 0 ${props => props.theme.colors.boxShadow};
   padding: ${padding(dims.padding[1])};
   font-size: ${rem(fonts.normal)};
   text-align: center;
@@ -203,7 +196,7 @@ export const MyOrdersPopover = styled.div`
 ` as any;
 
 export const MyOrdersCount = styled.h4`
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(fonts.extraLarge)};
   font-weight: bold;
@@ -215,7 +208,7 @@ export const MyOrdersCount = styled.h4`
 `;
 
 export const MyOrdersVolume = styled.div`
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   text-align: center;
   margin-bottom: ${rem(20)};
 
@@ -228,7 +221,7 @@ export const MyOrdersCancelButton = styled.button`
   background: transparent;
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   font-size: ${rem(fonts.normal)};
   padding: ${padding(...dims.padding)};
   cursor: pointer;
@@ -251,11 +244,15 @@ export const FakeOrderBookStage = styled.div.attrs({
 export const Button = styled.button`
   cursor: pointer;
   background: ${(props: any) =>
-    !props.disabled ? buttonBackgrounds.normal : buttonBackgrounds.disabled};
+    !props.disabled
+      ? props.theme.buttonBackgrounds.normal
+      : props.theme.buttonBackgrounds.disabled};
   border: none;
   border-radius: 4px;
   color: ${(props: any) =>
-    !props.disabled ? buttonColors.normal : buttonColors.disabled};
+    !props.disabled
+      ? props.theme.buttonColors.normal
+      : props.theme.buttonColors.disabled};
   outline: none;
   padding: 0;
   height: 24px;
@@ -267,21 +264,29 @@ export const Button = styled.button`
 
   &:hover {
     background: ${(props: any) =>
-      !props.disabled ? buttonBackgrounds.hovered : buttonBackgrounds.disabled};
+      !props.disabled
+        ? props.theme.buttonBackgrounds.hovered
+        : props.theme.buttonBackgrounds.disabled};
   }
 
   &:active {
     background: ${(props: any) =>
-      !props.disabled ? buttonBackgrounds.pressed : buttonBackgrounds.disabled};
+      !props.disabled
+        ? props.theme.buttonBackgrounds.pressed
+        : props.theme.buttonBackgrounds.disabled};
   }
 
   &:hover svg {
     color: ${(props: any) =>
-      !props.disabled ? buttonColors.hovered : buttonColors.disabled};
+      !props.disabled
+        ? props.theme.buttonColors.hovered
+        : props.theme.buttonColors.disabled};
   }
 
   &:active svg {
     color: ${(props: any) =>
-      !props.disabled ? buttonColors.pressed : buttonColors.disabled};
+      !props.disabled
+        ? props.theme.buttonColors.pressed
+        : props.theme.buttonColors.disabled};
   }
 `;

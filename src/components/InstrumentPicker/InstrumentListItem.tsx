@@ -2,7 +2,7 @@ import {observer} from 'mobx-react';
 import * as React from 'react';
 import {AssetModel, InstrumentModel} from '../../models/index';
 import {formattedNumberWithDashes} from '../../utils/localFormatted/localFormatted';
-import {colors} from '../styled';
+import {ThemeObject} from '../styled';
 import {InstrumentListNumber, InstrumentPickerActions} from './index';
 
 interface InstrumentListItemProps extends InstrumentPickerActions {
@@ -10,18 +10,22 @@ interface InstrumentListItemProps extends InstrumentPickerActions {
   instrument: InstrumentModel;
   inactive: boolean;
   isAuth: boolean;
+  theme: ThemeObject;
 }
 
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
-  ({baseAsset, instrument, onPick, inactive, isAuth}) => {
+  ({baseAsset, instrument, onPick, inactive, isAuth, theme}) => {
     const percentageAccuracy = 2;
     const click = () => inactive && onPick && onPick(instrument);
 
     const dynamics =
       (instrument.change24h || 0) === 0
         ? 'zero'
-        : (instrument.change24h || 0) > 0 ? 'up' : 'down';
+        : (instrument.change24h || 0) > 0
+          ? 'up'
+          : 'down';
     const sign = (instrument.change24h || 0) > 0 ? '+' : '';
+    const themeColors = theme.colors;
 
     return (
       <tr onClick={click} className={inactive ? 'inactive' : 'active'}>
@@ -32,7 +36,11 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
               instrument.price || null,
               instrument.accuracy || 0
             )}
-            color={!!instrument.price ? colors.white : colors.lightGrey}
+            color={
+              !!instrument.price
+                ? themeColors.text
+                : themeColors.numberNonPriceText
+            }
           />
         </td>
         <td>
@@ -54,7 +62,11 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
                 instrument.volume || null,
                 instrument.baseAsset.accuracy || 0
               )}
-              color={!!instrument.volume ? colors.white : colors.lightGrey}
+              color={
+                !!instrument.volume
+                  ? themeColors.text
+                  : themeColors.numberNonPriceText
+              }
             >
               {!!instrument.volume && ` ${instrument.baseAsset.name}`}
             </InstrumentListNumber>
@@ -69,7 +81,7 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
                 instrument.volumeInBase || null,
                 baseAsset.accuracy || 0
               )}
-              color={colors.lightGrey}
+              color={themeColors.instrumentVolumeText}
             >
               {!!instrument.volumeInBase && ` ${baseAsset.name}`}
             </InstrumentListNumber>
@@ -79,7 +91,11 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
                 instrument.volume || null,
                 instrument.baseAsset.accuracy || 0
               )}
-              color={!!instrument.volume ? colors.white : colors.lightGrey}
+              color={
+                !!instrument.volume
+                  ? themeColors.text
+                  : themeColors.numberNonPriceText
+              }
             >
               {!!instrument.volume && ` ${instrument.baseAsset.name}`}
             </InstrumentListNumber>

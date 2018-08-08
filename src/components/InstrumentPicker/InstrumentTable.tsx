@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {AssetModel, InstrumentModel} from '../../models/index';
+import {ThemeObject} from '../styled';
 import {InstrumentListItem} from './index';
 import {InstrumentTableEl} from './styles';
 
@@ -9,6 +10,7 @@ interface InstrumentTableProps {
   instruments: InstrumentModel[];
   onPick: any;
   isAuth: boolean;
+  theme: ThemeObject;
 }
 
 const InstrumentTable: React.SFC<InstrumentTableProps> = ({
@@ -16,7 +18,8 @@ const InstrumentTable: React.SFC<InstrumentTableProps> = ({
   currentInstrumentId,
   instruments,
   onPick,
-  isAuth
+  isAuth,
+  theme
 }) => {
   return (
     <InstrumentTableEl>
@@ -29,6 +32,7 @@ const InstrumentTable: React.SFC<InstrumentTableProps> = ({
             inactive={currentInstrumentId !== instrument.id}
             instrument={instrument}
             isAuth={isAuth}
+            theme={theme}
           />
         ))}
       </tbody>

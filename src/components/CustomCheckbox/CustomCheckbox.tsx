@@ -37,7 +37,7 @@ const StyledCustomCheckbox = styled.span`
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  background-color: #0388ef;
+  background-color: ${props => props.theme.colors.customCheckboxBackground};
 
   &:after {
     content: '';

@@ -1,5 +1,5 @@
 import {OrderBookCellType, Side} from '../../../models/index';
-import {colors} from '../../styled';
+import {Dictionary} from '../../../types';
 import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 
@@ -8,8 +8,8 @@ export const START_ANIMATED_OPACITY = 0.16;
 export const DEFAULT_OPACITY = 1;
 export const DEFAULT_BAR_OPACITY = 0.16;
 
-export const fillBySide = (side: Side) =>
-  side === Side.Buy ? colors.buy : colors.sell;
+export const fillBySide = (side: Side, colors: Dictionary<string>) =>
+  side === Side.Buy ? colors.levelListBuy : colors.levelListSell;
 
 export const getCellType = (type: string) =>
   type === OrderBookCellType.Depth
@@ -33,7 +33,8 @@ export const updateAnimatingLevelsWithNewLevel = (
 
 export const getColorAndOpacityForAnimation = (
   animatingLevel: IAnimatingLevels,
-  color: string
+  color: string,
+  colors: Dictionary<string>
 ) => {
   if (animatingLevel.currentOpacity < DEFAULT_OPACITY) {
     animatingLevel.currentOpacity += STEP_OPACITY;
@@ -42,7 +43,9 @@ export const getColorAndOpacityForAnimation = (
   }
 
   return {
-    animatedColor: animatingLevel!.isAnimated ? colors.white : color,
+    animatedColor: animatingLevel!.isAnimated
+      ? colors.levelListAnimatedColor
+      : color,
     animatedOpacity: animatingLevel!.currentOpacity
   };
 };
@@ -68,6 +71,9 @@ export const findAndDeleteDuplicatedAnimatedLevel = (
 
 export const colorizedSymbol = (volumeColor: string) => (
   trailingZeroPosition: number,
-  currentSymbolPosition: number
+  currentSymbolPosition: number,
+  colors: Dictionary<string>
 ) =>
-  currentSymbolPosition < trailingZeroPosition ? volumeColor : colors.lightGrey;
+  currentSymbolPosition < trailingZeroPosition
+    ? volumeColor
+    : colors.levelListTrailingZero;

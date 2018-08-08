@@ -4,7 +4,7 @@ import {RootStore} from '../../stores';
 import styled from '../styled';
 
 const Link = styled.a`
-  color: #0388ef;
+  color: ${props => props.theme.colors.linkText};
   cursor: pointer;
   text-decoration: underline;
 `;

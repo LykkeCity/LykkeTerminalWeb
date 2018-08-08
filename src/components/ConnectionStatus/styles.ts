@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors} from '../styled';
+import styled from '../styled';
 
 export const StyledConnectionStatus = styled.div`
   font-size: ${rem(12)};
@@ -11,12 +11,12 @@ export const StyledConnectionStatus = styled.div`
     height: 8px;
     margin-right: 7px;
     border-radius: 50%;
-    background: ${colors.red};
+    background: ${props => props.theme.colors.disconnectedStatusBackground};
   }
 
   &.connected {
     &:before {
-      background: ${colors.green};
+      background: ${props => props.theme.colors.connectedStatusBackground};
     }
   }
 `;

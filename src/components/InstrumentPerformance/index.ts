@@ -21,7 +21,8 @@ const mapStoreToProps = ({priceStore, uiStore}: RootStore) => ({
     ['selectedInstrument', 'baseAsset', 'accuracy'],
     priceStore
   ),
-  showPerformance: uiStore.showInstrumentPerformanceData
+  showPerformance: uiStore.showInstrumentPerformanceData,
+  theme: uiStore.theme
 });
 
 const ConnectedInstrumentPerformance = connect<InstrumentPerformanceProps>(

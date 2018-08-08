@@ -2,6 +2,7 @@ import {shallow} from 'enzyme';
 import React from 'react';
 import {AuthApi} from '../../../api';
 import {AuthStore, RootStore, SettingsStore} from '../../../stores';
+import {themes} from '../../styled';
 import Header from '../Header';
 
 describe('<Header>', () => {
@@ -15,6 +16,7 @@ describe('<Header>', () => {
         authStore={authStore}
         settingsStore={settingsStore}
         readOnlyMode={readOnlyMode}
+        theme={themes.dark}
       />
     );
   };

@@ -1,6 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
 
+import {ThemeProvider, themes} from '../../styled';
 import CustomDropdown from '../CustomDropdown';
 
 describe('<CustomDropdown>', () => {
@@ -15,12 +16,14 @@ describe('<CustomDropdown>', () => {
 
   const getTestCustomDropdown = () => {
     return (
-      <CustomDropdown
-        controlButtonName={controlButtonName}
-        items={getItems()}
-        selectedValue={selectedValue}
-        onClick={onClick}
-      />
+      <ThemeProvider theme={themes.dark}>
+        <CustomDropdown
+          controlButtonName={controlButtonName}
+          items={getItems()}
+          selectedValue={selectedValue}
+          onClick={onClick}
+        />
+      </ThemeProvider>
     );
   };
 
@@ -45,11 +48,14 @@ describe('<CustomDropdown>', () => {
 
   it('should change state when user click on control button', () => {
     const wrapper = mount(getTestCustomDropdown());
+    const dropdown = wrapper.find('CustomDropdown');
     const controlButton = wrapper.find('.dropdown__control');
-    wrapper.instance().setState = jest.fn();
+    dropdown.instance().setState = jest.fn();
     controlButton.simulate('click');
-    expect(wrapper.instance().setState).toHaveBeenCalledWith({isOpened: true});
+    expect(dropdown.instance().setState).toHaveBeenCalledWith({isOpened: true});
     controlButton.simulate('click');
-    expect(wrapper.instance().setState).toHaveBeenCalledWith({isOpened: false});
+    expect(dropdown.instance().setState).toHaveBeenCalledWith({
+      isOpened: false
+    });
   });
 });

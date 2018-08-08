@@ -2,7 +2,7 @@ import {rem} from 'polished';
 import styled from 'styled-components';
 
 export const Item = styled.div`
-  color: #f5f6f7;
+  color: ${props => props.theme.colors.choosableItemText};
   display: flex;
   justify-content: center;
   align-items: center;

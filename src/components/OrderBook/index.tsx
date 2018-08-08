@@ -70,7 +70,8 @@ const ConnectedAskLevels = connect<LevelListProps>(
       selectedInstrument,
       orderbookDisplayType,
       readOnlyMode,
-      getPageVisibility
+      getPageVisibility,
+      theme
     }
   }) => {
     return {
@@ -85,7 +86,8 @@ const ConnectedAskLevels = connect<LevelListProps>(
       type: LevelType.Asks,
       isPageVisible: getPageVisibility,
       spanAccuracy,
-      setSpanUpdatingHandler
+      setSpanUpdatingHandler,
+      theme
     };
   },
   observer(LevelList)
@@ -105,7 +107,8 @@ const ConnectedBidLevels = connect<LevelListProps>(
       selectedInstrument,
       orderbookDisplayType,
       readOnlyMode,
-      getPageVisibility
+      getPageVisibility,
+      theme
     }
   }) => {
     return {
@@ -120,7 +123,8 @@ const ConnectedBidLevels = connect<LevelListProps>(
       type: LevelType.Bids,
       isPageVisible: getPageVisibility,
       spanAccuracy,
-      setSpanUpdatingHandler
+      setSpanUpdatingHandler,
+      theme
     };
   },
   observer(LevelList)
