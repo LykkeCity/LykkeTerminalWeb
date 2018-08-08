@@ -3,7 +3,7 @@ import {AssetBalanceModel} from '../../../models';
 import {Cell} from '../../Table/styles';
 import WalletBalanceNumber from './WalletBalanceNumber';
 
-interface WalletBalanceItemProps {
+export interface WalletBalanceItemProps {
   assetBalance: AssetBalanceModel;
   onClick?: () => void;
 }
