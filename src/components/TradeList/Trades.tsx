@@ -51,7 +51,7 @@ class Trades extends React.Component<TradesProps, TableSortState> {
   };
 
   render() {
-    const headers: HeaderProps[] = [
+    const desktopHeaders: HeaderProps[] = [
       {
         sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
         key: 'symbol',
@@ -96,6 +96,40 @@ class Trades extends React.Component<TradesProps, TableSortState> {
         value: 'Time'
       }
     ];
+
+    const mobileHeaders: HeaderProps[] = [
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
+        key: 'symbol',
+        value: 'Asset pair',
+        width: TradesCellWidth.Symbol
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        className: 'right-align',
+        key: 'price',
+        value: 'Price'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'oppositeVolume'),
+        className: 'right-align',
+        key: 'oppositeVolume',
+        value: 'Value'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'timestamp'),
+        className: 'right-align',
+        key: 'timestamp',
+        value: 'Time'
+      }
+    ];
+
+    let headers;
+    if (window.matchMedia('(min-width: 1224px)').matches) {
+      headers = desktopHeaders;
+    } else {
+      headers = mobileHeaders;
+    }
 
     return (
       <React.Fragment>

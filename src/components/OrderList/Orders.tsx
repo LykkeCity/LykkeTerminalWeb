@@ -62,7 +62,7 @@ class Blotter extends React.Component<OrdersProps, OrdersState> {
   };
 
   render() {
-    const headers: HeaderProps[] = [
+    const desktopHeaders: HeaderProps[] = [
       {
         sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
         key: 'symbol',
@@ -107,6 +107,47 @@ class Blotter extends React.Component<OrdersProps, OrdersState> {
         width: OrderCellWidth.Actions
       }
     ];
+
+    const mobileHeaders: HeaderProps[] = [
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'symbol'),
+        key: 'symbol',
+        value: 'Asset pair',
+        width: OrderCellWidth.Symbol
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        className: 'right-align',
+        key: 'price',
+        value: 'Price'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'volume'),
+        className: 'right-align',
+        key: 'volume',
+        value: 'Amount'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'createdAt'),
+        className: 'right-align',
+        key: 'createdAt',
+        value: 'Time'
+      },
+      {
+        sortDisabled: true,
+        className: 'right-align',
+        key: '',
+        value: 'Actions',
+        width: OrderCellWidth.Actions
+      }
+    ];
+
+    let headers;
+    if (window.matchMedia('(min-width: 1224px)').matches) {
+      headers = desktopHeaders;
+    } else {
+      headers = mobileHeaders;
+    }
 
     return (
       <React.Fragment>

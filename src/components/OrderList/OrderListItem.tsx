@@ -7,6 +7,8 @@ import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 import {OrderActions, OrderCellWidth} from './index';
 
+import MediaQuery from 'react-responsive';
+
 interface OrderListItemProps {
   onEdit: any;
   order: OrderModel;
@@ -64,16 +66,18 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <TitledCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
-      <TitledCell>
-        {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
-          filledPercent,
-          2,
-          {style: 'percent'}
-        )})
-      </TitledCell>
-      <TitledCell>
-        {formattedNumber(roundedValue, quoteAssetAccuracy)} {quoteAssetName}
-      </TitledCell>
+      <MediaQuery query="(min-device-width: 1224px)">
+        <TitledCell>
+          {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
+            filledPercent,
+            2,
+            {style: 'percent'}
+          )})
+        </TitledCell>
+        <TitledCell>
+          {formattedNumber(roundedValue, quoteAssetAccuracy)} {quoteAssetName}
+        </TitledCell>
+      </MediaQuery>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>

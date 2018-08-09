@@ -6,6 +6,8 @@ import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 
+import MediaQuery from 'react-responsive';
+
 interface TradeListItemProps extends TradeModel {
   className?: string;
   changeInstrumentById: (id: string) => void;
@@ -52,13 +54,15 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
       <TitledCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
-      <TitledCell>
-        {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
-      </TitledCell>
-      <TitledCell>
-        {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
-      </TitledCell>
-      <Cell w={TradesCellWidth.OrderType}>{orderType}</Cell>
+      <MediaQuery query="(min-device-width: 1224px)">
+        <TitledCell>
+          {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
+        </TitledCell>
+        <TitledCell>
+          {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
+        </TitledCell>
+        <Cell w={TradesCellWidth.OrderType}>{orderType}</Cell>
+      </MediaQuery>
       <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>
     </tr>
   );

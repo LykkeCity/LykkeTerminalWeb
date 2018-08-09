@@ -77,7 +77,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 };
 
 class Terminal extends React.Component<TerminalProps, {}> {
-  state = {
+  desktopState = {
     initialValue: {
       direction: 'row' as MosaicDirection,
       first: {
@@ -109,8 +109,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
   mobileState = {
     initialValue: {
       direction: 'column' as MosaicDirection,
-      first: MobileTop,
-      second: OrderListWidget,
+      first: MobileTopWidget,
+      second: MobileBottomWidget,
       splitPercentage: 70
     }
   };
@@ -269,7 +269,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
             renderTile={this.handleRenderTile}
             onChange={this.handleChange}
             resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
-            initialValue={this.state.initialValue}
+            initialValue={this.desktopState.initialValue}
           />
           <Footer />
         </TerminalWrapper>

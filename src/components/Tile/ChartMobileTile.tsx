@@ -7,6 +7,10 @@ const ChartContainer = styled.div`
   height: 65%;
 `;
 
+const DepthChartContainer = styled.div`
+  height: 35%;
+`;
+
 class ChartTabbedTile extends React.Component<any> {
   render() {
     return (
@@ -14,7 +18,9 @@ class ChartTabbedTile extends React.Component<any> {
         <ChartContainer>
           <Chart />
         </ChartContainer>
-        <DepthChart />
+        <DepthChartContainer>
+          <DepthChart />
+        </DepthChartContainer>
       </React.Fragment>
     );
   }
