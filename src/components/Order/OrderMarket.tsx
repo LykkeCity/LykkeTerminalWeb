@@ -1,6 +1,6 @@
 import {Form, FormikProps, withFormik} from 'formik';
 import * as React from 'react';
-import {IndicativeTotalHint} from '../../constants/indicativeTotalHint';
+import indicativeTotalHint from '../../constants/indicativeTotalHint';
 import {OrderInputs, Side} from '../../models';
 import {capitalize} from '../../utils';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
@@ -144,8 +144,8 @@ class OrderMarket extends React.Component<
               <TotalHint
                 title={
                   action === Side.Sell
-                    ? IndicativeTotalHint.sell
-                    : IndicativeTotalHint.buy
+                    ? indicativeTotalHint.sell
+                    : indicativeTotalHint.buy
                 }
               >
                 Indicative price *
