@@ -148,7 +148,7 @@ class OrderMarket extends React.Component<
                     : indicativeTotalHint.buy
                 }
               >
-                Indicative price *
+                Actual costs/amount depend on market price
               </TotalHint>
             </Amount>
           )}

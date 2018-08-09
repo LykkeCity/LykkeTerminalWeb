@@ -129,7 +129,7 @@ export const Total = Flex.extend`
 
 export const TotalHint = styled.small`
   display: block;
-  margin-top: ${rem(2)};
+  margin: ${rem(2)} 0 0 30%;
   color: ${colors.coolGrey};
   font-size: ${rem(12)};
   text-align: right;
@@ -152,6 +152,7 @@ export const Note = styled.div`
 export const Amount = styled.div`
   color: #8c94a0;
   font-size: ${rem(14)};
+  text-align: right;
 `;
 
 export const Available = styled(Amount).attrs({
