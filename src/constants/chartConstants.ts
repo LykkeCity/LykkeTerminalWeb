@@ -21,7 +21,8 @@ const chart = {
     horizontalFontSize: 12,
     fontFamily: 'Proxima Nova',
 
-    verticalLinesAmount: 8,
+    verticalLinesAmount: () =>
+      window.matchMedia('(min-width: 1224px)').matches ? 8 : 4,
     horizontalLinesAmount: 10
   },
   asks: {
