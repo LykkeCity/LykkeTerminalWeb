@@ -1,5 +1,5 @@
 interface RectInterface {
-  ctx: any;
+  ctx: CanvasRenderingContext2D;
   color: string;
   x: number;
   y: number;
@@ -9,23 +9,36 @@ interface RectInterface {
 }
 
 interface LineInterface {
-  ctx: any;
+  ctx: CanvasRenderingContext2D;
   x: number;
   y: number;
   width: number;
   opacity?: number;
   color: string;
   lineWidth: number;
+  dashSegments?: number[];
+}
+
+interface VerticalLineInterface {
+  ctx: CanvasRenderingContext2D;
+  x: number;
+  y: number;
+  height: number;
+  lineWidth: number;
+  color: string;
+  lineCap?: string;
+  opacity?: number;
+  dashSegments?: number[];
 }
 
 interface TextInterface {
-  ctx: any;
+  ctx: CanvasRenderingContext2D;
   color: string;
-  text: string | number;
+  text: string;
   x: number;
   y: number;
   font: string;
-  align: string;
+  align?: string;
   opacity?: number;
 }
 
@@ -50,12 +63,14 @@ export const drawLine = ({
   width,
   opacity = 1,
   color,
-  lineWidth
+  lineWidth,
+  dashSegments = []
 }: LineInterface) => {
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
   ctx.globalAlpha = opacity;
   ctx.beginPath();
+  ctx.setLineDash(dashSegments);
   ctx.moveTo(x, y);
   ctx.lineTo(width, y);
   ctx.stroke();
@@ -68,16 +83,67 @@ export const drawVerticalLine = ({
   height,
   lineWidth,
   color,
-  lineCap
-}: any) => {
+  lineCap = '',
+  opacity = 1,
+  dashSegments = []
+}: VerticalLineInterface) => {
   ctx.globalAlpha = 1;
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
   ctx.lineCap = lineCap;
   ctx.beginPath();
+  ctx.setLineDash(dashSegments);
+
   ctx.moveTo(x, y);
   ctx.lineTo(x, height);
   ctx.stroke();
+};
+
+export const drawArea = ({
+  ctx,
+  points,
+  lineWidth,
+  lineCap = '',
+  opacity = 1,
+  dashSegments = [],
+  fill
+}: any) => {
+  ctx.globalAlpha = 1;
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = lineCap;
+  ctx.beginPath();
+  ctx.setLineDash(dashSegments);
+  ctx.moveTo(points[0].x, points[0].y);
+
+  points.forEach((p: {x: number; y: number; color?: string}, i: number) => {
+    if (i !== 0) {
+      ctx.strokeStyle = p.color || 'transparent';
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    }
+  });
+
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.closePath();
+};
+
+export const drawCircle = ({
+  ctx,
+  radius,
+  color,
+  x,
+  y,
+  lineWidth,
+  lineColor
+}: any) => {
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = lineColor;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.fill();
 };
 
 export const drawText = ({
@@ -87,7 +153,7 @@ export const drawText = ({
   x,
   y,
   font,
-  align,
+  align = 'center',
   opacity = 1
 }: TextInterface) => {
   ctx.font = font;

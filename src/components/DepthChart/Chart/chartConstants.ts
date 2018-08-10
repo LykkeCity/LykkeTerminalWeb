@@ -3,7 +3,7 @@ const chart = {
     color: '#8c94a0',
     dash: [2, 5],
     dots: [1, 5],
-    strikeWidth: 1,
+    strokeWidth: 1,
     opacity: 0.4,
     verticalFontSize: 12,
     horizontalFontSize: 12,
@@ -60,7 +60,7 @@ const chart = {
     marginLeft: 16
   },
 
-  strokeWidth: 2,
+  strokeWidth: 1,
   fillOpacity: 0.2,
 
   labelsWidth: 50,

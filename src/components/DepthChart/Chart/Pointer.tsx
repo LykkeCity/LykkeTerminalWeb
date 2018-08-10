@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Circle, Line, Text} from 'react-konva';
+import {Line, Text} from 'react-konva';
 
 import {AssetModel, Order} from '../../../models';
 
@@ -240,65 +240,6 @@ class Pointer extends React.Component<PointerProps> {
       this.generateModalText(depthLabelWidth, totalOfLableWidth);
 
       this.graphics.push(
-        // invisible borders under a chart
-        <Line
-          key="border"
-          points={[
-            this.props.borders[0],
-            this.props.borders[1],
-            this.props.borders[0],
-            this.props.borders[3],
-            this.props.borders[2],
-            this.props.borders[3],
-            this.props.borders[2],
-            this.props.borders[1]
-          ]}
-          closed={true}
-          onMouseMove={this.handleMouseMove}
-          onMouseOver={this.handleMouseMove}
-          onMouseLeave={this.handleMouseLeave}
-          dashEnabled={false}
-          shadowEnabled={false}
-          perfectDrawEnabled={false}
-          strokeEnabled={false}
-          strokeHitEnabled={false}
-          strokeScaleEnabled={false}
-        />,
-        // ball
-        <Circle
-          key="circle"
-          x={this.mouseX}
-          y={this.calcY}
-          fill={this.props.color}
-          stroke={chart.pointer.circleStrokeColor}
-          radius={chart.pointer.circleRadius}
-          onMouseMove={this.handleMouseMove}
-          onMouseOver={this.handleMouseMove}
-          onMouseLeave={this.handleMouseLeave}
-          dashEnabled={false}
-          shadowEnabled={false}
-          perfectDrawEnabled={false}
-          strokeHitEnabled={false}
-          strokeScaleEnabled={false}
-          listening={false}
-        />,
-        // dashed line under the ball
-        <Line
-          key="line-1"
-          points={this.line}
-          closed={false}
-          stroke={this.props.color}
-          strokeWidth={chart.strokeWidth}
-          dash={chart.pointer.dash}
-          onMouseMove={this.handleMouseMove}
-          onMouseOver={this.handleMouseMove}
-          onMouseLeave={this.handleMouseLeave}
-          shadowEnabled={false}
-          perfectDrawEnabled={false}
-          strokeHitEnabled={false}
-          strokeScaleEnabled={false}
-          listening={false}
-        />,
         // modal window
         <Line
           key="line-2"

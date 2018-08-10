@@ -67,4 +67,12 @@ export const Button = styled.button`
   }
 `;
 
+export const ChartContainer = styled.div`
+  position: relative;
+`;
+
+export const LevelContainer = styled.div`
+  position: absolute;
+`;
+
 export const Price = styled.div``;

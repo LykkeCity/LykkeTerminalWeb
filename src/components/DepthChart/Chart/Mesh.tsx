@@ -1,15 +1,23 @@
 import * as React from 'react';
-import {Line, Text} from 'react-konva';
 import {Order} from '../../../models';
 
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import chart from './chartConstants';
+
+import {
+  defineCanvasScale,
+  drawLine,
+  drawText,
+  drawVerticalLine
+} from '../../../utils/canvasUtils';
 
 interface MeshProps {
   asks: Order[];
   bids: Order[];
   width: number;
   height: number;
+  canvasHeight: number;
+  canvasWidth: number;
   quoteAccuracy: number;
   baseAccuracy: number;
   priceAccuracy: number;
@@ -26,16 +34,51 @@ class Mesh extends React.Component<MeshProps> {
   labels: string[] = [];
 
   emptyLabels: string[] = ['', '', '', ''];
+  canvas: HTMLCanvasElement | null;
+  canvasCtx: CanvasRenderingContext2D | null;
+  memoWidth: number = 0;
 
   constructor(props: MeshProps) {
     super(props);
   }
 
+  componentDidMount() {
+    this.canvasCtx = this.canvas!.getContext('2d');
+    window.requestAnimationFrame(() => {
+      this.renderCanvas();
+      this.forceUpdate();
+    });
+
+    defineCanvasScale(
+      this.canvasCtx,
+      this.canvas,
+      this.props.canvasWidth,
+      this.props.canvasHeight
+    );
+  }
+
+  componentWillReceiveProps({canvasWidth}: MeshProps) {
+    window.requestAnimationFrame(() => {
+      if (canvasWidth !== this.memoWidth) {
+        this.memoWidth = canvasWidth;
+        defineCanvasScale(
+          this.canvasCtx,
+          this.canvas,
+          this.props.canvasWidth,
+          this.props.canvasHeight
+        );
+      }
+      this.renderCanvas();
+      this.forceUpdate();
+    });
+  }
+
   generateAsksLabels = (): string[] => {
     const asksLabels = [];
     if (this.props.asks.length > 0) {
-      const start = Math.min(...this.props.asks.map(a => a.price));
-      const end = Math.max(...this.props.asks.map(a => a.price));
+      const prices = this.props.asks.map(a => a.price);
+      const start = Math.min(...prices);
+      const end = Math.max(...prices);
       const step = (end - start) / chart.mesh.verticalLinesAmount;
       for (let i = 0; i < chart.mesh.verticalLinesAmount; i++) {
         if (i % 2 === 1) {
@@ -98,23 +141,15 @@ class Mesh extends React.Component<MeshProps> {
   };
 
   drawMid = () => {
-    this.mesh.push(
-      <Line
-        key="mid"
-        points={[
-          this.props.width / 2,
-          0,
-          this.props.width / 2,
-          this.props.height
-        ]}
-        closed={true}
-        stroke={chart.mesh.color}
-        strokeWidth={chart.mesh.strikeWidth}
-        dashEnabled={false}
-        shadowEnabled={false}
-        listening={false}
-      />
-    );
+    drawVerticalLine({
+      ctx: this.canvasCtx!,
+      opacity: 0.6,
+      color: chart.mesh.color,
+      lineWidth: chart.mesh.strokeWidth,
+      height: this.props.height,
+      x: this.props.width / 2,
+      y: 0
+    });
   };
 
   drawVerticalLines = () => {
@@ -125,19 +160,16 @@ class Mesh extends React.Component<MeshProps> {
       startX < this.props.width;
       startX += stepVertical, index++
     ) {
-      this.mesh.push(
-        <Line
-          key={`vl-${index}`}
-          points={[startX, 0, startX, this.props.height]}
-          closed={true}
-          stroke={chart.mesh.color}
-          strokeWidth={chart.mesh.strikeWidth}
-          dash={chart.mesh.dots}
-          opacity={0.6}
-          shadowEnabled={false}
-          listening={false}
-        />
-      );
+      drawVerticalLine({
+        ctx: this.canvasCtx!,
+        opacity: 0.6,
+        color: chart.mesh.color,
+        dashSegments: chart.mesh.dots,
+        lineWidth: chart.mesh.strokeWidth,
+        height: this.props.height,
+        x: startX,
+        y: 0
+      });
     }
   };
 
@@ -151,18 +183,14 @@ class Mesh extends React.Component<MeshProps> {
         startX < this.props.width;
         startX += stepVertical, index++
       ) {
-        this.mesh.push(
-          <Text
-            key={`vt-${index}`}
-            x={startX - 35}
-            y={this.props.height + 15}
-            fill={chart.mesh.color}
-            fontFamily={chart.mesh.fontFamily}
-            fontSize={chart.mesh.verticalFontSize}
-            text={`${labels[index]}`}
-            listening={false}
-          />
-        );
+        drawText({
+          ctx: this.canvasCtx!,
+          color: chart.mesh.color,
+          text: `${labels[index]}`,
+          x: startX,
+          y: this.props.height + 15,
+          font: `${chart.mesh.verticalFontSize}px ${chart.mesh.fontFamily}`
+        });
       }
     }
   };
@@ -175,25 +203,22 @@ class Mesh extends React.Component<MeshProps> {
       startY < this.props.height;
       startY += stepHorizontal, index++
     ) {
-      this.mesh.push(
-        <Line
-          key={`hl-${index}`}
-          points={[0, startY, this.props.width, startY]}
-          closed={true}
-          stroke={chart.mesh.color}
-          strokeWidth={chart.mesh.strikeWidth}
-          dash={chart.mesh.dash}
-          opacity={0.6}
-          shadowEnabled={false}
-          listening={false}
-        />
-      );
+      drawLine({
+        ctx: this.canvasCtx!,
+        opacity: 0.6,
+        color: chart.mesh.color,
+        dashSegments: chart.mesh.dash,
+        lineWidth: chart.mesh.strokeWidth,
+        width: this.props.width,
+        x: 0,
+        y: startY
+      });
     }
   };
 
   drawHorizontalLabels = () => {
     const stepHorizontal = this.props.height / chart.mesh.horizontalLinesAmount;
-    const startHorizontal = stepHorizontal / 2;
+    const startHorizontal = stepHorizontal / 2 + 9;
     this.labels = this.generateHorizontalLabels();
     if (this.labels.length > 0) {
       for (
@@ -201,39 +226,42 @@ class Mesh extends React.Component<MeshProps> {
         startY < this.props.height;
         startY += stepHorizontal, index++
       ) {
-        this.mesh.push(
-          <Text
-            key={`ht-${index}`}
-            x={this.props.width + 10}
-            y={startY - chart.mesh.horizontalFontSize / 2}
-            fill={chart.mesh.color}
-            fontFamily={chart.mesh.fontFamily}
-            fontSize={chart.mesh.horizontalFontSize}
-            text={`${this.labels[index]}`}
-            listening={false}
-          />
-        );
+        drawText({
+          ctx: this.canvasCtx!,
+          color: chart.mesh.color,
+          text: `${this.labels[index]}`,
+          x: this.props.width + 25,
+          y: startY - chart.mesh.horizontalFontSize / 2,
+          font: `${chart.mesh.horizontalFontSize}px ${chart.mesh.fontFamily}`
+        });
       }
     }
   };
 
-  renderMesh = () => {
-    this.drawMid();
+  renderCanvas = () => {
+    if (this.canvas) {
+      this.canvasCtx!.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     this.drawHorizontalLines();
     this.drawVerticalLines();
+    this.drawVerticalLabels();
+    this.drawHorizontalLabels();
+    this.drawMid();
   };
 
-  renderLabels = () => {
-    this.drawHorizontalLabels();
-    this.drawVerticalLabels();
-  };
+  setCanvasRef = (canvas: any) => (this.canvas = canvas);
 
   render() {
-    this.mesh = [];
-    this.labels = [];
-    this.renderMesh();
-    this.renderLabels();
-    return this.mesh;
+    return (
+      <React.Fragment>
+        <canvas
+          width={this.props.canvasWidth}
+          height={this.props.canvasHeight}
+          ref={this.setCanvasRef}
+        />
+      </React.Fragment>
+    );
   }
 }
 
