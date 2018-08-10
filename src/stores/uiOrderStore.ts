@@ -19,6 +19,13 @@ import {BaseStore, RootStore} from './index';
 
 const MARKET_TOTAL_DEBOUNCE = 1000;
 
+export interface PercentageChangeConfig {
+  balance: number;
+  baseAssetId: string;
+  quoteAssetId: string;
+  percents: number;
+}
+
 class UiOrderStore extends BaseStore {
   @computed
   get getComputedPriceValue() {
@@ -143,7 +150,7 @@ class UiOrderStore extends BaseStore {
     this.setMarketTotal(volume, side);
   };
 
-  handlePercentageChange = (config: any) => {
+  handlePercentageChange = (config: PercentageChangeConfig) => {
     const {balance, baseAssetId, quoteAssetId, percents} = config;
 
     if (this.market === OrderType.Limit) {

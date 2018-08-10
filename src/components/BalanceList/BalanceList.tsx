@@ -34,7 +34,7 @@ const Total = styled.tr`
 const BalanceList: React.SFC<BalanceListProps> = ({
   balances = [],
   baseAssetName,
-  total,
+  getTotalBalance,
   accuracy
 }) => (
   <React.Fragment>
@@ -49,7 +49,7 @@ const BalanceList: React.SFC<BalanceListProps> = ({
         <Total>
           <td>Total</td>
           <td>
-            {total.toLocaleString(undefined, {
+            {getTotalBalance().toLocaleString(undefined, {
               maximumFractionDigits: accuracy
             })}&nbsp;{baseAssetName}
           </td>

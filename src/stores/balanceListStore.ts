@@ -1,71 +1,43 @@
-import {action, computed, observable, runInAction} from 'mobx';
-import {add, find, pathOr} from 'rambda';
+import {action, runInAction} from 'mobx';
+import {add, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import * as topics from '../api/topics';
 import {AssetBalanceModel, WalletModel, WalletType} from '../models';
+import {ApiWalletModel} from '../models/walletModel';
 import {BaseStore, RootStore} from './index';
 
 class BalanceListStore extends BaseStore {
-  @computed
-  get getWalletsWithPositiveBalances() {
-    return this.walletList
-      .filter(b => b.totalBalance > 0)
-      .sort((a, b) => b.totalBalance - a.totalBalance);
-  }
-
-  @computed
-  get getBalances() {
-    return this.walletList
-      .filter(b => b.totalBalance > 0)
-      .sort((a, b) => b.totalBalance - a.totalBalance);
-  }
-
-  @computed
-  get totalBalance() {
-    return this.walletList
-      .map(wallet => wallet.totalBalanceInBaseAsset)
-      .reduce(add, 0);
-  }
-
-  @computed
-  get fundsOnBalance() {
-    return (
-      this.walletList.map(wallet => wallet.totalBalance).reduce(add, 0) > 0
-    );
-  }
-
-  @computed
-  get tradingWalletBalances() {
-    return (this.tradingWallet && this.tradingWallet.balances) || [];
-  }
-
-  @observable currentWalletId: string;
-
-  @computed
-  get currentWallet() {
-    return (
-      this.walletList.find(w => w.id === this.currentWalletId) ||
-      this.walletList.find(w => w.type === WalletType.Trading)
-    );
-  }
-
-  @computed
-  get tradingWallet() {
-    return find(w => w.type === WalletType.Trading, this.walletList);
-  }
-
-  @observable.shallow private walletList: WalletModel[] = [];
+  tradingWallet: WalletModel;
 
   constructor(store: RootStore, private readonly api: BalanceListApi) {
     super(store);
+
+    this.tradingWallet = new WalletModel({
+      Id: 'Trading',
+      Name: 'Trading',
+      Balances: [],
+      Type: 'Trading'
+    });
   }
+
+  hasFundsOnBalance = () =>
+    this.tradingWallet.balances.map(wallet => wallet.balance).reduce(add, 0) >
+    0;
+
+  getTotalBalance = () =>
+    this.tradingWallet ? this.tradingWallet.totalBalance : 0;
+
+  getTotalBalanceInBaseAsset = () =>
+    this.tradingWallet ? this.tradingWallet.totalBalanceInBaseAsset : 0;
 
   fetchAll = () => {
     return this.api
       .fetchAll()
       .then((resp: any) => {
         runInAction(() => {
-          this.walletList = resp.map((wallet: any) => new WalletModel(wallet));
+          this.tradingWallet = resp
+            .map((wallet: ApiWalletModel) => new WalletModel(wallet))
+            .find((wallet: WalletModel) => wallet.type === WalletType.Trading);
         });
         return Promise.resolve();
       })
@@ -80,8 +52,8 @@ class BalanceListStore extends BaseStore {
       getAssetById,
       fetchAssetById
     } = this.rootStore.referenceStore;
-    this.walletList.forEach(wallet => {
-      wallet.balances.forEach(async (assetBalance: AssetBalanceModel) => {
+    this.tradingWallet.balances.forEach(
+      async (assetBalance: AssetBalanceModel) => {
         const {balance, id} = assetBalance;
 
         let asset = getAssetById(id);
@@ -99,12 +71,8 @@ class BalanceListStore extends BaseStore {
           baseAssetId,
           getInstrumentById
         );
-      });
-    });
-  };
-
-  changeWallet = (walletId: string) => {
-    this.currentWalletId = walletId;
+      }
+    );
   };
 
   subscribe = (session: any) => {
@@ -114,16 +82,15 @@ class BalanceListStore extends BaseStore {
   onUpdateBalance = async (args: any) => {
     const dto = args[0];
     const {id, a, b, r} = dto;
-    const wallet = this.walletList.find((w: WalletModel) => w.id === id)!;
-    if (wallet) {
-      const balance = wallet.balances.find(
+    if (this.tradingWallet && this.tradingWallet.id === id) {
+      const balance = this.tradingWallet.balances.find(
         (bc: AssetBalanceModel) => bc.id === a
       );
       if (balance) {
         balance.balance = b;
         balance.reserved = r;
       } else {
-        wallet.balances.push(
+        this.tradingWallet.balances.push(
           new AssetBalanceModel({
             AssetId: a,
             Balance: b,
@@ -131,13 +98,11 @@ class BalanceListStore extends BaseStore {
           })
         );
       }
-
-      this.updateWalletBalances();
     }
   };
 
   reset = () => {
-    this.walletList = [];
+    this.tradingWallet.balances = [];
   };
 }
 

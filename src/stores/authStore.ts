@@ -27,7 +27,9 @@ class AuthStore extends BaseStore {
 
   @computed
   get noKycAndFunds() {
-    return !this.isKycPassed || !this.rootStore.balanceListStore.fundsOnBalance;
+    return (
+      !this.isKycPassed || !this.rootStore.balanceListStore.hasFundsOnBalance()
+    );
   }
 
   @observable private token: string = tokenStorage.get() || '';

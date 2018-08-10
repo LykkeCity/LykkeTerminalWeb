@@ -1,6 +1,14 @@
 import {computed, observable} from 'mobx';
 import {add} from 'rambda';
 import {AssetBalanceModel} from '.';
+import {ApiAssetBalanceModel} from './assetBalanceModel';
+
+export interface ApiWalletModel {
+  Name: string;
+  Id: string;
+  Balances: ApiAssetBalanceModel[];
+  Type: string;
+}
 
 export default class WalletModel {
   name: string;
@@ -19,7 +27,7 @@ export default class WalletModel {
     return this.balances.map(b => b.balanceInBaseAsset).reduce(add, 0);
   }
 
-  constructor(wallet: any) {
+  constructor(wallet: ApiWalletModel) {
     this.name = wallet.Name;
     this.id = wallet.Id;
     this.balances = wallet.Balances.map((b: any) => new AssetBalanceModel(b));

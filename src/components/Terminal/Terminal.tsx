@@ -1,14 +1,14 @@
 import * as React from 'react';
-import {Mosaic, MosaicDirection} from 'react-mosaic-component';
+import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
+import {getHashCode} from '../../utils/hashcode';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
-import {MyWallets} from '../MyWallets';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
@@ -17,6 +17,7 @@ import {SessionNotificationComponent} from '../Session';
 import styled, {colors} from '../styled';
 import {ChartTabbedTile, TabbedTile, Tile} from '../Tile';
 import {TradeLog, Trades} from '../TradeList';
+import {Wallet} from '../TradingWallet';
 import {TerminalProps} from './index';
 
 const Shell = styled.div`
@@ -38,7 +39,8 @@ const {
   OrderWidget,
   OrderBookWidget,
   OrderListWidget,
-  TradeListWidget
+  TradeListWidget,
+  TradingWalletWidget
 } = Widgets;
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
@@ -56,15 +58,19 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile tabs={['Orders', 'Trades', 'My funds']}>
+    <TabbedTile tabs={['Orders', 'Trades']}>
       <Orders />
       <Trades />
-      <MyWallets />
     </TabbedTile>
   ),
   [OrderWidget]: (
-    <Tile title="Order" authorize={true}>
+    <Tile title="Order" authorize={true} className="no-padding">
       <Order />
+    </Tile>
+  ),
+  [TradingWalletWidget]: (
+    <Tile title="Funds">
+      <Wallet />
     </Tile>
   )
 };
@@ -73,7 +79,12 @@ class Terminal extends React.Component<TerminalProps, {}> {
   state = {
     initialValue: {
       direction: 'row' as MosaicDirection,
-      first: OrderWidget,
+      first: {
+        direction: 'column' as MosaicDirection,
+        first: OrderWidget,
+        second: TradingWalletWidget,
+        splitPercentage: 70
+      },
       second: {
         direction: 'row' as MosaicDirection,
         first: {
@@ -114,16 +125,27 @@ class Terminal extends React.Component<TerminalProps, {}> {
       if (!resp) {
         return;
       }
-      const layout = layoutStorage.get();
-      if (layout) {
-        this.setState({
-          initialValue: Object.assign(
-            this.state.initialValue,
-            JSON.parse(layout)
-          )
-        });
-      }
+      this.updateLayoutFromLocalStorage();
       this.bindChartOverlayHandler();
+    });
+  }
+
+  updateLayoutFromLocalStorage() {
+    const layout = layoutStorage.get();
+    if (!layout) {
+      return;
+    }
+
+    const layoutFromLocalstorage = JSON.parse(layout);
+    const currentStateHashCode = this.getStateHashCode(this.state.initialValue);
+    const savedStateHashCode = this.getStateHashCode(layoutFromLocalstorage);
+    if (currentStateHashCode !== savedStateHashCode) {
+      layoutStorage.set('');
+      return;
+    }
+
+    this.setState({
+      initialValue: Object.assign(this.state.initialValue, JSON.parse(layout))
     });
   }
 
@@ -212,6 +234,26 @@ class Terminal extends React.Component<TerminalProps, {}> {
       </Shell>
     );
   }
+
+  private getStateHashCode = (state: MosaicNode<string>) =>
+    getHashCode(this.getWidgetsArray(state));
+
+  private getWidgetsArray = (
+    state: MosaicNode<string>,
+    widgetsArray: string[] = []
+  ) => {
+    const propertyNames = ['first', 'second'];
+    propertyNames.forEach(property => {
+      const widgetState = state[property];
+      if (typeof widgetState === 'string') {
+        widgetsArray.push(widgetState);
+      } else if (!!widgetState) {
+        this.getWidgetsArray(widgetState, widgetsArray);
+      }
+    });
+
+    return widgetsArray;
+  };
 }
 
 export default Terminal;

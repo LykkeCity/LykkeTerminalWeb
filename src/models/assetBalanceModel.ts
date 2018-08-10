@@ -1,10 +1,16 @@
 import {computed, observable} from 'mobx';
 import {subtraction} from '../utils/math';
 
+export interface ApiAssetBalanceModel {
+  AssetId: string;
+  Balance: number;
+  Reserved: number;
+}
+
 class AssetBalanceModel {
   accuracy: number;
   id: string;
-  name: string;
+  @observable name: string;
   @observable balance: number;
   @observable reserved: number;
   @observable balanceInBaseAsset: number = 0;

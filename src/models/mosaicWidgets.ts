@@ -4,7 +4,8 @@ enum Widgets {
   TradeListWidget = 'TradeList',
   OrderBookWidget = 'OrderBook',
   OrderListWidget = 'OrderList',
-  OrderWidget = 'Order'
+  OrderWidget = 'Order',
+  TradingWalletWidget = 'Wallet'
 }
 
 export default Widgets;

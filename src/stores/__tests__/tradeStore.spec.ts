@@ -1,11 +1,19 @@
+import {Subscription} from 'autobahn';
+import * as topics from '../../api/topics';
 import {
   AssetModel,
   InstrumentModel,
   OrderType,
   TradeFilter,
-  TradeModel
+  TradeModel,
+  WalletModel
 } from '../../models/index';
 import {RootStore, TradeStore} from '../index';
+
+jest.mock('../../models/tradeModel.mapper', () => ({
+  fromWampToTrade: jest.fn(),
+  fromWampToPublicTrade: jest.fn()
+}));
 
 describe('trade store', () => {
   let tradeStore: TradeStore;
@@ -60,10 +68,13 @@ describe('trade store', () => {
     );
 
     tradeStore = new TradeStore(rootStore, api);
-    tradeStore.unsubscribeFromPublicTrades = jest.fn();
   });
 
   describe('state', () => {
+    beforeEach(() => {
+      tradeStore.unsubscribeFromPublicTrades = jest.fn();
+    });
+
     it('trades should be defined after instantiation', () => {
       expect(tradeStore.getAllTrades).toBeDefined();
       expect(tradeStore.getAllTrades).not.toBeNull();
@@ -127,6 +138,82 @@ describe('trade store', () => {
       tradeStore.addTrades([correctTrade, incorrectTrade]);
       expect(tradeStore.getAllTrades).toHaveLength(1);
       expect(tradeStore.getAllTrades).toEqual([correctTrade]);
+    });
+
+    it('should not add trades if wallet is not trading', () => {
+      rootStore.balanceListStore.tradingWallet = new WalletModel({
+        Id: 'Trading',
+        Name: 'Trading',
+        Balances: [],
+        Type: 'Trading'
+      });
+      const correctTrade = getTestTrade({
+        walletId: rootStore.balanceListStore.tradingWallet.id
+      });
+      const incorrectTrade = getTestTrade({
+        walletId: 'Test'
+      });
+      tradeStore.addTrades([correctTrade, incorrectTrade]);
+      expect(tradeStore.getAllTrades).toHaveLength(1);
+      expect(tradeStore.getAllTrades).toEqual([correctTrade]);
+    });
+  });
+
+  describe('method subscribe', () => {
+    it('should call subscribe method in ws', () => {
+      const ws = {
+        subscribe: jest.fn()
+      };
+      tradeStore.subscribe(ws);
+      expect(ws.subscribe).toHaveBeenCalledWith(
+        topics.trades,
+        tradeStore.onTrades
+      );
+    });
+  });
+
+  describe('method onTrades', () => {
+    it('should add trades came from arguments', () => {
+      tradeStore.addTrade = jest.fn();
+      tradeStore.onTrades([{}, {}, {}]);
+      expect(tradeStore.addTrade).toHaveBeenCalled();
+    });
+  });
+
+  describe('method onPublicTrades', () => {
+    it('should add public trades came from arguments', () => {
+      tradeStore.addPublicTrades = jest.fn();
+      tradeStore.onPublicTrades([{}, {}, {}]);
+      expect(tradeStore.addPublicTrades).toHaveBeenCalled();
+    });
+  });
+
+  describe('method unsubscribeFromPublicTrades', () => {
+    let unsubscribe: () => void;
+    function* getSubscriptions() {
+      yield new Subscription('first');
+    }
+    beforeEach(() => {
+      unsubscribe = jest.fn();
+
+      tradeStore.getWs = jest.fn(() => ({
+        subscribe: jest.fn(() => getSubscriptions()),
+        unsubscribe
+      }));
+    });
+
+    it('should not call for unsubscribe in ws if no subscriptions presented', async () => {
+      await tradeStore.unsubscribeFromPublicTrades();
+      expect(unsubscribe).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call for unsubscribe in ws for all subscription', async () => {
+      await tradeStore.subscribeToPublicTrades();
+      await tradeStore.subscribeToPublicTrades();
+      await tradeStore.subscribeToPublicTrades();
+
+      await tradeStore.unsubscribeFromPublicTrades();
+      expect(unsubscribe).toHaveBeenCalledTimes(3);
     });
   });
 

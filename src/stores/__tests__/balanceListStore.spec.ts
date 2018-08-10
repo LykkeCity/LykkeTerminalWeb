@@ -2,8 +2,23 @@ import {
   MockBalanceListApi,
   MockBalanceListApiNullBalance
 } from '../../api/balanceListApi';
-import {AssetModel, WalletType} from '../../models';
+import * as topics from '../../api/topics';
+import {
+  AssetBalanceModel,
+  AssetModel,
+  WalletModel,
+  WalletType
+} from '../../models';
 import {BalanceListStore, RootStore} from '../index';
+
+const getTestTradingWallet = () => {
+  return new WalletModel({
+    Id: 'Trading',
+    Name: 'Trading',
+    Balances: [],
+    Type: 'Trading'
+  });
+};
 
 describe('balanceList store', () => {
   let balanceListStore: BalanceListStore;
@@ -17,16 +32,6 @@ describe('balanceList store', () => {
   });
 
   describe('state', () => {
-    it('balanceLists should be defined after instantiation', () => {
-      expect(balanceListStore.getWalletsWithPositiveBalances).toBeDefined();
-      expect(balanceListStore.getWalletsWithPositiveBalances).not.toBeNull();
-    });
-
-    it('balanceLists should be an empty array by default', () => {
-      expect(balanceListStore.getBalances instanceof Array).toBeTruthy();
-      expect(balanceListStore.getBalances.length).toBe(0);
-    });
-
     it("should fetch user's wallets and set Trading Wallet", async () => {
       balanceListStore.updateWalletBalances = jest.fn();
 
@@ -38,7 +43,7 @@ describe('balanceList store', () => {
       balanceListStore.updateWalletBalances = jest.fn();
 
       await balanceListStore.fetchAll();
-      expect(balanceListStore.fundsOnBalance).toBeTruthy();
+      expect(balanceListStore.getTotalBalance()).toBeTruthy();
     });
 
     it('should update wallet', async () => {
@@ -52,9 +57,7 @@ describe('balanceList store', () => {
         }
       ];
       await balanceListStore.fetchAll();
-      const wallet = balanceListStore.getWalletsWithPositiveBalances.find(
-        w => w.id === dto[0].id
-      );
+      const wallet = balanceListStore.tradingWallet;
       const balance = wallet!.balances.find(b => b.id === dto[0].a);
       expect(wallet!.type).toBe(WalletType.Trading);
       expect(balance!.balance).not.toBe(dto[0].b);
@@ -73,7 +76,7 @@ describe('balanceList store', () => {
       balanceListStore.updateWalletBalances = jest.fn();
 
       await balanceListStore.fetchAll();
-      expect(balanceListStore.fundsOnBalance).toBeFalsy();
+      expect(balanceListStore.getTotalBalance()).toBeFalsy();
     });
 
     describe('should update asset balance', () => {
@@ -91,15 +94,6 @@ describe('balanceList store', () => {
 
       const assets = [asset];
       const convertedBalance = 0;
-      const customWallet = {
-        ApiKey: null,
-        Balances: [{AssetId: 'BTC', Balance: 200, Reserved: 20}],
-        Description: 'Default trading wallet',
-        Id: '0269b387-09de-40f0-b6a8-ca2950576ac0',
-        Name: 'Trading Wallet',
-        Type: 'Trading'
-      };
-
       beforeEach(() => {
         balanceListStore.rootStore.referenceStore.getAssetById = (id: string) =>
           assets.find(a => a.id === id);
@@ -112,9 +106,7 @@ describe('balanceList store', () => {
       it('with info from asset with the same id', async () => {
         await balanceListStore.fetchAll();
         await balanceListStore.updateWalletBalances();
-        const wallet = balanceListStore.getWalletsWithPositiveBalances.find(
-          w => w.id === customWallet.Id
-        );
+        const wallet = balanceListStore.tradingWallet;
         const balance = wallet!.balances.find(b => b.id === asset.id);
         expect(balance!.name).toBe(asset.name);
         expect(balance!.accuracy).toBe(asset.accuracy);
@@ -127,12 +119,70 @@ describe('balanceList store', () => {
         expect(
           balanceListStore.rootStore.referenceStore.fetchAssetById
         ).toHaveBeenCalled();
-        const wallet = balanceListStore.getWalletsWithPositiveBalances.find(
-          w => w.id === customWallet.Id
-        );
+        const wallet = balanceListStore.tradingWallet;
         const balance = wallet!.balances.find(b => b.id === unknownAsset.id);
         expect(balance!.name).toBe(unknownAsset.name);
         expect(balance!.accuracy).toBe(unknownAsset.accuracy);
+      });
+    });
+
+    describe('method hasFundsOnBalance', () => {
+      it('should return false if trading wallet have no positive balance', () => {
+        balanceListStore.tradingWallet = getTestTradingWallet();
+        balanceListStore.tradingWallet.balances = [
+          new AssetBalanceModel({Balance: 0})
+        ];
+        expect(balanceListStore.hasFundsOnBalance()).toBe(false);
+      });
+
+      it('should return true if trading wallet have at least one positive balance', () => {
+        balanceListStore.tradingWallet = getTestTradingWallet();
+        balanceListStore.tradingWallet.balances = [
+          new AssetBalanceModel({Balance: 2000}),
+          new AssetBalanceModel({Balance: 3000}),
+          new AssetBalanceModel({Balance: 5000})
+        ];
+        expect(balanceListStore.hasFundsOnBalance()).toBe(true);
+      });
+    });
+
+    describe('method getTotalBalance', () => {
+      it('should return sum of balances from trading balances', () => {
+        balanceListStore.tradingWallet = getTestTradingWallet();
+        balanceListStore.tradingWallet.balances = [
+          new AssetBalanceModel({Balance: 2000}),
+          new AssetBalanceModel({Balance: 3000}),
+          new AssetBalanceModel({Balance: 5000})
+        ];
+        expect(balanceListStore.getTotalBalance()).toBe(10000);
+      });
+    });
+
+    describe('method getTotalBalanceInBaseAsset', () => {
+      it('should return sum of balances in base asset from trading balances', () => {
+        balanceListStore.tradingWallet = getTestTradingWallet();
+        balanceListStore.tradingWallet.balances = [
+          new AssetBalanceModel({Balance: 2000}),
+          new AssetBalanceModel({Balance: 3000}),
+          new AssetBalanceModel({Balance: 5000})
+        ];
+        balanceListStore.tradingWallet.balances.forEach(balanceModel => {
+          balanceModel.balanceInBaseAsset = balanceModel.balance;
+        });
+        expect(balanceListStore.getTotalBalanceInBaseAsset()).toBe(10000);
+      });
+    });
+
+    describe('method subscribe', () => {
+      it('should set subscribe to session passed in parameters', () => {
+        const session = {
+          subscribe: jest.fn()
+        };
+        balanceListStore.subscribe(session);
+        expect(session.subscribe).toHaveBeenCalledWith(
+          topics.balances,
+          balanceListStore.onUpdateBalance
+        );
       });
     });
   });
