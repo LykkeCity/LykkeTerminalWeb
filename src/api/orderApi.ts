@@ -5,6 +5,7 @@ export interface OrderApi {
   placeMarket: (body: any) => ApiResponse;
   placeLimit: (body: any) => ApiResponse;
   cancelOrder: (id: string) => ApiResponse;
+  cancelAllOrders: (body: any) => ApiResponse;
   fetchAll: () => ApiResponse;
 }
 
@@ -15,6 +16,8 @@ export class RestOrderApi extends RestApi implements OrderApi {
 
   cancelOrder = (id: string) =>
     this.fireAndForget(`/orders/limit/${id}/cancel`, {});
+
+  cancelAllOrders = (body: any) => this.deleteWithParams(`/orders/limit`, body);
 
   fetchAll = () => this.get('/orders');
 }

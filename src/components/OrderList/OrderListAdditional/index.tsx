@@ -5,6 +5,7 @@ import ToggleOrders from './ToggleOrders';
 export interface CancelAllOrderProps {
   cancelAll: any;
   isOrderLength: boolean;
+  selectedOrderOptions: string;
 }
 
 export interface ToggleOrdersProps {
@@ -15,9 +16,13 @@ export interface ToggleOrdersProps {
 }
 
 const ConnectedCancelAllOrders = connect(
-  ({orderListStore: {hasOrders}, orderStore: {cancelAll}}) => ({
+  ({
+    orderListStore: {hasOrders, selectedOrderOptions},
+    orderStore: {cancelAll}
+  }) => ({
     cancelAll,
-    hasOrders
+    hasOrders,
+    selectedOrderOptions
   }),
   CancelAllOrders
 );

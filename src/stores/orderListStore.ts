@@ -54,7 +54,9 @@ class OrderListStore extends BaseStore {
 
   @computed
   get limitOrdersForThePair() {
-    const {uiStore: {selectedInstrument}} = this.rootStore;
+    const {
+      uiStore: {selectedInstrument}
+    } = this.rootStore;
     return this.limitOrders.filter(
       order => order.symbol === (selectedInstrument && selectedInstrument.id)
     );
@@ -93,6 +95,15 @@ class OrderListStore extends BaseStore {
     }
     const deletedOrders = this.orders.splice(orderIndex, 1);
     return deletedOrders[0];
+  };
+
+  @action
+  deleteAllOrders = (assetPairId: string | undefined) => {
+    if (assetPairId) {
+      this.orders = this.orders.filter(order => order.symbol !== assetPairId);
+    } else {
+      this.orders = [];
+    }
   };
 
   @action

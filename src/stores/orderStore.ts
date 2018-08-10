@@ -4,7 +4,7 @@ import ModalMessages from '../constants/modalMessages';
 import messages from '../constants/notificationMessages';
 import logger from '../Logger';
 import {levels} from '../models';
-import {OrderModel, OrderType} from '../models';
+import {OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
 import {BaseStore, RootStore} from './index';
@@ -85,10 +85,24 @@ class OrderStore extends BaseStore {
     }
   };
 
-  cancelAll = () =>
-    this.rootStore.orderListStore.limitOrders
-      .map((o: OrderModel) => o.id)
-      .forEach(this.cancelOrder);
+  cancelAll = async (currentAsset: boolean) => {
+    try {
+      const selectedInstrument = this.rootStore.uiStore.selectedInstrument;
+      const body = currentAsset ? {AssetPairId: selectedInstrument!.id} : {};
+      const deleted = await this.api.cancelAllOrders(body);
+
+      if (deleted.status === 200) {
+        this.rootStore.orderListStore.deleteAllOrders(body.AssetPairId);
+        this.allOrdersCancelledSuccessfully(
+          currentAsset ? selectedInstrument!.displayName : null
+        );
+      }
+    } catch (error) {
+      this.orderPlacedUnsuccessfully(error);
+
+      logger.logException(error);
+    }
+  };
 
   subscribe = (ws: any) => {
     ws.subscribe(topics.orders, this.onOrders);
@@ -152,6 +166,19 @@ class OrderStore extends BaseStore {
     this.notificationStore.addNotification(
       levels.information,
       `${messages.orderCancelled} ${orderId}`
+    );
+  };
+
+  private allOrdersCancelledSuccessfully = (
+    instrumentName: string | null | undefined
+  ) => {
+    this.notificationStore.addNotification(
+      levels.information,
+      `${
+        instrumentName
+          ? messages.allCurrentInstrumentOrdersCancelled(instrumentName)
+          : messages.allOrdersCancelled
+      }`
     );
   };
 

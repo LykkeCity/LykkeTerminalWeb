@@ -2,6 +2,7 @@ import {observer} from 'mobx-react';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
+import OrdersDefaultSelection from '../../../models/ordersDefaultSelection';
 import {colors, dims, fonts, padding} from '../../styled';
 import {CancelAllOrderProps} from './index';
 
@@ -18,14 +19,21 @@ const StyledSpan = styled.span`
     color: ${colors.white};
     cursor: pointer;
   }
-`;
+` as any;
 
 const CancelAllOrders: React.SFC<CancelAllOrderProps> = observer(
-  ({cancelAll, hasOrders}) => {
+  ({cancelAll, hasOrders, selectedOrderOptions}) => {
+    const handleCancelAll = () => {
+      const currentAsset =
+        selectedOrderOptions === OrdersDefaultSelection.CurrentAsset;
+
+      cancelAll(currentAsset);
+    };
+
     return (
       <StyledSpan
         className={hasOrders ? 'clickable' : ''}
-        onClick={hasOrders ? cancelAll : null}
+        onClick={hasOrders ? handleCancelAll : null}
       >
         Cancel all
       </StyledSpan>
