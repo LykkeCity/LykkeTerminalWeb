@@ -41,7 +41,9 @@ const {
   OrderBookWidget,
   OrderListWidget,
   TradeListWidget,
-  TradingWalletWidget
+  TradingWalletWidget,
+  MobileTopWidget,
+  MobileBottomWidget
 } = Widgets;
 
 const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
@@ -73,6 +75,19 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     <Tile title="Funds" className="bottom-tile">
       <Wallet />
     </Tile>
+  ),
+  [MobileTopWidget]: (
+    <TopWidgetTile
+      tabs={['Order', 'Price chart', 'Depth chart', 'Order book']}
+    />
+  ),
+  [MobileBottomWidget]: (
+    <TabbedTile tabs={['Trade log', 'Orders', 'Trades', 'My funds']}>
+      <TradeLog />
+      <Orders />
+      <Trades />
+      <MyWallets />
+    </TabbedTile>
   )
 };
 
@@ -111,7 +126,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
       direction: 'column' as MosaicDirection,
       first: MobileTopWidget,
       second: MobileBottomWidget,
-      splitPercentage: 70
+      splitPercentage: 60
     }
   };
 

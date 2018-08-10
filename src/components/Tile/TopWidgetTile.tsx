@@ -49,6 +49,7 @@ class TopWidgetTile extends React.Component<ChartTabbedTileProps> {
             <Order />
           </TileContent>
         )}
+
         <TileContent
           style={{
             display: this.selectedTab === TopWidgetTabs.Price ? 'block' : 'none'
@@ -56,16 +57,21 @@ class TopWidgetTile extends React.Component<ChartTabbedTileProps> {
         >
           <Chart />
         </TileContent>
+
         {this.selectedTab === TopWidgetTabs.Depth && (
           <TileContent>
             <DepthChart />
           </TileContent>
         )}
-        {this.selectedTab === TopWidgetTabs.OrderBook && (
-          <TileContent>
-            <OrderBook />
-          </TileContent>
-        )}
+
+        <TileContent
+          style={{
+            display:
+              this.selectedTab === TopWidgetTabs.OrderBook ? 'block' : 'none'
+          }}
+        >
+          <OrderBook />
+        </TileContent>
       </React.Fragment>
     );
   }
