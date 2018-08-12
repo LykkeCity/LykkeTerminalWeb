@@ -1,23 +1,25 @@
 import * as React from 'react';
 
-import {Order} from '../../../models';
+import {DepthArea, DepthText, Order} from '../../../models';
 import chart from './chartConstants';
 
 import {defineCanvasScale} from '../../../utils/canvasUtils';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
+import {colors} from '../../styled';
 import {
+  COST_PADDING,
+  DEPTH_PADDING,
   drawChartElements,
+  getAreaColor,
   getPopupCoords,
   IDrawTools,
-  measureText
+  measureText,
+  PRICE_PADDING,
+  VALUE_PADDING
 } from './chartHelpers';
 
 const PRICE_FONT_SIZE = 14;
 const FONT_SIZE = 13;
-
-export enum Area {
-  Bid = 'Bid',
-  Ask = 'Ask'
-}
 
 interface ChartProps {
   asks: Order[];
@@ -29,6 +31,8 @@ interface ChartProps {
   quoteAccuracy: number;
   baseAccuracy: number;
   priceAccuracy: number;
+  baseAssetName: string;
+  quoteAssetName: string;
 }
 
 class Chart extends React.Component<ChartProps> {
@@ -55,7 +59,7 @@ class Chart extends React.Component<ChartProps> {
   canvasCtx: CanvasRenderingContext2D | null;
   memoWidth: number = 0;
   xIndex: number = -1;
-  currentArea: Area;
+  currentArea: DepthArea;
   drawTools: IDrawTools;
 
   constructor(props: ChartProps) {
@@ -87,7 +91,7 @@ class Chart extends React.Component<ChartProps> {
       const {offsetX: x} = event;
       this.currentArea = this.getCurrentArea(x);
       let point: {x: number; y: number};
-      if (this.currentArea === Area.Bid) {
+      if (this.currentArea === DepthArea.Bid) {
         point = this.findPoints(this.pointsBids)(x)!;
       } else {
         point = this.findPoints(this.pointsAsks)(x)!;
@@ -125,12 +129,14 @@ class Chart extends React.Component<ChartProps> {
     xPoints.push(x);
     xPoints.sort((a, b) => a - b);
     const xIndex = xPoints.findIndex(i => i === x);
-    const sibling = this.currentArea === Area.Bid ? xIndex - 1 : xIndex + 1;
+    const sibling =
+      this.currentArea === DepthArea.Bid ? xIndex - 1 : xIndex + 1;
     this.xIndex = sibling;
     return points.find(p => p.x === xPoints[sibling]);
   };
 
-  getCurrentArea = (x: number) => (x > this.midXBids ? Area.Ask : Area.Bid);
+  getCurrentArea = (x: number) =>
+    x > this.midXBids ? DepthArea.Ask : DepthArea.Bid;
 
   calculateAsksStepLength(ask: Order, index: number) {
     const priceDifference = this.props.asks[index + 1]
@@ -236,6 +242,116 @@ class Chart extends React.Component<ChartProps> {
     this.drawTools.drawLevel(points);
   };
 
+  drawPopup = (y: number, x: number) => {
+    this.drawTools.drawPointer(x, y);
+    this.drawTools.drawPointerLine(this.props.height, x, y);
+
+    const order = this.findOrder();
+    if (order) {
+      const depthLabel = this.getDepthText();
+
+      const priceValue = `${formattedNumber(
+        order.price,
+        this.props.priceAccuracy
+      )} ${this.props.quoteAssetName}`;
+      const depthValue = `${formattedNumber(
+        order.depth,
+        this.props.baseAccuracy
+      )} ${this.props.baseAssetName}`;
+
+      const costValue = `${formattedNumber(
+        this.calculateExactPrice(),
+        this.props.quoteAccuracy
+      )} ${this.props.quoteAssetName}`;
+
+      const priceMeasure = measureText(
+        priceValue,
+        PRICE_FONT_SIZE,
+        chart.modal.label.fontFamily
+      );
+      const depthMeasure = measureText(
+        `${depthLabel} ${depthValue}`,
+        FONT_SIZE,
+        chart.modal.label.fontFamily
+      );
+      const depthLabelMeasure = measureText(
+        depthLabel,
+        FONT_SIZE,
+        chart.modal.label.fontFamily
+      );
+      const costMeasure = measureText(
+        `${DepthText.Cost} ${costValue}`,
+        FONT_SIZE,
+        chart.modal.label.fontFamily
+      );
+      const costLabelMeasure = measureText(
+        DepthText.Cost,
+        FONT_SIZE,
+        chart.modal.label.fontFamily
+      );
+      const maxValueWidth = Math.max(priceMeasure, depthMeasure, costMeasure);
+
+      this.drawTools.drawPopup(
+        getPopupCoords(x, y, maxValueWidth, this.currentArea, this.midXBids)
+      );
+
+      const drawText = this.drawTools.drawText(
+        x,
+        y,
+        this.currentArea,
+        this.midXBids,
+        maxValueWidth
+      );
+
+      // draw price
+      drawText(
+        priceMeasure,
+        priceValue,
+        colors.white,
+        PRICE_FONT_SIZE,
+        PRICE_PADDING
+      );
+
+      // draw depth label
+      drawText(
+        depthLabelMeasure,
+        depthLabel,
+        getAreaColor(this.currentArea),
+        FONT_SIZE,
+        DEPTH_PADDING
+      );
+
+      // draw depth value
+      drawText(
+        depthMeasure,
+        depthValue,
+        colors.white,
+        FONT_SIZE,
+        DEPTH_PADDING,
+        depthLabelMeasure + VALUE_PADDING
+      );
+
+      // draw cost label
+      drawText(
+        costLabelMeasure,
+        DepthText.Cost,
+        getAreaColor(this.currentArea),
+        FONT_SIZE,
+        COST_PADDING
+      );
+
+      // draw cost value
+      drawText(
+        costMeasure,
+        costValue,
+        colors.white,
+        FONT_SIZE,
+        COST_PADDING,
+        costLabelMeasure + VALUE_PADDING
+      );
+    }
+  };
+
   calculateCoefficient() {
     if (this.minDepth && this.maxDepth) {
       if (this.minDepth === this.maxDepth) {
@@ -273,104 +389,16 @@ class Chart extends React.Component<ChartProps> {
     this.drawBids();
 
     if (y && x) {
-      this.drawTools.drawPointer(x, y);
-      this.drawTools.drawPointerLine(this.props.height, x, y);
-
-      const order = this.findOrder();
-      if (order) {
-        const depthLabel = this.getDepthText();
-        const costLabel = 'Cost';
-        const depthText = `${depthLabel} ${order.depth}`;
-        const costText = `${costLabel} ${this.calculateExactPrice()}`;
-        const priceMeasure = measureText(
-          `${order.price}`,
-          PRICE_FONT_SIZE,
-          chart.modal.label.fontFamily
-        );
-        const depthMeasure = measureText(
-          depthText,
-          FONT_SIZE,
-          chart.modal.label.fontFamily
-        );
-        const depthLabelMeasure = measureText(
-          depthLabel,
-          FONT_SIZE,
-          chart.modal.label.fontFamily
-        );
-        const costMeasure = measureText(
-          costText,
-          FONT_SIZE,
-          chart.modal.label.fontFamily
-        );
-        const costLabelMeasure = measureText(
-          costLabel,
-          FONT_SIZE,
-          chart.modal.label.fontFamily
-        );
-        const maxValueWidth = Math.max(priceMeasure, depthMeasure, costMeasure);
-
-        this.drawTools.drawPopup(
-          getPopupCoords(x, y, maxValueWidth, this.currentArea, this.midXBids)
-        );
-        this.drawTools.drawPrice(
-          x,
-          y,
-          this.currentArea,
-          priceMeasure,
-          order.price,
-          this.midXBids,
-          maxValueWidth
-        );
-        this.drawTools.drawDepthLabel(
-          x,
-          y,
-          depthMeasure,
-          this.currentArea,
-          maxValueWidth,
-          depthLabel,
-          this.midXBids
-        );
-        this.drawTools.drawDepthValue(
-          depthLabelMeasure,
-          maxValueWidth,
-          depthMeasure,
-          order.depth,
-          this.currentArea,
-          y,
-          x,
-          this.midXBids
-        );
-
-        this.drawTools.drawCostLabel(
-          x,
-          y,
-          costMeasure,
-          this.currentArea,
-          maxValueWidth,
-          costLabel,
-          this.midXBids
-        );
-
-        this.drawTools.drawCostValue(
-          costLabelMeasure,
-          maxValueWidth,
-          costMeasure,
-          this.calculateExactPrice(),
-          this.currentArea,
-          y,
-          x,
-          this.midXBids
-        );
-      }
+      this.drawPopup(y, x);
     }
   };
 
   calculateExactPrice = (): number => {
     const orders =
-      this.currentArea === Area.Bid ? this.props.bids : this.props.asks;
+      this.currentArea === DepthArea.Bid ? this.props.bids : this.props.asks;
     let exactPrice = 0;
 
-    if (this.currentArea === Area.Bid) {
+    if (this.currentArea === DepthArea.Bid) {
       for (let i = 0; i < orders.length - Math.floor(this.xIndex / 2); i++) {
         const price = orders[i].price;
         const volume = orders[i].volume;
@@ -389,15 +417,13 @@ class Chart extends React.Component<ChartProps> {
     return exactPrice;
   };
 
-  getDepthText = () => {
-    if (this.currentArea === Area.Bid) {
-      return `Can be sold`;
-    }
-    return `Can be bought`;
-  };
+  getDepthText = () =>
+    this.currentArea === DepthArea.Bid
+      ? DepthText.CanBeSold
+      : DepthText.CanBeBought;
 
   findOrder = () => {
-    if (this.currentArea === Area.Bid) {
+    if (this.currentArea === DepthArea.Bid) {
       return [...this.props.bids].reverse()[Math.floor(this.xIndex / 2)];
     }
     return this.props.asks[Math.floor(this.xIndex / 2) - 1];

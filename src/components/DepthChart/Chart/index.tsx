@@ -53,8 +53,8 @@ const ConnectedChart = connect(
       width: width - chart.labelsWidth,
       canvasHeight: height,
       canvasWidth: width,
-      baseAsset: selectedInstrument!.baseAsset.name,
-      quoteAsset: selectedInstrument!.quoteAsset.name,
+      baseAssetName: selectedInstrument!.baseAsset.name,
+      quoteAssetName: selectedInstrument!.quoteAsset.name,
       quoteAccuracy: selectedInstrument!.quoteAsset.accuracy,
       baseAccuracy: selectedInstrument!.baseAsset.accuracy,
       priceAccuracy: selectedInstrument!.accuracy

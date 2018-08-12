@@ -41,6 +41,8 @@ import {
   WatchlistStore
 } from './index';
 
+import autobahn from 'autobahn';
+
 const tokenStorage = StorageUtils(keys.token);
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
 
@@ -103,30 +105,25 @@ class RootStore {
 
   startPublicMode = async (defaultInstrument: any) => {
     const ws = new WampApi();
-    return ws
-      .connect(
-        this.wampUrl,
-        this.wampRealm
-      )
-      .then(session => {
-        this.uiStore.setWs(ws);
-        this.depthChartStore.setWs(ws);
-        this.orderBookStore.setWs(ws);
-        this.chartStore.setWs(ws);
-        this.tradeStore.setWs(ws);
-        this.priceStore.setWs(ws);
-        this.referenceStore.getInstruments().forEach((x: any) => {
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-          ws.subscribe(
-            topics.candle('spot', x.id, PriceType.Trade, 'day'),
-            this.referenceStore.onCandle
-          );
-        });
-        this.uiStore.selectInstrument(
-          this.lastOrDefaultInstrument(defaultInstrument)!.id
+    return ws.connect(this.wampUrl, this.wampRealm).then(session => {
+      this.uiStore.setWs(ws);
+      this.depthChartStore.setWs(ws);
+      this.orderBookStore.setWs(ws);
+      this.chartStore.setWs(ws);
+      this.tradeStore.setWs(ws);
+      this.priceStore.setWs(ws);
+      this.referenceStore.getInstruments().forEach((x: any) => {
+        ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+        ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+        ws.subscribe(
+          topics.candle('spot', x.id, PriceType.Trade, 'day'),
+          this.referenceStore.onCandle
         );
       });
+      this.uiStore.selectInstrument(
+        this.lastOrDefaultInstrument(defaultInstrument)!.id
+      );
+    });
   };
 
   start = async () => {
@@ -190,6 +187,24 @@ class RootStore {
         if (!this.uiStore.getPageVisibility()) {
           this.pause();
         }
+
+        const conn = new autobahn.Connection({
+          url: 'wss://wamp.lykke.com/ws/',
+          realm: 'prices'
+        });
+
+        conn.onopen = (session, details) => {
+          session.subscribe(
+            'orderbook.spot.btcusd.sell',
+            this.orderBookStore.onNextOrders
+          );
+          session.subscribe(
+            'orderbook.spot.btcusd.buy',
+            this.orderBookStore.onNextOrders
+          );
+        };
+
+        conn.open();
 
         return Promise.resolve();
       })
