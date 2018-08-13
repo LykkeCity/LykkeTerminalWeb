@@ -2,7 +2,7 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import {InstrumentModel, TradeModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
-import {HeaderProps, TableHeaderWithoutSort} from '../Table';
+import {HeaderProps, TableHeaderWithoutSort, TableNotSortState} from '../Table';
 import {PublicTradeList} from './';
 
 export interface TradeLogProps extends LoaderProps {
@@ -12,8 +12,14 @@ export interface TradeLogProps extends LoaderProps {
   setIsWampTradesProcessed: (isProcessing: boolean) => void;
 }
 
+class TradeLog extends React.Component<TradeLogProps, TableNotSortState> {
+  constructor(props: TradeLogProps) {
+    super(props);
+    this.state = {
+      data: this.props.trades
+    };
+  }
 
-class TradeLog extends React.Component<TradeLogProps, TableSortState> {
   componentWillReceiveProps(args: TradeLogProps) {
     this.setState({
       data: args.trades
@@ -31,7 +37,11 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
     const headers: HeaderProps[] = [
       {
         key: 'price',
-        value: `Price (${pathOr('', ['quoteAsset', 'name'], this.props.selectedInstrument)})`
+        value: `Price (${pathOr(
+          '',
+          ['quoteAsset', 'name'],
+          this.props.selectedInstrument
+        )})`
       },
       {
         className: 'right-align',
@@ -43,7 +53,7 @@ class TradeLog extends React.Component<TradeLogProps, TableSortState> {
         key: 'timestamp',
         value: 'Time'
       }
-    ];;
+    ];
 
     return (
       <React.Fragment>

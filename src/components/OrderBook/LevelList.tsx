@@ -6,6 +6,7 @@ import {
   LevelType,
   Order,
   OrderBookCellType,
+  OrderBookDisplayType,
   Side
 } from '../../models';
 import {mapToEffectivePrice} from '../../models/mappers/orderMapper';
@@ -276,13 +277,18 @@ class LevelList extends React.Component<LevelListProps> {
     });
   };
 
-  prepareLevelForDrawing = (normalize: any, levelHeight: number) => {
+  prepareLevelForDrawing = (
+    normalize: any,
+    levelHeight: number,
+    levels: Order[]
+  ) => {
     const {displayType, instrument, format, width} = this.props;
     const isAnimationPrevented = !this.cachedLevels.length;
 
     const levelsWidth = width - BAR_WIDTH;
 
     return (levelOrder: Order, index: number) => {
+      let value;
       const existedLevel = this.cachedLevels.find(
         cachedLevel => cachedLevel.price === levelOrder.price
       );
@@ -333,10 +339,14 @@ class LevelList extends React.Component<LevelListProps> {
         levelHeight
       );
 
-      const value = format(
-        levelOrder[displayType] * levelOrder.price,
-        instrument.quoteAsset.accuracy
-      );
+      if (displayType === toLower(OrderBookDisplayType.Depth)) {
+        const arr = levels.slice(0, index + 1);
+        const sumVolume = arr.reduce((sum, cur) => sum + cur.volume, 0);
+        value = mapToEffectivePrice(sumVolume, arr)!;
+      } else {
+        value = levelOrder.volume * levelOrder.price;
+      }
+      value = format(value, instrument.quoteAsset.accuracy);
 
       const normalizedWidth = normalize(levelOrder[displayType]) / SCALE_BAR;
 
@@ -409,7 +419,11 @@ class LevelList extends React.Component<LevelListProps> {
       Math.max(...vals)
     );
 
-    const drawLevel = this.prepareLevelForDrawing(normalize, levelHeight);
+    const drawLevel = this.prepareLevelForDrawing(
+      normalize,
+      levelHeight,
+      levels
+    );
 
     levels.forEach(drawLevel);
     this.animatingLevels = this.animatingLevels.filter(al => !al.isAnimated);

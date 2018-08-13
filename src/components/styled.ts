@@ -41,7 +41,6 @@ export const colors = {
   activeBuy: '#8ccb4d',
   activeSell: '#ca4c4c',
   zeroGrey: '#4d5158',
-  snowWhite: '#fff',
   whiteText: '#f5f6f7',
   graphiteBackground: '#3e3e3e'
 };

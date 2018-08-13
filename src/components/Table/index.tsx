@@ -4,6 +4,10 @@ export interface TableSortState {
   sortDirection: string;
 }
 
+export interface TableNotSortState {
+  data: any[];
+}
+
 export * from './styles';
 export * from './sortFn';
 export * from './TableHeader';
