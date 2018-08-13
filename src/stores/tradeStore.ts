@@ -121,19 +121,11 @@ class TradeStore extends BaseStore {
   };
 
   fetchHistory = () => {
-    const types = [
-      OperationType.CashOut,
-      OperationType.CashIn,
-      OperationType.Trade,
-      OperationType.LimitTrade
-    ];
     const walletId = this.rootStore.balanceListStore.getCurrentWalletId();
 
-    return this.api
-      .fetchHistory(walletId, types, this.instrumentIdByFilter)
-      .then(data => {
-        return Promise.resolve(data);
-      });
+    return this.api.fetchCsvLink(walletId).then(url => {
+      return Promise.resolve(url);
+    });
   };
 
   fetchNextTrades = async () => {
