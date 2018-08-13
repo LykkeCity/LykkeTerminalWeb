@@ -173,7 +173,7 @@ class Order extends React.Component<OrderProps, OrderState> {
     }
     this.closeConfirmModal();
     placeOrder(orderType, body)
-      .then((a: any) => {
+      .then(() => {
         this.disableButton(false);
 
         const amountInBase = formattedNumber(

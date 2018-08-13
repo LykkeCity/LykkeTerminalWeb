@@ -60,8 +60,8 @@ describe('<Order>', () => {
   let baseAsset: AssetModel;
   let convert: (
     amount: number,
-    assetFrom: any,
-    assetTo: any,
+    assetFrom: AssetModel,
+    assetTo: AssetModel,
     getInstrumentById: (id: string) => InstrumentModel | undefined
   ) => number;
   let getInstrumentById: (id: string) => InstrumentModel | undefined;

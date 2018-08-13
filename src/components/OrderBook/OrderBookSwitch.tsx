@@ -33,9 +33,9 @@ const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
     }
   };
 
-  const items = Object.keys(OrderBookDisplayType).map(x => ({
-    label: x,
-    value: x
+  const items = Object.keys(OrderBookDisplayType).map(type => ({
+    label: type,
+    value: type
   }));
 
   return (
