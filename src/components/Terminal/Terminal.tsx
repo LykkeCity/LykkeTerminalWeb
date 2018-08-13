@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import AnalyticsIds from '../../constants/analyticsIds';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
@@ -137,11 +136,6 @@ class Terminal extends React.Component<TerminalProps, {}> {
         AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
       );
     });
-
-    AnalyticsService.handleClicksOnElement(
-      AnalyticsIds.MyFundsTab,
-      AnalyticsEvents.OpenMyFunds
-    );
   }
 
   updateLayoutFromLocalStorage() {

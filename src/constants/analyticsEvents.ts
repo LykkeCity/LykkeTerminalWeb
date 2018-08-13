@@ -43,14 +43,6 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       }
     }
   }),
-  OpenMyFunds: {
-    title: 'Open My Funds Tab',
-    details: {
-      category,
-      location: 'OrderList Widget',
-      type: 'Change Tab'
-    }
-  },
   LogOut: {
     title: 'Log Out',
     details: {
@@ -73,14 +65,6 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       category,
       location: 'OrderBook Widget',
       type: 'Button Click'
-    }
-  },
-  TradelogScrolledToBottom: {
-    title: 'Scroll Tradelog to the Bottom',
-    details: {
-      category,
-      location: 'TradeList Widget',
-      type: 'Scroll'
     }
   },
   ChartTypeSwitched: (type: string) => ({

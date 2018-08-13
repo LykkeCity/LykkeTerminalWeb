@@ -26,11 +26,9 @@ export interface AnalyticsEventsModel {
     side: string,
     type: string
   ) => AnalyticsEventModel;
-  OpenMyFunds: AnalyticsEventModel;
   LogOut: AnalyticsEventModel;
   SwitchToDepth: AnalyticsEventModel;
   SwitchToVolume: AnalyticsEventModel;
-  TradelogScrolledToBottom: AnalyticsEventModel;
   ChartTypeSwitched: (type: string) => AnalyticsEventModel;
   DepthChartZoom: (scale: number) => AnalyticsEventModel;
   InstrumentPickerSort: (

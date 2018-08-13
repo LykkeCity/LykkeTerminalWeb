@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import AnalyticsIds from '../../constants/analyticsIds';
 import {Percentage} from '../../constants/ordersPercentage';
 import {keys} from '../../models';
 import {AssetModel, OrderInputs, OrderType} from '../../models';
@@ -108,14 +107,6 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   componentDidMount() {
     this.props.resetOrder();
-    AnalyticsService.handleClicksOnElement(
-      AnalyticsIds.LimitOrderButton,
-      AnalyticsEvents.SwitchToLimitOrder
-    );
-    AnalyticsService.handleClicksOnElement(
-      AnalyticsIds.MarketOrderButton,
-      AnalyticsEvents.SwitchToMarketOrder
-    );
   }
 
   handleSideClick = (side: Side) => () => {
@@ -135,6 +126,14 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState({
       percents: percentage
     });
+    switch (market) {
+      case LIMIT:
+        AnalyticsService.handleClick(AnalyticsEvents.SwitchToLimitOrder);
+        break;
+      case MARKET:
+        AnalyticsService.handleClick(AnalyticsEvents.SwitchToMarketOrder);
+        break;
+    }
   };
 
   disableButton = (value: boolean) => {
@@ -372,13 +371,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       <React.Fragment>
         <Markets>
           <MarketChoiceButton
-            id={AnalyticsIds.LimitOrderButton}
             title={LIMIT}
             isActive={currentMarket === LIMIT}
             click={this.handleMarketClick(LIMIT)}
           />
           <MarketChoiceButton
-            id={AnalyticsIds.MarketOrderButton}
             title={MARKET}
             isActive={currentMarket === MARKET}
             click={this.handleMarketClick(MARKET)}

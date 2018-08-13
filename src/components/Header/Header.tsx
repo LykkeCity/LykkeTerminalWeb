@@ -1,5 +1,7 @@
 import * as React from 'react';
-import AnalyticsIds from '../../constants/analyticsIds';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+
+import {AnalyticsService} from '../../services/analyticsService';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
 import {Icon} from '../Icon/index';
@@ -29,6 +31,7 @@ const Header: React.SFC<HeaderProps> = ({
 }) => {
   const signOut = () => {
     authStore.signOut();
+    AnalyticsService.handleClick(AnalyticsEvents.LogOut);
   };
 
   const signIn = () => {
@@ -96,11 +99,7 @@ const Header: React.SFC<HeaderProps> = ({
             ) : null}
             <HeaderItem>
               {authStore.isAuth ? (
-                <span
-                  id={AnalyticsIds.LogoutButton}
-                  className="hidden-xs"
-                  onClick={signOut}
-                >
+                <span className="hidden-xs" onClick={signOut}>
                   <Icon name={'logout'} color={colors.coolGrey} />
                 </span>
               ) : (

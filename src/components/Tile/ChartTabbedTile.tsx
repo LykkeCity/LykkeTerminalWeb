@@ -16,7 +16,7 @@ interface ChartTabbedTileProps extends TileProps {
 class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
   @observable selectedTab = ChartType.Price;
 
-  handleSelectTab = (tab: ChartType) => (e: React.MouseEvent<any>) => {
+  handleSelectTab = (tab: ChartType) => () => {
     this.selectedTab = tab;
 
     AnalyticsService.handleClick(AnalyticsEvents.ChartTypeSwitched(tab));
