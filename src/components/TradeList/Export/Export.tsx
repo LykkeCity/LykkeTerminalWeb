@@ -1,10 +1,9 @@
 import * as React from 'react';
-import {HistoryResponseModel} from '../../../models';
 import {ExportButton} from '../styles';
 import saveFile from './exportDataAndSave';
 
 interface ExportProps {
-  fetchHistory: () => Promise<HistoryResponseModel[]>;
+  fetchHistory: () => Promise<string>;
   canExport: () => boolean;
 }
 
@@ -14,9 +13,7 @@ class Export extends React.Component<ExportProps> {
   }
 
   saveFile = () => {
-    if (this.props.canExport()) {
-      saveFile(this.props.fetchHistory);
-    }
+    saveFile(this.props.fetchHistory);
   };
 
   render() {

@@ -1,4 +1,4 @@
-import {HistoryResponseModel, OperationType} from '../models/index';
+import {OperationType} from '../models/index';
 import {HistoryApi} from './index';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
@@ -39,17 +39,8 @@ export class RestTradeApi extends RestApi implements TradeApi {
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
     HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
 
-  fetchHistory = (
-    walletId: string,
-    operationType: string[],
-    instrumentId: string
-  ): Promise<HistoryResponseModel[]> => {
-    return HistoryApi.fetchHistoryByWalletId(walletId, {
-      operationType,
-      assetPairId: instrumentId,
-      take: 1000,
-      skip: 0
-    });
+  fetchCsvLink = (walletId: string): Promise<string> => {
+    return HistoryApi.fetchCsvLink(walletId);
   };
 }
 

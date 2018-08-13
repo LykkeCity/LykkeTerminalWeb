@@ -3,7 +3,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
-import {OperationType, TradeFilter, TradeModel} from '../models/index';
+import {TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {nextSkip} from '../utils';
@@ -124,19 +124,11 @@ class TradeStore extends BaseStore {
   };
 
   fetchHistory = () => {
-    const types = [
-      OperationType.CashOut,
-      OperationType.CashIn,
-      OperationType.Trade,
-      OperationType.LimitTrade
-    ];
     const walletId = this.rootStore.balanceListStore.getCurrentWalletId();
 
-    return this.api
-      .fetchHistory(walletId, types, this.instrumentIdByFilter)
-      .then(data => {
-        return Promise.resolve(data);
-      });
+    return this.api.fetchCsvLink(walletId).then(url => {
+      return Promise.resolve(url);
+    });
   };
 
   fetchNextTrades = async () => {
