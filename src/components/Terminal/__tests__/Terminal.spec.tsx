@@ -1,5 +1,6 @@
 import {shallow} from 'enzyme';
 import React from 'react';
+import {UserInfoModel} from '../../../models';
 import {RootStore} from '../../../stores';
 import Terminal from '../Terminal';
 
@@ -7,8 +8,19 @@ const oldLayout =
   '{"direction":"row","first":"Order","second":{"direction":"row","first":{"direction":"column","first":"Chart","second":"OrderList","splitPercentage":65},"second":{"direction":"column","first":"OrderBook","second":"TradeList","splitPercentage":70},"splitPercentage":73.30729166666667},"splitPercentage":20}';
 
 describe('<Terminal>', () => {
-  const rootStore = new RootStore(true);
+  window.analytics = {
+    identify: jest.fn()
+  };
+
   const history = {};
+  const user = {
+    Email: 'atata@email.com',
+    FirstName: 'Michael',
+    LastName: 'Jackson',
+    KycStatus: 'Done'
+  };
+  const rootStore = new RootStore(true);
+  rootStore.authStore.userInfo = new UserInfoModel(user);
 
   const getTestTerminal = () => (
     <Terminal rootStore={rootStore} history={history} />
