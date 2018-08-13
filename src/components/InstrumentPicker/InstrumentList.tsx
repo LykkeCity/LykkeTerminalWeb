@@ -1,5 +1,7 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {SortDirection} from '../../models';
+import {AnalyticsService} from '../../services/analyticsService';
 import {
   checkDataForSorting,
   HeaderProps,
@@ -75,6 +77,10 @@ class InstrumentList extends React.Component<
       sortByParam,
       direction,
       this.state
+    );
+
+    AnalyticsService.handleClick(
+      AnalyticsEvents.InstrumentPickerSort(sortByParam, sortDirection)
     );
   };
 

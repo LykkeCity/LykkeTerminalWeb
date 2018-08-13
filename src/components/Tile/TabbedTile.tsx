@@ -11,7 +11,7 @@ interface TabbedTileProps extends TileProps {
 class TabbedTile extends React.Component<TabbedTileProps> {
   @observable selectedIndex = 0;
 
-  handleSelectTab = (idx: number) => (e: React.MouseEvent<any>) => {
+  handleSelectTab = (idx: number) => () => {
     this.selectedIndex = idx;
   };
 

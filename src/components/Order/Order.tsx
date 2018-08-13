@@ -1,9 +1,11 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {Percentage} from '../../constants/ordersPercentage';
 import {keys} from '../../models';
-import {OrderInputs, OrderType} from '../../models';
+import {AssetModel, OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Side from '../../models/side';
+import {AnalyticsService} from '../../services/analyticsService';
 import {StorageUtils} from '../../utils/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../../utils/math';
@@ -83,6 +85,14 @@ interface OrderProps {
   marketTotalPrice: number;
   isEnoughLiquidity: boolean;
   resetMarketTotal: () => void;
+  baseAsset: AssetModel;
+  convert: (
+    amount: number,
+    assetFrom: any,
+    assetTo: any,
+    getInstrumentById: (id: string) => InstrumentModel | undefined
+  ) => number;
+  getInstrumentById: (id: string) => InstrumentModel | undefined;
 }
 
 class Order extends React.Component<OrderProps, OrderState> {
@@ -106,6 +116,8 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState({
       percents: percentage
     });
+
+    AnalyticsService.handleClick(AnalyticsEvents.SideSwitch(side));
   };
 
   handleMarketClick = (market: OrderType) => () => {
@@ -114,6 +126,14 @@ class Order extends React.Component<OrderProps, OrderState> {
     this.setState({
       percents: percentage
     });
+    switch (market) {
+      case LIMIT:
+        AnalyticsService.handleClick(AnalyticsEvents.SwitchToLimitOrder);
+        break;
+      case MARKET:
+        AnalyticsService.handleClick(AnalyticsEvents.SwitchToMarketOrder);
+        break;
+    }
   };
 
   disableButton = (value: boolean) => {
@@ -129,21 +149,45 @@ class Order extends React.Component<OrderProps, OrderState> {
     price: string
   ) => {
     this.disableButton(true);
-    const orderType = this.props.currentMarket;
+
+    const {
+      baseAsset,
+      convert,
+      getInstrumentById,
+      currentMarket,
+      currency,
+      placeOrder,
+      quoteAssetId
+    } = this.props;
+    const orderType = currentMarket;
     const body: any = {
       AssetId: baseAssetId,
-      AssetPairId: this.props.currency,
+      AssetPairId: currency,
       OrderAction: action,
       Volume: parseFloat(quantity)
     };
 
-    if (this.props.currentMarket === LIMIT) {
+    if (currentMarket === LIMIT) {
       body.Price = parseFloat(price);
     }
     this.closeConfirmModal();
-    this.props
-      .placeOrder(orderType, body)
-      .then(() => this.disableButton(false))
+    placeOrder(orderType, body)
+      .then(() => {
+        this.disableButton(false);
+
+        const amountInBase = formattedNumber(
+          convert(
+            parseFloat(quantity) * parseFloat(price),
+            quoteAssetId,
+            baseAsset.id,
+            getInstrumentById
+          ),
+          baseAsset.accuracy
+        );
+        AnalyticsService.handleClick(
+          AnalyticsEvents.OrderPlaced(amountInBase, action, currentMarket)
+        );
+      })
       .catch(() => this.disableButton(false));
   };
 

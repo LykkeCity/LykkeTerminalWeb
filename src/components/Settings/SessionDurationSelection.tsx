@@ -1,4 +1,6 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {AnalyticsService} from '../../services/analyticsService';
 import ChoosableItem from '../ChoosableItem/ChoosableItem';
 import {SessionDurations} from './styles';
 
@@ -42,6 +44,10 @@ const SessionDurationSelection: React.SFC<SessionDurationSelectionProps> = ({
             if (sessionCurrentDuration !== item) {
               handleSetDuration(item);
               closeSessionNotification();
+
+              AnalyticsService.handleClick(
+                AnalyticsEvents.SessionDurationChanged(item)
+              );
             }
           }}
         />

@@ -37,7 +37,7 @@ const ConnectedOrder = connect(
       isDisclaimerShown,
       disclaimedAssets
     },
-    referenceStore,
+    referenceStore: {getBaseAsset, getInstrumentById},
     uiOrderStore: {
       handlePriceArrowClick,
       handleQuantityArrowClick,
@@ -61,7 +61,8 @@ const ConnectedOrder = connect(
       resetMarketTotal,
       handleMarketQuantityArrowClick
     },
-    authStore: {isAuth}
+    authStore: {isAuth},
+    marketStore: {convert}
   }) => ({
     accuracy: {
       priceAccuracy: getPriceAccuracy(),
@@ -118,7 +119,10 @@ const ConnectedOrder = connect(
     setMarketTotal,
     marketTotalPrice,
     isEnoughLiquidity,
-    resetMarketTotal
+    resetMarketTotal,
+    convert,
+    baseAsset: getBaseAsset,
+    getInstrumentById
   }),
   withAuth(Order)
 );

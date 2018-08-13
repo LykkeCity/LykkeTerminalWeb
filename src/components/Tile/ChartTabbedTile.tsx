@@ -1,7 +1,9 @@
 import {observable} from 'mobx';
 import {equals} from 'rambda';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {ChartType} from '../../models';
+import {AnalyticsService} from '../../services/analyticsService';
 import {Chart} from '../Chart/index';
 import DepthChart from '../DepthChart';
 import {TileContent, TileHeader, TileTab} from './styles';
@@ -14,8 +16,10 @@ interface ChartTabbedTileProps extends TileProps {
 class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
   @observable selectedTab = ChartType.Price;
 
-  handleSelectTab = (tab: ChartType) => (e: React.MouseEvent<any>) => {
+  handleSelectTab = (tab: ChartType) => () => {
     this.selectedTab = tab;
+
+    AnalyticsService.handleClick(AnalyticsEvents.ChartTypeSwitched(tab));
   };
 
   render() {

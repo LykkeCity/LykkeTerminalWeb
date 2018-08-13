@@ -7,6 +7,12 @@ import './Logger';
 import {RootStore} from './stores/index';
 import {getWorkerByCurrentBrowser} from './workers/worker';
 
+declare global {
+  interface Window {
+    analytics: any;
+  }
+}
+
 // tslint:disable-next-line:no-var-requires
 const {detect} = require('detect-browser');
 

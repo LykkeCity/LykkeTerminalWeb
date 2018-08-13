@@ -5,6 +5,10 @@ import {ChoosableItemProps} from '../../ChoosableItem/ChoosableItem';
 import SessionDurationSelection from '../SessionDurationSelection';
 
 describe('<SessionDurationSelection>', () => {
+  window.analytics = {
+    track: jest.fn()
+  };
+
   const closeSessionNotification = jest.fn();
   const handleSetDuration = jest.fn();
   const sessionCurrentDuration = 0.5;
@@ -50,5 +54,6 @@ describe('<SessionDurationSelection>', () => {
     const options = wrapper.find('ChoosableItem');
     options.last().simulate('click');
     expect(handleSetDuration).toHaveBeenCalledWith(24);
+    expect(window.analytics.track).toHaveBeenCalled();
   });
 });

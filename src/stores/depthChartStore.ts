@@ -1,6 +1,8 @@
 import {action, computed, observable} from 'mobx';
 import {reverse} from 'rambda';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {Order, TradeModel} from '../models';
+import {AnalyticsService} from '../services/analyticsService';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
@@ -112,6 +114,10 @@ class DepthChartStore extends BaseStore {
   nextSpan = () => {
     if (this.spanMultiplierIdx < this.maxMultiplier) {
       this.spanMultiplierIdx++;
+
+      AnalyticsService.handleClick(
+        AnalyticsEvents.DepthChartZoom(this.spanMultiplierIdx)
+      );
     }
   };
 
@@ -119,6 +125,10 @@ class DepthChartStore extends BaseStore {
   prevSpan = () => {
     if (this.spanMultiplierIdx > 1) {
       this.spanMultiplierIdx--;
+
+      AnalyticsService.handleClick(
+        AnalyticsEvents.DepthChartZoom(this.spanMultiplierIdx)
+      );
     }
   };
 

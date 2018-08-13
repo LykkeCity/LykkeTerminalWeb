@@ -1,4 +1,7 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+
+import {AnalyticsService} from '../../services/analyticsService';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
 import {Icon} from '../Icon/index';
@@ -28,6 +31,7 @@ const Header: React.SFC<HeaderProps> = ({
 }) => {
   const signOut = () => {
     authStore.signOut();
+    AnalyticsService.handleClick(AnalyticsEvents.LogOut);
   };
 
   const signIn = () => {

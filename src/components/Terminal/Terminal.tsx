@@ -1,8 +1,10 @@
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
+import {AnalyticsService} from '../../services/analyticsService';
 import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {getHashCode} from '../../utils/hashcode';
 import {StorageUtils} from '../../utils/index';
@@ -109,6 +111,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private balanceListStore: BalanceListStore = this.props.rootStore
     .balanceListStore;
   private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
+  private isMosaicChanged: boolean = false;
 
   handleVisibilityChange = () => {
     this.props.rootStore.uiStore.setPageVisibility(
@@ -127,6 +130,11 @@ class Terminal extends React.Component<TerminalProps, {}> {
       }
       this.updateLayoutFromLocalStorage();
       this.bindChartOverlayHandler();
+
+      AnalyticsService.handleIdentify(
+        this.authStore.userInfo.email,
+        AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
+      );
     });
   }
 
@@ -188,6 +196,13 @@ class Terminal extends React.Component<TerminalProps, {}> {
       initialValue: args
     });
     layoutStorage.set(JSON.stringify(args));
+
+    if (!this.isMosaicChanged) {
+      this.isMosaicChanged = true;
+      setTimeout(() => (this.isMosaicChanged = false), 1000);
+
+      AnalyticsService.handleClick(AnalyticsEvents.SectionSplitterMoved);
+    }
   };
 
   async start() {

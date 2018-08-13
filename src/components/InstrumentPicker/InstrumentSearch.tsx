@@ -1,5 +1,7 @@
 import {rem} from 'polished';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {AnalyticsService} from '../../services/analyticsService';
 import {Icon} from '../Icon/index';
 import styled, {colors} from '../styled';
 import {InstrumentPickerActions} from './index';
@@ -25,7 +27,13 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
       type="search"
       placeholder="Type to search instrument..."
       // tslint:disable-next-line:jsx-no-lambda
-      onChange={e => change(e.currentTarget.value)}
+      onChange={e => {
+        change(e.currentTarget.value);
+
+        AnalyticsService.handleClick(
+          AnalyticsEvents.InstrumentPickerSearch(e.currentTarget.value)
+        );
+      }}
     />
   </Box>
 );
