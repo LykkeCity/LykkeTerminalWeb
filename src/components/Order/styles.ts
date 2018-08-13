@@ -9,7 +9,9 @@ const {Flex} = require('grid-styled');
 export const Markets = styled.div`
   display: flex;
   flex-direction: row;
-  margin-bottom: ${rem(16)};
+  margin-bottom: ${rem(
+    window.matchMedia('(max-width: 400px)').matches ? 8 : 16
+  )};
   border-bottom: 1px solid #2d2d2d;
 `;
 
@@ -143,7 +145,7 @@ export const OrderTitle = styled.div`
 `;
 
 export const MarketConfirmButton = styled.div`
-  margin-top: ${rem(24)};
+  margin-top: ${rem(window.matchMedia('(max-width: 400px)').matches ? 16 : 24)};
 `;
 
 export const Note = styled.div`

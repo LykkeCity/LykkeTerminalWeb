@@ -126,7 +126,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
       direction: 'column' as MosaicDirection,
       first: MobileTopWidget,
       second: MobileBottomWidget,
-      splitPercentage: 60
+      splitPercentage: 70
     }
   };
 
