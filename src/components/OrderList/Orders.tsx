@@ -37,9 +37,9 @@ class Blotter extends React.Component<OrdersProps, OrdersState> {
   }
 
   componentWillReceiveProps(args: any) {
-    this.setState({
-      data: args.orders
-    });
+    this.setState(
+      sortData(args.orders, this.state.sortByParam, this.state.sortDirection)
+    );
   }
 
   sort = (sortByParam: string, sortDirectionDefault: string) => {
