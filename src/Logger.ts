@@ -1,4 +1,5 @@
-import {AppInsights} from 'applicationinsights-js';
+// tslint:disable-next-line:no-var-requires
+const AppInsights = require('applicationinsights-js').AppInsights;
 import raven from 'raven-js';
 
 // tslint:disable-next-line:no-var-requires

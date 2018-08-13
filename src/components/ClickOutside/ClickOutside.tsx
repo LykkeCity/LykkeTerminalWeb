@@ -17,7 +17,8 @@ export class ClickOutside extends React.Component<IClickOutsideProps> {
   }
 
   handleDocumentClick = (e: MouseEvent | TouchEvent) => {
-    if (!ReactDOM.findDOMNode(this).contains(e.target as Node)) {
+    const domNode = ReactDOM.findDOMNode(this);
+    if (!domNode || !domNode.contains(e.target as Node)) {
       if (this.props.onClickOutside) {
         this.props.onClickOutside();
       }

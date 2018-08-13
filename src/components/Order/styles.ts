@@ -21,7 +21,9 @@ export const Actions = Markets.extend`
 
 const buttonColorBySide = (side: Side, isActive: boolean) => {
   return isActive
-    ? side === Side.Sell ? colors.red : colors.green
+    ? side === Side.Sell
+      ? colors.red
+      : colors.green
     : '#272727';
 };
 
@@ -44,7 +46,9 @@ export const ActionProperty = styled.div.attrs({
   style: (props: any) => ({
     backgroundColor: buttonColorBySide(props.side, props.isActive),
     color: props.isActive
-      ? props.side === Side.Buy ? '#333' : colors.white
+      ? props.side === Side.Buy
+        ? '#333'
+        : colors.white
       : '#8c94a0'
   })
 })`
@@ -88,10 +92,11 @@ export const MarketProperty = styled.div`
 `;
 
 export const ConfirmButton = styled.button.attrs({
-  style: (props: any) => ({
-    cursor: `${props.disabled ? 'not-allowed' : 'pointer'}`,
-    opacity: `${props.disabled ? '0.5' : '1'}`
-  })
+  style: (props: any) =>
+    ({
+      cursor: `${props.disabled ? 'not-allowed' : 'pointer'}`,
+      opacity: `${props.disabled ? '0.5' : '1'}`
+    } as any)
 })`
   width: 100%;
   min-height: ${rem(50)};

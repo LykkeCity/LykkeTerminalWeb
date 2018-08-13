@@ -58,6 +58,9 @@ describe('<Header>', () => {
   describe('Header for logged in user', () => {
     beforeEach(() => {
       window.localStorage.getItem = jest.fn(() => '123');
+      window.analytics = {
+        track: jest.fn()
+      };
 
       const rootStore = new RootStore(true);
       authStore = new AuthStore(rootStore, new AuthApi(rootStore));
@@ -84,6 +87,15 @@ describe('<Header>', () => {
       const wrapper = shallow(getTestHeader());
       const icon = wrapper.find('Icon[name="logout"]');
       expect(icon).toHaveLength(1);
+    });
+
+    it('should show sign-out icon', () => {
+      const wrapper = shallow(getTestHeader());
+      const icon = wrapper.find('Icon[name="logout"]');
+      authStore.signOut = jest.fn();
+
+      icon.parent().simulate('click');
+      expect(authStore.signOut).toHaveBeenCalled();
     });
 
     describe('Readonly mode', () => {

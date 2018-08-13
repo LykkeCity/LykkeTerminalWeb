@@ -22,7 +22,8 @@
       {
         "name": "typescript-styled-plugin"
       }
-    ]
+    ],
+    "baseUrl": "."
   },
   "exclude": [
     "node_modules",
@@ -32,6 +33,8 @@
     "webpack",
     "jest",
     "enzyme",
-    "src/setupTests.ts"
+    "public",
+    "src/setupTests.ts",
+    "coverage"
   ]
 }
