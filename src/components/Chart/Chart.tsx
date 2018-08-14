@@ -130,10 +130,10 @@ class Chart extends React.Component<
         'keep_left_toolbar_visible_on_small_screens'
       ],
       time_frames: [
-        {text: '1m', resolution: '30', description: '1 Minute'},
-        {text: '3m', resolution: '60', description: '3 Minutes'},
-        {text: '6m', resolution: '1D', description: '6 Minutes'},
-        {text: '5d', resolution: '5', description: '5 Days'}
+        {text: '5D', title: '5D', resolution: '5', description: '5 days'},
+        {text: '1m', title: '1M', resolution: '30', description: '1 month'},
+        {text: '3m', title: '3M', resolution: '60', description: '3 months'},
+        {text: '6m', title: '6M', resolution: '1D', description: '6 months'}
       ],
       fullscreen,
       autosize,
