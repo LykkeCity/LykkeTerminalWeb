@@ -141,14 +141,10 @@ class OrderMarket extends React.Component<
           {isEnoughLiquidity && (
             <Amount>
               {amount} {quoteAssetName}
-              <TotalHint
-                title={
-                  action === Side.Sell
-                    ? indicativeTotalHint.sell
-                    : indicativeTotalHint.buy
-                }
-              >
-                Actual costs/amount depend on market price
+              <TotalHint>
+                {action === Side.Sell
+                  ? indicativeTotalHint.sell
+                  : indicativeTotalHint.buy}
               </TotalHint>
             </Amount>
           )}
