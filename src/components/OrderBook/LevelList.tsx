@@ -1,13 +1,15 @@
+import {curry, map, prop, toLower} from 'rambda';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-
-import {colors} from '../styled';
-
-import {InstrumentModel, Order, OrderBookDisplayType, Side} from '../../models';
+import {
+  InstrumentModel,
+  LevelType,
+  Order,
+  OrderBookCellType,
+  OrderBookDisplayType,
+  Side
+} from '../../models';
 import {mapToEffectivePrice} from '../../models/mappers/orderMapper';
-import {LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
-
-import {curry, map, prop, toLower} from 'rambda';
 import {normalizeVolume} from '../../utils';
 import {
   defineCanvasScale,
@@ -16,23 +18,30 @@ import {
   drawText,
   drawVerticalLine
 } from '../../utils/canvasUtils';
-
-import LevelType from '../../models/levelType';
-import OrderBookCellType from '../../models/orderBookCellType';
+import {
+  getTrailingZeroOppositePosition,
+  hasTrailingZeroes
+} from '../../utils/string';
+import {colors} from '../styled';
+import {
+  colorizedSymbol,
+  DEFAULT_BAR_OPACITY,
+  DEFAULT_OPACITY,
+  fillBySide,
+  findAndDeleteDuplicatedAnimatedLevel,
+  getCellType,
+  getColorAndOpacityForAnimation,
+  getY,
+  updateAnimatingLevelsWithNewLevel
+} from './helpers/LevelListHelpers';
+import {BAR_WIDTH, LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 import {FakeOrderBookStage} from './styles';
 
 const LEVEL_FONT = `12.25px Proxima Nova`;
-
-const fillBySide = (side: Side) =>
-  side === Side.Buy ? colors.buy : colors.sell;
-
-const getCellType = (type: string) =>
-  type === OrderBookCellType.Depth
-    ? OrderBookCellType.Depth
-    : OrderBookCellType.Volume;
-
-const getY = (side: Side, idx: number, levelHeight: number) =>
-  (side === Side.Buy ? idx : LEVELS_COUNT - idx - 1) * levelHeight;
+const UPDATE_ANIMATION_INTERVAL = 250;
+const CELLS_NUMBER = 3;
+const SCALE_BAR = 3;
+const MARGIN_BOTTOM = 3;
 
 export interface LevelListProps {
   levels: Order[];
@@ -42,16 +51,17 @@ export interface LevelListProps {
   height: number;
   width: number;
   isReadOnly: boolean;
-  getAsks: any;
-  getBids: any;
+  getAsks: () => Order[];
+  getBids: () => Order[];
   displayType: string;
-  getLevels: () => Order[];
   setLevelsUpdatingHandler: (
     fn: (asks: Order[], bids: Order[], type: LevelType) => void
   ) => void;
   triggerOrderUpdate: (clickedEl: any) => void;
   type: LevelType;
   isPageVisible: () => boolean;
+  spanAccuracy: number;
+  setSpanUpdatingHandler: (levelType: LevelType, fn: () => void) => void;
 }
 
 interface ILevelsCells {
@@ -64,12 +74,21 @@ interface ILevelsCells {
   side: Side;
 }
 
+export interface IAnimatingLevels {
+  isAnimated: boolean;
+  currentOpacity: number;
+  price: number;
+}
+
 class LevelList extends React.Component<LevelListProps> {
   canvas: HTMLCanvasElement | null;
   canvasCtx: CanvasRenderingContext2D | null;
   levelsCells: ILevelsCells[] = [];
   fakeStage: HTMLDivElement;
-  memoWidth: number = 0;
+  prevWidth: number = 0;
+  cachedLevels: Order[] = [];
+  cancelColorAnimationIntervalId: any;
+  animatingLevels: IAnimatingLevels[] = [];
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
     if (!this.props.isPageVisible()) {
@@ -79,7 +98,23 @@ class LevelList extends React.Component<LevelListProps> {
     window.requestAnimationFrame(() => {
       this.renderCanvas(asks, bids, type);
       this.forceUpdate();
+
+      clearInterval(this.cancelColorAnimationIntervalId);
+
+      this.cancelColorAnimationIntervalId = setInterval(() => {
+        if (this.animatingLevels.length) {
+          this.renderCanvas(asks, bids, type);
+          this.forceUpdate();
+        } else {
+          clearInterval(this.cancelColorAnimationIntervalId);
+        }
+      }, UPDATE_ANIMATION_INTERVAL);
     });
+  };
+
+  handleSpanUpdating = () => {
+    this.clearCachedLevels();
+    this.clearAnimatingLevels();
   };
 
   togglePointerEvents = (value: string) =>
@@ -91,10 +126,14 @@ class LevelList extends React.Component<LevelListProps> {
     const {
       setLevelsUpdatingHandler,
       triggerOrderUpdate,
+      setSpanUpdatingHandler,
+      type,
       width,
       height
     } = this.props;
     setLevelsUpdatingHandler(this.handleLevelsUpdating);
+    setSpanUpdatingHandler(type, this.handleSpanUpdating);
+
     this.canvasCtx = this.canvas!.getContext('2d');
     this.canvas!.addEventListener(
       'mouseup',
@@ -125,9 +164,248 @@ class LevelList extends React.Component<LevelListProps> {
     defineCanvasScale(this.canvasCtx, this.canvas, width, height);
   }
 
-  drawLevels = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
+  drawBar = (color: string, y: number, normalizedWidth: number) => {
+    drawRect({
+      ctx: this.canvasCtx,
+      color,
+      x: LEFT_PADDING,
+      y,
+      width: normalizedWidth,
+      height: this.props.height / LEVELS_COUNT,
+      opacity: DEFAULT_BAR_OPACITY
+    });
+  };
+
+  drawConnectedOrders = (color: string, y: number) => {
+    drawVerticalLine({
+      ctx: this.canvasCtx,
+      x: 1 + LEFT_PADDING,
+      y: y + 2,
+      height: y + this.props.height / LEVELS_COUNT - 2,
+      lineWidth: 2,
+      color,
+      lineCap: 'round'
+    });
+  };
+
+  drawLevelBorder = (width: number, y: number) => {
+    drawLine({
+      ctx: this.canvasCtx,
+      width,
+      y,
+      x: LEFT_PADDING,
+      color: colors.graphiteBorder,
+      lineWidth: 1
+    });
+  };
+
+  drawAndSavePrice = (
+    color: string,
+    canvasY: number,
+    y: number,
+    price: number,
+    side: Side
+  ) => {
+    const {spanAccuracy, width, height, format} = this.props;
+    drawText({
+      ctx: this.canvasCtx,
+      color,
+      text: format(price, spanAccuracy),
+      x: BAR_WIDTH,
+      y: canvasY - TOP_PADDING,
+      font: LEVEL_FONT,
+      align: 'start'
+    });
+
+    this.levelsCells.push({
+      left: BAR_WIDTH,
+      top: y + MARGIN_BOTTOM,
+      width: (width - BAR_WIDTH) / CELLS_NUMBER,
+      height: height / LEVELS_COUNT,
+      type: OrderBookCellType.Price,
+      value: price,
+      side
+    });
+  };
+
+  drawVolume = (
+    volumeColor: string,
+    volume: string,
+    volumeOpacity: number,
+    canvasY: number,
+    x: number
+  ) => {
+    drawText({
+      ctx: this.canvasCtx,
+      color: volumeColor,
+      text: volume,
+      x,
+      y: canvasY - TOP_PADDING,
+      font: LEVEL_FONT,
+      align: 'start',
+      opacity: volumeOpacity
+    });
+  };
+
+  saveVolume = (
+    displayType: OrderBookCellType,
+    depth: number,
+    side: Side,
+    y: number
+  ) => {
+    const {width, height} = this.props;
+    this.levelsCells.push({
+      left: (width - BAR_WIDTH) / CELLS_NUMBER + BAR_WIDTH,
+      top: y + MARGIN_BOTTOM,
+      width: (width - BAR_WIDTH) / CELLS_NUMBER,
+      height: height / LEVELS_COUNT,
+      type: getCellType(displayType),
+      value: depth,
+      side
+    });
+  };
+
+  drawValue = (value: string, y: number) => {
+    drawText({
+      ctx: this.canvasCtx,
+      color: colors.white,
+      text: value,
+      x: this.props.width,
+      y: y - TOP_PADDING,
+      font: LEVEL_FONT,
+      align: 'end'
+    });
+  };
+
+  prepareLevelForDrawing = (
+    normalize: any,
+    levelHeight: number,
+    levels: Order[]
+  ) => {
+    const {displayType, instrument, format, width} = this.props;
+    const isAnimationPrevented = !this.cachedLevels.length;
+
+    const levelsWidth = width - BAR_WIDTH;
+
+    return (levelOrder: Order, index: number) => {
+      let value;
+      const existedLevel = this.cachedLevels.find(
+        cachedLevel => cachedLevel.price === levelOrder.price
+      );
+      const color = fillBySide(levelOrder.side);
+
+      let volumeColor = colors.white;
+      let volumeOpacity = DEFAULT_OPACITY;
+      const isChangingLevel =
+        existedLevel && existedLevel[displayType] !== levelOrder[displayType];
+      let existedAnimatingLevel: IAnimatingLevels | undefined;
+
+      if (isChangingLevel) {
+        this.animatingLevels = findAndDeleteDuplicatedAnimatedLevel(
+          this.animatingLevels,
+          levelOrder.price
+        );
+      }
+
+      if (!isAnimationPrevented) {
+        if (
+          !existedLevel ||
+          existedLevel[displayType] !== levelOrder[displayType]
+        ) {
+          this.animatingLevels = updateAnimatingLevelsWithNewLevel(
+            this.animatingLevels,
+            levelOrder.price
+          );
+        }
+
+        existedAnimatingLevel = this.animatingLevels.find(
+          animatingLevel => animatingLevel.price === levelOrder.price
+        );
+
+        if (existedAnimatingLevel) {
+          const {
+            animatedColor,
+            animatedOpacity
+          } = getColorAndOpacityForAnimation(existedAnimatingLevel, color);
+          volumeColor = animatedColor;
+          volumeOpacity = animatedOpacity;
+        }
+      }
+
+      const y = getY(levelOrder.side, index, levelHeight);
+      const canvasY = getY(
+        levelOrder.side,
+        levelOrder.side === Side.Sell ? index - 1 : index + 1,
+        levelHeight
+      );
+
+      if (displayType === toLower(OrderBookDisplayType.Depth)) {
+        const arr = levels.slice(0, index + 1);
+        const sumVolume = arr.reduce((sum, cur) => sum + cur.volume, 0);
+        value = mapToEffectivePrice(sumVolume, arr)!;
+      } else {
+        value = levelOrder.volume * levelOrder.price;
+      }
+      value = format(value, instrument.quoteAsset.accuracy);
+
+      const normalizedWidth = normalize(levelOrder[displayType]) / SCALE_BAR;
+
+      this.drawBar(color, y, normalizedWidth);
+
+      if (levelOrder.connectedLimitOrders.length > 0) {
+        this.drawConnectedOrders(color, y);
+      }
+
+      this.drawLevelBorder(width, canvasY);
+
+      this.drawAndSavePrice(
+        color,
+        canvasY,
+        y,
+        levelOrder.price,
+        levelOrder.side
+      );
+
+      const volume = format(
+        levelOrder[displayType],
+        instrument.baseAsset.accuracy
+      );
+
+      if (hasTrailingZeroes(volume)) {
+        let drownSymbolsWidth = 0;
+        const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
+        const symbols = volume.split('');
+        const getSymbolColor = colorizedSymbol(volumeColor);
+
+        symbols.forEach((symbol: string, i: number) => {
+          const symbolColor =
+            existedAnimatingLevel && !existedAnimatingLevel.isAnimated
+              ? volumeColor
+              : getSymbolColor(trailingZeroPosition, i);
+          const x = levelsWidth / CELLS_NUMBER + BAR_WIDTH + drownSymbolsWidth;
+
+          this.drawVolume(symbolColor, symbol, volumeOpacity, canvasY, x);
+          drownSymbolsWidth += this.canvasCtx!.measureText(symbol).width;
+        });
+      } else {
+        const x = levelsWidth / CELLS_NUMBER + BAR_WIDTH;
+        this.drawVolume(volumeColor, volume, volumeOpacity, canvasY, x);
+      }
+
+      this.saveVolume(
+        levelOrder[displayType],
+        levelOrder.depth,
+        levelOrder.side,
+        y
+      );
+
+      this.drawValue(value, canvasY);
+    };
+  };
+
+  drawCanvas = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
     this.levelsCells = [];
-    const {displayType, instrument, format, width, height} = this.props;
+    const {displayType, height} = this.props;
 
     const levels = type === LevelType.Asks ? asks : bids;
 
@@ -141,112 +419,21 @@ class LevelList extends React.Component<LevelListProps> {
       Math.max(...vals)
     );
 
-    levels.forEach((level, index: number) => {
-      let value;
+    const drawLevel = this.prepareLevelForDrawing(
+      normalize,
+      levelHeight,
+      levels
+    );
 
-      const color = fillBySide(level.side);
-      const y = getY(level.side, index, levelHeight);
-      const canvasY = getY(
-        level.side,
-        level.side === Side.Sell ? index - 1 : index + 1,
-        levelHeight
-      );
-
-      if (displayType === toLower(OrderBookDisplayType.Depth)) {
-        const arr = levels.slice(0, index + 1);
-        const volume = arr.reduce((sum, cur) => sum + cur.volume, 0);
-
-        value = mapToEffectivePrice(volume, arr)!;
-      } else {
-        value = level.volume * level.price;
-      }
-      value = format(value, instrument.quoteAsset.accuracy);
-
-      drawRect({
-        ctx: this.canvasCtx,
-        color,
-        x: width / 3,
-        y,
-        width: normalize(level[displayType]),
-        height: levelHeight,
-        opacity: 0.16
-      });
-
-      if (level.connectedLimitOrders.length > 0) {
-        drawVerticalLine({
-          ctx: this.canvasCtx,
-          x: width / 3 + 1,
-          y: y + 2,
-          height: y + levelHeight - 2,
-          lineWidth: 2,
-          color,
-          lineCap: 'round'
-        });
-      }
-
-      drawLine({
-        ctx: this.canvasCtx,
-        width,
-        y: canvasY,
-        x: LEFT_PADDING,
-        color: colors.graphiteBorder,
-        lineWidth: 1
-      });
-
-      drawText({
-        ctx: this.canvasCtx,
-        color,
-        text: format(level.price, instrument.accuracy),
-        x: LEFT_PADDING,
-        y: canvasY - TOP_PADDING,
-        font: LEVEL_FONT,
-        align: 'start'
-      });
-      this.levelsCells.push({
-        left: LEFT_PADDING,
-        top: y,
-        width: width / 3 - LEFT_PADDING,
-        height: levelHeight,
-        type: OrderBookCellType.Price,
-        value: level.price,
-        side: level.side
-      });
-
-      drawText({
-        ctx: this.canvasCtx,
-        color,
-        text: format(level[displayType], instrument.baseAsset.accuracy),
-        x: width / 3 + LEFT_PADDING,
-        y: canvasY - TOP_PADDING,
-        font: LEVEL_FONT,
-        align: 'start'
-      });
-      this.levelsCells.push({
-        left: width / 3,
-        top: y,
-        width: width / 3,
-        height: levelHeight,
-        type: getCellType(displayType),
-        value: level.depth,
-        side: level.side
-      });
-
-      drawText({
-        ctx: this.canvasCtx,
-        color: colors.white,
-        text: value,
-        x: width,
-        y: canvasY - TOP_PADDING,
-        font: LEVEL_FONT,
-        align: 'end'
-      });
-    });
+    levels.forEach(drawLevel);
+    this.animatingLevels = this.animatingLevels.filter(al => !al.isAnimated);
+    this.cachedLevels = [...levels];
   };
 
-  componentWillReceiveProps({width}: any) {
+  componentWillReceiveProps({width}: LevelListProps) {
     window.requestAnimationFrame(() => {
-      if (width !== this.memoWidth) {
-        this.memoWidth = width;
+      if (width !== this.prevWidth) {
+        this.prevWidth = width;
         defineCanvasScale(
           this.canvasCtx,
           this.canvas,
@@ -254,21 +441,30 @@ class LevelList extends React.Component<LevelListProps> {
           this.props.height
         );
       }
-      this.renderCanvas(
-        this.props.getAsks(),
-        this.props.getBids(),
-        this.props.type
-      );
+      const asks = this.props.getAsks();
+      const bids = this.props.getBids();
+      if (!asks.length && !bids.length) {
+        this.clearCachedLevels();
+        this.clearCanvas();
+      } else {
+        this.renderCanvas(asks, bids, this.props.type);
+      }
       this.forceUpdate();
     });
   }
 
-  renderCanvas = (asks: Order[], bids: Order[], type: LevelType) => {
+  clearCanvas = () => {
     if (this.canvas) {
       this.canvasCtx!.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+  };
 
-    this.drawLevels(asks, bids, type);
+  clearCachedLevels = () => (this.cachedLevels = []);
+  clearAnimatingLevels = () => (this.animatingLevels = []);
+
+  renderCanvas = (asks: Order[], bids: Order[], type: LevelType) => {
+    this.clearCanvas();
+    this.drawCanvas(asks, bids, type);
   };
 
   setFakeStageRef = (div: any) => (this.fakeStage = div);
@@ -281,13 +477,20 @@ class LevelList extends React.Component<LevelListProps> {
       <React.Fragment>
         {!isReadOnly && (
           <FakeOrderBookStage
-            width={width / 3 * 2}
+            width={(width - BAR_WIDTH) / CELLS_NUMBER * 2}
             height={height}
             onMouseDown={this.handleMouseDownOnFakeStage}
             ref={this.setFakeStageRef}
+            left={BAR_WIDTH + LEFT_PADDING}
+            bottom={MARGIN_BOTTOM}
           />
         )}
-        <canvas width={width} height={height} ref={this.setCanvasRef} />
+        <canvas
+          width={width}
+          height={height}
+          ref={this.setCanvasRef}
+          style={{marginBottom: `-${MARGIN_BOTTOM}px`}}
+        />
       </React.Fragment>
     );
   }

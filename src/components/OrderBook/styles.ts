@@ -89,7 +89,15 @@ export const StyledHeader = Table.extend`
   th {
     text-align: left;
     padding: 0;
+
+    &:first-child {
+      padding-left: 50px !important;
+    }
   }
+`;
+
+export const BarTh = styled.th`
+  width: ${rem(50)} !important;
 `;
 
 export const Levels = Table.extend`
@@ -230,7 +238,9 @@ export const MyOrdersCancelButton = styled.button`
 export const FakeOrderBookStage = styled.div.attrs({
   style: (props: any) => ({
     height: props.height,
-    width: props.width
+    width: props.width,
+    marginLeft: rem(props.left),
+    marginBottom: rem(-props.bottom)
   })
 })`
   position: absolute;

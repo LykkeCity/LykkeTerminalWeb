@@ -2,38 +2,69 @@ import {pathOr} from 'rambda';
 import * as React from 'react';
 import {InstrumentModel, TradeModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
-import {HeaderProps, TableHeaderWithoutSort} from '../Table';
+import {HeaderProps, TableHeaderWithoutSort, TableNotSortState} from '../Table';
 import {PublicTradeList} from './';
 
 export interface TradeLogProps extends LoaderProps {
   selectedInstrument: InstrumentModel;
   trades: TradeModel[];
+  getIsWampTradesProcessed: () => boolean;
+  setIsWampTradesProcessed: (isProcessing: boolean) => void;
 }
 
-const TradeLog: React.SFC<TradeLogProps> = ({selectedInstrument, trades}) => {
-  const headers: HeaderProps[] = [
-    {
-      key: 'price',
-      value: `Price (${pathOr('', ['quoteAsset', 'name'], selectedInstrument)})`
-    },
-    {
-      className: 'right-align',
-      key: 'volume',
-      value: 'Trade size'
-    },
-    {
-      className: 'right-align',
-      key: 'timestamp',
-      value: 'Time'
-    }
-  ];
+class TradeLog extends React.Component<TradeLogProps, TableNotSortState> {
+  constructor(props: TradeLogProps) {
+    super(props);
+    this.state = {
+      data: this.props.trades
+    };
+  }
 
-  return (
-    <React.Fragment>
-      <TableHeaderWithoutSort headers={headers} />
-      <PublicTradeList trades={trades} />
-    </React.Fragment>
-  );
-};
+  componentWillReceiveProps(args: TradeLogProps) {
+    this.setState({
+      data: args.trades
+    });
+  }
+
+  componentDidUpdate() {
+    const {getIsWampTradesProcessed, setIsWampTradesProcessed} = this.props;
+    if (getIsWampTradesProcessed()) {
+      setIsWampTradesProcessed(false);
+    }
+  }
+
+  render() {
+    const headers: HeaderProps[] = [
+      {
+        key: 'price',
+        value: `Price (${pathOr(
+          '',
+          ['quoteAsset', 'name'],
+          this.props.selectedInstrument
+        )})`
+      },
+      {
+        className: 'right-align',
+        key: 'volume',
+        value: 'Trade size'
+      },
+      {
+        className: 'right-align',
+        key: 'timestamp',
+        value: 'Time'
+      }
+    ];
+
+    return (
+      <React.Fragment>
+        <TableHeaderWithoutSort headers={headers} />
+        <PublicTradeList
+          trades={this.state.data}
+          isProcessingWampTrades={this.props.getIsWampTradesProcessed()}
+        />
+      </React.Fragment>
+    );
+  }
+}
 
 export default TradeLog;

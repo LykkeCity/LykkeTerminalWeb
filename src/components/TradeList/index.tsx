@@ -66,9 +66,18 @@ const ConnectedPublicTradeList = withStyledScroll({
 })(PublicTradeList);
 
 const ConnectedTradeLog = connect(
-  ({tradeStore: {getPublicTrades}, uiStore: {selectedInstrument}}) => ({
+  ({
+    tradeStore: {
+      getPublicTrades,
+      getIsWampTradesProcessed,
+      setIsWampTradesProcessed
+    },
+    uiStore: {selectedInstrument}
+  }) => ({
     trades: getPublicTrades,
-    selectedInstrument
+    selectedInstrument,
+    getIsWampTradesProcessed,
+    setIsWampTradesProcessed
   }),
   TradeLog
 );
