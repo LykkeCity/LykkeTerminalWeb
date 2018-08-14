@@ -9,6 +9,7 @@ import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
 import {getHashCode} from '../../utils/hashcode';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
+import {Footer} from '../Footer';
 import {Header} from '../Header';
 import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
@@ -249,6 +250,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
           resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
           initialValue={this.state.initialValue}
         />
+        <Footer />
       </Shell>
     );
   }

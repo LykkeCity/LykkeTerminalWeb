@@ -47,6 +47,7 @@ class UiStore extends BaseStore {
   };
 
   @observable userInfo: UserInfoModel | null;
+  @observable isConnectionOpened: boolean = false;
   @observable private isReadOnlyMode: boolean;
 
   private isPageVisible: boolean = true;
@@ -120,6 +121,18 @@ class UiStore extends BaseStore {
       }
     );
   }
+
+  setSocketWatcher = async () => {
+    const ws = this.getWs();
+    ws.onConnectionOpen = () => {
+      this.updateConnectionStatus();
+    };
+    ws.onConnectionClose = () => {
+      this.updateConnectionStatus();
+    };
+
+    this.updateConnectionStatus();
+  };
 
   setPageVisibility = (isVisible: boolean) => (this.isPageVisible = isVisible);
   getPageVisibility = () => this.isPageVisible;
@@ -203,6 +216,11 @@ class UiStore extends BaseStore {
   getInstrumentPickerSortingParameters = () => {
     return this.instrumentPickerSortingParameters;
   };
+
+  updateConnectionStatus = () => {
+    this.isConnectionOpened = this.getWs().isConnectionOpened;
+  };
+  getConnectionOpened = () => this.isConnectionOpened;
 
   private checkAssetToDisclaim = (
     selectedInstrument: InstrumentModel | undefined,
