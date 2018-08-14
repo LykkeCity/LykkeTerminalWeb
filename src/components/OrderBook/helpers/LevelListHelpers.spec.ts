@@ -1,6 +1,5 @@
 import {OrderBookCellType, Side} from '../../../models';
 import {colors} from '../../styled';
-import {LEVELS_COUNT} from '../index';
 import {IAnimatingLevels} from '../LevelList';
 import {
   colorizedSymbol,
