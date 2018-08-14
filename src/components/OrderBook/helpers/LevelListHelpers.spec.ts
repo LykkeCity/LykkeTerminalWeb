@@ -42,9 +42,8 @@ describe('level list helpers', () => {
     const askIndex = 1;
     const side = Side.Sell;
     const levelHeight = 30;
-    expect(getY(side, askIndex, levelHeight)).toBe(
-      (LEVELS_COUNT - askIndex - 1) * levelHeight
-    );
+    const yAskPosition = 1440;
+    expect(getY(side, askIndex, levelHeight)).toBe(yAskPosition);
   });
 
   it('should return default color if currentSymbolPosition is less than trailingZeroPosition', () => {
