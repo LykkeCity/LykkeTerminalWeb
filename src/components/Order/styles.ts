@@ -129,7 +129,7 @@ export const Total = Flex.extend`
 
 export const TotalHint = styled.small`
   display: block;
-  margin: ${rem(2)} 0 0 30%;
+  margin-top: ${rem(2)};
   color: ${colors.coolGrey};
   font-size: ${rem(12)};
   text-align: right;
@@ -138,6 +138,10 @@ export const TotalHint = styled.small`
 export const OrderTitle = styled.div`
   font-size: ${rem(16)};
   font-weight: 600;
+
+  &.estimated-total {
+    min-width: 40%;
+  }
 `;
 
 export const MarketConfirmButton = styled.div`

@@ -137,7 +137,7 @@ class OrderMarket extends React.Component<
           ))}
         </Flex>
         <Total>
-          <OrderTitle>Total</OrderTitle>
+          <OrderTitle className={'estimated-total'}>Estimated total</OrderTitle>
           {isEnoughLiquidity && (
             <Amount>
               {amount} {quoteAssetName}
