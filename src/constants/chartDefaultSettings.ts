@@ -18,7 +18,7 @@ export const overrides = {
   'mainSeriesProperties.candleStyle.upColor': chartPalette.candleUp,
   'mainSeriesProperties.candleStyle.downColor': chartPalette.candleDown,
   'mainSeriesProperties.candleStyle.drawWick': true,
-  'mainSeriesProperties.candleStyle.drawBorder': true,
+  'mainSeriesProperties.candleStyle.drawBorder': false,
   'mainSeriesProperties.candleStyle.wickUpColor': 'rgba(140, 148, 160, 0.4)',
   'mainSeriesProperties.candleStyle.wickDownColor': 'rgba(140, 148, 160, 0.4)',
   'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
