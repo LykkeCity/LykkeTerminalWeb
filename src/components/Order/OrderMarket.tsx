@@ -1,6 +1,7 @@
 import {Form, FormikProps, withFormik} from 'formik';
 import * as React from 'react';
-import {OrderInputs} from '../../models';
+import indicativeTotalHint from '../../constants/indicativeTotalHint';
+import {OrderInputs, Side} from '../../models';
 import {capitalize} from '../../utils';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
@@ -99,7 +100,7 @@ class OrderMarket extends React.Component<
       isEnoughLiquidity
     } = this.props;
     this.previousPropsAction = this.props.action;
-    const {quantity, quantityAccuracy} = this.props;
+    const {action, quantity, quantityAccuracy} = this.props;
 
     return (
       <div>
@@ -136,12 +137,14 @@ class OrderMarket extends React.Component<
           ))}
         </Flex>
         <Total>
-          <OrderTitle>Total</OrderTitle>
+          <OrderTitle className={'estimated-total'}>Estimated total</OrderTitle>
           {isEnoughLiquidity && (
             <Amount>
               {amount} {quoteAssetName}
-              <TotalHint title={'Your order may execute at a different price'}>
-                Indicative price *
+              <TotalHint>
+                {action === Side.Sell
+                  ? indicativeTotalHint.sell
+                  : indicativeTotalHint.buy}
               </TotalHint>
             </Amount>
           )}

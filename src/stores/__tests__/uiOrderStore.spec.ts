@@ -384,17 +384,6 @@ describe('uiOrder store', () => {
       uiOrderStore.resetMarketTotal();
     });
 
-    it('should block market total price after orders were updated from wamp', () => {
-      uiOrderStore.setMarketTotal();
-      expect(uiOrderStore.marketTotal.price).toBe(0);
-
-      uiOrderStore.rootStore.orderBookStore.getBids = jest.fn(() => orders);
-      uiOrderStore.setMarketTotal();
-
-      expect(uiOrderStore.marketTotal.canBeUpdated).toBeFalsy();
-      expect(uiOrderStore.marketTotal.price).toBe(0);
-    });
-
     it('should not block market total price for manual update', () => {
       const volume = 1;
       const type = Side.Sell;

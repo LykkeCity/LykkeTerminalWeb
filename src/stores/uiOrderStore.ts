@@ -75,10 +75,14 @@ class UiOrderStore extends BaseStore {
     isEnoughLiquidity: true,
     price: 0
   };
-  @observable private priceValue: string = DEFAULT_INPUT_VALUE;
-  @observable private quantityValue: string = DEFAULT_INPUT_VALUE;
-  @observable private market: OrderType = OrderType.Limit;
-  @observable private side: Side = Side.Buy;
+  @observable
+  private priceValue: string = DEFAULT_INPUT_VALUE;
+  @observable
+  private quantityValue: string = DEFAULT_INPUT_VALUE;
+  @observable
+  private market: OrderType = OrderType.Limit;
+  @observable
+  private side: Side = Side.Buy;
   private priceAccuracy: number = 2;
   private quantityAccuracy: number = 2;
 
@@ -257,14 +261,12 @@ class UiOrderStore extends BaseStore {
     }
 
     const areNewValues = operationVolume && operationType;
-    const areOldValues = !operationVolume && !operationType;
-    const isDebounceByWamp = areOldValues && !this.marketTotal.canBeUpdated;
     const isDebounceManually =
-      areNewValues && !this.marketTotal.canBeUpdated && debounce;
+      areNewValues && debounce && !this.marketTotal.canBeUpdated;
 
-    if (isDebounceByWamp || isDebounceManually) {
+    if (isDebounceManually) {
       return;
-    } else if (areOldValues || debounce) {
+    } else if (debounce) {
       this.setDebounce();
     }
 

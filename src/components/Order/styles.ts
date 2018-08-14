@@ -138,6 +138,10 @@ export const TotalHint = styled.small`
 export const OrderTitle = styled.div`
   font-size: ${rem(16)};
   font-weight: 600;
+
+  &.estimated-total {
+    min-width: 40%;
+  }
 `;
 
 export const MarketConfirmButton = styled.div`
@@ -152,6 +156,7 @@ export const Note = styled.div`
 export const Amount = styled.div`
   color: #8c94a0;
   font-size: ${rem(14)};
+  text-align: right;
 `;
 
 export const Available = styled(Amount).attrs({
