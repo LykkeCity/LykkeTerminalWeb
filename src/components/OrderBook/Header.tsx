@@ -1,11 +1,11 @@
 import React from 'react';
-import {FakeTh, StyledHeader} from './styles';
+import {BarTh, StyledHeader} from './styles';
 
 export default () => (
   <StyledHeader>
     <tbody>
       <tr>
-        <FakeTh />
+        <BarTh />
         <th>Price</th>
         <th>Volume</th>
         <th>Value</th>

@@ -96,7 +96,7 @@ export const StyledHeader = Table.extend`
   }
 `;
 
-export const FakeTh = styled.th`
+export const BarTh = styled.th`
   width: ${rem(50)} !important;
 `;
 
