@@ -34,7 +34,7 @@ describe('level list helpers', () => {
     const bidIndex = 1;
     const side = Side.Buy;
     const levelHeight = 30;
-    const yBidPosition = bidIndex * levelHeight;
+    const yBidPosition = 30;
     expect(getY(side, bidIndex, levelHeight)).toBe(yBidPosition);
   });
 
