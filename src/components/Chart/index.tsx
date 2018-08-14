@@ -1,12 +1,28 @@
+import {observer} from 'mobx-react';
 import {connect} from '../connect';
-import Chart, {ChartProps} from './Chart';
+import Chart from './Chart';
 
-const ConnectedChart = connect<ChartProps>(
-  ({chartStore, referenceStore}) => ({
-    onReset: chartStore.resetToDefault,
-    renderChart: chartStore.renderChart
+const ConnectedChart = connect(
+  ({
+    authStore: {isAuth},
+    chartStore: {
+      getDatafeed,
+      loadSettings,
+      saveSettings,
+      subscribeToCandlesWithResolutions,
+      unsubscribeFromCandle
+    },
+    uiStore: {selectedInstrument}
+  }) => ({
+    instrument: selectedInstrument,
+    isAuth,
+    getDatafeed,
+    loadSettings,
+    saveSettings,
+    subscribeToCandle: subscribeToCandlesWithResolutions,
+    unsubscribeFromCandle
   }),
-  Chart
+  observer(Chart)
 );
 
 export {ConnectedChart as Chart};
