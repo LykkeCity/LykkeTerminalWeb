@@ -4,5 +4,11 @@
     "member-access": [true, "no-public"],
     "interface-name": false,
     "object-literal-sort-keys": false
+  },
+  "linterOptions": {
+    "exclude": [
+      "public/charting_library/*",
+      "src/charting_library/*"
+    ]
   }
 }

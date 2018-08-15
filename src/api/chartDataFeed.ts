@@ -51,7 +51,7 @@ const addTick = (d: Date, interval: Interval) => {
 class ChartDataFeed {
   constructor(
     private readonly config: any,
-    private readonly instrument: InstrumentModel,
+    private instrument: InstrumentModel,
     private readonly priceApi: PriceApi,
     private readonly session: any,
     private readonly subscribeToCandlesWithResolutions: (
@@ -177,6 +177,10 @@ class ChartDataFeed {
 
   getServerTime = (cb: any) => {
     cb(Math.round(Date.now() / 1000));
+  };
+
+  setInstrument = (instrument: InstrumentModel) => {
+    this.instrument = instrument;
   };
 }
 

@@ -106,48 +106,52 @@ button._tv-button {
   box-sizing: border-box;
 }
 
-.tv-side-toolbar {
-  border-right: 1px solid #272727 !important;
-}
-
 .tv-close-panel {
   border: 1px solid #272727;
   border-left: none;
   background-color: #464646;
 }
 
-.tv-side-toolbar .tools-group::before {
-  background: #272727 !important;
+.drawingToolbar-2CoOuCv8- .separator-3cgsM4c1- {
+  background-color: #272727;
 }
 
-.tv-side-toolbar svg {
+.drawingToolbar-2CoOuCv8- .toggleButton-2o6YKJ1g- svg,
+.drawingToolbar-2CoOuCv8- .toggleButton-2o6YKJ1g-:hover svg
+{
+  fill: #8e8e92;
+}
+
+.drawingToolbar-2CoOuCv8- .scrollTop-2G6k9HF0-,
+.drawingToolbar-2CoOuCv8- .scrollBot-1mx_BeXt- {
+  background-color: #272727;
+}
+
+.drawingToolbar-2CoOuCv8- svg {
   height: 25px;
 }
 
-.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical {
-  margin: 5px 0 0;
+.common-tooltip-wrapper .common-tooltip-body {
+  background-color: #272727;
+  border-color: #272727;
 }
 
-.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical {
-  height: 25px;
+.common-tooltip-wrapper:after, .common-tooltip-wrapper:before {
+  border: none !important;
 }
 
-.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical:hover,
-.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.selected {
-  border-radius: 3px;
-  border-color: #56595e !important;
-  background-color: rgba(255, 255, 255, 0.08);
+.header-group-save-load {
+  margin: 0 68px 0 0 !important;
 }
 
-.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.subgroup > span {
-  height: 25px;
-  background: none !important;
+.save-load-buttons .button {
+  margin-left: 4px;
+  border-radius: 4px;
 }
 
-.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.subgroup > span.side {
-  border-left: 1px solid #56595e;
-}
-
-.layout__area--left .button.apply-common-tooltip.common-tooltip-vertical.subgroup > span.side svg{
-  height: 5px;
+.save-load-buttons .button,
+.save-load-buttons .button.titled,
+.save-load-buttons .button.first,
+.save-load-buttons .button.last {
+  border: 1px solid rgba(140, 148, 160, 0.4);
 }

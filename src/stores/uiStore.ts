@@ -158,7 +158,6 @@ class UiStore extends BaseStore {
     const selectedInstrument = getInstrumentById(id);
     instrumentStorage.set(JSON.stringify(selectedInstrument));
     this.selectedInstrument = selectedInstrument!;
-    this.rootStore.chartStore.renderChart();
 
     this.resetDisclaimedAssets();
     disclaimedAssets.forEach(asset =>
