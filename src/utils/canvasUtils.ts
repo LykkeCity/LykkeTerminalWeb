@@ -1,3 +1,5 @@
+import {IPoint} from '../components/DepthChart/helpers/chartHelpers';
+
 interface RectInterface {
   ctx: CanvasRenderingContext2D;
   color: string;
@@ -40,6 +42,26 @@ interface TextInterface {
   font: string;
   align?: string;
   opacity?: number;
+}
+
+interface CircleInterface {
+  ctx: CanvasRenderingContext2D;
+  radius: number;
+  color: string;
+  x: number;
+  y: number;
+  lineWidth: number;
+  lineColor: string;
+}
+
+interface AreaInterface {
+  ctx: CanvasRenderingContext2D;
+  points: IPoint[];
+  lineWidth: number;
+  lineCap?: string;
+  opacity?: number;
+  dashSegments?: number[];
+  fill: string;
 }
 
 export const drawRect = ({
@@ -87,7 +109,7 @@ export const drawVerticalLine = ({
   opacity = 1,
   dashSegments = []
 }: VerticalLineInterface) => {
-  ctx.globalAlpha = 1;
+  ctx.globalAlpha = opacity;
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
   ctx.lineCap = lineCap;
@@ -107,8 +129,8 @@ export const drawArea = ({
   opacity = 1,
   dashSegments = [],
   fill
-}: any) => {
-  ctx.globalAlpha = 1;
+}: AreaInterface) => {
+  ctx.globalAlpha = opacity;
   ctx.lineWidth = lineWidth;
   ctx.lineCap = lineCap;
   ctx.beginPath();
@@ -136,7 +158,7 @@ export const drawCircle = ({
   y,
   lineWidth,
   lineColor
-}: any) => {
+}: CircleInterface) => {
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = lineColor;
   ctx.beginPath();

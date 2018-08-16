@@ -194,14 +194,14 @@ class RootStore {
         });
 
         conn.onopen = (session, details) => {
-          session.subscribe(
-            'orderbook.spot.btcusd.sell',
-            this.orderBookStore.onNextOrders
-          );
-          session.subscribe(
-            'orderbook.spot.btcusd.buy',
-            this.orderBookStore.onNextOrders
-          );
+          // session.subscribe(
+          //   'orderbook.spot.btcusd.sell',
+          //   this.orderBookStore.onNextOrders
+          // );
+          // session.subscribe(
+          //   'orderbook.spot.btcusd.buy',
+          //   this.orderBookStore.onNextOrders
+          // );
         };
 
         conn.open();

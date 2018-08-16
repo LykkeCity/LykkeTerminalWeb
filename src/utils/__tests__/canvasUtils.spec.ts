@@ -1,20 +1,24 @@
-import {drawLine, drawRect, drawText, drawVerticalLine} from '../canvasUtils';
+import {
+  drawArea,
+  drawCircle,
+  drawLine,
+  drawRect,
+  drawText,
+  drawVerticalLine
+} from '../canvasUtils';
+import {colors} from '../../components/styled';
 
 describe(' canvas utils', () => {
-  let context: any;
+  let context: CanvasRenderingContext2D;
 
   beforeEach(() => {
-    context = {
-      beginPath: jest.fn(),
-      moveTo: jest.fn(),
-      lineTo: jest.fn(),
-      stroke: jest.fn(),
-      fillRect: jest.fn(),
-      fillText: jest.fn()
-    };
+    context = document
+      .createElement('canvas')
+      .getContext('2d') as CanvasRenderingContext2D;
+    jest.resetAllMocks();
   });
 
-  const color = '#fff';
+  const color = '#ffffff';
   const x = 100;
   const y = 100;
   const width = 100;
@@ -27,6 +31,7 @@ describe(' canvas utils', () => {
   const align = 'center';
 
   it('should fill context with property for rect', () => {
+    context.fillRect = jest.fn();
     drawRect({
       ctx: context,
       color,
@@ -43,6 +48,11 @@ describe(' canvas utils', () => {
   });
 
   it('should fill context with property for line', () => {
+    context.beginPath = jest.fn();
+    context.moveTo = jest.fn();
+    context.lineTo = jest.fn();
+    context.stroke = jest.fn();
+
     drawLine({
       ctx: context,
       x,
@@ -63,6 +73,11 @@ describe(' canvas utils', () => {
   });
 
   it('should fill context with property for vertical line', () => {
+    context.beginPath = jest.fn();
+    context.moveTo = jest.fn();
+    context.lineTo = jest.fn();
+    context.stroke = jest.fn();
+
     drawVerticalLine({
       ctx: context,
       x,
@@ -84,6 +99,8 @@ describe(' canvas utils', () => {
   });
 
   it('should fill context with property for text', () => {
+    context.fillText = jest.fn();
+
     drawText({
       ctx: context,
       color,
@@ -100,5 +117,65 @@ describe(' canvas utils', () => {
     expect(context.fillStyle).toBe(color);
     expect(context.textAlign).toBe(align);
     expect(context.fillText).toHaveBeenCalledWith(text, x, y);
+  });
+
+  it('should fill context with property for circle', () => {
+    context.arc = jest.fn();
+    context.beginPath = jest.fn();
+    context.stroke = jest.fn();
+    context.fill = jest.fn();
+
+    const radius = 5;
+    drawCircle({
+      ctx: context,
+      radius,
+      color,
+      x,
+      y,
+      lineWidth,
+      lineColor: colors.coolGrey
+    });
+
+    expect(context.lineWidth).toBe(lineWidth);
+    expect(context.strokeStyle).toBe(colors.coolGrey);
+    expect(context.fillStyle).toBe(color);
+    expect(context.arc).toHaveBeenCalledWith(x, y, radius, 0, 2 * Math.PI);
+    expect(context.beginPath).toHaveBeenCalled();
+    expect(context.stroke).toHaveBeenCalled();
+    expect(context.fill).toHaveBeenCalled();
+  });
+
+  it('should fill context with property for area', () => {
+    context.setLineDash = jest.fn();
+    context.beginPath = jest.fn();
+    context.stroke = jest.fn();
+    context.fill = jest.fn();
+    context.closePath = jest.fn();
+
+    const points = [
+      {
+        x: 1,
+        y: 1
+      },
+      {
+        x: 5,
+        y: 5
+      }
+    ];
+    drawArea({
+      ctx: context,
+      points,
+      fill: color,
+      lineWidth
+    });
+
+    expect(context.lineWidth).toBe(lineWidth);
+    expect(context.fillStyle).toBe(color);
+    expect(context.globalAlpha).toBe(1);
+    expect(context.setLineDash).toHaveBeenCalledWith([]);
+    expect(context.beginPath).toHaveBeenCalled();
+    expect(context.closePath).toHaveBeenCalled();
+    expect(context.fill).toHaveBeenCalled();
+    expect(context.stroke).toHaveBeenCalled();
   });
 });

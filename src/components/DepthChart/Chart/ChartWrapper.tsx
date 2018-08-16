@@ -1,10 +1,7 @@
 import * as React from 'react';
-
 import Measure from 'react-measure';
-
-import {Chart, Mesh} from './index';
-
 import {ChartContainer, LevelContainer} from '../styles';
+import {Chart, Mesh} from './index';
 
 export interface ChartWrapperProps {
   setWidth: (width: number) => void;

@@ -1,8 +1,6 @@
 import * as React from 'react';
-
+import chart from '../../../constants/chartConstants';
 import {DepthArea, DepthText, Order} from '../../../models';
-import chart from './chartConstants';
-
 import {defineCanvasScale} from '../../../utils/canvasUtils';
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import {colors} from '../../styled';
@@ -10,16 +8,20 @@ import {
   COST_PADDING,
   DEPTH_PADDING,
   drawChartElements,
+  FONT_SIZE,
+  generatePoints,
   getAreaColor,
+  getCurrentArea,
+  getDepthText,
   getPopupCoords,
-  IDrawTools,
+  IChartDrawingTools,
+  IPoint,
   measureText,
+  PRICE_FONT_SIZE,
   PRICE_PADDING,
+  updatePointsForDrawing,
   VALUE_PADDING
-} from './chartHelpers';
-
-const PRICE_FONT_SIZE = 14;
-const FONT_SIZE = 13;
+} from '../helpers/chartHelpers';
 
 interface ChartProps {
   asks: Order[];
@@ -33,34 +35,28 @@ interface ChartProps {
   priceAccuracy: number;
   baseAssetName: string;
   quoteAssetName: string;
+  calculateExactPrice: (area: DepthArea, index: number) => number;
+  findOrder: (area: DepthArea, index: number) => Order;
+  calculateOrderXInterval: (
+    width: number,
+    area: DepthArea
+  ) => (index: number) => number;
+  calculateOrderYInterval: (depth: number) => number;
+  midXAsks: number;
+  midXBids: number;
+  askWidth: number;
 }
 
 class Chart extends React.Component<ChartProps> {
-  graphics: any[] = [];
-  pointsAsks: any[] = [];
-  pointsBids: any[] = [];
-
-  midXAsks: number;
-  midXBids: number;
-
-  asksWidth: number;
-
-  minDepth: number;
-  maxDepth: number;
-
-  asksStart: number;
-  asksEnd: number;
-  bidsStart: number;
-  bidsEnd: number;
-
-  coefficient: number;
+  pointsAsks: IPoint[] = [];
+  pointsBids: IPoint[] = [];
 
   canvas: HTMLCanvasElement | null;
   canvasCtx: CanvasRenderingContext2D | null;
   memoWidth: number = 0;
-  xIndex: number = -1;
+  currentItemXIndex: number = -1;
   currentArea: DepthArea;
-  drawTools: IDrawTools;
+  drawTools: IChartDrawingTools;
 
   constructor(props: ChartProps) {
     super(props);
@@ -68,11 +64,6 @@ class Chart extends React.Component<ChartProps> {
 
   componentDidMount() {
     this.canvasCtx = this.canvas!.getContext('2d');
-    window.requestAnimationFrame(() => {
-      this.renderCanvas();
-      this.forceUpdate();
-    });
-
     defineCanvasScale(
       this.canvasCtx,
       this.canvas,
@@ -80,31 +71,13 @@ class Chart extends React.Component<ChartProps> {
       this.props.canvasHeight
     );
 
-    this.canvas!.addEventListener('mouseleave', (event: any) => {
-      window.requestAnimationFrame(() => {
-        this.renderCanvas();
-        this.forceUpdate();
-      });
+    window.requestAnimationFrame(() => {
+      this.renderCanvas();
+      this.forceUpdate();
     });
 
-    this.canvas!.addEventListener('mousemove', (event: any) => {
-      const {offsetX: x} = event;
-      this.currentArea = this.getCurrentArea(x);
-      let point: {x: number; y: number};
-      if (this.currentArea === DepthArea.Bid) {
-        point = this.findPoints(this.pointsBids)(x)!;
-      } else {
-        point = this.findPoints(this.pointsAsks)(x)!;
-      }
-
-      if (point) {
-        window.requestAnimationFrame(() => {
-          this.renderCanvas(point.y, x);
-          this.forceUpdate();
-        });
-      }
-    });
-
+    this.canvas!.addEventListener('mouseleave', this.handleMouseLeave);
+    this.canvas!.addEventListener('mousemove', this.handleMouseMove);
     this.drawTools = drawChartElements(this.canvasCtx!, () => this.currentArea);
   }
 
@@ -124,182 +97,189 @@ class Chart extends React.Component<ChartProps> {
     });
   }
 
-  findPoints = (points: Array<{x: number; y: number}>) => (x: number) => {
+  handleMouseMove = (event: any) => {
+    const {offsetX: x} = event;
+    this.currentArea = getCurrentArea(x, this.props.midXBids);
+    let points: IPoint;
+
+    if (this.currentArea === DepthArea.Bid) {
+      points = this.findPoints(this.pointsBids, x)!;
+    } else {
+      points = this.findPoints(this.pointsAsks, x)!;
+    }
+
+    if (points) {
+      window.requestAnimationFrame(() => {
+        this.renderCanvas(points.y, x);
+        this.forceUpdate();
+      });
+    }
+  };
+
+  handleMouseLeave = () => {
+    window.requestAnimationFrame(() => {
+      this.renderCanvas();
+      this.forceUpdate();
+    });
+  };
+
+  findPoints = (points: IPoint[], x: number) => {
     const xPoints = points.map(p => p.x);
     xPoints.push(x);
     xPoints.sort((a, b) => a - b);
-    const xIndex = xPoints.findIndex(i => i === x);
-    const sibling =
-      this.currentArea === DepthArea.Bid ? xIndex - 1 : xIndex + 1;
-    this.xIndex = sibling;
-    return points.find(p => p.x === xPoints[sibling]);
-  };
-
-  getCurrentArea = (x: number) =>
-    x > this.midXBids ? DepthArea.Ask : DepthArea.Bid;
-
-  calculateAsksStepLength(ask: Order, index: number) {
-    const priceDifference = this.props.asks[index + 1]
-      ? this.props.asks[index + 1].price - this.asksStart
-      : this.props.asks[index].price - this.asksStart;
-    const priceRange = this.asksEnd - this.asksStart;
-    const length = this.asksWidth * priceDifference / priceRange;
-    return isNaN(length) ? this.asksWidth : length;
-  }
-
-  calculateAsksStepHeight(ask: Order) {
-    return this.coefficient * ask.depth;
-  }
-
-  generateAsksPoints = () => {
-    let currentX = this.midXAsks;
-    let newX = this.midXAsks;
-    let newY = this.props.height;
-    const points = [{x: this.midXAsks, y: this.props.height}];
-
-    for (let index = 0; index < this.props.asks.length; index++) {
-      newX =
-        this.midXAsks +
-        this.calculateAsksStepLength(this.props.asks[index], index);
-      newY =
-        this.props.height -
-        this.calculateAsksStepHeight(this.props.asks[index]);
-      points.push({x: currentX, y: newY}, {x: newX, y: newY});
-      currentX = newX;
-    }
-    this.pointsAsks = points;
+    const currentXPointIndex = xPoints.findIndex(i => i === x);
+    this.currentItemXIndex =
+      this.currentArea === DepthArea.Bid
+        ? currentXPointIndex - 1
+        : currentXPointIndex + 1;
+    return points.find(p => p.x === xPoints[this.currentItemXIndex]);
   };
 
   drawAsks = () => {
-    this.generateAsksPoints();
-    const points: any = this.pointsAsks.map((p: any) => ({
-      ...p,
-      color: chart.asks.lineColor
-    }));
-    points.push(
-      {
-        x: this.props.width,
-        y: this.props.height
-      },
-      {
-        x: this.midXBids,
-        y: this.props.height
-      }
+    const {
+      midXAsks,
+      height: y,
+      asks,
+      calculateOrderXInterval,
+      calculateOrderYInterval,
+      askWidth,
+      width: x,
+      midXBids
+    } = this.props;
+
+    this.pointsAsks = generatePoints(
+      midXAsks,
+      y,
+      asks,
+      DepthArea.Ask,
+      calculateOrderXInterval(askWidth, DepthArea.Ask),
+      calculateOrderYInterval
     );
 
-    this.drawTools.drawLevel(points);
-  };
+    const updatedPoints = updatePointsForDrawing(
+      this.pointsAsks,
+      chart.asks.lineColor,
+      [{x, y}, {x: midXBids, y}]
+    );
 
-  calculateBidsStepLength(bid: Order, index: number) {
-    const priceDifference = this.props.bids[index + 1]
-      ? this.bidsStart - this.props.bids[index + 1].price
-      : this.bidsStart - this.props.bids[index].price;
-    const priceRange = this.bidsStart - this.bidsEnd;
-    const length = this.midXBids * priceDifference / priceRange;
-    return isNaN(length) ? this.midXBids : length;
-  }
-
-  calculateBidsStepHeight(bid: Order) {
-    return this.coefficient * bid.depth;
-  }
-
-  generateBidsPoints = () => {
-    let currentX = this.midXBids;
-    let newX = this.midXBids;
-    let newY = this.props.height;
-    const points = [{x: this.midXBids, y: this.props.height}];
-
-    for (let index = 0; index < this.props.bids.length; index++) {
-      newX =
-        this.midXBids -
-        this.calculateBidsStepLength(this.props.bids[index], index);
-      newY =
-        this.props.height -
-        this.calculateBidsStepHeight(this.props.bids[index]);
-      points.push({x: currentX, y: newY}, {x: newX, y: newY});
-      currentX = newX;
-    }
-    this.pointsBids = points;
+    this.drawTools.drawLevel(updatedPoints, chart.asks.fillColor);
   };
 
   drawBids = () => {
-    this.generateBidsPoints();
-    const points: any = this.pointsBids.map((p: any) => ({
-      ...p,
-      color: chart.bids.lineColor
-    }));
-    points.push(
-      {
-        x: 0,
-        y: this.props.height
-      },
-      {
-        x: this.midXBids,
-        y: this.props.height
-      }
+    const {
+      midXBids,
+      height: y,
+      bids,
+      calculateOrderXInterval,
+      calculateOrderYInterval
+    } = this.props;
+
+    this.pointsBids = generatePoints(
+      midXBids,
+      y,
+      bids,
+      DepthArea.Bid,
+      calculateOrderXInterval(midXBids, DepthArea.Bid),
+      calculateOrderYInterval
     );
 
-    this.drawTools.drawLevel(points);
+    const updatedPoints = updatePointsForDrawing(
+      this.pointsBids,
+      chart.bids.lineColor,
+      [{x: 0, y}, {x: this.props.midXBids, y}]
+    );
+
+    this.drawTools.drawLevel(updatedPoints, chart.bids.fillColor);
   };
 
   drawPopup = (y: number, x: number) => {
+    const {
+      findOrder,
+      priceAccuracy,
+      baseAccuracy,
+      quoteAccuracy,
+      quoteAssetName,
+      baseAssetName,
+      midXBids,
+      height
+    } = this.props;
+
     this.drawTools.drawPointer(x, y);
     this.drawTools.drawPointerLine(this.props.height, x, y);
 
-    const order = this.findOrder();
+    const order = findOrder(
+      this.currentArea,
+      Math.floor(this.currentItemXIndex / 2)
+    );
     if (order) {
-      const depthLabel = this.getDepthText();
+      const depthLabel = getDepthText(this.currentArea);
 
       const priceValue = `${formattedNumber(
         order.price,
-        this.props.priceAccuracy
-      )} ${this.props.quoteAssetName}`;
+        priceAccuracy
+      )} ${quoteAssetName}`;
       const depthValue = `${formattedNumber(
         order.depth,
-        this.props.baseAccuracy
-      )} ${this.props.baseAssetName}`;
+        baseAccuracy
+      )} ${baseAssetName}`;
 
       const costValue = `${formattedNumber(
-        this.calculateExactPrice(),
-        this.props.quoteAccuracy
-      )} ${this.props.quoteAssetName}`;
+        this.props.calculateExactPrice(
+          this.currentArea,
+          Math.floor(this.currentItemXIndex / 2)
+        ),
+        quoteAccuracy
+      )} ${quoteAssetName}`;
 
       const priceMeasure = measureText(
         priceValue,
         PRICE_FONT_SIZE,
-        chart.modal.label.fontFamily
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
       );
       const depthMeasure = measureText(
         `${depthLabel} ${depthValue}`,
         FONT_SIZE,
-        chart.modal.label.fontFamily
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
       );
       const depthLabelMeasure = measureText(
         depthLabel,
         FONT_SIZE,
-        chart.modal.label.fontFamily
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
       );
       const costMeasure = measureText(
         `${DepthText.Cost} ${costValue}`,
         FONT_SIZE,
-        chart.modal.label.fontFamily
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
       );
       const costLabelMeasure = measureText(
         DepthText.Cost,
         FONT_SIZE,
-        chart.modal.label.fontFamily
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
       );
       const maxValueWidth = Math.max(priceMeasure, depthMeasure, costMeasure);
 
       this.drawTools.drawPopup(
-        getPopupCoords(x, y, maxValueWidth, this.currentArea, this.midXBids)
+        getPopupCoords(
+          x,
+          y,
+          maxValueWidth,
+          this.currentArea,
+          midXBids,
+          height / 2
+        )
       );
 
       const drawText = this.drawTools.drawText(
         x,
         y,
         this.currentArea,
-        this.midXBids,
+        midXBids,
+        height / 2,
         maxValueWidth
       );
 
@@ -352,34 +332,6 @@ class Chart extends React.Component<ChartProps> {
     }
   };
 
-  calculateCoefficient() {
-    if (this.minDepth && this.maxDepth) {
-      if (this.minDepth === this.maxDepth) {
-        return this.props.height / this.minDepth * chart.scaleFactor;
-      }
-      return this.props.height / this.maxDepth * chart.scaleFactor;
-    }
-    return 1;
-  }
-
-  initilaize() {
-    this.graphics = [];
-    this.midXAsks = this.props.width / 2 + Math.round(chart.strokeWidth / 2);
-    this.midXBids = this.props.width / 2 - Math.round(chart.strokeWidth / 2);
-    this.asksWidth = this.props.width - this.midXAsks;
-    this.minDepth = Math.min(
-      ...this.props.bids.concat(this.props.asks).map(x => x.depth)
-    );
-    this.maxDepth = Math.max(
-      ...this.props.bids.concat(this.props.asks).map(x => x.depth)
-    );
-    this.asksStart = Math.min(...this.props.asks.map(a => a.price));
-    this.asksEnd = Math.max(...this.props.asks.map(a => a.price));
-    this.bidsStart = Math.max(...this.props.bids.map(b => b.price));
-    this.bidsEnd = Math.min(...this.props.bids.map(b => b.price));
-    this.coefficient = this.calculateCoefficient();
-  }
-
   renderCanvas = (y?: number, x?: number) => {
     if (this.canvas) {
       this.canvasCtx!.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -393,47 +345,9 @@ class Chart extends React.Component<ChartProps> {
     }
   };
 
-  calculateExactPrice = (): number => {
-    const orders =
-      this.currentArea === DepthArea.Bid ? this.props.bids : this.props.asks;
-    let exactPrice = 0;
-
-    if (this.currentArea === DepthArea.Bid) {
-      for (let i = 0; i < orders.length - Math.floor(this.xIndex / 2); i++) {
-        const price = orders[i].price;
-        const volume = orders[i].volume;
-
-        exactPrice += price * volume;
-      }
-    } else {
-      for (let i = 0; i < this.xIndex / 2 - 1; i++) {
-        const price = orders[i].price;
-        const volume = orders[i].volume;
-
-        exactPrice += price * volume;
-      }
-    }
-
-    return exactPrice;
-  };
-
-  getDepthText = () =>
-    this.currentArea === DepthArea.Bid
-      ? DepthText.CanBeSold
-      : DepthText.CanBeBought;
-
-  findOrder = () => {
-    if (this.currentArea === DepthArea.Bid) {
-      return [...this.props.bids].reverse()[Math.floor(this.xIndex / 2)];
-    }
-    return this.props.asks[Math.floor(this.xIndex / 2) - 1];
-  };
-
   setCanvasRef = (canvas: any) => (this.canvas = canvas);
 
   render() {
-    this.initilaize();
-
     return (
       <React.Fragment>
         <canvas
