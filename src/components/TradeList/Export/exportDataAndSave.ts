@@ -13,13 +13,14 @@ const generateName = (): string => {
 };
 
 const downloadFile = (url: string, filename: string) => {
-  downloadLink.download = filename;
   downloadLink.href = url;
+  downloadLink.target = '_blank';
+  downloadLink.download = filename;
   document.body.appendChild(downloadLink);
   downloadLink.click();
 };
 
-const saveFile = async (fetchHistory: () => Promise<string>) => {
+const saveFile = async (fetchHistory: () => Promise<any>) => {
   const url = await fetchHistory();
   const filename = generateName();
   downloadFile(url, filename);

@@ -4,6 +4,7 @@ import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {TradeFilter, TradeModel} from '../models/index';
+import OperationType from '../models/operationType';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {nextSkip} from '../utils';
@@ -123,12 +124,28 @@ class TradeStore extends BaseStore {
     }
   };
 
-  fetchHistory = () => {
-    const walletId = this.rootStore.balanceListStore.getCurrentWalletId();
+  fetchHistory = async () => {
+    const csvIdRequestBody = {
+      OperationType: [
+        OperationType.CashIn,
+        OperationType.CashOut,
+        OperationType.LimitTrade,
+        OperationType.Trade
+      ],
+      AssetId: '',
+      AssetPairId: this.instrumentIdByFilter
+    };
+    const csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
+    const csvLinkRequestQuery = {
+      id: csvIdResponse.Id
+    };
 
-    return this.api.fetchCsvLink(walletId).then(url => {
-      return Promise.resolve(url);
-    });
+    let csvLinkResponse = await this.api.fetchCsvLink(csvLinkRequestQuery);
+    while (!csvLinkResponse.Url) {
+      csvLinkResponse = await this.api.fetchCsvLink(csvLinkRequestQuery);
+    }
+
+    return csvLinkResponse.Url;
   };
 
   fetchNextTrades = async () => {
