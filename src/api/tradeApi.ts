@@ -1,3 +1,9 @@
+import {
+  CsvIdRequestModel,
+  CsvIdResponseModel,
+  CsvLinkRequestModel,
+  CsvLinkResponseModel
+} from '../models/csvModels';
 import {OperationType} from '../models/index';
 import {HistoryApi} from './index';
 import {RestApi} from './restApi';
@@ -39,9 +45,11 @@ export class RestTradeApi extends RestApi implements TradeApi {
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
     HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
 
-  fetchCsvLink = (walletId: string): Promise<string> => {
-    return HistoryApi.fetchCsvLink(walletId);
-  };
+  fetchCsvId = (body: CsvIdRequestModel): Promise<CsvIdResponseModel> =>
+    HistoryApi.fetchCsvId(body);
+
+  fetchCsvLink = (query: CsvLinkRequestModel): Promise<CsvLinkResponseModel> =>
+    HistoryApi.fetchCsvLink(query);
 }
 
 export default TradeApi;

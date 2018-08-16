@@ -3,7 +3,7 @@ import {ExportButton} from '../styles';
 import saveFile from './exportDataAndSave';
 
 interface ExportProps {
-  fetchHistory: () => Promise<string>;
+  fetchHistory: () => Promise<any>;
   canExport: () => boolean;
 }
 
