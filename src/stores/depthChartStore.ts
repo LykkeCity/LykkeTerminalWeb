@@ -1,10 +1,10 @@
 import {action, computed, observable} from 'mobx';
 import {reverse, take} from 'rambda';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import chart from '../constants/chartConstants';
 import {DepthArea, Order} from '../models';
-import {formattedNumber} from '../utils/localFormatted/localFormatted';
-import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {AnalyticsService} from '../services/analyticsService';
+import {formattedNumber} from '../utils/localFormatted/localFormatted';
 import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
@@ -214,7 +214,7 @@ class DepthChartStore extends BaseStore {
   spread = async () => {
     const bestAsk = await this.rootStore.orderBookStore.getBestAsk();
     const bestBid = await this.rootStore.orderBookStore.getBestBid();
-    return (bestAsk - bestBid) / bestAsk * 100;
+    return ((bestAsk - bestBid) / bestAsk) * 100;
   };
 
   calculateExactPrice = (area: DepthArea, index: number): number => {
@@ -250,10 +250,12 @@ class DepthChartStore extends BaseStore {
     if (minDepth && maxDepth) {
       if (minDepth === maxDepth) {
         return (
-          (this.height - chart.labelsHeight) / minDepth * chart.scaleFactor
+          ((this.height - chart.labelsHeight) / minDepth) * chart.scaleFactor
         );
       }
-      return (this.height - chart.labelsHeight) / maxDepth * chart.scaleFactor;
+      return (
+        ((this.height - chart.labelsHeight) / maxDepth) * chart.scaleFactor
+      );
     }
     return 1;
   };
@@ -277,7 +279,7 @@ class DepthChartStore extends BaseStore {
         ? this.getBidPriceRange()
         : this.getAskPriceRange();
 
-    const length = width * priceDifference / priceRange;
+    const length = (width * priceDifference) / priceRange;
     return isNaN(length) ? width : length;
   };
 

@@ -1,3 +1,4 @@
+import {colors} from '../../components/styled';
 import {
   drawArea,
   drawCircle,
@@ -6,7 +7,6 @@ import {
   drawText,
   drawVerticalLine
 } from '../canvasUtils';
-import {colors} from '../../components/styled';
 
 describe(' canvas utils', () => {
   let context: CanvasRenderingContext2D;

@@ -1,10 +1,3 @@
-import {DepthChartStore, RootStore} from '../index';
-import {
-  DEFAULT_DEPTH_CHART_HEIGHT,
-  DEFAULT_DEPTH_CHART_WIDTH,
-  DEFAULT_SPAN_MULTIPLIER_IDX,
-  MULTIPLERS
-} from '../depthChartStore';
 import {
   AssetModel,
   DepthArea,
@@ -12,6 +5,13 @@ import {
   Order,
   Side
 } from '../../models';
+import {
+  DEFAULT_DEPTH_CHART_HEIGHT,
+  DEFAULT_DEPTH_CHART_WIDTH,
+  DEFAULT_SPAN_MULTIPLIER_IDX,
+  MULTIPLERS
+} from '../depthChartStore';
+import {DepthChartStore, RootStore} from '../index';
 
 describe('depth chart store', () => {
   let depthChartStore: DepthChartStore;

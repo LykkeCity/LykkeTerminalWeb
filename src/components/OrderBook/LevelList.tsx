@@ -166,7 +166,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   drawBar = (color: string, y: number, normalizedWidth: number) => {
     drawRect({
-      ctx: this.canvasCtx,
+      ctx: this.canvasCtx!,
       color,
       x: LEFT_PADDING,
       y,
@@ -178,7 +178,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   drawConnectedOrders = (color: string, y: number) => {
     drawVerticalLine({
-      ctx: this.canvasCtx,
+      ctx: this.canvasCtx!,
       x: 1 + LEFT_PADDING,
       y: y + 2,
       height: y + this.props.height / LEVELS_COUNT - 2,
@@ -190,7 +190,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   drawLevelBorder = (width: number, y: number) => {
     drawLine({
-      ctx: this.canvasCtx,
+      ctx: this.canvasCtx!,
       width,
       y,
       x: LEFT_PADDING,
@@ -208,7 +208,7 @@ class LevelList extends React.Component<LevelListProps> {
   ) => {
     const {spanAccuracy, width, height, format} = this.props;
     drawText({
-      ctx: this.canvasCtx,
+      ctx: this.canvasCtx!,
       color,
       text: format(price, spanAccuracy),
       x: BAR_WIDTH,
@@ -236,7 +236,7 @@ class LevelList extends React.Component<LevelListProps> {
     x: number
   ) => {
     drawText({
-      ctx: this.canvasCtx,
+      ctx: this.canvasCtx!,
       color: volumeColor,
       text: volume,
       x,
@@ -267,7 +267,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   drawValue = (value: string, y: number) => {
     drawText({
-      ctx: this.canvasCtx,
+      ctx: this.canvasCtx!,
       color: colors.white,
       text: value,
       x: this.props.width,
@@ -477,7 +477,7 @@ class LevelList extends React.Component<LevelListProps> {
       <React.Fragment>
         {!isReadOnly && (
           <FakeOrderBookStage
-            width={(width - BAR_WIDTH) / CELLS_NUMBER * 2}
+            width={((width - BAR_WIDTH) / CELLS_NUMBER) * 2}
             height={height}
             onMouseDown={this.handleMouseDownOnFakeStage}
             ref={this.setFakeStageRef}
