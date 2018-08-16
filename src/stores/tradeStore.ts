@@ -3,6 +3,7 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
+import {CsvIdResponseModel} from '../models/csvModels';
 import {TradeFilter, TradeModel} from '../models/index';
 import OperationType from '../models/operationType';
 import TradeQuantity from '../models/tradeLoadingQuantity';
@@ -29,6 +30,12 @@ class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
   @observable shouldFetchMore = false;
   @observable hasPendingItems: boolean = false;
+  @observable csvIdResponse: CsvIdResponseModel;
+
+  whenCsvIsReady: any;
+  csvWamp: Promise<any> = new Promise(resolve => {
+    this.whenCsvIsReady = resolve;
+  });
 
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
@@ -135,17 +142,11 @@ class TradeStore extends BaseStore {
       AssetId: '',
       AssetPairId: this.instrumentIdByFilter
     };
-    const csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
-    const csvLinkRequestQuery = {
-      id: csvIdResponse.Id
-    };
+    this.csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
 
-    let csvLinkResponse = await this.api.fetchCsvLink(csvLinkRequestQuery);
-    while (!csvLinkResponse.Url) {
-      csvLinkResponse = await this.api.fetchCsvLink(csvLinkRequestQuery);
-    }
+    const resp = await this.csvWamp;
 
-    return csvLinkResponse.Url;
+    return resp.Url;
   };
 
   fetchNextTrades = async () => {
@@ -178,11 +179,16 @@ class TradeStore extends BaseStore {
 
   subscribe = (ws: any) => {
     ws.subscribe(topics.trades, this.onTrades);
+    ws.subscribe(topics.csv, this.onCsvReady);
   };
 
   onTrades = async (args: any[]) => {
     this.receivedFromWamp += 2;
     this.addTrade(map.fromWampToTrade(args[0], this.instruments));
+  };
+
+  onCsvReady = (args: any[]) => {
+    this.whenCsvIsReady(args[0]);
   };
 
   subscribeToPublicTrades = async () => {
