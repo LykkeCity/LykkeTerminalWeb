@@ -7,11 +7,3 @@ export interface CsvIdRequestModel {
 export interface CsvIdResponseModel {
   Id?: string;
 }
-
-export interface CsvLinkRequestModel {
-  id?: string;
-}
-
-export interface CsvLinkResponseModel {
-  Url: string;
-}
