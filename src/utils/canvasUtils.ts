@@ -137,10 +137,10 @@ export const drawArea = ({
   ctx.setLineDash(dashSegments);
   ctx.moveTo(points[0].x, points[0].y);
 
-  points.forEach((p: {x: number; y: number; color?: string}, i: number) => {
+  points.forEach((point, i: number) => {
     if (i !== 0) {
-      ctx.strokeStyle = p.color || 'transparent';
-      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = point.color || 'transparent';
+      ctx.lineTo(point.x, point.y);
       ctx.stroke();
     }
   });

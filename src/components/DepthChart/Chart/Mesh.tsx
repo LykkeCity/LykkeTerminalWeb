@@ -3,6 +3,10 @@ import chart from '../../../constants/chartConstants';
 import {defineCanvasScale} from '../../../utils/canvasUtils';
 import {drawMeshElements, IMeshDrawingTools} from '../helpers/chartHelpers';
 
+const VERTICAL_LINE_PADDING = 15;
+const HORIZONTAL_LINE_Y_PADDING = 9;
+const HORIZONTAL_LINE_X_PADDING = 25;
+
 interface MeshProps {
   width: number;
   height: number;
@@ -87,6 +91,7 @@ class Mesh extends React.Component<MeshProps> {
     const startVertical = stepVertical / 2;
     const labels = this.props.verticalLabels;
     if (labels.length) {
+      const startY = this.props.height + VERTICAL_LINE_PADDING;
       for (
         let startX = startVertical, index = 0;
         startX < this.props.width;
@@ -95,7 +100,7 @@ class Mesh extends React.Component<MeshProps> {
         this.drawingTools.drawLabel(
           labels[index],
           startX,
-          this.props.height + 15,
+          startY,
           `${chart.mesh.verticalFontSize}px ${chart.mesh.fontFamily}`
         );
       }
@@ -104,9 +109,10 @@ class Mesh extends React.Component<MeshProps> {
 
   drawHorizontalLabels = () => {
     const stepHorizontal = this.props.height / chart.mesh.horizontalLinesAmount;
-    const startHorizontal = stepHorizontal / 2 + 9;
+    const startHorizontal = stepHorizontal / 2 + HORIZONTAL_LINE_Y_PADDING;
     const labels = this.props.depthLabels;
     if (labels.length) {
+      const startX = this.props.width + HORIZONTAL_LINE_X_PADDING;
       for (
         let startY = startHorizontal, index = 0;
         startY < this.props.height;
@@ -114,7 +120,7 @@ class Mesh extends React.Component<MeshProps> {
       ) {
         this.drawingTools.drawLabel(
           labels[index],
-          this.props.width + 25,
+          startX,
           startY - chart.mesh.horizontalFontSize / 2,
           `${chart.mesh.horizontalFontSize}px ${chart.mesh.fontFamily}`
         );

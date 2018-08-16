@@ -16,8 +16,7 @@ export const PRICE_FONT_SIZE = 14;
 export const FONT_SIZE = 13;
 export const VALUE_PADDING = 3;
 export const POPUP_HEIGHT = 80;
-export const POPUP_TEXT_LEFT_PADDING = 10;
-export const POPUP_TEXT_RIGHT_PADDING = 10;
+export const POPUP_TEXT_PADDING = 10;
 export const MESH_LINES_OPACITY = 0.6;
 export const POINTER_OPACITY = 0.6;
 export const POPUP_ALIGN = 'left';
@@ -131,15 +130,16 @@ export const drawChartElements = (
 ): IChartDrawingTools => {
   return {
     drawPointer(x: number, y: number) {
+      const color =
+        getArea() === DepthArea.Bid
+          ? chart.bids.lineColor
+          : chart.asks.lineColor;
       drawCircle({
         ctx,
         radius: chart.pointer.circleRadius,
         x,
         y,
-        color:
-          getArea() === DepthArea.Bid
-            ? chart.bids.lineColor
-            : chart.asks.lineColor,
+        color,
         lineWidth: 1,
         lineColor: chart.pointer.circleStrokeColor
       });
@@ -155,13 +155,15 @@ export const drawChartElements = (
     },
 
     drawPointerLine(height: number, x: number, y: number) {
+      const color =
+        getArea() === DepthArea.Bid
+          ? chart.bids.lineColor
+          : chart.asks.lineColor;
+
       drawVerticalLine({
         ctx,
         opacity: POINTER_OPACITY,
-        color:
-          getArea() === DepthArea.Bid
-            ? chart.bids.lineColor
-            : chart.asks.lineColor,
+        color,
         dashSegments: chart.pointer.dash,
         lineWidth: chart.strokeWidth,
         height,
@@ -247,16 +249,15 @@ export const getXCoords = (
   area: DepthArea,
   midX: number
 ) => {
-  const upRightPoint =
-    textWidth + x + POPUP_TEXT_LEFT_PADDING + POPUP_TEXT_RIGHT_PADDING;
-  const upLeftPoint =
-    x - textWidth - POPUP_TEXT_LEFT_PADDING - POPUP_TEXT_RIGHT_PADDING;
+  const upRightPoint = textWidth + x + POPUP_TEXT_PADDING * 2;
+  const upLeftPoint = x - textWidth - POPUP_TEXT_PADDING * 2;
 
   if (area === DepthArea.Bid) {
     const isLessThanMidBid = x < midX / 2;
     return isLessThanMidBid ? upRightPoint : upLeftPoint;
   } else {
-    const isLessThanMidAsk = x > midX / 2 * 3;
+    const midAsk = (midX / 2) * 3;
+    const isLessThanMidAsk = x > midAsk;
     return isLessThanMidAsk ? upLeftPoint : upRightPoint;
   }
 };
@@ -272,14 +273,15 @@ export const getTextXCoords = (
   area: DepthArea,
   midX: number
 ) => {
-  const startLeftPoint = x + POPUP_TEXT_LEFT_PADDING;
-  const startRightPoint = x - endXPoint - POPUP_TEXT_RIGHT_PADDING;
+  const startLeftPoint = x + POPUP_TEXT_PADDING;
+  const startRightPoint = x - endXPoint - POPUP_TEXT_PADDING;
 
   if (area === DepthArea.Bid) {
     const isLessThanMidBid = x < midX / 2;
     return isLessThanMidBid ? startLeftPoint : startRightPoint;
   } else {
-    const isLessThanMidAsk = x > midX / 2 * 3;
+    const midAsk = (midX / 2) * 3;
+    const isLessThanMidAsk = x > midAsk;
     return isLessThanMidAsk ? startRightPoint : startLeftPoint;
   }
 };

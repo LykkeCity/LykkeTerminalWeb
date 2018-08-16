@@ -15,6 +15,8 @@ export const DEFAULT_DEPTH_CHART_HEIGHT = 512;
 export const MULTIPLERS = [0, 1, 0.75, 0.5, 0.25, 0.1, 0.05, 0.025];
 export const DEFAULT_SPAN_MULTIPLIER_IDX = 3;
 
+const sumPrice = (sum: number, curr: Order) => sum + curr.volume * curr.price;
+
 class DepthChartStore extends BaseStore {
   multiplers: number[] = [...MULTIPLERS];
   maxMultiplier = this.multiplers.length - 1;
@@ -224,17 +226,11 @@ class DepthChartStore extends BaseStore {
   };
 
   calculateExactBidPrice = (index: number) => {
-    return take(this.getBids.length - index, this.getBids).reduce(
-      (sum: number, curr: Order) => sum + curr.volume * curr.price,
-      0
-    );
+    return take(this.getBids.length - index, this.getBids).reduce(sumPrice, 0);
   };
 
   calculateExactAskPrice = (index: number) => {
-    return take(index, reverse(this.getAsks)).reduce(
-      (sum: number, curr: Order) => sum + curr.volume * curr.price,
-      0
-    );
+    return take(index, reverse(this.getAsks)).reduce(sumPrice, 0);
   };
 
   findOrder = (area: DepthArea, index: number) => {
@@ -247,17 +243,18 @@ class DepthChartStore extends BaseStore {
   getCoefficient = () => {
     const minDepth = this.getMinMaxDepth(Math.min);
     const maxDepth = this.getMinMaxDepth(Math.max);
-    if (minDepth && maxDepth) {
-      if (minDepth === maxDepth) {
-        return (
-          ((this.height - chart.labelsHeight) / minDepth) * chart.scaleFactor
-        );
-      }
-      return (
-        ((this.height - chart.labelsHeight) / maxDepth) * chart.scaleFactor
-      );
+
+    if (!minDepth || !maxDepth) {
+      return 1;
     }
-    return 1;
+
+    return minDepth === maxDepth
+      ? this.getCoefficientByDepth(minDepth)
+      : this.getCoefficientByDepth(maxDepth);
+  };
+
+  getCoefficientByDepth = (depth: number) => {
+    return ((this.height - chart.labelsHeight) / depth) * chart.scaleFactor;
   };
 
   getMinMaxDepth = (operation: any) => {
