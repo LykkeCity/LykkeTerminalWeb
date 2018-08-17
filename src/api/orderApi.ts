@@ -1,15 +1,24 @@
+import Side from '../models/side';
 import RestApi from './restApi';
 import {ApiResponse} from './types';
 
-export interface CancelAllOrdersProps {
+export interface PlaceOrder {
+  AssetId: string;
+  AssetPairId: string;
+  OrderAction: Side;
+  Price?: number;
+  Volume: number;
+}
+
+export interface CancelAllOrders {
   AssetPairId?: string;
 }
 
 export interface OrderApi {
-  placeMarket: (body: any) => ApiResponse;
-  placeLimit: (body: any) => ApiResponse;
+  placeMarket: (body: PlaceOrder) => ApiResponse;
+  placeLimit: (body: PlaceOrder) => ApiResponse;
   cancelOrder: (id: string) => ApiResponse;
-  cancelAllOrders: (body: CancelAllOrdersProps) => ApiResponse;
+  cancelAllOrders: (body: CancelAllOrders) => ApiResponse;
   fetchAll: () => ApiResponse;
 }
 

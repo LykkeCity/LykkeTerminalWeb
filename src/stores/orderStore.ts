@@ -1,4 +1,4 @@
-import OrderApi from '../api/orderApi';
+import OrderApi, {PlaceOrder} from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import messages from '../constants/notificationMessages';
@@ -35,7 +35,7 @@ class OrderStore extends BaseStore {
     this.modalStore = this.rootStore.modalStore;
   }
 
-  placeOrder = async (orderType: string, body: any) => {
+  placeOrder = async (orderType: string, body: PlaceOrder) => {
     switch (orderType) {
       case OrderType.Market:
         return this.api
@@ -85,15 +85,15 @@ class OrderStore extends BaseStore {
     }
   };
 
-  cancelAll = async (currentAsset: boolean) => {
+  cancelAll = async (isCurrentAsset: boolean) => {
     try {
       const selectedInstrument = this.rootStore.uiStore.selectedInstrument;
-      const body = currentAsset ? {AssetPairId: selectedInstrument!.id} : {};
+      const body = isCurrentAsset ? {AssetPairId: selectedInstrument!.id} : {};
 
       await this.api.cancelAllOrders(body);
       this.rootStore.orderListStore.deleteAllOrders(body.AssetPairId);
       this.allOrdersCancelledSuccessfully(
-        currentAsset ? selectedInstrument!.displayName : null
+        isCurrentAsset ? selectedInstrument!.displayName : null
       );
     } catch (error) {
       this.orderPlacedUnsuccessfully(error);
