@@ -1,4 +1,8 @@
-import chart from '../../../constants/chartConstants';
+import chart, {
+  MESH_LINES_OPACITY,
+  POINTER_OPACITY,
+  POPUP_ALIGN
+} from '../../../constants/chartConstants';
 import {DepthArea, DepthText, Order, Side} from '../../../models';
 import {colors} from '../../styled';
 import {
@@ -14,9 +18,6 @@ import {
   getYCoords,
   IChartDrawingTools,
   IMeshDrawingTools,
-  MESH_LINES_OPACITY,
-  POINTER_OPACITY,
-  POPUP_ALIGN,
   updatePointsForDrawing
 } from './chartHelpers';
 

@@ -1,14 +1,18 @@
 import * as React from 'react';
-import chart from '../../../constants/chartConstants';
+import chart, {
+  COST_PADDING,
+  DEPTH_PADDING,
+  FONT_SIZE,
+  PRICE_FONT_SIZE,
+  PRICE_PADDING,
+  VALUE_PADDING
+} from '../../../constants/chartConstants';
 import {DepthArea, DepthText, Order} from '../../../models';
 import {defineCanvasScale} from '../../../utils/canvasUtils';
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import {colors} from '../../styled';
 import {
-  COST_PADDING,
-  DEPTH_PADDING,
   drawChartElements,
-  FONT_SIZE,
   generatePoints,
   getAreaColor,
   getCurrentArea,
@@ -17,10 +21,7 @@ import {
   IChartDrawingTools,
   IPoint,
   measureText,
-  PRICE_FONT_SIZE,
-  PRICE_PADDING,
-  updatePointsForDrawing,
-  VALUE_PADDING
+  updatePointsForDrawing
 } from '../helpers/chartHelpers';
 
 interface ChartProps {

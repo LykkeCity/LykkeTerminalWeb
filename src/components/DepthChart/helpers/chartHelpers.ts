@@ -1,4 +1,10 @@
-import chart from '../../../constants/chartConstants';
+import chart, {
+  MESH_LINES_OPACITY,
+  POINTER_OPACITY,
+  POPUP_ALIGN,
+  POPUP_HEIGHT,
+  POPUP_TEXT_PADDING
+} from '../../../constants/chartConstants';
 import {DepthArea, DepthText, Order} from '../../../models/index';
 import {
   drawArea,
@@ -8,18 +14,6 @@ import {
   drawVerticalLine
 } from '../../../utils/canvasUtils';
 import {colors} from '../../styled';
-
-export const COST_PADDING = 15;
-export const DEPTH_PADDING = 35;
-export const PRICE_PADDING = 55;
-export const PRICE_FONT_SIZE = 14;
-export const FONT_SIZE = 13;
-export const VALUE_PADDING = 3;
-export const POPUP_HEIGHT = 80;
-export const POPUP_TEXT_PADDING = 10;
-export const MESH_LINES_OPACITY = 0.6;
-export const POINTER_OPACITY = 0.6;
-export const POPUP_ALIGN = 'left';
 
 export const getAreaColor = (area: DepthArea) =>
   area === DepthArea.Bid ? colors.buy : colors.sell;
@@ -195,12 +189,12 @@ export const drawChartElements = (
         color: string,
         fontSize: number,
         padding: number,
-        labelWidth: number = 0
+        textPadding: number = 0
       ) => {
         drawText({
           ctx,
           color,
-          x: getTextXCoords(x, textWidth, endXPoint, area, midX) + labelWidth,
+          x: getTextXCoords(x, textWidth, endXPoint, area, midX) + textPadding,
           y: getTextYCoords(y, midY) - padding,
           font: `${fontSize}px ${chart.modal.label.fontFamily}`,
           text: `${text}`,
@@ -256,7 +250,7 @@ export const getXCoords = (
     const isLessThanMidBid = x < midX / 2;
     return isLessThanMidBid ? upRightPoint : upLeftPoint;
   } else {
-    const midAsk = (midX / 2) * 3;
+    const midAsk = (midX / 2) * 3; // calculate the middle of asks x-coords
     const isLessThanMidAsk = x > midAsk;
     return isLessThanMidAsk ? upLeftPoint : upRightPoint;
   }
@@ -280,7 +274,7 @@ export const getTextXCoords = (
     const isLessThanMidBid = x < midX / 2;
     return isLessThanMidBid ? startLeftPoint : startRightPoint;
   } else {
-    const midAsk = (midX / 2) * 3;
+    const midAsk = (midX / 2) * 3; // calculate the middle of asks x-coords
     const isLessThanMidAsk = x > midAsk;
     return isLessThanMidAsk ? startRightPoint : startLeftPoint;
   }
