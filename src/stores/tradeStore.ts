@@ -4,7 +4,7 @@ import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
-import {CsvIdResponseModel} from '../models/csvModels';
+import {CsvIdResponseModel, CsvWampModel} from '../models/csvModels';
 import {OperationType, TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
@@ -33,10 +33,8 @@ class TradeStore extends BaseStore {
   @observable hasPendingItems: boolean = false;
   @observable csvIdResponse: CsvIdResponseModel;
 
-  whenCsvIsReady: any;
-  csvWamp: Promise<any> = new Promise(resolve => {
-    this.whenCsvIsReady = resolve;
-  });
+  whenCsvIsReady: (csvWampData: CsvWampModel) => void;
+  csvWamp: Promise<CsvWampModel>;
 
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
@@ -127,7 +125,7 @@ class TradeStore extends BaseStore {
     }
   };
 
-  fetchHistory = async () => {
+  fetchCsvUrl = async () => {
     const csvIdRequestBody = {
       OperationType: [
         OperationType.CashIn,
@@ -138,11 +136,17 @@ class TradeStore extends BaseStore {
       AssetId: '',
       AssetPairId: this.instrumentIdByFilter
     };
+    this.csvWamp = new Promise(resolve => {
+      this.whenCsvIsReady = resolve;
+    });
     this.csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
 
-    const resp = await this.csvWamp;
+    const csvWampData = await this.csvWamp;
 
-    return resp.Url;
+    if (this.csvIdResponse.Id === csvWampData.Id) {
+      return csvWampData.Url;
+    }
+    return '';
   };
 
   fetchNextTrades = async () => {
