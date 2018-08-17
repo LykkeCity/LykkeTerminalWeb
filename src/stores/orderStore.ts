@@ -89,14 +89,12 @@ class OrderStore extends BaseStore {
     try {
       const selectedInstrument = this.rootStore.uiStore.selectedInstrument;
       const body = currentAsset ? {AssetPairId: selectedInstrument!.id} : {};
-      const deleted = await this.api.cancelAllOrders(body);
 
-      if (deleted.status === 200) {
-        this.rootStore.orderListStore.deleteAllOrders(body.AssetPairId);
-        this.allOrdersCancelledSuccessfully(
-          currentAsset ? selectedInstrument!.displayName : null
-        );
-      }
+      await this.api.cancelAllOrders(body);
+      this.rootStore.orderListStore.deleteAllOrders(body.AssetPairId);
+      this.allOrdersCancelledSuccessfully(
+        currentAsset ? selectedInstrument!.displayName : null
+      );
     } catch (error) {
       this.orderPlacedUnsuccessfully(error);
 

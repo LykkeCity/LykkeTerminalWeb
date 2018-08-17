@@ -1,11 +1,15 @@
 import RestApi from './restApi';
 import {ApiResponse} from './types';
 
+export interface CancelAllOrdersProps {
+  AssetPairId?: string;
+}
+
 export interface OrderApi {
   placeMarket: (body: any) => ApiResponse;
   placeLimit: (body: any) => ApiResponse;
   cancelOrder: (id: string) => ApiResponse;
-  cancelAllOrders: (body: any) => ApiResponse;
+  cancelAllOrders: (body: CancelAllOrdersProps) => ApiResponse;
   fetchAll: () => ApiResponse;
 }
 

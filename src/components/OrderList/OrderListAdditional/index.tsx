@@ -3,8 +3,8 @@ import CancelAllOrders from './CancelAllOrders';
 import ToggleOrders from './ToggleOrders';
 
 export interface CancelAllOrderProps {
-  cancelAll: any;
-  isOrderLength: boolean;
+  cancelAll: (isCurrentAsset: boolean) => void;
+  hasOrders: boolean;
   selectedOrderOptions: string;
 }
 
