@@ -3,12 +3,12 @@ import React from 'react';
 import Export from '../Export';
 
 describe('<Export>', () => {
-  const fetchHistory = jest.fn();
+  const fetchCsvUrl = jest.fn();
   let canExport = jest.fn(() => true);
 
   // tslint:disable-next-line:no-shadowed-variable
   const getExportButton = (canExport: () => boolean) => {
-    return <Export canExport={canExport} fetchHistory={fetchHistory} />;
+    return <Export canExport={canExport} fetchCsvUrl={fetchCsvUrl} />;
   };
 
   it('should render content', () => {

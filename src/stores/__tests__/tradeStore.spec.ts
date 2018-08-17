@@ -25,8 +25,7 @@ describe('trade store', () => {
   const rootStore = new RootStore();
   const api: any = {
     fetchPublicTrades: jest.fn(),
-    fetchTrades: jest.fn(),
-    fetchHistory: jest.fn()
+    fetchTrades: jest.fn()
   };
 
   const getTestInstrument = (params?: Partial<InstrumentModel>) => {
@@ -318,30 +317,6 @@ describe('trade store', () => {
           })
         ]);
         expect(tradeStore.canExport()).toBeTruthy();
-      });
-    });
-
-    describe('fetchHistory method', () => {
-      it('getCurrentWalletId() method should be called', () => {
-        tradeStore.fetchHistory();
-
-        expect(
-          tradeStore.rootStore.balanceListStore.getCurrentWalletId
-        ).toBeCalled();
-      });
-
-      it('api method fetchHistory() method should be called', () => {
-        tradeStore.fetchHistory();
-
-        expect(api.fetchHistory).toBeCalled();
-      });
-
-      it('should return trades history', async () => {
-        const history = await tradeStore.fetchHistory();
-
-        expect(history).toBeDefined();
-        expect(history).toBeInstanceOf(Array);
-        expect(history).toHaveLength(1);
       });
     });
   });

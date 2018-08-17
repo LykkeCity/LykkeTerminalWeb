@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {ExportButton} from '../styles';
-import saveFile from './exportDataAndSave';
+import saveFile from './saveFileByUrl';
 
 interface ExportProps {
-  fetchHistory: () => Promise<any>;
+  fetchCsvUrl: () => Promise<string>;
   canExport: () => boolean;
 }
 
@@ -12,9 +12,7 @@ class Export extends React.Component<ExportProps> {
     super(props);
   }
 
-  saveFile = () => {
-    saveFile(this.props.fetchHistory);
-  };
+  saveFile = () => saveFile(this.props.fetchCsvUrl);
 
   render() {
     return (

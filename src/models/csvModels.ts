@@ -7,3 +7,8 @@ export interface CsvIdRequestModel {
 export interface CsvIdResponseModel {
   Id?: string;
 }
+
+export interface CsvWampModel {
+  Id: string;
+  Url: string;
+}
