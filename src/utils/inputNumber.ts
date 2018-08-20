@@ -1,5 +1,5 @@
+import {safeMath} from '@lykkex/lykke.js';
 import ArrowDirection from '../models/arrowDirection';
-import {addition, subtraction} from '../utils/math';
 import {
   getPostDecimalsLength,
   isOnlyNumbers,
@@ -20,11 +20,13 @@ export const onArrowClick = (
   const value = !getValue() ? '0' : getValue();
   switch (operation) {
     case ArrowDirection.Up:
-      setValue(addition(value, Math.pow(10, -1 * getAccuracy())).toString());
+      setValue(
+        safeMath.add(value, Math.pow(10, -1 * getAccuracy())).toString()
+      );
       break;
     case ArrowDirection.Down:
-      const newVal = subtraction(value, Math.pow(10, -1 * getAccuracy()));
-      const sentVal = newVal.toNumber() <= 0 ? 0 : newVal.toString();
+      const newVal = safeMath.sub(value, Math.pow(10, -1 * getAccuracy()));
+      const sentVal = newVal.valueOf() <= 0 ? 0 : newVal.toString();
       setValue(sentVal);
       break;
   }

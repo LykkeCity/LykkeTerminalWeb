@@ -1,3 +1,4 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {action, computed, observable} from 'mobx';
 import {compose, curry, head, reverse, sortBy, take} from 'rambda';
@@ -9,7 +10,6 @@ import {LevelType, Order, OrderBookCellType, Side} from '../models/index';
 import {OrderLevel} from '../models/order';
 import {AnalyticsService} from '../services/analyticsService';
 import {switchcase} from '../utils/fn';
-import {precisionFloor, times} from '../utils/math';
 import {getDigits} from '../utils/number';
 import {BaseStore, RootStore} from './index';
 import {
@@ -78,8 +78,8 @@ class OrderBookStore extends BaseStore {
   @computed
   get span() {
     if (this.rootStore.uiStore.selectedInstrument) {
-      return precisionFloor(
-        times(this.seedSpan, this.spanMultiplier).toNumber(),
+      return safeMath.floor(
+        this.seedSpan * this.spanMultiplier,
         this.rootStore.uiStore.selectedInstrument.accuracy
       );
     }
@@ -93,7 +93,7 @@ class OrderBookStore extends BaseStore {
     }
 
     return this.rootStore.uiStore.selectedInstrument
-      ? getDigits(times(this.seedSpan, this.spanMultiplier).toNumber())
+      ? getDigits(this.seedSpan * this.spanMultiplier)
       : DEFAULT_ACCURACY;
   }
 

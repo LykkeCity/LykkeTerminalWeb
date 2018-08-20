@@ -1,5 +1,5 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {computed, observable} from 'mobx';
-import {subtraction} from '../utils/math';
 
 export interface ApiAssetBalanceModel {
   AssetId: string;
@@ -17,7 +17,7 @@ class AssetBalanceModel {
 
   @computed
   get available() {
-    return subtraction(this.balance, this.reserved).toNumber();
+    return safeMath.sub(this.balance, this.reserved).valueOf();
   }
 
   constructor(dto: any) {

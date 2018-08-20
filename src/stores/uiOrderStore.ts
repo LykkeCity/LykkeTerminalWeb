@@ -1,3 +1,4 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {computed, observable} from 'mobx';
 import {curry} from 'rambda';
 import {ArrowDirection, OrderType, Side} from '../models';
@@ -10,7 +11,6 @@ import {
   onArrowClick,
   onValueChange
 } from '../utils/inputNumber';
-import {bigToFixed, getPercentsOf, precisionFloor} from '../utils/math';
 import {
   getPercentOfValueForLimit,
   isAmountExceedLimitBalance
@@ -75,14 +75,10 @@ class UiOrderStore extends BaseStore {
     isEnoughLiquidity: true,
     price: 0
   };
-  @observable
-  private priceValue: string = DEFAULT_INPUT_VALUE;
-  @observable
-  private quantityValue: string = DEFAULT_INPUT_VALUE;
-  @observable
-  private market: OrderType = OrderType.Limit;
-  @observable
-  private side: Side = Side.Buy;
+  @observable private priceValue: string = DEFAULT_INPUT_VALUE;
+  @observable private quantityValue: string = DEFAULT_INPUT_VALUE;
+  @observable private market: OrderType = OrderType.Limit;
+  @observable private side: Side = Side.Buy;
   private priceAccuracy: number = 2;
   private quantityAccuracy: number = 2;
 
@@ -117,11 +113,11 @@ class UiOrderStore extends BaseStore {
   setPriceValueWithFixed = (price: number) =>
     (this.priceValue = !price
       ? DEFAULT_INPUT_VALUE
-      : bigToFixed(price, this.priceAccuracy).toString());
+      : safeMath.toFixed(price, this.priceAccuracy));
   setQuantityValueWithFixed = (quantity: number | string) =>
     (this.quantityValue = !quantity
       ? DEFAULT_INPUT_VALUE
-      : bigToFixed(quantity, this.quantityAccuracy).toString());
+      : safeMath.toFixed(quantity, this.quantityAccuracy));
 
   setPriceValue = (price: string) => (this.priceValue = price);
   setQuantityValue = (quantity: string) => (this.quantityValue = quantity);
@@ -186,14 +182,18 @@ class UiOrderStore extends BaseStore {
     baseAssetId: string
   ) => {
     if (this.isCurrentSideSell) {
-      return getPercentsOf(percents, value, this.getQuantityAccuracy());
+      return safeMath.getPercentsOf(
+        percents,
+        value,
+        this.getQuantityAccuracy()
+      );
     }
     const convertedBalance = getMaxAvailableVolume(
       value,
       this.rootStore.orderBookStore.rawAsks
     );
 
-    return getPercentsOf(
+    return safeMath.getPercentsOf(
       percents,
       convertedBalance,
       this.getQuantityAccuracy()
@@ -248,7 +248,7 @@ class UiOrderStore extends BaseStore {
     return this.isCurrentSideSell
       ? +this.quantityValue > baseAssetBalance
       : +this.quantityValue >
-          precisionFloor(+convertedBalance, this.quantityAccuracy);
+          safeMath.floor(+convertedBalance, this.quantityAccuracy);
   };
 
   setMarketTotal = (

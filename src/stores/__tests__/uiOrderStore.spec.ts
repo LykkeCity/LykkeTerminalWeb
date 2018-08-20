@@ -1,6 +1,6 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {ArrowDirection, Order, OrderType, Side} from '../../models';
 import {DEFAULT_INPUT_VALUE} from '../../utils/inputNumber';
-import {getPercentsOf, precisionFloor} from '../../utils/math';
 import {RootStore, UiOrderStore} from '../index';
 
 describe('uiOrder store', () => {
@@ -251,11 +251,9 @@ describe('uiOrder store', () => {
         quoteAssetId: ''
       });
       expect(uiOrderStore.getComputedQuantityValue).toBe(
-        getPercentsOf(
-          percents,
-          balance,
-          uiOrderStore.getQuantityAccuracy()
-        ).toFixed(uiOrderStore.getQuantityAccuracy())
+        safeMath
+          .getPercentsOf(percents, balance, uiOrderStore.getQuantityAccuracy())
+          .toFixed(uiOrderStore.getQuantityAccuracy())
       );
     });
 
@@ -275,11 +273,13 @@ describe('uiOrder store', () => {
         quoteAssetId: ''
       });
       expect(uiOrderStore.getComputedQuantityValue).toBe(
-        getPercentsOf(
-          percents,
-          convertedBalance,
-          uiOrderStore.getQuantityAccuracy()
-        ).toFixed(uiOrderStore.getQuantityAccuracy())
+        safeMath
+          .getPercentsOf(
+            percents,
+            convertedBalance,
+            uiOrderStore.getQuantityAccuracy()
+          )
+          .toFixed(uiOrderStore.getQuantityAccuracy())
       );
     });
 
@@ -318,7 +318,7 @@ describe('uiOrder store', () => {
       uiOrderStore.setQuantityValue(quantity);
       uiOrderStore.setSide(Side.Buy);
       expect(parseFloat(uiOrderStore.getComputedQuantityValue)).toBeGreaterThan(
-        precisionFloor(+convertedBalance, uiOrderStore.getQuantityAccuracy())
+        safeMath.floor(+convertedBalance, uiOrderStore.getQuantityAccuracy())
       );
       expect(
         uiOrderStore.isMarketInvalid(

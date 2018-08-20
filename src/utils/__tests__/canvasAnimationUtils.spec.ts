@@ -1,9 +1,9 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {
   getDefaultTransitionAnimationState,
   ITransitionAnimationDetail,
   updateTransitionState
 } from '../canvasAnimationUtils';
-import {bigToFixed} from '../math';
 
 describe('canvas animation utils', () => {
   describe('method getDefaultTransitionAnimationState', () => {
@@ -27,7 +27,7 @@ describe('canvas animation utils', () => {
 
     it('should increase opacity if animation is rising and less then maximum', () => {
       updateTransitionState(state);
-      expect(bigToFixed(state.currentOpacity, 1).toNumber()).toBe(0.2);
+      expect(safeMath.toFixed(state.currentOpacity, 1)).toBe('0.2');
     });
 
     it('should decrease opacity if animation is not rising', () => {
@@ -35,7 +35,7 @@ describe('canvas animation utils', () => {
       state.currentOpacity = 0.4;
 
       updateTransitionState(state);
-      expect(bigToFixed(state.currentOpacity, 1).toNumber()).toBe(0.3);
+      expect(safeMath.toFixed(state.currentOpacity, 1)).toBe('0.3');
     });
 
     it('should turn off rising if opacity is larger then maximum', () => {

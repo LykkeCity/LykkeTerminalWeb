@@ -1,6 +1,6 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {add, reject, uniq, without} from 'rambda';
 import {FeeType, InstrumentModel, Side, TradeModel} from '.';
-import {precisionCeil, precisionFloor} from '../utils/math';
 import {mapHistoryTypeToOrderType} from './mappers';
 import SideDirection from './sideDirection';
 
@@ -45,8 +45,8 @@ export const mapToEffectivePrice = (
       : volumeSum / oppositeVolumeSum;
 
   return side === SideDirection.Buy
-    ? precisionCeil(effectivePrice, accuracy)
-    : precisionFloor(effectivePrice, accuracy);
+    ? safeMath.ceil(effectivePrice, accuracy)
+    : safeMath.floor(effectivePrice, accuracy);
 };
 
 export const aggregateTradesByTimestamp = (

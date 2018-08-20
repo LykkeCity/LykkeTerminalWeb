@@ -1,5 +1,5 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {Side} from '../models';
-import {getPercentsOf, precisionFloor} from './math';
 
 export const getPercentOfValueForLimit = (
   getPriceValue: () => string,
@@ -9,9 +9,9 @@ export const getPercentOfValueForLimit = (
   side: Side
 ) => {
   if (side === Side.Sell) {
-    return getPercentsOf(percents, value, getQuantityAccuracy());
+    return safeMath.getPercentsOf(percents, value, getQuantityAccuracy());
   }
-  return getPercentsOf(
+  return safeMath.getPercentsOf(
     percents,
     value / parseFloat(getPriceValue()),
     getQuantityAccuracy()
@@ -30,7 +30,7 @@ export const isAmountExceedLimitBalance = (
   isSell
     ? +quantityValue > baseAssetBalance
     : parseFloat(priceValue) *
-        precisionFloor(parseFloat(quantityValue), quantityAccuracy) >
+        safeMath.floor(parseFloat(quantityValue), quantityAccuracy) >
       quoteAssetBalance;
 
 export const setActivePercentage = (percentage: any[], index?: number) => {

@@ -1,5 +1,5 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {Side} from '../../models';
-import {getPercentsOf} from '../math';
 import {
   getPercentOfValueForLimit,
   isAmountExceedLimitBalance,
@@ -91,7 +91,7 @@ describe('order utils', () => {
         Side.Sell
       );
 
-      expect(result).toBe(getPercentsOf(percents, balance, accuracy));
+      expect(result).toBe(safeMath.getPercentsOf(percents, balance, accuracy));
     });
 
     it('should return value for buy side', () => {
@@ -104,7 +104,11 @@ describe('order utils', () => {
       );
 
       expect(result).toBe(
-        getPercentsOf(percents, balance / parseFloat(`${price}`), accuracy)
+        safeMath.getPercentsOf(
+          percents,
+          balance / parseFloat(`${price}`),
+          accuracy
+        )
       );
     });
   });
@@ -130,7 +134,7 @@ describe('order utils', () => {
 
     it('should be invalid if the total price slightly differs from the available amount and direction is buy', () => {
       const amountTaken = 2050.353;
-      quantityValue = (amountTaken * 1.000001 / 5848.989).toFixed(8);
+      quantityValue = ((amountTaken * 1.000001) / 5848.989).toFixed(8);
       priceValue = '5848.989';
       isSell = false;
       const isInvalid = isAmountExceedLimitBalance(

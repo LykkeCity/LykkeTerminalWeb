@@ -1,3 +1,4 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {curry, pathOr} from 'rambda';
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
@@ -11,7 +12,6 @@ import {
   onValueChange
 } from '../../utils/inputNumber';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import {bigToFixed, precisionFloor} from '../../utils/math';
 import {
   getPercentOfValueForLimit,
   isAmountExceedLimitBalance,
@@ -81,14 +81,11 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.state = {
       pendingOrder: false,
       percents: percentage,
-      priceValue: bigToFixed(
-        order.price,
-        this.accuracy.priceAccuracy
-      ).toString(),
-      quantityValue: bigToFixed(
+      priceValue: safeMath.toFixed(order.price, this.accuracy.priceAccuracy),
+      quantityValue: safeMath.toFixed(
         order.remainingVolume,
         this.accuracy.quantityAccuracy
-      ).toString()
+      )
     };
 
     this.handlePriceArrowClick = curry(onArrowClick)(
@@ -145,7 +142,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.setState({
       priceValue: !price
         ? DEFAULT_INPUT_VALUE
-        : bigToFixed(price, this.accuracy.priceAccuracy).toString()
+        : safeMath.toFixed(price, this.accuracy.priceAccuracy)
     });
   };
 
@@ -153,7 +150,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     this.setState({
       quantityValue: !quantity
         ? DEFAULT_INPUT_VALUE
-        : bigToFixed(quantity, this.accuracy.quantityAccuracy).toString()
+        : safeMath.toFixed(quantity, this.accuracy.quantityAccuracy)
     });
   };
 
@@ -241,7 +238,7 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   };
 
   render() {
-    const roundedAmount = precisionFloor(
+    const roundedAmount = safeMath.floor(
       parseFloat(this.state.quantityValue) * parseFloat(this.state.priceValue),
       this.accuracy.quoteAssetAccuracy
     );

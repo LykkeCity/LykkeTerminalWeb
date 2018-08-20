@@ -16,19 +16,19 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@lykkex/lykke.js@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@lykkex/lykke.js/-/lykke.js-0.2.1.tgz#f101863579168cf1ce2ffa4f257bf8081b21427c"
+"@lykkex/lykke.js@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@lykkex/lykke.js/-/lykke.js-0.3.3.tgz#d8a905b9cad28de193b163fe5df601bfdda68596"
 
-"@lykkex/react-components@^0.8.14":
-  version "0.8.14"
-  resolved "https://registry.yarnpkg.com/@lykkex/react-components/-/react-components-0.8.14.tgz#09e35e3d8b2134c897879b1bc8ff8f30bace6cae"
+"@lykkex/react-components@^0.8.16":
+  version "0.8.20"
+  resolved "https://registry.yarnpkg.com/@lykkex/react-components/-/react-components-0.8.20.tgz#7a16eafa5cd6ecb934b1af23b03a248594970273"
   dependencies:
     recharts "^1.1.0"
 
-"@lykkex/subzero-wamp@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@lykkex/subzero-wamp/-/subzero-wamp-0.0.8.tgz#e147a546d694a224ef4a415ca29182b9c432e2dc"
+"@lykkex/subzero-wamp@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@lykkex/subzero-wamp/-/subzero-wamp-0.0.10.tgz#5a4b9e598237cb26ca9cdb1b3595e4654f1dedd1"
   dependencies:
     "@lykkex/subzero" "^0.0.4"
     uniqid "^5.0.3"

@@ -1,3 +1,4 @@
+import {safeMath} from '@lykkex/lykke.js';
 import {action, computed, observable} from 'mobx';
 import {reverse, take} from 'rambda';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
@@ -5,7 +6,6 @@ import chart from '../constants/chartConstants';
 import {DepthArea, Order} from '../models';
 import {AnalyticsService} from '../services/analyticsService';
 import {formattedNumber} from '../utils/localFormatted/localFormatted';
-import {precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
@@ -42,7 +42,7 @@ class DepthChartStore extends BaseStore {
   @computed
   get instrumentSpan() {
     if (this.rootStore.uiStore.selectedInstrument) {
-      return precisionFloor(
+      return safeMath.floor(
         this.seedSpan * 1,
         this.rootStore.uiStore.selectedInstrument.accuracy
       );
