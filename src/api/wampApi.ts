@@ -12,6 +12,7 @@ import {Backoff, createBackoff} from './backoffApi';
 const tokenStorage = StorageUtils(keys.token);
 
 const DEFAULT_THROTTLE_DURATION = 60000;
+const CLOSING_MESSAGE = 'Changed Tab';
 
 class ConnectionWrapper extends Connection {
   isConnectionOpened: boolean = false;
@@ -70,14 +71,18 @@ export class WampApi {
   throttle = (callback: any, duration: number) => {
     this.isThrottled = true;
     this.timer = setTimeout(() => {
-      callback.call();
+      callback('', CLOSING_MESSAGE);
       this.resetTimer();
     }, duration);
   };
 
   pause = () => {
     if (this.connection && this.isConnectionOpened && !this.isThrottled) {
-      this.throttle(() => this.connection.close(), DEFAULT_THROTTLE_DURATION);
+      this.throttle(
+        (reason: string, message: string) =>
+          this.connection.close(reason, message),
+        DEFAULT_THROTTLE_DURATION
+      );
     }
   };
 
@@ -141,10 +146,12 @@ export class WampApi {
         resolve(session);
       };
 
-      this.connection.onclose = () => {
+      this.connection.onclose = (reason: string, details: any) => {
         this.isConnectionOpened = false;
         this.onConnectionClose();
-        this.backoff.backoff();
+        if (details.message !== CLOSING_MESSAGE) {
+          this.backoff.backoff();
+        }
         return false;
       };
 
