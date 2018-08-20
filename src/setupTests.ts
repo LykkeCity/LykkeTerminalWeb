@@ -24,13 +24,33 @@ const localStorage = {
   removeItem: jest.fn()
 };
 
+const sessionStorage = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  // tslint:disable-next-line:object-literal-sort-keys
+  removeItem: jest.fn()
+};
+
 (window as any).TradingView = tradingView;
 (window as any).localStorage = localStorage;
+(window as any).sessionStorage = sessionStorage;
 (window as any).Worker = jest.fn();
 (window as any).location.replace = jest.fn();
 (window as any).analytics = {
   track: jest.fn()
 };
+
+jest.mock('oidc-client', () => {
+  return {
+    UserManager() {
+      return {
+        signinRedirect: jest.fn(),
+        signoutRedirect: jest.fn(),
+        signinRedirectCallback: jest.fn()
+      };
+    }
+  };
+});
 
 jest.mock('applicationinsights-js', () => {
   return {

@@ -1,11 +1,12 @@
 import {computed, observable} from 'mobx';
+import {UserManager} from 'oidc-client';
 import {AuthApi} from '../api/index';
 import messages from '../constants/notificationMessages';
+import {openIdConstants} from '../constants/openId';
 import {keys, KycStatuses, levels, UserInfoModel} from '../models';
-import {RandomString, StorageUtils} from '../utils/index';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
-const randomString = RandomString();
 const tokenStorage = StorageUtils(keys.token);
 const stateStorage = StorageUtils(keys.state);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
@@ -33,9 +34,27 @@ class AuthStore extends BaseStore {
 
   @observable private token: string = tokenStorage.get() || '';
   @observable private kycStatus: string = kycStatusStorage.get() || '';
+  private userManager: UserManager;
 
   constructor(store: RootStore, private readonly api: AuthApi) {
     super(store);
+
+    const settings = {
+      authority: process.env.REACT_APP_AUTH_URL!,
+      client_id: process.env.REACT_APP_ID!,
+      redirect_uri:
+        process.env.REACT_APP_CALLBACK_URL &&
+        process.env.REACT_APP_CALLBACK_URL.toString(),
+      post_logout_redirect_uri: location.origin,
+      silent_redirect_uri: openIdConstants.silentRedirectUri,
+      response_type: openIdConstants.responseType,
+      scope: openIdConstants.scope,
+      filterProtocolClaims: true,
+      loadUserInfo: false,
+      automaticSilentRenew: true
+    };
+
+    this.userManager = new UserManager(settings);
   }
 
   fetchBearerToken = (email: string, password: string) =>
@@ -48,17 +67,15 @@ class AuthStore extends BaseStore {
       })
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
-  fetchToken = async (accessToken: string, state: string) => {
-    if (state === stateStorage.get()) {
-      const {token, authId} = await this.api.fetchToken(accessToken);
-      sessionTokenStorage.set(authId);
-      this.token = token;
-      tokenStorage.set(token);
-      stateStorage.clear();
-      return Promise.resolve();
-    } else {
-      this.catchUnauthorized();
-    }
+  fetchToken = async () => {
+    const user = await this.userManager.signinRedirectCallback();
+    const {access_token} = user;
+    const {token, authId} = await this.api.fetchToken(access_token);
+    sessionTokenStorage.set(authId);
+    this.token = token;
+    tokenStorage.set(token);
+    stateStorage.clear();
+    return Promise.resolve();
   };
 
   fetchUserInfo = async () => {
@@ -79,16 +96,13 @@ class AuthStore extends BaseStore {
     this.signOut();
   };
 
-  signIn = () => location.replace(this.getSignInUrl());
+  signIn = () => {
+    return this.userManager.signinRedirect();
+  };
 
-  signOut = async (redirectUrl?: string) => {
+  signOut = async () => {
     this.rootStore.reset();
-    const {REACT_APP_AUTH_URL: url} = process.env;
-    location.replace(
-      `${url}/connect/logout?post_logout_redirect_uri=${encodeURIComponent(
-        redirectUrl || location.origin
-      )}`
-    );
+    await this.userManager.signoutRedirect();
   };
 
   getSignInUrl = () => {
