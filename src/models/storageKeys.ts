@@ -6,7 +6,6 @@ enum keys {
   layout = 'lwt-layout-2',
   notificationId = 'lwt-notificationId',
   selectedInstrument = 'selected-instrument',
-  state = 'lwt-state',
   token = 'lwt-token',
   sessionNote = 'lwt-sessionNote',
   sessionToken = 'lwt-session-token',

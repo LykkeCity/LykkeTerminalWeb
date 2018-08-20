@@ -8,7 +8,6 @@ import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const tokenStorage = StorageUtils(keys.token);
-const stateStorage = StorageUtils(keys.state);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 const kycStatusStorage = StorageUtils(keys.isKycPassed);
 
@@ -74,7 +73,6 @@ class AuthStore extends BaseStore {
     sessionTokenStorage.set(authId);
     this.token = token;
     tokenStorage.set(token);
-    stateStorage.clear();
     return Promise.resolve();
   };
 
