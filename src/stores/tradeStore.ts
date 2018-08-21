@@ -131,26 +131,24 @@ class TradeStore extends BaseStore {
 
   fetchCsvUrl = async () => {
     const csvIdRequestBody = {
-      OperationType: [
-        OperationType.CashIn,
-        OperationType.CashOut,
-        OperationType.LimitTrade,
-        OperationType.Trade
-      ],
+      OperationType: [OperationType.LimitTrade, OperationType.Trade],
       AssetId: '',
       AssetPairId: this.instrumentIdByFilter
     };
     this.csvWamp = new Promise(resolve => {
       this.whenCsvIsReady = resolve;
     });
+
+    this.hasPendingItems = true;
     this.csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
 
     const csvWampData = await this.csvWamp;
 
-    if (this.csvIdResponse.Id === csvWampData.Id) {
+    if (this.csvIdResponse.Id === csvWampData.Id && csvWampData.Url) {
+      this.hasPendingItems = false;
       return csvWampData.Url;
     }
-    return '';
+    throw new Error();
   };
 
   fetchNextTrades = async () => {

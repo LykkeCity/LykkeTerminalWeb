@@ -12,7 +12,11 @@ class Export extends React.Component<ExportProps> {
     super(props);
   }
 
-  saveFile = () => saveFile(this.props.fetchCsvUrl);
+  saveFile = () => {
+    if (this.props.canExport()) {
+      saveFile(this.props.fetchCsvUrl);
+    }
+  };
 
   render() {
     return (
