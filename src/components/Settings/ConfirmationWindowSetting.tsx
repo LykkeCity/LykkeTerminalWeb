@@ -1,4 +1,4 @@
-import {Checkbox} from '@lykkex/react-components';
+import {Switcher} from '@lykkex/react-components';
 import * as React from 'react';
 import {StyledConfirmationSetting} from './styles';
 
@@ -21,7 +21,7 @@ class ConfirmationWindowSetting extends React.Component<
   render() {
     return (
       <StyledConfirmationSetting>
-        <Checkbox
+        <Switcher
           onToggle={this.handleConfirm}
           checked={!this.props.confirmations}
           label="Do not warn me on next trades"

@@ -35,4 +35,8 @@ export const SessionDurations = styled(Flex)`
 
 export const StyledConfirmationSetting = styled.div`
   display: inline-block;
+
+  .switcher-container {
+    color: inherit;
+  }
 `;
