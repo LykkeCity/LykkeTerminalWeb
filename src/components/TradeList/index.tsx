@@ -34,10 +34,15 @@ const ConnectedTrades = connect(
 
 const ConnectedTradeList = connect<TradeListProps>(
   ({
-    tradeStore: {hasPendingItems, shouldFetchMore, fetchNextTrades},
+    tradeStore: {
+      hasPendingItems,
+      hasPendingCsv,
+      shouldFetchMore,
+      fetchNextTrades
+    },
     uiStore: {selectInstrument, selectedInstrument}
   }) => ({
-    loading: hasPendingItems,
+    loading: hasPendingItems || hasPendingCsv,
     fetchNextTrades,
     shouldFetchMore,
     onChangeInstrumentById: selectInstrument,

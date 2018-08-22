@@ -3,8 +3,9 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
+import messages from '../constants/notificationMessages';
 import {CsvIdResponseModel, CsvWampModel} from '../models/csvModels';
-import {TradeFilter, TradeModel} from '../models/index';
+import {levels, TradeFilter, TradeModel} from '../models/index';
 import OperationType from '../models/operationType';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
@@ -30,6 +31,7 @@ class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
   @observable shouldFetchMore = false;
   @observable hasPendingItems: boolean = false;
+  @observable hasPendingCsv: boolean = false;
   @observable csvIdResponse: CsvIdResponseModel;
 
   whenCsvIsReady: (csvWampData: CsvWampModel) => void;
@@ -129,6 +131,17 @@ class TradeStore extends BaseStore {
     }
   };
 
+  promiseTimeout = (time: number, promise: Promise<CsvIdResponseModel>) => {
+    const timeout = new Promise(resolve => {
+      const id = setTimeout(() => {
+        clearTimeout(id);
+        resolve('Timed out in ' + time + 'ms.');
+      }, time);
+    });
+
+    return Promise.race([promise, timeout]);
+  };
+
   fetchCsvUrl = async () => {
     const csvIdRequestBody = {
       OperationType: [OperationType.LimitTrade, OperationType.Trade],
@@ -139,16 +152,24 @@ class TradeStore extends BaseStore {
       this.whenCsvIsReady = resolve;
     });
 
-    this.hasPendingItems = true;
+    this.hasPendingCsv = true;
+
     this.csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
 
-    const csvWampData = await this.csvWamp;
-
-    if (this.csvIdResponse.Id === csvWampData.Id && csvWampData.Url) {
-      this.hasPendingItems = false;
-      return csvWampData.Url;
-    }
-    throw new Error();
+    return this.promiseTimeout(16000, this.csvWamp).then(
+      async (csvWampData: CsvWampModel) => {
+        this.hasPendingItems = false;
+        if (this.csvIdResponse.Id === csvWampData.Id && csvWampData.Url) {
+          return csvWampData.Url;
+        } else {
+          this.rootStore.notificationStore.addNotification(
+            levels.error,
+            messages.defaultError
+          );
+          return '';
+        }
+      }
+    );
   };
 
   fetchNextTrades = async () => {
