@@ -1,5 +1,5 @@
 import {computed, observable} from 'mobx';
-import {Log, UserManager} from 'oidc-client';
+import {UserManager} from 'oidc-client';
 import {AuthApi} from '../api/index';
 import messages from '../constants/notificationMessages';
 import {openIdConstants} from '../constants/openId';
@@ -63,8 +63,6 @@ class AuthStore extends BaseStore {
     this.userManager.events.addUserLoaded(() => {
       console.log('reload');
     });
-    Log.logger = window.console;
-    Log.level = Log.INFO;
   }
 
   renew = () => {
