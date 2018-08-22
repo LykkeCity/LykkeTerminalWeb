@@ -1,5 +1,5 @@
 import {computed, observable} from 'mobx';
-import {UserManager} from 'oidc-client';
+import {Log, UserManager} from 'oidc-client';
 import {AuthApi} from '../api/index';
 import messages from '../constants/notificationMessages';
 import {openIdConstants} from '../constants/openId';
@@ -11,6 +11,7 @@ const tokenStorage = StorageUtils(keys.token);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 const kycStatusStorage = StorageUtils(keys.isKycPassed);
 
+// tslint:disable:no-console
 class AuthStore extends BaseStore {
   @computed
   get isAuth() {
@@ -45,7 +46,9 @@ class AuthStore extends BaseStore {
         process.env.REACT_APP_CALLBACK_URL &&
         process.env.REACT_APP_CALLBACK_URL.toString(),
       post_logout_redirect_uri: location.origin,
-      silent_redirect_uri: openIdConstants.silentRedirectUri,
+      silent_redirect_uri:
+        process.env.REACT_APP_CALLBACK_URL &&
+        process.env.REACT_APP_CALLBACK_URL.toString(),
       response_type: openIdConstants.responseType,
       scope: openIdConstants.scope,
       filterProtocolClaims: true,
@@ -54,7 +57,19 @@ class AuthStore extends BaseStore {
     };
 
     this.userManager = new UserManager(settings);
+    this.userManager.events.addSilentRenewError(() => {
+      this.userManager.signoutRedirect();
+    });
+    this.userManager.events.addUserLoaded(() => {
+      console.log('reload');
+    });
+    Log.logger = window.console;
+    Log.level = Log.INFO;
   }
+
+  renew = () => {
+    this.userManager.signinSilent().then(user => console.log(user));
+  };
 
   fetchBearerToken = (email: string, password: string) =>
     this.api
@@ -67,7 +82,9 @@ class AuthStore extends BaseStore {
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
   fetchToken = async () => {
+    const check = await this.userManager.getUser();
     const user = await this.userManager.signinRedirectCallback();
+    console.log(check);
     const {access_token} = user;
     const {token, authId} = await this.api.fetchToken(access_token);
     sessionTokenStorage.set(authId);
