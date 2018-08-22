@@ -101,12 +101,6 @@ class BalanceListStore extends BaseStore {
     }
   };
 
-  refetchBalances = async () => {
-    this.reset();
-    await this.fetchAll();
-    this.updateWalletBalances();
-  };
-
   reset = () => {
     this.tradingWallet.balances = [];
   };
