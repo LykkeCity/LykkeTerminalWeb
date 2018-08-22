@@ -172,6 +172,8 @@ class UiStore extends BaseStore {
     disclaimedAssets.forEach(asset =>
       this.checkAssetToDisclaim(selectedInstrument, asset)
     );
+
+    this.rootStore.chartStore.fetchCandlesFirstTime();
   };
 
   @action search = (term: string) => (this.searchTerm = term);

@@ -1,4 +1,5 @@
 import dates from '../constants/dateKeys';
+import {chartInterval} from '../constants/priceChartConstants';
 
 export const splitter = (from: number, to: number, resolution: string) => {
   const requestLimit = 5000;
@@ -73,7 +74,7 @@ export const getTimeOffset = (offset: number) => {
   return (
     (offset < 0 ? '+' : '-') +
     ('00' + Math.floor(absOffset / 60)).slice(-2) +
-    ('00' + absOffset % 60).slice(-2)
+    ('00' + (absOffset % 60)).slice(-2)
   );
 };
 
@@ -98,4 +99,35 @@ export const convertHoursToMs = (ms: number) => ms * 3600000;
 export const getDiffDays = (currentDate: number, previousDate: number) => {
   const timeDiff = Math.abs(currentDate - previousDate);
   return Math.ceil(timeDiff / (1000 * 3600 * 24));
+};
+
+export const getChartFromDate = (interval: string, scale: number) => {
+  let timeOffset = 0;
+  const scaleMultiplier = 5;
+  const timeUnitQty = chartInterval[interval].timeUnitQty;
+
+  switch (interval) {
+    case chartInterval.min5.value:
+    case chartInterval.min15.value:
+    case chartInterval.min30.value:
+      timeOffset = dates.minute * scale;
+      break;
+    case chartInterval.hour.value:
+    case chartInterval.hour4.value:
+    case chartInterval.hour6.value:
+    case chartInterval.hour12.value:
+      timeOffset = dates.hour * scale;
+      break;
+    case chartInterval.day.value:
+      timeOffset = dates.day * scale;
+      break;
+    case chartInterval.week.value:
+      timeOffset = dates.week * scale;
+      break;
+    case chartInterval.month.value:
+      timeOffset = dates.month * scale;
+      break;
+  }
+
+  return timeOffset * timeUnitQty * scaleMultiplier;
 };

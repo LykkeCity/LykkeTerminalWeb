@@ -35,3 +35,10 @@ export {default as DescriptionResponseModel} from './descriptionResponseModel';
 export {default as DepthArea} from './depthArea';
 export {default as DepthText} from './depthText';
 export {default as NotificationColor} from './notificationColor';
+export {default as StockChartType} from './stockChartType';
+export {default as ChartControlButtonType} from './chartControlButtonType';
+export {default as ChartCandleModel} from './chartCandleModel';
+export {default as ChartCandleResponseModel} from './chartCandleResponseModel';
+export {
+  default as ChartCandleWampResponseModel
+} from './chartCandleWampResponseModel';

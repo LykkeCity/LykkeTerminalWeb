@@ -1,5 +1,4 @@
 import {pathOr} from 'rambda';
-import {ChartStore} from '../../stores/index';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -47,7 +46,7 @@ export const mapToChartSymbol = ({
   pricescale: Math.pow(10, accuracy),
   session: '24x7',
   timezone: 'Europe/Zurich',
-  supported_resolutions: ChartStore.config.supported_resolutions,
+  supported_resolutions: '',
   has_intraday: true,
   intraday_multipliers: ['1', '5', '15', '30', '60', '240', '360', '720'],
   has_empty_bars: true,

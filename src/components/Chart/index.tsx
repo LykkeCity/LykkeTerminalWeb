@@ -1,28 +1,42 @@
 import {observer} from 'mobx-react';
+import {compose} from 'rambda';
 import {connect} from '../connect';
-import Chart from './Chart';
+import withLoader from '../Loader/withLoader';
+import Chart, {ChartProps} from './Chart';
 
-const ConnectedChart = connect(
+const ConnectedChart = connect<ChartProps>(
   ({
-    authStore: {isAuth},
     chartStore: {
-      getDatafeed,
-      loadSettings,
-      saveSettings,
-      subscribeToCandlesWithResolutions,
-      unsubscribeFromCandle
-    },
-    uiStore: {selectedInstrument}
+      hasPendingCandles,
+      initialData,
+      isIndicatorsPopupShown,
+      indicators,
+      fetchCandles,
+      fullScreenMode,
+      selectedChartType,
+      selectedChartInterval,
+      toggleChartType,
+      toggleChartInterval,
+      toggleIndicatorsPopup,
+      toggleIndicator,
+      toggleFullScreenMode
+    }
   }) => ({
-    instrument: selectedInstrument,
-    isAuth,
-    getDatafeed,
-    loadSettings,
-    saveSettings,
-    subscribeToCandle: subscribeToCandlesWithResolutions,
-    unsubscribeFromCandle
+    loading: hasPendingCandles,
+    initialData,
+    isIndicatorsPopupShown,
+    indicators,
+    fetchCandles,
+    fullScreenMode,
+    selectedChartType,
+    selectedChartInterval,
+    toggleChartType,
+    toggleChartInterval,
+    toggleIndicatorsPopup,
+    toggleIndicator,
+    toggleFullScreenMode
   }),
-  observer(Chart)
+  compose(withLoader<ChartProps>(p => p.loading!))(observer(Chart))
 );
 
-export {ConnectedChart as Chart};
+export {ConnectedChart as PriceChart};

@@ -1,221 +1,140 @@
 import * as React from 'react';
+import ReactResizeDetector from 'react-resize-detector';
 import {
-  ChartingLibraryWidgetOptions,
-  IBasicDataFeed,
-  widget
-} from '../../charting_library/charting_library.min';
+  CHART_ID,
+  IchartIndicator,
+  IchartInterval
+} from '../../constants/priceChartConstants';
 import {
-  overrides,
-  studiesOverrides
-} from '../../constants/chartDefaultSettings';
-import {InstrumentModel} from '../../models';
-import {chartPalette} from '../styled';
-import {
-  ButtonWithImg,
-  ChartContainer,
-  ChartControlBar,
-  ChartPlaceholder,
-  ChartWrapper,
-  loadPath,
-  savePath,
-  SvgButton,
-  TransparentDiv
-} from './styles';
+  ChartCandleModel,
+  ChartControlButtonType,
+  StockChartType
+} from '../../models';
+import {ChartStore} from '../../stores/index';
+import {Icon} from '../Icon';
+import {LoaderProps} from '../Loader/withLoader';
+import {colors} from '../styled';
+import {ChartDropdown, IndicatorsPopup} from './Controls';
+import ReactChart from './ReactStockCharts/ReactStockCharts.js';
+import {ChartContainer, ChartControls, ChartControlsItem} from './styles';
 
-export interface ChartContainerProps {
-  symbol: ChartingLibraryWidgetOptions['symbol'];
-  interval: ChartingLibraryWidgetOptions['interval'];
-  datafeedUrl: string;
-  libraryPath: ChartingLibraryWidgetOptions['library_path'];
-  fullscreen: ChartingLibraryWidgetOptions['fullscreen'];
-  autosize: ChartingLibraryWidgetOptions['autosize'];
-  containerId: ChartingLibraryWidgetOptions['container_id'];
-  instrument: InstrumentModel;
-  isAuth: boolean;
-  getDatafeed: () => IBasicDataFeed;
-  loadSettings: () => Promise<any>;
-  saveSettings: () => void;
-  subscribeToCandle: () => void;
-  unsubscribeFromCandle: () => void;
+export interface ChartProps extends LoaderProps {
+  initialData?: ChartCandleModel[];
+  indicators: IchartIndicator[];
+  fetchCandles: (scale: number) => Promise<any>;
+  fullScreenMode: boolean;
+  isIndicatorsPopupShown: boolean;
+  selectedChartType: StockChartType;
+  selectedChartInterval: IchartInterval;
+  toggleChartType: (type: string) => void;
+  toggleChartInterval: (interval: string) => void;
+  toggleIndicator: (indicatorName: string) => void;
+  toggleIndicatorsPopup: () => void;
+  toggleFullScreenMode: () => void;
 }
 
-interface ChartStateProps {
-  chartReady: boolean;
-}
+const Chart: React.SFC<ChartProps> = ({
+  initialData,
+  indicators,
+  isIndicatorsPopupShown,
+  fetchCandles,
+  fullScreenMode,
+  selectedChartType,
+  selectedChartInterval,
+  toggleChartType,
+  toggleChartInterval,
+  toggleIndicatorsPopup,
+  toggleIndicator,
+  toggleFullScreenMode,
+  loading
+}) => {
+  const chartTypes = ChartStore.chartTypes.map((type: StockChartType) => ({
+    label: type,
+    description: type,
+    value: type
+  }));
+  const intervals = ChartStore.intervals.map((interval: IchartInterval) => ({
+    label: interval.label,
+    description: interval.description,
+    value: interval.value
+  }));
 
-class Chart extends React.Component<
-  Partial<ChartContainerProps>,
-  ChartStateProps
-> {
-  static defaultProps: Partial<ChartContainerProps> = {
-    interval: '1D',
-    containerId: 'tv_chart_container',
-    datafeedUrl: 'https://demo_feed.tradingview.com',
-    libraryPath: 'charting_library/',
-    fullscreen: false,
-    autosize: true
-  };
-
-  private tvWidget: any;
-
-  constructor(props: ChartContainerProps) {
-    super(props);
-    this.state = {
-      chartReady: false
-    };
+  if (!initialData || !initialData.length) {
+    return null;
   }
 
-  componentDidUpdate(prevProps: any): void {
-    if (!prevProps.instrument) {
-      this.renderChart();
-      return;
-    }
+  return (
+    <ReactResizeDetector
+      handleWidth={true}
+      handleHeight={true}
+      resizableElementId={CHART_ID}
+    >
+      {(width: number, height: number) => {
+        const size =
+          width && height
+            ? {width: Math.floor(width), height: Math.floor(height)}
+            : {};
 
-    const prevInstrument = prevProps.instrument
-      ? prevProps.instrument.name
-      : null;
-    const currentInstrument = this.props.instrument
-      ? this.props.instrument.name
-      : null;
-    const areInstruments = prevInstrument || currentInstrument;
+        return (
+          <ChartContainer fullScreenMode={fullScreenMode} id={CHART_ID}>
+            <ChartControls>
+              <ChartControlsItem>
+                <ChartDropdown
+                  controlButtonName={selectedChartInterval.label}
+                  controlButtonType={ChartControlButtonType.Text}
+                  items={intervals}
+                  onClick={toggleChartInterval}
+                  selectedValue={selectedChartInterval.value}
+                />
+              </ChartControlsItem>
+              <ChartControlsItem>
+                <ChartDropdown
+                  controlButtonName={'candles'}
+                  controlButtonType={ChartControlButtonType.Image}
+                  items={chartTypes}
+                  onClick={toggleChartType}
+                  selectedValue={selectedChartType}
+                />
+              </ChartControlsItem>
+              <ChartControlsItem onClick={toggleIndicatorsPopup}>
+                <Icon name={'rates'} color={colors.whiteText} />
+              </ChartControlsItem>
+              {fullScreenMode ? (
+                <ChartControlsItem
+                  onClick={toggleFullScreenMode}
+                  className={'full-screen'}
+                >
+                  Exit full screen{' '}
+                  <Icon name={'close-small'} color={colors.coolGrey} />
+                </ChartControlsItem>
+              ) : (
+                <ChartControlsItem onClick={toggleFullScreenMode}>
+                  <Icon name={'expand'} color={colors.whiteText} />
+                </ChartControlsItem>
+              )}
+            </ChartControls>
 
-    if (
-      this.state.chartReady &&
-      areInstruments &&
-      prevInstrument !== currentInstrument
-    ) {
-      this.tvWidget._options.datafeed.setInstrument(this.props.instrument);
+            <ReactChart
+              chartType={selectedChartType}
+              data={initialData}
+              dataUpdate={fetchCandles}
+              indicators={indicators}
+              fullScreenMode={fullScreenMode}
+              loading={loading}
+              {...size}
+            />
 
-      this.tvWidget.chart().setSymbol(this.props.instrument!.displayName);
-    }
-  }
-
-  createWidget = () => {
-    const {
-      containerId,
-      instrument,
-      interval,
-      libraryPath,
-      fullscreen,
-      autosize,
-      getDatafeed
-    } = this.props;
-    const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: instrument!.displayName as string,
-      datafeed: getDatafeed!(),
-      interval: interval as ChartingLibraryWidgetOptions['interval'],
-      container_id: containerId as ChartingLibraryWidgetOptions['container_id'],
-      library_path: libraryPath as string,
-      locale: 'en',
-      disabled_features: [
-        'widget_logo',
-        'link_to_tradingview',
-        'header_symbol_search',
-        'header_screenshot',
-        'compare_symbol',
-        'header_compare',
-        'display_market_status',
-        'border_around_the_chart',
-        'remove_library_container_border',
-        'header_undo_redo',
-        'header_interval_dialog_button',
-        'show_interval_dialog_on_keypress',
-        'use_localstorage_for_settings',
-        'save_chart_properties_to_local_storage',
-        'go_to_date'
-      ],
-      enabled_features: [
-        'hide_last_na_study_output',
-        'left_toolbar',
-        'keep_left_toolbar_visible_on_small_screens'
-      ],
-      time_frames: [
-        {text: '5D', title: '5D', resolution: '5', description: '5 days'},
-        {text: '1m', title: '1M', resolution: '30', description: '1 month'},
-        {text: '3m', title: '3M', resolution: '60', description: '3 months'},
-        {text: '6m', title: '6M', resolution: '1D', description: '6 months'}
-      ],
-      fullscreen,
-      autosize,
-      toolbar_bg: chartPalette.background,
-      overrides,
-      studies_overrides: studiesOverrides,
-      custom_css_url: process.env.PUBLIC_URL + '/tv_custom.css'
-    };
-
-    this.tvWidget = new widget(widgetOptions);
-  };
-
-  renderChart = async () => {
-    const {instrument, unsubscribeFromCandle} = this.props;
-    await unsubscribeFromCandle!();
-
-    if (!instrument) {
-      return;
-    }
-
-    this.setState({
-      chartReady: false
-    });
-
-    this.createWidget();
-    this.tvWidget.onChartReady(() => {
-      this.setState({
-        chartReady: true
-      });
-    });
-  };
-
-  saveSettings = () => {
-    this.tvWidget.save(this.props.saveSettings);
-  };
-
-  loadSettings = async () => {
-    await this.props.loadSettings!()
-      .then((res: any) => {
-        this.tvWidget.load(JSON.parse(res.Data));
-      })
-      .catch(err => {
-        if (err.status === 404) {
-          this.tvWidget.chart().executeActionById('chartReset');
-        }
-      });
-  };
-
-  render() {
-    const {containerId, isAuth} = this.props;
-
-    return (
-      <ChartWrapper>
-        {this.state.chartReady && isAuth ? (
-          <ChartControlBar>
-            <ButtonWithImg onClick={this.saveSettings} title={'Save layout'}>
-              <SvgButton
-                xmlns={'http://www.w3.org/2000/svg'}
-                viewBox={'0 0 26 18'}
-              >
-                <path d={savePath} />
-              </SvgButton>
-            </ButtonWithImg>
-            <ButtonWithImg
-              onClick={this.loadSettings}
-              title={'Load saved layout'}
-            >
-              <SvgButton
-                xmlns={'http://www.w3.org/2000/svg'}
-                viewBox={'0 0 26 18'}
-              >
-                <path d={loadPath} />
-              </SvgButton>
-            </ButtonWithImg>
-          </ChartControlBar>
-        ) : null}
-        <ChartContainer id={containerId} className={'TVChartContainer'} />
-        <ChartPlaceholder isReady={this.state.chartReady} />
-        <TransparentDiv id="transparentDiv" />
-      </ChartWrapper>
-    );
-  }
-}
+            <IndicatorsPopup
+              isIndicatorsPopupShown={isIndicatorsPopupShown}
+              indicators={indicators}
+              toggleIndicatorsPopup={toggleIndicatorsPopup}
+              toggleIndicator={toggleIndicator}
+            />
+          </ChartContainer>
+        );
+      }}
+    </ReactResizeDetector>
+  );
+};
 
 export default Chart;

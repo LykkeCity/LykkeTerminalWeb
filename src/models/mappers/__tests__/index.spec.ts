@@ -7,7 +7,6 @@ import {
   OrderType,
   Side
 } from '../..';
-import {ChartStore} from '../../../stores';
 import AssetModel from '../../assetModel';
 import {Order} from '../../order';
 
@@ -77,9 +76,7 @@ describe('orderMapper', () => {
       expect(mappedObject.pricescale).toEqual(100000000);
       expect(mappedObject.session).toEqual('24x7');
       expect(mappedObject.timezone).toEqual('Europe/Zurich');
-      expect(mappedObject.supported_resolutions).toEqual(
-        ChartStore.config.supported_resolutions
-      );
+      expect(mappedObject.supported_resolutions).toEqual('');
       expect(mappedObject.has_intraday).toEqual(true);
       expect(mappedObject.intraday_multipliers).toEqual([
         '1',

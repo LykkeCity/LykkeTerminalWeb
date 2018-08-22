@@ -164,6 +164,7 @@ class ChartDataFeed {
         ),
         (args: any[]) => {
           if (args) {
+            console.log('subscribe: ', args[0]);
             onRealtimeCallback(mappers.mapToBarFromWamp(args[0]));
           }
         }

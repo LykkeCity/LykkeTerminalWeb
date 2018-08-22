@@ -1,4 +1,4 @@
-import {Interval, PriceType} from '../models/index';
+import {PriceType} from '../models/index';
 
 export const orderBook = (asset: string, side: string) =>
   `orderbook.spot.${asset.toLowerCase()}.${side.toLowerCase()}`;
@@ -7,7 +7,7 @@ export const candle = (
   market: 'spot' | 'mt',
   pair: string,
   priceType: PriceType,
-  interval: Interval
+  interval: string
 ) => `candle.${market}.${pair.toLowerCase()}.${priceType}.${interval}`;
 
 export const quote = (symbol: string) =>

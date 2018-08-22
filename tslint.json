@@ -3,12 +3,14 @@
   "rules": {
     "member-access": [true, "no-public"],
     "interface-name": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "no-console": false
   },
   "linterOptions": {
     "exclude": [
       "public/charting_library/*",
-      "src/charting_library/*"
+      "src/charting_library/*",
+      "src/components/Chart/ReactStockCharts/*"
     ]
   }
 }
