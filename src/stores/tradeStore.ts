@@ -4,6 +4,7 @@ import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
+import messages from '../constants/notificationMessages';
 import {CsvIdResponseModel, CsvWampModel} from '../models/csvModels';
 import {OperationType, TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
@@ -31,6 +32,7 @@ class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
   @observable shouldFetchMore = false;
   @observable hasPendingItems: boolean = false;
+  @observable hasPendingCsv: boolean = false;
   @observable csvIdResponse: CsvIdResponseModel;
 
   whenCsvIsReady: (csvWampData: CsvWampModel) => void;
@@ -125,6 +127,17 @@ class TradeStore extends BaseStore {
     }
   };
 
+  promiseTimeout = (time: number, promise: Promise<CsvIdResponseModel>) => {
+    const timeout = new Promise(resolve => {
+      const id = setTimeout(() => {
+        clearTimeout(id);
+        resolve('Timed out in ' + time + 'ms.');
+      }, time);
+    });
+
+    return Promise.race([promise, timeout]);
+  };
+
   fetchCsvUrl = async () => {
     const csvIdRequestBody = {
       OperationType: [OperationType.LimitTrade, OperationType.Trade],
@@ -135,16 +148,24 @@ class TradeStore extends BaseStore {
       this.whenCsvIsReady = resolve;
     });
 
-    this.hasPendingItems = true;
+    this.hasPendingCsv = true;
+
     this.csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
 
-    const csvWampData = await this.csvWamp;
-
-    if (this.csvIdResponse.Id === csvWampData.Id && csvWampData.Url) {
-      this.hasPendingItems = false;
-      return csvWampData.Url;
-    }
-    throw new Error();
+    return this.promiseTimeout(16000, this.csvWamp).then(
+      async (csvWampData: CsvWampModel) => {
+        this.hasPendingItems = false;
+        if (this.csvIdResponse.Id === csvWampData.Id && csvWampData.Url) {
+          return csvWampData.Url;
+        } else {
+          this.rootStore.notificationStore.addNotification(
+            levels.error,
+            messages.defaultError
+          );
+          return '';
+        }
+      }
+    );
   };
 
   fetchNextTrades = async () => {
@@ -180,14 +201,11 @@ class TradeStore extends BaseStore {
     this.fetchTrades();
   };
 
-<<<<<<< HEAD
-=======
   subscribe = (ws: any) => {
     ws.subscribe(topics.trades, this.onTrades);
     ws.subscribe(topics.csv, this.onCsvReady);
   };
 
->>>>>>> 6aae9eb2... Use wamp to get csv url
   onTrades = async (args: any[]) => {
     this.receivedFromWamp += 2;
     this.addTrade(map.fromWampToTrade(args[0], this.instruments));
