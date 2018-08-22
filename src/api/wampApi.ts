@@ -11,9 +11,6 @@ import {Backoff, createBackoff} from './backoffApi';
 
 const tokenStorage = StorageUtils(keys.token);
 
-const DEFAULT_THROTTLE_DURATION = 60000;
-const CLOSING_MESSAGE = 'Changed Tab';
-
 class ConnectionWrapper extends Connection {
   isConnectionOpened: boolean = false;
 }
@@ -28,8 +25,6 @@ export class WampApi {
 
   private listeners: Map<string, () => void> = new Map();
   private subscriptions: Map<string, Subscription> = new Map();
-
-  private timer: any;
 
   connect = (url: string, realm: string, authId?: string) => {
     let options: IConnectionOptions = {url, realm, max_retries: -1};
@@ -61,37 +56,6 @@ export class WampApi {
   close = () => {
     this.unsubscribeFromAll();
     this.connection.close();
-  };
-
-  resetTimer = () => {
-    this.isThrottled = false;
-    clearTimeout(this.timer);
-  };
-
-  throttle = (callback: any, duration: number) => {
-    this.isThrottled = true;
-    this.timer = setTimeout(() => {
-      callback('', CLOSING_MESSAGE);
-      this.resetTimer();
-    }, duration);
-  };
-
-  pause = () => {
-    if (this.connection && this.isConnectionOpened && !this.isThrottled) {
-      this.throttle(
-        (reason: string, message: string) =>
-          this.connection.close(reason, message),
-        DEFAULT_THROTTLE_DURATION
-      );
-    }
-  };
-
-  continue = (updateData: () => void) => {
-    this.resetTimer();
-    if (this.connection && !this.isConnectionOpened) {
-      this.connection.open();
-      updateData();
-    }
   };
 
   publish = (topic: string, event: [any]) => this.session.publish(topic, event);
@@ -146,12 +110,10 @@ export class WampApi {
         resolve(session);
       };
 
-      this.connection.onclose = (reason: string, details: any) => {
+      this.connection.onclose = () => {
         this.isConnectionOpened = false;
         this.onConnectionClose();
-        if (details.message !== CLOSING_MESSAGE) {
-          this.backoff.backoff();
-        }
+        this.backoff.backoff();
         return false;
       };
 

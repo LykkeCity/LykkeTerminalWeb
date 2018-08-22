@@ -151,11 +151,6 @@ class TradeStore extends BaseStore {
     this.fetchTrades();
   };
 
-  refetchAllTrades = () => {
-    this.refetchPublicTrades();
-    this.refetchTrades();
-  };
-
   subscribe = (ws: any) => {
     ws.subscribe(topics.trades, this.onTrades);
   };

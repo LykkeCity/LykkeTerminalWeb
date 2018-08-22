@@ -187,28 +187,12 @@ class RootStore {
         this.orderStore.subscribe(this.ws);
         this.balanceListStore.subscribe(this.ws);
 
-        if (!this.uiStore.getPageVisibility()) {
-          this.pause();
-        }
-
         return Promise.resolve();
       })
       .catch(e => {
         this.startPublicMode(defaultInstrument);
       });
   };
-
-  updateData = () => {
-    this.orderListStore.fetchAll();
-    this.orderBookStore.fetchAll();
-    this.balanceListStore
-      .refetchBalances()
-      .then(() => this.tradeStore.refetchAllTrades());
-  };
-
-  pause = () => this.ws.pause();
-
-  continue = () => this.ws.continue(this.updateData);
 
   registerStore = (store: BaseStore) => this.stores.add(store);
 
