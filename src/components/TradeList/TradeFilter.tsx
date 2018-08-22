@@ -1,7 +1,7 @@
+import {ClickOutside} from '@lykkex/react-components';
 import {observable} from 'mobx';
 import {Observer} from 'mobx-react';
 import * as React from 'react';
-import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect, {Option} from '../Select/CustomSelect';
 import {TradeFilterValue} from './styles';
 

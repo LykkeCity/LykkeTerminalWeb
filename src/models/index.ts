@@ -8,7 +8,6 @@ export {default as WalletModel} from './walletModel';
 export {default as OrderBookModel} from './orderBookModel';
 export {default as OrderModel} from './orderModel';
 export {default as TradeModel} from './tradeModel';
-export {default as Dir} from './dir';
 export {default as Side} from './side';
 export {default as Order} from './order';
 export {default as SearchString} from './searchString';

@@ -1,10 +1,9 @@
+import {ClickOutside} from '@lykkex/react-components';
 import * as React from 'react';
 import keycodes from '../../constants/keycodes';
-import ClickOutside from '../ClickOutside/ClickOutside';
 import ModalHeader from '../Modal/ModalHeader/ModalHeader';
 import withModal from '../Modal/withModal';
-import {Tabs} from '../Tabs';
-import {SettingsModalContent, StyledSettingsModal} from './styles';
+import {SettingsModalContent, StyledSettingsModal, StyledTabs} from './styles';
 import {ProfileTab, SecurityTab} from './Tabs';
 
 interface SettingsModalProps {
@@ -51,10 +50,10 @@ class SettingsModal extends React.Component<SettingsModalProps> {
         <StyledSettingsModal>
           <ModalHeader title={'Settings'} onClick={this.handleCancel} />
           <SettingsModalContent>
-            <Tabs>
+            <StyledTabs>
               <ProfileTab title={'Profile'} />
               <SecurityTab title={'Security'} />
-            </Tabs>
+            </StyledTabs>
           </SettingsModalContent>
         </StyledSettingsModal>
       </ClickOutside>

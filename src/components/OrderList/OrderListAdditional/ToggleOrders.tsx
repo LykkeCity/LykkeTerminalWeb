@@ -1,8 +1,8 @@
+import {ClickOutside} from '@lykkex/react-components';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';
 import {OrdersSelection} from '../../../constants/ordersSelection';
-import ClickOutside from '../../ClickOutside/ClickOutside';
 import CustomSelect from '../../Select/CustomSelect';
 import {colors, fonts} from '../../styled';
 import {ToggleOrdersProps} from './index';

@@ -1,5 +1,5 @@
+import {Tab} from '@lykkex/react-components';
 import * as React from 'react';
-import {Tab} from '../../Tabs';
 import {ConfirmationWindowSetting, SessionDurationSelection} from '../index';
 import {SettingsList, SettingsListItem, SettingsListItemTitle} from '../styles';
 

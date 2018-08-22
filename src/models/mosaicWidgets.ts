@@ -1,5 +1,4 @@
 enum Widgets {
-  AccountWidget = 'Account',
   ChartWidget = 'Chart',
   TradeListWidget = 'TradeList',
   OrderBookWidget = 'OrderBook',

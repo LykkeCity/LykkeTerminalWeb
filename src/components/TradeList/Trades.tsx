@@ -1,10 +1,10 @@
+import {HBar} from '@lykkex/react-components';
 import * as React from 'react';
 import {
   SortDirection,
   TradeFilter as TradeFilterModel,
   TradeModel
 } from '../../models/index';
-import {HBar} from '../Bar';
 import {
   checkDataForSorting,
   HeaderProps,

@@ -1,6 +1,6 @@
+import {ClickOutside} from '@lykkex/react-components';
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
-import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
 import {InstrumentShortcutSelectionProps} from './index';
 import {

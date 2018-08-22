@@ -1,10 +1,10 @@
+import {ClickOutside} from '@lykkex/react-components';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {OrderBookDisplayType} from '../../models';
 import {AnalyticsService} from '../../services/analyticsService';
-import ClickOutside from '../ClickOutside/ClickOutside';
 import CustomSelect from '../Select/CustomSelect';
 import {StyledSwitch} from './styles';
 
