@@ -35,10 +35,6 @@ const Header: React.SFC<HeaderProps> = ({
     }
   };
 
-  const handleClick = () => {
-    authStore.renew();
-  };
-
   return (
     <HeaderWrapper>
       <HeaderFlex justify="stretch" align="center">
@@ -46,7 +42,6 @@ const Header: React.SFC<HeaderProps> = ({
           <InstrumentPicker value="BTCUSD" instruments={[]} />
         </HeaderItem>
         <InstrumentPerformance />
-        <button onClick={handleClick}>renew</button>
 
         <Box ml="auto" is="menu">
           <Flex align="center">

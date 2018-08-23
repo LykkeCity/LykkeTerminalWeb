@@ -2,6 +2,7 @@ import {inject} from 'mobx-react';
 import * as React from 'react';
 import {RouteComponentProps} from 'react-router';
 import {AuthStore, BalanceListStore} from '../../stores/index';
+import {AuthWrap} from './styles';
 
 interface AuthProps extends RouteComponentProps<any> {
   authStore: AuthStore;
@@ -22,7 +23,11 @@ class Auth extends React.Component<AuthProps> {
   }
 
   render() {
-    return null;
+    return (
+      <AuthWrap>
+        <div>You're logging in. Please wait...</div>
+      </AuthWrap>
+    );
   }
 }
 

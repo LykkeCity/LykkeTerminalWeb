@@ -11,7 +11,6 @@ const tokenStorage = StorageUtils(keys.token);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 const kycStatusStorage = StorageUtils(keys.isKycPassed);
 
-// tslint:disable:no-console
 class AuthStore extends BaseStore {
   @computed
   get isAuth() {
@@ -42,13 +41,9 @@ class AuthStore extends BaseStore {
     const settings = {
       authority: process.env.REACT_APP_AUTH_URL!,
       client_id: process.env.REACT_APP_ID!,
-      redirect_uri:
-        process.env.REACT_APP_CALLBACK_URL &&
-        process.env.REACT_APP_CALLBACK_URL.toString(),
+      redirect_uri: `${location.origin}/assets/signin-callback.html`,
+      silent_redirect_uri: `${location.origin}/assets/silent-callback.html`,
       post_logout_redirect_uri: location.origin,
-      silent_redirect_uri:
-        process.env.REACT_APP_CALLBACK_URL &&
-        process.env.REACT_APP_CALLBACK_URL.toString(),
       response_type: openIdConstants.responseType,
       scope: openIdConstants.scope,
       filterProtocolClaims: true,
@@ -60,14 +55,7 @@ class AuthStore extends BaseStore {
     this.userManager.events.addSilentRenewError(() => {
       this.userManager.signoutRedirect();
     });
-    this.userManager.events.addUserLoaded(() => {
-      console.log('reload');
-    });
   }
-
-  renew = () => {
-    this.userManager.signinSilent().then(user => console.log(user));
-  };
 
   fetchBearerToken = (email: string, password: string) =>
     this.api
@@ -80,9 +68,7 @@ class AuthStore extends BaseStore {
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
   fetchToken = async () => {
-    const check = await this.userManager.getUser();
-    const user = await this.userManager.signinRedirectCallback();
-    console.log(check);
+    const user = await this.userManager.getUser();
     const {access_token} = user;
     const {token, authId} = await this.api.fetchToken(access_token);
     sessionTokenStorage.set(authId);
@@ -110,12 +96,12 @@ class AuthStore extends BaseStore {
   };
 
   signIn = () => {
-    return this.userManager.signinRedirect();
+    this.userManager.signinRedirect();
   };
 
   signOut = async () => {
     this.rootStore.reset();
-    await this.userManager.signoutRedirect();
+    this.userManager.signoutRedirect();
   };
 
   getSignInUrl = () => {
