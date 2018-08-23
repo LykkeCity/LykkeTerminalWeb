@@ -1,9 +1,9 @@
+import {HBar} from '@lykkex/react-components';
 import {observer} from 'mobx-react';
 import {compose, pathOr} from 'rambda';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import {withContentRect} from 'react-measure';
-import {HBar} from '../Bar';
 import {connect} from '../connect';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
@@ -146,7 +146,10 @@ const ConnectedFigures = connect<FigureListProps>(
   Figures
 );
 
-const withMeasureAnLoader = compose(withLoader(), withContentRect('client'));
+const withMeasureAnLoader = compose(
+  withLoader(),
+  withContentRect('client')
+);
 
 const ConnectedOrderbook = connect(
   ({orderBookStore: {hasPendingItems}, uiStore: {selectedInstrument}}) => ({

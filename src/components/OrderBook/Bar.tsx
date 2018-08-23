@@ -1,6 +1,6 @@
+import {VBar} from '@lykkex/react-components';
 import React from 'react';
 import {OrderBookDisplayType} from '../../models';
-import {VBar} from '../Bar';
 import {Icon} from '../Icon';
 import OrderBookSwitch from './OrderBookSwitch';
 import {Button, StyledBar, StyledGrouping} from './styles';

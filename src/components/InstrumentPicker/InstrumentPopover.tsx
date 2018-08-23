@@ -1,6 +1,6 @@
+import {ClickOutside} from '@lykkex/react-components';
 import {rem} from 'polished';
 import * as React from 'react';
-import ClickOutside from '../ClickOutside/ClickOutside';
 import styled, {colors} from '../styled';
 import {InstrumentPopoverProps} from './index';
 

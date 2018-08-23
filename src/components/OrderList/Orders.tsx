@@ -1,6 +1,6 @@
+import {HBar} from '@lykkex/react-components';
 import * as React from 'react';
 import {OrderModel, SortDirection} from '../../models';
-import {HBar} from '../Bar';
 import {EditOrder} from '../Modal';
 import {
   checkDataForSorting,

@@ -1,3 +1,4 @@
+import {Tabs} from '@lykkex/react-components';
 import {rem} from 'polished';
 import {Modal, ModalContent} from '../Modal/styles';
 import styled, {colors} from '../styled';
@@ -12,6 +13,18 @@ export const StyledSettingsModal = styled(Modal)`
 
 export const SettingsModalContent = styled(ModalContent)`
   width: 100%;
+`;
+
+export const StyledTabs = styled(Tabs)`
+  margin-top: ${rem(16)};
+
+  .tabs-labels {
+    padding-top: ${rem(13)};
+    .tab-label.active {
+      color: ${colors.snowWhite};
+      font-weight: 600;
+    }
+  }
 `;
 
 export const SettingsList = styled.div`
