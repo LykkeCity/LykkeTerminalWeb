@@ -1,250 +1,363 @@
 import * as React from 'react';
-
-import {Line} from 'react-konva';
-
-import {Order} from '../../../models';
-import {Pointer} from './index';
-
-import chart from './chartConstants';
+import chart, {
+  COST_PADDING,
+  DEPTH_PADDING,
+  FONT_SIZE,
+  PRICE_FONT_SIZE,
+  PRICE_PADDING,
+  VALUE_PADDING
+} from '../../../constants/chartConstants';
+import {DepthArea, DepthText, Order} from '../../../models';
+import {defineCanvasScale} from '../../../utils/canvasUtils';
+import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
+import {colors} from '../../styled';
+import {
+  drawChartElements,
+  generatePoints,
+  getAreaColor,
+  getCurrentArea,
+  getDepthText,
+  getPopupCoords,
+  IChartDrawingTools,
+  IPoint,
+  measureText,
+  updatePointsForDrawing
+} from '../helpers/chartHelpers';
 
 interface ChartProps {
   asks: Order[];
   bids: Order[];
   width: number;
   height: number;
+  canvasHeight: number;
+  canvasWidth: number;
   quoteAccuracy: number;
   baseAccuracy: number;
   priceAccuracy: number;
+  baseAssetName: string;
+  quoteAssetName: string;
+  calculateExactPrice: (area: DepthArea, index: number) => number;
+  findOrder: (area: DepthArea, index: number) => Order;
+  calculateOrderXInterval: (
+    width: number,
+    area: DepthArea
+  ) => (index: number) => number;
+  calculateOrderYInterval: (depth: number) => number;
+  midXAsks: number;
+  midXBids: number;
+  askWidth: number;
 }
 
 class Chart extends React.Component<ChartProps> {
-  graphics: any[] = [];
-  pointsAsks: number[] = [];
-  pointsBids: number[] = [];
+  pointsAsks: IPoint[] = [];
+  pointsBids: IPoint[] = [];
 
-  midXAsks: number;
-  midXBids: number;
-
-  asksWidth: number;
-
-  minDepth: number;
-  maxDepth: number;
-
-  asksStart: number;
-  asksEnd: number;
-  bidsStart: number;
-  bidsEnd: number;
-
-  coefficient: number;
+  canvas: HTMLCanvasElement | null;
+  canvasCtx: CanvasRenderingContext2D | null;
+  memoWidth: number = 0;
+  currentItemXIndex: number = -1;
+  currentArea: DepthArea;
+  drawTools: IChartDrawingTools;
 
   constructor(props: ChartProps) {
     super(props);
   }
 
-  calculateAsksStepLength(ask: Order, index: number) {
-    const priceDifference = this.props.asks[index + 1]
-      ? this.props.asks[index + 1].price - this.asksStart
-      : this.props.asks[index].price - this.asksStart;
-    const priceRange = this.asksEnd - this.asksStart;
-    const length = this.asksWidth * priceDifference / priceRange;
-    return isNaN(length) ? this.asksWidth : length;
+  componentDidMount() {
+    this.canvasCtx = this.canvas!.getContext('2d');
+    defineCanvasScale(
+      this.canvasCtx,
+      this.canvas,
+      this.props.canvasWidth,
+      this.props.canvasHeight
+    );
+
+    window.requestAnimationFrame(() => {
+      this.renderCanvas();
+      this.forceUpdate();
+    });
+
+    this.canvas!.addEventListener('mouseleave', this.handleMouseLeave);
+    this.canvas!.addEventListener('mousemove', this.handleMouseMove);
+    this.drawTools = drawChartElements(this.canvasCtx!, () => this.currentArea);
   }
 
-  calculateAsksStepHeight(ask: Order) {
-    return this.coefficient * ask.depth;
+  componentWillReceiveProps({canvasWidth}: ChartProps) {
+    window.requestAnimationFrame(() => {
+      if (canvasWidth !== this.memoWidth) {
+        this.memoWidth = canvasWidth;
+        defineCanvasScale(
+          this.canvasCtx,
+          this.canvas,
+          this.props.canvasWidth,
+          this.props.canvasHeight
+        );
+      }
+      this.renderCanvas();
+      this.forceUpdate();
+    });
   }
 
-  generateAsksPoints = () => {
-    let currentX = this.midXAsks;
-    let newX = this.midXAsks;
-    let newY = this.props.height;
-    const points = [this.midXAsks, this.props.height];
+  handleMouseMove = (event: any) => {
+    const {offsetX: x} = event;
+    this.currentArea = getCurrentArea(x, this.props.midXBids);
+    let points: IPoint;
 
-    for (let index = 0; index < this.props.asks.length; index++) {
-      newX =
-        this.midXAsks +
-        this.calculateAsksStepLength(this.props.asks[index], index);
-      newY =
-        this.props.height -
-        this.calculateAsksStepHeight(this.props.asks[index]);
-      points.push(currentX, newY, newX, newY);
-      currentX = newX;
+    if (this.currentArea === DepthArea.Bid) {
+      points = this.findPoints(this.pointsBids, x)!;
+    } else {
+      points = this.findPoints(this.pointsAsks, x)!;
     }
-    this.pointsAsks = points;
+
+    if (points) {
+      window.requestAnimationFrame(() => {
+        this.renderCanvas(points.y, x);
+        this.forceUpdate();
+      });
+    }
+  };
+
+  handleMouseLeave = () => {
+    window.requestAnimationFrame(() => {
+      this.renderCanvas();
+      this.forceUpdate();
+    });
+  };
+
+  findPoints = (points: IPoint[], x: number) => {
+    const xPoints = points.map(p => p.x);
+    xPoints.push(x);
+    xPoints.sort((a, b) => a - b);
+    const currentXPointIndex = xPoints.findIndex(i => i === x);
+    this.currentItemXIndex =
+      this.currentArea === DepthArea.Bid
+        ? currentXPointIndex - 1
+        : currentXPointIndex + 1;
+    return points.find(p => p.x === xPoints[this.currentItemXIndex]);
   };
 
   drawAsks = () => {
-    this.generateAsksPoints();
+    const {
+      midXAsks,
+      height: y,
+      asks,
+      calculateOrderXInterval,
+      calculateOrderYInterval,
+      askWidth,
+      width: x,
+      midXBids
+    } = this.props;
 
-    this.graphics.push(
-      <Line
-        key="asks-line"
-        points={this.pointsAsks}
-        closed={false}
-        stroke={chart.asks.lineColor}
-        strokeWidth={chart.strokeWidth}
-        dashEnabled={false}
-        shadowEnabled={false}
-        listening={false}
-      />
+    this.pointsAsks = generatePoints(
+      midXAsks,
+      y,
+      asks,
+      DepthArea.Ask,
+      calculateOrderXInterval(askWidth, DepthArea.Ask),
+      calculateOrderYInterval
     );
-    this.graphics.push(
-      <Line
-        key="asks-area"
-        points={[
-          ...this.pointsAsks,
-          this.props.width,
-          this.props.height,
-          this.midXBids,
-          this.props.height
-        ]}
-        closed={true}
-        fill={chart.asks.fillColor}
-        strokeEnabled={false}
-        dashEnabled={false}
-        shadowEnabled={false}
-        listening={false}
-      />
+
+    const updatedPoints = updatePointsForDrawing(
+      this.pointsAsks,
+      chart.asks.lineColor,
+      [{x, y}, {x: midXBids, y}]
     );
-  };
 
-  drawAsksPointerPadding = () => {
-    this.graphics.push(
-      <Pointer
-        key="asks-pointer"
-        side={'asks'}
-        color={chart.asks.lineColor}
-        orders={this.props.asks}
-        points={this.pointsAsks}
-        borders={[this.midXAsks, this.props.height, this.props.width, 0]}
-      />
-    );
-  };
-
-  calculateBidsStepLength(bid: Order, index: number) {
-    const priceDifference = this.props.bids[index + 1]
-      ? this.bidsStart - this.props.bids[index + 1].price
-      : this.bidsStart - this.props.bids[index].price;
-    const priceRange = this.bidsStart - this.bidsEnd;
-    const length = this.midXBids * priceDifference / priceRange;
-    return isNaN(length) ? this.midXBids : length;
-  }
-
-  calculateBidsStepHeight(bid: Order) {
-    return this.coefficient * bid.depth;
-  }
-
-  generateBidsPoints = () => {
-    let currentX = this.midXBids;
-    let newX = this.midXBids;
-    let newY = this.props.height;
-    const points = [this.midXBids, this.props.height];
-
-    for (let index = 0; index < this.props.bids.length; index++) {
-      newX =
-        this.midXBids -
-        this.calculateBidsStepLength(this.props.bids[index], index);
-      newY =
-        this.props.height -
-        this.calculateBidsStepHeight(this.props.bids[index]);
-      points.push(currentX, newY, newX, newY);
-      currentX = newX;
-    }
-    this.pointsBids = points;
+    this.drawTools.drawLevel(updatedPoints, chart.asks.fillColor);
   };
 
   drawBids = () => {
-    this.generateBidsPoints();
+    const {
+      midXBids,
+      height: y,
+      bids,
+      calculateOrderXInterval,
+      calculateOrderYInterval
+    } = this.props;
 
-    this.graphics.push(
-      <Line
-        key="bids-line"
-        points={this.pointsBids}
-        closed={false}
-        stroke={chart.bids.lineColor}
-        strokeWidth={chart.strokeWidth}
-        dashEnabled={false}
-        shadowEnabled={false}
-        strokeHitEnabled={false}
-        listening={false}
-      />
+    this.pointsBids = generatePoints(
+      midXBids,
+      y,
+      bids,
+      DepthArea.Bid,
+      calculateOrderXInterval(midXBids, DepthArea.Bid),
+      calculateOrderYInterval
     );
-    this.graphics.push(
-      <Line
-        key="bids-area"
-        points={[
-          ...this.pointsBids,
-          0,
-          this.props.height,
-          this.midXBids,
-          this.props.height
-        ]}
-        closed={true}
-        fill={chart.bids.fillColor}
-        strokeEnabled={false}
-        dashEnabled={false}
-        shadowEnabled={false}
-        strokeHitEnabled={false}
-        listening={false}
-      />
+
+    const updatedPoints = updatePointsForDrawing(
+      this.pointsBids,
+      chart.bids.lineColor,
+      [{x: 0, y}, {x: this.props.midXBids, y}]
     );
+
+    this.drawTools.drawLevel(updatedPoints, chart.bids.fillColor);
   };
 
-  drawBidsPointerPadding = () => {
-    this.graphics.push(
-      <Pointer
-        key="bids-pointer"
-        side={'bids'}
-        color={chart.bids.lineColor}
-        orders={this.props.bids}
-        points={this.pointsBids}
-        borders={[0, this.props.height, this.midXBids, 0]}
-      />
-    );
-  };
+  drawPopup = (y: number, x: number) => {
+    const {
+      findOrder,
+      priceAccuracy,
+      baseAccuracy,
+      quoteAccuracy,
+      quoteAssetName,
+      baseAssetName,
+      midXBids,
+      height
+    } = this.props;
 
-  calculateCoefficient() {
-    if (this.minDepth && this.maxDepth) {
-      if (this.minDepth === this.maxDepth) {
-        return this.props.height / this.minDepth * chart.scaleFactor;
-      }
-      return this.props.height / this.maxDepth * chart.scaleFactor;
+    this.drawTools.drawPointer(x, y);
+    this.drawTools.drawPointerLine(this.props.height, x, y);
+
+    const order = findOrder(
+      this.currentArea,
+      Math.floor(this.currentItemXIndex / 2)
+    );
+    if (order) {
+      const depthLabel = getDepthText(this.currentArea);
+
+      const priceValue = `${formattedNumber(
+        order.price,
+        priceAccuracy
+      )} ${quoteAssetName}`;
+      const depthValue = `${formattedNumber(
+        order.depth,
+        baseAccuracy
+      )} ${baseAssetName}`;
+
+      const costValue = `${formattedNumber(
+        this.props.calculateExactPrice(
+          this.currentArea,
+          Math.floor(this.currentItemXIndex / 2)
+        ),
+        quoteAccuracy
+      )} ${quoteAssetName}`;
+
+      const priceMeasure = measureText(
+        priceValue,
+        PRICE_FONT_SIZE,
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
+      );
+      const depthMeasure = measureText(
+        `${depthLabel} ${depthValue}`,
+        FONT_SIZE,
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
+      );
+      const depthLabelMeasure = measureText(
+        depthLabel,
+        FONT_SIZE,
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
+      );
+      const costMeasure = measureText(
+        `${DepthText.Cost} ${costValue}`,
+        FONT_SIZE,
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
+      );
+      const costLabelMeasure = measureText(
+        DepthText.Cost,
+        FONT_SIZE,
+        chart.modal.label.fontFamily,
+        this.canvasCtx!
+      );
+      const maxValueWidth = Math.max(priceMeasure, depthMeasure, costMeasure);
+
+      this.drawTools.drawPopup(
+        getPopupCoords(
+          x,
+          y,
+          maxValueWidth,
+          this.currentArea,
+          midXBids,
+          height / 2
+        )
+      );
+
+      const drawText = this.drawTools.drawText(
+        x,
+        y,
+        this.currentArea,
+        midXBids,
+        height / 2,
+        maxValueWidth
+      );
+
+      // draw price
+      drawText(
+        priceMeasure,
+        priceValue,
+        colors.white,
+        PRICE_FONT_SIZE,
+        PRICE_PADDING
+      );
+
+      // draw depth label
+      drawText(
+        depthLabelMeasure,
+        depthLabel,
+        getAreaColor(this.currentArea),
+        FONT_SIZE,
+        DEPTH_PADDING
+      );
+
+      // draw depth value
+      drawText(
+        depthMeasure,
+        depthValue,
+        colors.white,
+        FONT_SIZE,
+        DEPTH_PADDING,
+        depthLabelMeasure + VALUE_PADDING
+      );
+
+      // draw cost label
+      drawText(
+        costLabelMeasure,
+        DepthText.Cost,
+        getAreaColor(this.currentArea),
+        FONT_SIZE,
+        COST_PADDING
+      );
+
+      // draw cost value
+      drawText(
+        costMeasure,
+        costValue,
+        colors.white,
+        FONT_SIZE,
+        COST_PADDING,
+        costLabelMeasure + VALUE_PADDING
+      );
     }
-    return 1;
-  }
+  };
 
-  initilaize() {
-    this.graphics = [];
-    this.midXAsks = this.props.width / 2 + Math.round(chart.strokeWidth / 2);
-    this.midXBids = this.props.width / 2 - Math.round(chart.strokeWidth / 2);
-    this.asksWidth = this.props.width - this.midXAsks;
-    this.minDepth = Math.min(
-      ...this.props.bids.concat(this.props.asks).map(x => x.depth)
-    );
-    this.maxDepth = Math.max(
-      ...this.props.bids.concat(this.props.asks).map(x => x.depth)
-    );
-    this.asksStart = Math.min(...this.props.asks.map(a => a.price));
-    this.asksEnd = Math.max(...this.props.asks.map(a => a.price));
-    this.bidsStart = Math.max(...this.props.bids.map(b => b.price));
-    this.bidsEnd = Math.min(...this.props.bids.map(b => b.price));
-    this.coefficient = this.calculateCoefficient();
-  }
-
-  render() {
-    this.initilaize();
+  renderCanvas = (y?: number, x?: number) => {
+    if (this.canvas) {
+      this.canvasCtx!.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 
     this.drawAsks();
     this.drawBids();
 
-    if (this.props.asks.length > 0) {
-      this.drawAsksPointerPadding();
+    if (y && x) {
+      this.drawPopup(y, x);
     }
-    if (this.props.bids.length > 0) {
-      this.drawBidsPointerPadding();
-    }
+  };
 
-    return this.graphics;
+  setCanvasRef = (canvas: any) => (this.canvas = canvas);
+
+  render() {
+    return (
+      <React.Fragment>
+        <canvas
+          width={this.props.canvasWidth}
+          height={this.props.canvasHeight}
+          ref={this.setCanvasRef}
+        />
+      </React.Fragment>
+    );
   }
 }
 

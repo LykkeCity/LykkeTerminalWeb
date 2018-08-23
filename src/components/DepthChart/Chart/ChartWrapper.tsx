@@ -1,9 +1,6 @@
 import * as React from 'react';
-
-import {FastLayer, Layer, Stage} from 'react-konva';
-
 import Measure from 'react-measure';
-
+import {ChartContainer, LevelContainer} from '../styles';
 import {Chart, Mesh} from './index';
 
 export interface ChartWrapperProps {
@@ -38,10 +35,14 @@ class ChartWrapper extends React.Component<ChartWrapperProps> {
       >
         {({measureRef}) => (
           <div style={{height: '100%'}} ref={measureRef}>
-            <Stage width={this.width} height={this.height}>
-              <FastLayer>{this.props.selectedInstrument && <Mesh />}</FastLayer>
-              <Layer>{this.props.selectedInstrument && <Chart />}</Layer>
-            </Stage>
+            <ChartContainer style={{height: this.height, width: this.width}}>
+              <LevelContainer>
+                {this.props.selectedInstrument && <Mesh />}
+              </LevelContainer>
+              <LevelContainer>
+                {this.props.selectedInstrument && <Chart />}
+              </LevelContainer>
+            </ChartContainer>
           </div>
         )}
       </Measure>

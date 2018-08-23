@@ -1,6 +1,6 @@
 import {rem} from 'polished';
+import chartConstants from '../../constants/chartConstants';
 import styled, {buttonBackgrounds, buttonColors, fonts} from '../styled';
-import chartConstants from './Chart/chartConstants';
 
 export const FillHeight = styled.div`
   height: 100%;
@@ -65,6 +65,14 @@ export const Button = styled.button`
     color: ${(props: any) =>
       !props.disabled ? buttonColors.pressed : buttonColors.disabled};
   }
+`;
+
+export const ChartContainer = styled.div`
+  position: relative;
+`;
+
+export const LevelContainer = styled.div`
+  position: absolute;
 `;
 
 export const Price = styled.div``;

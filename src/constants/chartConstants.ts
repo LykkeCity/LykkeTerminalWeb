@@ -1,9 +1,21 @@
+export const COST_PADDING = 15;
+export const DEPTH_PADDING = 35;
+export const PRICE_PADDING = 55;
+export const PRICE_FONT_SIZE = 14;
+export const FONT_SIZE = 13;
+export const VALUE_PADDING = 3;
+export const POPUP_HEIGHT = 80;
+export const POPUP_TEXT_PADDING = 10;
+export const MESH_LINES_OPACITY = 0.6;
+export const POINTER_OPACITY = 0.6;
+export const POPUP_ALIGN = 'left';
+
 const chart = {
   mesh: {
     color: '#8c94a0',
     dash: [2, 5],
     dots: [1, 5],
-    strikeWidth: 1,
+    strokeWidth: 1,
     opacity: 0.4,
     verticalFontSize: 12,
     horizontalFontSize: 12,
@@ -60,7 +72,7 @@ const chart = {
     marginLeft: 16
   },
 
-  strokeWidth: 2,
+  strokeWidth: 1,
   fillOpacity: 0.2,
 
   labelsWidth: 50,

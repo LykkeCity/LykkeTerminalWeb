@@ -32,3 +32,5 @@ export {default as Browser} from './browser';
 export {default as UserInfoModel} from './userInfoModel';
 export {default as BigNumberModel} from './bigNumberModel';
 export {default as DescriptionResponseModel} from './descriptionResponseModel';
+export {default as DepthArea} from './depthArea';
+export {default as DepthText} from './depthText';

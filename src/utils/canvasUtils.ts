@@ -1,5 +1,7 @@
+import {IPoint} from '../components/DepthChart/helpers/chartHelpers';
+
 interface RectInterface {
-  ctx: any;
+  ctx: CanvasRenderingContext2D;
   color: string;
   x: number;
   y: number;
@@ -9,24 +11,57 @@ interface RectInterface {
 }
 
 interface LineInterface {
-  ctx: any;
+  ctx: CanvasRenderingContext2D;
   x: number;
   y: number;
   width: number;
   opacity?: number;
   color: string;
   lineWidth: number;
+  dashSegments?: number[];
+}
+
+interface VerticalLineInterface {
+  ctx: CanvasRenderingContext2D;
+  x: number;
+  y: number;
+  height: number;
+  lineWidth: number;
+  color: string;
+  lineCap?: string;
+  opacity?: number;
+  dashSegments?: number[];
 }
 
 interface TextInterface {
-  ctx: any;
+  ctx: CanvasRenderingContext2D;
   color: string;
-  text: string | number;
+  text: string;
   x: number;
   y: number;
   font: string;
-  align: string;
+  align?: string;
   opacity?: number;
+}
+
+interface CircleInterface {
+  ctx: CanvasRenderingContext2D;
+  radius: number;
+  color: string;
+  x: number;
+  y: number;
+  lineWidth: number;
+  lineColor: string;
+}
+
+interface AreaInterface {
+  ctx: CanvasRenderingContext2D;
+  points: IPoint[];
+  lineWidth: number;
+  lineCap?: string;
+  opacity?: number;
+  dashSegments?: number[];
+  fill: string;
 }
 
 export const drawRect = ({
@@ -50,12 +85,14 @@ export const drawLine = ({
   width,
   opacity = 1,
   color,
-  lineWidth
+  lineWidth,
+  dashSegments = []
 }: LineInterface) => {
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
   ctx.globalAlpha = opacity;
   ctx.beginPath();
+  ctx.setLineDash(dashSegments);
   ctx.moveTo(x, y);
   ctx.lineTo(width, y);
   ctx.stroke();
@@ -68,16 +105,67 @@ export const drawVerticalLine = ({
   height,
   lineWidth,
   color,
-  lineCap
-}: any) => {
-  ctx.globalAlpha = 1;
+  lineCap = '',
+  opacity = 1,
+  dashSegments = []
+}: VerticalLineInterface) => {
+  ctx.globalAlpha = opacity;
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
   ctx.lineCap = lineCap;
   ctx.beginPath();
+  ctx.setLineDash(dashSegments);
+
   ctx.moveTo(x, y);
   ctx.lineTo(x, height);
   ctx.stroke();
+};
+
+export const drawArea = ({
+  ctx,
+  points,
+  lineWidth,
+  lineCap = '',
+  opacity = 1,
+  dashSegments = [],
+  fill
+}: AreaInterface) => {
+  ctx.globalAlpha = opacity;
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = lineCap;
+  ctx.beginPath();
+  ctx.setLineDash(dashSegments);
+  ctx.moveTo(points[0].x, points[0].y);
+
+  points.forEach((point, i: number) => {
+    if (i !== 0) {
+      ctx.strokeStyle = point.color || 'transparent';
+      ctx.lineTo(point.x, point.y);
+      ctx.stroke();
+    }
+  });
+
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.closePath();
+};
+
+export const drawCircle = ({
+  ctx,
+  radius,
+  color,
+  x,
+  y,
+  lineWidth,
+  lineColor
+}: CircleInterface) => {
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = lineColor;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.fill();
 };
 
 export const drawText = ({
@@ -87,7 +175,7 @@ export const drawText = ({
   x,
   y,
   font,
-  align,
+  align = 'center',
   opacity = 1
 }: TextInterface) => {
   ctx.font = font;
