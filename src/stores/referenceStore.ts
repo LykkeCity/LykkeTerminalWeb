@@ -271,7 +271,10 @@ class ReferenceStore extends BaseStore {
   setBaseAssetId = async (assetId: string) => {
     baseAssetStorage.set(assetId);
     this.baseAsset = assetId;
-    this.api.setBaseAsset({BaseAsssetId: assetId});
+    this.api.setBaseAsset({
+      BaseAsssetId: assetId, // TODO: remove it ASA contract updates
+      BaseAssetId: assetId
+    });
     this.updateInstruments();
     this.rootStore.balanceListStore.updateWalletBalances();
   };
