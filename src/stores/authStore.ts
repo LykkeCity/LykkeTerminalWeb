@@ -45,7 +45,6 @@ class AuthStore extends BaseStore {
       silent_redirect_uri: `${location.origin}/assets/silent-callback.html`,
       post_logout_redirect_uri: location.origin,
       response_type: openIdConstants.responseType,
-      scope: openIdConstants.scope,
       filterProtocolClaims: true,
       loadUserInfo: false,
       automaticSilentRenew: true
@@ -53,7 +52,7 @@ class AuthStore extends BaseStore {
 
     this.userManager = new UserManager(settings);
     this.userManager.events.addSilentRenewError(() => {
-      this.userManager.signoutRedirect();
+      this.signOut();
     });
   }
 
