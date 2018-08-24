@@ -272,7 +272,6 @@ class ReferenceStore extends BaseStore {
     baseAssetStorage.set(assetId);
     this.baseAsset = assetId;
     this.api.setBaseAsset({
-      BaseAsssetId: assetId, // TODO: remove it ASA contract updates
       BaseAssetId: assetId
     });
     this.updateInstruments();
