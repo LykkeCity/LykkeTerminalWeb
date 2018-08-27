@@ -1,10 +1,10 @@
-import OrderApi from '../api/orderApi';
+import OrderApi, {PlaceOrder} from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import messages from '../constants/notificationMessages';
 import logger from '../Logger';
 import {levels} from '../models';
-import {OrderModel, OrderType} from '../models';
+import {OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
 import {BaseStore, RootStore} from './index';
@@ -35,7 +35,7 @@ class OrderStore extends BaseStore {
     this.modalStore = this.rootStore.modalStore;
   }
 
-  placeOrder = async (orderType: string, body: any) => {
+  placeOrder = async (orderType: string, body: PlaceOrder) => {
     switch (orderType) {
       case OrderType.Market:
         return this.api
@@ -85,10 +85,22 @@ class OrderStore extends BaseStore {
     }
   };
 
-  cancelAll = () =>
-    this.rootStore.orderListStore.limitOrders
-      .map((o: OrderModel) => o.id)
-      .forEach(this.cancelOrder);
+  cancelAll = async (isCurrentAsset: boolean) => {
+    try {
+      const selectedInstrument = this.rootStore.uiStore.selectedInstrument;
+      const body = isCurrentAsset ? {AssetPairId: selectedInstrument!.id} : {};
+
+      await this.api.cancelAllOrders(body);
+      this.rootStore.orderListStore.deleteAllOrders(body.AssetPairId);
+      this.allOrdersCancelledSuccessfully(
+        isCurrentAsset ? selectedInstrument!.displayName : null
+      );
+    } catch (error) {
+      this.orderPlacedUnsuccessfully(error);
+
+      logger.logException(error);
+    }
+  };
 
   subscribe = (ws: any) => {
     ws.subscribe(topics.orders, this.onOrders);
@@ -152,6 +164,19 @@ class OrderStore extends BaseStore {
     this.notificationStore.addNotification(
       levels.information,
       `${messages.orderCancelled} ${orderId}`
+    );
+  };
+
+  private allOrdersCancelledSuccessfully = (
+    instrumentName: string | null | undefined
+  ) => {
+    this.notificationStore.addNotification(
+      levels.information,
+      `${
+        instrumentName
+          ? messages.allCurrentInstrumentOrdersCancelled(instrumentName)
+          : messages.allOrdersCancelled
+      }`
     );
   };
 
