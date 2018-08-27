@@ -158,7 +158,7 @@ class TradeStore extends BaseStore {
 
     return this.promiseTimeout(16000, this.csvWamp).then(
       async (csvWampData: CsvWampModel) => {
-        this.hasPendingItems = false;
+        this.hasPendingCsv = false;
         if (this.csvIdResponse.Id === csvWampData.Id && csvWampData.Url) {
           return csvWampData.Url;
         } else {
@@ -240,7 +240,7 @@ class TradeStore extends BaseStore {
   };
 
   canExport = (): boolean => {
-    return this.trades.length !== 0;
+    return this.trades.length !== 0 && !this.hasPendingCsv;
   };
 
   @action
