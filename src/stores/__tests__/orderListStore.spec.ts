@@ -33,22 +33,6 @@ describe('orderList store', () => {
           quoteAsset: undefined,
           accuracy: 3,
           invertedAccuracy: 8
-        }),
-        new InstrumentModel({
-          id: 'BTCEUR',
-          name: 'BTC/EUR',
-          baseAsset: undefined,
-          quoteAsset: undefined,
-          accuracy: 3,
-          invertedAccuracy: 8
-        }),
-        new InstrumentModel({
-          id: 'EURGBP',
-          name: 'EUR/GBP',
-          baseAsset: undefined,
-          quoteAsset: undefined,
-          accuracy: 2,
-          invertedAccuracy: 4
         })
       ];
     });
@@ -174,34 +158,6 @@ describe('orderList store', () => {
     it('should not be present if it does not present in the instrument list', async () => {
       await orderListStore.fetchAll();
       expect(orderListStore.allOrders.length).toBe(0);
-    });
-  });
-
-  describe('deleteAllOrders', () => {
-    const currentAsset = 'BTCUSD';
-
-    beforeEach(() => {
-      api.fetchAll = jest.fn(() => [
-        {AssetPairId: 'BTCUSD', Id: 'a1'},
-        {AssetPairId: 'BTCUSD', Id: 'b2'},
-        {AssetPairId: 'BTCEUR', Id: 'c3'},
-        {AssetPairId: 'EURGBP', Id: 'd4'}
-      ]);
-      orderListStore.fetchAll();
-    });
-
-    it('should delete all orders', async () => {
-      orderListStore.deleteAllOrders(undefined);
-
-      expect(orderListStore.allOrders.length).toBe(0);
-    });
-
-    it('should delete all BTCUSD orders', async () => {
-      orderListStore.deleteAllOrders(currentAsset);
-
-      expect(orderListStore.allOrders.length).toBe(2);
-      expect(orderListStore.allOrders[0].symbol).toBe('BTCEUR');
-      expect(orderListStore.allOrders[1].symbol).toBe('EURGBP');
     });
   });
 });

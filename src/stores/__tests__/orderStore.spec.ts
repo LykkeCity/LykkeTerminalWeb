@@ -1,6 +1,6 @@
 import {OrderApi} from '../../api';
 import logger from '../../Logger';
-import {InstrumentModel, levels} from '../../models';
+import {levels} from '../../models';
 import {OrderStore, RootStore} from '../index';
 
 describe('order store', () => {
@@ -12,18 +12,13 @@ describe('order store', () => {
     rootStore = new RootStore(true);
     api = new OrderApi(rootStore);
     rootStore.orderListStore.deleteOrder = jest.fn();
-    rootStore.orderListStore.deleteAllOrders = jest.fn();
 
     orderStore = new OrderStore(rootStore, api);
 
     api.cancelOrder = jest.fn();
-    api.cancelAllOrders = jest.fn();
 
     rootStore.notificationStore.addNotification = jest.fn();
     rootStore.modalStore.addModal = jest.fn();
-    rootStore.uiStore.selectedInstrument = new InstrumentModel({
-      id: 'BTCUSD'
-    });
   });
 
   describe('method cancelOrder', () => {
@@ -88,54 +83,6 @@ describe('order store', () => {
 
       await orderStore.cancelOrder(orderId);
       expect(rootStore.modalStore.addModal).toHaveBeenCalled();
-    });
-  });
-
-  describe('method cancelAll', () => {
-    let currentAsset: boolean = true;
-
-    it('should call for api method to cancel all orders', async () => {
-      await orderStore.cancelAll(currentAsset);
-      expect(api.cancelAllOrders).toHaveBeenCalled();
-    });
-
-    it('should remove all BTCUSD orders from order list store', async () => {
-      api.cancelAllOrders = jest.fn().mockReturnValue({status: 200});
-
-      await orderStore.cancelAll(currentAsset);
-      expect(rootStore.orderListStore.deleteAllOrders).toHaveBeenCalledWith(
-        rootStore.uiStore.selectedInstrument!.id
-      );
-    });
-
-    it('should remove all orders from order list store', async () => {
-      currentAsset = false;
-      api.cancelAllOrders = jest.fn().mockReturnValue({status: 200});
-
-      await orderStore.cancelAll(currentAsset);
-      expect(rootStore.orderListStore.deleteAllOrders).toHaveBeenCalledWith(
-        undefined
-      );
-    });
-
-    it('should add notification if orders canceled correctly', async () => {
-      api.cancelAllOrders = jest.fn().mockReturnValue({status: 200});
-
-      await orderStore.cancelAll(currentAsset);
-      expect(rootStore.notificationStore.addNotification).toHaveBeenCalled();
-    });
-
-    it('should show notification with error message on expection', async () => {
-      const errorMessage = 'Ooops, something went wrong';
-      api.cancelAllOrders = jest.fn().mockImplementation(() => {
-        throw new Error(errorMessage);
-      });
-
-      await orderStore.cancelAll(currentAsset);
-      expect(rootStore.notificationStore.addNotification).toHaveBeenCalledWith(
-        levels.error,
-        errorMessage
-      );
     });
   });
 });
