@@ -82,6 +82,15 @@ export class RestApi {
         .unauthorized((error: WretcherError) => this.catchUnauthorized(error))
     ).res();
 
+  protected deleteWithParams = (url: string, body: any) =>
+    this.extendByErrorHandlers(
+      this.wretcher()
+        .url(url)
+        .json(body)
+        .delete()
+        .unauthorized((error: WretcherError) => this.catchUnauthorized(error))
+    ).res();
+
   private readonly catchUnauthorized = (error: WretcherError) => {
     this.rootStore!.authStore.catchUnauthorized();
     throw error;
