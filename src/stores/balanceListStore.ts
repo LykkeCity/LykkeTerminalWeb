@@ -46,32 +46,32 @@ class BalanceListStore extends BaseStore {
 
   @action
   updateWalletBalances = async () => {
+    this.tradingWallet.balances.forEach(this.updateBalance);
+  };
+
+  updateBalance = async (assetBalance: AssetBalanceModel) => {
     const {
       baseAssetId,
       getInstrumentById,
       getAssetById,
       fetchAssetById
     } = this.rootStore.referenceStore;
-    this.tradingWallet.balances.forEach(
-      async (assetBalance: AssetBalanceModel) => {
-        const {balance, id} = assetBalance;
+    const {balance, id} = assetBalance;
 
-        let asset = getAssetById(id);
+    let asset = getAssetById(id);
 
-        if (!asset) {
-          asset = await fetchAssetById(id);
-        }
+    if (!asset) {
+      asset = await fetchAssetById(id);
+    }
 
-        assetBalance.name = pathOr('', ['name'], asset);
-        assetBalance.accuracy = pathOr('', ['accuracy'], asset);
+    assetBalance.name = pathOr('', ['name'], asset);
+    assetBalance.accuracy = pathOr('', ['accuracy'], asset);
 
-        assetBalance.balanceInBaseAsset = this.rootStore.marketStore.convert(
-          balance,
-          id,
-          baseAssetId,
-          getInstrumentById
-        );
-      }
+    assetBalance.balanceInBaseAsset = this.rootStore.marketStore.convert(
+      balance,
+      id,
+      baseAssetId,
+      getInstrumentById
     );
   };
 
@@ -90,13 +90,14 @@ class BalanceListStore extends BaseStore {
         balance.balance = b;
         balance.reserved = r;
       } else {
-        this.tradingWallet.balances.push(
-          new AssetBalanceModel({
-            AssetId: a,
-            Balance: b,
-            Reserved: r
-          })
-        );
+        const newBalanceModel = new AssetBalanceModel({
+          AssetId: a,
+          Balance: b,
+          Reserved: r
+        });
+
+        this.updateBalance(newBalanceModel);
+        this.tradingWallet.balances.push(newBalanceModel);
       }
     }
   };
