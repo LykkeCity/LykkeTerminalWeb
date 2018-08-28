@@ -6,7 +6,6 @@ import Header from '../Header';
 
 describe('<Header>', () => {
   let authStore: AuthStore;
-  const history = {};
   let settingsStore: SettingsStore;
   let readOnlyMode = false;
 
@@ -14,7 +13,6 @@ describe('<Header>', () => {
     return (
       <Header
         authStore={authStore}
-        history={history}
         settingsStore={settingsStore}
         readOnlyMode={readOnlyMode}
       />
@@ -42,17 +40,6 @@ describe('<Header>', () => {
       const wrapper = shallow(getTestHeader());
       expect(wrapper.find('Icon[name="cogwheel"]')).toHaveLength(0);
     });
-
-    it('should not show username', () => {
-      const wrapper = shallow(getTestHeader());
-      expect(wrapper.find('inject-UserName')).toHaveLength(0);
-    });
-
-    it('should show sign-in icon', () => {
-      const wrapper = shallow(getTestHeader());
-      const icon = wrapper.find('Icon[name="login"]');
-      expect(icon).toHaveLength(1);
-    });
   });
 
   describe('Header for logged in user', () => {
@@ -76,26 +63,6 @@ describe('<Header>', () => {
       const wrapper = shallow(getTestHeader());
       const icon = wrapper.find('Icon[name="cogwheel"]');
       expect(icon).toHaveLength(1);
-    });
-
-    it('should show username', () => {
-      const wrapper = shallow(getTestHeader());
-      expect(wrapper.find('inject-UserName')).toHaveLength(1);
-    });
-
-    it('should show sign-out icon', () => {
-      const wrapper = shallow(getTestHeader());
-      const icon = wrapper.find('Icon[name="logout"]');
-      expect(icon).toHaveLength(1);
-    });
-
-    it('should show sign-out icon', () => {
-      const wrapper = shallow(getTestHeader());
-      const icon = wrapper.find('Icon[name="logout"]');
-      authStore.signOut = jest.fn();
-
-      icon.parent().simulate('click');
-      expect(authStore.signOut).toHaveBeenCalled();
     });
 
     describe('Readonly mode', () => {

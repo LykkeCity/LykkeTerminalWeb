@@ -1,3 +1,4 @@
+import {Header} from '@lykkex/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
@@ -5,31 +6,28 @@ import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {AnalyticsService} from '../../services/analyticsService';
-import {AuthStore, BalanceListStore, ReferenceStore} from '../../stores';
+import {
+  AuthStore,
+  BalanceListStore,
+  ReferenceStore,
+  UiStore
+} from '../../stores';
 import {getHashCode} from '../../utils/hashcode';
 import {StorageUtils} from '../../utils/index';
 import Backdrop from '../Backdrop/Backdrop';
 import {Footer} from '../Footer';
-import {Header} from '../Header';
+import {Header as SubHeader} from '../Header';
 import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
 import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {Orders} from '../OrderList';
 import {SessionNotificationComponent} from '../Session';
-import styled, {colors} from '../styled';
 import {ChartTabbedTile, TabbedTile, Tile} from '../Tile';
 import {TradeLog, Trades} from '../TradeList';
 import {Wallet} from '../TradingWallet';
 import {TerminalProps} from './index';
-
-const Shell = styled.div`
-  background: ${colors.darkGraphite};
-  height: 100vh;
-  width: 100vw;
-  padding: 0;
-  margin: 0;
-`;
+import {Shell, TerminalWrapper} from './styles';
 
 const layoutStorage = StorageUtils(keys.layout);
 
@@ -112,6 +110,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private balanceListStore: BalanceListStore = this.props.rootStore
     .balanceListStore;
   private referenceStore: ReferenceStore = this.props.rootStore.referenceStore;
+  private uiStore: UiStore = this.props.rootStore.uiStore;
   private isMosaicChanged: boolean = false;
 
   handleVisibilityChange = () => {
@@ -206,6 +205,11 @@ class Terminal extends React.Component<TerminalProps, {}> {
     }
   };
 
+  onLogout() {
+    this.authStore.signOut();
+    AnalyticsService.handleClick(AnalyticsEvents.LogOut);
+  }
+
   async start() {
     if (this.authStore.isAuth) {
       await this.referenceStore.fetchReferenceData();
@@ -228,26 +232,38 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   render() {
+    const userInfo = this.uiStore.getUserInfo();
+    const userName = userInfo ? userInfo.fullName : undefined;
+    const email = userInfo ? userInfo.email : undefined;
     return (
       <Shell>
-        <NotificationList />
-        {this.props.rootStore.modalStore.isModals ? (
-          <div>
-            <Backdrop />
-            <Modal modals={this.props.rootStore.modalStore.modals} />
-          </div>
-        ) : null}
-        {this.props.rootStore.sessionStore.sessionNotificationsBlockShown && (
-          <SessionNotificationComponent />
-        )}
-        <Header history={this.props.history} />
-        <Mosaic
-          renderTile={this.handleRenderTile}
-          onChange={this.handleChange}
-          resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
-          initialValue={this.state.initialValue}
+        <Header
+          // tslint:disable-next-line:jsx-no-lambda
+          onLogout={() => this.onLogout()}
+          userName={userName}
+          email={email}
+          activeMenuItem="trade"
         />
-        <Footer />
+        <TerminalWrapper>
+          <NotificationList />
+          {this.props.rootStore.modalStore.isModals ? (
+            <div>
+              <Backdrop />
+              <Modal modals={this.props.rootStore.modalStore.modals} />
+            </div>
+          ) : null}
+          {this.props.rootStore.sessionStore.sessionNotificationsBlockShown && (
+            <SessionNotificationComponent />
+          )}
+          <SubHeader history={this.props.history} />
+          <Mosaic
+            renderTile={this.handleRenderTile}
+            onChange={this.handleChange}
+            resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
+            initialValue={this.state.initialValue}
+          />
+          <Footer />
+        </TerminalWrapper>
       </Shell>
     );
   }

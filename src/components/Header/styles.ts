@@ -36,12 +36,9 @@ export const HeaderItem = styled(Box)`
 export const HeaderWrapper = styled.header`
   padding: ${rem(9)} ${rem(11)};
   height: 60px;
+  border-top: solid 1px #292929;
   border-bottom: solid 1px #292929;
   background: #333;
-`;
-
-export const Logo = styled.div`
-  margin-right: ${rem(18)};
 `;
 
 export const HeaderFlex = styled(Flex)`
