@@ -19,6 +19,7 @@
     "applicationinsights-js": "^1.0.18",
     "autobahn": "git://github.com/crossbario/autobahn-js-built.git#v0.11.2",
     "big.js": "^5.0.3",
+    "canvas-prebuilt": "^1.6.5-prerelease.1",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
     "detect-browser": "^2.5.1",
@@ -51,8 +52,7 @@
     "url-search-params": "^0.10.0",
     "whatwg-fetch": "^2.0.3",
     "wretch": "^1.1.1",
-    "yup": "^0.24.0",
-    "canvas-prebuilt": "^1.6.5-prerelease.1"
+    "yup": "^0.24.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,json,css,scss}": [

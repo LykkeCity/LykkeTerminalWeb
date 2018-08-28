@@ -33,6 +33,22 @@ describe('orderList store', () => {
           quoteAsset: undefined,
           accuracy: 3,
           invertedAccuracy: 8
+        }),
+        new InstrumentModel({
+          id: 'BTCEUR',
+          name: 'BTC/EUR',
+          baseAsset: undefined,
+          quoteAsset: undefined,
+          accuracy: 3,
+          invertedAccuracy: 8
+        }),
+        new InstrumentModel({
+          id: 'EURGBP',
+          name: 'EUR/GBP',
+          baseAsset: undefined,
+          quoteAsset: undefined,
+          accuracy: 2,
+          invertedAccuracy: 4
         })
       ];
     });
