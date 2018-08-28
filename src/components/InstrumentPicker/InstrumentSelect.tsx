@@ -24,7 +24,7 @@ const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
 const StyledInstrumentSelect = styled(InstrumentSelect)`
   cursor: pointer;
   height: 100%;
-  padding: ${rem(5)} ${rem(15)};
+  padding: ${rem(5)} ${rem(15)} ${rem(5)} ${rem(6)};
   min-width: ${rem(100)};
   position: relative;
 
