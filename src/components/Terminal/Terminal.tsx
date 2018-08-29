@@ -84,7 +84,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         direction: 'column' as MosaicDirection,
         first: OrderWidget,
         second: TradingWalletWidget,
-        splitPercentage: 70
+        splitPercentage: 75
       },
       second: {
         direction: 'row' as MosaicDirection,
