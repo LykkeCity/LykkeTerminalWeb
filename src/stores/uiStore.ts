@@ -1,3 +1,4 @@
+import LDClient from 'ldclient-js';
 import {action, computed, observable, reaction} from 'mobx';
 import {pathOr} from 'rambda';
 import {ThemeObject, themes} from '../components/styled';
@@ -196,9 +197,27 @@ class UiStore extends BaseStore {
   };
 
   @action
-  setUserInfo = (userInfo: ApiUserInfoModel) =>
-    (this.userInfo = toUserInfoModel(userInfo));
+  setUserInfo = (userInfo: ApiUserInfoModel) => {
+    this.userInfo = toUserInfoModel(userInfo);
+    this.checkThemeToggler();
+  };
   getUserInfo = () => this.userInfo;
+
+  checkThemeToggler = () => {
+    const ldclient = LDClient.initialize(
+      process.env.REACT_APP_LAUNCH_DARKLY_ID || '',
+      {
+        key: this.getUserInfo()!.email
+      }
+    );
+    ldclient.on('ready', () => {
+      if (ldclient.variation('light-theme')) {
+        this.setTheme(themes.light);
+      }
+    });
+  };
+  @action setTheme = (theme: ThemeObject) => (this.theme = theme);
+  getTheme = () => this.theme;
 
   @action
   setInstrumentPickerSortingParameters = (

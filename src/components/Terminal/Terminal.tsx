@@ -237,7 +237,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
     const userName = userInfo ? userInfo.fullName : undefined;
     const email = userInfo ? userInfo.email : undefined;
     return (
-      <ThemeProvider theme={this.props.rootStore.uiStore.theme}>
+      <ThemeProvider theme={this.props.rootStore.uiStore.getTheme()}>
         <Shell>
           <Header
             // tslint:disable-next-line:jsx-no-lambda
