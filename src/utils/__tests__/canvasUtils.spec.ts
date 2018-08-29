@@ -15,7 +15,6 @@ describe(' canvas utils', () => {
     context = document
       .createElement('canvas')
       .getContext('2d') as CanvasRenderingContext2D;
-    jest.resetAllMocks();
   });
 
   const color = '#ffffff';

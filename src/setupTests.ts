@@ -1,3 +1,4 @@
+import 'jest-canvas-mock';
 import 'raf/polyfill';
 (window as any).requestAnimationFrame = callback => setTimeout(callback, 0);
 
