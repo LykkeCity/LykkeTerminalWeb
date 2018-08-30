@@ -210,6 +210,7 @@ describe('session store', () => {
       sessionStore.stopSessionRemains = jest.fn();
       sessionStore.runSessionNotificationTimeout = jest.fn();
       sessionStore.runSessionRemains = jest.fn();
+      sessionStore.stopSessionNotificationTimeout = jest.fn();
 
       await sessionStore.extendSession();
 
@@ -218,6 +219,11 @@ describe('session store', () => {
 
       expect(sessionStore.runSessionRemains).toHaveBeenCalled();
       expect(sessionStore.runSessionRemains).toHaveBeenCalledTimes(1);
+
+      expect(sessionStore.stopSessionNotificationTimeout).toHaveBeenCalled();
+      expect(sessionStore.stopSessionNotificationTimeout).toHaveBeenCalledTimes(
+        1
+      );
 
       expect(sessionStore.runSessionNotificationTimeout).toHaveBeenCalled();
       expect(sessionStore.runSessionNotificationTimeout).toHaveBeenCalledTimes(
