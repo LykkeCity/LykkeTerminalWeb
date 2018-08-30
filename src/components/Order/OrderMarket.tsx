@@ -10,9 +10,9 @@ import OrderButton from './OrderButton';
 import OrderPercentage from './OrderPercentage';
 import {
   Action,
-  Amount,
   Available,
   InputControl,
+  MarketAmount,
   MarketConfirmButton,
   OrderTitle,
   Reset,
@@ -97,6 +97,7 @@ class OrderMarket extends React.Component<
       baseAssetName,
       quoteAssetName,
       balanceAccuracy,
+      isDisable,
       isEnoughLiquidity
     } = this.props;
     this.previousPropsAction = this.props.action;
@@ -138,20 +139,20 @@ class OrderMarket extends React.Component<
         </Flex>
         <Total>
           <OrderTitle className={'estimated-total'}>Estimated total</OrderTitle>
-          {isEnoughLiquidity && (
-            <Amount>
-              {amount} {quoteAssetName}
-              <TotalHint>
-                {action === Side.Sell
+          <MarketAmount available={isEnoughLiquidity}>
+            {isEnoughLiquidity ? `${amount} ${quoteAssetName}` : '--'}
+            <TotalHint>
+              {isEnoughLiquidity
+                ? action === Side.Sell
                   ? indicativeTotalHint.sell
-                  : indicativeTotalHint.buy}
-              </TotalHint>
-            </Amount>
-          )}
+                  : indicativeTotalHint.buy
+                : indicativeTotalHint.na}
+            </TotalHint>
+          </MarketAmount>
         </Total>
         <MarketConfirmButton>
           <OrderButton
-            isDisable={this.props.isDisable}
+            isDisable={isDisable || !isEnoughLiquidity}
             type={'submit'}
             message={`${capitalize(this.state.action)} ${formattedNumber(
               +quantity,
