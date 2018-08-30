@@ -16,7 +16,6 @@ export const Markets = styled.div`
 export const Actions = Markets.extend`
   justify-content: center;
   border-bottom: none;
-  margin-bottom: ${rem(30)};
 `;
 
 const buttonColorBySide = (side: Side, isActive: boolean) => {
@@ -123,8 +122,8 @@ export const Total = Flex.extend`
   justify-content: space-between;
   border-top: 1px solid rgb(45, 45, 45);
   border-bottom: 1px solid rgb(45, 45, 45);
-  padding: ${rem(19)} 0;
-  margin: ${rem(23)} 0;
+  padding: ${rem(8)} 0;
+  margin: ${rem(5)} 0;
 `;
 
 export const TotalHint = styled.small`
@@ -180,7 +179,7 @@ export const Reset = Flex.extend`
   font-size: ${rem(16)};
   font-weight: bold;
   line-height: 1;
-  padding: ${rem(19)} 0;
+  padding: ${rem(8)} 0;
 
   span:hover {
     cursor: pointer;
@@ -189,15 +188,11 @@ export const Reset = Flex.extend`
 
 export const InputControl = styled.div`
   margin: ${rem(8)} 0;
-
-  & + & {
-    margin-top: ${rem(20)};
-  }
 `;
 
 export const StyledOrderButton = styled.div`
-  margin-top: ${rem(32)};
-  margin-bottom: ${rem(10)};
+  margin-top: ${rem(8)};
+  margin-bottom: ${rem(8)};
 `;
 
 export const DisclaimerNotification = styled.div`
