@@ -129,7 +129,6 @@ export const Total = Flex.extend`
 export const TotalHint = styled.small`
   display: block;
   margin-top: ${rem(2)};
-  color: ${colors.coolGrey};
   font-size: ${rem(12)};
   text-align: right;
 `;
@@ -153,10 +152,19 @@ export const Note = styled.div`
 `;
 
 export const Amount = styled.div`
-  color: #8c94a0;
+  color: ${colors.coolGrey};
   font-size: ${rem(14)};
   text-align: right;
 `;
+
+export const MarketAmount = styled.div.attrs({
+  style: (props: any) => ({
+    color: `${props.available ? colors.coolGrey : colors.red}`
+  })
+})`
+  font-size: ${rem(14)};
+  text-align: right;
+` as any;
 
 export const Available = styled(Amount).attrs({
   style: (props: any) => ({
