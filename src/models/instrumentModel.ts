@@ -1,4 +1,4 @@
-import {action, computed, extendObservable, observable} from 'mobx';
+import {action, computed, observable} from 'mobx';
 import {join} from 'rambda';
 import {AssetModel} from './index';
 
@@ -34,7 +34,7 @@ class InstrumentModel {
   }
 
   constructor(instrument: Partial<InstrumentModel>) {
-    extendObservable(this, instrument);
+    Object.assign(this, instrument);
   }
 
   @action
@@ -68,7 +68,7 @@ class InstrumentModel {
     volume?: number
   ) => {
     if (openPrice && closePrice) {
-      this.change24h = (closePrice - openPrice) / openPrice * 100;
+      this.change24h = ((closePrice - openPrice) / openPrice) * 100;
     }
     if (closePrice) {
       this.price = closePrice;

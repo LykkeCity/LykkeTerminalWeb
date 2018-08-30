@@ -55,10 +55,8 @@ describe('<WalletBalanceList>', () => {
       Type: 'Trading'
     });
     wallet.balances = wallet.balances.map((balance: AssetBalanceModel) => {
-      return {
-        name: balance.id,
-        ...balance
-      };
+      balance.name = balance.id;
+      return balance;
     });
   });
 

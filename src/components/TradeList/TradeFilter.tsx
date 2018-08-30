@@ -16,7 +16,7 @@ const TradeFilter: React.SFC<TradeFilterProps> = ({
   options,
   onFilter
 }) => {
-  const show = observable(false);
+  const show = observable.box(false);
   const toggle = () => show.set(!show.get());
   const handleClick = (newValue: string) => () => onFilter(newValue);
   return (

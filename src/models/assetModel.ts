@@ -1,9 +1,8 @@
-import {extendObservable} from 'mobx';
+import {observable} from 'mobx';
 import {AssetCategoryModel} from './index';
 
 class AssetModel {
   id: string;
-  name: string;
   category: AssetCategoryModel;
   accuracy: number;
 
@@ -11,8 +10,10 @@ class AssetModel {
   iconUrl?: string = '';
   fullName?: string = '';
 
+  @observable name: string;
+
   constructor(asset: Partial<AssetModel>) {
-    extendObservable(this, asset);
+    Object.assign(this, asset);
   }
 }
 
