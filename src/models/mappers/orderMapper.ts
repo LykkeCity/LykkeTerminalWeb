@@ -65,7 +65,7 @@ export const getMaxAvailableVolume = (amount: number, orders: Order[]) => {
   if (ordersVolume && expendedAmount < amount) {
     const averagePrice = totalOrdersAmount / totalOrdersVolume;
     return ordersVolume + (amount - expendedAmount) / averagePrice;
-  } else {
-    return ordersVolume;
   }
+
+  return ordersVolume;
 };
