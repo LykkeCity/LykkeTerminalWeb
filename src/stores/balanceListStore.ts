@@ -80,7 +80,7 @@ class BalanceListStore extends BaseStore {
   };
 
   getCurrentWalletId = () => {
-    const currentWallet = this.currentWallet;
+    const currentWallet = this.tradingWallet;
     return currentWallet ? currentWallet.id : '';
   };
 

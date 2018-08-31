@@ -5,5 +5,5 @@ export const LaunchDarkly = ReactLaunchDarkly.LaunchDarkly;
 export const FeatureFlag = ReactLaunchDarkly.FeatureFlag;
 
 export const Feature = {
-  ExportTradingHistory: 'export-trading-history'
+  ExportTradingHistory: 'terminal-export-trading-history'
 };

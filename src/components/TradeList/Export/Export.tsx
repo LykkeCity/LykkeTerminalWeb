@@ -1,10 +1,14 @@
 import * as React from 'react';
+import {UserInfoModel} from '../../../models';
 import {ExportButton} from '../styles';
 import saveFile from './saveFileByUrl';
+
+import {Feature, FeatureFlag, LaunchDarkly} from '../../../utils/launchDarkly';
 
 interface ExportProps {
   fetchCsvUrl: () => Promise<string>;
   canExport: () => boolean;
+  userInfo: UserInfoModel;
 }
 
 class Export extends React.Component<ExportProps> {
@@ -20,12 +24,23 @@ class Export extends React.Component<ExportProps> {
 
   render() {
     return (
-      <ExportButton
-        className={this.props.canExport() ? 'clickable' : ''}
-        onClick={this.saveFile}
+      <LaunchDarkly
+        clientId={process.env.REACT_APP_LAUNCH_DARKLY_CLIENT_ID}
+        user={{key: this.props.userInfo.email}}
       >
-        Export history (csv)
-      </ExportButton>
+        <FeatureFlag
+          flagKey={Feature.ExportTradingHistory}
+          // tslint:disable-next-line:jsx-no-lambda
+          renderFeatureCallback={() => (
+            <ExportButton
+              className={this.props.canExport() ? 'clickable' : ''}
+              onClick={this.saveFile}
+            >
+              Export history (csv)
+            </ExportButton>
+          )}
+        />
+      </LaunchDarkly>
     );
   }
 }

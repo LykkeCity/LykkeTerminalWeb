@@ -1,14 +1,27 @@
 import {mount, render} from 'enzyme';
 import React from 'react';
+import {UserInfoModel} from '../../../../models';
 import Export from '../Export';
 
 describe('<Export>', () => {
+  const userInfo = new UserInfoModel({
+    email: 'wow@so.much',
+    firstName: 'Doge',
+    lastName: 'Sych',
+    kycStatus: 'Ok'
+  });
   const fetchCsvUrl = jest.fn();
   let canExport = jest.fn(() => true);
 
   // tslint:disable-next-line:no-shadowed-variable
   const getExportButton = (canExport: () => boolean) => {
-    return <Export canExport={canExport} fetchCsvUrl={fetchCsvUrl} />;
+    return (
+      <Export
+        canExport={canExport}
+        fetchCsvUrl={fetchCsvUrl}
+        userInfo={userInfo}
+      />
+    );
   };
 
   it('should render content', () => {
