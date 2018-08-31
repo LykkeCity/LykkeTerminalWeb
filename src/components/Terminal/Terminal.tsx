@@ -49,28 +49,28 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     <ChartTabbedTile tabs={['Price chart', 'Depth chart']} authorize={false} />
   ),
   [TradeListWidget]: (
-    <Tile title="Trade log">
+    <Tile title="Trade log" className="bottom-tile">
       <TradeLog />
     </Tile>
   ),
   [OrderBookWidget]: (
-    <Tile title="Order book">
+    <Tile title="Order book" className="with-padding">
       <OrderBook />
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile tabs={['Orders', 'Trades']}>
+    <TabbedTile tabs={['Orders', 'Trades']} className="bottom-tile">
       <Orders />
       <Trades />
     </TabbedTile>
   ),
   [OrderWidget]: (
-    <Tile title="Order" authorize={true} className="no-padding">
+    <Tile title="Order" authorize={true}>
       <Order />
     </Tile>
   ),
   [TradingWalletWidget]: (
-    <Tile title="Funds">
+    <Tile title="Funds" className="bottom-tile">
       <Wallet />
     </Tile>
   )

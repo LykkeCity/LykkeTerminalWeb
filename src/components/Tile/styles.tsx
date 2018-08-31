@@ -58,11 +58,15 @@ export const TileTab = TileTitle.extend`
 export const TileContent = styled.div`
   font-size: ${rem(fonts.normal)};
   padding: ${padding(...dims.padding)};
-  height: calc(100% - 40px) !important;
   overflow: hidden;
 
-  &.no-padding {
-    height: 100% !important;
+  &.chart-tile,
+  &.with-padding {
+    height: calc(100% - 40px) !important;
+  }
+
+  &.bottom-tile {
+    height: calc(100% - 30px) !important;
   }
 `;
 

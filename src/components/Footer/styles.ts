@@ -5,8 +5,11 @@ import styled, {fonts} from '../styled';
 const {Box} = require('grid-styled');
 
 export const FooterWrapper = styled.footer`
-  padding: ${rem(9)} ${rem(11)};
-  height: 27px;
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 ${rem(11)};
   border-bottom: solid 1px #292929;
   background: #333;
 `;
