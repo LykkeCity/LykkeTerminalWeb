@@ -4,7 +4,7 @@ import {AnalyticsService} from '../../services/analyticsService';
 import ChoosableItem from '../ChoosableItem/ChoosableItem';
 import {SessionDurations} from './styles';
 
-const sessionDuration = [0.025, 0.04, 0.05, 12, 24];
+const sessionDuration = [0.5, 1, 4, 12, 24];
 
 const MINUTE_ABBREVIATION = 'min';
 const HOUR_ABBREVIATION = 'hr';
