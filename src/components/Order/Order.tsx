@@ -16,7 +16,7 @@ import ActionChoiceButton from './ActionChoiceButton';
 import {Disclaimer} from './Disclaimer';
 import MarketChoiceButton from './MarketChoiceButton';
 import OrderLimit from './OrderLimit';
-import OrderMarket from './OrderMarket';
+import OrderMarket from './OrderNewMarket';
 import {Actions, Markets} from './styles';
 
 const confirmStorage = StorageUtils(keys.confirmReminder);
@@ -161,9 +161,14 @@ class Order extends React.Component<OrderProps, OrderState> {
     } = this.props;
     const orderType = currentMarket;
     const body: any = {
-      AssetId: baseAssetId,
+      AssetId:
+        orderType === OrderType.Market
+          ? action === Side.Buy
+            ? quoteAssetId
+            : baseAssetId
+          : baseAssetId,
       AssetPairId: currency,
-      OrderAction: action,
+      OrderAction: orderType === OrderType.Market ? Side.Sell : action,
       Volume: parseFloat(quantity)
     };
 
@@ -199,10 +204,12 @@ class Order extends React.Component<OrderProps, OrderState> {
 
   handleButtonClick = () => {
     const {
+      currentMarket,
       quantityValue,
       priceValue,
       isCurrentSideSell,
-      baseAssetId
+      baseAssetId,
+      quoteAssetId
     } = this.props;
 
     const isConfirm = confirmStorage.get() as string;
@@ -210,7 +217,11 @@ class Order extends React.Component<OrderProps, OrderState> {
       return this.applyOrder(
         isCurrentSideSell ? Side.Sell : Side.Buy,
         quantityValue,
-        baseAssetId,
+        currentMarket === MARKET
+          ? isCurrentSideSell
+            ? baseAssetId
+            : quoteAssetId
+          : baseAssetId,
         priceValue
       );
     }
@@ -271,7 +282,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       currentMarket,
       priceValue,
       quantityValue,
-      accuracy: {priceAccuracy, baseAssetAccuracy}
+      accuracy: {priceAccuracy, baseAssetAccuracy, quoteAssetAccuracy}
     } = this.props;
 
     const displayedPrice = formattedNumber(
@@ -281,14 +292,21 @@ class Order extends React.Component<OrderProps, OrderState> {
 
     const displayedQuantity = formattedNumber(
       +parseFloat(quantityValue),
-      baseAssetAccuracy
+      currentMarket === MARKET ? quoteAssetAccuracy : baseAssetAccuracy
     );
 
+    const actionName = currentMarket === MARKET ? 'sell' : action.toLowerCase();
+    const assetName =
+      currentMarket === MARKET
+        ? this.props.isCurrentSideSell
+          ? baseAssetName
+          : quoteAssetName
+        : baseAssetName;
     const messageSuffix =
       currentMarket === MARKET
         ? 'at the market price'
         : `at the price of ${displayedPrice} ${quoteAssetName}`;
-    return `${action.toLowerCase()} ${displayedQuantity} ${baseAssetName} ${messageSuffix}`;
+    return `${actionName} ${displayedQuantity} ${assetName} ${messageSuffix}`;
   };
 
   reset = () => {
@@ -336,7 +354,9 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {percents} = this.state;
     const currentPrice =
       (currentMarket === MARKET
-        ? isCurrentSideSell ? bid : ask
+        ? isCurrentSideSell
+          ? bid
+          : ask
         : parseFloat(priceValue)) || 0;
 
     const roundedAmount = precisionFloor(

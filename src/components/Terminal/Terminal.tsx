@@ -94,12 +94,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
           second: OrderListWidget,
           splitPercentage: 65
         },
-        second: {
-          direction: 'column' as MosaicDirection,
-          first: OrderBookWidget,
-          second: TradeListWidget,
-          splitPercentage: 70
-        },
+        second: OrderBookWidget,
         splitPercentage: MAX_RIGHT_PADDING
       },
       splitPercentage: MAX_LEFT_PADDING

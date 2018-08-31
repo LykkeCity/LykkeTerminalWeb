@@ -75,14 +75,10 @@ class UiOrderStore extends BaseStore {
     isEnoughLiquidity: true,
     price: 0
   };
-  @observable
-  private priceValue: string = DEFAULT_INPUT_VALUE;
-  @observable
-  private quantityValue: string = DEFAULT_INPUT_VALUE;
-  @observable
-  private market: OrderType = OrderType.Limit;
-  @observable
-  private side: Side = Side.Buy;
+  @observable private priceValue: string = DEFAULT_INPUT_VALUE;
+  @observable private quantityValue: string = DEFAULT_INPUT_VALUE;
+  @observable private market: OrderType = OrderType.Limit;
+  @observable private side: Side = Side.Buy;
   private priceAccuracy: number = 2;
   private quantityAccuracy: number = 2;
 
@@ -163,7 +159,7 @@ class UiOrderStore extends BaseStore {
       );
     } else {
       this.setQuantityValueWithFixed(
-        this.onPercentChangeForMarket(
+        this.onPercentChangeForNewMarket(
           percents,
           balance,
           quoteAssetId,
@@ -200,6 +196,15 @@ class UiOrderStore extends BaseStore {
     );
   };
 
+  onPercentChangeForNewMarket = (
+    percents: number,
+    value: number,
+    quoteAssetId: string,
+    baseAssetId: string
+  ) => {
+    return getPercentsOf(percents, value, this.getQuantityAccuracy());
+  };
+
   isLimitInvalid = (baseAssetBalance: number, quoteAssetBalance: number) => {
     return (
       !+this.priceValue ||
@@ -224,12 +229,7 @@ class UiOrderStore extends BaseStore {
   ) => {
     return (
       !+this.quantityValue ||
-      this.isAmountExceedMarketBalance(
-        baseAssetBalance,
-        quoteAssetBalance,
-        baseAssetId,
-        quoteAssetId
-      )
+      this.isAmountExceedNewMarketBalance(baseAssetBalance, quoteAssetBalance)
     );
   };
 
@@ -249,6 +249,20 @@ class UiOrderStore extends BaseStore {
       ? +this.quantityValue > baseAssetBalance
       : +this.quantityValue >
           precisionFloor(+convertedBalance, this.quantityAccuracy);
+  };
+
+  isAmountExceedNewMarketBalance = (
+    baseAssetBalance: number,
+    quoteAssetBalance: number
+  ) => {
+    if (!this.isCurrentSideSell) {
+      return (
+        +this.quantityValue >
+        precisionFloor(quoteAssetBalance, this.quantityAccuracy)
+      );
+    }
+
+    return +this.quantityValue > baseAssetBalance;
   };
 
   setMarketTotal = (
