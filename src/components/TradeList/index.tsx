@@ -89,9 +89,10 @@ const ConnectedTradeLog = connect(
 );
 
 const ConnectedExport = connect(
-  ({tradeStore: {fetchCsvUrl, canExport}}) => ({
+  ({tradeStore: {fetchCsvUrl, canExport}, authStore: {userInfo}}) => ({
     fetchCsvUrl,
-    canExport
+    canExport,
+    userInfo
   }),
   Export
 );
