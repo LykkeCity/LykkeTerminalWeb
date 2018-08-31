@@ -43,6 +43,7 @@ class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
           style={{
             display: this.selectedTab === ChartType.Price ? 'block' : 'none'
           }}
+          className="chart-tile"
         >
           <Chart />
         </TileContent>

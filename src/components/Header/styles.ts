@@ -5,7 +5,7 @@ import styled, {fonts} from '../styled';
 const {Flex, Box} = require('grid-styled');
 
 export const HeaderItem = styled(Box)`
-  font-size: ${rem(fonts.normal)};
+  font-size: ${rem(fonts.small)};
   position: relative;
   &:after {
     content: '';
@@ -35,7 +35,7 @@ export const HeaderItem = styled(Box)`
 
 export const HeaderWrapper = styled.header`
   padding: ${rem(9)} ${rem(11)};
-  height: 60px;
+  height: 50px;
   border-top: solid 1px #292929;
   border-bottom: solid 1px #292929;
   background: #333;

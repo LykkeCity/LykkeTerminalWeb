@@ -195,7 +195,7 @@ export const Reset = Flex.extend`
 `;
 
 export const InputControl = styled.div`
-  margin: ${rem(8)} 0;
+  margin: ${rem(10)} 0;
 `;
 
 export const StyledOrderButton = styled.div`
