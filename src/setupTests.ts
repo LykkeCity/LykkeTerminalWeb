@@ -49,3 +49,9 @@ jest.mock('raven-js', () => {
     captureException: jest.fn()
   };
 });
+
+jest.mock('debounce', () => {
+  return (callback: any) => {
+    return () => callback();
+  };
+});

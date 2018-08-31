@@ -215,3 +215,21 @@ export const defineCanvasScale = (
     ctx.scale(ratio, ratio);
   }
 };
+
+export const fitString = (ctx: any, text: string, maxWidth: number) => {
+  let textWidth = ctx.measureText(text).width;
+  const ellipsis = '…';
+  const ellipsisWidth = ctx.measureText(ellipsis).width;
+
+  if (textWidth <= maxWidth) {
+    return text;
+  }
+
+  let textLength = text.length;
+  while (textWidth >= maxWidth - ellipsisWidth && textLength-- > 0) {
+    text = text.substring(0, textLength);
+    textWidth = ctx.measureText(text).width;
+  }
+
+  return text + ellipsis;
+};

@@ -5,7 +5,8 @@ import {
   drawLine,
   drawRect,
   drawText,
-  drawVerticalLine
+  drawVerticalLine,
+  fitString
 } from '../canvasUtils';
 
 describe(' canvas utils', () => {
@@ -176,5 +177,19 @@ describe(' canvas utils', () => {
     expect(context.closePath).toHaveBeenCalled();
     expect(context.fill).toHaveBeenCalled();
     expect(context.stroke).toHaveBeenCalled();
+  });
+
+  describe('method fitString', () => {
+    it('should not cut text if it is fully visible on canvas', () => {
+      const textForCutting = 'a';
+      const cuttedText = fitString(context, textForCutting, width / 2);
+      expect(cuttedText).toEqual(textForCutting);
+    });
+
+    it('should cut text if it is not fully visible on canvas', () => {
+      const textForCutting = 'Some very large text that will be cutted';
+      const cuttedText = fitString(context, textForCutting, width / 2);
+      expect(cuttedText).toContain('…');
+    });
   });
 });

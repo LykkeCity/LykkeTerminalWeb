@@ -92,15 +92,6 @@ describe('trade store', () => {
       expect(tradeStore.getPublicTrades instanceof Array).toBeTruthy();
       expect(tradeStore.getPublicTrades.length).toBe(0);
     });
-
-    it('isWampTradesProcessed should be false by default', () => {
-      expect(tradeStore.getIsWampTradesProcessed()).toBeFalsy();
-    });
-
-    it('should change value of isWampTradesProcessed', () => {
-      tradeStore.setIsWampTradesProcessed(true);
-      expect(tradeStore.getIsWampTradesProcessed()).toBeTruthy();
-    });
   });
 
   describe('add trade', () => {
@@ -243,9 +234,9 @@ describe('trade store', () => {
       expect(tradeStore.getAllTrades).toHaveLength(0);
     });
 
-    it('should limit number of items by 999', () => {
-      tradeStore.addPublicTrades(new Array(1010).fill(testObject));
-      expect(tradeStore.getPublicTrades).toHaveLength(999);
+    it('should limit number of items by 100', () => {
+      tradeStore.addPublicTrades(new Array(101).fill(testObject));
+      expect(tradeStore.getPublicTrades).toHaveLength(100);
     });
   });
 });

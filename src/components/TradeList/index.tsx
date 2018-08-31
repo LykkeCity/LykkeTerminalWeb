@@ -1,16 +1,18 @@
 import {compose, pathOr} from 'rambda';
+import React from 'react';
+import Scrollbars from 'react-custom-scrollbars';
+import {withContentRect} from 'react-measure';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
-import PublicTradeList from './PublicTradeList';
-import PublicTradeListItem from './PublicTradeListItem';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
 import TradeList, {TradeListProps} from './TradeList';
 import TradeListItem from './TradeListItem';
-import TradeLog from './TradeLog';
+import TradeLog, {LEFT_PADDING, TRADE_HEIGHT} from './TradeLog';
+import TradeLogHeader from './TradeLogHeader';
 import Trades from './Trades';
 
 export const TradesCellWidth = {
@@ -60,32 +62,53 @@ const ConnectedTradeFilter = connect<TradeFilterProps>(
   TradeFilter
 );
 
-const ConnectedPublicTradeList = withStyledScroll({
-  width: `calc(100% + ${tableScrollMargin})`,
-  height: 'calc(100% - 1.75rem)'
-})(PublicTradeList);
+const ConnectedTradeLogHeader = connect(
+  ({uiStore: {selectedInstrument}}) => ({
+    selectedInstrument
+  }),
+  TradeLogHeader
+);
+
+const withMeasureAnLoader = compose(
+  withLoader(),
+  withContentRect('client')
+);
 
 const ConnectedTradeLog = connect(
-  ({
-    tradeStore: {
-      getPublicTrades,
-      getIsWampTradesProcessed,
-      setIsWampTradesProcessed
-    },
-    uiStore: {selectedInstrument}
-  }) => ({
+  ({orderBookStore: {hasPendingItems}, uiStore: {selectedInstrument}}) => ({
+    loading: hasPendingItems || selectedInstrument === undefined
+  }),
+  withMeasureAnLoader(({measureRef, contentRect}: any) => (
+    <React.Fragment>
+      <ConnectedTradeLogHeader />
+      <div style={{height: '100%'}} ref={measureRef}>
+        <Scrollbars
+          style={{
+            height: `calc(100% - 0.5rem)`,
+            width: 'calc(100% + 1rem)',
+            marginLeft: '-0.5rem'
+          }}
+        >
+          <ConnectedTradeLogCanvas
+            itemHeight={TRADE_HEIGHT}
+            width={contentRect.client.width + LEFT_PADDING || 300}
+          />
+        </Scrollbars>
+      </div>
+    </React.Fragment>
+  ))
+);
+
+const ConnectedTradeLogCanvas = connect(
+  ({tradeStore: {getPublicTrades}, uiStore: {selectedInstrument}}) => ({
     trades: getPublicTrades,
-    selectedInstrument,
-    getIsWampTradesProcessed,
-    setIsWampTradesProcessed
+    selectedInstrument
   }),
   TradeLog
 );
 
 export {ConnectedTrades as Trades};
 export {ConnectedTradeList as TradeList};
-export {ConnectedPublicTradeList as PublicTradeList};
 export {TradeListItem};
-export {PublicTradeListItem};
 export {ConnectedTradeFilter as TradeFilter};
 export {ConnectedTradeLog as TradeLog};
