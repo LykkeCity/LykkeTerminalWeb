@@ -132,10 +132,10 @@ class SessionStore extends BaseStore {
   };
 
   startSessionListener = async () => {
-    await this.api.createSession(this.sessionDuration);
     this.sessionConfirmationExpire();
-
     this.showQR();
+
+    await this.api.createSession(this.sessionDuration);
 
     const polling = () => {
       this.sessionPollingTimerId = setTimeout(async () => {
