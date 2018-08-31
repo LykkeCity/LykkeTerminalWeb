@@ -39,15 +39,15 @@ describe('<SessionDurationSelection>', () => {
     const defaultOption = options.first();
     expect(
       (defaultOption.props() as Partial<ChoosableItemProps>).isActive
-    ).toBeFalsy();
+    ).toBeTruthy();
   });
 
-  // it('should call not set action when user click on selected option', () => {
-  //   const wrapper = mount(getTestSessionDurationSelection());
-  //   const options = wrapper.find('ChoosableItem');
-  //   options.first().simulate('click');
-  //   expect(handleSetDuration).not.toHaveBeenCalled();
-  // });
+  it('should call not set action when user click on selected option', () => {
+    const wrapper = mount(getTestSessionDurationSelection());
+    const options = wrapper.find('ChoosableItem');
+    options.first().simulate('click');
+    expect(handleSetDuration).not.toHaveBeenCalled();
+  });
 
   it('should call set action when user click on last option', () => {
     const wrapper = mount(getTestSessionDurationSelection());
