@@ -34,10 +34,4 @@ describe('<Export>', () => {
     const wrapper = render(getExportButton(canExport));
     expect(wrapper.find('Export').hasClass('clickable')).toBeFalsy();
   });
-
-  it('should have proper title', () => {
-    const title = 'Export history (csv)';
-    const wrapper = mount(getExportButton(canExport));
-    expect(wrapper.find('Export').text()).toEqual(title);
-  });
 });
