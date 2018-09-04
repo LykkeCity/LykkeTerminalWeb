@@ -9,8 +9,6 @@ import {colors} from '../styled';
 import {BalanceInfo} from '../UserInfo/BalanceInfo';
 import {HeaderFlex, HeaderItem, HeaderWrapper} from './styles';
 
-import MediaQuery from 'react-responsive';
-
 // tslint:disable-next-line:no-var-requires
 const {Flex, Box} = require('grid-styled');
 
@@ -39,39 +37,18 @@ const Header: React.SFC<HeaderProps> = ({
         <HeaderItem>
           <InstrumentPicker value="BTCUSD" instruments={[]} />
         </HeaderItem>
+        <InstrumentPerformance />
 
-        <MediaQuery query="(min-device-width: 1224px)">
-          <InstrumentPerformance />
-
-          <Box ml="auto" is="menu">
-            <Flex align="left">
-              {authStore.isAuth && !readOnlyMode ? (
-                <HeaderItem>
-                  <Flex>
-                    <BalanceInfo />
-                  </Flex>
-                </HeaderItem>
-              ) : null}
-              {authStore.isAuth && !readOnlyMode ? (
-                <HeaderItem>
-                  <span
-                    className="hidden-xs settings"
-                    onClick={handleToggleSettings}
-                  >
-                    <Icon name={'cogwheel'} color={colors.coolGrey} />
-                  </span>
-                  {settingsStore.showSettings ? (
-                    <SettingsModal handleCloseSettings={handleCloseSettings} />
-                  ) : null}
-                </HeaderItem>
-              ) : null}
-              {authStore.isAuth ? (
-                <HeaderItem>
-                  <Flex>
-                    <UserName />
-                  </Flex>
-                </HeaderItem>
-              ) : null}
+        <Box ml="auto" is="menu">
+          <Flex align="center">
+            {authStore.isAuth && !readOnlyMode ? (
+              <HeaderItem>
+                <Flex>
+                  <BalanceInfo />
+                </Flex>
+              </HeaderItem>
+            ) : null}
+            {authStore.isAuth && !readOnlyMode ? (
               <HeaderItem>
                 <span
                   className="hidden-xs settings"

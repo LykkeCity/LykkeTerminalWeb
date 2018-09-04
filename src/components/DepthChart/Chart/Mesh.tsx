@@ -63,7 +63,7 @@ class Mesh extends React.Component<MeshProps> {
   };
 
   drawVerticalLines = () => {
-    const stepVertical = this.props.width / chart.mesh.verticalLinesAmount();
+    const stepVertical = this.props.width / chart.mesh.verticalLinesAmount;
     const startVertical = stepVertical / 2;
     for (
       let startX = startVertical, index = 0;
@@ -87,7 +87,7 @@ class Mesh extends React.Component<MeshProps> {
   };
 
   drawVerticalLabels = () => {
-    const stepVertical = this.props.width / chart.mesh.verticalLinesAmount();
+    const stepVertical = this.props.width / chart.mesh.verticalLinesAmount;
     const startVertical = stepVertical / 2;
     const labels = this.props.verticalLabels;
     if (labels.length) {

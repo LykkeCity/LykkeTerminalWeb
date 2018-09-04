@@ -1,6 +1,7 @@
 import {Header} from '@lykkex/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
+import MediaQuery from 'react-responsive';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
@@ -23,7 +24,7 @@ import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {Orders} from '../OrderList';
 import {SessionNotificationComponent} from '../Session';
-import {ChartTabbedTile, TabbedTile, Tile} from '../Tile';
+import {ChartTabbedTile, TabbedTile, Tile, TopWidgetTile} from '../Tile';
 import {TradeLog, Trades} from '../TradeList';
 import {Wallet} from '../TradingWallet';
 import {TerminalProps} from './index';
@@ -82,11 +83,11 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     />
   ),
   [MobileBottomWidget]: (
-    <TabbedTile tabs={['Trade log', 'Orders', 'Trades', 'My funds']}>
+    <TabbedTile tabs={['Trade log', 'Orders', 'Trades', 'Funds']}>
       <TradeLog />
       <Orders />
       <Trades />
-      <MyWallets />
+      <Wallet />
     </TabbedTile>
   )
 };
@@ -169,7 +170,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
     }
 
     const layoutFromLocalstorage = JSON.parse(layout);
-    const currentStateHashCode = this.getStateHashCode(this.state.initialValue);
+    const currentStateHashCode = this.getStateHashCode(
+      this.desktopState.initialValue
+    );
     const savedStateHashCode = this.getStateHashCode(layoutFromLocalstorage);
     if (currentStateHashCode !== savedStateHashCode) {
       layoutStorage.set('');
@@ -177,7 +180,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
     }
 
     this.setState({
-      initialValue: Object.assign(this.state.initialValue, JSON.parse(layout))
+      initialValue: Object.assign(
+        this.desktopState.initialValue,
+        JSON.parse(layout)
+      )
     });
   }
 
@@ -280,12 +286,22 @@ class Terminal extends React.Component<TerminalProps, {}> {
             <SessionNotificationComponent />
           )}
           <SubHeader history={this.props.history} />
-          <Mosaic
-            renderTile={this.handleRenderTile}
-            onChange={this.handleChange}
-            resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
-            initialValue={this.desktopState.initialValue}
-          />
+          <MediaQuery query="(min-device-width: 1224px)">
+            <Mosaic
+              renderTile={this.handleRenderTile}
+              onChange={this.handleChange}
+              resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
+              initialValue={this.desktopState.initialValue}
+            />
+          </MediaQuery>
+          <MediaQuery query="(max-device-width: 1224px)">
+            <Mosaic
+              renderTile={this.handleRenderTile}
+              onChange={this.handleChange}
+              resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
+              initialValue={this.mobileState.initialValue}
+            />
+          </MediaQuery>
           <Footer />
         </TerminalWrapper>
       </Shell>
