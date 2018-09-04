@@ -1,5 +1,6 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
+import MediaQuery from 'react-responsive';
 import {AssetModel, InstrumentModel} from '../../models/index';
 import {formattedNumberWithDashes} from '../../utils/localFormatted/localFormatted';
 import {colors} from '../styled';
@@ -20,7 +21,9 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
     const dynamics =
       (instrument.change24h || 0) === 0
         ? 'zero'
-        : (instrument.change24h || 0) > 0 ? 'up' : 'down';
+        : (instrument.change24h || 0) > 0
+          ? 'up'
+          : 'down';
     const sign = (instrument.change24h || 0) > 0 ? '+' : '';
 
     return (
@@ -47,21 +50,23 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
             {!!instrument.change24h && `%`}
           </InstrumentListNumber>
         </td>
-        <td>
-          {isAuth ? (
-            <InstrumentListNumber
-              num={formattedNumberWithDashes(
-                instrument.volume || null,
-                instrument.baseAsset.accuracy || 0
-              )}
-              color={!!instrument.volume ? colors.white : colors.lightGrey}
-            >
-              {!!instrument.volume && ` ${instrument.baseAsset.name}`}
-            </InstrumentListNumber>
-          ) : (
-            ''
-          )}
-        </td>
+        <MediaQuery query="(min-device-width: 1224px)">
+          <td>
+            {isAuth ? (
+              <InstrumentListNumber
+                num={formattedNumberWithDashes(
+                  instrument.volume || null,
+                  instrument.baseAsset.accuracy || 0
+                )}
+                color={!!instrument.volume ? colors.white : colors.lightGrey}
+              >
+                {!!instrument.volume && ` ${instrument.baseAsset.name}`}
+              </InstrumentListNumber>
+            ) : (
+              ''
+            )}
+          </td>
+        </MediaQuery>
         <td>
           {isAuth ? (
             <InstrumentListNumber

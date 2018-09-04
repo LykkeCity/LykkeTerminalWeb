@@ -1,4 +1,5 @@
 import * as React from 'react';
+import MediaQuery from 'react-responsive';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {HeaderItem} from '../Header/styles';
 import {
@@ -10,7 +11,11 @@ import {
 
 const colorFromChange = (change: number) =>
   Number.isFinite(change)
-    ? change === 0 ? undefined : change > 0 ? '#46eb6a' : '#ff6161'
+    ? change === 0
+      ? undefined
+      : change > 0
+        ? '#46eb6a'
+        : '#ff6161'
     : undefined;
 
 const mapToPercentageWithAccuracy = (acc: number) => (val: number) =>
@@ -74,32 +79,34 @@ const InstrumentPerformance: React.SFC<InstrumentPerformanceProps> = ({
       accuracy={instrumentAccuracy}
       show={showPerformance}
     />
-    <InstrumentPerformanceFigure
-      label="Change (24h)"
-      value={change}
-      valueFormatter={mapToPercentage}
-      color={colorFromChange(change)}
-      accuracy={instrumentAccuracy}
-      show={showPerformance}
-    />
-    <InstrumentPerformanceFigure
-      label="High (24h)"
-      value={high}
-      accuracy={instrumentAccuracy}
-      show={showPerformance}
-    />
-    <InstrumentPerformanceFigure
-      label="Low (24h)"
-      value={low}
-      accuracy={instrumentAccuracy}
-      show={showPerformance}
-    />
-    <InstrumentPerformanceFigure
-      label="Volume (24h)"
-      value={volume}
-      accuracy={baseAssetAccuracy}
-      show={showPerformance}
-    />
+    <MediaQuery query="(min-device-width: 1224px)">
+      <InstrumentPerformanceFigure
+        label="Change (24h)"
+        value={change}
+        valueFormatter={mapToPercentage}
+        color={colorFromChange(change)}
+        accuracy={instrumentAccuracy}
+        show={showPerformance}
+      />
+      <InstrumentPerformanceFigure
+        label="High (24h)"
+        value={high}
+        accuracy={instrumentAccuracy}
+        show={showPerformance}
+      />
+      <InstrumentPerformanceFigure
+        label="Low (24h)"
+        value={low}
+        accuracy={instrumentAccuracy}
+        show={showPerformance}
+      />
+      <InstrumentPerformanceFigure
+        label="Volume (24h)"
+        value={volume}
+        accuracy={baseAssetAccuracy}
+        show={showPerformance}
+      />
+    </MediaQuery>
   </StyledInstrumentPerformance>
 );
 

@@ -25,7 +25,9 @@ const StyledInstrumentPopover = styled(InstrumentPopover)`
   padding: ${rem(8)} ${rem(16)};
   z-index: 999;
   transition: all 0.3s ease;
-  width: 700px;
+  width: ${window.matchMedia('(min-width: 1224px)').matches
+    ? rem(700)
+    : 'calc(100vw - 20px)'};
   height: 360px;
   top: 5px;
   font-size: ${rem(14)};

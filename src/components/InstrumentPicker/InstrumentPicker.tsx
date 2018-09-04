@@ -1,4 +1,5 @@
 import * as React from 'react';
+import MediaQuery from 'react-responsive';
 import Watchlists from '../../models/watchlists';
 import {
   InstrumentList,
@@ -51,21 +52,23 @@ class InstrumentPicker extends React.Component<
         <InstrumentSelect {...this.props} />
         {this.props.show ? (
           <InstrumentPopover onToggle={this.props.onToggle}>
-            <SearchWrap align={'center'} justify={'space-between'}>
-              <InstrumentShortcuts
-                changeValue={this.changeWallet}
-                onToggleInstrumentSelection={
-                  this.props.onToggleInstrumentSelection
-                }
-                shortcutActiveIndex={this.state.activeShortcut}
-                shortcuts={this.props.watchlistNames}
-                showInstrumentSelection={this.props.showInstrumentSelection}
-              />
-              <InstrumentSearch
-                inputValue={this.state.searchValue}
-                change={this.changeValue}
-              />
-            </SearchWrap>
+            <MediaQuery query="(min-device-width: 1224px)">
+              <SearchWrap align={'center'} justify={'space-between'}>
+                <InstrumentShortcuts
+                  changeValue={this.changeWallet}
+                  onToggleInstrumentSelection={
+                    this.props.onToggleInstrumentSelection
+                  }
+                  shortcutActiveIndex={this.state.activeShortcut}
+                  shortcuts={this.props.watchlistNames}
+                  showInstrumentSelection={this.props.showInstrumentSelection}
+                />
+                <InstrumentSearch
+                  inputValue={this.state.searchValue}
+                  change={this.changeValue}
+                />
+              </SearchWrap>
+            </MediaQuery>
             <InstrumentList
               baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}
