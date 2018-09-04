@@ -2,12 +2,19 @@ import {ClickOutside} from '@lykkex/react-components';
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
 import CustomSelect from '../Select/CustomSelect';
-import {InstrumentShortcutSelectionProps} from './index';
 import {
   ShortcutSelection,
   ShortcutSelectionWrapper,
   ShortcutTruncatedText
 } from './styles';
+
+interface InstrumentShortcutSelectionProps {
+  toggleShortcuts: any;
+  onToggleInstrumentSelection: any;
+  selectedShortcut: number;
+  shortcuts: any[];
+  showInstrumentSelection: boolean;
+}
 
 const InstrumentShortcutSelection: React.SFC<
   InstrumentShortcutSelectionProps

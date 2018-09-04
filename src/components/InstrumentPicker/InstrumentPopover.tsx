@@ -2,7 +2,11 @@ import {ClickOutside} from '@lykkex/react-components';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled, {colors} from '../styled';
-import {InstrumentPopoverProps} from './index';
+import {InstrumentPickerActions} from './index';
+
+export interface InstrumentPopoverProps extends InstrumentPickerActions {
+  className?: string;
+}
 
 const InstrumentPopover: React.SFC<InstrumentPopoverProps> = ({
   className,

@@ -284,4 +284,16 @@ describe('uiStore', () => {
       });
     });
   });
+
+  describe('selectedWatchListName', () => {
+    it('should be all assets by default', () => {
+      expect(uiStore.getSelectedWatchListName()).toBe(Watchlists.All);
+    });
+
+    it('shuld change selectedWatchListName', () => {
+      const customWatchListName = 'custom name';
+      uiStore.setSelectedWatchListName(customWatchListName);
+      expect(uiStore.getSelectedWatchListName()).toBe(customWatchListName);
+    });
+  });
 });

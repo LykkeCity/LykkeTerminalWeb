@@ -45,7 +45,6 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
     display: inline-block;
     margin-left: 4%;
     width: 8%;
-    text-align: center;
     cursor: default;
   }
   & > input {
