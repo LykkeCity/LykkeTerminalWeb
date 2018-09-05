@@ -64,23 +64,23 @@ class InstrumentList extends React.Component<
     instruments: InstrumentModel[],
     state?: TableSortState,
     param?: string,
-    sortDirection?: string
+    direction?: string
   ) => {
     const pickerParams = this.props.getInstrumentPickerSortingParameters();
     const sortByParam = param || pickerParams.sortByParam;
-    const direction = sortDirection || pickerParams.direction;
+    const sortDirection = direction || pickerParams.direction;
 
     const instrumentsToBeSorted = instruments.filter(i => !!i[sortByParam]);
-    const shouldNotBeSorted = instruments.filter(i => !i[sortByParam]);
+    const instrumentsWithoutSorting = instruments.filter(i => !i[sortByParam]);
     const stateObjWithSortedInstruments = sortData(
       instrumentsToBeSorted,
       sortByParam,
-      direction,
+      sortDirection,
       state || pickerParams.state
     );
     stateObjWithSortedInstruments.data = [
       ...stateObjWithSortedInstruments.data,
-      ...shouldNotBeSorted
+      ...instrumentsWithoutSorting
     ];
     return stateObjWithSortedInstruments;
   };

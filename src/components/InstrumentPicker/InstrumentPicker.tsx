@@ -27,12 +27,6 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   onToggleInstrumentSelection: any;
   watchlistNames: string[];
   isAuth: boolean;
-  setInstrumentPickerSortingParameters: (
-    sortByParam: string,
-    direction: string,
-    state: any
-  ) => void;
-  getInstrumentPickerSortingParameters: () => any;
   setSelectedWatchListName: (name: string) => void;
   getSelectedWatchListName: () => string;
 }

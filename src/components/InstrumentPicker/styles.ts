@@ -115,7 +115,7 @@ export const InstrumentTableEl = styled(Table)`
     padding: ${rem(10)} ${rem(12)};
 
     &:first-child {
-      padding-left: ${rem(8)};
+      padding-left: 0;
     }
     &:nth-child(2) > div {
       justify-content: flex-start;
