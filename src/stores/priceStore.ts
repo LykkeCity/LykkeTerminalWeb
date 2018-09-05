@@ -9,6 +9,7 @@ import messages from '../constants/notificationMessages';
 import {levels} from '../models';
 import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
+import {DocumentService} from '../services/documentService';
 
 const toUtc = (date: Date) => {
   const y = date.getUTCFullYear();
@@ -29,7 +30,7 @@ class PriceStore extends BaseStore {
 
   @computed
   get dailyChange() {
-    return (this.lastTradePrice - this.dailyOpen) / this.dailyOpen * 100;
+    return ((this.lastTradePrice - this.dailyOpen) / this.dailyOpen) * 100;
   }
 
   @computed
@@ -59,6 +60,7 @@ class PriceStore extends BaseStore {
               close,
               undefined
             );
+            DocumentService.updateDocumentTitle(this.selectedInstrument!);
           });
         }
       })
@@ -102,6 +104,7 @@ class PriceStore extends BaseStore {
             this.rootStore.referenceStore.getInstrumentById
           )
         );
+        DocumentService.updateDocumentTitle(this.selectedInstrument!);
       });
     }
   };
@@ -128,6 +131,7 @@ class PriceStore extends BaseStore {
       this.dailyLow = low;
       this.lastTradePrice = close;
       this.dailyVolume = volume;
+      DocumentService.updateDocumentTitle(this.selectedInstrument!);
     }
   };
 

@@ -5,6 +5,7 @@ const colors = {
   defaultText: 'black',
   linkText: 'black',
   amountText: 'black',
+  marketAmountText: 'red',
   choosableItemText: 'black',
   inputText: 'black',
   activeItemText: 'black',

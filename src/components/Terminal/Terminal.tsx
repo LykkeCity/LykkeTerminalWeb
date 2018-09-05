@@ -33,7 +33,7 @@ import {Shell, TerminalWrapper} from './styles';
 const layoutStorage = StorageUtils(keys.layout);
 
 const MAX_LEFT_PADDING = 20;
-const MAX_RIGHT_PADDING = 75;
+const MAX_RIGHT_PADDING = 72.5;
 const MIN_PANE_SIZE_PERCENTAGE = 20;
 
 const {
@@ -50,28 +50,28 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
     <ChartTabbedTile tabs={['Price chart', 'Depth chart']} authorize={false} />
   ),
   [TradeListWidget]: (
-    <Tile title="Trade log">
+    <Tile title="Trade log" className="bottom-tile">
       <TradeLog />
     </Tile>
   ),
   [OrderBookWidget]: (
-    <Tile title="Order book">
+    <Tile title="Order book" className="with-padding">
       <OrderBook />
     </Tile>
   ),
   [OrderListWidget]: (
-    <TabbedTile tabs={['Orders', 'Trades']}>
+    <TabbedTile tabs={['Orders', 'Trades']} className="bottom-tile">
       <Orders />
       <Trades />
     </TabbedTile>
   ),
   [OrderWidget]: (
-    <Tile title="Order" authorize={true} className="no-padding">
+    <Tile title="Order" authorize={true}>
       <Order />
     </Tile>
   ),
   [TradingWalletWidget]: (
-    <Tile title="Funds">
+    <Tile title="Funds" className="bottom-tile">
       <Wallet />
     </Tile>
   )
@@ -85,7 +85,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         direction: 'column' as MosaicDirection,
         first: OrderWidget,
         second: TradingWalletWidget,
-        splitPercentage: 70
+        splitPercentage: 75
       },
       second: {
         direction: 'row' as MosaicDirection,
@@ -254,7 +254,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
                 <Modal modals={this.props.rootStore.modalStore.modals} />
               </div>
             ) : null}
-            {this.props.rootStore.sessionStore.sessionNotificationsBlockShown && (
+            {this.props.rootStore.sessionStore
+              .sessionNotificationsBlockShown && (
               <SessionNotificationComponent />
             )}
             <SubHeader history={this.props.history} />

@@ -1,15 +1,12 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import NotificationModel from '../../models/notificationModel';
-import {NotificationListProps} from './index';
 import Notification from './Notification';
+import {StyledNotificationList} from './styles';
 
-const StyledNotificationList = styled.div`
-  position: absolute;
-  right: 15px;
-  top: 30px;
-  z-index: 999;
-`;
+export interface NotificationListProps {
+  notificationLists: NotificationModel[];
+  closeNotification: (notification: NotificationModel) => void;
+}
 
 class NotificationList extends React.Component<NotificationListProps> {
   constructor(props: NotificationListProps) {

@@ -60,6 +60,7 @@ class SessionStore extends BaseStore {
   private sessionConfirmationExpireTimerId: any;
   private qrModal: ModalModel;
   private sessionPollingTimerId: any;
+  private sessionNotificationTimeoutId: any;
 
   constructor(store: RootStore, private readonly api: SessionApi) {
     super(store);
@@ -110,13 +111,13 @@ class SessionStore extends BaseStore {
   };
 
   runSessionNotificationTimeout = () => {
-    const timeoutId = setTimeout(() => {
+    this.sessionNotificationTimeoutId = setTimeout(() => {
       if (this.ttl > SESSION_REMAINS) {
         this.ttl = SESSION_REMAINS;
       }
       this.runSessionRemains();
       this.showSessionNotification();
-      clearTimeout(timeoutId);
+      clearTimeout(this.sessionNotificationTimeoutId);
     }, convertSecondsToMs(this.ttl - SESSION_WARNING_REMAINING));
   };
 
@@ -131,10 +132,10 @@ class SessionStore extends BaseStore {
   };
 
   startSessionListener = async () => {
-    await this.api.createSession(this.sessionDuration);
     this.sessionConfirmationExpire();
-
     this.showQR();
+
+    await this.api.createSession(this.sessionDuration);
 
     const polling = () => {
       this.sessionPollingTimerId = setTimeout(async () => {
@@ -220,6 +221,7 @@ class SessionStore extends BaseStore {
     this.runSessionRemains();
     await this.api.extendSession(this.sessionDuration);
     this.stopSessionRemains();
+    this.stopSessionNotificationTimeout();
     this.runSessionNotificationTimeout();
   };
 
@@ -288,6 +290,11 @@ class SessionStore extends BaseStore {
   stopSessionPolling = () => {
     clearTimeout(this.sessionPollingTimerId);
     this.sessionPollingTimerId = null;
+  };
+
+  stopSessionNotificationTimeout = () => {
+    clearTimeout(this.sessionNotificationTimeoutId);
+    this.sessionNotificationTimeoutId = null;
   };
 }
 

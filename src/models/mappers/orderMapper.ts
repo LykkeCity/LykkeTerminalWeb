@@ -12,10 +12,10 @@ export const toOrder = (dto: any, side: Side = Side.Buy) =>
     connectedLimitOrders: []
   });
 
-const getValueForAvailableVolume = (order: Order) => order.price * order.volume;
-
-const getAvailableVolume = (amount: number, order: Order) =>
-  amount * order.volume / order.price;
+const getOrderExpendedAmount = (amount: number, order: Order) => {
+  const orderAmount = order.volume * order.price;
+  return amount >= orderAmount ? orderAmount : amount;
+};
 
 export const mapToEffectivePrice = (volume: number, orders: Order[]) => {
   let effectivePrice: number = 0;
@@ -43,22 +43,29 @@ export const mapToEffectivePrice = (volume: number, orders: Order[]) => {
 };
 
 export const getMaxAvailableVolume = (amount: number, orders: Order[]) => {
-  let expendedPrice: number = 0;
+  let expendedAmount: number = 0;
+  let totalOrdersAmount: number = 0;
+  let totalOrdersVolume: number = 0;
 
-  return orders.reduce((maxVolume, order) => {
-    if (expendedPrice >= amount) {
+  const ordersVolume = orders.reduce((maxVolume, order) => {
+    totalOrdersAmount += order.price * order.volume;
+    totalOrdersVolume += order.volume;
+
+    if (expendedAmount >= amount) {
       return maxVolume;
     }
 
-    const amountLeft = amount - expendedPrice;
-    const valueForAvailableVolume = getValueForAvailableVolume(order);
-    const isValueAvailable = valueForAvailableVolume < amountLeft;
-    if (isValueAvailable) {
-      expendedPrice += valueForAvailableVolume;
-      return maxVolume + order.volume;
-    }
+    const amountLeft = amount - expendedAmount;
+    const orderExpendedAmount = getOrderExpendedAmount(amountLeft, order);
+    expendedAmount += orderExpendedAmount;
 
-    expendedPrice = amount;
-    return maxVolume + getAvailableVolume(amountLeft, order);
+    return maxVolume + orderExpendedAmount / order.price;
   }, 0);
+
+  if (ordersVolume && expendedAmount < amount) {
+    const averagePrice = totalOrdersAmount / totalOrdersVolume;
+    return ordersVolume + (amount - expendedAmount) / averagePrice;
+  }
+
+  return ordersVolume;
 };

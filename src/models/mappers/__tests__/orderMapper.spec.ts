@@ -93,7 +93,7 @@ describe('orderMapper', () => {
 
   describe('method getMaxAvailableVolume', () => {
     it('should return 0 is no orders available', () => {
-      const maxVolume = getMaxAvailableVolume(10000, []);
+      const maxVolume = getMaxAvailableVolume(4000, []);
       expect(maxVolume).toBe(0);
     });
 
@@ -105,13 +105,13 @@ describe('orderMapper', () => {
       ];
 
       let maxVolume = getMaxAvailableVolume(4000, orders);
-      expect(maxVolume).toBe(0.25);
+      expect(maxVolume).toBe(0.5);
 
       maxVolume = getMaxAvailableVolume(10000, orders);
       expect(maxVolume).toBe(1.1);
 
       maxVolume = getMaxAvailableVolume(30000, orders);
-      expect(maxVolume).toBe(2);
+      expect(maxVolume).toBe(3);
     });
 
     it('should return max available volume for passed price with real orders', () => {
@@ -131,19 +131,19 @@ describe('orderMapper', () => {
       const convertVolumeToString = (volume: number) => volume.toFixed(8);
 
       let maxVolume = getMaxAvailableVolume(98828.14, orders);
-      expect(convertVolumeToString(maxVolume)).toBe('7.28421153');
+      expect(convertVolumeToString(maxVolume)).toBe('12.09680740');
 
       maxVolume = getMaxAvailableVolume(2500, orders);
-      expect(convertVolumeToString(maxVolume)).toBe('0.38557527');
+      expect(convertVolumeToString(maxVolume)).toBe('0.41345554');
 
       maxVolume = getMaxAvailableVolume(1000, orders);
-      expect(convertVolumeToString(maxVolume)).toBe('0.06442669');
+      expect(convertVolumeToString(maxVolume)).toBe('0.16541353');
 
       maxVolume = getMaxAvailableVolume(200, orders);
-      expect(convertVolumeToString(maxVolume)).toBe('0.00165447');
+      expect(convertVolumeToString(maxVolume)).toBe('0.03308941');
 
       maxVolume = getMaxAvailableVolume(10, orders);
-      expect(convertVolumeToString(maxVolume)).toBe('0.00008272');
+      expect(convertVolumeToString(maxVolume)).toBe('0.00165447');
     });
   });
 });

@@ -260,7 +260,7 @@ describe('uiOrder store', () => {
     });
 
     it('should return calculated percent value of balance for market and buy side', () => {
-      const convertedBalance = 5228.46;
+      const convertedBalance = 5.228465;
       const balance = 52284.65;
       const percents = 50;
       uiOrderStore.rootStore.orderBookStore.rawAsks = [

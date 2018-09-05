@@ -5,6 +5,7 @@ const colors = {
   defaultText: '#f5f6f7',
   linkText: '#0388ef',
   amountText: '#8c94a0',
+  marketAmountText: '#ff6161',
   choosableItemText: '#f5f6f7',
   inputText: '#f5f6f7',
   activeItemText: 'rgb(245, 246, 247)',

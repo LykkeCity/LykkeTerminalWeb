@@ -1,7 +1,7 @@
 @import '~react-mosaic-component/react-mosaic-component.css';
 
 .mosaic {
-  height: calc(100% - 87px);
+  height: calc(100% - 70px);
 }
 .mosaic-root {
   top: 0;

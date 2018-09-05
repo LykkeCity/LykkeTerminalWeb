@@ -6,6 +6,7 @@ import {TileProps} from './Tile';
 
 interface TabbedTileProps extends TileProps {
   tabs: string[];
+  className?: string;
 }
 
 class TabbedTile extends React.Component<TabbedTileProps> {
@@ -16,10 +17,10 @@ class TabbedTile extends React.Component<TabbedTileProps> {
   };
 
   render() {
-    const {tabs = [], children} = this.props;
+    const {tabs = [], className, children} = this.props;
     return (
       <React.Fragment>
-        <TileHeader>
+        <TileHeader className={className}>
           {tabs.map((tab, idx) => (
             <TileTab
               key={tab}
@@ -30,7 +31,7 @@ class TabbedTile extends React.Component<TabbedTileProps> {
             </TileTab>
           ))}
         </TileHeader>
-        <TileContent>
+        <TileContent className={className}>
           {React.Children.map(
             children,
             (child, idx) => (equals(idx, this.selectedIndex) ? child : null)
