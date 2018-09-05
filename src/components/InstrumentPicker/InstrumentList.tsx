@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import media from '../../constants/media';
 import {SortDirection} from '../../models';
 import {AnalyticsService} from '../../services/analyticsService';
 import {
@@ -85,7 +86,7 @@ class InstrumentList extends React.Component<
   };
 
   render() {
-    const headers: HeaderProps[] = [
+    const desktopHeaders: HeaderProps[] = [
       {
         sortDisabled: checkDataForSorting(this.state.data, 'displayName'),
         key: 'displayName',
@@ -113,6 +114,41 @@ class InstrumentList extends React.Component<
         value: 'Volume'
       }
     ];
+
+    const mobileHeaders: HeaderProps[] = [
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'displayName'),
+        key: 'displayName',
+        value: 'Asset pair'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'price'),
+        key: 'price',
+        value: 'Price'
+      },
+      {
+        sortDisabled: checkDataForSorting(this.state.data, 'change24h'),
+        className: 'right-align',
+        key: 'change24h',
+        value: '24h Change'
+      },
+      {
+        sortDisabled: checkDataForSorting(
+          this.state.data,
+          this.props.isAuth ? 'volumeInBase' : 'volume'
+        ),
+        className: 'right-align',
+        key: this.props.isAuth ? 'volumeInBase' : 'volume',
+        value: 'Volume'
+      }
+    ];
+
+    let headers;
+    if (window.matchMedia(media.desktop).matches) {
+      headers = desktopHeaders;
+    } else {
+      headers = mobileHeaders;
+    }
 
     return (
       <React.Fragment>

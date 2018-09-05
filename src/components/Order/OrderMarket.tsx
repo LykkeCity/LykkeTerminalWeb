@@ -1,6 +1,8 @@
 import {Form, FormikProps, withFormik} from 'formik';
 import * as React from 'react';
+import MediaQuery from 'react-responsive';
 import indicativeTotalHint from '../../constants/indicativeTotalHint';
+import media from '../../constants/media';
 import {OrderInputs, Side} from '../../models';
 import {capitalize} from '../../utils';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
@@ -160,9 +162,11 @@ class OrderMarket extends React.Component<
             )} ${!this.isInverted ? baseAssetName : quoteAssetName}`}
           />
         </MarketConfirmButton>
-        <Reset justify={'center'}>
-          <span onClick={this.reset}>Reset and clear</span>
-        </Reset>
+        <MediaQuery query={media.desktop}>
+          <Reset justify={'center'}>
+            <span onClick={this.reset}>Reset and clear</span>
+          </Reset>
+        </MediaQuery>
       </div>
     );
   }

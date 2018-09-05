@@ -1,5 +1,6 @@
 import {HBar} from '@lykkex/react-components';
 import * as React from 'react';
+import media from '../../constants/media';
 import {OrderModel, SortDirection} from '../../models';
 import {EditOrder} from '../Modal';
 import {
@@ -143,7 +144,7 @@ class Blotter extends React.Component<OrdersProps, OrdersState> {
     ];
 
     let headers;
-    if (window.matchMedia('(min-width: 1224px)').matches) {
+    if (window.matchMedia(media.desktop).matches) {
       headers = desktopHeaders;
     } else {
       headers = mobileHeaders;

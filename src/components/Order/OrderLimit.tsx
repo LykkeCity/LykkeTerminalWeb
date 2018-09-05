@@ -1,5 +1,7 @@
 import {Form, withFormik} from 'formik';
 import * as React from 'react';
+import MediaQuery from 'react-responsive';
+import media from '../../constants/media';
 import {OrderInputs} from '../../models';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
@@ -114,12 +116,15 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
           />
         ))}
       </Flex>
-      <Total>
-        <OrderTitle>Total</OrderTitle>
-        <Amount>
-          {amount} {quoteAssetName}
-        </Amount>
-      </Total>
+
+      <MediaQuery query={media.desktop}>
+        <Total>
+          <OrderTitle>Total</OrderTitle>
+          <Amount>
+            {amount} {quoteAssetName}
+          </Amount>
+        </Total>
+      </MediaQuery>
 
       <StyledOrderButton>
         <OrderButton
@@ -129,11 +134,13 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
         />
       </StyledOrderButton>
 
-      {onReset && (
-        <Reset justify={'center'}>
-          <span onClick={onReset}>Reset and clear</span>
-        </Reset>
-      )}
+      <MediaQuery query={media.desktop}>
+        {onReset && (
+          <Reset justify={'center'}>
+            <span onClick={onReset}>Reset and clear</span>
+          </Reset>
+        )}
+      </MediaQuery>
     </Form>
   );
 };

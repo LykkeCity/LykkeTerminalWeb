@@ -3,6 +3,7 @@ import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import MediaQuery from 'react-responsive';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import media from '../../constants/media';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
@@ -127,7 +128,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
       direction: 'column' as MosaicDirection,
       first: MobileTopWidget,
       second: MobileBottomWidget,
-      splitPercentage: 70
+      splitPercentage: 65
     }
   };
 
@@ -286,7 +287,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
             <SessionNotificationComponent />
           )}
           <SubHeader history={this.props.history} />
-          <MediaQuery query="(min-device-width: 1224px)">
+          <MediaQuery query={media.desktop}>
             <Mosaic
               renderTile={this.handleRenderTile}
               onChange={this.handleChange}
@@ -294,7 +295,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
               initialValue={this.desktopState.initialValue}
             />
           </MediaQuery>
-          <MediaQuery query="(max-device-width: 1224px)">
+          <MediaQuery query={media.mobile}>
             <Mosaic
               renderTile={this.handleRenderTile}
               onChange={this.handleChange}

@@ -1,6 +1,7 @@
 import {ClickOutside} from '@lykkex/react-components';
 import {rem} from 'polished';
 import * as React from 'react';
+import media from '../../constants/media';
 import styled, {colors} from '../styled';
 import {InstrumentPopoverProps} from './index';
 
@@ -25,7 +26,7 @@ const StyledInstrumentPopover = styled(InstrumentPopover)`
   padding: ${rem(8)} ${rem(16)};
   z-index: 999;
   transition: all 0.3s ease;
-  width: ${window.matchMedia('(min-width: 1224px)').matches
+  width: ${window.matchMedia(media.desktop).matches
     ? rem(700)
     : 'calc(100vw - 20px)'};
   height: 360px;

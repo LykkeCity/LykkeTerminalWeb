@@ -1,5 +1,6 @@
 import {HBar} from '@lykkex/react-components';
 import * as React from 'react';
+import media from '../../constants/media';
 import {
   SortDirection,
   TradeFilter as TradeFilterModel,
@@ -125,7 +126,7 @@ class Trades extends React.Component<TradesProps, TableSortState> {
     ];
 
     let headers;
-    if (window.matchMedia('(min-width: 1224px)').matches) {
+    if (window.matchMedia(media.desktop).matches) {
       headers = desktopHeaders;
     } else {
       headers = mobileHeaders;
