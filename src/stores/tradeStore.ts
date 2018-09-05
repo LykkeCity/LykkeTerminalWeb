@@ -4,14 +4,18 @@ import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
+import {keys} from '../models';
 import {TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {AnalyticsService} from '../services/analyticsService';
 import {nextSkip} from '../utils';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
 const MAX_TRADE_COUNT = 100;
+const tradesStorage = StorageUtils(keys.trades);
+const publicTradesStorage = StorageUtils(keys.publicTrades);
 
 const sortByDate = compose<TradeModel[], TradeModel[], TradeModel[]>(
   reverse,
@@ -82,6 +86,7 @@ class TradeStore extends BaseStore {
     this.trades = this.trades.concat(
       trades.filter(trade => this.isTradeVisible(trade))
     );
+    tradesStorage.set(JSON.stringify(this.trades));
   };
 
   @action
@@ -91,6 +96,7 @@ class TradeStore extends BaseStore {
     );
 
     this.publicTrades = this.filterTrades(updatedTrades);
+    publicTradesStorage.set(JSON.stringify(this.publicTrades));
   };
 
   @action
@@ -104,19 +110,26 @@ class TradeStore extends BaseStore {
     if (this.selectedInstrument) {
       this.hasPendingItems = true;
 
-      const trades = await this.api.fetchTrades(
-        this.getWalletId(),
-        this.instrumentIdByFilter,
-        this.skip,
-        TradeQuantity.Take
-      );
-      this.hasPendingItems = false;
-      runInAction(() => {
-        this.addTrades(
-          map.aggregateTradesByTimestamp([...trades], this.instruments)
+      try {
+        const trades = await this.api.fetchTrades(
+          this.getWalletId(),
+          this.instrumentIdByFilter,
+          this.skip,
+          TradeQuantity.Take,
+          () => this.fetchTrades
         );
-        this.shouldFetchMore = trades.length >= TradeQuantity.Take;
-      });
+        this.hasPendingItems = false;
+        runInAction(() => {
+          this.addTrades(
+            map.aggregateTradesByTimestamp([...trades], this.instruments)
+          );
+          this.shouldFetchMore = trades.length >= TradeQuantity.Take;
+        });
+      } catch {
+        if (this.rootStore.apiStore.getUseCacheData()) {
+          this.trades = JSON.parse(tradesStorage.get()!);
+        }
+      }
     }
   };
 
@@ -128,14 +141,21 @@ class TradeStore extends BaseStore {
 
   fetchPublicTrades = async () => {
     if (this.selectedInstrument) {
-      const resp = await this.api.fetchPublicTrades(
-        this.selectedInstrument.id,
-        TradeQuantity.Skip,
-        TradeQuantity.Take
-      );
-      runInAction(() => {
-        this.addPublicTrades(resp.map(map.fromRestToPublicTrade));
-      });
+      try {
+        const resp = await this.api.fetchPublicTrades(
+          this.selectedInstrument.id,
+          TradeQuantity.Skip,
+          TradeQuantity.Take,
+          this.fetchPublicTrades
+        );
+        runInAction(() => {
+          this.addPublicTrades(resp.map(map.fromRestToPublicTrade));
+        });
+      } catch {
+        if (this.rootStore.apiStore.getUseCacheData()) {
+          this.publicTrades = JSON.parse(publicTradesStorage.get()!);
+        }
+      }
     }
   };
 

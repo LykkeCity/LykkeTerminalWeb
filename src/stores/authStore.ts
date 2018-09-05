@@ -10,6 +10,7 @@ const tokenStorage = StorageUtils(keys.token);
 const stateStorage = StorageUtils(keys.state);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 const kycStatusStorage = StorageUtils(keys.isKycPassed);
+const userInfoStorage = StorageUtils(keys.userInfo);
 
 class AuthStore extends BaseStore {
   @computed
@@ -40,7 +41,9 @@ class AuthStore extends BaseStore {
 
   fetchBearerToken = (email: string, password: string) =>
     this.api
-      .fetchBearerToken('/client/auth', email, password)
+      .fetchBearerToken('/client/auth', email, password, () =>
+        this.fetchBearerToken(email, password)
+      )
       .then((resp: any) => {
         this.token = resp.AccessToken;
         tokenStorage.set(this.token);
@@ -50,7 +53,9 @@ class AuthStore extends BaseStore {
 
   fetchToken = async (accessToken: string, state: string) => {
     if (state === stateStorage.get()) {
-      const {token, authId} = await this.api.fetchToken(accessToken);
+      const {token, authId} = await this.api.fetchToken(accessToken, () =>
+        this.fetchToken(accessToken, state)
+      );
       sessionTokenStorage.set(authId);
       this.token = token;
       tokenStorage.set(token);
@@ -62,13 +67,22 @@ class AuthStore extends BaseStore {
   };
 
   fetchUserInfo = async () => {
-    const userInfo = await this.api.fetchUserInfo();
-    const {KycStatus} = userInfo;
+    try {
+      const userInfo = await this.api.fetchUserInfo(this.fetchUserInfo);
+      const {KycStatus} = userInfo;
 
-    this.userInfo = new UserInfoModel(userInfo);
-    this.kycStatus = KycStatus;
-    kycStatusStorage.set(KycStatus);
-    this.rootStore.uiStore.setUserInfo(userInfo);
+      this.userInfo = new UserInfoModel(userInfo);
+      userInfoStorage.set(JSON.stringify(userInfo));
+      this.kycStatus = KycStatus;
+      kycStatusStorage.set(KycStatus);
+      this.rootStore.uiStore.setUserInfo(userInfo);
+    } catch {
+      if (this.rootStore.apiStore.getUseCacheData()) {
+        const userInfo = JSON.parse(userInfoStorage.get()!);
+        this.userInfo = new UserInfoModel(userInfo);
+        this.rootStore.uiStore.setUserInfo(userInfo);
+      }
+    }
   };
 
   catchUnauthorized = () => {

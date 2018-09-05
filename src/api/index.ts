@@ -9,6 +9,6 @@ export {default as HistoryApi} from './historyApi';
 export {default as RestApi} from './restApi';
 export {default as AuthApi} from './authApi';
 export {default as ChartDataFeed} from './chartDataFeed';
-export {default as PriceApi} from './priceApi';
+export {RestPriceApi as PriceApi} from './priceApi';
 export {default as ChartApi} from './chartApi';
 export {default as SessionApi} from './sessionApi';

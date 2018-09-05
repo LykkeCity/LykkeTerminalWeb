@@ -1,3 +1,4 @@
+import mockWatchlistApi from '../api/mocks/watchlistApi';
 import {RestApi} from './restApi';
 
 export interface WatchlistApi {
@@ -5,7 +6,12 @@ export interface WatchlistApi {
 }
 
 export class RestWatchlistApi extends RestApi implements WatchlistApi {
-  fetchAll = () => this.get('/WatchLists');
+  fetchAll = (onRefetch?: any) =>
+    this.extendForOffline(
+      () => this.get('/WatchLists'),
+      () => mockWatchlistApi.fetchAll(),
+      () => onRefetch()
+    );
 }
 
 export default WatchlistApi;

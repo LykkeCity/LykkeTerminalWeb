@@ -19,6 +19,7 @@ import {PriceType} from '../models/index';
 import {StorageUtils} from '../utils/index';
 import {workerMock} from '../workers/worker';
 import {
+  ApiStore,
   AuthStore,
   BalanceListStore,
   BaseStore,
@@ -65,6 +66,7 @@ class RootStore {
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
   readonly socketStore: SocketStore;
+  readonly apiStore: ApiStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -96,9 +98,10 @@ class RootStore {
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
       this.sessionStore = new SessionStore(this, new SessionApi(this));
-      this.priceStore = new PriceStore(this, new PriceApi());
+      this.priceStore = new PriceStore(this, new PriceApi(this));
       this.marketStore = new MarketStore(this);
       this.socketStore = new SocketStore(this);
+      this.apiStore = new ApiStore(this);
     }
   }
 
@@ -155,7 +158,7 @@ class RootStore {
         this.orderListStore.fetchAll();
         this.referenceStore.updateInstruments();
         this.balanceListStore.updateWalletBalances();
-      }, reject => Promise.resolve)
+      }, (reject: any) => Promise.resolve)
       .then(async () => {
         await this.socketStore.connect(
           this.wampUrl,
@@ -182,7 +185,7 @@ class RootStore {
         this.balanceListStore.subscribe();
         return Promise.resolve();
       })
-      .catch(e => {
+      .catch(() => {
         this.startPublicMode(defaultInstrument);
       });
   };

@@ -19,3 +19,4 @@ export {default as SessionStore} from './sessionStore';
 export {default as PriceStore} from './priceStore';
 export {default as MarketStore} from './marketStore';
 export {default as SocketStore} from './socketStore';
+export {default as ApiStore} from './apiStore';

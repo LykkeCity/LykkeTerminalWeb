@@ -10,7 +10,6 @@ describe('<BaseAssetSelection>', () => {
   let referenceStore: ReferenceStore;
   const api: any = {
     fetchAll: jest.fn(),
-    fetchAssetCategories: jest.fn(),
     fetchAssetInstruments: jest.fn(),
     fetchBaseAsset: jest.fn()
   };

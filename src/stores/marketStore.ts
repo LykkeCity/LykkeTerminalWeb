@@ -6,8 +6,8 @@ class MarketStore extends BaseStore {
   private result: any = {};
   private graph: any = {};
 
-  init = (insturments: InstrumentModel[], assets: AssetModel[]) => {
-    const {g, d, u} = this.initData(insturments);
+  init = (instruments: InstrumentModel[], assets: AssetModel[]) => {
+    const {g, d, u} = this.initData(instruments);
     for (const asset of assets) {
       this.result[asset.id] = buildDijkstra(asset.id, g, {...d}, {...u});
     }

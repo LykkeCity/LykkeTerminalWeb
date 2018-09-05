@@ -31,7 +31,7 @@ class ChartStore extends BaseStore {
     this.api.save({Data: JSON.stringify(settings)});
   };
 
-  loadSettings = () => this.api.load();
+  loadSettings = () => this.api.load(this.loadSettings);
 
   subscribeToCandlesWithResolutions = (s: IWampSubscriptionItem) =>
     this.subscriptions.add(s);
@@ -53,7 +53,7 @@ class ChartStore extends BaseStore {
     return new ChartDataFeed(
       ChartStore.config,
       this.rootStore.uiStore.selectedInstrument!,
-      new PriceApi(this),
+      new PriceApi(this.rootStore),
       this.rootStore.socketStore,
       this.subscribeToCandlesWithResolutions
     );

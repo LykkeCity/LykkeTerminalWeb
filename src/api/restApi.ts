@@ -10,6 +10,7 @@ const URLSearchParams = require('url-search-params');
 const tokenStorage = StorageUtils(keys.token);
 
 const GATEWAY_TIMEOUT = 504;
+const REFETCH_TIMEOUT = 60000;
 
 export class RestApi {
   constructor(protected rootStore?: RootStore | any) {}
@@ -90,6 +91,28 @@ export class RestApi {
         .delete()
         .unauthorized((error: WretcherError) => this.catchUnauthorized(error))
     ).res();
+
+  protected extendForOffline = (
+    callback: any,
+    fallback: any,
+    onRefetch?: any
+  ) => {
+    if (!this.rootStore) {
+      return callback();
+    }
+
+    if (this.rootStore.apiStore.getUseMockData()) {
+      return fallback();
+    }
+
+    if (this.rootStore.apiStore.getUseCacheData()) {
+      return callback().catch(() => {
+        setTimeout(() => onRefetch(), REFETCH_TIMEOUT);
+      });
+    }
+
+    return callback();
+  };
 
   private readonly catchUnauthorized = (error: WretcherError) => {
     this.rootStore!.authStore.catchUnauthorized();

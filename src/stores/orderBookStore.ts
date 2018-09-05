@@ -197,7 +197,7 @@ class OrderBookStore extends BaseStore {
     if (selectedInstrument) {
       this.hasPendingItems = true;
       const orders = await this.api
-        .fetchAll(selectedInstrument.id)
+        .fetchAll(selectedInstrument.id, this.fetchAll)
         .catch(() => {
           this.hasPendingItems = false;
         });
