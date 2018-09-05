@@ -91,6 +91,18 @@ export class RestApi {
         .unauthorized((error: WretcherError) => this.catchUnauthorized(error))
     ).res();
 
+  protected extendWithMocks = (callback: any, fallback: any) => {
+    if (!this.rootStore) {
+      return callback();
+    }
+
+    if (this.rootStore.apiStore.getUseMockData()) {
+      return fallback();
+    }
+
+    return callback();
+  };
+
   private readonly catchUnauthorized = (error: WretcherError) => {
     this.rootStore!.authStore.catchUnauthorized();
     throw error;

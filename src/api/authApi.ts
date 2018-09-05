@@ -1,3 +1,4 @@
+import mockAuthApi from '../api/mocks/authApi';
 import {RestApi} from './index';
 import {ApiResponse} from './types';
 
@@ -7,32 +8,48 @@ export interface AuthApi {
 
 export class RestAuthApi extends RestApi implements AuthApi {
   fetchBearerToken = (path: string, email: string, password: string) =>
-    this.post(path, {
-      ClientInfo: '',
-      Email: email,
-      PartnerId: '',
-      Password: password
-    });
+    this.extendWithMocks(
+      () =>
+        this.post(path, {
+          ClientInfo: '',
+          Email: email,
+          PartnerId: '',
+          Password: password
+        }),
+      () => mockAuthApi.fetchBearerToken(path, email, password)
+    );
 
   fetchToken = (accessToken: string) =>
-    this.wretcher()
-      .url(process.env.REACT_APP_AUTH_URL!, true)
-      .headers({
-        Authorization: `Bearer ${accessToken}`,
-        application_id: process.env.REACT_APP_ID
-      })
-      .url('/getlykkewallettoken')
-      .get()
-      .json();
+    this.extendWithMocks(
+      () =>
+        this.wretcher()
+          .url(process.env.REACT_APP_AUTH_URL!, true)
+          .headers({
+            Authorization: `Bearer ${accessToken}`,
+            application_id: process.env.REACT_APP_ID
+          })
+          .url('/getlykkewallettoken')
+          .get()
+          .json(),
+      () => mockAuthApi.fetchToken()
+    );
 
-  fetchUserInfo = () => this.get('/client/userinfo');
+  fetchUserInfo = () =>
+    this.extendWithMocks(
+      () => this.get('/client/userinfo'),
+      () => mockAuthApi.fetchUserInfo()
+    );
 
   signout = () =>
-    this.wretcher()
-      .url(process.env.REACT_APP_AUTH_URL!, true)
-      .url('/signout')
-      .post()
-      .res();
+    this.extendWithMocks(
+      () =>
+        this.wretcher()
+          .url(process.env.REACT_APP_AUTH_URL!, true)
+          .url('/signout')
+          .post()
+          .res(),
+      () => mockAuthApi.signout()
+    );
 }
 
 export default RestAuthApi;

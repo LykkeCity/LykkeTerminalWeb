@@ -6,8 +6,10 @@ import autobahn, {
   Subscription
 } from 'autobahn';
 import {keys} from '../models';
+import {RootStore} from '../stores';
 import {StorageUtils} from '../utils/index';
 import {Backoff, createBackoff} from './backoffApi';
+import {FakeConnection} from './mocks/fakeAutobahn';
 
 const tokenStorage = StorageUtils(keys.token);
 
@@ -19,12 +21,18 @@ class ConnectionWrapper extends Connection {
 export class WampApi {
   isThrottled: boolean = false;
 
+  private rootStore: RootStore;
+
   private session: Session;
   private connection: ConnectionWrapper;
   private backoff: Backoff;
 
   private listeners: Map<string, () => void> = new Map();
   private subscriptions: Map<string, Subscription> = new Map();
+
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
+  }
 
   connect = (url: string, realm: string, authId?: string) => {
     let options: IConnectionOptions = {url, realm, max_retries: -1};
@@ -100,7 +108,11 @@ export class WampApi {
 
       this.backoff = createBackoff(() => this.onBackoffReady());
 
-      this.connection = new autobahn.Connection(options) as ConnectionWrapper;
+      if (this.rootStore.apiStore.getUseMockData()) {
+        this.connection = new FakeConnection(options) as ConnectionWrapper;
+      } else {
+        this.connection = new autobahn.Connection(options) as ConnectionWrapper;
+      }
 
       this.connection.onopen = (session: Session) => {
         this.isConnectionOpened = true;

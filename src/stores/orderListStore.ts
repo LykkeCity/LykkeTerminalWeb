@@ -1,10 +1,13 @@
 import {action, computed, observable} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {OrderApi} from '../api/index';
-import {InstrumentModel, OrderModel} from '../models';
+import {InstrumentModel, keys, OrderModel} from '../models';
 import * as mappers from '../models/mappers';
 import OrdersDefaultSelection from '../models/ordersDefaultSelection';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
+
+const ordersStorage = StorageUtils(keys.orders);
 
 // tslint:disable:no-bitwise
 class OrderListStore extends BaseStore {
@@ -64,11 +67,18 @@ class OrderListStore extends BaseStore {
 
   fetchAll = async () => {
     this.hasPendingOrders = true;
-    const dto = await this.api.fetchAll();
-    this.orders = mappers.filterByInstrumentsAndMapToLimitOrder(
-      this.instruments,
-      dto
-    );
+    try {
+      const dto = await this.api.fetchAll();
+      this.orders = mappers.filterByInstrumentsAndMapToLimitOrder(
+        this.instruments,
+        dto
+      );
+      ordersStorage.set(JSON.stringify(this.orders));
+    } catch {
+      if (this.rootStore.apiStore.getUseCacheData()) {
+        this.orders = JSON.parse(ordersStorage.get()!);
+      }
+    }
     this.hasPendingOrders = false;
   };
 
@@ -82,6 +92,7 @@ class OrderListStore extends BaseStore {
     }
     const mappedOrder = mappers.mapToLimitOrder(addedOrder);
     this.orders = [...this.orders, mappedOrder];
+    ordersStorage.set(JSON.stringify(this.orders));
     return mappedOrder;
   };
 
@@ -94,6 +105,7 @@ class OrderListStore extends BaseStore {
       return null;
     }
     const deletedOrders = this.orders.splice(orderIndex, 1);
+    ordersStorage.set(JSON.stringify(this.orders));
     return deletedOrders[0];
   };
 
@@ -104,6 +116,8 @@ class OrderListStore extends BaseStore {
     } else {
       this.orders = [];
     }
+
+    ordersStorage.set(JSON.stringify(this.orders));
   };
 
   @action
@@ -115,6 +129,8 @@ class OrderListStore extends BaseStore {
     }
     order!.remainingVolume = dto.RemainingVolume;
     order!.volume = dto.Volume;
+
+    ordersStorage.set(JSON.stringify(this.orders));
   };
 
   filterOrders = (orders: OrderModel[], instrument?: InstrumentModel) => {

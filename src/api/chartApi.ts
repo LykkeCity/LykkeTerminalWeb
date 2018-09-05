@@ -1,3 +1,4 @@
+import mockChartApi from '../api/mocks/chartApi';
 import {keys} from '../models';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
@@ -10,16 +11,22 @@ export interface ChartApi {
 
 export class RestChartApi extends RestApi implements ChartApi {
   save = (body: any) =>
-    this.fireAndForget(`/dictionary/${keys.chartKey}`, body);
-  load = () => this.get(`/dictionary/${keys.chartKey}`);
-  reset = () => this.delete(`/dictionary/${keys.chartKey}`);
-}
+    this.extendWithMocks(
+      () => this.fireAndForget(`/dictionary/${keys.chartKey}`, body),
+      () => mockChartApi.save(body)
+    );
 
-// tslint:disable-next-line:max-classes-per-file
-export class MockChartApi implements ChartApi {
-  load = () => Promise.resolve([]);
-  save = (body: any) => Promise.resolve([]);
-  reset = () => Promise.resolve();
+  load = () =>
+    this.extendWithMocks(
+      () => this.get(`/dictionary/${keys.chartKey}`),
+      () => mockChartApi.load()
+    );
+
+  reset = () =>
+    this.extendWithMocks(
+      () => this.delete(`/dictionary/${keys.chartKey}`),
+      () => mockChartApi.reset()
+    );
 }
 
 export default RestChartApi;

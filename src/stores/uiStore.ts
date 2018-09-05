@@ -71,7 +71,6 @@ class UiStore extends BaseStore {
             await fetchAll(); // should be waited for loading bids and asks
           } catch (error) {
             logger.logException(error);
-            return;
           }
 
           subscribe(this.getWs());

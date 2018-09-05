@@ -1,3 +1,4 @@
+import mockTradeApi from '../api/mocks/tradeApi';
 import {OperationType} from '../models/index';
 import {HistoryApi} from './index';
 import {RestApi} from './restApi';
@@ -29,15 +30,22 @@ export class RestTradeApi extends RestApi implements TradeApi {
     skip: number,
     take: number
   ) =>
-    HistoryApi.fetchHistory(walletId, {
-      assetPairId: instrumentId,
-      skip,
-      take,
-      operationType: [OperationType.Trade, OperationType.LimitTrade]
-    });
+    this.extendWithMocks(
+      () =>
+        HistoryApi.fetchHistory(walletId, {
+          assetPairId: instrumentId,
+          skip,
+          take,
+          operationType: [OperationType.Trade, OperationType.LimitTrade]
+        }),
+      () => mockTradeApi.fetchTrades(walletId, instrumentId, skip, take)
+    );
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>
-    HistoryApi.fetchTradesByInstrument(instrumentId, skip, take);
+    this.extendWithMocks(
+      () => HistoryApi.fetchTradesByInstrument(instrumentId, skip, take),
+      () => mockTradeApi.fetchPublicTrades(instrumentId, skip, take)
+    );
 }
 
 export default TradeApi;

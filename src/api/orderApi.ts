@@ -1,3 +1,4 @@
+import mockOrderApi from '../api/mocks/orderApi';
 import Side from '../models/side';
 import RestApi from './restApi';
 import {ApiResponse} from './types';
@@ -23,16 +24,35 @@ export interface OrderApi {
 }
 
 export class RestOrderApi extends RestApi implements OrderApi {
-  placeMarket = (body: any) => this.fireAndForget('/Orders/market', body);
+  placeMarket = (body: any) =>
+    this.extendWithMocks(
+      () => this.fireAndForget('/Orders/market', body),
+      () => mockOrderApi.placeMarket()
+    );
 
-  placeLimit = (body: any) => this.post('/Orders/limit', body);
+  placeLimit = (body: any) =>
+    this.extendWithMocks(
+      () => this.post('/Orders/limit', body),
+      () => mockOrderApi.placeLimit()
+    );
 
   cancelOrder = (id: string) =>
-    this.fireAndForget(`/orders/limit/${id}/cancel`, {});
+    this.extendWithMocks(
+      () => this.fireAndForget(`/orders/limit/${id}/cancel`, {}),
+      () => mockOrderApi.cancelOrder()
+    );
 
-  cancelAllOrders = (body: any) => this.deleteWithParams(`/orders/limit`, body);
+  cancelAllOrders = (body: any) =>
+    this.extendWithMocks(
+      () => this.deleteWithParams(`/orders/limit`, body),
+      () => mockOrderApi.cancelAllOrders()
+    );
 
-  fetchAll = () => this.get('/orders');
+  fetchAll = () =>
+    this.extendWithMocks(
+      () => this.get('/orders'),
+      () => mockOrderApi.fetchAll()
+    );
 }
 
 export default OrderApi;

@@ -3,7 +3,6 @@ import {compose, filter, replace, toLower} from 'rambda';
 import {AssetApi} from '../api/index';
 import {keys} from '../models';
 import {
-  AssetCategoryModel,
   AssetModel,
   DescriptionResponseModel,
   InstrumentModel,
@@ -22,14 +21,17 @@ const normalize = compose(
   toLower
 );
 
+const assetsStorage = StorageUtils(keys.assets);
+const availableAssetsStorage = StorageUtils(keys.availableAssets);
 const baseAssetStorage = StorageUtils(keys.baseAsset);
+const descriptionsStorage = StorageUtils(keys.descriptions);
+const instrumentsStorage = StorageUtils(keys.instruments);
 
 class ReferenceStore extends BaseStore {
   descriptions: DescriptionResponseModel[];
 
   @observable assets: AssetModel[] = [];
   @observable.shallow private availableAssets: string[] = [];
-  @observable private categories: AssetCategoryModel[] = [];
   @observable.shallow private instruments: InstrumentModel[] = [];
   @observable private baseAsset: string = '';
 
@@ -38,11 +40,6 @@ class ReferenceStore extends BaseStore {
     return this.assets
       .filter(a => this.availableAssets.indexOf(a.id) > -1)
       .filter(a => a.canBeBase);
-  }
-
-  @computed
-  get allAssets() {
-    return this.assets;
   }
 
   @computed
@@ -70,9 +67,10 @@ class ReferenceStore extends BaseStore {
   getAssetById = (id: string) => this.assets.find(a => a.id === id);
 
   @action
-  addAsset = (asset: AssetModel) => (this.assets = [...this.assets, asset]);
-
-  getCategories = () => this.categories;
+  addAsset = (asset: AssetModel) => {
+    this.assets = [...this.assets, asset];
+    assetsStorage.set(JSON.stringify(this.assets));
+  };
 
   getInstruments = () => {
     return this.instruments;
@@ -139,31 +137,36 @@ class ReferenceStore extends BaseStore {
   fetchAssets = () => {
     const requests = [this.api.fetchAll(), this.api.fetchAssetsDescriptions()];
 
-    return Promise.all(requests).then(data => {
-      // TODO: Remove variability when new endpoint releases
-      const assets = data[0].Assets || data[0];
-      this.descriptions = data[1].Descriptions || data[1];
-      if (assets.length > 0) {
-        runInAction(() => {
-          this.assets = assets.map((rawAsset: AssetResponseModel) => {
-            const appropriateDescription = this.findAppropriateDescriptionById(
-              this.descriptions,
-              rawAsset.Id
-            );
-            return mappers.mapToAsset(
-              rawAsset,
-              this.categories,
-              appropriateDescription
-            );
+    return Promise.all(requests)
+      .then(data => {
+        // TODO: Remove variability when new endpoint releases
+        const assets = data[0].Assets || data[0];
+        this.descriptions = data[1].Descriptions || data[1];
+        if (assets.length > 0) {
+          runInAction(() => {
+            this.assets = assets.map((rawAsset: AssetResponseModel) => {
+              const appropriateDescription = this.findAppropriateDescriptionById(
+                this.descriptions,
+                rawAsset.Id
+              );
+              return mappers.mapToAsset(rawAsset, appropriateDescription);
+            });
+            assetsStorage.set(JSON.stringify(this.assets));
+            descriptionsStorage.set(JSON.stringify(this.descriptions));
           });
-        });
-      }
-      return Promise.resolve();
-    });
+        }
+        return Promise.resolve();
+      })
+      .catch(() => {
+        if (this.rootStore.apiStore.getUseCacheData()) {
+          this.assets = JSON.parse(assetsStorage.get()!) || [];
+          this.descriptions = JSON.parse(descriptionsStorage.get()!) || [];
+        }
+      });
   };
 
   fetchAssetById = (id: string) => {
-    return this.api.fetchAssetById(id).then(data => {
+    return this.api.fetchAssetById(id).then((data: any) => {
       let mappedAsset;
       const rawAsset = data.Asset || data;
       if (rawAsset) {
@@ -173,67 +176,70 @@ class ReferenceStore extends BaseStore {
         );
         mappedAsset = mappers.mapToAsset(
           rawAsset as AssetResponseModel,
-          this.categories,
           appropriateDescription as DescriptionResponseModel
         );
         this.assets.push(mappedAsset);
+        assetsStorage.set(JSON.stringify(this.assets));
       }
       return Promise.resolve(mappedAsset);
     });
   };
 
   fetchAvailableAssets = async () => {
-    const resp = await this.api.fetchAvailableAssets();
-    runInAction(() => {
-      this.availableAssets = resp.AssetIds;
-    });
-  };
-
-  fetchCategories = () => {
-    return this.api
-      .fetchAssetCategories()
-      .then((resp: any) => {
-        if (resp) {
-          const assetCategories = resp.AssetCategories || resp;
-          if (!assetCategories) {
-            return;
-          }
-          runInAction(() => {
-            this.categories = assetCategories.map(mappers.mapToAssetCategory);
-          });
-        }
-        return Promise.resolve();
-      })
-      .catch(Promise.reject);
+    try {
+      const resp = await this.api.fetchAvailableAssets();
+      runInAction(() => {
+        this.availableAssets = resp.AssetIds;
+        availableAssetsStorage.set(JSON.stringify(this.availableAssets));
+      });
+    } catch {
+      if (this.rootStore.apiStore.getUseCacheData()) {
+        this.availableAssets = JSON.parse(availableAssetsStorage.get()!);
+      }
+    }
   };
 
   fetchInstruments = async () => {
-    const resp = await this.api.fetchAssetInstruments();
-    if (resp) {
-      const assetPairs = resp.AssetPairs || resp;
-      if (!assetPairs) {
-        return;
+    try {
+      const resp = await this.api.fetchAssetInstruments();
+      if (resp) {
+        const assetPairs = resp.AssetPairs || resp;
+        if (!assetPairs) {
+          return;
+        }
+        runInAction(() => {
+          this.instruments = assetPairs.map((x: any) =>
+            mappers.mapToInstrument(x, this.getAssetById)
+          );
+          instrumentsStorage.set(JSON.stringify(this.instruments));
+        });
       }
-      runInAction(() => {
-        this.instruments = assetPairs.map((x: any) =>
-          mappers.mapToInstrument(x, this.getAssetById)
-        );
-      });
+    } catch {
+      if (this.rootStore.apiStore.getUseCacheData()) {
+        this.setInstrumentsFromCache();
+      }
     }
   };
 
   fetchPublicInstruments = async () => {
-    const resp = await this.api.fetchPublicAssetInstruments();
-    if (resp) {
-      const assetPairs = resp.AssetPairs || resp;
-      if (!assetPairs) {
-        return;
+    try {
+      const resp = await this.api.fetchPublicAssetInstruments();
+      if (resp) {
+        const assetPairs = resp.AssetPairs || resp;
+        if (!assetPairs) {
+          return;
+        }
+        runInAction(() => {
+          this.instruments = assetPairs.map((x: any) =>
+            mappers.mapToPublicInstrument(x, this.getAssetById)
+          );
+          instrumentsStorage.set(JSON.stringify(this.instruments));
+        });
       }
-      runInAction(() => {
-        this.instruments = assetPairs.map((x: any) =>
-          mappers.mapToPublicInstrument(x, this.getAssetById)
-        );
-      });
+    } catch {
+      if (this.rootStore.apiStore.getUseCacheData()) {
+        this.setInstrumentsFromCache();
+      }
     }
   };
 
@@ -247,25 +253,36 @@ class ReferenceStore extends BaseStore {
         }
         return Promise.resolve();
       })
-      .catch(Promise.reject);
+      .catch(() => {
+        if (this.rootStore.apiStore.getUseCacheData()) {
+          this.baseAsset = baseAssetStorage.get()!;
+        }
+      });
   };
 
   fetchRates = async () => {
-    const resp = await this.api.fetchMarket();
-    resp.forEach(
-      ({AssetPair, Volume24H, PriceChange24H, Bid, Ask, LastPrice}: any) => {
-        const instrument = this.getInstrumentById(AssetPair);
-        if (instrument) {
-          runInAction(() => {
-            instrument.price = LastPrice;
-            instrument.bid = Bid;
-            instrument.ask = Ask;
-            instrument.volume = Volume24H;
-            instrument.change24h = PriceChange24H * 100;
-          });
+    try {
+      const resp = await this.api.fetchMarket();
+      resp.forEach(
+        ({AssetPair, Volume24H, PriceChange24H, Bid, Ask, LastPrice}: any) => {
+          const instrument = this.getInstrumentById(AssetPair);
+          if (instrument) {
+            runInAction(() => {
+              instrument.price = LastPrice;
+              instrument.bid = Bid;
+              instrument.ask = Ask;
+              instrument.volume = Volume24H;
+              instrument.change24h = PriceChange24H * 100;
+            });
+          }
         }
+      );
+      instrumentsStorage.set(JSON.stringify(this.instruments));
+    } catch {
+      if (this.rootStore.apiStore.getUseCacheData()) {
+        this.setInstrumentsFromCache();
       }
-    );
+    }
   };
 
   setBaseAssetId = async (assetId: string) => {
@@ -287,6 +304,7 @@ class ReferenceStore extends BaseStore {
         )
       )
     );
+    instrumentsStorage.set(JSON.stringify(this.instruments));
   };
 
   onQuote = (args: any) => {
@@ -325,6 +343,12 @@ class ReferenceStore extends BaseStore {
   reset = () => {
     this.assets = [];
     this.availableAssets = [];
+  };
+
+  private setInstrumentsFromCache = () => {
+    this.instruments = (JSON.parse(instrumentsStorage.get()!) || []).map(
+      (instrument: any) => new InstrumentModel(instrument)
+    );
   };
 }
 
