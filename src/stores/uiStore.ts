@@ -66,6 +66,7 @@ class UiStore extends BaseStore {
   private isReadOnlyMode: boolean;
 
   private isPageVisible: boolean = true;
+  private selectedWatchListName: string = Watchlists.All;
 
   constructor(store: RootStore) {
     super(store);
@@ -151,6 +152,10 @@ class UiStore extends BaseStore {
 
   setPageVisibility = (isVisible: boolean) => (this.isPageVisible = isVisible);
   getPageVisibility = () => this.isPageVisible;
+
+  setSelectedWatchListName = (watchListName: string) =>
+    (this.selectedWatchListName = watchListName);
+  getSelectedWatchListName = () => this.selectedWatchListName;
 
   hasAsset = (
     selectedInstrument: InstrumentModel,

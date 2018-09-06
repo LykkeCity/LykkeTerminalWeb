@@ -1,12 +1,20 @@
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
-import {InstrumentShortcutSelection, InstrumentShortcutsProps} from './index';
+import {InstrumentShortcutSelection} from './index';
 import {
   OtherShortcuts,
   Shortcut,
   ShortcutList,
   ShortcutTruncatedText
 } from './styles';
+
+interface InstrumentShortcutsProps {
+  changeValue: any;
+  shortcutActiveIndex: null | number;
+  shortcuts: string[];
+  showInstrumentSelection: boolean;
+  onToggleInstrumentSelection: any;
+}
 
 class InstrumentShortcuts extends React.Component<InstrumentShortcutsProps> {
   private primeShortcuts: any[];

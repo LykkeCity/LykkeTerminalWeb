@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {SortDirection} from '../../models';
+import {AssetModel, InstrumentModel} from '../../models';
+import SortDirection from '../../models/sortDirection';
 import {AnalyticsService} from '../../services/analyticsService';
 import {
   checkDataForSorting,
@@ -9,7 +10,27 @@ import {
   TableHeader,
   TableSortState
 } from '../Table';
-import {InstrumentListProps, InstrumentTable} from './index';
+import {InstrumentTable} from './index';
+
+export interface InstrumentListProps {
+  baseAsset: AssetModel;
+  currentInstrumentId: string;
+  instruments: InstrumentModel[];
+  onPick: any;
+  isAuth: boolean;
+  setInstrumentPickerSortingParameters: (
+    sortByParam: string,
+    direction: string,
+    state: any
+  ) => void;
+  defaultSortingField: string;
+  searchValue: string;
+  getInstrumentPickerSortingParameters: () => {
+    sortByParam: string;
+    direction: string;
+    state: TableSortState;
+  };
+}
 
 class InstrumentList extends React.Component<
   InstrumentListProps,
@@ -31,51 +52,56 @@ class InstrumentList extends React.Component<
     };
   }
 
-  componentWillReceiveProps(args: any) {
-    this.setState({
-      data: args.instruments
-    });
+  componentWillReceiveProps(args: InstrumentListProps) {
+    this.setState(this.sortPickerInstruments(args.instruments));
   }
 
   componentDidMount() {
-    this.props.change();
-    const {
-      sortByParam,
-      direction,
-      state
-    } = this.props.getInstrumentPickerSortingParameters();
-    this.setState(
-      sortData(this.props.instruments, sortByParam, direction, state)
-    );
+    this.setState(this.sortPickerInstruments(this.props.instruments));
   }
+
+  sortPickerInstruments = (
+    instruments: InstrumentModel[],
+    state?: TableSortState,
+    param?: string,
+    direction?: string
+  ) => {
+    const pickerParams = this.props.getInstrumentPickerSortingParameters();
+    const sortByParam = param || pickerParams.sortByParam;
+    const sortDirection = direction || pickerParams.direction;
+
+    const instrumentsToBeSorted = instruments.filter(i => !!i[sortByParam]);
+    const instrumentsWithoutSorting = instruments.filter(i => !i[sortByParam]);
+    const stateObjWithSortedInstruments = sortData(
+      instrumentsToBeSorted,
+      sortByParam,
+      sortDirection,
+      state || pickerParams.state
+    );
+    stateObjWithSortedInstruments.data = [
+      ...stateObjWithSortedInstruments.data,
+      ...instrumentsWithoutSorting
+    ];
+    return stateObjWithSortedInstruments;
+  };
 
   sort = (sortByParam: string, sortDirection: string) => {
     const direction =
       this.state.sortByParam === sortByParam
         ? sortDirection
         : SortDirection.DESC;
-    const instrumentsToBeSorted = this.props.instruments.filter(
-      i => !!i[sortByParam]
-    );
-    const shouldNotBeSorted = this.props.instruments.filter(
-      i => !i[sortByParam]
-    );
-    const stateObjWithSortedInstruments = sortData(
-      instrumentsToBeSorted,
-      sortByParam,
-      direction,
-      this.state
-    );
-    stateObjWithSortedInstruments.data = [
-      ...stateObjWithSortedInstruments.data,
-      ...shouldNotBeSorted
-    ];
 
+    const stateObjWithSortedInstruments = this.sortPickerInstruments(
+      this.props.instruments,
+      this.state,
+      sortByParam,
+      direction
+    );
     this.setState(stateObjWithSortedInstruments);
 
     this.props.setInstrumentPickerSortingParameters(
       sortByParam,
-      direction,
+      stateObjWithSortedInstruments.sortDirection,
       this.state
     );
 
