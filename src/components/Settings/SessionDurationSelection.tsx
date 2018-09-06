@@ -45,7 +45,7 @@ const SessionDurationSelection: React.SFC<SessionDurationSelectionProps> = ({
               handleSetDuration(item);
               closeSessionNotification();
 
-              AnalyticsService.handleClick(
+              AnalyticsService.track(
                 AnalyticsEvents.SessionDurationChanged(item)
               );
             }

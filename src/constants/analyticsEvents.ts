@@ -128,5 +128,23 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     firstName: userInfo.firstName,
     lastName: userInfo.lastName,
     kycStatus: userInfo.kycStatus
-  })
+  }),
+  AppLoaded: {
+    title: 'Session Started',
+    details: {
+      category,
+      location: 'Application',
+      type: 'Event',
+      info: 'Application has loaded'
+    }
+  },
+  FundsClicked: {
+    title: 'Funds Clicked',
+    details: {
+      category,
+      location: 'Application',
+      type: 'Click',
+      info: 'User clicked on Funds widget'
+    }
+  }
 };

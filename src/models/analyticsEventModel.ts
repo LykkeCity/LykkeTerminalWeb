@@ -39,4 +39,6 @@ export interface AnalyticsEventsModel {
   SectionSplitterMoved: AnalyticsEventModel;
   SessionDurationChanged: (duration: number) => AnalyticsEventModel;
   UserIdentifyTraits: (userInfo: any) => AnalyticsUserIdentifyTraitsModel;
+  AppLoaded: AnalyticsEventModel;
+  FundsClicked: AnalyticsEventModel;
 }

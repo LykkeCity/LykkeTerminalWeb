@@ -19,7 +19,7 @@ class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
   handleSelectTab = (tab: ChartType) => () => {
     this.selectedTab = tab;
 
-    AnalyticsService.handleClick(AnalyticsEvents.ChartTypeSwitched(tab));
+    AnalyticsService.track(AnalyticsEvents.ChartTypeSwitched(tab));
   };
 
   render() {

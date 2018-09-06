@@ -136,7 +136,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
         AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
       );
 
-      AnalyticsService.handleClick(AnalyticsEvents.SessionStarted);
+      AnalyticsService.track(AnalyticsEvents.AppLoaded);
     });
   }
 
@@ -203,13 +203,13 @@ class Terminal extends React.Component<TerminalProps, {}> {
       this.isMosaicChanged = true;
       setTimeout(() => (this.isMosaicChanged = false), 1000);
 
-      AnalyticsService.handleClick(AnalyticsEvents.SectionSplitterMoved);
+      AnalyticsService.track(AnalyticsEvents.SectionSplitterMoved);
     }
   };
 
   onLogout() {
     this.authStore.signOut();
-    AnalyticsService.handleClick(AnalyticsEvents.LogOut);
+    AnalyticsService.track(AnalyticsEvents.LogOut);
   }
 
   async start() {

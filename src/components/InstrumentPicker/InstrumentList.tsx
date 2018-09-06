@@ -105,7 +105,7 @@ class InstrumentList extends React.Component<
       this.state
     );
 
-    AnalyticsService.handleClick(
+    AnalyticsService.track(
       AnalyticsEvents.InstrumentPickerSort(sortByParam, sortDirection)
     );
   };
