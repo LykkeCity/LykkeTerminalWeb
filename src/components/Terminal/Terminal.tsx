@@ -135,6 +135,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
         this.authStore.userInfo.email,
         AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
       );
+
+      AnalyticsService.handleClick(AnalyticsEvents.SessionStarted);
     });
   }
 
