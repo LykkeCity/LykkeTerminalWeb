@@ -118,7 +118,7 @@ class TradeStore extends BaseStore {
         this.addTrades(
           map.aggregateTradesByTimestamp([...trades], this.instruments)
         );
-        this.shouldFetchMore = trades.length === TradeQuantity.Take;
+        this.shouldFetchMore = trades.length >= TradeQuantity.Take;
       });
     }
   };

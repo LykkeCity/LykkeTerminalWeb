@@ -58,7 +58,6 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
       <TitledCell>
         {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
       </TitledCell>
-      <Cell w={TradesCellWidth.OrderType}>{orderType}</Cell>
       <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>
     </tr>
   );
