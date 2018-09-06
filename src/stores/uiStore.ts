@@ -31,7 +31,7 @@ class UiStore extends BaseStore {
 
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
 
-  @observable theme: ThemeObject = themes.light;
+  @observable theme: ThemeObject = themes.dark;
   @observable searchTerm: string = '';
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
