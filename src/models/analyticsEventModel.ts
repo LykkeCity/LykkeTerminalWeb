@@ -45,7 +45,10 @@ export interface AnalyticsEventsModel {
   FundsClicked: AnalyticsEventModel;
   OpenInstrumentPicker: AnalyticsEventModel;
   SelectInstrument: (instrument: InstrumentModel) => AnalyticsEventModel;
+  ChangeWatchlist: (watchlist: any) => AnalyticsEventModel;
   ClickTotalBalance: AnalyticsEventModel;
   OpenSettingsModal: AnalyticsEventModel;
   ChangeBaseAsset: (asset: string) => AnalyticsEventModel;
+  ClickOnAvailable: (orderType: string) => AnalyticsEventModel;
+  ClickOnReset: AnalyticsEventModel;
 }

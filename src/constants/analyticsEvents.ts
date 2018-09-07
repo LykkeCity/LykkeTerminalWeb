@@ -166,6 +166,15 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       info: instrument
     }
   }),
+  ChangeWatchlist: (watchlist: any) => ({
+    title: 'Change Watchlist',
+    details: {
+      category,
+      location: 'Instrument Picker',
+      type: 'Click',
+      info: watchlist
+    }
+  }),
   ClickTotalBalance: {
     title: 'Click Total Balance',
     details: {
@@ -192,5 +201,23 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       type: 'Click',
       info: `User set ${asset} as base asset`
     }
-  })
+  }),
+  ClickOnAvailable: (orderType: string) => ({
+    title: 'Click on Available',
+    details: {
+      category,
+      location: 'Order Widget',
+      type: 'Click',
+      info: `User clicks on Available label at ${orderType} Order Widget`
+    }
+  }),
+  ClickOnReset: {
+    title: 'Click on Reset',
+    details: {
+      category,
+      location: 'Order Widget',
+      type: 'Click',
+      info: 'User resets Order Widget'
+    }
+  }
 };

@@ -1,6 +1,8 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AssetModel} from '../../models';
 import Watchlists from '../../models/watchlists';
+import {AnalyticsService} from '../../services/analyticsService';
 import {
   InstrumentList,
   InstrumentPickerActions,
@@ -65,6 +67,7 @@ class InstrumentPicker extends React.Component<
     if (this.props.onSearchWalletName) {
       this.props.onSearchWalletName(value);
     }
+    AnalyticsService.track(AnalyticsEvents.ChangeWatchlist(value));
   };
 
   changeValue = (value: string = '') => {

@@ -1,6 +1,8 @@
 import {Form, withFormik} from 'formik';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {OrderInputs} from '../../models';
+import {AnalyticsService} from '../../services/analyticsService';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderBasicFormProps} from './index';
@@ -75,6 +77,16 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
     updatePercentageState(OrderInputs.Quantity);
   };
 
+  const handlePercentageChange = () => {
+    onHandlePercentageChange();
+    AnalyticsService.track(AnalyticsEvents.ClickOnAvailable('Limit'));
+  };
+
+  const reset = () => {
+    onReset();
+    AnalyticsService.track(AnalyticsEvents.ClickOnReset);
+  };
+
   return (
     <Form>
       <InputControl style={{borderBottom: '1px solid #333'}}>
@@ -91,7 +103,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <InputControl>
         <Flex justify={'space-between'} style={{marginBottom: '7px'}}>
           <Action>{`Amount (${baseAssetName})`}</Action>
-          <Available disabled={!balance} onClick={onHandlePercentageChange()}>
+          <Available disabled={!balance} onClick={handlePercentageChange}>
             {formattedNumber(balance || 0, balanceAccuracy)}{' '}
             {isSell ? baseAssetName : quoteAssetName} available
           </Available>
@@ -131,7 +143,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
 
       {onReset && (
         <Reset justify={'center'}>
-          <span onClick={onReset}>Reset and clear</span>
+          <span onClick={reset}>Reset and clear</span>
         </Reset>
       )}
     </Form>
