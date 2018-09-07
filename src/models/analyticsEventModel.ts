@@ -1,3 +1,5 @@
+import {InstrumentModel} from '.';
+
 export interface AnalyticsEventDetailsModel {
   category: string;
   location: string;
@@ -42,6 +44,8 @@ export interface AnalyticsEventsModel {
   AppLoaded: AnalyticsEventModel;
   FundsClicked: AnalyticsEventModel;
   OpenInstrumentPicker: AnalyticsEventModel;
-  SelectInstrument: (instrument: any) => AnalyticsEventModel;
+  SelectInstrument: (instrument: InstrumentModel) => AnalyticsEventModel;
   ClickTotalBalance: AnalyticsEventModel;
+  OpenSettingsModal: AnalyticsEventModel;
+  ChangeBaseAsset: (asset: string) => AnalyticsEventModel;
 }

@@ -1,4 +1,6 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {AnalyticsService} from '../../services/analyticsService';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
 import {Icon} from '../Icon/index';
@@ -27,8 +29,10 @@ const Header: React.SFC<HeaderProps> = ({
     if (event) {
       event.stopPropagation();
     }
-
     settingsStore.toggleSettings();
+    if (settingsStore.showSettings) {
+      AnalyticsService.track(AnalyticsEvents.OpenSettingsModal);
+    }
   };
 
   return (

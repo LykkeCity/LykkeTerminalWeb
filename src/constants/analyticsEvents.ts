@@ -1,3 +1,4 @@
+import {InstrumentModel} from '../models';
 import {AnalyticsEventsModel} from '../models/analyticsEventModel';
 
 const category = 'Lykke Web Terminal';
@@ -156,7 +157,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       info: 'User opened Instrument Picker'
     }
   },
-  SelectInstrument: (instrument: any) => ({
+  SelectInstrument: (instrument: InstrumentModel) => ({
     title: 'Select Instrument',
     details: {
       category,
@@ -173,5 +174,23 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       type: 'Click',
       info: 'User is trying to click Total Balance element'
     }
-  }
+  },
+  OpenSettingsModal: {
+    title: 'Open Settings Modal',
+    details: {
+      category,
+      location: 'Application',
+      type: 'Click',
+      info: 'User opened Settings modal window'
+    }
+  },
+  ChangeBaseAsset: (asset: string) => ({
+    title: 'Change Base Asset',
+    details: {
+      category,
+      location: 'Setting Modal',
+      type: 'Click',
+      info: `User set ${asset} as base asset`
+    }
+  })
 };
