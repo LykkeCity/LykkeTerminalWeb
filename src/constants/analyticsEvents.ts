@@ -146,5 +146,32 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       type: 'Click',
       info: 'User clicked on Funds widget'
     }
+  },
+  OpenInstrumentPicker: {
+    title: 'Open Instrument Picker',
+    details: {
+      category,
+      location: 'Instrument Picker',
+      type: 'Click',
+      info: 'User opened Instrument Picker'
+    }
+  },
+  SelectInstrument: (instrument: any) => ({
+    title: 'Select Instrument',
+    details: {
+      category,
+      location: 'Instrument Picker',
+      type: 'Click',
+      info: instrument
+    }
+  }),
+  ClickTotalBalance: {
+    title: 'Click Total Balance',
+    details: {
+      category,
+      location: 'Application',
+      type: 'Click',
+      info: 'User is trying to click Total Balance element'
+    }
   }
 };

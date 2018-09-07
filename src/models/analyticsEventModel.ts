@@ -41,4 +41,7 @@ export interface AnalyticsEventsModel {
   UserIdentifyTraits: (userInfo: any) => AnalyticsUserIdentifyTraitsModel;
   AppLoaded: AnalyticsEventModel;
   FundsClicked: AnalyticsEventModel;
+  OpenInstrumentPicker: AnalyticsEventModel;
+  SelectInstrument: (instrument: any) => AnalyticsEventModel;
+  ClickTotalBalance: AnalyticsEventModel;
 }

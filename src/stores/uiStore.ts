@@ -1,5 +1,6 @@
 import {action, computed, observable, reaction} from 'mobx';
 import {pathOr} from 'rambda';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {disclaimedAssets} from '../constants/assetDisclaimer';
 import logger from '../Logger';
 import {keys} from '../models';
@@ -14,6 +15,7 @@ import {
 } from '../models/mappers/userInfoMapper';
 import UserInfoModel from '../models/userInfoModel';
 import Watchlists from '../models/watchlists';
+import {AnalyticsService} from '../services/analyticsService';
 import {DocumentService} from '../services/documentService';
 import {fns, StorageUtils} from '../utils/index';
 import {DEFAULT_INPUT_VALUE} from '../utils/inputNumber';
@@ -29,28 +31,17 @@ class UiStore extends BaseStore {
 
   static readonly DEFAULT_INSTRUMENT = 'BTCUSD';
 
-  @observable
-  searchTerm: string = '';
-  @observable
-  searchWalletName: string = Watchlists.All;
-  @observable
-  selectedInstrument: InstrumentModel | null;
-  @observable
-  showInstrumentPicker = false;
-  @observable
-  showInstrumentPerformanceData = false;
-  @observable
-  showInstrumentSelection = false;
-  @observable
-  showOrdersSelect: boolean = false;
-  @observable
-  showSessionNotification: boolean = true;
-  @observable
-  orderbookDisplayType = OrderBookDisplayType.Volume;
-  @observable
-  isDisclaimerShown: boolean = false;
-  @observable
-  disclaimedAssets: string[] = [];
+  @observable searchTerm: string = '';
+  @observable searchWalletName: string = Watchlists.All;
+  @observable selectedInstrument: InstrumentModel | null;
+  @observable showInstrumentPicker = false;
+  @observable showInstrumentPerformanceData = false;
+  @observable showInstrumentSelection = false;
+  @observable showOrdersSelect: boolean = false;
+  @observable showSessionNotification: boolean = true;
+  @observable orderbookDisplayType = OrderBookDisplayType.Volume;
+  @observable isDisclaimerShown: boolean = false;
+  @observable disclaimedAssets: string[] = [];
   @observable
   instrumentPickerSortingParameters: any = {
     sortByParam: '',
@@ -58,12 +49,9 @@ class UiStore extends BaseStore {
     state: {}
   };
 
-  @observable
-  userInfo: UserInfoModel | null;
-  @observable
-  isConnectionOpened: boolean = false;
-  @observable
-  private isReadOnlyMode: boolean;
+  @observable userInfo: UserInfoModel | null;
+  @observable isConnectionOpened: boolean = false;
+  @observable private isReadOnlyMode: boolean;
 
   private isPageVisible: boolean = true;
   private selectedWatchListName: string = Watchlists.All;
@@ -186,14 +174,17 @@ class UiStore extends BaseStore {
     );
   };
 
-  @action
-  search = (term: string) => (this.searchTerm = term);
-  @action
-  searchWallet = (name: string) => (this.searchWalletName = name);
+  @action search = (term: string) => (this.searchTerm = term);
+  @action searchWallet = (name: string) => (this.searchWalletName = name);
 
   @action
-  toggleInstrumentPicker = () =>
-    (this.showInstrumentPicker = !this.showInstrumentPicker);
+  toggleInstrumentPicker = () => {
+    this.showInstrumentPicker = !this.showInstrumentPicker;
+
+    if (this.showInstrumentPicker) {
+      AnalyticsService.track(AnalyticsEvents.OpenInstrumentPicker);
+    }
+  };
 
   @action
   toggleSessionNotification = (value: boolean) =>

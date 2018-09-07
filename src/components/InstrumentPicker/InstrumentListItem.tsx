@@ -1,6 +1,8 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AssetModel, InstrumentModel} from '../../models/index';
+import {AnalyticsService} from '../../services/analyticsService';
 import {formattedNumberWithDashes} from '../../utils/localFormatted/localFormatted';
 import {colors} from '../styled';
 import {InstrumentListNumber, InstrumentPickerActions} from './index';
@@ -15,12 +17,17 @@ interface InstrumentListItemProps extends InstrumentPickerActions {
 const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
   ({baseAsset, instrument, onPick, inactive, isAuth}) => {
     const percentageAccuracy = 2;
-    const click = () => inactive && onPick && onPick(instrument);
+    const click = () => {
+      AnalyticsService.track(AnalyticsEvents.SelectInstrument(instrument));
+      return inactive && onPick && onPick(instrument);
+    };
 
     const dynamics =
       (instrument.change24h || 0) === 0
         ? 'zero'
-        : (instrument.change24h || 0) > 0 ? 'up' : 'down';
+        : (instrument.change24h || 0) > 0
+          ? 'up'
+          : 'down';
     const sign = (instrument.change24h || 0) > 0 ? '+' : '';
 
     return (
