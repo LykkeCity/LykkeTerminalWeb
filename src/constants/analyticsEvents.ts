@@ -1,33 +1,17 @@
 import {InstrumentModel} from '../models';
 import {AnalyticsEventsModel} from '../models/analyticsEventModel';
+import place from './places';
 
 const category = 'Lykke Web Terminal';
 const button = 'Button Click';
 const event = 'Event';
-
-const location = {
-  application: 'Application',
-  header: 'Header',
-  subheader: 'Subheader',
-  instrumentPicker: 'Instrument Picker',
-  settings: 'Settings Modal',
-  order: 'Order Widget',
-  charts: 'Chart Widget',
-  priceChart: 'Price Chart',
-  depthChart: 'Depth Chart',
-  orderBook: 'Order Book Widget',
-  funds: 'Funds Widget',
-  orders: 'Orders Widget',
-  trades: 'Trades Widget',
-  tradelog: ' Trade log Widget'
-};
 
 export const AnalyticsEvents: AnalyticsEventsModel = {
   SwitchToLimitOrder: {
     title: 'Change Order Type',
     details: {
       category,
-      location: location.order,
+      location: place.order,
       type: button,
       info: 'Market'
     }
@@ -36,7 +20,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Change Order Type',
     details: {
       category,
-      location: location.order,
+      location: place.order,
       type: button,
       info: 'Limit'
     }
@@ -45,7 +29,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Change Order Side',
     details: {
       category,
-      location: location.order,
+      location: place.order,
       type: button,
       info: side
     }
@@ -54,7 +38,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Placed New Order',
     details: {
       category,
-      location: location.order,
+      location: place.order,
       type: button,
       info: {
         amount,
@@ -67,7 +51,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Log Out',
     details: {
       category,
-      location: location.header,
+      location: place.header,
       type: button
     }
   },
@@ -75,7 +59,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Switch to Depth Mode',
     details: {
       category,
-      location: location.orderBook,
+      location: place.orderBook,
       type: button
     }
   },
@@ -83,7 +67,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Switch to Volume Mode',
     details: {
       category,
-      location: location.orderBook,
+      location: place.orderBook,
       type: button
     }
   },
@@ -91,7 +75,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Switch to another Chart type',
     details: {
       category,
-      location: location.charts,
+      location: place.charts,
       type: button,
       info: type
     }
@@ -100,28 +84,16 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Scale of the Depth Chart',
     details: {
       category,
-      location: location.depthChart,
+      location: place.depthChart,
       type: button,
       info: `${scale}x scale`
-    }
-  }),
-  InstrumentPickerSort: (column: string, direction: string) => ({
-    title: 'Sort Instruments in Picker',
-    details: {
-      category,
-      location: location.instrumentPicker,
-      type: button,
-      info: {
-        column,
-        direction
-      }
     }
   }),
   InstrumentPickerSearch: (term: string) => ({
     title: 'Search for Instrument in Picker',
     details: {
       category,
-      location: location.instrumentPicker,
+      location: place.instrumentPicker,
       type: button,
       info: term
     }
@@ -130,7 +102,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Section Resized',
     details: {
       category,
-      location: location.application,
+      location: place.application,
       type: button
     }
   },
@@ -138,7 +110,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Session Duration Changed',
     details: {
       category,
-      location: location.settings,
+      location: place.settings,
       type: button,
       info: `${duration} hours`
     }
@@ -153,7 +125,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Session Started',
     details: {
       category,
-      location: location.application,
+      location: place.application,
       type: event,
       info: 'Application has loaded'
     }
@@ -162,7 +134,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Funds Clicked',
     details: {
       category,
-      location: location.application,
+      location: place.application,
       type: button,
       info: 'User clicked on Funds widget'
     }
@@ -171,7 +143,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Open Instrument Picker',
     details: {
       category,
-      location: location.instrumentPicker,
+      location: place.instrumentPicker,
       type: button,
       info: 'User opened Instrument Picker'
     }
@@ -180,7 +152,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Select Instrument',
     details: {
       category,
-      location: location.instrumentPicker,
+      location: place.instrumentPicker,
       type: button,
       info: instrument
     }
@@ -189,7 +161,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Change Watchlist',
     details: {
       category,
-      location: location.instrumentPicker,
+      location: place.instrumentPicker,
       type: button,
       info: watchlist
     }
@@ -198,7 +170,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Click Total Balance',
     details: {
       category,
-      location: location.subheader,
+      location: place.subheader,
       type: button,
       info: 'User is trying to click Total Balance element'
     }
@@ -207,7 +179,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Open Settings Modal',
     details: {
       category,
-      location: location.subheader,
+      location: place.subheader,
       type: button,
       info: 'User opened Settings modal window'
     }
@@ -216,7 +188,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Change Base Asset',
     details: {
       category,
-      location: location.settings,
+      location: place.settings,
       type: button,
       info: `User set ${asset} as base asset`
     }
@@ -225,7 +197,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Click on Available',
     details: {
       category,
-      location: location.order,
+      location: place.order,
       type: button,
       info: `User clicks on Available label at ${orderType} Order Widget`
     }
@@ -234,7 +206,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Click on Reset',
     details: {
       category,
-      location: location.order,
+      location: place.order,
       type: button,
       info: 'User resets Order Widget'
     }
@@ -243,7 +215,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Click on Grouping Button',
     details: {
       category,
-      location: location.orderBook,
+      location: place.orderBook,
       type: button,
       info: 'User grouped orders in Order Book'
     }
@@ -252,9 +224,22 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     title: 'Scroll Orders',
     details: {
       category,
-      location: location.orderBook,
+      location: place.orderBook,
       type: button,
       info: 'User scrolled orders in Order Book'
     }
-  }
+  },
+  ApplySorting: (widget: string, parameter: string, direction: string) => ({
+    title: 'Apply Table Sorting',
+    details: {
+      category,
+      location: widget,
+      type: button,
+      info: {
+        text: 'User applied sorting',
+        direction,
+        parameter
+      }
+    }
+  })
 };

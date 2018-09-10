@@ -33,10 +33,6 @@ export interface AnalyticsEventsModel {
   SwitchToVolume: AnalyticsEventModel;
   ChartTypeSwitched: (type: string) => AnalyticsEventModel;
   DepthChartZoom: (scale: number) => AnalyticsEventModel;
-  InstrumentPickerSort: (
-    column: string,
-    direction: string
-  ) => AnalyticsEventModel;
   InstrumentPickerSearch: (term: string) => AnalyticsEventModel;
   SectionSplitterMoved: AnalyticsEventModel;
   SessionDurationChanged: (duration: number) => AnalyticsEventModel;
@@ -53,4 +49,9 @@ export interface AnalyticsEventsModel {
   ClickOnReset: AnalyticsEventModel;
   GroupOrderBook: AnalyticsEventModel;
   ScrollOrderBook: AnalyticsEventModel;
+  ApplySorting: (
+    widget: string,
+    parameter: string,
+    direction: string
+  ) => AnalyticsEventModel;
 }
