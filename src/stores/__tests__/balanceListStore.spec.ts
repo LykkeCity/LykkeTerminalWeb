@@ -2,7 +2,6 @@ import {
   MockBalanceListApi,
   MockBalanceListApiNullBalance
 } from '../../api/balanceListApi';
-import * as topics from '../../api/topics';
 import {
   AssetBalanceModel,
   AssetModel,
@@ -170,19 +169,6 @@ describe('balanceList store', () => {
           balanceModel.balanceInBaseAsset = balanceModel.balance;
         });
         expect(balanceListStore.getTotalBalanceInBaseAsset()).toBe(10000);
-      });
-    });
-
-    describe('method subscribe', () => {
-      it('should set subscribe to session passed in parameters', () => {
-        const session = {
-          subscribe: jest.fn()
-        };
-        balanceListStore.subscribe(session);
-        expect(session.subscribe).toHaveBeenCalledWith(
-          topics.balances,
-          balanceListStore.onUpdateBalance
-        );
       });
     });
   });

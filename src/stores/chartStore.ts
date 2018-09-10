@@ -1,5 +1,4 @@
-import {pathOr} from 'rambda';
-import {IWampSubscriptionItem} from 'socket-connection-wamp';
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {BaseStore, RootStore} from './index';
 
@@ -55,7 +54,7 @@ class ChartStore extends BaseStore {
       ChartStore.config,
       this.rootStore.uiStore.selectedInstrument!,
       new PriceApi(this),
-      this.getWs(),
+      this.rootStore.socketStore,
       this.subscribeToCandlesWithResolutions
     );
   };

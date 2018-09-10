@@ -127,11 +127,11 @@ class UiStore extends BaseStore {
   }
 
   setSocketWatcher = async () => {
-    const ws = this.getWs();
-    ws.onConnectionOpen = () => {
+    const {socketStore} = this.rootStore;
+    socketStore.onConnectionOpen = () => {
       this.updateConnectionStatus();
     };
-    ws.onConnectionClose = () => {
+    socketStore.onConnectionClose = () => {
       this.updateConnectionStatus();
     };
 
@@ -231,7 +231,7 @@ class UiStore extends BaseStore {
   };
 
   updateConnectionStatus = () => {
-    this.isConnectionOpened = this.getWs().isConnectionOpened;
+    this.isConnectionOpened = this.rootStore.socketStore.isSocketOpen();
   };
   getConnectionOpened = () => this.isConnectionOpened;
 

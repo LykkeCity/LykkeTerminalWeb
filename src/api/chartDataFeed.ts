@@ -1,3 +1,4 @@
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {
   addDays,
   addHours,
@@ -7,7 +8,6 @@ import {
   addWeeks
 } from 'date-fns';
 import {uniq} from 'rambda';
-import {IWampSubscriptionItem} from 'socket-connection-wamp';
 import * as topics from '../api/topics';
 import {
   InstrumentModel,

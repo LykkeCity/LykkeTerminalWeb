@@ -1,6 +1,6 @@
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {action, computed, observable} from 'mobx';
 import {compose, curry, head, reverse, sortBy, take} from 'rambda';
-import {IWampSubscriptionItem} from 'socket-connection-wamp';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {LEVELS_COUNT} from '../components/OrderBook';

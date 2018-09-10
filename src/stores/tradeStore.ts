@@ -1,6 +1,6 @@
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
-import {IWampSubscriptionItem} from 'socket-connection-wamp';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {AnalyticsEvents} from '../constants/analyticsEvents';

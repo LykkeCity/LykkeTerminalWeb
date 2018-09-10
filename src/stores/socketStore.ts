@@ -1,10 +1,11 @@
-import {IConnectionOptions, OnChallengeHandler} from 'autobahn';
-import {Socket} from 'socket-connection';
+import {Socket} from '@lykkex/subzero';
 import {
   IWampMessageOptions,
   WampConnection,
   WampMessageType
-} from 'socket-connection-wamp';
+} from '@lykkex/subzero-wamp';
+import {IConnectionOptions, OnChallengeHandler} from 'autobahn';
+import {Backoff, createBackoff} from '../api/backoffApi';
 import {keys} from '../models';
 import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
@@ -13,6 +14,8 @@ const tokenStorage = StorageUtils(keys.token);
 
 class SocketStore extends BaseStore {
   private socket: Socket | null;
+  private listeners: Map<string, () => void> = new Map();
+  private backoff: Backoff;
 
   constructor(store: RootStore) {
     super(store);
@@ -29,8 +32,20 @@ class SocketStore extends BaseStore {
       };
     }
 
-    this.socket = new Socket(new WampConnection(options));
+    const wampProxy = new WampConnection(options);
+
+    wampProxy.onopen = () => {
+      this.onConnectionOpen();
+    };
+
+    wampProxy.onclose = () => {
+      this.onConnectionClose();
+      this.backoff.backoff();
+    };
+
+    this.socket = new Socket(wampProxy);
     await this.socket.connect();
+    this.backoff = createBackoff(() => this.onBackoffReady());
     return this.socket;
   };
 
@@ -51,6 +66,26 @@ class SocketStore extends BaseStore {
     await this.socket!.close();
     this.socket = null;
   };
+
+  onBackoffReady() {
+    this.socket!.connect();
+  }
+
+  set onConnectionOpen(callback: () => void) {
+    this.listeners.set('onConnectionOpen', callback);
+  }
+  get onConnectionOpen() {
+    return this.listeners.get('onConnectionOpen') || (() => null);
+  }
+
+  set onConnectionClose(callback: () => void) {
+    this.listeners.set('onConnectionClose', callback);
+  }
+  get onConnectionClose() {
+    return this.listeners.get('onConnectionClose') || (() => null);
+  }
+
+  isSocketOpen = () => this.socket!.isSocketConnected();
 
   private handleChallenge: OnChallengeHandler = (session, method) => {
     if (method === 'ticket') {

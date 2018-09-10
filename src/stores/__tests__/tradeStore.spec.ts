@@ -1,5 +1,3 @@
-import {Subscription} from 'autobahn';
-import * as topics from '../../api/topics';
 import {
   AssetModel,
   InstrumentModel,
@@ -168,19 +166,6 @@ describe('trade store', () => {
     });
   });
 
-  describe('method subscribe', () => {
-    it('should call subscribe method in ws', () => {
-      const ws = {
-        subscribe: jest.fn()
-      };
-      tradeStore.subscribe(ws);
-      expect(ws.subscribe).toHaveBeenCalledWith(
-        topics.trades,
-        tradeStore.onTrades
-      );
-    });
-  });
-
   describe('method onTrades', () => {
     it('should add trades came from arguments', () => {
       tradeStore.addTrade = jest.fn();
@@ -194,35 +179,6 @@ describe('trade store', () => {
       tradeStore.addPublicTrades = jest.fn();
       tradeStore.onPublicTrades([{}, {}, {}]);
       expect(tradeStore.addPublicTrades).toHaveBeenCalled();
-    });
-  });
-
-  describe('method unsubscribeFromPublicTrades', () => {
-    let unsubscribe: () => void;
-    function* getSubscriptions() {
-      yield new Subscription('first');
-    }
-    beforeEach(() => {
-      unsubscribe = jest.fn();
-
-      tradeStore.getWs = jest.fn(() => ({
-        subscribe: jest.fn(() => getSubscriptions()),
-        unsubscribe
-      }));
-    });
-
-    it('should not call for unsubscribe in ws if no subscriptions presented', async () => {
-      await tradeStore.unsubscribeFromPublicTrades();
-      expect(unsubscribe).toHaveBeenCalledTimes(0);
-    });
-
-    it('should call for unsubscribe in ws for all subscription', async () => {
-      await tradeStore.subscribeToPublicTrades();
-      await tradeStore.subscribeToPublicTrades();
-      await tradeStore.subscribeToPublicTrades();
-
-      await tradeStore.unsubscribeFromPublicTrades();
-      expect(unsubscribe).toHaveBeenCalledTimes(3);
     });
   });
 

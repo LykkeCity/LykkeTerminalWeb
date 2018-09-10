@@ -1,7 +1,7 @@
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {addDays, addMonths} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
 import {last} from 'rambda';
-import {IWampSubscriptionItem} from 'socket-connection-wamp';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
 import * as topics from '../api/topics';
