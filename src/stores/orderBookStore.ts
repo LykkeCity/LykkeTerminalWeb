@@ -4,8 +4,10 @@ import {compose, curry, head, reverse, sortBy, take} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {LEVELS_COUNT} from '../components/OrderBook';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {LevelType, Order, OrderBookCellType, Side} from '../models/index';
 import {OrderLevel} from '../models/order';
+import {AnalyticsService} from '../services/analyticsService';
 import {switchcase} from '../utils/fn';
 import {precisionFloor} from '../utils/math';
 import {getDigits} from '../utils/number';
@@ -62,7 +64,11 @@ class OrderBookStore extends BaseStore {
   @computed
   get maxMultiplierIdx() {
     if (this.rawAsks.length > 0) {
-      const sortByPriceDesc = compose(headArr, reverse, sortByPrice);
+      const sortByPriceDesc = compose(
+        headArr,
+        reverse,
+        sortByPrice
+      );
       const bestAsk = sortByPriceDesc(this.rawAsks).price;
       return Math.floor(Math.log10(bestAsk / this.seedSpan));
     }
@@ -169,6 +175,7 @@ class OrderBookStore extends BaseStore {
       this.spanMultiplierIdx++;
     }
     this.drawOrderBook();
+    AnalyticsService.track(AnalyticsEvents.GroupOrderBook);
   };
 
   @action
@@ -177,6 +184,7 @@ class OrderBookStore extends BaseStore {
       this.spanMultiplierIdx--;
     }
     this.drawOrderBook();
+    AnalyticsService.track(AnalyticsEvents.GroupOrderBook);
   };
 
   @action

@@ -106,7 +106,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     }
   }),
   InstrumentPickerSort: (column: string, direction: string) => ({
-    title: 'Sort instruments in picker',
+    title: 'Sort Instruments in Picker',
     details: {
       category,
       location: location.instrumentPicker,
@@ -127,7 +127,7 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     }
   }),
   SectionSplitterMoved: {
-    title: 'Section resized',
+    title: 'Section Resized',
     details: {
       category,
       location: location.application,
@@ -237,6 +237,24 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       location: location.order,
       type: button,
       info: 'User resets Order Widget'
+    }
+  },
+  GroupOrderBook: {
+    title: 'Click on Grouping Button',
+    details: {
+      category,
+      location: location.orderBook,
+      type: button,
+      info: 'User grouped orders in Order Book'
+    }
+  },
+  ScrollOrderBook: {
+    title: 'Scroll Orders',
+    details: {
+      category,
+      location: location.orderBook,
+      type: button,
+      info: 'User scrolled orders in Order Book'
     }
   }
 };

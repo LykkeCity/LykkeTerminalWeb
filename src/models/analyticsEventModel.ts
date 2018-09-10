@@ -51,4 +51,6 @@ export interface AnalyticsEventsModel {
   ChangeBaseAsset: (asset: string) => AnalyticsEventModel;
   ClickOnAvailable: (orderType: string) => AnalyticsEventModel;
   ClickOnReset: AnalyticsEventModel;
+  GroupOrderBook: AnalyticsEventModel;
+  ScrollOrderBook: AnalyticsEventModel;
 }
