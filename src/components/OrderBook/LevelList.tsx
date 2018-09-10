@@ -430,17 +430,9 @@ class LevelList extends React.Component<LevelListProps> {
     this.cachedLevels = [...levels];
   };
 
-  componentWillReceiveProps({width}: LevelListProps) {
+  componentWillReceiveProps({width, height}: LevelListProps) {
     window.requestAnimationFrame(() => {
-      if (width !== this.prevWidth) {
-        this.prevWidth = width;
-        defineCanvasScale(
-          this.canvasCtx,
-          this.canvas,
-          width,
-          this.props.height
-        );
-      }
+      defineCanvasScale(this.canvasCtx, this.canvas, width, height);
       const asks = this.props.getAsks();
       const bids = this.props.getBids();
       if (!asks.length && !bids.length) {
