@@ -4,6 +4,8 @@ import {compose, pathOr} from 'rambda';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import {withContentRect} from 'react-measure';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {AnalyticsService} from '../../services/analyticsService';
 import {connect} from '../connect';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
@@ -151,6 +153,10 @@ const withMeasureAnLoader = compose(
   withContentRect('client')
 );
 
+const handleScroll = () => {
+  AnalyticsService.track(AnalyticsEvents.ScrollOrderBook);
+};
+
 const ConnectedOrderbook = connect(
   ({orderBookStore: {hasPendingItems}, uiStore: {selectedInstrument}}) => ({
     loading: hasPendingItems || selectedInstrument === undefined
@@ -163,6 +169,7 @@ const ConnectedOrderbook = connect(
       <HBar />
       <div style={{height: 'calc(100% - 75px)'}} ref={measureRef}>
         <Scrollbars
+          onScrollStop={handleScroll}
           style={{
             height: `100%`,
             width: 'calc(100% + 1rem)',

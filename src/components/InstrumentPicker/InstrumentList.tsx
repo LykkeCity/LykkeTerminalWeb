@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import place from '../../constants/places';
 import {AssetModel, InstrumentModel} from '../../models';
 import SortDirection from '../../models/sortDirection';
 import {AnalyticsService} from '../../services/analyticsService';
@@ -105,8 +106,12 @@ class InstrumentList extends React.Component<
       this.state
     );
 
-    AnalyticsService.handleClick(
-      AnalyticsEvents.InstrumentPickerSort(sortByParam, sortDirection)
+    AnalyticsService.track(
+      AnalyticsEvents.ApplySorting(
+        place.instrumentPicker,
+        sortByParam,
+        sortDirection
+      )
     );
   };
 

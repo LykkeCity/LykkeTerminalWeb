@@ -1,5 +1,7 @@
 import {pathOr} from 'rambda';
 import React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {AnalyticsService} from '../../services/analyticsService';
 import {ReferenceStore} from '../../stores/index';
 import {CustomDropdown} from '../CustomDropdown';
 import {ListItem} from '../CustomDropdown/CustomDropdown';
@@ -17,6 +19,7 @@ class BaseAssetSelection extends React.Component<BaseAssetSelectionProps> {
 
   handleAssetChange = (value: string) => {
     this.referenceStore.setBaseAssetId(value);
+    AnalyticsService.track(AnalyticsEvents.ChangeBaseAsset(value));
   };
 
   getAssetOptions = () => {

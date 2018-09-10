@@ -1,6 +1,9 @@
 import {HBar} from '@lykkex/react-components';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import place from '../../constants/places';
 import {OrderModel, SortDirection} from '../../models';
+import {AnalyticsService} from '../../services/analyticsService';
 import {EditOrder} from '../Modal';
 import {
   checkDataForSorting,
@@ -45,6 +48,13 @@ class Blotter extends React.Component<OrdersProps, OrdersState> {
   sort = (sortByParam: string, sortDirectionDefault: string) => {
     this.setState(
       sortData(this.props.orders, sortByParam, sortDirectionDefault, this.state)
+    );
+    AnalyticsService.track(
+      AnalyticsEvents.ApplySorting(
+        place.orders,
+        sortByParam,
+        sortDirectionDefault
+      )
     );
   };
 

@@ -3,9 +3,11 @@ import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
+import {AnalyticsService} from '../services/analyticsService';
 import {nextSkip} from '../utils';
 import {BaseStore, RootStore} from './index';
 
@@ -126,6 +128,7 @@ class TradeStore extends BaseStore {
   fetchNextTrades = async () => {
     this.skip = nextSkip(this.skip, TradeQuantity.Take, this.receivedFromWamp);
     this.fetchTrades();
+    AnalyticsService.track(AnalyticsEvents.LoadMoreTrades);
   };
 
   fetchPublicTrades = async () => {

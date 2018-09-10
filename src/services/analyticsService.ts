@@ -6,7 +6,7 @@ export abstract class AnalyticsService {
     window.analytics.page();
   };
 
-  static handleClick = (event: AnalyticsEventModel) => {
+  static track = (event: AnalyticsEventModel) => {
     window.analytics.track(event.title, event.details);
   };
 

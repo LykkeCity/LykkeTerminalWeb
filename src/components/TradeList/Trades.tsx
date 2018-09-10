@@ -1,10 +1,13 @@
 import {HBar} from '@lykkex/react-components';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import place from '../../constants/places';
 import {
   SortDirection,
   TradeFilter as TradeFilterModel,
   TradeModel
 } from '../../models/index';
+import {AnalyticsService} from '../../services/analyticsService';
 import {
   checkDataForSorting,
   HeaderProps,
@@ -47,6 +50,13 @@ class Trades extends React.Component<TradesProps, TableSortState> {
   sort = (sortByParam: string, sortDirectionDefault: string) => {
     this.setState(
       sortData(this.props.trades, sortByParam, sortDirectionDefault, this.state)
+    );
+    AnalyticsService.track(
+      AnalyticsEvents.ApplySorting(
+        place.trades,
+        sortByParam,
+        sortDirectionDefault
+      )
     );
   };
 

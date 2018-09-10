@@ -1,8 +1,10 @@
 import {curry, pathOr} from 'rambda';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {Percentage} from '../../constants/ordersPercentage';
 import {AssetBalanceModel, OrderInputs, OrderModel} from '../../models';
 import Side from '../../models/side';
+import {AnalyticsService} from '../../services/analyticsService';
 import {
   DEFAULT_INPUT_VALUE,
   onArrowClick,
@@ -206,11 +208,13 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
       .editOrder(body, this.props.order.id)
       .then(this.handleClose)
       .catch(() => this.toggleDisableBtn(false));
+    AnalyticsService.track(AnalyticsEvents.FinishOrderEdit);
   };
 
   handleClose = () => {
     resetPercentage(percentage);
     this.props.onClose();
+    AnalyticsService.track(AnalyticsEvents.CancelOrderEdit);
   };
 
   isLimitInvalid = () => {

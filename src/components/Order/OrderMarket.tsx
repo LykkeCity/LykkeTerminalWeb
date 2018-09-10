@@ -1,7 +1,9 @@
 import {Form, FormikProps, withFormik} from 'formik';
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import indicativeTotalHint from '../../constants/indicativeTotalHint';
 import {OrderInputs, Side} from '../../models';
+import {AnalyticsService} from '../../services/analyticsService';
 import {capitalize} from '../../utils';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
@@ -74,6 +76,7 @@ class OrderMarket extends React.Component<
     this.isInverted = false;
     this.updateInvertedValues(null);
     this.props.onReset();
+    AnalyticsService.track(AnalyticsEvents.ClickOnReset);
   };
 
   handleArrowClick = (operation: string) => () => {
@@ -88,6 +91,7 @@ class OrderMarket extends React.Component<
   };
 
   handlePercentageChange = (index?: number) => () => {
+    AnalyticsService.track(AnalyticsEvents.ClickOnAvailable('Market'));
     this.props.onHandlePercentageChange(index)(this.isInverted);
   };
 
