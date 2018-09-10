@@ -241,5 +241,50 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
         parameter
       }
     }
-  })
+  }),
+  StartOrderEdit: {
+    title: 'Start Order Edit',
+    details: {
+      category,
+      location: place.orders,
+      type: button,
+      info: 'User started editing order'
+    }
+  },
+  CancelOrderEdit: {
+    title: 'Cancel Order Edit',
+    details: {
+      category,
+      location: place.editOrder,
+      type: button,
+      info: 'User canceled editing order'
+    }
+  },
+  FinishOrderEdit: {
+    title: 'Finish Order Edit',
+    details: {
+      category,
+      location: place.editOrder,
+      type: button,
+      info: 'User finished editing order'
+    }
+  },
+  CancelOrder: {
+    title: 'Cancel Order',
+    details: {
+      category,
+      location: place.orders,
+      type: button,
+      info: 'User cancelled order'
+    }
+  },
+  LoadMoreTrades: {
+    title: 'Load More Trades',
+    details: {
+      category,
+      location: place.trades,
+      type: button,
+      info: 'User loads more trades'
+    }
+  }
 };

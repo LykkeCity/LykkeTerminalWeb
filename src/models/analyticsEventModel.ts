@@ -54,4 +54,9 @@ export interface AnalyticsEventsModel {
     parameter: string,
     direction: string
   ) => AnalyticsEventModel;
+  StartOrderEdit: AnalyticsEventModel;
+  CancelOrderEdit: AnalyticsEventModel;
+  FinishOrderEdit: AnalyticsEventModel;
+  CancelOrder: AnalyticsEventModel;
+  LoadMoreTrades: AnalyticsEventModel;
 }

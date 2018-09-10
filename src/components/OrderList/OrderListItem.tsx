@@ -1,5 +1,7 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {InstrumentModel, OrderModel, Side} from '../../models';
+import {AnalyticsService} from '../../services/analyticsService';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil, precisionFloor} from '../../utils/math';
 import {Icon} from '../Icon/index';
@@ -39,8 +41,14 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
   changeInstrumentById,
   isSelected
 }) => {
-  const handleEditOrder = () => onEdit(id);
-  const handleCancelOrder = () => cancelOrder(id);
+  const handleEditOrder = () => {
+    onEdit(id);
+    AnalyticsService.track(AnalyticsEvents.StartOrderEdit);
+  };
+  const handleCancelOrder = () => {
+    cancelOrder(id);
+    AnalyticsService.track(AnalyticsEvents.CancelOrder);
+  };
   const roundedValue =
     side === Side.Buy
       ? precisionCeil(value, quoteAssetAccuracy)

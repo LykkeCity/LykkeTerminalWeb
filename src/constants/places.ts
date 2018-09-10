@@ -12,7 +12,8 @@ const place = {
   funds: 'Funds Widget',
   orders: 'Orders Widget',
   trades: 'Trades Widget',
-  tradelog: ' Trade log Widget'
+  tradelog: 'Trade log Widget',
+  editOrder: 'Edit Order Modal'
 };
 
 export default place;
