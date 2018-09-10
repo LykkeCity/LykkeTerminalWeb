@@ -18,8 +18,10 @@ const InstrumentListItem: React.SFC<InstrumentListItemProps> = observer(
   ({baseAsset, instrument, onPick, inactive, isAuth}) => {
     const percentageAccuracy = 2;
     const click = () => {
-      AnalyticsService.track(AnalyticsEvents.SelectInstrument(instrument));
-      return inactive && onPick && onPick(instrument);
+      if (inactive && onPick) {
+        AnalyticsService.track(AnalyticsEvents.SelectInstrument(instrument));
+        onPick(instrument);
+      }
     };
 
     const dynamics =
