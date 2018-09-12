@@ -67,9 +67,10 @@ class SocketStore extends BaseStore {
     this.socket = null;
   };
 
-  onBackoffReady() {
-    this.socket!.connect();
-  }
+  onBackoffReady = async () => {
+    await this.socket!.connect();
+    this.socket!.send({type: WampMessageType.SubscribeToAll});
+  };
 
   set onConnectionOpen(callback: () => void) {
     this.listeners.set('onConnectionOpen', callback);
