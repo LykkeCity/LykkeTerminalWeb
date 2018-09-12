@@ -1,4 +1,4 @@
-import {Header} from '@lykkex/react-components';
+import {Header, MenuItem} from '@lykkex/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
@@ -14,6 +14,7 @@ import {
 } from '../../stores';
 import {getHashCode} from '../../utils/hashcode';
 import {StorageUtils} from '../../utils/index';
+import ApplicationLink from '../ApplicationLink/ApplicationLink';
 import Backdrop from '../Backdrop/Backdrop';
 import {Footer} from '../Footer';
 import {Header as SubHeader} from '../Header';
@@ -74,6 +75,21 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
       <Wallet />
     </Tile>
   )
+};
+
+const headerLinkOptions = [
+  {
+    title: MenuItem.Trade,
+    url: process.env.REACT_APP_ROOT_LINK!
+  },
+  {
+    title: MenuItem.Funds,
+    url: process.env.REACT_APP_WEBWALLET_ROOT_LINK!
+  }
+];
+
+const renderLink = (classes: string, title: JSX.Element, url: string) => {
+  return <ApplicationLink classes={classes} title={title} url={url} />;
 };
 
 class Terminal extends React.Component<TerminalProps, {}> {
@@ -244,7 +260,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
           onLogout={() => this.onLogout()}
           userName={userName}
           email={email}
-          activeMenuItem="trade"
+          activeMenuItem={MenuItem.Trade}
+          headerLinkOptions={headerLinkOptions}
+          renderLink={renderLink}
         />
         <TerminalWrapper>
           <NotificationList />
