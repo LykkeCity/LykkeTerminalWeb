@@ -80,11 +80,11 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 const headerLinkOptions = [
   {
     title: MenuItem.Trade,
-    url: process.env.REACT_APP_ROOT_LINK!
+    url: process.env.REACT_APP_ROOT_URL! || 'http://trade.lykke.com'
   },
   {
     title: MenuItem.Funds,
-    url: process.env.REACT_APP_WEBWALLET_ROOT_LINK!
+    url: process.env.REACT_APP_WEBWALLET_ROOT_URL! || 'http://wallet.lykke.com'
   }
 ];
 
