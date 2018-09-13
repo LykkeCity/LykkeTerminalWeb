@@ -11,7 +11,6 @@ export {default as TradeModel} from './tradeModel';
 export {default as Side} from './side';
 export {default as Order} from './order';
 export {default as SearchString} from './searchString';
-export {default as Interval} from './interval';
 export {default as PriceType} from './priceType';
 export {default as MarketType} from './marketType';
 export {OrderType, OrderInputs} from './orderType';

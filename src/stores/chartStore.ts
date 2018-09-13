@@ -70,14 +70,14 @@ class ChartStore extends BaseStore {
   }
 
   @action
-  toggleChartType = (type: string) =>
-    (this.selectedChartType = StockChartType[type]);
+  setChartInterval = (interval: string) => {
+    this.selectedChartInterval = chartInterval[interval];
+    this.fetchCandlesWithNewParams();
+  };
 
   @action
-  toggleChartInterval = (interval: string) => {
-    this.selectedChartInterval = chartInterval[interval];
-    this.fetchCandlesFirstTime();
-  };
+  toggleChartType = (type: string) =>
+    (this.selectedChartType = StockChartType[type]);
 
   @action
   toggleIndicatorsPopup = () =>
@@ -140,6 +140,8 @@ class ChartStore extends BaseStore {
           ? candles
           : candles.concat(this.initialData);
       });
+    } else {
+      candles = [];
     }
 
     this.dateTo = from;
@@ -148,7 +150,7 @@ class ChartStore extends BaseStore {
     return candles;
   };
 
-  fetchCandlesFirstTime = async () => {
+  fetchCandlesWithNewParams = async () => {
     this.firstLoad = true;
 
     await this.unsubscribeFromCandles();
@@ -178,7 +180,7 @@ class ChartStore extends BaseStore {
 
   unsubscribeFromCandles = async () => {
     const subscriptions = Array.from(this.subscriptions).map(
-      s => this.getWs() && this.getWs().unsubscribe(s)
+      subscription => this.getWs() && this.getWs().unsubscribe(subscription)
     );
 
     await Promise.all(subscriptions);

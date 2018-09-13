@@ -26,8 +26,8 @@ export interface ChartProps extends LoaderProps {
   isIndicatorsPopupShown: boolean;
   selectedChartType: StockChartType;
   selectedChartInterval: IchartInterval;
+  setChartInterval: (interval: string) => void;
   toggleChartType: (type: string) => void;
-  toggleChartInterval: (interval: string) => void;
   toggleIndicator: (indicatorName: string) => void;
   toggleIndicatorsPopup: () => void;
   toggleFullScreenMode: () => void;
@@ -41,8 +41,8 @@ const Chart: React.SFC<ChartProps> = ({
   fullScreenMode,
   selectedChartType,
   selectedChartInterval,
+  setChartInterval,
   toggleChartType,
-  toggleChartInterval,
   toggleIndicatorsPopup,
   toggleIndicator,
   toggleFullScreenMode,
@@ -83,7 +83,7 @@ const Chart: React.SFC<ChartProps> = ({
                   controlButtonName={selectedChartInterval.label}
                   controlButtonType={ChartControlButtonType.Text}
                   items={intervals}
-                  onClick={toggleChartInterval}
+                  onClick={setChartInterval}
                   selectedValue={selectedChartInterval.value}
                 />
               </ChartControlsItem>

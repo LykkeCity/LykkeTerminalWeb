@@ -173,7 +173,7 @@ class UiStore extends BaseStore {
       this.checkAssetToDisclaim(selectedInstrument, asset)
     );
 
-    this.rootStore.chartStore.fetchCandlesFirstTime();
+    this.rootStore.chartStore.fetchCandlesWithNewParams();
   };
 
   @action search = (term: string) => (this.searchTerm = term);

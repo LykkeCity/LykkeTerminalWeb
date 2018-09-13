@@ -15,8 +15,8 @@ const ConnectedChart = connect<ChartProps>(
       fullScreenMode,
       selectedChartType,
       selectedChartInterval,
+      setChartInterval,
       toggleChartType,
-      toggleChartInterval,
       toggleIndicatorsPopup,
       toggleIndicator,
       toggleFullScreenMode
@@ -30,8 +30,8 @@ const ConnectedChart = connect<ChartProps>(
     fullScreenMode,
     selectedChartType,
     selectedChartInterval,
+    setChartInterval,
     toggleChartType,
-    toggleChartInterval,
     toggleIndicatorsPopup,
     toggleIndicator,
     toggleFullScreenMode
