@@ -19,7 +19,6 @@ interface MeshProps {
 class Mesh extends React.Component<MeshProps> {
   canvas: HTMLCanvasElement | null;
   canvasCtx: CanvasRenderingContext2D | null;
-  memoWidth: number = 0;
   drawingTools: IMeshDrawingTools;
 
   constructor(props: MeshProps) {
@@ -42,17 +41,9 @@ class Mesh extends React.Component<MeshProps> {
     this.drawingTools = drawMeshElements(this.canvasCtx!);
   }
 
-  componentWillReceiveProps({canvasWidth}: MeshProps) {
+  componentWillReceiveProps({canvasWidth, canvasHeight}: MeshProps) {
     window.requestAnimationFrame(() => {
-      if (canvasWidth !== this.memoWidth) {
-        this.memoWidth = canvasWidth;
-        defineCanvasScale(
-          this.canvasCtx,
-          this.canvas,
-          this.props.canvasWidth,
-          this.props.canvasHeight
-        );
-      }
+      defineCanvasScale(this.canvasCtx, this.canvas, canvasWidth, canvasHeight);
       this.renderCanvas();
       this.forceUpdate();
     });

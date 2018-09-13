@@ -49,7 +49,7 @@ class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
         </TileContent>
 
         {this.selectedTab === ChartType.Depth && (
-          <TileContent>
+          <TileContent className="chart-tile">
             <DepthChart />
           </TileContent>
         )}
