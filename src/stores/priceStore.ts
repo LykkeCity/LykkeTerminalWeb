@@ -146,6 +146,8 @@ class PriceStore extends BaseStore {
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();
     }
+
+    await Promise.all(subscriptions);
   };
 
   reset = () => {
