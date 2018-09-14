@@ -1,4 +1,3 @@
-import {BigNumberModel} from '../../models';
 import {
   addition,
   bigToFixed,
