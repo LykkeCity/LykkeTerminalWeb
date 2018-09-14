@@ -11,19 +11,20 @@ export interface ChartApi {
 
 export class RestChartApi extends RestApi implements ChartApi {
   save = (body: any) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.fireAndForget(`/dictionary/${keys.chartKey}`, body),
       () => mockChartApi.save(body)
     );
 
-  load = () =>
-    this.extendWithMocks(
+  load = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get(`/dictionary/${keys.chartKey}`),
-      () => mockChartApi.load()
+      () => mockChartApi.load(),
+      () => onRefetch()
     );
 
   reset = () =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.delete(`/dictionary/${keys.chartKey}`),
       () => mockChartApi.reset()
     );

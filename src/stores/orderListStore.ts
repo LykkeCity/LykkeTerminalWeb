@@ -68,7 +68,7 @@ class OrderListStore extends BaseStore {
   fetchAll = async () => {
     this.hasPendingOrders = true;
     try {
-      const dto = await this.api.fetchAll();
+      const dto = await this.api.fetchAll(this.fetchAll);
       this.orders = mappers.filterByInstrumentsAndMapToLimitOrder(
         this.instruments,
         dto

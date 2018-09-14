@@ -31,7 +31,7 @@ class ChartStore extends BaseStore {
     this.api.save({Data: JSON.stringify(settings)});
   };
 
-  loadSettings = () => this.api.load();
+  loadSettings = () => this.api.load(this.loadSettings);
 
   subscribeToCandlesWithResolutions = (s: ISubscription) =>
     this.subscriptions.add(s);

@@ -97,7 +97,17 @@ class ChartDataFeed {
         this.instrument.id,
         new Date(from * 1000),
         addTick(firstDataRequest ? new Date() : new Date(to * 1000), interval),
-        interval
+        interval,
+        () =>
+          this.getBars(
+            symbolInfo,
+            resolution,
+            from,
+            to,
+            onHistoryCallback,
+            onErrorCallback,
+            firstDataRequest
+          )
       )
     );
 

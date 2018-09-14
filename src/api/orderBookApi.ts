@@ -6,10 +6,11 @@ export interface OrderBookApi {
 }
 
 export class RestOrderBookApi extends RestApi implements OrderBookApi {
-  fetchAll = (id: string) =>
-    this.extendWithMocks(
+  fetchAll = (id: string, onRefetch?: any) =>
+    this.extendForOffline(
       () => this.getWithQuery('/Orderbook', {assetPairId: id}),
-      () => mockOrderBookApi.fetchAll()
+      () => mockOrderBookApi.fetchAll(),
+      () => onRefetch()
     );
 }
 

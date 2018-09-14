@@ -8,7 +8,7 @@ export interface MarketApi {
 
 export class RestMarketApi extends RestApi implements MarketApi {
   convert = (body: any) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.post('/market/converter', body),
       () => mockMarketApi.convert()
     );

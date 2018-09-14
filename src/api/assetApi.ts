@@ -11,58 +11,66 @@ export interface AssetApi {
 }
 
 export class RestAssetApi extends RestApi implements AssetApi {
-  fetchAll = () =>
-    this.extendWithMocks(
+  fetchAll = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/assets'),
-      () => mockAssetApi.fetchAll()
+      () => mockAssetApi.fetchAll(),
+      () => onRefetch()
     );
 
-  fetchAvailableAssets = () =>
-    this.extendWithMocks(
+  fetchAvailableAssets = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/assets/available'),
-      () => mockAssetApi.fetchAvailableAssets()
+      () => mockAssetApi.fetchAvailableAssets(),
+      () => onRefetch()
     );
 
-  fetchBaseAsset = () =>
-    this.extendWithMocks(
+  fetchBaseAsset = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/assets/baseAsset'),
-      () => mockAssetApi.fetchBaseAsset()
+      () => mockAssetApi.fetchBaseAsset(),
+      () => onRefetch()
     );
 
-  fetchAssetInstruments = () =>
-    this.extendWithMocks(
+  fetchAssetInstruments = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/assetpairs/available'),
-      () => mockAssetApi.fetchAssetInstruments()
+      () => mockAssetApi.fetchAssetInstruments(),
+      () => onRefetch()
     );
 
-  fetchPublicAssetInstruments = () =>
-    this.extendWithMocks(
+  fetchPublicAssetInstruments = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/assetpairs'),
-      () => mockAssetApi.fetchPublicAssetInstruments()
+      () => mockAssetApi.fetchPublicAssetInstruments(),
+      () => onRefetch()
     );
 
   setBaseAsset = (body: any) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.fireAndForget('/assets/baseAsset', body),
       () => mockAssetApi.setBaseAsset()
     );
 
-  fetchAssetById = (id: string) =>
-    this.extendWithMocks(
+  fetchAssetById = (id: string, onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get(`/assets/${id}`),
-      () => mockAssetApi.fetchAssetById(id)
+      () => mockAssetApi.fetchAssetById(id),
+      () => onRefetch()
     );
 
-  fetchMarket = () =>
-    this.extendWithMocks(
+  fetchMarket = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/markets'),
-      () => mockAssetApi.fetchMarket()
+      () => mockAssetApi.fetchMarket(),
+      () => onRefetch()
     );
 
-  fetchAssetsDescriptions = () =>
-    this.extendWithMocks(
+  fetchAssetsDescriptions = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/assets/description'),
-      () => mockAssetApi.fetchAssetsDescriptions()
+      () => mockAssetApi.fetchAssetsDescriptions(),
+      () => onRefetch()
     );
 }
 

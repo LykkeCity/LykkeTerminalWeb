@@ -15,37 +15,37 @@ export interface SessionApi {
 
 export class RestSessionApi extends RestApi implements SessionApi {
   saveSessionNoteShown = (currentDate: any) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.fireAndForget(`/dictionary/${keys.sessionNote}`, currentDate),
       () => mockSessionApi.saveSessionDuration(currentDate)
     );
 
   loadSessionNoteShown = () =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.get(`/dictionary/${keys.sessionNote}`),
       () => mockSessionApi.loadSessionNoteShown()
     );
 
   getSessionStatus = () =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.get(`/client/features`),
       () => mockSessionApi.getSessionStatus()
     );
 
   extendSession = (Ttl: number) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.patch('/client/session', {Ttl}),
       () => mockSessionApi.extendSession(Ttl)
     );
 
   createSession = (Ttl: number) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.fireAndForget('/client/session', {Ttl}),
       () => mockSessionApi.createSession(Ttl)
     );
 
   saveSessionDuration = (duration: number) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () =>
         this.fireAndForget(`/dictionary/${keys.sessionDuration}`, {
           Data: duration
@@ -54,7 +54,7 @@ export class RestSessionApi extends RestApi implements SessionApi {
     );
 
   getSessionDuration = () =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.get(`/dictionary/${keys.sessionDuration}`),
       () => mockSessionApi.getSessionDuration()
     );

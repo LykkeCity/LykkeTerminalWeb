@@ -44,7 +44,9 @@ class AuthStore extends BaseStore {
 
   fetchBearerToken = (email: string, password: string) =>
     this.api
-      .fetchBearerToken('/client/auth', email, password)
+      .fetchBearerToken('/client/auth', email, password, () =>
+        this.fetchBearerToken(email, password)
+      )
       .then((resp: any) => {
         this.token = resp.AccessToken;
         tokenStorage.set(this.token);
@@ -54,7 +56,9 @@ class AuthStore extends BaseStore {
 
   fetchToken = async (accessToken: string, state: string) => {
     if (state === stateStorage.get()) {
-      const {token, authId} = await this.api.fetchToken(accessToken);
+      const {token, authId} = await this.api.fetchToken(accessToken, () =>
+        this.fetchToken(accessToken, state)
+      );
       sessionTokenStorage.set(authId);
       this.token = token;
       tokenStorage.set(token);
@@ -67,7 +71,7 @@ class AuthStore extends BaseStore {
 
   fetchUserInfo = async () => {
     try {
-      const userInfo = await this.api.fetchUserInfo();
+      const userInfo = await this.api.fetchUserInfo(this.fetchUserInfo);
       const {KycStatus} = userInfo;
 
       this.userInfo = new UserInfoModel(userInfo);
