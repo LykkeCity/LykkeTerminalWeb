@@ -212,7 +212,7 @@ describe('<InstrumentListItem>', () => {
           .find('td')
           .at(3)
           .childAt(0);
-        expect(child.html()).toBe(null);
+        expect(child.length).toBe(0);
       });
     });
 
