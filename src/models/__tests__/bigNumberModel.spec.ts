@@ -34,6 +34,17 @@ describe('BigNumberModel', () => {
     expect(bigNumber.toString()).toBe(resultString);
   });
 
+  it('should multiply value', () => {
+    const value = 10;
+    const term = 3;
+    const resultNumber = 30;
+    const resultString = '30';
+    const bigNumber = new BigNumberModel(value).times(term);
+
+    expect(bigNumber.toNumber()).toBe(resultNumber);
+    expect(bigNumber.toString()).toBe(resultString);
+  });
+
   it('should subtract decrement from value', () => {
     const value = 300;
     const bigNumber = new BigNumberModel(value);
