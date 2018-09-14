@@ -11,13 +11,20 @@ export interface PriceApi {
 }
 
 export class RestPriceApi extends RestApi implements PriceApi {
-  fetchCandles = (instrument: string, from: Date, to: Date, interval: string) =>
-    this.extendWithMocks(
+  fetchCandles = (
+    instrument: string,
+    from: Date,
+    to: Date,
+    interval: string,
+    onRefetch?: any
+  ) =>
+    this.extendForOffline(
       () =>
         this.get(
           `/candlesHistory/spot/${instrument}/trades/${interval}/${from.toISOString()}/${to.toISOString()}`
         ),
-      () => mockPriceApi.fetchCandles(instrument, from, to, interval)
+      () => mockPriceApi.fetchCandles(instrument, from, to, interval),
+      () => onRefetch()
     );
 }
 

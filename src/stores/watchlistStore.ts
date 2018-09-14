@@ -54,7 +54,7 @@ class WatchlistStore extends BaseStore {
 
   fetchAll = async () => {
     try {
-      const resp = await this.api.fetchAll();
+      const resp = await this.api.fetchAll(this.fetchAll);
       runInAction(() => {
         this.watchlists = resp.map(mappers.mapToWatchlist);
         watchlistsStorage.set(JSON.stringify(this.watchlists));

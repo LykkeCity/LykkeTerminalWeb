@@ -6,10 +6,11 @@ export interface BalanceListApi {
 }
 
 export class RestBalanceListApi extends RestApi implements BalanceListApi {
-  fetchAll = () =>
-    this.extendWithMocks(
+  fetchAll = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/wallets/balances'),
-      () => mockBalanceListApi.fetchAll()
+      () => mockBalanceListApi.fetchAll(),
+      () => onRefetch()
     );
 }
 

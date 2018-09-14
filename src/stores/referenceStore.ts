@@ -135,7 +135,10 @@ class ReferenceStore extends BaseStore {
 
   @action
   fetchAssets = () => {
-    const requests = [this.api.fetchAll(), this.api.fetchAssetsDescriptions()];
+    const requests = [
+      this.api.fetchAll(this.fetchAssets),
+      this.api.fetchAssetsDescriptions(this.fetchAssets)
+    ];
 
     return Promise.all(requests)
       .then(data => {
@@ -166,28 +169,32 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchAssetById = (id: string) => {
-    return this.api.fetchAssetById(id).then((data: any) => {
-      let mappedAsset;
-      const rawAsset = data.Asset || data;
-      if (rawAsset) {
-        const appropriateDescription = this.findAppropriateDescriptionById(
-          this.descriptions,
-          rawAsset.Id
-        );
-        mappedAsset = mappers.mapToAsset(
-          rawAsset as AssetResponseModel,
-          appropriateDescription as DescriptionResponseModel
-        );
-        this.assets.push(mappedAsset);
-        assetsStorage.set(JSON.stringify(this.assets));
-      }
-      return Promise.resolve(mappedAsset);
-    });
+    return this.api
+      .fetchAssetById(id, () => this.fetchAssetById(id))
+      .then((data: any) => {
+        let mappedAsset;
+        const rawAsset = data.Asset || data;
+        if (rawAsset) {
+          const appropriateDescription = this.findAppropriateDescriptionById(
+            this.descriptions,
+            rawAsset.Id
+          );
+          mappedAsset = mappers.mapToAsset(
+            rawAsset as AssetResponseModel,
+            appropriateDescription as DescriptionResponseModel
+          );
+          this.assets.push(mappedAsset);
+          assetsStorage.set(JSON.stringify(this.assets));
+        }
+        return Promise.resolve(mappedAsset);
+      });
   };
 
   fetchAvailableAssets = async () => {
     try {
-      const resp = await this.api.fetchAvailableAssets();
+      const resp = await this.api.fetchAvailableAssets(
+        this.fetchAvailableAssets
+      );
       runInAction(() => {
         this.availableAssets = resp.AssetIds;
         availableAssetsStorage.set(JSON.stringify(this.availableAssets));
@@ -201,7 +208,7 @@ class ReferenceStore extends BaseStore {
 
   fetchInstruments = async () => {
     try {
-      const resp = await this.api.fetchAssetInstruments();
+      const resp = await this.api.fetchAssetInstruments(this.fetchInstruments);
       if (resp) {
         const assetPairs = resp.AssetPairs || resp;
         if (!assetPairs) {
@@ -223,7 +230,9 @@ class ReferenceStore extends BaseStore {
 
   fetchPublicInstruments = async () => {
     try {
-      const resp = await this.api.fetchPublicAssetInstruments();
+      const resp = await this.api.fetchPublicAssetInstruments(
+        this.fetchPublicInstruments
+      );
       if (resp) {
         const assetPairs = resp.AssetPairs || resp;
         if (!assetPairs) {
@@ -245,7 +254,7 @@ class ReferenceStore extends BaseStore {
 
   fetchBaseAsset = () => {
     return this.api
-      .fetchBaseAsset()
+      .fetchBaseAsset(this.fetchBaseAsset)
       .then((res: any) => {
         if (!!res) {
           this.baseAsset = res.BaseAssetId || 'USD';
@@ -262,7 +271,7 @@ class ReferenceStore extends BaseStore {
 
   fetchRates = async () => {
     try {
-      const resp = await this.api.fetchMarket();
+      const resp = await this.api.fetchMarket(this.fetchRates);
       resp.forEach(
         ({AssetPair, Volume24H, PriceChange24H, Bid, Ask, LastPrice}: any) => {
           const instrument = this.getInstrumentById(AssetPair);

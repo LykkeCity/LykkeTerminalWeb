@@ -25,33 +25,34 @@ export interface OrderApi {
 
 export class RestOrderApi extends RestApi implements OrderApi {
   placeMarket = (body: any) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.fireAndForget('/Orders/market', body),
       () => mockOrderApi.placeMarket()
     );
 
   placeLimit = (body: any) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.post('/Orders/limit', body),
       () => mockOrderApi.placeLimit()
     );
 
   cancelOrder = (id: string) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.fireAndForget(`/orders/limit/${id}/cancel`, {}),
       () => mockOrderApi.cancelOrder()
     );
 
   cancelAllOrders = (body: any) =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () => this.deleteWithParams(`/orders/limit`, body),
       () => mockOrderApi.cancelAllOrders()
     );
 
-  fetchAll = () =>
-    this.extendWithMocks(
+  fetchAll = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/orders'),
-      () => mockOrderApi.fetchAll()
+      () => mockOrderApi.fetchAll(),
+      () => onRefetch()
     );
 }
 

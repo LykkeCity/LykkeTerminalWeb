@@ -120,7 +120,8 @@ class TradeStore extends BaseStore {
           this.getWalletId(),
           this.instrumentIdByFilter,
           this.skip,
-          TradeQuantity.Take
+          TradeQuantity.Take,
+          () => this.fetchTrades
         );
         this.hasPendingItems = false;
         runInAction(() => {
@@ -149,7 +150,8 @@ class TradeStore extends BaseStore {
         const resp = await this.api.fetchPublicTrades(
           this.selectedInstrument.id,
           TradeQuantity.Skip,
-          TradeQuantity.Take
+          TradeQuantity.Take,
+          this.fetchPublicTrades
         );
         runInAction(() => {
           this.addPublicTrades(resp.map(map.fromRestToPublicTrade));

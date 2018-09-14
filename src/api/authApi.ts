@@ -7,8 +7,13 @@ export interface AuthApi {
 }
 
 export class RestAuthApi extends RestApi implements AuthApi {
-  fetchBearerToken = (path: string, email: string, password: string) =>
-    this.extendWithMocks(
+  fetchBearerToken = (
+    path: string,
+    email: string,
+    password: string,
+    onRefetch?: any
+  ) =>
+    this.extendForOffline(
       () =>
         this.post(path, {
           ClientInfo: '',
@@ -16,11 +21,12 @@ export class RestAuthApi extends RestApi implements AuthApi {
           PartnerId: '',
           Password: password
         }),
-      () => mockAuthApi.fetchBearerToken(path, email, password)
+      () => mockAuthApi.fetchBearerToken(path, email, password),
+      () => onRefetch()
     );
 
-  fetchToken = (accessToken: string) =>
-    this.extendWithMocks(
+  fetchToken = (accessToken: string, onRefetch?: any) =>
+    this.extendForOffline(
       () =>
         this.wretcher()
           .url(process.env.REACT_APP_AUTH_URL!, true)
@@ -31,17 +37,19 @@ export class RestAuthApi extends RestApi implements AuthApi {
           .url('/getlykkewallettoken')
           .get()
           .json(),
-      () => mockAuthApi.fetchToken()
+      () => mockAuthApi.fetchToken(),
+      () => onRefetch()
     );
 
-  fetchUserInfo = () =>
-    this.extendWithMocks(
+  fetchUserInfo = (onRefetch?: any) =>
+    this.extendForOffline(
       () => this.get('/client/userinfo'),
-      () => mockAuthApi.fetchUserInfo()
+      () => mockAuthApi.fetchUserInfo(),
+      () => onRefetch()
     );
 
   signout = () =>
-    this.extendWithMocks(
+    this.extendForOffline(
       () =>
         this.wretcher()
           .url(process.env.REACT_APP_AUTH_URL!, true)
