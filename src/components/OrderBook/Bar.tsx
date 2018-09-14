@@ -1,7 +1,8 @@
 import {VBar} from '@lykkex/react-components';
 import React from 'react';
+import {IconContext} from 'react-icons';
+import {FiMinus, FiPlus} from 'react-icons/fi';
 import {OrderBookDisplayType} from '../../models';
-import {Icon} from '../Icon';
 import OrderBookSwitch from './OrderBookSwitch';
 import {Button, StyledBar, StyledGrouping} from './styles';
 
@@ -28,11 +29,15 @@ export default ({
     <StyledGrouping>
       Grouping:{' '}
       <Button onClick={onPrevSpan}>
-        <Icon name={'minus'} />
+        <IconContext.Provider value={{size: '1.2rem'}}>
+          <FiMinus />
+        </IconContext.Provider>
       </Button>
       <div>{format(span, priceAccuracy)}</div>
       <Button onClick={onNextSpan}>
-        <Icon name={'plus'} />
+        <IconContext.Provider value={{size: '1.2rem'}}>
+          <FiPlus />
+        </IconContext.Provider>
       </Button>
     </StyledGrouping>
     <VBar />
