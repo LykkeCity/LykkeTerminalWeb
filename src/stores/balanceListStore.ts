@@ -2,9 +2,12 @@ import {action, runInAction} from 'mobx';
 import {add, pathOr} from 'rambda';
 import {BalanceListApi} from '../api/index';
 import * as topics from '../api/topics';
-import {AssetBalanceModel, WalletModel, WalletType} from '../models';
+import {AssetBalanceModel, keys, WalletModel, WalletType} from '../models';
 import {ApiWalletModel} from '../models/walletModel';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
+
+const tradingWalletStorage = StorageUtils(keys.tradingWallet);
 
 class BalanceListStore extends BaseStore {
   tradingWallet: WalletModel;
@@ -38,15 +41,21 @@ class BalanceListStore extends BaseStore {
           this.tradingWallet = resp
             .map((wallet: ApiWalletModel) => new WalletModel(wallet))
             .find((wallet: WalletModel) => wallet.type === WalletType.Trading);
+          tradingWalletStorage.set(JSON.stringify(this.tradingWallet));
         });
         return Promise.resolve();
       })
-      .catch(Promise.reject);
+      .catch(() => {
+        if (this.rootStore.apiStore.getUseCacheData()) {
+          this.setWalletFromCache();
+        }
+      });
   };
 
   @action
   updateWalletBalances = async () => {
     this.tradingWallet.balances.forEach(this.updateBalance);
+    tradingWalletStorage.set(JSON.stringify(this.tradingWallet));
   };
 
   updateBalance = async (assetBalance: AssetBalanceModel) => {
@@ -73,6 +82,7 @@ class BalanceListStore extends BaseStore {
       baseAssetId,
       getInstrumentById
     );
+    tradingWalletStorage.set(JSON.stringify(this.tradingWallet));
   };
 
   subscribe = (session: any) => {
@@ -99,11 +109,29 @@ class BalanceListStore extends BaseStore {
         this.updateBalance(newBalanceModel);
         this.tradingWallet.balances.push(newBalanceModel);
       }
+
+      tradingWalletStorage.set(JSON.stringify(this.tradingWallet));
     }
   };
 
   reset = () => {
     this.tradingWallet.balances = [];
+  };
+
+  private setWalletFromCache = () => {
+    const cachedWalletModel = JSON.parse(tradingWalletStorage.get()!);
+    this.tradingWallet = Object.assign(
+      new WalletModel({
+        Name: '',
+        Id: '',
+        Balances: [],
+        Type: ''
+      }),
+      cachedWalletModel
+    );
+    this.tradingWallet.balances = this.tradingWallet.balances.map(balance =>
+      Object.assign(new AssetBalanceModel({}), balance)
+    );
   };
 }
 

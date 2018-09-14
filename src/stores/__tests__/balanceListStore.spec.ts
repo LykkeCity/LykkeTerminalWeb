@@ -1,7 +1,4 @@
-import {
-  MockBalanceListApi,
-  MockBalanceListApiNullBalance
-} from '../../api/balanceListApi';
+import {MockBalanceListApi} from '../../api/mocks/balanceListApi';
 import * as topics from '../../api/topics';
 import {
   AssetBalanceModel,
@@ -66,17 +63,6 @@ describe('balanceList store', () => {
       balanceListStore.onUpdateBalance(dto);
       expect(balance!.balance).toBe(dto[0].b);
       expect(balance!.reserved).toBe(dto[0].r);
-    });
-
-    it('should be no funds on balance after fetching from empty balances', async () => {
-      balanceListStore = new BalanceListStore(
-        new RootStore(false),
-        new MockBalanceListApiNullBalance({})
-      );
-      balanceListStore.updateWalletBalances = jest.fn();
-
-      await balanceListStore.fetchAll();
-      expect(balanceListStore.getTotalBalance()).toBeFalsy();
     });
 
     describe('should update asset balance', () => {

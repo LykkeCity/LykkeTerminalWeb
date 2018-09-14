@@ -1,3 +1,4 @@
+import mockSessionApi from '../api/mocks/sessionApi';
 import {keys} from '../models';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
@@ -14,14 +15,49 @@ export interface SessionApi {
 
 export class RestSessionApi extends RestApi implements SessionApi {
   saveSessionNoteShown = (currentDate: any) =>
-    this.fireAndForget(`/dictionary/${keys.sessionNote}`, currentDate);
-  loadSessionNoteShown = () => this.get(`/dictionary/${keys.sessionNote}`);
-  getSessionStatus = () => this.get(`/client/features`);
-  extendSession = (Ttl: number) => this.patch('/client/session', {Ttl});
-  createSession = (Ttl: number) => this.fireAndForget('/client/session', {Ttl});
+    this.extendWithMocks(
+      () => this.fireAndForget(`/dictionary/${keys.sessionNote}`, currentDate),
+      () => mockSessionApi.saveSessionDuration(currentDate)
+    );
+
+  loadSessionNoteShown = () =>
+    this.extendWithMocks(
+      () => this.get(`/dictionary/${keys.sessionNote}`),
+      () => mockSessionApi.loadSessionNoteShown()
+    );
+
+  getSessionStatus = () =>
+    this.extendWithMocks(
+      () => this.get(`/client/features`),
+      () => mockSessionApi.getSessionStatus()
+    );
+
+  extendSession = (Ttl: number) =>
+    this.extendWithMocks(
+      () => this.patch('/client/session', {Ttl}),
+      () => mockSessionApi.extendSession(Ttl)
+    );
+
+  createSession = (Ttl: number) =>
+    this.extendWithMocks(
+      () => this.fireAndForget('/client/session', {Ttl}),
+      () => mockSessionApi.createSession(Ttl)
+    );
+
   saveSessionDuration = (duration: number) =>
-    this.fireAndForget(`/dictionary/${keys.sessionDuration}`, {Data: duration});
-  getSessionDuration = () => this.get(`/dictionary/${keys.sessionDuration}`);
+    this.extendWithMocks(
+      () =>
+        this.fireAndForget(`/dictionary/${keys.sessionDuration}`, {
+          Data: duration
+        }),
+      () => mockSessionApi.saveSessionDuration(duration)
+    );
+
+  getSessionDuration = () =>
+    this.extendWithMocks(
+      () => this.get(`/dictionary/${keys.sessionDuration}`),
+      () => mockSessionApi.getSessionDuration()
+    );
 }
 
 export default RestSessionApi;

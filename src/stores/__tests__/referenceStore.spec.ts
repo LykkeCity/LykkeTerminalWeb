@@ -11,7 +11,6 @@ describe('referenceStore', () => {
   const api: any = {
     fetchAll: jest.fn(),
     fetchAssetById: jest.fn(),
-    fetchAssetCategories: jest.fn(),
     fetchAssetInstruments: jest.fn(),
     fetchAssetsDescriptions: jest.fn(),
     fetchBaseAsset: jest.fn()
@@ -30,17 +29,6 @@ describe('referenceStore', () => {
 
     it('should be empty after store instantiation', () => {
       expect(assetStore.getAssets()).toHaveLength(0);
-    });
-  });
-
-  describe('categories list', () => {
-    it('should be defined', () => {
-      expect(assetStore.getCategories()).toBeDefined();
-      expect(assetStore.getCategories()).not.toBeNull();
-    });
-
-    it('should be empty after store instantiation', () => {
-      expect(assetStore.getCategories()).toHaveLength(0);
     });
   });
 
@@ -228,44 +216,13 @@ describe('referenceStore', () => {
     });
   });
 
-  describe('fetch categories', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
-
-    it('should call api get categories', async () => {
-      api.fetchAssetCategories = jest.fn(() => Promise.resolve());
-
-      await assetStore.fetchCategories();
-
-      expect(api.fetchAssetCategories).toHaveBeenCalled();
-      expect(api.fetchAssetCategories).toHaveBeenCalledTimes(1);
-    });
-
-    it('should map valid response to categories', async () => {
-      api.fetchAssetCategories = jest.fn(() =>
-        Promise.resolve({
-          AssetCategories: [{Id: '1', Name: 'Lykke'}]
-        })
-      );
-
-      await assetStore.fetchCategories();
-
-      expect(assetStore.getCategories()).not.toBeNull();
-      expect(assetStore.getCategories()).toHaveLength(1);
-      expect(assetStore.getCategories()[0]).toEqual(
-        new AssetCategoryModel({id: '1', name: 'Lykke'})
-      );
-    });
-  });
-
   describe('map asset from dto', () => {
     beforeEach(() => {
       jest.resetAllMocks();
     });
 
     it('correctly maps from dto', async () => {
-      const ctg = new AssetCategoryModel({id: '1', name: 'Lykke'});
+      const ctg = new AssetCategoryModel({name: 'Other'});
       const expectedAsset = new AssetModel({
         id: '1',
         name: 'LKK',
@@ -298,13 +255,6 @@ describe('referenceStore', () => {
         })
       );
 
-      api.fetchAssetCategories = jest.fn(() =>
-        Promise.resolve({
-          AssetCategories: [{Id: '1', Name: 'Lykke'}]
-        })
-      );
-
-      await assetStore.fetchCategories();
       await assetStore.fetchAssets();
 
       expect(assetStore.getAssets()[0]).toEqual(expectedAsset);

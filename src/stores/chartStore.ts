@@ -51,7 +51,7 @@ class ChartStore extends BaseStore {
     return new ChartDataFeed(
       ChartStore.config,
       this.rootStore.uiStore.selectedInstrument!,
-      new PriceApi(this),
+      new PriceApi(this.rootStore),
       this.getWs(),
       this.subscribeToCandlesWithResolutions
     );

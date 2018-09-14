@@ -248,27 +248,13 @@ describe('orderMapper', () => {
         FullName: 'Test'
       });
 
-      const mappedAssetModel = orderMapper.mapToAsset(
-        rawObject,
-        [],
-        description
-      );
+      const mappedAssetModel = orderMapper.mapToAsset(rawObject, description);
       expect(mappedAssetModel.accuracy).toEqual(rawObject.Accuracy);
       expect(mappedAssetModel.category).toEqual(AssetCategoryModel.Other());
       expect(mappedAssetModel.iconUrl).toEqual(rawObject.IconUrl);
       expect(mappedAssetModel.id).toEqual(rawObject.Id);
       expect(mappedAssetModel.canBeBase).toEqual(rawObject.CanBeBase);
       expect(mappedAssetModel.name).toEqual(rawObject.DisplayId);
-
-      const assetCategoryModel = new AssetCategoryModel({id: '3'});
-      const mappedAssetModelWithCetegories = orderMapper.mapToAsset(
-        rawObject,
-        [assetCategoryModel],
-        description
-      );
-      expect(mappedAssetModelWithCetegories.category).toEqual(
-        assetCategoryModel
-      );
     });
   });
 

@@ -15,7 +15,7 @@ describe('root store', () => {
   describe('reset stores', () => {
     it('should call reset on watchlist store', () => {
       rootStore.watchlistStore.reset = jest.fn();
-      new WampApi().close = jest.fn();
+      new WampApi(new RootStore()).close = jest.fn();
 
       rootStore.reset();
 

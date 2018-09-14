@@ -1,5 +1,4 @@
 import {InstrumentModel} from '../../models';
-import WatchlistModel from '../../models/watchlistModel';
 import Watchlists from '../../models/watchlists';
 import {RootStore, WatchlistStore} from '../index';
 
@@ -50,29 +49,6 @@ describe('watchlist store', () => {
       expect(watchlistStore.allInstrumentsWatchlist.assetPairIds).toHaveLength(
         getInstruments().length
       );
-    });
-
-    it('should return only 1 watchlist with All instruments', () => {
-      const num = 3;
-      for (let idx = 0; idx < num; idx++) {
-        watchlistStore.addWatchlist(
-          new WatchlistModel({id: `${idx}`, name: `${idx}`})
-        );
-      }
-      for (let idx = 0; idx < num; idx++) {
-        watchlistStore.addWatchlist(
-          new WatchlistModel({id: `default${idx}`, name: Watchlists.All})
-        );
-      }
-
-      expect(watchlistStore.activeWatchlists).toHaveLength(num + 1);
-      expect(
-        watchlistStore.activeWatchlists.filter(w => w.name === Watchlists.All)
-      ).toHaveLength(1);
-      expect(watchlistStore.watchlistNames).toHaveLength(num + 1);
-      expect(
-        watchlistStore.watchlistNames.filter(x => x === Watchlists.All)
-      ).toHaveLength(1);
     });
   });
 

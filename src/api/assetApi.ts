@@ -1,42 +1,69 @@
+import mockAssetApi from '../api/mocks/assetApi';
 import {RestApi} from './restApi';
-import {ApiResponse} from './types/index';
 
 export interface AssetApi {
   fetchAll: () => Promise<any>;
   fetchAssetById: (id: string) => Promise<any>;
   fetchBaseAsset: () => Promise<any>;
-  fetchAssetCategories: () => Promise<any>;
   fetchAssetInstruments: () => Promise<any>;
   fetchPublicAssetInstruments: () => Promise<any>;
   setBaseAsset: (body: any) => Promise<any>;
-  fetchRates: () => ApiResponse;
 }
 
 export class RestAssetApi extends RestApi implements AssetApi {
-  fetchAll = () => this.get('/assets');
-  fetchAvailableAssets = () => this.get('/assets/available');
-  fetchBaseAsset = () => this.get('/assets/baseAsset');
-  fetchAssetCategories = () => this.get('/assets/categories');
-  fetchAssetInstruments = () => this.get('/assetpairs/available');
-  fetchPublicAssetInstruments = () => this.get('/assetpairs');
-  setBaseAsset = (body: any) => this.fireAndForget('/assets/baseAsset', body);
-  fetchAssetById = (id: string) => this.get(`/assets/${id}`);
-  fetchRates = () => this.get('/assetpairs/rates');
-  fetchMarket = () => this.get('/markets');
-  fetchAssetsDescriptions = () => this.get('/assets/description');
-}
+  fetchAll = () =>
+    this.extendWithMocks(
+      () => this.get('/assets'),
+      () => mockAssetApi.fetchAll()
+    );
 
-// tslint:disable-next-line:max-classes-per-file
-export class MockAssetApi implements AssetApi {
-  fetchAll = () => Promise.resolve<any[]>([]);
-  fetchAssetById = () => Promise.resolve<any[]>([]);
-  fetchBaseAsset = () => Promise.resolve<any[]>([]);
-  fetchAvailableAssets = () => Promise.resolve<any[]>([]);
-  fetchAssetCategories = () => Promise.resolve<any[]>([]);
-  fetchAssetInstruments = () => Promise.resolve<any[]>([]);
-  setBaseAsset = () => Promise.resolve<any[]>([]);
-  fetchRates = () => Promise.resolve([]);
-  fetchPublicAssetInstruments = () => Promise.resolve([]);
+  fetchAvailableAssets = () =>
+    this.extendWithMocks(
+      () => this.get('/assets/available'),
+      () => mockAssetApi.fetchAvailableAssets()
+    );
+
+  fetchBaseAsset = () =>
+    this.extendWithMocks(
+      () => this.get('/assets/baseAsset'),
+      () => mockAssetApi.fetchBaseAsset()
+    );
+
+  fetchAssetInstruments = () =>
+    this.extendWithMocks(
+      () => this.get('/assetpairs/available'),
+      () => mockAssetApi.fetchAssetInstruments()
+    );
+
+  fetchPublicAssetInstruments = () =>
+    this.extendWithMocks(
+      () => this.get('/assetpairs'),
+      () => mockAssetApi.fetchPublicAssetInstruments()
+    );
+
+  setBaseAsset = (body: any) =>
+    this.extendWithMocks(
+      () => this.fireAndForget('/assets/baseAsset', body),
+      () => mockAssetApi.setBaseAsset()
+    );
+
+  fetchAssetById = (id: string) =>
+    this.extendWithMocks(
+      () => this.get(`/assets/${id}`),
+      () => mockAssetApi.fetchAssetById(id)
+    );
+
+  fetchMarket = () =>
+    this.extendWithMocks(
+      () => this.get('/markets'),
+      () => mockAssetApi.fetchMarket()
+    );
+
+  fetchAssetsDescriptions = () =>
+    this.extendWithMocks(
+      () => this.get('/assets/description'),
+      () => mockAssetApi.fetchAssetsDescriptions()
+    );
 }
 
 export default AssetApi;

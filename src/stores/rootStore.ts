@@ -20,6 +20,7 @@ import {PriceType} from '../models/index';
 import {StorageUtils} from '../utils/index';
 import {workerMock} from '../workers/worker';
 import {
+  ApiStore,
   AuthStore,
   BalanceListStore,
   BaseStore,
@@ -63,8 +64,9 @@ class RootStore {
   readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
+  readonly apiStore: ApiStore;
 
-  private ws: WampApi = new WampApi();
+  private ws: WampApi = new WampApi(this);
 
   private readonly stores = new Set<BaseStore>();
 
@@ -96,13 +98,14 @@ class RootStore {
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
       this.sessionStore = new SessionStore(this, new SessionApi(this));
-      this.priceStore = new PriceStore(this, new PriceApi());
+      this.priceStore = new PriceStore(this, new PriceApi(this));
       this.marketStore = new MarketStore(this);
+      this.apiStore = new ApiStore(this);
     }
   }
 
   startPublicMode = async (defaultInstrument: any) => {
-    const ws = new WampApi();
+    const ws = new WampApi(this);
     return ws
       .connect(
         this.wampUrl,
@@ -130,7 +133,7 @@ class RootStore {
   };
 
   start = async () => {
-    this.ws = new WampApi();
+    this.ws = new WampApi(this);
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
@@ -153,7 +156,7 @@ class RootStore {
         this.orderListStore.fetchAll();
         this.referenceStore.updateInstruments();
         this.balanceListStore.updateWalletBalances();
-      }, reject => Promise.resolve)
+      }, (reject: any) => Promise.resolve)
       .then(async () => {
         await this.ws.connect(
           this.wampUrl,
@@ -189,7 +192,7 @@ class RootStore {
 
         return Promise.resolve();
       })
-      .catch(e => {
+      .catch(() => {
         this.startPublicMode(defaultInstrument);
       });
   };
