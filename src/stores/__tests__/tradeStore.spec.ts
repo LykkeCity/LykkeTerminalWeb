@@ -173,6 +173,43 @@ describe('trade store', () => {
     });
   });
 
+  describe('method unsubscribeFromPublicTrades', () => {
+    let unsubscribe: () => void;
+
+    function getSubscriptions() {
+      const subscription = new Subscription(
+        'first',
+        undefined,
+        {},
+        SessionMock
+      );
+      subscription.active = true;
+      return Promise.resolve(subscription);
+    }
+    beforeEach(() => {
+      unsubscribe = jest.fn();
+
+      tradeStore.getWs = jest.fn(() => ({
+        subscribe: jest.fn(() => getSubscriptions()),
+        unsubscribe
+      }));
+    });
+
+    it('should not call for unsubscribe in ws if no subscriptions presented', async () => {
+      await tradeStore.unsubscribeFromPublicTrades();
+      expect(unsubscribe).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call for unsubscribe in ws for all subscription', async () => {
+      await tradeStore.subscribeToPublicTrades();
+      await tradeStore.subscribeToPublicTrades();
+      await tradeStore.subscribeToPublicTrades();
+
+      await tradeStore.unsubscribeFromPublicTrades();
+      expect(unsubscribe).toHaveBeenCalledTimes(3);
+    });
+  });
+
   describe('reset', () => {
     it('should clear trades', async () => {
       await tradeStore.addTrades([getTestTrade()]);

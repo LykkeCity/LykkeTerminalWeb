@@ -64,7 +64,7 @@ class UiStore extends BaseStore {
           this.toggleInstrumentPerformanceData(false);
 
           const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
-          reset();
+          await reset();
 
           try {
             await fetchAll(); // should be waited for loading bids and asks
@@ -102,11 +102,9 @@ class UiStore extends BaseStore {
             fns.seq(resetTrades, fetchTrades)();
           }
 
-          fns.seq(
-            resetPublicTrades,
-            fetchPublicTrades,
-            subscribeToPublicTrades
-          )();
+          await resetPublicTrades();
+
+          fns.seq(fetchPublicTrades, subscribeToPublicTrades)();
 
           const {
             fetchLastPrice,
@@ -114,7 +112,7 @@ class UiStore extends BaseStore {
             subscribeToDailyCandle,
             reset: resetPriceStore
           } = this.rootStore.priceStore;
-          resetPriceStore();
+          await resetPriceStore();
           await fetchLastPrice();
           await fetchDailyCandle();
           subscribeToDailyCandle();

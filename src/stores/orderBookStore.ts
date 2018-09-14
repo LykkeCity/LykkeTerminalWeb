@@ -259,8 +259,6 @@ class OrderBookStore extends BaseStore {
         subscription.id
       )
     );
-    await Promise.all(promises);
-
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();
     }
@@ -287,10 +285,10 @@ class OrderBookStore extends BaseStore {
     })(type)(value, side);
   };
 
-  reset = () => {
+  reset = async () => {
     this.rawBids = this.rawAsks = [];
     this.spanMultiplierIdx = 0;
-    this.unsubscribe();
+    await this.unsubscribe();
   };
 }
 

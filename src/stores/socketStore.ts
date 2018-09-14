@@ -59,7 +59,11 @@ class SocketStore extends BaseStore {
   };
 
   unsubscribe = async (topic: string, id: string) => {
-    await this.socket!.send({type: WampMessageType.Unsubscribe, topic, id});
+    if (this.isSocketOpen()) {
+      await this.socket!.send({type: WampMessageType.Unsubscribe, topic, id});
+    } else {
+      return Promise.resolve();
+    }
   };
 
   reset = async () => {
