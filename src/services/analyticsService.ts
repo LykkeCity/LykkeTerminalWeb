@@ -10,7 +10,7 @@ export abstract class AnalyticsService {
     window.analytics.track(event.title, event.details);
   };
 
-  static handleIdentify = (id: string, traits: any): void => {
-    window.analytics.identify(id, traits);
+  static handleIdentify = (traits: any): void => {
+    window.analytics.identify(traits);
   };
 }
