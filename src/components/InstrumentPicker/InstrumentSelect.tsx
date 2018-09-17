@@ -35,7 +35,7 @@ const StyledInstrumentSelect = styled(InstrumentSelect)`
     top: 50%;
     height: 24px;
     margin-top: -12px;
-    border-right: solid 1px rgba(0, 0, 0, 0.2);
+    border-right: solid 1px ${props => props.theme.colors.headerItemSeparator};
   }
 `;
 
@@ -46,7 +46,7 @@ const Value = styled.span`
 `;
 
 const Label = styled.small`
-  color: #8c94a0;
+  color: ${props => props.theme.colors.headerFigureLabel};
   font-size: ${rem(12)};
   display: block;
 `;

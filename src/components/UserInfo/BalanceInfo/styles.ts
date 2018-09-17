@@ -7,7 +7,7 @@ export const BalanceInfoDiv = styled.div`
 `;
 
 export const BalanceValue = styled.span`
-  color: #f5f6f7;
+  color: ${props => props.theme.colors.headerTotalBalanceValue};
   font-family: 'Akrobat', sans-serif;
   font-size: ${rem(16)};
   font-weight: bold;
@@ -20,11 +20,11 @@ export const BaseAssetLabel = styled.span`
   font-weight: bold;
   font-size: ${rem(16)};
   line-height: 1;
-  color: #0388ef;
+  color: ${props => props.theme.colors.headerBaseAssetLabel};
   padding: 1px 0 1px 8px;
 `;
 
 export const BalanceLabel = styled.div`
-  color: #8c94a0;
+  color: ${props => props.theme.colors.headerFigureLabel};
   font-size: ${rem(12)};
 `;

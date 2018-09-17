@@ -1,17 +1,17 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {withStyledScroll} from '../CustomScrollbar';
-import {colors, css} from '../styled';
+import {css} from '../styled';
 
 import {rem} from 'polished';
 
 const StyledSelect = styled.div`
   position: absolute;
-  border: 1px solid #f5f6f7;
   z-index: 11;
-  background-color: rgb(60, 60, 60);
-  box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
-  border: solid 1px rgba(0, 0, 0, 0.2);
+  color: ${props => props.theme.colors.text};
+  background-color: ${props => props.theme.colors.selectBackground};
+  box-shadow: 0 10px 10px 0 ${props => props.theme.colors.boxShadow};
+  border: solid 1px ${props => props.theme.colors.selectBorder};
   text-align: left;
   overflow: hidden;
   font-size: ${rem(14)};
@@ -23,7 +23,9 @@ const StyledList = styled.div`
 
 const StyledItem = styled.li.attrs({
   style: (props: any) => ({
-    background: props.isActive ? colors.blue : 'transparent'
+    background: props.isActive
+      ? props.theme.colors.selectActiveItem
+      : 'transparent'
   })
 })`
   cursor: pointer;
@@ -34,7 +36,8 @@ const StyledItem = styled.li.attrs({
     p.isActive ||
     css`
       &:hover {
-        background-color: rgba(0, 0, 0, 0.2) !important;
+        background-color: ${(props: any) =>
+          props.theme.colors.selectItemHoveredBackground} !important;
       }
     `};
 ` as any;

@@ -1,7 +1,7 @@
-import {shallow} from 'enzyme';
+import {mount} from 'enzyme';
 import * as React from 'react';
 import {AssetModel, InstrumentModel} from '../../../models';
-import {colors} from '../../styled';
+import {ThemeProvider, themes} from '../../styled';
 import InstrumentListItem from '../InstrumentListItem';
 
 describe('<InstrumentListItem>', () => {
@@ -13,13 +13,20 @@ describe('<InstrumentListItem>', () => {
 
   const getTestInstrumentListItem = () => {
     return (
-      <InstrumentListItem
-        baseAsset={baseAsset}
-        instrument={instrument}
-        inactive={inactive}
-        isAuth={isAuth}
-        onPick={onPick}
-      />
+      <ThemeProvider theme={themes.dark}>
+        <table>
+          <tbody>
+            <InstrumentListItem
+              baseAsset={baseAsset}
+              instrument={instrument}
+              inactive={inactive}
+              isAuth={isAuth}
+              onPick={onPick}
+              theme={themes.dark}
+            />
+          </tbody>
+        </table>
+      </ThemeProvider>
     );
   };
 
@@ -44,19 +51,19 @@ describe('<InstrumentListItem>', () => {
 
   describe('method render', () => {
     it('should render table row', () => {
-      const wrapper = shallow(getTestInstrumentListItem());
+      const wrapper = mount(getTestInstrumentListItem());
       expect(wrapper.find('tr')).toHaveLength(1);
     });
 
     it('should contain 5 table divisions', () => {
-      const wrapper = shallow(getTestInstrumentListItem());
+      const wrapper = mount(getTestInstrumentListItem());
       expect(wrapper.find('td')).toHaveLength(5);
     });
   });
 
   describe('table divisions', () => {
     it('first table division should contain instrument display name', () => {
-      const wrapper = shallow(getTestInstrumentListItem());
+      const wrapper = mount(getTestInstrumentListItem());
       const td = wrapper.find('td').at(0);
       expect((td.props() as any).title).toBe(instrument.displayName);
       expect(td.html()).toContain(instrument.displayName);
@@ -65,26 +72,28 @@ describe('<InstrumentListItem>', () => {
     describe('second table division', () => {
       it('should contain child with color prop with white color', () => {
         instrument.price = 123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(1)
           .childAt(0);
-        expect((child.props() as any).color).toBe(colors.white);
+        expect((child.props() as any).color).toBe(themes.dark.colors.text);
       });
 
       it('should contain child with color prop with grey color', () => {
         instrument.price = 0;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(1)
           .childAt(0);
-        expect((child.props() as any).color).toBe(colors.lightGrey);
+        expect((child.props() as any).color).toBe(
+          themes.dark.colors.instrumentVolumeText
+        );
       });
 
       it('should contain child with num prop with formatted number', () => {
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(1)
@@ -96,7 +105,7 @@ describe('<InstrumentListItem>', () => {
     describe('third table division', () => {
       it('should contain child with sign prop with + value', () => {
         instrument.change24h = 123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(2)
@@ -106,7 +115,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain child with dynamics prop with up value', () => {
         instrument.change24h = 123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(2)
@@ -116,7 +125,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain child with sign prop with empty value', () => {
         instrument.change24h = -123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(2)
@@ -126,7 +135,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain child with dynamics prop with down value', () => {
         instrument.change24h = -123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(2)
@@ -136,7 +145,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain child with dynamics prop with zero value', () => {
         instrument.change24h = 0;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(2)
@@ -146,7 +155,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain child with num prop with formatted number', () => {
         instrument.change24h = 123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(2)
@@ -156,7 +165,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain % if change24h is not a null', () => {
         instrument.change24h = -123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(2)
@@ -167,17 +176,19 @@ describe('<InstrumentListItem>', () => {
 
     describe('fourth table division', () => {
       it('should contain child with color prop with white color', () => {
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(3)
           .childAt(0);
-        expect((child.props() as any).color).toBe(colors.lightGrey);
+        expect((child.props() as any).color).toBe(
+          themes.dark.colors.instrumentVolumeText
+        );
       });
 
       it('should contain child with num prop with formatted number', () => {
         instrument.volume = 123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(3)
@@ -187,7 +198,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain base asset name', () => {
         instrument.volume = 123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(3)
@@ -197,7 +208,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should not contain base asset name', () => {
         instrument.volume = 0;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(3)
@@ -207,12 +218,12 @@ describe('<InstrumentListItem>', () => {
 
       it('child of table division should not be rendered', () => {
         isAuth = false;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(3)
-          .childAt(0);
-        expect(child.length).toBe(0);
+          .text();
+        expect(child).toBe('');
       });
     });
 
@@ -220,17 +231,19 @@ describe('<InstrumentListItem>', () => {
       isAuth = true;
 
       it('should contain child with color prop with white color', () => {
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
           .childAt(0);
-        expect((child.props() as any).color).toBe(colors.lightGrey);
+        expect((child.props() as any).color).toBe(
+          themes.dark.colors.instrumentVolumeText
+        );
       });
 
       it('should contain child with num prop with formatted number', () => {
         instrument.volumeInBase = 2538;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
@@ -240,7 +253,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should contain base asset name', () => {
         instrument.volumeInBase = 123;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
@@ -250,7 +263,7 @@ describe('<InstrumentListItem>', () => {
 
       it('should not contain base asset name', () => {
         instrument.volumeInBase = 0;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
@@ -261,7 +274,7 @@ describe('<InstrumentListItem>', () => {
       it('should not contain instrument base asset name', () => {
         isAuth = false;
         instrument.volume = 0;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
@@ -272,7 +285,7 @@ describe('<InstrumentListItem>', () => {
       it('should contain instrument base asset name', () => {
         isAuth = false;
         instrument.volume = 10;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
@@ -283,23 +296,25 @@ describe('<InstrumentListItem>', () => {
       it('color should be white', () => {
         isAuth = false;
         instrument.volume = 10;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
           .childAt(0);
-        expect((child.props() as any).color).toBe(colors.white);
+        expect((child.props() as any).color).toBe(themes.dark.colors.text);
       });
 
       it('color should be white', () => {
         isAuth = false;
         instrument.volume = 0;
-        const wrapper = shallow(getTestInstrumentListItem());
+        const wrapper = mount(getTestInstrumentListItem());
         const child = wrapper
           .find('td')
           .at(4)
           .childAt(0);
-        expect((child.props() as any).color).toBe(colors.lightGrey);
+        expect((child.props() as any).color).toBe(
+          themes.dark.colors.instrumentVolumeText
+        );
       });
     });
   });

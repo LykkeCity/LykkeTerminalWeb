@@ -1,12 +1,8 @@
 import {ClickOutside} from '@lykkex/react-components';
 import {rem} from 'polished';
 import * as React from 'react';
-import styled, {colors} from '../styled';
-import {InstrumentPickerActions} from './index';
-
-export interface InstrumentPopoverProps extends InstrumentPickerActions {
-  className?: string;
-}
+import styled from '../styled';
+import {InstrumentPopoverProps} from './index';
 
 const InstrumentPopover: React.SFC<InstrumentPopoverProps> = ({
   className,
@@ -22,9 +18,9 @@ const InstrumentPopover: React.SFC<InstrumentPopoverProps> = ({
 
 const StyledInstrumentPopover = styled(InstrumentPopover)`
   border-radius: 6px;
-  background-color: ${colors.graphiteBackground};
-  box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2);
-  border: solid 1px rgba(0, 0, 0, 0.2);
+  background-color: ${props => props.theme.colors.modalBackground};
+  box-shadow: 0 10px 10px 0 ${props => props.theme.colors.boxShadow};
+  border: solid 1px ${props => props.theme.colors.modalBorder};
   position: absolute;
   padding: ${rem(8)} ${rem(16)};
   z-index: 999;

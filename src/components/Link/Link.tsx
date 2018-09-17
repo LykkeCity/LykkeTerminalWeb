@@ -1,7 +1,7 @@
 import styled from '../styled';
 
 const Link = styled.a`
-  color: #f5f6f7;
+  color: ${props => props.theme.colors.defaultText};
   text-decoration: none;
 
   &:hover {

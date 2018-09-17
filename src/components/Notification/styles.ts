@@ -1,7 +1,6 @@
 import rem from 'polished/lib/helpers/rem';
 import styled from 'styled-components';
 import {NotificationColor} from '../../models';
-import {colors} from '../styled';
 
 const getBackground = (level: string) => {
   return NotificationColor[level];
@@ -25,7 +24,7 @@ export const StyledNotification = styled.div`
 `;
 
 export const NotificationCloseButton = styled.a`
-  color: ${colors.whiteText};
+  color: ${props => props.theme.colors.defaultText};
   text-decoration: none;
   cursor: pointer;
   font-size: 16px;

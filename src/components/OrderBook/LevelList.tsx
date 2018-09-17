@@ -22,7 +22,7 @@ import {
   getTrailingZeroOppositePosition,
   hasTrailingZeroes
 } from '../../utils/string';
-import {colors} from '../styled';
+import {ThemeObject} from '../styled';
 import {
   colorizedSymbol,
   DEFAULT_BAR_OPACITY,
@@ -62,6 +62,7 @@ export interface LevelListProps {
   isPageVisible: () => boolean;
   spanAccuracy: number;
   setSpanUpdatingHandler: (levelType: LevelType, fn: () => void) => void;
+  theme: ThemeObject;
 }
 
 interface ILevelsCells {
@@ -89,6 +90,7 @@ class LevelList extends React.Component<LevelListProps> {
   cachedLevels: Order[] = [];
   cancelColorAnimationIntervalId: any;
   animatingLevels: IAnimatingLevels[] = [];
+  theme: ThemeObject;
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
     if (!this.props.isPageVisible()) {
@@ -194,7 +196,7 @@ class LevelList extends React.Component<LevelListProps> {
       width,
       y,
       x: LEFT_PADDING,
-      color: colors.graphiteBorder,
+      color: this.props.theme.colors.levelBorder,
       lineWidth: 1
     });
   };
@@ -268,7 +270,7 @@ class LevelList extends React.Component<LevelListProps> {
   drawValue = (value: string, y: number) => {
     drawText({
       ctx: this.canvasCtx!,
-      color: colors.white,
+      color: this.props.theme.colors.levelListValue,
       text: value,
       x: this.props.width,
       y: y - TOP_PADDING,
@@ -292,9 +294,9 @@ class LevelList extends React.Component<LevelListProps> {
       const existedLevel = this.cachedLevels.find(
         cachedLevel => cachedLevel.price === levelOrder.price
       );
-      const color = fillBySide(levelOrder.side);
+      const color = fillBySide(levelOrder.side, this.props.theme.colors);
 
-      let volumeColor = colors.white;
+      let volumeColor = this.props.theme.colors.levelListVolume;
       let volumeOpacity = DEFAULT_OPACITY;
       const isChangingLevel =
         existedLevel && existedLevel[displayType] !== levelOrder[displayType];
@@ -326,7 +328,11 @@ class LevelList extends React.Component<LevelListProps> {
           const {
             animatedColor,
             animatedOpacity
-          } = getColorAndOpacityForAnimation(existedAnimatingLevel, color);
+          } = getColorAndOpacityForAnimation(
+            existedAnimatingLevel,
+            color,
+            this.props.theme.colors
+          );
           volumeColor = animatedColor;
           volumeOpacity = animatedOpacity;
         }
@@ -381,7 +387,11 @@ class LevelList extends React.Component<LevelListProps> {
           const symbolColor =
             existedAnimatingLevel && !existedAnimatingLevel.isAnimated
               ? volumeColor
-              : getSymbolColor(trailingZeroPosition, i);
+              : getSymbolColor(
+                  trailingZeroPosition,
+                  i,
+                  this.props.theme.colors
+                );
           const x = levelsWidth / CELLS_NUMBER + BAR_WIDTH + drownSymbolsWidth;
 
           this.drawVolume(symbolColor, symbol, volumeOpacity, canvasY, x);

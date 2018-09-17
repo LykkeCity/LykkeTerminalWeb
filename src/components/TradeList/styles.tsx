@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors, dims, fonts, padding} from '../styled';
+import styled, {dims, fonts, padding} from '../styled';
 
 export const TradeListToolbar = styled.div`
   display: flex;
@@ -13,7 +13,7 @@ export const TradeFilterValue = styled.div`
   position: relative;
   font-size: ${rem(fonts.normal)};
   text-align: left;
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
 
   &:hover {
     cursor: pointer;
@@ -23,7 +23,7 @@ export const TradeFilterValue = styled.div`
     content: '';
     width: 0;
     height: 0;
-    border-top: 4px solid rgba(245, 246, 247, 0.4);
+    border-top: 4px solid ${props => props.theme.colors.dropdownControlIcon};
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     position: relative;
@@ -42,7 +42,7 @@ export const StyledLoadMore = styled.div`
 export const StyledLoadMoreButton = styled.span`
   border-radius: 4px;
   border: solid 1px rgba(140, 148, 160, 0.4);
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   padding: ${padding(...dims.padding)};
 
   &:hover {

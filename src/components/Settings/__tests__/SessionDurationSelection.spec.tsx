@@ -1,7 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
-
 import {ChoosableItemProps} from '../../ChoosableItem/ChoosableItem';
+import {ThemeProvider, themes} from '../../styled';
 import SessionDurationSelection from '../SessionDurationSelection';
 
 describe('<SessionDurationSelection>', () => {
@@ -15,11 +15,13 @@ describe('<SessionDurationSelection>', () => {
 
   const getTestSessionDurationSelection = () => {
     return (
-      <SessionDurationSelection
-        closeSessionNotification={closeSessionNotification}
-        handleSetDuration={handleSetDuration}
-        sessionCurrentDuration={sessionCurrentDuration}
-      />
+      <ThemeProvider theme={themes.dark}>
+        <SessionDurationSelection
+          closeSessionNotification={closeSessionNotification}
+          handleSetDuration={handleSetDuration}
+          sessionCurrentDuration={sessionCurrentDuration}
+        />
+      </ThemeProvider>
     );
   };
 

@@ -3,7 +3,7 @@ import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AnalyticsService} from '../../services/analyticsService';
 import {Icon} from '../Icon/index';
-import styled, {colors} from '../styled';
+import styled from '../styled';
 import {InstrumentPickerActions} from './index';
 
 // tslint:disable-next-line:no-var-requires
@@ -40,7 +40,7 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
 
 const StyledInstrumentSearch = styled(InstrumentSearch)`
   width: 250px;
-  border-left: 1px solid rgba(0, 0, 0, 0.2);
+  border-left: 1px solid ${props => props.theme.colors.barBackground};
   & > i.icon {
     display: inline-block;
     margin-left: 4%;
@@ -48,10 +48,10 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
     cursor: default;
   }
   & > input {
-    background-color: #3c3c3c;
+    background-color: transparent;
     border: solid 2px transparent;
     border-radius: 4px;
-    color: ${colors.coolGrey};
+    color: ${props => props.theme.colors.instrumentSearchText};
     padding: ${rem(6)};
     width: 88%;
     font-size: 14px;
@@ -60,7 +60,7 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
       border: solid 2px rgb(3, 136, 239);
     }
     &::placeholder {
-      color: ${colors.coolGrey};
+      color: ${props => props.theme.colors.instrumentSearchText};
     }
   }
 `;

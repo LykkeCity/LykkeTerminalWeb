@@ -1,5 +1,5 @@
 import {rem} from 'polished';
-import styled, {colors, greyButton} from '../styled';
+import styled, {greyButton} from '../styled';
 
 export const StyledKycModalHeader = styled.div`
   font-size: ${rem(24)};
@@ -42,8 +42,9 @@ export const Modal = styled.div`
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
   border-radius: 12px;
-  background-color: #3c3c3c;
-  border: solid 1px rgba(0, 0, 0, 0.2);
+  color: ${props => props.theme.colors.text};
+  background-color: ${props => props.theme.colors.modalBackground};
+  border: solid 1px ${props => props.theme.colors.modalBorder};
   z-index: 30;
   min-width: ${rem(360)};
 `;
@@ -54,7 +55,7 @@ export const SessionQRConfirm = styled(Modal)`
 `;
 
 export const Button = styled.button`
-  color: ${colors.white};
+  color: ${props => props.theme.colors.text};
   height: ${rem(49)};
   border-radius: 4px;
   outline: none;
@@ -79,8 +80,9 @@ export const ModalReminder = styled.div`
 
 export const ApplyButton = styled(Button)`
   width: 48%;
-  background-color: #0388ef;
-  border: solid 1px #0388ef;
+  color: ${props => props.theme.colors.text};
+  background-color: ${props => props.theme.colors.applyButtonBackground};
+  border: solid 1px ${props => props.theme.colors.applyButtonBorder};
 `;
 
 export const CancelButton = styled(Button)`
@@ -140,13 +142,14 @@ export const QRBody = styled.div`
 
 /*hack for ios mobile*/
 export const QRCodeWrapper = styled.div`
-  border: 2px solid #fff;
-  width: ${rem(160 / 14 * 16)};
-  height: ${rem(160 / 14 * 16)};
+  border: 2px solid ${props => props.theme.colors.qrCodeWrapperBorder};
+  width: ${rem((160 / 14) * 16)};
+  height: ${rem((160 / 14) * 16)};
   box-sizing: content-box;
 `;
 
 export const ModalHeaderTitle = styled.div`
+  color: ${props => props.theme.colors.text};
   font-family: 'Akrobat';
   font-size: ${rem(24)};
   font-weight: bold;
@@ -156,7 +159,11 @@ export const ModalHeaderTitle = styled.div`
 
 export const EditModal = styled.div.attrs({
   style: (props: any) => ({
-    borderTop: `${rem(6)} solid ${props.isSell ? colors.red : colors.green}`
+    borderTop: `${rem(6)} solid ${
+      props.isSell
+        ? props.theme.colors.editModalSell
+        : props.theme.colors.editModalBuy
+    }`
   })
 })`
   border-radius: ${rem(6)};
@@ -166,8 +173,9 @@ export const EditModal = styled.div.attrs({
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
-  background-color: ${colors.grey};
-  border: solid 1px ${colors.darkGraphite};
+  color: ${props => props.theme.colors.text};
+  background-color: ${props => props.theme.colors.modalBackground};
+  border: solid 1px ${props => props.theme.colors.modalBorder};
   z-index: 31;
   width: ${rem(360)};
   font-size: ${rem(14)};
@@ -184,7 +192,9 @@ export const EditTitle = styled.div`
 
 export const EditActionTitle = styled.div.attrs({
   style: (props: any) => ({
-    color: props.isSell ? colors.red : colors.green
+    color: props.isSell
+      ? props.theme.colors.editModalSell
+      : props.theme.colors.editModalBuy
   })
 })`
   text-transform: uppercase;
@@ -230,5 +240,5 @@ export const KycAndFundsBack = styled.div`
   width: 100vw;
   padding: 0;
   margin: 0;
-  background-color: ${colors.lightGraphite};
+  background-color: ${props => props.theme.colors.kycAndFundsBackBackground};
 `;
