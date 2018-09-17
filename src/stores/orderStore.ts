@@ -102,8 +102,8 @@ class OrderStore extends BaseStore {
     }
   };
 
-  subscribe = (ws: any) => {
-    ws.subscribe(topics.orders, this.onOrders);
+  subscribe = () => {
+    this.rootStore.socketStore.subscribe(topics.orders, this.onOrders);
   };
 
   onOrders = (args: any) => {

@@ -8,7 +8,6 @@ import {
   PriceApi,
   SessionApi,
   TradeApi,
-  WampApi,
   WatchlistApi
 } from '../api/index';
 import * as topics from '../api/topics';
@@ -35,6 +34,7 @@ import {
   ReferenceStore,
   SessionStore,
   SettingsStore,
+  SocketStore,
   TradeStore,
   UiOrderStore,
   UiStore,
@@ -63,8 +63,7 @@ class RootStore {
   readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
-
-  private ws: WampApi = new WampApi();
+  readonly socketStore: SocketStore;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -98,27 +97,24 @@ class RootStore {
       this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
+      this.socketStore = new SocketStore(this);
     }
   }
 
   startPublicMode = async (defaultInstrument: any) => {
-    const ws = new WampApi();
-    return ws
-      .connect(
-        this.wampUrl,
-        this.wampRealm
-      )
-      .then(session => {
-        this.uiStore.setWs(ws);
-        this.depthChartStore.setWs(ws);
-        this.orderBookStore.setWs(ws);
-        this.chartStore.setWs(ws);
-        this.tradeStore.setWs(ws);
-        this.priceStore.setWs(ws);
+    return this.socketStore
+      .connect(this.wampUrl, this.wampRealm, tokenStorage.get() as string)
+      .then(() => {
         this.referenceStore.getInstruments().forEach((x: any) => {
-          ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          ws.subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-          ws.subscribe(
+          this.socketStore.subscribe(
+            topics.quote(x.id),
+            this.referenceStore.onQuote
+          );
+          this.socketStore.subscribe(
+            topics.quoteAsk(x.id),
+            this.referenceStore.onQuoteAsk
+          );
+          this.socketStore.subscribe(
             topics.candle('spot', x.id, PriceType.Trade, 'day'),
             this.referenceStore.onCandle
           );
@@ -130,7 +126,6 @@ class RootStore {
   };
 
   start = async () => {
-    this.ws = new WampApi();
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 
@@ -155,38 +150,29 @@ class RootStore {
         this.balanceListStore.updateWalletBalances();
       }, reject => Promise.resolve)
       .then(async () => {
-        await this.ws.connect(
+        await this.socketStore.connect(
           this.wampUrl,
           this.wampRealm,
           tokenStorage.get() as string
         );
 
-        this.uiStore.setWs(this.ws);
+        const {subscribe} = this.socketStore;
+
         this.uiStore.setSocketWatcher();
-        this.depthChartStore.setWs(this.ws);
-        this.orderBookStore.setWs(this.ws);
-        this.chartStore.setWs(this.ws);
-        this.tradeStore.setWs(this.ws);
-        this.priceStore.setWs(this.ws);
         instruments.forEach(x => {
-          this.ws.subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          this.ws.subscribe(
-            topics.quoteAsk(x.id),
-            this.referenceStore.onQuoteAsk
-          );
-          this.ws.subscribe(
+          subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+          subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+          subscribe(
             topics.candle('spot', x.id, PriceType.Trade, 'day'),
             this.referenceStore.onCandle
           );
         });
-        this.orderListStore.setWs(this.ws);
         this.uiStore.selectInstrument(
           this.lastOrDefaultInstrument(defaultInstrument)!.id
         );
-        this.tradeStore.subscribe(this.ws);
-        this.orderStore.subscribe(this.ws);
-        this.balanceListStore.subscribe(this.ws);
-
+        this.tradeStore.subscribe();
+        this.orderStore.subscribe();
+        this.balanceListStore.subscribe();
         return Promise.resolve();
       })
       .catch(e => {

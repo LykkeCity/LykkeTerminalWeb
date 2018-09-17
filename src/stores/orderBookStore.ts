@@ -1,4 +1,4 @@
-import {ISubscription} from 'autobahn';
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {action, computed, observable} from 'mobx';
 import {compose, curry, head, reverse, sortBy, take} from 'rambda';
 import {OrderBookApi} from '../api';
@@ -97,7 +97,7 @@ class OrderBookStore extends BaseStore {
       : DEFAULT_ACCURACY;
   }
 
-  private subscriptions: Set<ISubscription> = new Set();
+  private subscriptions: Set<IWampSubscriptionItem> = new Set();
   private spanHandlers: Map<LevelType, () => void> = new Map();
 
   constructor(
@@ -210,15 +210,21 @@ class OrderBookStore extends BaseStore {
     return Promise.resolve();
   };
 
-  subscribe = async (ws: any) => {
+  subscribe = async () => {
     const topic = curry(topics.orderBook)(
       this.rootStore.uiStore.selectedInstrument!.id
     );
     this.subscriptions.add(
-      await ws.subscribe(topic(Side.Buy), this.onNextOrders)
+      await this.rootStore.socketStore.subscribe(
+        topic(Side.Buy),
+        this.onNextOrders
+      )
     );
     this.subscriptions.add(
-      await ws.subscribe(topic(Side.Sell), this.onNextOrders)
+      await this.rootStore.socketStore.subscribe(
+        topic(Side.Sell),
+        this.onNextOrders
+      )
     );
   };
 
@@ -246,10 +252,12 @@ class OrderBookStore extends BaseStore {
   };
 
   unsubscribe = async () => {
-    const promises = Array.from(this.subscriptions).map(s => {
-      // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe(s);
-    });
+    const promises = Array.from(this.subscriptions).map(subscription =>
+      this.rootStore.socketStore.unsubscribe(
+        subscription.topic,
+        subscription.id
+      )
+    );
     await Promise.all(promises);
 
     if (this.subscriptions.size > 0) {

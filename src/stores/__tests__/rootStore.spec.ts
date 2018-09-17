@@ -1,4 +1,3 @@
-import {WampApi} from '../../api/index';
 import {RootStore} from '../index';
 
 describe('root store', () => {
@@ -15,7 +14,7 @@ describe('root store', () => {
   describe('reset stores', () => {
     it('should call reset on watchlist store', () => {
       rootStore.watchlistStore.reset = jest.fn();
-      new WampApi().close = jest.fn();
+      rootStore.socketStore.reset = jest.fn();
 
       rootStore.reset();
 

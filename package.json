@@ -5,6 +5,8 @@
   "dependencies": {
     "@lykkex/lykke.js": "^0.2.1",
     "@lykkex/react-components": "^0.8.6",
+    "@lykkex/subzero": "^0.0.4",
+    "@lykkex/subzero-wamp": "^0.0.8",
     "@types/applicationinsights-js": "^1.0.5",
     "@types/classnames": "^2.2.4",
     "@types/jquery": "^3.3.4",

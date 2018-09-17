@@ -1,4 +1,4 @@
-import {ISubscription} from 'autobahn';
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {addDays, addMonths} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
 import {last} from 'rambda';
@@ -26,7 +26,7 @@ class PriceStore extends BaseStore {
   @observable dailyOpen: number;
   @observable dailyVolume: number;
 
-  private subscriptions: Set<ISubscription> = new Set();
+  private subscriptions: Set<IWampSubscriptionItem> = new Set();
 
   @computed
   get dailyChange() {
@@ -111,7 +111,7 @@ class PriceStore extends BaseStore {
 
   subscribeToDailyCandle = async () => {
     this.subscriptions.add(
-      await this.getWs().subscribe(
+      await this.rootStore.socketStore.subscribe(
         topics.candle(
           MarketType.Spot,
           this.selectedInstrument!.id,
@@ -136,10 +136,12 @@ class PriceStore extends BaseStore {
   };
 
   unsubscribeFromDailyCandle = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(s => {
-      // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe(s);
-    });
+    const subscriptions = Array.from(this.subscriptions).map(subscription =>
+      this.rootStore.socketStore.unsubscribe(
+        subscription.topic,
+        subscription.id
+      )
+    );
     await Promise.all(subscriptions);
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();
