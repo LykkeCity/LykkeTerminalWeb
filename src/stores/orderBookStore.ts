@@ -1,11 +1,13 @@
-import {ISubscription} from 'autobahn';
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {action, computed, observable} from 'mobx';
 import {compose, curry, head, reverse, sortBy, take} from 'rambda';
 import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {LEVELS_COUNT} from '../components/OrderBook';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {LevelType, Order, OrderBookCellType, Side} from '../models/index';
 import {OrderLevel} from '../models/order';
+import {AnalyticsService} from '../services/analyticsService';
 import {switchcase} from '../utils/fn';
 import {precisionFloor} from '../utils/math';
 import {getDigits} from '../utils/number';
@@ -62,7 +64,11 @@ class OrderBookStore extends BaseStore {
   @computed
   get maxMultiplierIdx() {
     if (this.rawAsks.length > 0) {
-      const sortByPriceDesc = compose(headArr, reverse, sortByPrice);
+      const sortByPriceDesc = compose(
+        headArr,
+        reverse,
+        sortByPrice
+      );
       const bestAsk = sortByPriceDesc(this.rawAsks).price;
       return Math.floor(Math.log10(bestAsk / this.seedSpan));
     }
@@ -91,7 +97,7 @@ class OrderBookStore extends BaseStore {
       : DEFAULT_ACCURACY;
   }
 
-  private subscriptions: Set<ISubscription> = new Set();
+  private subscriptions: Set<IWampSubscriptionItem> = new Set();
   private spanHandlers: Map<LevelType, () => void> = new Map();
 
   constructor(
@@ -169,6 +175,7 @@ class OrderBookStore extends BaseStore {
       this.spanMultiplierIdx++;
     }
     this.drawOrderBook();
+    AnalyticsService.track(AnalyticsEvents.GroupOrderBook);
   };
 
   @action
@@ -177,6 +184,7 @@ class OrderBookStore extends BaseStore {
       this.spanMultiplierIdx--;
     }
     this.drawOrderBook();
+    AnalyticsService.track(AnalyticsEvents.GroupOrderBook);
   };
 
   @action
@@ -202,15 +210,21 @@ class OrderBookStore extends BaseStore {
     return Promise.resolve();
   };
 
-  subscribe = async (ws: any) => {
+  subscribe = async () => {
     const topic = curry(topics.orderBook)(
       this.rootStore.uiStore.selectedInstrument!.id
     );
     this.subscriptions.add(
-      await ws.subscribe(topic(Side.Buy), this.onNextOrders)
+      await this.rootStore.socketStore.subscribe(
+        topic(Side.Buy),
+        this.onNextOrders
+      )
     );
     this.subscriptions.add(
-      await ws.subscribe(topic(Side.Sell), this.onNextOrders)
+      await this.rootStore.socketStore.subscribe(
+        topic(Side.Sell),
+        this.onNextOrders
+      )
     );
   };
 
@@ -238,10 +252,12 @@ class OrderBookStore extends BaseStore {
   };
 
   unsubscribe = async () => {
-    const promises = Array.from(this.subscriptions).map(s => {
-      // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe(s);
-    });
+    const promises = Array.from(this.subscriptions).map(subscription =>
+      this.rootStore.socketStore.unsubscribe(
+        subscription.topic,
+        subscription.id
+      )
+    );
     await Promise.all(promises);
 
     if (this.subscriptions.size > 0) {

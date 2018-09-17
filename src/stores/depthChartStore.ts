@@ -173,7 +173,7 @@ class DepthChartStore extends BaseStore {
     if (this.spanMultiplierIdx < this.maxMultiplier) {
       this.spanMultiplierIdx++;
 
-      AnalyticsService.handleClick(
+      AnalyticsService.track(
         AnalyticsEvents.DepthChartZoom(this.spanMultiplierIdx)
       );
     }
@@ -184,7 +184,7 @@ class DepthChartStore extends BaseStore {
     if (this.spanMultiplierIdx > 1) {
       this.spanMultiplierIdx--;
 
-      AnalyticsService.handleClick(
+      AnalyticsService.track(
         AnalyticsEvents.DepthChartZoom(this.spanMultiplierIdx)
       );
     }

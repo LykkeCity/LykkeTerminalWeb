@@ -1,4 +1,4 @@
-import {ISubscription} from 'autobahn';
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {
   addDays,
   addHours,
@@ -55,7 +55,7 @@ class ChartDataFeed {
     private readonly priceApi: PriceApi,
     private readonly session: any,
     private readonly subscribeToCandlesWithResolutions: (
-      s: ISubscription
+      s: IWampSubscriptionItem
     ) => void
   ) {}
 

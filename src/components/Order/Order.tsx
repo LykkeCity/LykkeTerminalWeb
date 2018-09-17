@@ -117,7 +117,7 @@ class Order extends React.Component<OrderProps, OrderState> {
       percents: percentage
     });
 
-    AnalyticsService.handleClick(AnalyticsEvents.SideSwitch(side));
+    AnalyticsService.track(AnalyticsEvents.SideSwitch(side));
   };
 
   handleMarketClick = (market: OrderType) => () => {
@@ -128,10 +128,10 @@ class Order extends React.Component<OrderProps, OrderState> {
     });
     switch (market) {
       case LIMIT:
-        AnalyticsService.handleClick(AnalyticsEvents.SwitchToLimitOrder);
+        AnalyticsService.track(AnalyticsEvents.SwitchToLimitOrder);
         break;
       case MARKET:
-        AnalyticsService.handleClick(AnalyticsEvents.SwitchToMarketOrder);
+        AnalyticsService.track(AnalyticsEvents.SwitchToMarketOrder);
         break;
     }
   };
@@ -184,7 +184,7 @@ class Order extends React.Component<OrderProps, OrderState> {
           ),
           baseAsset.accuracy
         );
-        AnalyticsService.handleClick(
+        AnalyticsService.track(
           AnalyticsEvents.OrderPlaced(amountInBase, action, currentMarket)
         );
       })
@@ -336,7 +336,9 @@ class Order extends React.Component<OrderProps, OrderState> {
     const {percents} = this.state;
     const currentPrice =
       (currentMarket === MARKET
-        ? isCurrentSideSell ? bid : ask
+        ? isCurrentSideSell
+          ? bid
+          : ask
         : parseFloat(priceValue)) || 0;
 
     const roundedAmount = precisionFloor(

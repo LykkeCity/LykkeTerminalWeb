@@ -1,11 +1,13 @@
-import {ISubscription} from 'autobahn';
+import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
+import {AnalyticsService} from '../services/analyticsService';
 import {nextSkip} from '../utils';
 import {BaseStore, RootStore} from './index';
 
@@ -59,7 +61,7 @@ class TradeStore extends BaseStore {
       : '';
   }
 
-  private subscriptions: Set<ISubscription> = new Set();
+  private subscriptions: Set<IWampSubscriptionItem> = new Set();
 
   private skip: number = TradeQuantity.Skip;
   private receivedFromWamp: number = 0;
@@ -118,7 +120,7 @@ class TradeStore extends BaseStore {
         this.addTrades(
           map.aggregateTradesByTimestamp([...trades], this.instruments)
         );
-        this.shouldFetchMore = trades.length === TradeQuantity.Take;
+        this.shouldFetchMore = trades.length >= TradeQuantity.Take;
       });
     }
   };
@@ -126,6 +128,7 @@ class TradeStore extends BaseStore {
   fetchNextTrades = async () => {
     this.skip = nextSkip(this.skip, TradeQuantity.Take, this.receivedFromWamp);
     this.fetchTrades();
+    AnalyticsService.track(AnalyticsEvents.LoadMoreTrades);
   };
 
   fetchPublicTrades = async () => {
@@ -141,6 +144,10 @@ class TradeStore extends BaseStore {
     }
   };
 
+  subscribe = () => {
+    this.rootStore.socketStore.subscribe(topics.trades, this.onTrades);
+  };
+
   refetchPublicTrades = () => {
     this.publicTrades = [];
     this.fetchPublicTrades();
@@ -151,10 +158,6 @@ class TradeStore extends BaseStore {
     this.fetchTrades();
   };
 
-  subscribe = (ws: any) => {
-    ws.subscribe(topics.trades, this.onTrades);
-  };
-
   onTrades = async (args: any[]) => {
     this.receivedFromWamp += 2;
     this.addTrade(map.fromWampToTrade(args[0], this.instruments));
@@ -162,7 +165,7 @@ class TradeStore extends BaseStore {
 
   subscribeToPublicTrades = async () => {
     this.subscriptions.add(
-      await this.getWs().subscribe(
+      await this.rootStore.socketStore.subscribe(
         topics.publicTrade(this.selectedInstrument!.id),
         this.onPublicTrades
       )
@@ -175,10 +178,12 @@ class TradeStore extends BaseStore {
   };
 
   unsubscribeFromPublicTrades = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(s => {
-      // tslint:disable-next-line:no-unused-expression
-      this.getWs() && this.getWs().unsubscribe(s);
-    });
+    const subscriptions = Array.from(this.subscriptions).map(subscription =>
+      this.rootStore.socketStore.unsubscribe(
+        subscription.topic,
+        subscription.id
+      )
+    );
     await Promise.all(subscriptions);
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();

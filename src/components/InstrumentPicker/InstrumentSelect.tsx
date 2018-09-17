@@ -1,6 +1,6 @@
 import {rem} from 'polished';
 import * as React from 'react';
-import {FAIcon} from '../Icon/Icon';
+import {FaAngleDown} from 'react-icons/fa';
 import styled from '../styled';
 import {InstrumentPickerActions} from './index';
 
@@ -16,7 +16,7 @@ const InstrumentSelect: React.SFC<InstrumentPickerProps> = ({
 }) => (
   <div className={className} onClick={onToggle}>
     <Value>{value}</Value>&nbsp;
-    {value && <FAIcon name="angle-down" />}
+    {value && <FaAngleDown />}
     <Label>Current asset pair</Label>
   </div>
 );

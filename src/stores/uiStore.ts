@@ -2,6 +2,7 @@ import LDClient from 'ldclient-js';
 import {action, computed, observable, reaction} from 'mobx';
 import {pathOr} from 'rambda';
 import {ThemeObject, themes} from '../components/styled';
+import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {disclaimedAssets} from '../constants/assetDisclaimer';
 import logger from '../Logger';
 import {keys} from '../models';
@@ -16,6 +17,7 @@ import {
 } from '../models/mappers/userInfoMapper';
 import UserInfoModel from '../models/userInfoModel';
 import Watchlists from '../models/watchlists';
+import {AnalyticsService} from '../services/analyticsService';
 import {DocumentService} from '../services/documentService';
 import {fns, StorageUtils} from '../utils/index';
 import {DEFAULT_INPUT_VALUE} from '../utils/inputNumber';
@@ -55,6 +57,7 @@ class UiStore extends BaseStore {
   @observable private isReadOnlyMode: boolean;
 
   private isPageVisible: boolean = true;
+  private selectedWatchListName: string = Watchlists.All;
 
   constructor(store: RootStore) {
     super(store);
@@ -74,7 +77,7 @@ class UiStore extends BaseStore {
             return;
           }
 
-          subscribe(this.getWs());
+          subscribe();
 
           const {
             setQuantityAccuracy,
@@ -127,11 +130,11 @@ class UiStore extends BaseStore {
   }
 
   setSocketWatcher = async () => {
-    const ws = this.getWs();
-    ws.onConnectionOpen = () => {
+    const {socketStore} = this.rootStore;
+    socketStore.onConnectionOpen = () => {
       this.updateConnectionStatus();
     };
-    ws.onConnectionClose = () => {
+    socketStore.onConnectionClose = () => {
       this.updateConnectionStatus();
     };
 
@@ -140,6 +143,10 @@ class UiStore extends BaseStore {
 
   setPageVisibility = (isVisible: boolean) => (this.isPageVisible = isVisible);
   getPageVisibility = () => this.isPageVisible;
+
+  setSelectedWatchListName = (watchListName: string) =>
+    (this.selectedWatchListName = watchListName);
+  getSelectedWatchListName = () => this.selectedWatchListName;
 
   hasAsset = (
     selectedInstrument: InstrumentModel,
@@ -174,8 +181,13 @@ class UiStore extends BaseStore {
   @action searchWallet = (name: string) => (this.searchWalletName = name);
 
   @action
-  toggleInstrumentPicker = () =>
-    (this.showInstrumentPicker = !this.showInstrumentPicker);
+  toggleInstrumentPicker = () => {
+    this.showInstrumentPicker = !this.showInstrumentPicker;
+
+    if (this.showInstrumentPicker) {
+      AnalyticsService.track(AnalyticsEvents.OpenInstrumentPicker);
+    }
+  };
 
   @action
   toggleSessionNotification = (value: boolean) =>
@@ -240,7 +252,7 @@ class UiStore extends BaseStore {
   };
 
   updateConnectionStatus = () => {
-    this.isConnectionOpened = this.getWs().isConnectionOpened;
+    this.isConnectionOpened = this.rootStore.socketStore.isSocketOpen();
   };
   getConnectionOpened = () => this.isConnectionOpened;
 

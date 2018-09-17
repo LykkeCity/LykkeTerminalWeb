@@ -19,7 +19,7 @@ class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
   handleSelectTab = (tab: ChartType) => () => {
     this.selectedTab = tab;
 
-    AnalyticsService.handleClick(AnalyticsEvents.ChartTypeSwitched(tab));
+    AnalyticsService.track(AnalyticsEvents.ChartTypeSwitched(tab));
   };
 
   render() {
@@ -49,7 +49,7 @@ class ChartTabbedTile extends React.Component<ChartTabbedTileProps> {
         </TileContent>
 
         {this.selectedTab === ChartType.Depth && (
-          <TileContent>
+          <TileContent className="chart-tile">
             <DepthChart />
           </TileContent>
         )}

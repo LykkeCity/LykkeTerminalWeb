@@ -9,7 +9,8 @@ const oldLayout =
 
 describe('<Terminal>', () => {
   window.analytics = {
-    identify: jest.fn()
+    identify: jest.fn(),
+    track: jest.fn()
   };
 
   const history = {};

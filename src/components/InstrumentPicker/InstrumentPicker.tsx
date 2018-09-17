@@ -1,9 +1,11 @@
 import * as React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {AssetModel} from '../../models';
 import Watchlists from '../../models/watchlists';
+import {AnalyticsService} from '../../services/analyticsService';
 import {
   InstrumentList,
-  InstrumentPickerProps,
-  InstrumentPickerStats,
+  InstrumentPickerActions,
   InstrumentPopover,
   InstrumentSearch,
   InstrumentSelect
@@ -11,9 +13,29 @@ import {
 import InstrumentShortcuts from './InstrumentShortcuts';
 import {SearchWrap} from './styles';
 
+interface InstrumentPickerState {
+  searchWallet: string;
+  searchValue: string;
+  activeShortcut: number;
+}
+
+export interface InstrumentPickerProps extends InstrumentPickerActions {
+  baseAsset: AssetModel;
+  value: string;
+  instrumentId: string;
+  show: boolean;
+  className?: string;
+  showInstrumentSelection: boolean;
+  onToggleInstrumentSelection: any;
+  watchlistNames: string[];
+  isAuth: boolean;
+  setSelectedWatchListName: (name: string) => void;
+  getSelectedWatchListName: () => string;
+}
+
 class InstrumentPicker extends React.Component<
   InstrumentPickerProps,
-  InstrumentPickerStats
+  InstrumentPickerState
 > {
   constructor(props: InstrumentPickerProps) {
     super(props);
@@ -24,15 +46,28 @@ class InstrumentPicker extends React.Component<
     };
   }
 
+  componentWillReceiveProps(args: InstrumentPickerProps) {
+    if (args.show) {
+      this.setState({
+        activeShortcut: args.watchlistNames.findIndex(
+          name => name === this.props.getSelectedWatchListName()
+        )
+      });
+    }
+  }
+
   changeWallet = (value: string = Watchlists.All, index: number = 0) => {
     this.setState({
       activeShortcut: index,
       searchWallet: value
     });
 
+    this.props.setSelectedWatchListName(value);
+
     if (this.props.onSearchWalletName) {
       this.props.onSearchWalletName(value);
     }
+    AnalyticsService.track(AnalyticsEvents.ChangeWatchlist(value));
   };
 
   changeValue = (value: string = '') => {
@@ -70,8 +105,8 @@ class InstrumentPicker extends React.Component<
               baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}
               onPick={this.props.onPick}
-              change={this.changeValue}
               isAuth={this.props.isAuth}
+              searchValue={this.state.searchValue}
             />
           </InstrumentPopover>
         ) : null}

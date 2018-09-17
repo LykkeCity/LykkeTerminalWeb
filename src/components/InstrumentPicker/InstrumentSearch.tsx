@@ -30,7 +30,7 @@ const InstrumentSearch: React.SFC<InstrumentSearchProps> = ({
       onChange={e => {
         change(e.currentTarget.value);
 
-        AnalyticsService.handleClick(
+        AnalyticsService.track(
           AnalyticsEvents.InstrumentPickerSearch(e.currentTarget.value)
         );
       }}
@@ -45,7 +45,6 @@ const StyledInstrumentSearch = styled(InstrumentSearch)`
     display: inline-block;
     margin-left: 4%;
     width: 8%;
-    text-align: center;
     cursor: default;
   }
   & > input {

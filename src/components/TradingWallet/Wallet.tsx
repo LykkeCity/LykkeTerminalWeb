@@ -1,4 +1,6 @@
 import React from 'react';
+import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {AnalyticsService} from '../../services/analyticsService';
 import {HeaderCell} from '../Table';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {
@@ -8,8 +10,12 @@ import {
   WalletContainer
 } from './styles';
 
+const handleClick = () => {
+  AnalyticsService.track(AnalyticsEvents.FundsClicked);
+};
+
 const Wallet: React.SFC = () => (
-  <WalletContainer>
+  <WalletContainer onClick={handleClick}>
     <StyledWalletItem>
       <WalletBalances>
         <WalletBalanceListHeader>

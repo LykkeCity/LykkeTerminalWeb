@@ -55,7 +55,6 @@ class Chart extends React.Component<ChartProps> {
 
   canvas: HTMLCanvasElement | null;
   canvasCtx: CanvasRenderingContext2D | null;
-  memoWidth: number = 0;
   currentItemXIndex: number = -1;
   currentArea: DepthArea;
   drawTools: IChartDrawingTools;
@@ -83,17 +82,9 @@ class Chart extends React.Component<ChartProps> {
     this.drawTools = drawChartElements(this.canvasCtx!, () => this.currentArea);
   }
 
-  componentWillReceiveProps({canvasWidth}: ChartProps) {
+  componentWillReceiveProps({canvasWidth, canvasHeight}: ChartProps) {
     window.requestAnimationFrame(() => {
-      if (canvasWidth !== this.memoWidth) {
-        this.memoWidth = canvasWidth;
-        defineCanvasScale(
-          this.canvasCtx,
-          this.canvas,
-          this.props.canvasWidth,
-          this.props.canvasHeight
-        );
-      }
+      defineCanvasScale(this.canvasCtx, this.canvas, canvasWidth, canvasHeight);
       this.renderCanvas();
       this.forceUpdate();
     });

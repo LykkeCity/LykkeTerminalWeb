@@ -3,8 +3,8 @@ import {AssetModel, InstrumentModel} from '../../models/index';
 import {connect} from '../connect';
 import {withStyledTrackedScroll} from '../CustomScrollbar/withScroll';
 import {tableScrollMargin} from '../styled';
-import InstrumentList from './InstrumentList';
-import InstrumentPicker from './InstrumentPicker';
+import InstrumentList, {InstrumentListProps} from './InstrumentList';
+import InstrumentPicker, {InstrumentPickerProps} from './InstrumentPicker';
 import InstrumentTable from './InstrumentTable';
 
 export interface InstrumentPickerActions {
@@ -14,67 +14,7 @@ export interface InstrumentPickerActions {
   onSearchWalletName?: (name: string) => void;
 }
 
-export interface InstrumentPickerProps extends InstrumentPickerActions {
-  baseAsset: AssetModel;
-  value: string;
-  instrumentId: string;
-  show: boolean;
-  className?: string;
-  showInstrumentSelection: boolean;
-  onToggleInstrumentSelection: any;
-  watchlistNames: string[];
-  isAuth: boolean;
-  setInstrumentPickerSortingParameters: (
-    sortByParam: string,
-    direction: string,
-    state: any
-  ) => void;
-  getInstrumentPickerSortingParameters: () => any;
-}
-
-export interface InstrumentPopoverProps extends InstrumentPickerActions {
-  className?: string;
-}
-
-export interface InstrumentPickerStats {
-  searchWallet: string;
-  searchValue: string;
-  activeShortcut: number;
-}
-
-export interface InstrumentShortcutsProps {
-  changeValue: any;
-  shortcutActiveIndex: null | number;
-  shortcuts: string[];
-  showInstrumentSelection: boolean;
-  onToggleInstrumentSelection: any;
-}
-
-export interface InstrumentListProps {
-  baseAsset: AssetModel;
-  currentInstrumentId: string;
-  change: any;
-  instruments: InstrumentModel[];
-  onPick: any;
-  isAuth: boolean;
-  setInstrumentPickerSortingParameters: (
-    sortByParam: string,
-    direction: string,
-    state: any
-  ) => void;
-  getInstrumentPickerSortingParameters: () => any;
-  defaultSortingField: string;
-}
-
-export interface InstrumentShortcutSelectionProps {
-  toggleShortcuts: any;
-  onToggleInstrumentSelection: any;
-  selectedShortcut: number;
-  shortcuts: any[];
-  showInstrumentSelection: boolean;
-}
-
-const connectedInstrumentPicker = connect(
+const connectedInstrumentPicker = connect<InstrumentPickerProps>(
   ({authStore, referenceStore, uiStore, watchlistStore}) => {
     return {
       baseAsset:
@@ -93,13 +33,15 @@ const connectedInstrumentPicker = connect(
       onSearch: uiStore.search,
       onSearchWalletName: uiStore.searchWallet,
       watchlistNames: watchlistStore.watchlistNames,
-      isAuth: authStore.isAuth
+      isAuth: authStore.isAuth,
+      setSelectedWatchListName: uiStore.setSelectedWatchListName,
+      getSelectedWatchListName: uiStore.getSelectedWatchListName
     };
   },
   InstrumentPicker
 );
 
-const connectedInstrumentList = connect(
+const connectedInstrumentList = connect<InstrumentListProps>(
   ({
     uiStore: {
       setInstrumentPickerSortingParameters,
@@ -124,11 +66,14 @@ const connectedScrolledInstrumentTable = withStyledTrackedScroll({
   width: `calc(100% + ${tableScrollMargin})`,
   height: 'calc(100% - 80px)'
 })(
-  connect(({uiStore: {theme}}) => {
-    return {
-      theme
-    };
-  }, InstrumentTable)
+  connect(
+    ({uiStore: {theme}}) => {
+      return {
+        theme
+      };
+    },
+    InstrumentTable
+  )
 );
 
 export {connectedInstrumentPicker as InstrumentPicker};

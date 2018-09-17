@@ -1,6 +1,6 @@
 import {DropdownControl} from '@lykkex/react-components';
 import React from 'react';
-import {DynamicFAIcon} from '../Icon/Icon';
+import {FaCaretDown} from 'react-icons/fa';
 import {
   StyledDropdown,
   StyledDropdownContainer,
@@ -65,7 +65,7 @@ class CustomDropdown extends React.Component<
   renderControlButton() {
     return (
       <StyledDropdownControlParent>
-        <DynamicFAIcon name="caret-down" key="caret-down" />
+        <FaCaretDown />
       </StyledDropdownControlParent>
     );
   }
