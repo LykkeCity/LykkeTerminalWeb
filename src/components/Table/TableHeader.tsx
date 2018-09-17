@@ -78,3 +78,4 @@ export const TableHeaderWithoutSort: React.SFC<TableHeaderWithoutSortProps> = ({
     </Table>
   );
 };
+TableHeaderWithoutSort.displayName = 'TableHeaderWithoutSort';
