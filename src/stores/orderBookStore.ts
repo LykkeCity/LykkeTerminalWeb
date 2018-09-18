@@ -63,14 +63,15 @@ class OrderBookStore extends BaseStore {
 
   @computed
   get maxMultiplierIdx() {
-    if (this.rawAsks.length > 0) {
+    const levels = this.rawAsks.length ? this.rawAsks : this.rawBids;
+    if (levels.length) {
       const sortByPriceDesc = compose(
         headArr,
         reverse,
         sortByPrice
       );
-      const bestAsk = sortByPriceDesc(this.rawAsks).price;
-      return Math.floor(Math.log10(bestAsk / this.seedSpan));
+      const bestLevel = sortByPriceDesc(levels).price;
+      return Math.floor(Math.log10(bestLevel / this.seedSpan));
     }
     return 0;
   }
