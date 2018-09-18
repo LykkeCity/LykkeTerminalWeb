@@ -447,7 +447,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   clearCanvas = () => {
     if (this.canvas) {
-      this.canvasCtx!.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.canvasCtx!.clearRect(0, 0, this.props.width, this.props.height);
     }
   };
 

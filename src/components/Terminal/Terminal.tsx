@@ -89,7 +89,9 @@ const headerLinkOptions = [
 ];
 
 const renderLink = (classes: string, title: JSX.Element, url: string) => {
-  return <ApplicationLink classes={classes} title={title} url={url} />;
+  return (
+    <ApplicationLink classes={classes} title={title} url={url} key={url} />
+  );
 };
 
 class Terminal extends React.Component<TerminalProps, {}> {

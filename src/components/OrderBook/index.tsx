@@ -2,7 +2,7 @@ import {HBar} from '@lykkex/react-components';
 import {observer} from 'mobx-react';
 import {compose, pathOr} from 'rambda';
 import React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
+// import Scrollbars from 'react-custom-scrollbars';
 import {withContentRect} from 'react-measure';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AnalyticsService} from '../../services/analyticsService';
@@ -18,6 +18,7 @@ import MyOrders, {MyOrdersProps} from './MyOrders';
 import LevelList from './LevelList';
 
 import LevelType from '../../models/levelType';
+import {CustomScrollbar} from '../CustomScrollbar';
 
 export const LEVEL_HEIGHT = 26;
 export const LEVELS_COUNT = 50;
@@ -168,9 +169,9 @@ const ConnectedOrderbook = connect(
       <Header />
       <HBar />
       <div style={{height: 'calc(100% - 75px)'}} ref={measureRef}>
-        <Scrollbars
+        <CustomScrollbar
           onScrollStop={handleScroll}
-          style={{
+          styles={{
             height: `100%`,
             width: 'calc(100% + 1rem)',
             marginLeft: '-0.5rem'
@@ -178,7 +179,7 @@ const ConnectedOrderbook = connect(
           ref={(node: any) => {
             // tslint:disable-next-line:no-unused-expression
             node &&
-              node.scrollTop(
+              node.scrollRef.scrollTop(
                 LEVELS_COUNT * LEVEL_HEIGHT -
                   (contentRect.client.height - 52) / 2
               );
@@ -193,7 +194,7 @@ const ConnectedOrderbook = connect(
             height={LEVELS_COUNT * LEVEL_HEIGHT}
             width={contentRect.client.width + LEFT_PADDING || 300}
           />
-        </Scrollbars>
+        </CustomScrollbar>
       </div>
       <ConnectedMyOrders />
     </React.Fragment>

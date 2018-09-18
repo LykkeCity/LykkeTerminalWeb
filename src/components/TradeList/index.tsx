@@ -1,10 +1,10 @@
 import {compose, pathOr} from 'rambda';
 import React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
 import {withContentRect} from 'react-measure';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
+import {CustomScrollbar} from '../CustomScrollbar';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
@@ -82,8 +82,8 @@ const ConnectedTradeLog = connect(
     <React.Fragment>
       <ConnectedTradeLogHeader />
       <div style={{height: '100%'}} ref={measureRef}>
-        <Scrollbars
-          style={{
+        <CustomScrollbar
+          styles={{
             height: `calc(100% - 0.5rem)`,
             width: 'calc(100% + 1rem)',
             marginLeft: '-0.5rem'
@@ -93,7 +93,7 @@ const ConnectedTradeLog = connect(
             itemHeight={TRADE_HEIGHT}
             width={contentRect.client.width + LEFT_PADDING || 300}
           />
-        </Scrollbars>
+        </CustomScrollbar>
       </div>
     </React.Fragment>
   ))
