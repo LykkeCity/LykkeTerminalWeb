@@ -148,11 +148,10 @@ class Terminal extends React.Component<TerminalProps, {}> {
       this.bindChartOverlayHandler();
 
       AnalyticsService.handleIdentify(
-        this.authStore.userInfo.email,
         AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
       );
 
-      AnalyticsService.track(AnalyticsEvents.AppLoaded);
+      AnalyticsService.track(AnalyticsEvents.LoadTerminal);
     });
   }
 

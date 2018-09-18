@@ -116,18 +116,17 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
     }
   }),
   UserIdentifyTraits: (userInfo: any) => ({
-    email: userInfo.email,
     firstName: userInfo.firstName,
     lastName: userInfo.lastName,
     kycStatus: userInfo.kycStatus
   }),
-  AppLoaded: {
-    title: 'Session Started',
+  LoadTerminal: {
+    title: 'Load terminal',
     details: {
       category,
       location: place.application,
       type: event,
-      info: 'Application has loaded'
+      info: 'Terminal has been loaded'
     }
   },
   FundsClicked: {

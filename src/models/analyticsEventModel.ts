@@ -13,7 +13,6 @@ export interface AnalyticsEventModel {
 }
 
 export interface AnalyticsUserIdentifyTraitsModel {
-  email: string;
   firstName: string;
   lastName: string;
   kycStatus: string;
@@ -37,7 +36,7 @@ export interface AnalyticsEventsModel {
   SectionSplitterMoved: AnalyticsEventModel;
   SessionDurationChanged: (duration: number) => AnalyticsEventModel;
   UserIdentifyTraits: (userInfo: any) => AnalyticsUserIdentifyTraitsModel;
-  AppLoaded: AnalyticsEventModel;
+  LoadTerminal: AnalyticsEventModel;
   FundsClicked: AnalyticsEventModel;
   OpenInstrumentPicker: AnalyticsEventModel;
   SelectInstrument: (instrument: InstrumentModel) => AnalyticsEventModel;
