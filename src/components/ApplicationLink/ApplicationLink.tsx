@@ -12,13 +12,6 @@ const ApplicationLink: React.SFC<ApplicationLinkProps> = ({
   title,
   url
 }) => {
-  if (url === window.location.href) {
-    return (
-      <a className={classes} key={url}>
-        {title}
-      </a>
-    );
-  }
   if (!url.includes('http')) {
     return (
       <Link to={url} className={classes} key={url}>
@@ -26,8 +19,10 @@ const ApplicationLink: React.SFC<ApplicationLinkProps> = ({
       </Link>
     );
   }
+
+  const customUrl = url === window.location.href ? undefined : url;
   return (
-    <a href={url} className={classes} key={url}>
+    <a href={customUrl} className={classes} key={url}>
       {title}
     </a>
   );
