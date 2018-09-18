@@ -9,7 +9,7 @@ import {LevelType, Order, OrderBookCellType, Side} from '../models/index';
 import {OrderLevel} from '../models/order';
 import {AnalyticsService} from '../services/analyticsService';
 import {switchcase} from '../utils/fn';
-import {precisionFloor} from '../utils/math';
+import {precisionFloor, times} from '../utils/math';
 import {getDigits} from '../utils/number';
 import {BaseStore, RootStore} from './index';
 import {
@@ -79,7 +79,7 @@ class OrderBookStore extends BaseStore {
   get span() {
     if (this.rootStore.uiStore.selectedInstrument) {
       return precisionFloor(
-        this.seedSpan * this.spanMultiplier,
+        times(this.seedSpan, this.spanMultiplier).toNumber(),
         this.rootStore.uiStore.selectedInstrument.accuracy
       );
     }
@@ -93,7 +93,7 @@ class OrderBookStore extends BaseStore {
     }
 
     return this.rootStore.uiStore.selectedInstrument
-      ? getDigits(this.seedSpan * this.spanMultiplier)
+      ? getDigits(times(this.seedSpan, this.spanMultiplier).toNumber())
       : DEFAULT_ACCURACY;
   }
 

@@ -31,6 +31,11 @@ class BigNumberModel {
     this.calculationResult = this.bigNumber.toFixed(accuracy);
     return this;
   };
+
+  times = (term: number) => {
+    this.calculationResult = this.bigNumber.times(term).valueOf();
+    return this;
+  };
 }
 
 export default BigNumberModel;

@@ -4,7 +4,8 @@ import {
   getPercentsOf,
   precisionCeil,
   precisionFloor,
-  subtraction
+  subtraction,
+  times
 } from '../math';
 
 describe('Test math functions', () => {
@@ -33,7 +34,7 @@ describe('Test math functions', () => {
     const value = 100;
     const accuracy = 0;
     expect(getPercentsOf(percents, value, accuracy)).toBe(
-      precisionFloor(percents / 100 * value, accuracy)
+      precisionFloor((percents / 100) * value, accuracy)
     );
   });
 
@@ -65,5 +66,22 @@ describe('Test math functions', () => {
     const result = 234567.847;
 
     expect(bigToFixed(value, accuracy).toNumber()).toBe(result);
+  });
+
+  it('should return value with fixed accuracy', () => {
+    const value = 234567.8473263;
+    const accuracy = 3;
+    const result = 234567.847;
+
+    expect(bigToFixed(value, accuracy).toNumber()).toBe(result);
+  });
+
+  it('should multiply value', () => {
+    const value = 10;
+    const term = 3;
+    const resultNumber = 30;
+    const bigNumber = times(value, term);
+
+    expect(bigNumber.toNumber()).toBe(resultNumber);
   });
 });

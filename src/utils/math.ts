@@ -48,7 +48,7 @@ export const getPercentsOf = (
   percents: number,
   value: number,
   accuracy: number
-) => precisionFloor(percents / 100 * value, accuracy);
+) => precisionFloor((percents / 100) * value, accuracy);
 
 export const addition = (term1: number | string, term2: number | string) => {
   return new BigNumberModel(term1).plus(term2);
@@ -60,6 +60,9 @@ export const subtraction = (
 ) => {
   return new BigNumberModel(value).minus(decrement);
 };
+
+export const times = (value: number | string, term: number) =>
+  new BigNumberModel(value).times(term);
 
 export const bigToFixed = (value: number | string, accuracy: number) => {
   return new BigNumberModel(value).toFixed(accuracy);
