@@ -24,6 +24,8 @@ import {
   updatePointsForDrawing
 } from '../helpers/chartHelpers';
 
+const RATIO_CHART_SCALE = 2;
+
 interface ChartProps {
   asks: Order[];
   bids: Order[];
@@ -326,7 +328,12 @@ class Chart extends React.Component<ChartProps> {
 
   renderCanvas = (y?: number, x?: number) => {
     if (this.canvas) {
-      this.canvasCtx!.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.canvasCtx!.clearRect(
+        0,
+        0,
+        this.props.width * RATIO_CHART_SCALE,
+        this.props.height * RATIO_CHART_SCALE
+      );
     }
 
     this.drawAsks();

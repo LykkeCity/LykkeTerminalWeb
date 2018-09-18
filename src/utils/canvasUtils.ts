@@ -200,20 +200,14 @@ export const defineCanvasScale = (
     ctx.backingStorePixelRatio ||
     1;
   const ratio = devicePixelRatio / backingStoreRatio;
-  let auto = true;
-  if (typeof auto === 'undefined') {
-    auto = true;
-  }
 
-  if (auto && devicePixelRatio !== backingStoreRatio) {
-    canvas.width = oldWidth * ratio;
-    canvas.height = oldHeight * ratio;
+  canvas.width = oldWidth * ratio;
+  canvas.height = oldHeight * ratio;
 
-    canvas.style.width = oldWidth + 'px';
-    canvas.style.height = oldHeight + 'px';
+  canvas.style.width = oldWidth + 'px';
+  canvas.style.height = oldHeight + 'px';
 
-    ctx.scale(ratio, ratio);
-  }
+  ctx.scale(ratio, ratio);
 };
 
 export const fitString = (ctx: any, text: string, maxWidth: number) => {
