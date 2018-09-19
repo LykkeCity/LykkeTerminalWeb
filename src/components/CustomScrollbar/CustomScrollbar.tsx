@@ -6,6 +6,7 @@ import {dims} from '../styled';
 const defaultHeight = `calc(100% - ${rem(dims.tileHeaderHeight)}`;
 
 const DEFAULT_MARGIN = 15;
+const ADDITIONAL_MARGIN = 0.05;
 
 class CustomScrollbar extends React.Component<
   {styles?: any; onScrollStop?: any},
@@ -18,7 +19,7 @@ class CustomScrollbar extends React.Component<
       const resizeCoefficient =
         e.currentTarget.devicePixelRatio === 1
           ? 1
-          : 1 / e.currentTarget.devicePixelRatio;
+          : 1 / e.currentTarget.devicePixelRatio + ADDITIONAL_MARGIN;
       if (this.scrollRef) {
         (this.scrollRef as any).view.style.marginRight = `-${DEFAULT_MARGIN *
           resizeCoefficient}px`;
