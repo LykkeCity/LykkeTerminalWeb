@@ -65,6 +65,14 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
   componentDidMount() {
     const {width, itemHeight} = this.props;
 
+    document.addEventListener(
+      'visibilitychange',
+      () => {
+        this.renderTrades(this.props.trades);
+      },
+      false
+    );
+
     this.canvasCtx = this.canvas!.getContext('2d');
 
     defineCanvasScale(
