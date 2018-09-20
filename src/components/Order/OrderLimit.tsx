@@ -78,7 +78,7 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
   };
 
   const handlePercentageChange = () => {
-    onHandlePercentageChange();
+    onHandlePercentageChange()();
     AnalyticsService.track(AnalyticsEvents.ClickOnAvailable('Limit'));
   };
 
