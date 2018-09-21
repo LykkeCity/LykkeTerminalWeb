@@ -53,7 +53,6 @@ class UiStore extends BaseStore {
   @observable isConnectionOpened: boolean = false;
   @observable private isReadOnlyMode: boolean;
 
-  private isPageVisible: boolean = true;
   private selectedWatchListName: string = Watchlists.All;
 
   constructor(store: RootStore) {
@@ -137,9 +136,6 @@ class UiStore extends BaseStore {
 
     this.updateConnectionStatus();
   };
-
-  setPageVisibility = (isVisible: boolean) => (this.isPageVisible = isVisible);
-  getPageVisibility = () => this.isPageVisible;
 
   setSelectedWatchListName = (watchListName: string) =>
     (this.selectedWatchListName = watchListName);

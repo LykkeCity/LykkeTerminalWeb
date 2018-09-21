@@ -129,17 +129,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private uiStore: UiStore = this.props.rootStore.uiStore;
   private isMosaicChanged: boolean = false;
 
-  handleVisibilityChange = () => {
-    this.props.rootStore.uiStore.setPageVisibility(
-      document.visibilityState === 'visible'
-    );
-  };
-
   componentDidMount() {
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
-    this.props.rootStore.uiStore.setPageVisibility(
-      document.visibilityState === 'visible'
-    );
     this.start().then(resp => {
       if (!resp) {
         return;
