@@ -263,6 +263,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
           headerLinkOptions={headerLinkOptions}
           renderLink={renderLink}
           getStartedUrl={process.env.REACT_APP_AUTH_URL!}
+          isAuth={this.authStore.isAuth}
         />
         <TerminalWrapper>
           <NotificationList />
