@@ -1,16 +1,16 @@
+import {Segment} from '@lykkex/lykke.js';
 import {AnalyticsEventModel} from '../models/analyticsEventModel';
 
 export abstract class AnalyticsService {
   static handlePageLoading = () => {
-    window.analytics.load(process.env.REACT_APP_SEGMENT_WRITE_KEY);
-    window.analytics.page();
+    Segment.setup(process.env.REACT_APP_SEGMENT_WRITE_KEY || '');
   };
 
   static track = (event: AnalyticsEventModel) => {
-    window.analytics.track(event.title, event.details);
+    Segment.track(event);
   };
 
   static handleIdentify = (traits: any): void => {
-    window.analytics.identify(traits);
+    Segment.identify(traits);
   };
 }
