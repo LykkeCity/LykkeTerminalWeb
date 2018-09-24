@@ -59,7 +59,6 @@ export interface LevelListProps {
   ) => void;
   triggerOrderUpdate: (clickedEl: any) => void;
   type: LevelType;
-  isPageVisible: () => boolean;
   spanAccuracy: number;
   setSpanUpdatingHandler: (levelType: LevelType, fn: () => void) => void;
 }
@@ -89,9 +88,10 @@ class LevelList extends React.Component<LevelListProps> {
   cachedLevels: Order[] = [];
   cancelColorAnimationIntervalId: any;
   animatingLevels: IAnimatingLevels[] = [];
+  isPageVisible: boolean = true;
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
-    if (!this.props.isPageVisible()) {
+    if (!this.isPageVisible) {
       // TODO delete after disconnect from wamp task will be implement
       return;
     }
@@ -129,7 +129,9 @@ class LevelList extends React.Component<LevelListProps> {
       setSpanUpdatingHandler,
       type,
       width,
-      height
+      height,
+      getAsks,
+      getBids
     } = this.props;
     setLevelsUpdatingHandler(this.handleLevelsUpdating);
     setSpanUpdatingHandler(type, this.handleSpanUpdating);
@@ -157,6 +159,15 @@ class LevelList extends React.Component<LevelListProps> {
           triggerOrderUpdate(clickedLevelElement);
         }
         this.togglePointerEvents('auto');
+      },
+      false
+    );
+
+    document.addEventListener(
+      'visibilitychange',
+      () => {
+        this.isPageVisible = document.visibilityState === 'visible';
+        this.handleLevelsUpdating(getAsks(), getBids(), type);
       },
       false
     );

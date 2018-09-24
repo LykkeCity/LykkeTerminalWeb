@@ -68,12 +68,7 @@ const ConnectedAskLevels = connect<LevelListProps>(
       spanAccuracy,
       setSpanUpdatingHandler
     },
-    uiStore: {
-      selectedInstrument,
-      orderbookDisplayType,
-      readOnlyMode,
-      getPageVisibility
-    }
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
   }) => {
     return {
       getBids,
@@ -85,7 +80,6 @@ const ConnectedAskLevels = connect<LevelListProps>(
       setLevelsUpdatingHandler: setAsksUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Asks,
-      isPageVisible: getPageVisibility,
       spanAccuracy,
       setSpanUpdatingHandler
     };
@@ -103,12 +97,7 @@ const ConnectedBidLevels = connect<LevelListProps>(
       spanAccuracy,
       setSpanUpdatingHandler
     },
-    uiStore: {
-      selectedInstrument,
-      orderbookDisplayType,
-      readOnlyMode,
-      getPageVisibility
-    }
+    uiStore: {selectedInstrument, orderbookDisplayType, readOnlyMode}
   }) => {
     return {
       getBids,
@@ -120,7 +109,6 @@ const ConnectedBidLevels = connect<LevelListProps>(
       setLevelsUpdatingHandler: setBidsUpdatingHandler,
       triggerOrderUpdate,
       type: LevelType.Bids,
-      isPageVisible: getPageVisibility,
       spanAccuracy,
       setSpanUpdatingHandler
     };

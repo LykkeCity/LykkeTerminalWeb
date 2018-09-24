@@ -129,15 +129,6 @@ describe('uiStore', () => {
     expect(uiStore.hasAsset(selectedInstrument, asset)).toBeFalsy();
   });
 
-  it('should return return as a default value for isPageVisible', () => {
-    expect(uiStore.getPageVisibility()).toBeTruthy();
-  });
-
-  it('should change value to false for isPageVisible', () => {
-    uiStore.setPageVisibility(false);
-    expect(uiStore.getPageVisibility()).toBeFalsy();
-  });
-
   it('should reset value for searchTerm and searchWalletName', () => {
     const text = 'some text';
     uiStore.search(text);
