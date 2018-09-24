@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "private": true,
   "dependencies": {
-    "@lykkex/lykke.js": "^0.4.6",
+    "@lykkex/lykke.js": "0.4.7",
     "@lykkex/react-components": "^0.8.13",
     "@lykkex/subzero": "^0.0.4",
     "@lykkex/subzero-wamp": "^0.0.8",
@@ -80,7 +80,10 @@
       "src/**/*.{ts,tsx}",
       "!src/**/styles.ts",
       "!src/**/index.tsx"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^@lykkex/lykke.js": "<rootDir>/node_modules/@lykkex/lykke.js/dist"
+    }
   },
   "devDependencies": {
     "@types/autobahn": "^0.9.38",
