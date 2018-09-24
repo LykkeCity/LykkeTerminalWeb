@@ -2,6 +2,13 @@ import {Header, MenuItem} from '@lykkex/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
+import {
+  API_KEYS_ROUTE,
+  FEES_AND_LIMITS_ROUTE,
+  FUNDS_ROUTE,
+  LYKKE_STREAMS_ROUTE,
+  TRADE_ROUTE
+} from '../../constants/lykkeRoutes';
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
@@ -80,16 +87,33 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 const headerLinkOptions = [
   {
     title: MenuItem.Trade,
-    url: process.env.REACT_APP_ROOT_URL! || 'http://trade.lykke.com'
+    url: TRADE_ROUTE
   },
   {
     title: MenuItem.Funds,
-    url: process.env.REACT_APP_WEBWALLET_ROOT_URL! || 'http://wallet.lykke.com'
+    url: FUNDS_ROUTE
+  }
+];
+
+const secondMenuLinkOptions = [
+  {
+    title: MenuItem.LykkeStreams,
+    url: LYKKE_STREAMS_ROUTE
+  },
+  {
+    title: MenuItem.ApiKeys,
+    url: API_KEYS_ROUTE
+  },
+  {
+    title: MenuItem.FeesAndLimits,
+    url: FEES_AND_LIMITS_ROUTE
   }
 ];
 
 const renderLink = (classes: string, title: JSX.Element, url: string) => {
-  return <ApplicationLink classes={classes} title={title} url={url} />;
+  return (
+    <ApplicationLink classes={classes} title={title} url={url} key={url} />
+  );
 };
 
 class Terminal extends React.Component<TerminalProps, {}> {
@@ -254,6 +278,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
           renderLink={renderLink}
           getStartedUrl={process.env.REACT_APP_AUTH_URL!}
           isAuth={this.authStore.isAuth}
+          secondaryMenuLinkOptions={secondMenuLinkOptions}
+          isSecondaryMenuShown={true}
         />
         <TerminalWrapper>
           <NotificationList />

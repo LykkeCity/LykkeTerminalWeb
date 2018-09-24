@@ -12,7 +12,7 @@ import {AnalyticsService} from './services/analyticsService';
 
 const addFont = (name: string) => (f: any) =>
   fontFace({
-    fileFormats: f.formats || ['woff', 'eot', 'ttf'],
+    fileFormats: f.formats || ['woff', 'eot', 'ttf', 'svg'],
     fontFamily: name,
     fontFilePath: `${process.env.PUBLIC_URL}/fonts/${f.name}`,
     fontStretch: 'normal',
@@ -25,6 +25,7 @@ const addFont = (name: string) => (f: any) =>
 
 const addBaseFont: any = addFont('Proxima Nova');
 const addAkrobatFont: any = addFont('Akrobat');
+const addIconsFont: any = addFont('icons');
 
 const proximaFonts = [
   {weight: 200, name: 'ProximaNovaThin'},
@@ -43,9 +44,20 @@ const akrobatFonts = [
   {weight: 800, name: 'Akrobat-ExtraBold', formats: ['otf']},
   {weight: 1000, name: 'Akrobat-Black', formats: ['otf']}
 ];
+const iconsFonts = [
+  {weight: 100, name: 'icons'},
+  {weight: 200, name: 'icons'},
+  {weight: 300, name: 'icons'},
+  {weight: 400, name: 'icons'},
+  {weight: 600, name: 'icons'},
+  {weight: 700, name: 'icons'},
+  {weight: 800, name: 'icons'},
+  {weight: 1000, name: 'icons'}
+];
 
 // tslint:disable-next-line:no-unused-expression
 injectGlobal`
+  ${iconsFonts.map(addIconsFont) as any};
   ${proximaFonts.map(addBaseFont) as any};
   ${akrobatFonts.map(addAkrobatFont) as any};
   ${normalize() as any};
