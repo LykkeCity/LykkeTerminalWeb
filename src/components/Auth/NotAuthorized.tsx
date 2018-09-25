@@ -1,30 +1,14 @@
-import {inject} from 'mobx-react';
 import * as React from 'react';
-import {RootStore} from '../../stores';
-import styled from '../styled';
+import {Centered, Link} from './styles';
 
-const Link = styled.a`
-  color: #0388ef;
-  cursor: pointer;
-  text-decoration: underline;
-`;
+interface NotAuthorizedProps {
+  signIn: () => void;
+}
 
-const Centered = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-`;
-
-const mapStoreToProps = ({authStore}: RootStore) => ({
-  signIn: authStore.signIn
-});
-
-const NotAuthorized = inject(mapStoreToProps)(({signIn}) => (
+const NotAuthorized: React.SFC<NotAuthorizedProps> = ({signIn}) => (
   <Centered>
     <Link onClick={signIn}>Connect</Link>&nbsp;to start trading
   </Centered>
-));
+);
 
 export default NotAuthorized;
