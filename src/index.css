@@ -28,8 +28,16 @@ body * {
   box-sizing: border-box;
 }
 
-[class^='icon-'],
-[class*=' icon-'] {
+.social--small > li > a > i {
+  font-size: 1.2rem;
+}
+
+.lykke-header .secondary-menu__footer {
+  padding-bottom: 3px;
+}
+
+[class^='icon-']:not([class^='icon--']),
+[class*=' icon-']:not([class*='icon--']) {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icons' !important;
   speak: none;

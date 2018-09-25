@@ -2,7 +2,14 @@ import {Header, MenuItem} from '@lykkex/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import paths from '../../constants/paths';
+import {
+  API_KEYS_ROUTE,
+  FEES_AND_LIMITS_ROUTE,
+  FUNDS_ROUTE,
+  LYKKE_STREAMS_ROUTE,
+  SETTINGS_ROUTE,
+  TRADE_ROUTE
+} from '../../constants/lykkeRoutes';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {AnalyticsService} from '../../services/analyticsService';
@@ -80,16 +87,37 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
 const headerLinkOptions = [
   {
     title: MenuItem.Trade,
-    url: process.env.REACT_APP_ROOT_URL! || 'http://trade.lykke.com'
+    url: TRADE_ROUTE
   },
   {
     title: MenuItem.Funds,
-    url: process.env.REACT_APP_WEBWALLET_ROOT_URL! || 'http://wallet.lykke.com'
+    url: FUNDS_ROUTE
+  },
+  {
+    title: MenuItem.Settings,
+    url: SETTINGS_ROUTE
+  }
+];
+
+const secondMenuLinkOptions = [
+  {
+    title: MenuItem.LykkeStreams,
+    url: LYKKE_STREAMS_ROUTE
+  },
+  {
+    title: MenuItem.ApiKeys,
+    url: API_KEYS_ROUTE
+  },
+  {
+    title: MenuItem.FeesAndLimits,
+    url: FEES_AND_LIMITS_ROUTE
   }
 ];
 
 const renderLink = (classes: string, title: JSX.Element, url: string) => {
-  return <ApplicationLink classes={classes} title={title} url={url} />;
+  return (
+    <ApplicationLink classes={classes} title={title} url={url} key={url} />
+  );
 };
 
 class Terminal extends React.Component<TerminalProps, {}> {
@@ -137,9 +165,11 @@ class Terminal extends React.Component<TerminalProps, {}> {
       this.updateLayoutFromLocalStorage();
       this.bindChartOverlayHandler();
 
-      AnalyticsService.handleIdentify(
-        AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
-      );
+      if (this.authStore.isAuth) {
+        AnalyticsService.handleIdentify(
+          AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
+        );
+      }
 
       AnalyticsService.track(AnalyticsEvents.LoadTerminal);
     });
@@ -218,22 +248,20 @@ class Terminal extends React.Component<TerminalProps, {}> {
   }
 
   async start() {
-    if (this.authStore.isAuth) {
-      await this.referenceStore.fetchReferenceData();
+    await this.referenceStore.fetchReferenceData();
 
+    if (this.authStore.isAuth) {
       await Promise.all([
         this.authStore.fetchUserInfo(),
         this.balanceListStore.fetchAll()
       ]);
 
-      if (this.authStore.noKycAndFunds) {
-        this.props.history.push(paths.kycAndFundsCheck);
-        return false;
-      } else {
-        this.props.rootStore.start();
-      }
+      this.props.rootStore.start();
     } else {
-      this.authStore.signIn();
+      const defaultInstrument = this.referenceStore.getInstrumentById(
+        UiStore.DEFAULT_INSTRUMENT
+      );
+      this.props.rootStore.startPublicMode(defaultInstrument);
     }
     return true;
   }
@@ -254,6 +282,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
           renderLink={renderLink}
           getStartedUrl={process.env.REACT_APP_AUTH_URL!}
           isAuth={this.authStore.isAuth}
+          secondaryMenuLinkOptions={secondMenuLinkOptions}
+          isSecondaryMenuShown={true}
         />
         <TerminalWrapper>
           <NotificationList />

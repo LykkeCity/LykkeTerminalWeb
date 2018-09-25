@@ -6,6 +6,7 @@ import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
+import {withKyc} from '../Kyc';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
@@ -22,15 +23,16 @@ export const TradesCellWidth = {
 
 const ConnectedTrades = connect(
   ({
-    authStore: {isAuth},
+    authStore: {isAuth, isKycPassed},
     uiStore: {readOnlyMode},
     tradeStore: {getAllTrades}
   }) => ({
     isAuth,
+    isKycPassed,
     readOnlyMode,
     trades: getAllTrades
   }),
-  withAuth(Trades)
+  withAuth(withKyc(Trades, false))
 );
 
 const ConnectedTradeList = connect<TradeListProps>(

@@ -2,6 +2,7 @@ import {pathOr} from 'rambda';
 import {AssetBalanceModel} from '../../models';
 import withAuth from '../Auth/withAuth';
 import {connect} from '../connect';
+import {withKyc} from '../Kyc';
 import Order from './Order';
 
 const DEFAULT_BALANCE = 0;
@@ -28,7 +29,9 @@ export interface OrderBasicFormProps {
 
 const ConnectedOrder = connect(
   ({
-    balanceListStore: {tradingWallet: {balances: balances}},
+    balanceListStore: {
+      tradingWallet: {balances: balances}
+    },
     orderBookStore: {bestAskPrice, bestBidPrice},
     orderStore: {placeOrder},
     uiStore: {
@@ -61,7 +64,7 @@ const ConnectedOrder = connect(
       resetMarketTotal,
       handleMarketQuantityArrowClick
     },
-    authStore: {isAuth},
+    authStore: {isAuth, isKycPassed},
     marketStore: {convert}
   }) => ({
     accuracy: {
@@ -103,6 +106,7 @@ const ConnectedOrder = connect(
       return asset ? asset.available : DEFAULT_BALANCE;
     },
     isAuth,
+    isKycPassed,
     readOnlyMode,
     instrument,
     priceValue: getComputedPriceValue,
@@ -124,7 +128,7 @@ const ConnectedOrder = connect(
     baseAsset: getBaseAsset,
     getInstrumentById
   }),
-  withAuth(Order)
+  withAuth(withKyc(Order))
 );
 
 export {ConnectedOrder as Order};
