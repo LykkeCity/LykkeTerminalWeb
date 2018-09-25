@@ -2,7 +2,7 @@ import {pathOr} from 'rambda';
 import {AssetBalanceModel} from '../../models';
 import withAuth from '../Auth/withAuth';
 import {connect} from '../connect';
-import {withKYC} from '../KYC';
+import {withKyc} from '../Kyc';
 import Order from './Order';
 
 const DEFAULT_BALANCE = 0;
@@ -128,7 +128,7 @@ const ConnectedOrder = connect(
     baseAsset: getBaseAsset,
     getInstrumentById
   }),
-  withAuth(withKYC(Order))
+  withAuth(withKyc(Order))
 );
 
 export {ConnectedOrder as Order};

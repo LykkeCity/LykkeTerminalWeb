@@ -1,6 +1,6 @@
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
-import {withKYC} from '../KYC';
+import {withKyc} from '../Kyc';
 import Wallet from './Wallet';
 
 const ConnectedWallet = connect(
@@ -9,7 +9,7 @@ const ConnectedWallet = connect(
     isKycPassed,
     readOnlyMode
   }),
-  withAuth(withKYC(Wallet, false))
+  withAuth(withKyc(Wallet, false))
 );
 
 export {ConnectedWallet as Wallet};

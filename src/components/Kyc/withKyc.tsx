@@ -2,14 +2,14 @@ import * as React from 'react';
 import NotVerified from './NotVerified';
 import {DisabledContainer} from './styles';
 
-interface KYCProps {
+interface KycProps {
   isKycPassed?: boolean;
 }
 
-const withKYC = <P extends {}>(
+const withKyc = <P extends {}>(
   Component: React.ComponentType<P>,
   withAction = true
-) => ({isKycPassed, ...props}: KYCProps & any) => {
+) => ({isKycPassed, ...props}: KycProps & any) => {
   if (isKycPassed) {
     return <Component {...props} />;
   }
@@ -38,4 +38,4 @@ const withKYC = <P extends {}>(
   );
 };
 
-export default withKYC;
+export default withKyc;

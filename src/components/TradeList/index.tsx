@@ -6,7 +6,7 @@ import * as TradeFilterModelFns from '../../models/tradeFilter';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar/withScroll';
-import {withKYC} from '../KYC';
+import {withKyc} from '../Kyc';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
@@ -32,7 +32,7 @@ const ConnectedTrades = connect(
     readOnlyMode,
     trades: getAllTrades
   }),
-  withAuth(withKYC(Trades, false))
+  withAuth(withKyc(Trades, false))
 );
 
 const ConnectedTradeList = connect<TradeListProps>(

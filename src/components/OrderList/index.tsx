@@ -3,7 +3,7 @@ import {compose, pathOr} from 'rambda';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar';
-import {withKYC} from '../KYC';
+import {withKyc} from '../Kyc';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
 import OrderList from './OrderList';
@@ -35,7 +35,7 @@ const ConnectedOrders = connect(
     readOnlyMode,
     orders
   }),
-  withAuth(withKYC(Orders, false))
+  withAuth(withKyc(Orders, false))
 );
 
 const ConnectedOrderList = connect<OrderListProps>(
