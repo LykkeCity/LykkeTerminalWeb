@@ -7,6 +7,7 @@ import {
   FEES_AND_LIMITS_ROUTE,
   FUNDS_ROUTE,
   LYKKE_STREAMS_ROUTE,
+  SETTINGS_ROUTE,
   TRADE_ROUTE
 } from '../../constants/lykkeRoutes';
 import {keys} from '../../models';
@@ -91,6 +92,10 @@ const headerLinkOptions = [
   {
     title: MenuItem.Funds,
     url: FUNDS_ROUTE
+  },
+  {
+    title: MenuItem.Settings,
+    url: SETTINGS_ROUTE
   }
 ];
 
