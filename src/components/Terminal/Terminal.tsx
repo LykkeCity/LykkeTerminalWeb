@@ -284,6 +284,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
           isAuth={this.authStore.isAuth}
           secondaryMenuLinkOptions={secondMenuLinkOptions}
           isSecondaryMenuShown={true}
+          isBeta={true}
         />
         <TerminalWrapper>
           <NotificationList />
