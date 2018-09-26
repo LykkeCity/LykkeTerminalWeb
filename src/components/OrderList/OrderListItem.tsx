@@ -18,17 +18,7 @@ interface OrderListItemProps {
 }
 
 const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
-  order: {
-    createdAt,
-    price,
-    id,
-    side,
-    volume,
-    remainingVolume,
-    filled,
-    filledPercent,
-    value
-  },
+  order: {createdAt, price, id, side, volume, filled, filledPercent, value},
   onEdit,
   cancelOrder,
   instrument: {
@@ -75,7 +65,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <TitledCell>
         {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
           filledPercent,
-          2,
+          0,
           {style: 'percent'}
         )})
       </TitledCell>
