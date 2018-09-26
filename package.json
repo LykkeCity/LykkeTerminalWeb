@@ -6,7 +6,7 @@
     "@lykkex/lykke.js": "^0.2.1",
     "@lykkex/react-components": "^0.8.14",
     "@lykkex/subzero": "^0.0.4",
-    "@lykkex/subzero-wamp": "^0.0.8",
+    "@lykkex/subzero-wamp": "^0.0.10",
     "@types/applicationinsights-js": "^1.0.5",
     "@types/classnames": "^2.2.4",
     "@types/debounce": "^1.0.0",
