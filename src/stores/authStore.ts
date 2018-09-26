@@ -82,22 +82,7 @@ class AuthStore extends BaseStore {
     this.signOut();
   };
 
-  signIn = () => {
-    const {
-      REACT_APP_AUTH_URL: url,
-      REACT_APP_ID: clientId,
-      REACT_APP_CALLBACK_URL: callbackUrl
-    } = process.env;
-    const nonce = randomString.mixed(20);
-    const state = randomString.mixed(20);
-    stateStorage.set(state);
-
-    location.replace(
-      `${url}/connect/authorize?client_id=${clientId}&scope=profile email address&response_type=token&redirect_uri=${encodeURIComponent(
-        callbackUrl!
-      )}&nonce=${nonce}&state=${state}`
-    );
-  };
+  signIn = () => location.replace(this.getSignInUrl());
 
   signOut = async (redirectUrl?: string) => {
     this.rootStore.reset();
@@ -107,6 +92,21 @@ class AuthStore extends BaseStore {
         redirectUrl || location.origin
       )}`
     );
+  };
+
+  getSignInUrl = () => {
+    const {
+      REACT_APP_AUTH_URL: url,
+      REACT_APP_ID: clientId,
+      REACT_APP_CALLBACK_URL: callbackUrl
+    } = process.env;
+    const nonce = randomString.mixed(20);
+    const state = randomString.mixed(20);
+    stateStorage.set(state);
+
+    return `${url}/connect/authorize?client_id=${clientId}&scope=profile email address&response_type=token&redirect_uri=${encodeURIComponent(
+      callbackUrl!
+    )}&nonce=${nonce}&state=${state}`;
   };
 
   reset = () => {
