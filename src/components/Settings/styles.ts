@@ -50,6 +50,7 @@ export const StyledConfirmationSetting = styled.div`
   display: inline-block;
 
   .switcher-container {
+    cursor: pointer;
     color: inherit;
   }
 `;
