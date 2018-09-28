@@ -1,5 +1,5 @@
 import {action, computed, observable, runInAction} from 'mobx';
-import {compose, filter, replace, toLower} from 'rambda';
+import {compose, filter, replace, toLower, trim} from 'rambda';
 import {AssetApi} from '../api/index';
 import {keys} from '../models';
 import {
@@ -19,7 +19,8 @@ const {includes} = require('rambda');
 
 const normalize = compose(
   replace(SearchString.Delimiter, SearchString.Empty),
-  toLower
+  toLower,
+  trim
 );
 
 const baseAssetStorage = StorageUtils(keys.baseAsset);
