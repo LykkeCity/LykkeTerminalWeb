@@ -73,11 +73,26 @@ class OrderStore extends BaseStore {
 
   cancelOrder = async (id: string) => {
     try {
-      await this.api.cancelOrder(id);
-      const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
-      if (deletedOrder) {
-        this.orderCancelledSuccessfully(id);
-      }
+      this.api
+        .cancelOrder(id)
+        .then(() => {
+          const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
+          if (deletedOrder) {
+            this.orderCancelledSuccessfully(id);
+          }
+        })
+        .catch((error: any) => {
+          switch (error.status) {
+            case 500:
+              this.rootStore.notificationStore.addNotification(
+                levels.error,
+                messages.defaultError
+              );
+              break;
+            default:
+              break;
+          }
+        });
     } catch (error) {
       this.orderPlacedUnsuccessfully(error);
 

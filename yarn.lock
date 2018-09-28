@@ -20,15 +20,15 @@
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@lykkex/lykke.js/-/lykke.js-0.2.1.tgz#f101863579168cf1ce2ffa4f257bf8081b21427c"
 
-"@lykkex/react-components@^0.8.14":
-  version "0.8.14"
-  resolved "https://registry.yarnpkg.com/@lykkex/react-components/-/react-components-0.8.14.tgz#09e35e3d8b2134c897879b1bc8ff8f30bace6cae"
+"@lykkex/react-components@^0.8.16":
+  version "0.8.19"
+  resolved "https://registry.yarnpkg.com/@lykkex/react-components/-/react-components-0.8.19.tgz#e481922f2ca0aeb9bc33b113927c0c3d220ddeb8"
   dependencies:
     recharts "^1.1.0"
 
-"@lykkex/subzero-wamp@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@lykkex/subzero-wamp/-/subzero-wamp-0.0.8.tgz#e147a546d694a224ef4a415ca29182b9c432e2dc"
+"@lykkex/subzero-wamp@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@lykkex/subzero-wamp/-/subzero-wamp-0.0.10.tgz#5a4b9e598237cb26ca9cdb1b3595e4654f1dedd1"
   dependencies:
     "@lykkex/subzero" "^0.0.4"
     uniqid "^5.0.3"
