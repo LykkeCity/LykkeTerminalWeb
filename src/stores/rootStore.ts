@@ -103,7 +103,11 @@ class RootStore {
 
   startPublicMode = async (defaultInstrument: any) => {
     return this.socketStore
-      .connect(this.wampUrl, this.wampRealm, tokenStorage.get() as string)
+      .connect(
+        this.wampUrl,
+        this.wampRealm,
+        tokenStorage.get() as string
+      )
       .then(() => {
         this.referenceStore.getInstruments().forEach((x: any) => {
           this.socketStore.subscribe(

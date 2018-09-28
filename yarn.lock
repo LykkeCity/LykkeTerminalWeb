@@ -189,6 +189,10 @@
   version "0.24.7"
   resolved "https://registry.yarnpkg.com/@types/yup/-/yup-0.24.7.tgz#d3b6d7c5d4faf9419005a889ce4d3fddfc0e77ed"
 
+Base64@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/Base64/-/Base64-1.0.1.tgz#def45cc50c961bcc9bf2321d0f52bcbfec1f1bb1"
+
 abab@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -4787,6 +4791,13 @@ lcid@^1.0.0:
   resolved "https://registry.yarnpkg.com/lcid/-/lcid-1.0.0.tgz#308accafa0bc483a3867b4b6f2b9506251d1b835"
   dependencies:
     invert-kv "^1.0.0"
+
+ldclient-js@2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/ldclient-js/-/ldclient-js-2.5.0.tgz#56ed4096aac914d93d92b18614d3255f96f4216f"
+  dependencies:
+    Base64 "1.0.1"
+    escape-string-regexp "1.0.5"
 
 left-pad@^1.2.0:
   version "1.3.0"

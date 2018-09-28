@@ -239,7 +239,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
     const userName = userInfo ? userInfo.fullName : undefined;
     const email = userInfo ? userInfo.email : undefined;
     return (
-      <ThemeProvider theme={this.props.rootStore.uiStore.theme}>
+      <ThemeProvider theme={this.props.rootStore.uiStore.getTheme()}>
         <Shell>
           <Header
             // tslint:disable-next-line:jsx-no-lambda
@@ -256,7 +256,8 @@ class Terminal extends React.Component<TerminalProps, {}> {
                 <Modal modals={this.props.rootStore.modalStore.modals} />
               </div>
             ) : null}
-            {this.props.rootStore.sessionStore.sessionNotificationsBlockShown && (
+            {this.props.rootStore.sessionStore
+              .sessionNotificationsBlockShown && (
               <SessionNotificationComponent />
             )}
             <SubHeader history={this.props.history} />

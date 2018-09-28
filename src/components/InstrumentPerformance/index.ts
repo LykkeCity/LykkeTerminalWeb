@@ -22,7 +22,7 @@ const mapStoreToProps = ({priceStore, uiStore}: RootStore) => ({
     priceStore
   ),
   showPerformance: uiStore.showInstrumentPerformanceData,
-  theme: uiStore.theme
+  theme: uiStore.getTheme()
 });
 
 const ConnectedInstrumentPerformance = connect<InstrumentPerformanceProps>(
