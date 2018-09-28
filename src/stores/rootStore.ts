@@ -111,6 +111,8 @@ class RootStore {
         tokenStorage.get() as string
       )
       .then(() => {
+        this.uiStore.setSocketWatcher();
+
         this.referenceStore.getInstruments().forEach((x: any) => {
           this.socketStore.subscribe(
             topics.quote(x.id),
