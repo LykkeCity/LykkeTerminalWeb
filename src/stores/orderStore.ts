@@ -71,6 +71,19 @@ class OrderStore extends BaseStore {
       .then(() => this.api.placeLimit(body))
       .catch(this.orderPlacedUnsuccessfully);
 
+  handleHttpError = (error: any) => {
+    switch (error.status) {
+      case 500:
+        this.rootStore.notificationStore.addNotification(
+          levels.error,
+          messages.defaultError
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
   cancelOrder = async (id: string) => {
     try {
       this.api
@@ -81,18 +94,7 @@ class OrderStore extends BaseStore {
             this.orderCancelledSuccessfully(id);
           }
         })
-        .catch((error: any) => {
-          switch (error.status) {
-            case 500:
-              this.rootStore.notificationStore.addNotification(
-                levels.error,
-                messages.defaultError
-              );
-              break;
-            default:
-              break;
-          }
-        });
+        .catch((error: any) => this.handleHttpError(error));
     } catch (error) {
       this.orderPlacedUnsuccessfully(error);
 
