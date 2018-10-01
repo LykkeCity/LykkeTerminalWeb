@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@lykkex/lykke.js": "^0.2.1",
-    "@lykkex/react-components": "^0.8.16",
+    "@lykkex/react-components": "^0.8.20",
     "@lykkex/subzero": "^0.0.4",
     "@lykkex/subzero-wamp": "^0.0.10",
     "@types/applicationinsights-js": "^1.0.5",
