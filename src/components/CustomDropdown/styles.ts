@@ -76,7 +76,6 @@ export const StyledDropdownContainer = styled(DropdownContainer)`
   .dropdown__nav {
     background: none;
     width: 100%;
-    height: 310px;
     padding: 0;
     margin-top: 0;
     box-shadow: 1px 10px 10px 0 rgba(0, 0, 0, 0.2);
@@ -121,10 +120,13 @@ export const StyledDropdownContainer = styled(DropdownContainer)`
   }
 `;
 
-export const StyledDropdownList = withStyledScroll({
-  height: '100%',
-  border: `${rem(1)} solid ${colors.greyBorder}`
-})(styled(DropdownList)`
+export const StyledDropdownList = withStyledScroll(
+  {
+    height: '100%',
+    border: `${rem(1)} solid ${colors.greyBorder}`
+  },
+  true
+)(styled(DropdownList)`
   background-color: ${colors.grey};
 `);
 
