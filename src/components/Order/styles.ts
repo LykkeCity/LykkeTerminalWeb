@@ -101,7 +101,6 @@ export const ConfirmButton = styled.button.attrs({
   min-height: ${rem(50)};
   border-radius: 4px;
   font-size: ${rem(16)};
-  height: 48px;
   padding: ${rem(12)} ${rem(20)};
   font-weight: bold;
   line-height: 1;
@@ -111,6 +110,7 @@ export const ConfirmButton = styled.button.attrs({
   font-family: 'Proxima Nova', sans-serif;
   background-color: #0388ef;
   border: solid 1px #0388ef;
+  word-wrap: break-word;
 
   &.disable {
     cursor: not-allowed;
@@ -124,6 +124,7 @@ export const Total = Flex.extend`
   border-bottom: 1px solid rgb(45, 45, 45);
   padding: ${rem(8)} 0;
   margin: ${rem(5)} 0;
+  width: 100%;
 `;
 
 export const TotalHint = styled.small`
@@ -138,7 +139,7 @@ export const OrderTitle = styled.div`
   font-weight: 600;
 
   &.estimated-total {
-    min-width: 40%;
+    min-width: 35%;
   }
 `;
 
@@ -155,6 +156,12 @@ export const Amount = styled.div`
   color: ${colors.coolGrey};
   font-size: ${rem(14)};
   text-align: right;
+  width: 90%;
+`;
+
+export const AmountWrap = styled.div`
+  word-wrap: break-word;
+  width: 100%;
 `;
 
 export const MarketAmount = styled.div.attrs({
@@ -164,6 +171,8 @@ export const MarketAmount = styled.div.attrs({
 })`
   font-size: ${rem(14)};
   text-align: right;
+  min-width: 65%;
+  word-wrap: break-word;
 ` as any;
 
 export const Available = styled(Amount).attrs({

@@ -11,6 +11,7 @@ import OrderPercentage from './OrderPercentage';
 import {
   Action,
   Amount,
+  AmountWrap,
   Available,
   InputControl,
   OrderTitle,
@@ -129,7 +130,9 @@ const OrderLimit: React.SFC<OrderLimitProps> = ({
       <Total>
         <OrderTitle>Total</OrderTitle>
         <Amount>
-          {amount} {quoteAssetName}
+          <AmountWrap>
+            {amount} {quoteAssetName}
+          </AmountWrap>
         </Amount>
       </Total>
 
