@@ -41,7 +41,7 @@ const layoutStorage = StorageUtils(keys.layout);
 
 const MAX_LEFT_PADDING = 20;
 const MAX_RIGHT_PADDING = 72.5;
-const MIN_PANE_SIZE_PERCENTAGE = 20;
+// const MIN_PANE_SIZE_PERCENTAGE = 20;
 
 const {
   ChartWidget,
@@ -229,6 +229,12 @@ class Terminal extends React.Component<TerminalProps, {}> {
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
   handleChange = (args: any) => {
+    if (args.splitPercentage > MAX_LEFT_PADDING) {
+      args.splitPercentage = MAX_LEFT_PADDING;
+    } else if (args.second.splitPercentage !== MAX_RIGHT_PADDING) {
+      args.second.splitPercentage = MAX_RIGHT_PADDING;
+    }
+
     this.setState({
       initialValue: args
     });
@@ -301,7 +307,6 @@ class Terminal extends React.Component<TerminalProps, {}> {
           <Mosaic
             renderTile={this.handleRenderTile}
             onChange={this.handleChange}
-            resize={{minimumPaneSizePercentage: MIN_PANE_SIZE_PERCENTAGE}}
             initialValue={this.state.initialValue}
           />
           <Footer />
