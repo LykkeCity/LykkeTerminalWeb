@@ -229,6 +229,12 @@ class Terminal extends React.Component<TerminalProps, {}> {
   handleRenderTile = (id: string) => ELEMENT_MAP[id];
 
   handleChange = (args: any) => {
+    if (args.splitPercentage !== MAX_LEFT_PADDING) {
+      args.splitPercentage = MAX_LEFT_PADDING;
+    } else if (args.second.splitPercentage !== MAX_RIGHT_PADDING) {
+      args.second.splitPercentage = MAX_RIGHT_PADDING;
+    }
+
     this.setState({
       initialValue: args
     });
