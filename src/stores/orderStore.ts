@@ -191,17 +191,12 @@ class OrderStore extends BaseStore {
           Types.Expired
         );
       } else {
-        if (error.status === 500) {
-          this.rootStore.notificationStore.addNotification(
-            levels.error,
-            messages.defaultError
-          );
-        } else {
-          this.notificationStore.addNotification(
-            levels.error,
-            `${error.message}`
-          );
-        }
+        const errorMessage =
+          error.status === 500 ? messages.defaultError : `${error.message}`;
+        this.rootStore.notificationStore.addNotification(
+          levels.error,
+          errorMessage
+        );
       }
     } else {
       const key = Object.keys(errorObject)[0];
