@@ -71,30 +71,13 @@ class OrderStore extends BaseStore {
       .then(() => this.api.placeLimit(body))
       .catch(this.orderPlacedUnsuccessfully);
 
-  handleHttpError = (error: any) => {
-    switch (error.status) {
-      case 500:
-        this.rootStore.notificationStore.addNotification(
-          levels.error,
-          messages.defaultError
-        );
-        break;
-      default:
-        break;
-    }
-  };
-
   cancelOrder = async (id: string) => {
     try {
-      this.api
-        .cancelOrder(id)
-        .then(() => {
-          const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
-          if (deletedOrder) {
-            this.orderCancelledSuccessfully(id);
-          }
-        })
-        .catch((error: any) => this.handleHttpError(error));
+      await this.api.cancelOrder(id);
+      const deletedOrder = this.rootStore.orderListStore.deleteOrder(id);
+      if (deletedOrder) {
+        this.orderCancelledSuccessfully(id);
+      }
     } catch (error) {
       this.orderPlacedUnsuccessfully(error);
 
@@ -208,10 +191,17 @@ class OrderStore extends BaseStore {
           Types.Expired
         );
       } else {
-        this.notificationStore.addNotification(
-          levels.error,
-          `${error.message}`
-        );
+        if (error.status === 500) {
+          this.rootStore.notificationStore.addNotification(
+            levels.error,
+            messages.defaultError
+          );
+        } else {
+          this.notificationStore.addNotification(
+            levels.error,
+            `${error.message}`
+          );
+        }
       }
     } else {
       const key = Object.keys(errorObject)[0];

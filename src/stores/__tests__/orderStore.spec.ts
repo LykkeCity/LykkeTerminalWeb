@@ -16,7 +16,7 @@ describe('order store', () => {
 
     orderStore = new OrderStore(rootStore, api);
 
-    api.cancelOrder = jest.fn(() => Promise.resolve());
+    api.cancelOrder = jest.fn();
     api.cancelAllOrders = jest.fn();
 
     rootStore.notificationStore.addNotification = jest.fn();
