@@ -23,6 +23,7 @@
         "name": "typescript-styled-plugin"
       }
     ],
+    "skipLibCheck": true,
     "baseUrl": "."
   },
   "exclude": [
@@ -35,6 +36,7 @@
     "enzyme",
     "public",
     "src/setupTests.ts",
-    "coverage"
+    "coverage",
+    "tests"
   ]
 }

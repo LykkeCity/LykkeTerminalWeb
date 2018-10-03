@@ -97,3 +97,5 @@ export const Pill = styled.span`
       box-shadow: inset 0 0 0 1px #0388ef;
     `};
 ` as any;
+
+TileTab.displayName = 'TileTab';
