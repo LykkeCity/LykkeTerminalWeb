@@ -35,4 +35,3 @@ export {default as DescriptionResponseModel} from './descriptionResponseModel';
 export {default as DepthArea} from './depthArea';
 export {default as DepthText} from './depthText';
 export {default as NotificationColor} from './notificationColor';
-export {default as HistoryResponseModel} from './historyResponseModel';

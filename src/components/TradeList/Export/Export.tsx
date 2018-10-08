@@ -36,7 +36,7 @@ class Export extends React.Component<ExportProps> {
               className={this.props.canExport() ? 'clickable' : ''}
               onClick={this.saveFile}
             >
-              Export history (csv)
+              Export trades (csv)
             </ExportButton>
           )}
         />

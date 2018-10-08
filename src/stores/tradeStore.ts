@@ -6,7 +6,7 @@ import * as topics from '../api/topics';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
 import messages from '../constants/notificationMessages';
 import {CsvIdResponseModel, CsvWampModel} from '../models/csvModels';
-import {OperationType, TradeFilter, TradeModel} from '../models/index';
+import {levels, OperationType, TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {AnalyticsService} from '../services/analyticsService';
@@ -189,6 +189,7 @@ class TradeStore extends BaseStore {
 
   subscribe = () => {
     this.rootStore.socketStore.subscribe(topics.trades, this.onTrades);
+    this.rootStore.socketStore.subscribe(topics.csv, this.onCsvReady);
   };
 
   refetchPublicTrades = () => {
@@ -199,11 +200,6 @@ class TradeStore extends BaseStore {
   refetchTrades = () => {
     this.trades = [];
     this.fetchTrades();
-  };
-
-  subscribe = (ws: any) => {
-    ws.subscribe(topics.trades, this.onTrades);
-    ws.subscribe(topics.csv, this.onCsvReady);
   };
 
   onTrades = async (args: any[]) => {

@@ -9,7 +9,7 @@ import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import {withKyc} from '../Kyc';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
-import Export from './Export';
+import {Export} from './Export';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
 import TradeList, {TradeListProps} from './TradeList';
 import TradeListItem from './TradeListItem';

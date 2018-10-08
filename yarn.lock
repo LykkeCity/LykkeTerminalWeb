@@ -20,15 +20,15 @@
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@lykkex/lykke.js/-/lykke.js-0.2.1.tgz#f101863579168cf1ce2ffa4f257bf8081b21427c"
 
-"@lykkex/react-components@^0.8.14":
-  version "0.8.14"
-  resolved "https://registry.yarnpkg.com/@lykkex/react-components/-/react-components-0.8.14.tgz#09e35e3d8b2134c897879b1bc8ff8f30bace6cae"
+"@lykkex/react-components@^0.8.16":
+  version "0.8.21"
+  resolved "https://registry.yarnpkg.com/@lykkex/react-components/-/react-components-0.8.21.tgz#1561a4c727317a222038c98fc7bbb33f1c346218"
   dependencies:
     recharts "^1.1.0"
 
-"@lykkex/subzero-wamp@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@lykkex/subzero-wamp/-/subzero-wamp-0.0.8.tgz#e147a546d694a224ef4a415ca29182b9c432e2dc"
+"@lykkex/subzero-wamp@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@lykkex/subzero-wamp/-/subzero-wamp-0.0.10.tgz#5a4b9e598237cb26ca9cdb1b3595e4654f1dedd1"
   dependencies:
     "@lykkex/subzero" "^0.0.4"
     uniqid "^5.0.3"
@@ -1555,6 +1555,12 @@ caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
 caniuse-lite@^1.0.30000748, caniuse-lite@^1.0.30000792:
   version "1.0.30000865"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000865.tgz#70026616e8afe6e1442f8bb4e1092987d81a2f25"
+
+canvas-prebuilt@^1.6.5-prerelease.1:
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/canvas-prebuilt/-/canvas-prebuilt-1.6.11.tgz#9b37071aa0ddd4f7c2b4a9e279b63fb2dc30db9b"
+  dependencies:
+    node-pre-gyp "^0.10.0"
 
 capture-exit@^1.2.0:
   version "1.2.0"
