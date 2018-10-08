@@ -4,6 +4,7 @@ import styled, {colors, dims, fonts, padding} from '../styled';
 export const TradeListToolbar = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   min-height: 45px;
   padding: ${padding(8, 0)};
   width: 100%;
@@ -46,6 +47,21 @@ export const StyledLoadMoreButton = styled.span`
   padding: ${padding(...dims.padding)};
 
   &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const ExportButton = styled.span`
+  font-size: ${rem(fonts.normal)};
+  border-radius: 4px;
+  border: solid 1px rgba(140, 148, 160, 0.4);
+  color: #ccc;
+  color: #8c94a0;
+  padding: ${padding(...dims.padding)};
+  cursor: not-allowed;
+
+  &.clickable {
+    color: ${colors.white};
     cursor: pointer;
   }
 `;

@@ -1,3 +1,4 @@
+import {CsvIdRequestModel, CsvIdResponseModel} from '../models/csvModels';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
 
@@ -8,6 +9,9 @@ export interface HistoryApi {
 export class RestHistoryApi extends RestApi implements HistoryApi {
   fetchHistory = (walletId: string, query: any) =>
     this.getWithQuery<any[]>(`/History/wallet/${walletId}`, query);
+
+  fetchCsvId = (body: CsvIdRequestModel): Promise<CsvIdResponseModel> =>
+    this.post(`/History/client/csv`, body);
 
   fetchTradesByInstrument = (
     instrumentId: string,

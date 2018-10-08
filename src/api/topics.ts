@@ -24,3 +24,5 @@ export const publicTrade = (symbol: string) =>
 export const balances = `balances`;
 
 export const orders = `orders.spot`;
+
+export const csv = `history.export`;

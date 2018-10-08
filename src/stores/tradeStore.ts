@@ -4,7 +4,9 @@ import {compose, reverse, sortBy} from 'rambda';
 import {TradeApi} from '../api/index';
 import * as topics from '../api/topics';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
-import {TradeFilter, TradeModel} from '../models/index';
+import messages from '../constants/notificationMessages';
+import {CsvIdResponseModel, CsvWampModel} from '../models/csvModels';
+import {levels, OperationType, TradeFilter, TradeModel} from '../models/index';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {AnalyticsService} from '../services/analyticsService';
@@ -30,6 +32,11 @@ class TradeStore extends BaseStore {
   @observable filter = TradeFilter.CurrentAsset;
   @observable shouldFetchMore = false;
   @observable hasPendingItems: boolean = false;
+  @observable hasPendingCsv: boolean = false;
+  @observable csvIdResponse: CsvIdResponseModel;
+
+  whenCsvIsReady: (csvWampData: CsvWampModel) => void;
+  csvWamp: Promise<CsvWampModel>;
 
   @observable.shallow private trades: TradeModel[] = [];
   @observable.shallow private publicTrades: TradeModel[] = [];
@@ -120,6 +127,47 @@ class TradeStore extends BaseStore {
     }
   };
 
+  promiseTimeout = (time: number, promise: Promise<CsvIdResponseModel>) => {
+    const timeout = new Promise(resolve => {
+      const id = setTimeout(() => {
+        clearTimeout(id);
+        resolve('Timed out in ' + time + 'ms.');
+      }, time);
+    });
+
+    return Promise.race([promise, timeout]);
+  };
+
+  fetchCsvUrl = async () => {
+    const csvIdRequestBody = {
+      OperationType: [OperationType.Trade],
+      AssetId: '',
+      AssetPairId: this.instrumentIdByFilter
+    };
+    this.csvWamp = new Promise(resolve => {
+      this.whenCsvIsReady = resolve;
+    });
+
+    this.hasPendingCsv = true;
+
+    this.csvIdResponse = await this.api.fetchCsvId(csvIdRequestBody);
+
+    return this.promiseTimeout(16000, this.csvWamp).then(
+      async (csvWampData: CsvWampModel) => {
+        this.hasPendingCsv = false;
+        if (this.csvIdResponse.Id === csvWampData.Id && csvWampData.Url) {
+          return csvWampData.Url;
+        } else {
+          this.rootStore.notificationStore.addNotification(
+            levels.error,
+            messages.defaultError
+          );
+          return '';
+        }
+      }
+    );
+  };
+
   fetchNextTrades = async () => {
     this.skip = nextSkip(this.skip, TradeQuantity.Take, this.receivedFromWamp);
     this.fetchTrades();
@@ -141,6 +189,7 @@ class TradeStore extends BaseStore {
 
   subscribe = () => {
     this.rootStore.socketStore.subscribe(topics.trades, this.onTrades);
+    this.rootStore.socketStore.subscribe(topics.csv, this.onCsvReady);
   };
 
   refetchPublicTrades = () => {
@@ -156,6 +205,10 @@ class TradeStore extends BaseStore {
   onTrades = async (args: any[]) => {
     this.receivedFromWamp += 2;
     this.addTrade(map.fromWampToTrade(args[0], this.instruments));
+  };
+
+  onCsvReady = (args: any[]) => {
+    this.whenCsvIsReady(args[0]);
   };
 
   subscribeToPublicTrades = async () => {
@@ -182,6 +235,10 @@ class TradeStore extends BaseStore {
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();
     }
+  };
+
+  canExport = (): boolean => {
+    return this.trades.length !== 0 && !this.hasPendingCsv;
   };
 
   @action
