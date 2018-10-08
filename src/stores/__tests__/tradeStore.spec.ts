@@ -263,4 +263,28 @@ describe('trade store', () => {
       });
     });
   });
+
+  describe('exporting feature', () => {
+    beforeEach(() => {
+      tradeStore.filter = TradeFilter.All;
+      tradeStore.rootStore.balanceListStore.getCurrentWalletId = jest.fn(
+        () => '1'
+      );
+    });
+
+    describe('canExport method', () => {
+      it('should check if trades are not empty', async () => {
+        expect(tradeStore.canExport()).toBeFalsy();
+        await tradeStore.addTrades([
+          new TradeModel({
+            side: 'Buy',
+            symbol: 'LKKUSD',
+            volume: 1,
+            timestamp: new Date().toLocaleString()
+          })
+        ]);
+        expect(tradeStore.canExport()).toBeTruthy();
+      });
+    });
+  });
 });

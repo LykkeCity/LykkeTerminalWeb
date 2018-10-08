@@ -34,7 +34,7 @@ export class RestTradeApi extends RestApi implements TradeApi {
       assetPairId: instrumentId,
       skip,
       take,
-      operationType: [OperationType.Trade, OperationType.LimitTrade]
+      operationType: [OperationType.Trade]
     });
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>

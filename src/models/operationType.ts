@@ -1,8 +1,7 @@
 enum OperationType {
   CashIn = 'CashIn',
   CashOut = 'CashOut',
-  Trade = 'Trade',
-  LimitTrade = 'LimitTrade'
+  Trade = 'Trade'
 }
 
 export default OperationType;

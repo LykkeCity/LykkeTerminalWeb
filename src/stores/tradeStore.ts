@@ -140,7 +140,7 @@ class TradeStore extends BaseStore {
 
   fetchCsvUrl = async () => {
     const csvIdRequestBody = {
-      OperationType: [OperationType.LimitTrade, OperationType.Trade],
+      OperationType: [OperationType.Trade],
       AssetId: '',
       AssetPairId: this.instrumentIdByFilter
     };
