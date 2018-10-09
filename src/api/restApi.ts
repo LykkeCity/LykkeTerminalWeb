@@ -14,10 +14,15 @@ const GATEWAY_TIMEOUT = 504;
 export class RestApi {
   constructor(protected rootStore?: RootStore | any) {}
 
-  protected readonly wretcher = () =>
-    wretch(process.env.REACT_APP_API_URL)
-      .polyfills({URLSearchParams})
-      .auth(`Bearer ${tokenStorage.get()}`);
+  protected readonly wretcher = () => {
+    const baseWretcher = wretch(process.env.REACT_APP_API_URL).polyfills({
+      URLSearchParams
+    });
+    const hasToken = tokenStorage.get();
+    return hasToken
+      ? baseWretcher.auth(`Bearer ${tokenStorage.get()}`)
+      : baseWretcher;
+  };
 
   protected readonly publicWretcher = () =>
     wretch(process.env.REACT_APP_PUBLIC_API_URL).polyfills({URLSearchParams});
