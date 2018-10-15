@@ -5,12 +5,14 @@ import ExpiredModal from './ExpiredModal';
 import {EditOrder, QRModal} from './index';
 import KycModal from './KycModal';
 import ManageFundsModal from './ManageFundsModal';
+import TfaModal from './TfaModal';
 
 const Modals = {
   Confirm: ConfirmModal,
   EditOrder,
   Expired: ExpiredModal,
   QR: QRModal,
+  TFA: TfaModal,
   MissedKyc: KycModal,
   ManageFunds: ManageFundsModal
 };

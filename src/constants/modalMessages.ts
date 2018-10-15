@@ -12,6 +12,12 @@ const ModalMessages = {
     button: 'Continue in read-only mode',
     title: 'Confirm trade session'
   },
+  tfa: {
+    body: 'Please confirm your trade session with 2FA code.',
+    applyButton: 'Submit',
+    cancelButton: 'Continue in read-only mode',
+    title: 'Confirm trade session'
+  },
   missedKyc: {
     body: `To offer you the advanced range of services we need you to confirm your
     identity and pass KYC (Know Your Customer) procedure. You can pass the

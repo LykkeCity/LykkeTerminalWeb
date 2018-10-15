@@ -3,6 +3,7 @@ enum Types {
   Expired = 'Expired',
   EditOrder = 'EditOrder',
   QR = 'QR',
+  TFA = 'TFA',
   MissedKyc = 'MissedKyc',
   ManageFunds = 'ManageFunds'
 }

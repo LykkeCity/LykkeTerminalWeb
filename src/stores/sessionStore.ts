@@ -1,7 +1,7 @@
 import {computed, observable} from 'mobx';
 import {SessionApi} from '../api';
 import ModalMessages from '../constants/modalMessages';
-import {keys} from '../models';
+import {keys, levels} from '../models';
 import ModalModel from '../models/modalModel';
 import Types from '../models/modals';
 import {
@@ -41,6 +41,11 @@ class SessionStore extends BaseStore {
   }
 
   @computed
+  get tfaEnabled() {
+    return this.is2faEnabled;
+  }
+
+  @computed
   get sessionRemain() {
     return this.ttl;
   }
@@ -52,13 +57,16 @@ class SessionStore extends BaseStore {
 
   @observable private isSessionNotificationShown: boolean = false;
   @observable private isReadOnlyModeNotificationShown: boolean = false;
+  @observable private is2faEnabled: boolean = false;
   @observable private sessionDuration: number;
   @observable private ttl: number = 0;
   private currentQrId: string = '';
   private isSessionNotesShown: boolean = false;
+  private isConfirmationInProgress: boolean = false;
   private sessionRemainIntervalId: any;
   private sessionConfirmationExpireTimerId: any;
   private qrModal: ModalModel;
+  private tfaModal: ModalModel;
   private sessionPollingTimerId: any;
   private sessionNotificationTimeoutId: any;
 
@@ -75,7 +83,10 @@ class SessionStore extends BaseStore {
 
   initUserSession = async () => {
     const session = await this.api.getSessionStatus();
+    const tfaProviders = await this.api.get2faStatus();
     const {Confirmed, Ttl, Enabled} = session.TradingSession;
+
+    this.is2faEnabled = tfaProviders.length > 0;
 
     if (!Enabled) {
       this.rootStore.uiStore.stopReadOnlyMode();
@@ -89,7 +100,7 @@ class SessionStore extends BaseStore {
 
     if (!Confirmed) {
       this.rootStore.uiStore.runReadOnlyMode();
-      this.startSessionListener();
+      this.showReadOnlyModeNotification();
       return;
     }
     this.rootStore.uiStore.stopReadOnlyMode();
@@ -131,29 +142,69 @@ class SessionStore extends BaseStore {
     );
   };
 
-  startSessionListener = async () => {
-    this.sessionConfirmationExpire();
-    this.showQR();
+  showTfa = () => {
+    this.tfaModal = this.rootStore.modalStore.addModal(
+      ModalMessages.tfa,
+      // tslint:disable-next-line:no-empty
+      (code: string) => {
+        if (!this.isConfirmationInProgress) {
+          this.isConfirmationInProgress = true;
+          this.api
+            .extend2faSession(code)
+            .then(() => {
+              this.isConfirmationInProgress = false;
+              this.sessionConfirmed();
+              this.closeTfaModal();
+            })
+            .catch(error => {
+              this.isConfirmationInProgress = false;
 
-    await this.api.createSession(this.sessionDuration);
+              try {
+                const errorObject = JSON.parse(error.message);
 
-    const polling = () => {
-      this.sessionPollingTimerId = setTimeout(async () => {
-        const sessionStatus = await this.api.getSessionStatus();
-        const {Confirmed} = sessionStatus.TradingSession;
-
-        if (Confirmed) {
-          this.sessionConfirmed();
-          this.qrModal.close();
-          this.stopSessionPolling();
-          return;
+                this.rootStore.notificationStore.addNotification(
+                  levels.error,
+                  errorObject.message
+                );
+              } catch (e) {
+                this.sessionConfirmed();
+                this.closeTfaModal();
+              }
+            });
         }
+      },
+      this.continueInReadOnlyMode,
+      Types.TFA
+    );
+  };
 
-        polling();
-      }, 1000);
-    };
+  startSessionListener = async () => {
+    if (this.tfaEnabled) {
+      this.showTfa();
+    } else {
+      this.sessionConfirmationExpire();
+      this.showQR();
 
-    polling();
+      await this.api.createSession(this.sessionDuration);
+
+      const polling = () => {
+        this.sessionPollingTimerId = setTimeout(async () => {
+          const sessionStatus = await this.api.getSessionStatus();
+          const {Confirmed} = sessionStatus.TradingSession;
+
+          if (Confirmed) {
+            this.sessionConfirmed();
+            this.qrModal.close();
+            this.stopSessionPolling();
+            return;
+          }
+
+          polling();
+        }, 1000);
+      };
+
+      polling();
+    }
   };
 
   sessionConfirmationExpire = () => {
@@ -164,6 +215,7 @@ class SessionStore extends BaseStore {
   };
 
   continueInReadOnlyMode = () => {
+    this.closeTfaModal();
     this.stopListenSessionConfirmationExpire();
     this.stopSessionPolling();
     this.showReadOnlyModeNotification();
@@ -275,6 +327,12 @@ class SessionStore extends BaseStore {
     this.stopSessionRemains();
     this.stopListenSessionConfirmationExpire();
     this.currentQrId = '';
+  };
+
+  closeTfaModal = () => {
+    if (this.tfaModal) {
+      this.tfaModal.close();
+    }
   };
 
   stopSessionRemains = () => {

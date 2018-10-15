@@ -15,6 +15,7 @@ const buildSiteUrl = buildUrl(
 export const TRADE_ROUTE = buildTerminalUrl();
 export const FUNDS_ROUTE = buildWalletUrl();
 export const SETTINGS_ROUTE = buildWalletUrl('profile');
+export const TFA_ROUTE = buildWalletUrl('profile/security');
 export const LYKKE_STREAMS_ROUTE = 'https://streams.lykke.com/';
 export const API_KEYS_ROUTE = buildWalletUrl('wallets/hft');
 export const FEES_AND_LIMITS_ROUTE = buildSiteUrl('cp/wallet-fees-and-limits');

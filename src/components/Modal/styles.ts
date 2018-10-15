@@ -141,8 +141,8 @@ export const QRBody = styled.div`
 /*hack for ios mobile*/
 export const QRCodeWrapper = styled.div`
   border: 2px solid #fff;
-  width: ${rem(160 / 14 * 16)};
-  height: ${rem(160 / 14 * 16)};
+  width: ${rem((160 / 14) * 16)};
+  height: ${rem((160 / 14) * 16)};
   box-sizing: content-box;
 `;
 
@@ -231,4 +231,50 @@ export const KycAndFundsBack = styled.div`
   padding: 0;
   margin: 0;
   background-color: ${colors.lightGraphite};
+`;
+
+export const SessionTfaConfirm = styled(Modal)`
+  box-sizing: border-box;
+  padding: ${rem(24)};
+`;
+
+export const TfaOkButton = styled(OkButton)`
+  width: 100%;
+  font-weight: bold;
+  line-height: 1;
+`;
+
+export const TfaCancelButton = styled(CancelButton)`
+  width: 100%;
+  line-height: 1;
+`;
+
+export const TfaSetupButton = styled(CancelButton)`
+  width: 100%;
+  line-height: 1;
+`;
+
+export const TfaSetupLink = styled.a`
+  color: ${colors.white};
+  text-decoration: none;
+`;
+
+export const StyledInput = styled.input`
+  background-color: transparent;
+  border-radius: 4px;
+  border: solid 1px #56595e;
+  color: #f5f6f7;
+  padding-left: 8px;
+  padding-right: 20px;
+  height: 32px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    cursor: pointer;
+    display: block;
+    width: 10px;
+    background: transparent;
+  }
 `;
