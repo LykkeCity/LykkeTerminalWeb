@@ -196,6 +196,11 @@ class RootStore {
   private lastOrDefaultInstrument = (defaultInstrument: any) => {
     try {
       const lastUsedInstrument = JSON.parse(instrumentStorage.get()!);
+
+      if (!lastUsedInstrument) {
+        return defaultInstrument;
+      }
+
       const refInstrument = this.referenceStore.getInstrumentById(
         lastUsedInstrument.id
       );
