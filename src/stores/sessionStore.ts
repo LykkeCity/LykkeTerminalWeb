@@ -1,6 +1,7 @@
 import {computed, observable} from 'mobx';
 import {SessionApi} from '../api';
 import ModalMessages from '../constants/modalMessages';
+import messages from '../constants/notificationMessages';
 import {keys, levels} from '../models';
 import ModalModel from '../models/modalModel';
 import Types from '../models/modals';
@@ -167,8 +168,10 @@ class SessionStore extends BaseStore {
                   errorObject.message
                 );
               } catch (e) {
-                this.sessionConfirmed();
-                this.closeTfaModal();
+                this.rootStore.notificationStore.addNotification(
+                  levels.error,
+                  messages.defaultError
+                );
               }
             });
         }

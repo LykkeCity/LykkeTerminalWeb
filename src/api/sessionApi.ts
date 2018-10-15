@@ -21,7 +21,7 @@ export class RestSessionApi extends RestApi implements SessionApi {
   getSessionStatus = () => this.get(`/client/features`);
   get2faStatus = () => this.get(`/2fa`);
   extend2faSession = (Confirmation: string) =>
-    this.post('/2fa/session', {Confirmation});
+    this.fireAndForget('/2fa/session', {Confirmation});
   extendSession = (Ttl: number) => this.patch('/client/session', {Ttl});
   createSession = (Ttl: number) => this.fireAndForget('/client/session', {Ttl});
   saveSessionDuration = (duration: number) =>
