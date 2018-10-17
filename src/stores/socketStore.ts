@@ -60,14 +60,15 @@ class SocketStore extends BaseStore {
 
   unsubscribe = async (topic: string, id: string) => {
     if (this.isSocketOpen()) {
-      await this.socket!.send({type: WampMessageType.Unsubscribe, topic, id});
-    } else {
-      return Promise.resolve();
+      return this.socket!.send({type: WampMessageType.Unsubscribe, topic, id});
     }
+    return Promise.resolve();
   };
 
   reset = async () => {
-    await this.socket!.close();
+    if (this.isSocketOpen()) {
+      await this.socket!.close();
+    }
     this.socket = null;
   };
 
@@ -90,7 +91,7 @@ class SocketStore extends BaseStore {
     return this.listeners.get('onConnectionClose') || (() => null);
   }
 
-  isSocketOpen = () => this.socket!.isSocketConnected();
+  isSocketOpen = () => this.socket && this.socket!.isSocketConnected();
 
   private handleChallenge: OnChallengeHandler = (session, method) => {
     if (method === 'ticket') {

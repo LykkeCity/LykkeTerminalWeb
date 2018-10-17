@@ -36,7 +36,7 @@ class SettingsStore extends BaseStore {
   };
 
   reset = () => {
-    return null;
+    return;
   };
 }
 

@@ -225,7 +225,8 @@ class UiStore extends BaseStore {
   };
 
   updateConnectionStatus = () => {
-    this.isConnectionOpened = this.rootStore.socketStore.isSocketOpen();
+    this.isConnectionOpened =
+      this.rootStore.socketStore.isSocketOpen() || false;
   };
   getConnectionOpened = () => this.isConnectionOpened;
 

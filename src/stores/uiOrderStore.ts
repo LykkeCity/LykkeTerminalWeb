@@ -75,14 +75,10 @@ class UiOrderStore extends BaseStore {
     isEnoughLiquidity: true,
     price: 0
   };
-  @observable
-  private priceValue: string = DEFAULT_INPUT_VALUE;
-  @observable
-  private quantityValue: string = DEFAULT_INPUT_VALUE;
-  @observable
-  private market: OrderType = OrderType.Limit;
-  @observable
-  private side: Side = Side.Buy;
+  @observable private priceValue: string = DEFAULT_INPUT_VALUE;
+  @observable private quantityValue: string = DEFAULT_INPUT_VALUE;
+  @observable private market: OrderType = OrderType.Limit;
+  @observable private side: Side = Side.Buy;
   private priceAccuracy: number = 2;
   private quantityAccuracy: number = 2;
 
@@ -304,8 +300,9 @@ class UiOrderStore extends BaseStore {
     this.setQuantityValue(DEFAULT_INPUT_VALUE);
   };
 
-  // tslint:disable-next-line:no-empty
-  reset = () => {};
+  reset = () => {
+    return;
+  };
 
   private setDebounce = () => {
     this.marketTotal.canBeUpdated = false;
