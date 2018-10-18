@@ -18,12 +18,16 @@ const Centered = styled.div`
 `;
 
 const mapStoreToProps = ({sessionStore}: RootStore) => ({
-  startTrade: sessionStore.startTrade
+  startTrade: sessionStore.startTrade,
+  tfaEnabled: sessionStore.tfaEnabled
 });
 
-const ReadOnlyMode = inject(mapStoreToProps)(({startTrade}) => (
+const ReadOnlyMode = inject(mapStoreToProps)(({startTrade, tfaEnabled}) => (
   <Centered>
-    <Link onClick={startTrade}>Scan QR</Link>&nbsp;to start trading
+    <Link onClick={startTrade}>
+      {tfaEnabled ? 'Enter 2FA code' : 'Scan QR'}
+    </Link>
+    &nbsp;to start trading
   </Centered>
 ));
 

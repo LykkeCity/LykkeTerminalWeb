@@ -28,7 +28,9 @@ describe('session store', () => {
             TradingSession: confirmation
           };
         },
+        get2faStatus: () => Promise.resolve([]),
         extendSession: jest.fn(),
+        extend2faSession: jest.fn(),
         createSession: jest.fn(),
         saveSessionDuration: jest.fn(),
         getSessionDuration: () => Promise.resolve(sessionDuration)
@@ -282,7 +284,9 @@ describe('session store', () => {
             TradingSession: confirmation
           };
         },
+        get2faStatus: () => Promise.resolve([]),
         extendSession: jest.fn(),
+        extend2faSession: jest.fn(),
         createSession: jest.fn(),
         saveSessionDuration: jest.fn(),
         getSessionDuration: () => Promise.resolve(sessionDuration)
@@ -311,7 +315,9 @@ describe('session store', () => {
             TradingSession: confirmation
           };
         },
+        get2faStatus: () => Promise.resolve([]),
         extendSession: jest.fn(),
+        extend2faSession: jest.fn(),
         createSession: jest.fn(),
         saveSessionDuration: jest.fn(),
         getSessionDuration: () => Promise.resolve(sessionDuration)
@@ -338,7 +344,9 @@ describe('session store', () => {
             TradingSession: confirmation
           };
         },
+        get2faStatus: () => Promise.resolve([]),
         extendSession: jest.fn(),
+        extend2faSession: jest.fn(),
         createSession: jest.fn(),
         saveSessionDuration: jest.fn(),
         getSessionDuration: () => Promise.resolve(sessionDuration)
@@ -368,7 +376,9 @@ describe('session store', () => {
             TradingSession: confirmation
           };
         },
+        get2faStatus: () => Promise.resolve([]),
         extendSession: jest.fn(),
+        extend2faSession: jest.fn(),
         createSession: jest.fn(),
         saveSessionDuration: jest.fn(),
         getSessionDuration: () => Promise.reject('error')

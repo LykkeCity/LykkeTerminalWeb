@@ -1,5 +1,6 @@
 import QRCode from 'qrcode.react';
 import * as React from 'react';
+import {TFA_ROUTE} from '../../constants/lykkeRoutes';
 import ModalModel from '../../models/modalModel';
 import ModalHeader from './ModalHeader/ModalHeader';
 import {
@@ -8,7 +9,9 @@ import {
   QRBody,
   QRButton,
   QRCodeWrapper,
-  SessionQRConfirm
+  SessionQRConfirm,
+  TfaSetupButton,
+  TfaSetupLink
 } from './styles';
 
 interface QRModalProps {
@@ -39,6 +42,11 @@ const QRModal: React.SFC<QRModalProps> = ({
         </QRCodeWrapper>
       </QRBody>
       <QRButton onClick={handleContinue}>{message.button}</QRButton>
+      <TfaSetupButton>
+        <TfaSetupLink href={TFA_ROUTE}>
+          Use Google Authenticator instead
+        </TfaSetupLink>
+      </TfaSetupButton>
     </SessionQRConfirm>
   );
 };
