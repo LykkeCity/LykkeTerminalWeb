@@ -1,3 +1,5 @@
+import {Subscription} from 'autobahn';
+import {SessionMock} from 'mocks/autobahnSessionMock';
 import {
   AssetModel,
   InstrumentModel,
@@ -7,6 +9,7 @@ import {
   WalletModel
 } from '../../models/index';
 import {RootStore, TradeStore} from '../index';
+import SocketStore from '../socketStore';
 
 jest.mock('../../models/tradeModel.mapper', () => ({
   fromWampToTrade: jest.fn(),
@@ -285,6 +288,30 @@ describe('trade store', () => {
         ]);
         expect(tradeStore.canExport()).toBeTruthy();
       });
+    });
+  });
+
+  describe('method unsubscribeFromPublicTrades', () => {
+    const unsubscribe = jest.fn();
+
+    beforeEach(() => {
+      rootStore.socketStore.subscribe = jest.fn(() => ({
+        topic: 'topic'
+      }));
+      rootStore.socketStore.unsubscribe = unsubscribe;
+    });
+
+    it('should not call for unsubscribe in ws if no subscriptions presented', async () => {
+      await tradeStore.unsubscribeFromPublicTrades();
+      expect(unsubscribe).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call for unsubscribe in ws for all subscription', async () => {
+      await tradeStore.subscribeToPublicTrades();
+      await tradeStore.subscribeToPublicTrades();
+      await tradeStore.subscribeToPublicTrades();
+      await tradeStore.unsubscribeFromPublicTrades();
+      expect(unsubscribe).toHaveBeenCalledTimes(3);
     });
   });
 });
