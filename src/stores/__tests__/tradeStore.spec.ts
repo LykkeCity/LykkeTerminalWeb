@@ -1,5 +1,3 @@
-import {Subscription} from 'autobahn';
-import {SessionMock} from 'mocks/autobahnSessionMock';
 import {
   AssetModel,
   InstrumentModel,
@@ -9,7 +7,6 @@ import {
   WalletModel
 } from '../../models/index';
 import {RootStore, TradeStore} from '../index';
-import SocketStore from '../socketStore';
 
 jest.mock('../../models/tradeModel.mapper', () => ({
   fromWampToTrade: jest.fn(),
