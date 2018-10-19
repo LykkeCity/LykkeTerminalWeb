@@ -183,6 +183,8 @@ class SessionStore extends BaseStore {
 
   startSessionListener = async () => {
     if (this.tfaEnabled) {
+      await this.api.createSession(this.sessionDuration);
+
       this.showTfa();
     } else {
       this.sessionConfirmationExpire();
