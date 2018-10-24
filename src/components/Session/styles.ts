@@ -7,7 +7,7 @@ const {Flex} = require('grid-styled');
 
 export const SessionNotificationBlock = styled.div`
   position: absolute;
-  z-index: 7;
+  z-index: 10;
   bottom: ${rem(16)};
   right: ${rem(16)};
 `;
