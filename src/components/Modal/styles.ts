@@ -240,13 +240,16 @@ export const SessionTfaConfirm = styled(Modal)`
 
 export const TfaOkButton = styled(OkButton)`
   width: 100%;
+  background-color: ${colors.blue};
   font-weight: bold;
   line-height: 1;
 `;
 
-export const TfaCancelButton = styled(CancelButton)`
-  width: 100%;
-  line-height: 1;
+export const TfaCancelButton = styled.div`
+  color: ${colors.white};
+  cursor: pointer;
+  text-align: center;
+  margin-top: ${rem(16)};
 `;
 
 export const TfaSetupButton = styled(CancelButton)`
