@@ -40,7 +40,6 @@ class ModalStore extends BaseStore {
 
   reset = () => {
     this.modals = [];
-    return;
   };
 }
 

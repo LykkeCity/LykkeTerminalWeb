@@ -142,10 +142,11 @@ class PriceStore extends BaseStore {
         subscription.id
       )
     );
-    await Promise.all(subscriptions);
     if (this.subscriptions.size > 0) {
       this.subscriptions.clear();
     }
+
+    await Promise.all(subscriptions);
   };
 
   reset = () => {

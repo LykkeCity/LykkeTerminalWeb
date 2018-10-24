@@ -1,3 +1,4 @@
+import {without} from 'rambda';
 import {
   AssetApi,
   AuthApi,
@@ -189,8 +190,13 @@ class RootStore {
 
   registerStore = (store: BaseStore) => this.stores.add(store);
 
-  reset = () => {
-    Array.from(this.stores).forEach(s => s.reset && s.reset());
+  reset = async () => {
+    const stores = Array.from(this.stores);
+    const socketStore = stores.find(store => store instanceof SocketStore)!;
+    const domainStores = without([socketStore], stores);
+
+    await Promise.all(domainStores.map(s => s.reset()));
+    await socketStore.reset();
   };
 
   private lastOrDefaultInstrument = (defaultInstrument: any) => {
