@@ -1,3 +1,4 @@
+import {rem} from 'polished';
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 import ModalHeader from './ModalHeader/ModalHeader';
@@ -51,7 +52,7 @@ class TfaModal extends React.Component<TfaModalProps, TfaModalState> {
           <ModalTitle>{message.title}</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <div style={{width: '300px'}}>
+          <div style={{width: '300px', marginBottom: rem(16)}}>
             {message.body}
             <StyledText>2FA code</StyledText>
             <StyledInput

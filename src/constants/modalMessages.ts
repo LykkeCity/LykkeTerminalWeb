@@ -13,7 +13,8 @@ const ModalMessages = {
     title: 'Confirm trade session'
   },
   tfa: {
-    body: 'Please confirm your trade session with 2FA code.',
+    body:
+      'Please confirm your trade session by using Google Authenticator or any other compatible app of your choice.',
     applyButton: 'Submit',
     cancelButton: 'Continue in read-only mode',
     title: 'Confirm trade session'

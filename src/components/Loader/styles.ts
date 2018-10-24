@@ -14,5 +14,5 @@ export const Centered = styled.div`
   height: 88px;
   background: ${rgb(17, 17, 17)};
   opacity: 0.8;
-  z-index: 99;
+  z-index: 9;
 `;

@@ -41,12 +41,12 @@ const QRModal: React.SFC<QRModalProps> = ({
           <QRCode size={160} value={qrId} />
         </QRCodeWrapper>
       </QRBody>
-      <QRButton onClick={handleContinue}>{message.button}</QRButton>
       <TfaSetupButton>
         <TfaSetupLink href={TFA_ROUTE}>
           Use Google Authenticator instead
         </TfaSetupLink>
       </TfaSetupButton>
+      <QRButton onClick={handleContinue}>{message.button}</QRButton>
     </SessionQRConfirm>
   );
 };

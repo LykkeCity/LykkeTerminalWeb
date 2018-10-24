@@ -94,11 +94,21 @@ export const OkButton = styled(CancelButton)`
   width: 100%;
 `;
 
-export const QRButton = styled(CancelButton)`
+const BlockLink = styled.a`
+  display: inline-block;
+  color: #0388ef;
+  cursor: pointer;
+  text-decoration: underline;
+  text-align: center;
   width: 100%;
-  font-weight: bold;
-  line-height: 1;
 `;
+
+const PrimaryButton = styled(OkButton)`
+  background-color: ${colors.blue};
+  font-weight: bold;
+`;
+
+export const QRButton = styled(BlockLink)``;
 
 export const Expired = styled(Modal)`
   width: 300px;
@@ -134,8 +144,7 @@ export const QRBody = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: ${rem(41)};
-  margin-bottom: ${rem(64)};
+  margin: ${rem(42)} 0;
 `;
 
 /*hack for ios mobile*/
@@ -238,20 +247,16 @@ export const SessionTfaConfirm = styled(Modal)`
   padding: ${rem(24)};
 `;
 
-export const TfaOkButton = styled(OkButton)`
+export const TfaOkButton = styled(PrimaryButton)`
+  margin-bottom: ${rem(16)};
   width: 100%;
-  font-weight: bold;
-  line-height: 1;
 `;
 
-export const TfaCancelButton = styled(CancelButton)`
-  width: 100%;
-  line-height: 1;
-`;
+export const TfaCancelButton = styled(BlockLink)``;
 
-export const TfaSetupButton = styled(CancelButton)`
+export const TfaSetupButton = styled(PrimaryButton)`
+  margin-bottom: ${rem(16)};
   width: 100%;
-  line-height: 1;
 `;
 
 export const TfaSetupLink = styled.a`
