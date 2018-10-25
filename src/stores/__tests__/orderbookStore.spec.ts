@@ -34,7 +34,7 @@ describe('orderBook store', () => {
   const store = new OrderBookStore(rootStore, {} as any, workerMock);
   const {getBestBid, getBestAsk, mid} = store;
 
-  test('order should contain users volume with equal price', () => {
+  test('order should contain users volume with equal price', async () => {
     const limitOrders = [
       {
         id: '0',
