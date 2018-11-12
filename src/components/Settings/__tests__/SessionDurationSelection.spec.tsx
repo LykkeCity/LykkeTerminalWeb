@@ -1,6 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
 
+import {AnalyticsService} from '../../../services/analyticsService';
 import {ChoosableItemProps} from '../../ChoosableItem/ChoosableItem';
 import SessionDurationSelection from '../SessionDurationSelection';
 
@@ -50,10 +51,11 @@ describe('<SessionDurationSelection>', () => {
   });
 
   it('should call set action when user click on last option', () => {
+    AnalyticsService.track = jest.fn();
     const wrapper = mount(getTestSessionDurationSelection());
     const options = wrapper.find('ChoosableItem');
     options.last().simulate('click');
     expect(handleSetDuration).toHaveBeenCalledWith(24);
-    expect(window.analytics.track).toHaveBeenCalled();
+    expect(AnalyticsService.track).toHaveBeenCalled();
   });
 });
