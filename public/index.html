@@ -1,40 +1,72 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, minimal-ui, user-scalable=no"
+    />
+    <meta name="theme-color" content="#000000" />
 
-<head> 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, minimal-ui, user-scalable=no">
-  <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" lazyload />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
 
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" lazyload>
-  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="%PUBLIC_URL%/apple-touch-icon.png"
+      lazyload
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-32x32.png"
+      sizes="32x32"
+      lazyload
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-16x16.png"
+      sizes="16x16"
+      lazyload
+    />
+    <link
+      rel="mask-icon"
+      href="%PUBLIC_URL%/safari-pinned-tab.svg"
+      color="#5bbad5"
+      lazyload
+    />
+    <link rel="stylesheet" href="%PUBLIC_URL%/icons-font.css" lazyload />
+    <meta name="theme-color" content="#ffffff" />
 
-  <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" lazyload>
-  <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-32x32.png" sizes="32x32" lazyload>
-  <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-16x16.png" sizes="16x16" lazyload>
-  <link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg" color="#5bbad5" lazyload>
-  <link rel="stylesheet" href="%PUBLIC_URL%/icons-font.css" lazyload>
-  <meta name="theme-color" content="#ffffff">
+    <title>Lykke Web Terminal</title>
+    <meta
+      name="description"
+      content="Lykke is a movement to build one global marketplace that is a level playing field where everyone has access."
+    />
+    <meta
+      name="keywords"
+      content="Lykke, bitcoin trading, bitcoin forex trading, bitcoin exchange, lykke exchange"
+    />
+    <!-- TradingView Widget BEGIN -->
+    <script
+      src="%PUBLIC_URL%/charting_library/charting_library.min.js"
+      async="true"
+    ></script>
+    <script
+      src="%PUBLIC_URL%/charting_library/datafeeds/udf/dist/polyfills.js"
+      async="true"
+    ></script>
+    <script
+      src="%PUBLIC_URL%/charting_library/datafeeds/udf/dist/bundle.js"
+      async="true"
+    ></script>
+    <!-- TradingView Widget END -->
+  </head>
 
-  <title>Lykke Web Terminal</title>
-  <meta name="description" content="Lykke is a movement to build one global marketplace that is a level playing field where everyone has access.">
-  <meta name="keywords" content="Lykke, bitcoin trading, bitcoin forex trading, bitcoin exchange, lykke exchange">
-  <!-- TradingView Widget BEGIN -->
-  <script src="%PUBLIC_URL%/charting_library/charting_library.min.js" async="true"></script>
-  <script src="%PUBLIC_URL%/charting_library/datafeeds/udf/dist/polyfills.js" async="true"></script>
-  <script src="%PUBLIC_URL%/charting_library/datafeeds/udf/dist/bundle.js" async="true"></script>
-  <!-- TradingView Widget END -->
-</head>
-
-<body>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <div id="root"></div>
-  <script>
-      !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
-      }}();
-  </script>
-</body>
-
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <div id="root"></div>
+  </body>
 </html>
