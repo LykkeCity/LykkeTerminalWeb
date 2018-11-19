@@ -155,3 +155,13 @@ button._tv-button {
 .save-load-buttons .button.last {
   border: 1px solid rgba(140, 148, 160, 0.4);
 }
+
+.header-chart-panel .header-chart-panel-content .button_mid,
+.header-chart-panel .header-chart-panel-content .button_mid:hover {
+  background: url('assets/images/noun-globe-1774522.svg') no-repeat center;
+}
+
+.header-chart-panel .header-chart-panel-content .button_trade,
+.header-chart-panel .header-chart-panel-content .button_trade:hover {
+  background: url('assets/images/lykke-logo-glyph.svg') no-repeat center;
+}

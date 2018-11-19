@@ -7,6 +7,7 @@ import {keys} from '../models';
 import {
   InstrumentModel,
   OrderBookDisplayType,
+  PriceType,
   TradeFilter
 } from '../models/index';
 import {
@@ -34,6 +35,7 @@ class UiStore extends BaseStore {
   @observable searchTerm: string = '';
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
+  @observable selectedPriceType: PriceType = PriceType.Mid;
   @observable showInstrumentPicker = false;
   @observable showInstrumentPerformanceData = false;
   @observable showInstrumentSelection = false;
@@ -166,6 +168,11 @@ class UiStore extends BaseStore {
     disclaimedAssets.forEach(asset =>
       this.checkAssetToDisclaim(selectedInstrument, asset)
     );
+  };
+
+  @action
+  selectPriceType = (priceType: PriceType) => {
+    this.selectedPriceType = priceType;
   };
 
   @action search = (term: string) => (this.searchTerm = term);

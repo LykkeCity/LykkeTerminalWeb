@@ -16,7 +16,6 @@ import messages from '../constants/notificationMessages';
 import logger from '../Logger';
 import {levels} from '../models';
 import {keys} from '../models';
-import {PriceType} from '../models/index';
 import {StorageUtils} from '../utils/index';
 import {workerMock} from '../workers/worker';
 import {
@@ -124,7 +123,7 @@ class RootStore {
             this.referenceStore.onQuoteAsk
           );
           this.socketStore.subscribe(
-            topics.candle('spot', x.id, PriceType.Trade, 'day'),
+            topics.candle('spot', x.id, this.uiStore.selectedPriceType, 'day'),
             this.referenceStore.onCandle
           );
         });
@@ -171,7 +170,7 @@ class RootStore {
           subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
           subscribe(
-            topics.candle('spot', x.id, PriceType.Trade, 'day'),
+            topics.candle('spot', x.id, this.uiStore.selectedPriceType, 'day'),
             this.referenceStore.onCandle
           );
         });

@@ -52,6 +52,7 @@ class ChartDataFeed {
   constructor(
     private readonly config: any,
     private instrument: InstrumentModel,
+    private priceType: PriceType,
     private readonly priceApi: PriceApi,
     private readonly session: any,
     private readonly subscribeToCandlesWithResolutions: (
@@ -95,6 +96,7 @@ class ChartDataFeed {
     const promises = timePeriods!.map(period =>
       this.priceApi.fetchCandles(
         this.instrument.id,
+        this.priceType,
         new Date(from * 1000),
         addTick(firstDataRequest ? new Date() : new Date(to * 1000), interval),
         interval
@@ -159,7 +161,7 @@ class ChartDataFeed {
         topics.candle(
           MarketType.Spot,
           this.instrument.id,
-          PriceType.Trade,
+          this.priceType,
           mappers.mapChartResolutionToWampInterval(resolution)
         ),
         (args: any[]) => {
