@@ -35,7 +35,7 @@ class UiStore extends BaseStore {
   @observable searchTerm: string = '';
   @observable searchWalletName: string = Watchlists.All;
   @observable selectedInstrument: InstrumentModel | null;
-  @observable selectedPriceType: PriceType = PriceType.Trade;
+  @observable selectedPriceType: PriceType = PriceType.Mid;
   @observable showInstrumentPicker = false;
   @observable showInstrumentPerformanceData = false;
   @observable showInstrumentSelection = false;
