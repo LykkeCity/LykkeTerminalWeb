@@ -1,4 +1,4 @@
-import {InstrumentModel} from '../models';
+import {InstrumentModel, KycStatuses} from '../models';
 import {AnalyticsEventsModel} from '../models/analyticsEventModel';
 import place from './places';
 
@@ -118,7 +118,8 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
   UserIdentifyTraits: (userInfo: any) => ({
     firstName: userInfo.firstName,
     lastName: userInfo.lastName,
-    kycStatus: userInfo.kycStatus
+    kycStatus: userInfo.kycStatus,
+    isKycPassed: userInfo.kycStatus === KycStatuses.Ok
   }),
   LoadTerminal: {
     title: 'Load terminal',
