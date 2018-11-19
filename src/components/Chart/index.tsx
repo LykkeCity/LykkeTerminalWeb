@@ -12,10 +12,12 @@ const ConnectedChart = connect(
       subscribeToCandlesWithResolutions,
       unsubscribeFromCandle
     },
-    uiStore: {selectedInstrument}
+    uiStore: {selectedInstrument, selectedPriceType, selectPriceType}
   }) => ({
     instrument: selectedInstrument,
     isAuth,
+    selectedPriceType,
+    selectPriceType,
     getDatafeed,
     loadSettings,
     saveSettings,

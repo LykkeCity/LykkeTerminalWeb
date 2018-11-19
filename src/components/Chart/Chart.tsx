@@ -8,7 +8,7 @@ import {
   overrides,
   studiesOverrides
 } from '../../constants/chartDefaultSettings';
-import {InstrumentModel} from '../../models';
+import {InstrumentModel, PriceType} from '../../models';
 import {chartPalette} from '../styled';
 import {
   ButtonWithImg,
@@ -32,9 +32,11 @@ export interface ChartContainerProps {
   containerId: ChartingLibraryWidgetOptions['container_id'];
   instrument: InstrumentModel;
   isAuth: boolean;
+  selectedPriceType: PriceType;
   getDatafeed: () => IBasicDataFeed;
   loadSettings: () => Promise<any>;
-  saveSettings: () => void;
+  saveSettings: (settings: any) => void;
+  selectPriceType: (priceType: PriceType) => void;
   subscribeToCandle: () => void;
   unsubscribeFromCandle: () => void;
 }
@@ -66,7 +68,10 @@ class Chart extends React.Component<
   }
 
   componentDidUpdate(prevProps: any): void {
-    if (!prevProps.instrument) {
+    if (
+      !prevProps.instrument ||
+      this.props.selectedPriceType !== prevProps.selectedPriceType
+    ) {
       this.renderChart();
       return;
     }
@@ -163,17 +168,60 @@ class Chart extends React.Component<
       this.setState({
         chartReady: true
       });
+
+      this.addPriceTypeButton();
     });
   };
 
+  addPriceTypeButton = () => {
+    const {selectedPriceType, selectPriceType} = this.props;
+
+    const buttonProps = {
+      [PriceType.Mid]: {
+        cssClass: 'button_trade',
+        title: 'Trades',
+        onClick: () => {
+          selectPriceType!(PriceType.Trade);
+        }
+      },
+      [PriceType.Trade]: {
+        cssClass: 'button_mid',
+        title: 'Mid price',
+        onClick: () => {
+          selectPriceType!(PriceType.Mid);
+        }
+      }
+    };
+
+    if (selectedPriceType) {
+      const button = buttonProps[selectedPriceType!];
+
+      this.tvWidget
+        .createButton()
+        .attr('title', button.title)
+        .attr('class', `button ${button.cssClass}`)
+        .on('click', button.onClick)
+        .append(' ');
+    }
+  };
+
   saveSettings = () => {
-    this.tvWidget.save(this.props.saveSettings);
+    this.tvWidget.save((settings: any) => {
+      settings.priceType = this.props.selectedPriceType;
+      this.props.saveSettings!(settings);
+    });
   };
 
   loadSettings = async () => {
     await this.props.loadSettings!()
       .then((res: any) => {
-        this.tvWidget.load(JSON.parse(res.Data));
+        const settings = JSON.parse(res.Data);
+
+        this.tvWidget.load(settings);
+
+        if (settings.priceType) {
+          this.props.selectPriceType!(settings.priceType);
+        }
       })
       .catch(err => {
         if (err.status === 404) {
