@@ -178,15 +178,15 @@ class Chart extends React.Component<
 
     const buttonProps = {
       [PriceType.Mid]: {
-        cssClass: 'button_trade',
-        title: 'Trades',
+        cssClass: 'button_mid',
+        title: 'Mid price',
         onClick: () => {
           selectPriceType!(PriceType.Trade);
         }
       },
       [PriceType.Trade]: {
-        cssClass: 'button_mid',
-        title: 'Mid price',
+        cssClass: 'button_trade',
+        title: 'Trades',
         onClick: () => {
           selectPriceType!(PriceType.Mid);
         }
