@@ -7,7 +7,7 @@ import {PriceApi} from '../api';
 import * as topics from '../api/topics';
 import messages from '../constants/notificationMessages';
 import {levels} from '../models';
-import {MarketType} from '../models';
+import {MarketType, PriceType} from '../models';
 import * as map from '../models/mappers';
 import {DocumentService} from '../services/documentService';
 
@@ -51,7 +51,7 @@ class PriceStore extends BaseStore {
     return this.api
       .fetchCandles(
         this.selectedInstrument!.id,
-        this.selectedPriceType,
+        PriceType.Trade,
         toUtc(addMonths(new Date(), -12)),
         toUtc(addMonths(new Date(), 1)),
         'month'
@@ -87,7 +87,7 @@ class PriceStore extends BaseStore {
   fetchDailyCandle = async () => {
     const resp = await this.api.fetchCandles(
       this.selectedInstrument!.id,
-      this.selectedPriceType,
+      PriceType.Trade,
       toUtc(new Date()),
       toUtc(addDays(new Date(), 1)),
       'day'
@@ -122,7 +122,7 @@ class PriceStore extends BaseStore {
         topics.candle(
           MarketType.Spot,
           this.selectedInstrument!.id,
-          this.selectedPriceType,
+          PriceType.Trade,
           'day'
         ),
         this.onDailyTradeCandle

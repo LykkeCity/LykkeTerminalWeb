@@ -159,9 +159,11 @@ button._tv-button {
 .header-chart-panel .header-chart-panel-content .button_mid,
 .header-chart-panel .header-chart-panel-content .button_mid:hover {
   background: url('assets/images/noun-globe-1774522.svg') no-repeat center;
+  margin-left: 5px;
 }
 
 .header-chart-panel .header-chart-panel-content .button_trade,
 .header-chart-panel .header-chart-panel-content .button_trade:hover {
   background: url('assets/images/lykke-logo-glyph.svg') no-repeat center;
+  margin-left: 5px;
 }
