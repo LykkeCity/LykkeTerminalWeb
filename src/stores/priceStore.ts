@@ -87,7 +87,7 @@ class PriceStore extends BaseStore {
   fetchDailyCandle = async () => {
     const resp = await this.api.fetchCandles(
       this.selectedInstrument!.id,
-      this.selectedPriceType,
+      PriceType.Trade,
       toUtc(new Date()),
       toUtc(addDays(new Date(), 1)),
       'day'
@@ -122,7 +122,7 @@ class PriceStore extends BaseStore {
         topics.candle(
           MarketType.Spot,
           this.selectedInstrument!.id,
-          this.selectedPriceType,
+          PriceType.Trade,
           'day'
         ),
         this.onDailyTradeCandle
