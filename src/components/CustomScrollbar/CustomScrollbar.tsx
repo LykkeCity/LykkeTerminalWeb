@@ -5,8 +5,16 @@ import {dims} from '../styled';
 
 const defaultHeight = `calc(100% - ${rem(dims.tileHeaderHeight)}`;
 
-const CustomScrollbar: React.SFC<{styles?: any}> = ({children, styles}) => (
-  <Scrollbars autoHide={true} style={{height: defaultHeight, ...styles}}>
+const CustomScrollbar: React.SFC<{autoHeight?: boolean; styles?: any}> = ({
+  children,
+  autoHeight,
+  styles
+}) => (
+  <Scrollbars
+    autoHeight={autoHeight}
+    autoHide={true}
+    style={{height: defaultHeight, ...styles}}
+  >
     {children}
   </Scrollbars>
 );

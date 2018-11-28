@@ -51,7 +51,6 @@ const InstrumentShortcutSelection: React.SFC<
           <CustomSelect
             styles={{
               borderRadius: '4px',
-              height: '69px',
               minWidth: '150px',
               right: '200px',
               top: '45px'

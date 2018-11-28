@@ -11,10 +11,12 @@ const withScroll = <P extends {}>(Component: React.ComponentType<P>) => (
   </CustomScrollbar>
 );
 
-export const withStyledScroll = (styles: object) => <P extends {}>(
+export const withStyledScroll = (styles: object, autoHeight?: boolean) => <
+  P extends {}
+>(
   Component: React.ComponentType<P>
 ) => (props: P & ScrollbarProps) => (
-  <CustomScrollbar styles={styles}>
+  <CustomScrollbar styles={styles} autoHeight={autoHeight}>
     <Component {...props} />
   </CustomScrollbar>
 );

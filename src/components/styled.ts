@@ -99,7 +99,7 @@ export const chartPalette = {
   volumeDown: '#B03C3C'
 };
 
-export const tableScrollMargin = '1rem';
+export const tableScrollMargin = '1rem + 1px';
 
 export const svgPaths = {
   load:

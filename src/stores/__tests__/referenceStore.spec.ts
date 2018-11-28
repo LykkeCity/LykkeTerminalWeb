@@ -464,6 +464,7 @@ describe('referenceStore', () => {
         })
       );
 
+      expect(refStore.findInstruments(' BTC', '')).not.toHaveLength(0);
       expect(refStore.findInstruments('BTC', '')).not.toHaveLength(0);
       expect(refStore.findInstruments('Bitcoin', '')).not.toHaveLength(0);
       expect(refStore.findInstruments('Swiss Franc', '')).toHaveLength(0);
