@@ -139,6 +139,7 @@ export const mapToStopLimitOrder = ({
     createdAt: new Date(CreateDateTime),
     id: Id,
     price: OrderAction === Side.Buy ? UpperPrice : LowerPrice,
+    stopPrice: OrderAction === Side.Buy ? UpperLimitPrice : LowerLimitPrice,
     side: OrderAction,
     symbol: AssetPairId,
     volume: Volume,

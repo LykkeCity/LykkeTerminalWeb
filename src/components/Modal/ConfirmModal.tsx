@@ -13,7 +13,7 @@ import {
 import withModal from './withModal';
 
 interface ConfirmModalProps {
-  onApply: () => void;
+  onApply: () => any;
   onClose: () => void;
   message: string;
 }
@@ -25,6 +25,7 @@ const {Flex} = require('grid-styled');
 
 interface ConfirmModalState {
   isReminderChecked: boolean;
+  submitting: boolean;
 }
 
 class ConfirmModal extends React.Component<
@@ -34,7 +35,8 @@ class ConfirmModal extends React.Component<
   constructor(props: ConfirmModalProps) {
     super(props);
     this.state = {
-      isReminderChecked: !JSON.parse(confirmStorage.get() || 'true')
+      isReminderChecked: !JSON.parse(confirmStorage.get() || 'true'),
+      submitting: false
     };
   }
 
@@ -44,10 +46,18 @@ class ConfirmModal extends React.Component<
     });
   };
 
-  handleApply = () => {
+  handleApply = async () => {
     confirmStorage.set(!this.state.isReminderChecked);
-
-    this.props.onApply();
+    this.setState({
+      submitting: true
+    });
+    try {
+      await this.props.onApply();
+    } finally {
+      this.setState({
+        submitting: false
+      });
+    }
   };
 
   handleCancel = () => {
@@ -70,7 +80,11 @@ class ConfirmModal extends React.Component<
             />
           </ModalReminder>
           <Flex justify={'space-between'} style={{marginTop: '24px'}}>
-            <ApplyButton type="button" onClick={this.handleApply}>
+            <ApplyButton
+              type="button"
+              onClick={this.handleApply}
+              disabled={this.state.submitting}
+            >
               Yes
             </ApplyButton>
             <CancelButton type="button" onClick={this.handleCancel}>

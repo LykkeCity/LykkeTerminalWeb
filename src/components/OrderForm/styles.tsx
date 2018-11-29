@@ -207,7 +207,7 @@ Percentage.Item = styled(
     left: -9999px;
   }
   label {
-    border: solid 1px ${theme.bg};
+    border: solid 1px transparent;
     border-radius: 4px;
     cursor: pointer;
     display: inline-block;

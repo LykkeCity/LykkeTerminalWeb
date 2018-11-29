@@ -22,7 +22,7 @@ export interface OrderFormProps {
   quoteAsset: string;
   availableInBaseAsset: number;
   availableInQuoteAsset: number;
-  onPlaceOrder: (values: any) => void;
+  onPlaceOrder: (values: any) => any;
   placeOrder: any;
 }
 
@@ -31,7 +31,7 @@ export default class extends Component<OrderFormProps> {
   state = {
     type: this.props.type,
     showConfirm: false,
-    placeOrder: () => ({}),
+    placeOrder: () => Promise.resolve(),
     warnText: 'place the order'
   };
 
@@ -55,7 +55,7 @@ export default class extends Component<OrderFormProps> {
       default:
         break;
     }
-    if (confirmStorage.get()) {
+    if (JSON.parse(confirmStorage.get() || true.toString())) {
       this.setState({
         showConfirm: true,
         placeOrder: () => this.props.placeOrder(this.state.type, opts),
@@ -64,7 +64,7 @@ export default class extends Component<OrderFormProps> {
         }`
       });
     } else {
-      this.props.placeOrder(this.state.type, opts);
+      return this.props.placeOrder(this.state.type, opts);
     }
   };
 
@@ -109,8 +109,7 @@ export default class extends Component<OrderFormProps> {
         {this.state.showConfirm && (
           <ConfirmModal
             onApply={() => {
-              this.state.placeOrder();
-              this.hideConfirm();
+              return this.state.placeOrder().then(this.hideConfirm);
             }}
             onClose={this.hideConfirm}
             message={this.state.warnText}

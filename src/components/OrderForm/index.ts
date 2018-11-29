@@ -6,7 +6,7 @@ import MarketOrder from './MarketOrder';
 import OrderForm, {OrderFormProps} from './OrderForm';
 import StopLimitOrder from './StopLimitOrder';
 
-const plainOrderProps = (
+export const orderProps = (
   instrument: InstrumentModel,
   balances: AssetBalanceModel[]
 ) => {
@@ -41,7 +41,7 @@ const mapStoreToProps = ({balanceListStore, uiStore}: RootStore) => ({
   amount: uiStore.selectedAmount,
   side: uiStore.selectedSide,
   onReset: uiStore.resetOrderForm,
-  ...plainOrderProps(
+  ...orderProps(
     uiStore.selectedInstrument!,
     balanceListStore.tradingWallet.balances
   )

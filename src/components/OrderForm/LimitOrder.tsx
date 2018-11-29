@@ -28,7 +28,8 @@ export default ({
   availableInBaseAsset,
   availableInQuoteAsset,
   onPlaceOrder,
-  onReset
+  onReset,
+  editing = false
 }: any) => (
   <Formik
     enableReinitialize={true}
@@ -85,20 +86,22 @@ export default ({
         : availableInBaseAsset;
       return (
         <Form>
-          <Side>
-            <Field
-              component={Side.Option}
-              name="side"
-              id={SideModel.Buy}
-              label={SideModel.Buy}
-            />
-            <Field
-              component={Side.Option}
-              name="side"
-              id={SideModel.Sell}
-              label={SideModel.Sell}
-            />
-          </Side>
+          {editing || (
+            <Side>
+              <Field
+                component={Side.Option}
+                name="side"
+                id={SideModel.Buy}
+                label={SideModel.Buy}
+              />
+              <Field
+                component={Side.Option}
+                name="side"
+                id={SideModel.Sell}
+                label={SideModel.Sell}
+              />
+            </Side>
+          )}
           <Field name="price">
             {({field}: FieldProps<any>) => (
               <FormGroup>
@@ -181,7 +184,9 @@ export default ({
           </Total>
           <Actions>
             <Button type="submit" disabled={isSubmitting || !isValid}>
-              {`${SideModel[values.side]} ${values.amount} ${baseAsset}`}
+              {editing
+                ? 'Modify'
+                : `${SideModel[values.side]} ${values.amount} ${baseAsset}`}
             </Button>
             <GhostButton
               type="button"

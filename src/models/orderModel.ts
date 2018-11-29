@@ -8,6 +8,7 @@ class OrderModel {
   volume: number;
   remainingVolume: number;
   price: number;
+  stopPrice: number;
   createdAt: Date;
   id: string;
   cancelOrder?: (id: string) => void;
