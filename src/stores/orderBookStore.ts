@@ -5,7 +5,13 @@ import {OrderBookApi} from '../api';
 import * as topics from '../api/topics';
 import {LEVELS_COUNT} from '../components/OrderBook';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
-import {LevelType, Order, OrderBookCellType, Side} from '../models/index';
+import {
+  LevelType,
+  Order,
+  OrderBookCellType,
+  OrderType,
+  Side
+} from '../models/index';
 import {OrderLevel} from '../models/order';
 import {AnalyticsService} from '../services/analyticsService';
 import {switchcase} from '../utils/fn';
@@ -267,14 +273,21 @@ class OrderBookStore extends BaseStore {
 
   setOrderPrice = (value: number, side: Side) => {
     this.rootStore.uiOrderStore.handlePriceClickFromOrderBook(value, side);
+    this.rootStore.uiStore.selectedPrice = value;
+    this.rootStore.uiStore.selectedSide = side;
+    this.rootStore.uiStore.selectedOrderType = OrderType.Limit;
   };
 
-  setOrderVolume = (value: number, side: Side) => {
-    const orderSide = side === Side.Sell ? Side.Buy : Side.Sell;
+  setOrderVolume = (value: number, clickedSide: Side) => {
+    const orderSide = clickedSide === Side.Sell ? Side.Buy : Side.Sell;
     this.rootStore.uiOrderStore.handleVolumeClickFromOrderBook(
       value,
       orderSide
     );
+    this.rootStore.uiStore.selectedAmount = value;
+    this.rootStore.uiStore.selectedSide =
+      clickedSide === Side.Buy ? Side.Sell : Side.Buy; // make an opposite side
+    this.rootStore.uiStore.selectedOrderType = OrderType.Market;
   };
 
   triggerOrderUpdate = ({type, value, side}: any) => {

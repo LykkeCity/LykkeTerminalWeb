@@ -3,7 +3,7 @@ import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import messages from '../constants/notificationMessages';
 import logger from '../Logger';
-import {levels} from '../models';
+import {levels, Side} from '../models';
 import {OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
@@ -62,6 +62,26 @@ class OrderStore extends BaseStore {
               }
             }, this.orderPlacedUnsuccessfully)
         );
+      case OrderType.StopLimit: {
+        const {Price, StopPrice, ...commonProps} = body;
+        const bounds =
+          body.OrderAction === Side.Sell
+            ? {
+                LowerPrice: Price!,
+                LowerLimitPrice: StopPrice!,
+                UpperPrice: null,
+                UpperLimitPrice: null
+              }
+            : {
+                LowerPrice: null,
+                LowerLimitPrice: null,
+                UpperPrice: Price!,
+                UpperLimitPrice: StopPrice!
+              };
+        return this.api
+          .placeStopLimit({...commonProps, ...bounds})
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully);
+      }
     }
   };
 

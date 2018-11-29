@@ -1,9 +1,10 @@
 import {action, computed, observable, reaction} from 'mobx';
 import {pathOr} from 'rambda';
+import {precisionCeil} from 'src/utils/math';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {disclaimedAssets} from '../constants/assetDisclaimer';
 import logger from '../Logger';
-import {keys} from '../models';
+import {keys, OrderType, Side} from '../models';
 import {
   InstrumentModel,
   OrderBookDisplayType,
@@ -51,6 +52,12 @@ class UiStore extends BaseStore {
     state: {}
   };
 
+  @observable initialPrice = 0;
+  @observable selectedPrice = 0;
+  @observable selectedAmount = 0;
+  @observable selectedSide = Side.Buy;
+  @observable selectedOrderType = OrderType.Limit;
+
   @observable userInfo: UserInfoModel | null;
   @observable isConnectionOpened: boolean = false;
   @observable private isReadOnlyMode: boolean;
@@ -65,11 +72,17 @@ class UiStore extends BaseStore {
         if (instrument) {
           this.toggleInstrumentPerformanceData(false);
 
-          const {reset, fetchAll, subscribe} = this.rootStore.orderBookStore;
+          const {
+            reset,
+            fetchAll,
+            subscribe,
+            mid
+          } = this.rootStore.orderBookStore;
           await reset();
 
           try {
             await fetchAll(); // should be waited for loading bids and asks
+            this.initialPrice = precisionCeil(await mid(), instrument.accuracy);
           } catch (error) {
             logger.logException(error);
             return;
@@ -85,8 +98,7 @@ class UiStore extends BaseStore {
           } = this.rootStore.uiOrderStore;
           setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
           setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
-          const mid = await this.rootStore.orderBookStore.mid();
-          setPriceValueWithFixed(mid);
+          setPriceValueWithFixed(await mid());
           setQuantityValue(DEFAULT_INPUT_VALUE);
 
           const {
@@ -236,6 +248,12 @@ class UiStore extends BaseStore {
       this.rootStore.socketStore.isSocketOpen() || false;
   };
   getConnectionOpened = () => this.isConnectionOpened;
+
+  resetOrderForm = () => {
+    this.selectedPrice = 0;
+    this.selectedAmount = 0;
+    this.selectedSide = Side.Buy;
+  };
 
   private checkAssetToDisclaim = (
     selectedInstrument: InstrumentModel | undefined,
