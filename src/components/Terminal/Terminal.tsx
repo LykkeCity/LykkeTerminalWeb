@@ -10,6 +10,7 @@ import {
   SETTINGS_ROUTE,
   TRADE_ROUTE
 } from '../../constants/lykkeRoutes';
+import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
 import {AnalyticsService} from '../../services/analyticsService';
@@ -280,7 +281,7 @@ class Terminal extends React.Component<TerminalProps, {}> {
           activeMenuItem={MenuItem.Trade}
           headerLinkOptions={headerLinkOptions}
           renderLink={renderLink}
-          getStartedUrl={this.authStore.getSignInUrl()}
+          getStartedUrl={paths.auth}
           isAuth={this.authStore.isAuth}
           secondaryMenuLinkOptions={secondMenuLinkOptions}
           isSecondaryMenuShown={true}

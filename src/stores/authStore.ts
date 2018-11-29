@@ -68,6 +68,9 @@ class AuthStore extends BaseStore {
 
   fetchToken = async () => {
     const user = await this.userManager.getUser();
+    if (!user) {
+      return Promise.reject();
+    }
     const {access_token} = user;
     const {token, authId} = await this.api.fetchToken(access_token);
     sessionTokenStorage.set(authId);
@@ -103,6 +106,7 @@ class AuthStore extends BaseStore {
     this.userManager.signoutRedirect();
   };
 
+<<<<<<< HEAD
   getSignInUrl = () => {
     const {REACT_APP_AUTH_URL: url, REACT_APP_ID: clientId} = process.env;
     const nonce = randomString.mixed(20);
@@ -116,6 +120,8 @@ class AuthStore extends BaseStore {
     )}&nonce=${nonce}&state=${state}`;
   };
 
+=======
+>>>>>>> WEB-61: Few rebase fixes
   reset = () => {
     this.kycStatus = '';
     this.token = '';

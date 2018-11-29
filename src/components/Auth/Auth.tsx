@@ -13,13 +13,16 @@ interface AuthProps extends RouteComponentProps<any> {
 class Auth extends React.Component<AuthProps> {
   componentDidMount() {
     const {authStore, balanceListStore} = this.props;
-    authStore.fetchToken().then(() =>
-      authStore.fetchUserInfo().then(() => {
-        balanceListStore.fetchAll().then(() => {
-          this.props.history.push('/');
-        });
-      })
-    );
+    authStore
+      .fetchToken()
+      .then(() =>
+        authStore.fetchUserInfo().then(() => {
+          balanceListStore.fetchAll().then(() => {
+            this.props.history.push('/');
+          });
+        })
+      )
+      .catch(() => authStore.signIn());
   }
 
   render() {
