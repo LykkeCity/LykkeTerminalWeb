@@ -1,5 +1,6 @@
 import * as React from 'react';
-import Icon from '../Icon/Icon';
+import {IconContext} from 'react-icons';
+import {FiMinus, FiPlus} from 'react-icons/fi';
 import {Figure, FigureHint, FigureValue} from '../OrderBook/styles';
 import ChartWrapper from './Chart/index';
 import {AbsoluteCentered, Bar, Button, FillHeight} from './styles';
@@ -27,14 +28,18 @@ export const DepthChart = ({
     <AbsoluteCentered>
       <Bar>
         <Button onClick={zoomOut} disabled={isMinZoom}>
-          <Icon name={'minus'} />
+          <IconContext.Provider value={{size: '1.2rem'}}>
+            <FiMinus />
+          </IconContext.Provider>
         </Button>
         <Figure>
           <FigureValue>{format(mid, quoteAccuracy)}</FigureValue>
           <FigureHint>Mid price</FigureHint>
         </Figure>
         <Button onClick={zoomIn} disabled={isMaxZoom}>
-          <Icon name={'plus'} />
+          <IconContext.Provider value={{size: '1.2rem'}}>
+            <FiPlus />
+          </IconContext.Provider>
         </Button>
       </Bar>
     </AbsoluteCentered>

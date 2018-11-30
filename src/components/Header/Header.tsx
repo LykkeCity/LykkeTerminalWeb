@@ -1,9 +1,10 @@
 import * as React from 'react';
+import {IconContext} from 'react-icons';
+import {FiSettings} from 'react-icons/fi';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AnalyticsService} from '../../services/analyticsService';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
-import {Icon} from '../Icon/index';
 import {InstrumentPerformance} from '../InstrumentPerformance';
 import {InstrumentPicker} from '../InstrumentPicker';
 import {SettingsModal} from '../Settings';
@@ -58,7 +59,11 @@ const Header: React.SFC<HeaderProps> = ({
                   className="hidden-xs settings"
                   onClick={handleToggleSettings}
                 >
-                  <Icon name={'cogwheel'} color={colors.coolGrey} />
+                  <IconContext.Provider
+                    value={{size: '1.1rem', color: colors.coolGrey}}
+                  >
+                    <FiSettings />
+                  </IconContext.Provider>
                 </span>
                 {settingsStore.showSettings ? (
                   <SettingsModal handleCloseSettings={handleToggleSettings} />

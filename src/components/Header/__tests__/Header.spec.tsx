@@ -1,5 +1,6 @@
 import {shallow} from 'enzyme';
 import React from 'react';
+import {FiSettings} from 'react-icons/fi';
 import {AuthApi} from '../../../api';
 import {AuthStore, RootStore, SettingsStore} from '../../../stores';
 import Header from '../Header';
@@ -38,7 +39,7 @@ describe('<Header>', () => {
 
     it('should not show cog wheel icon', () => {
       const wrapper = shallow(getTestHeader());
-      expect(wrapper.find('Icon[name="cogwheel"]')).toHaveLength(0);
+      expect(wrapper.find(FiSettings)).toHaveLength(0);
     });
   });
 
@@ -61,7 +62,7 @@ describe('<Header>', () => {
 
     it('should show cog wheel icon', () => {
       const wrapper = shallow(getTestHeader());
-      const icon = wrapper.find('Icon[name="cogwheel"]');
+      const icon = wrapper.find(FiSettings);
       expect(icon).toHaveLength(1);
     });
 
@@ -77,7 +78,7 @@ describe('<Header>', () => {
 
       it('should not show cog wheel icon', () => {
         const wrapper = shallow(getTestHeader());
-        expect(wrapper.find('Icon[name="cogwheel"]')).toHaveLength(0);
+        expect(wrapper.find(FiSettings)).toHaveLength(0);
       });
     });
   });

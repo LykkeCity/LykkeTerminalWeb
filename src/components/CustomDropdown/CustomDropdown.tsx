@@ -1,6 +1,6 @@
 import {DropdownControl} from '@lykkex/react-components';
 import React from 'react';
-import {FaCaretDown} from 'react-icons/fa';
+import {FiChevronDown} from 'react-icons/fi';
 import {
   StyledDropdown,
   StyledDropdownContainer,
@@ -65,7 +65,7 @@ class CustomDropdown extends React.Component<
   renderControlButton() {
     return (
       <StyledDropdownControlParent>
-        <FaCaretDown />
+        <FiChevronDown />
       </StyledDropdownControlParent>
     );
   }

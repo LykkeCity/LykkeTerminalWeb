@@ -1,10 +1,11 @@
 import * as React from 'react';
+import {IconContext} from 'react-icons';
+import {FiEdit2, FiX} from 'react-icons/fi';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {InstrumentModel, OrderModel, Side} from '../../models';
 import {AnalyticsService} from '../../services/analyticsService';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil, precisionFloor} from '../../utils/math';
-import {Icon} from '../Icon/index';
 import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 import {OrderActions, OrderCellWidth} from './index';
@@ -75,10 +76,14 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
         <span onClick={handleEditOrder}>
-          <Icon name={'edit-alt'} />
+          <IconContext.Provider value={{size: '1rem'}}>
+            <FiEdit2 />
+          </IconContext.Provider>
         </span>
         <span style={{marginLeft: '0.75rem'}} onClick={handleCancelOrder}>
-          <Icon name={'close'} />
+          <IconContext.Provider value={{size: '1.1rem'}}>
+            <FiX />
+          </IconContext.Provider>
         </span>
       </Cell>
     </tr>
