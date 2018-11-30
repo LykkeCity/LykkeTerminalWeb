@@ -13,7 +13,7 @@ interface OrderBookSwitchProps {
   onChange: (displayType: OrderBookDisplayType) => void;
 }
 
-const show = observable(false);
+const show = observable.box(false);
 
 const OrderBookSwitch: React.SFC<OrderBookSwitchProps> = ({
   value,
