@@ -1,6 +1,8 @@
 import {AssetBalanceModel, InstrumentModel} from 'src/models';
 import {RootStore} from 'src/stores';
+import {withAuth} from '../Auth';
 import {connect} from '../connect';
+import {withKyc} from '../Kyc';
 import LimitOrder from './LimitOrder';
 import MarketOrder from './MarketOrder';
 import OrderForm, {OrderFormProps} from './OrderForm';
@@ -48,12 +50,15 @@ const mapStoreToProps = ({balanceListStore, uiStore}: RootStore) => ({
 });
 
 const ConnectedOrderForm = connect<OrderFormProps>(
-  ({orderStore, uiStore}) => ({
+  ({orderStore, uiStore, authStore}) => ({
     instrument: uiStore.selectedInstrument,
     placeOrder: orderStore.placeOrder,
-    type: uiStore.selectedOrderType
+    type: uiStore.selectedOrderType,
+    isAuth: authStore.isAuth,
+    isKycPassed: authStore.isKycPassed,
+    readOnlyMode: uiStore.readOnlyMode
   }),
-  OrderForm
+  withAuth(withKyc(OrderForm))
 );
 
 const ConnectedLimitOrder = connect<OrderFormProps>(

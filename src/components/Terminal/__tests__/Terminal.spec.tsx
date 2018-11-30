@@ -20,7 +20,8 @@ describe('<Terminal>', () => {
     LastName: 'Jackson',
     KycStatus: 'Done'
   };
-  const rootStore = new RootStore(true);
+  const rootStore = new RootStore(false);
+  // rootStore.uiStore = jest.fn();
   rootStore.authStore.userInfo = new UserInfoModel(user);
 
   const getTestTerminal = () => (
@@ -33,7 +34,6 @@ describe('<Terminal>', () => {
       (wrapper.instance() as any).updateLayoutFromLocalStorage();
       expect(window.localStorage.getItem).toHaveBeenCalled();
     });
-
     it('should update state by layout from storage if structure is the same', () => {
       const wrapper = shallow(getTestTerminal());
       const state = wrapper.instance().state as any;
@@ -44,7 +44,6 @@ describe('<Terminal>', () => {
       (wrapper.instance() as any).updateLayoutFromLocalStorage();
       expect(wrapper.instance().setState).toHaveBeenCalled();
     });
-
     it('should not update state by layout from storage if structure is different', () => {
       const wrapper = shallow(getTestTerminal());
       window.localStorage.getItem = jest.fn(() => oldLayout);
@@ -52,7 +51,6 @@ describe('<Terminal>', () => {
       (wrapper.instance() as any).updateLayoutFromLocalStorage();
       expect(wrapper.instance().setState).not.toHaveBeenCalled();
     });
-
     it('should reset layout in storage if structure is different', () => {
       const wrapper = shallow(getTestTerminal());
       window.localStorage.getItem = jest.fn(() => oldLayout);

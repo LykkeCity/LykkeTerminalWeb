@@ -29,20 +29,20 @@ describe('<WalletBalanceList>', () => {
 
   let wallet: any;
   let setSide: any;
-  let handlePercentageChange: any;
+  let setAmount: any;
 
   const getTestWalletBalanceList = () => (
     <WalletBalanceList
       wallet={wallet}
       selectedInstrument={selectedInstrument}
       setSide={setSide}
-      handlePercentageChange={handlePercentageChange}
+      setAmount={setAmount}
     />
   );
 
   beforeEach(() => {
     setSide = jest.fn();
-    handlePercentageChange = jest.fn();
+    setAmount = jest.fn();
 
     wallet = new WalletModel({
       Id: 'Trading',
@@ -137,7 +137,7 @@ describe('<WalletBalanceList>', () => {
         .first()
         .props() as any;
       quoteAssetBalanceItemProps.onClick();
-      expect(handlePercentageChange).toHaveBeenCalled();
+      expect(setAmount).toHaveBeenCalled();
     });
   });
 });
