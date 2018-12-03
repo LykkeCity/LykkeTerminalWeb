@@ -31,7 +31,7 @@ class BalanceInfo extends React.Component<BalanceInfoProps> {
         <BaseAssetLabel>
           {pathOr('', ['getBaseAsset', 'name'], this.referenceStore)}
         </BaseAssetLabel>
-        <BalanceLabel className={'balance-total'}>Total Balance</BalanceLabel>
+        <BalanceLabel className={'balance-total'}>Balance</BalanceLabel>
       </BalanceInfoDiv>
     );
   }
