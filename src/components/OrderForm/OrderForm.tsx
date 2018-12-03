@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import StorageUtils from 'src/utils/storageUtils';
 import {
   AssetBalanceModel,
   InstrumentModel,
@@ -7,6 +6,7 @@ import {
   OrderType,
   Side
 } from '../../models';
+import StorageUtils from '../../utils/storageUtils';
 import ConfirmModal from '../Modal/ConfirmModal';
 import {LimitOrder, MarketOrder, StopLimitOrder} from './';
 import {OrderForm, Type} from './styles';

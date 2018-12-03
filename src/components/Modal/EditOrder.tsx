@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {precisionCeil} from 'src/utils/math';
 import {InstrumentModel, OrderModel, OrderType} from '../../models';
 import Side from '../../models/side';
+import {precisionCeil} from '../../utils/math';
 import {orderProps} from '../OrderForm';
 import LimitOrder from '../OrderForm/LimitOrder';
 import StopLimitOrder from '../OrderForm/StopLimitOrder';
@@ -44,9 +44,11 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
     switch (this.props.order.type) {
       case OrderType.Limit:
         body.Price = values.price;
+        break;
       case OrderType.StopLimit:
         body.Price = values.price;
         body.StopPrice = values.stopPrice;
+        break;
       default:
         break;
     }

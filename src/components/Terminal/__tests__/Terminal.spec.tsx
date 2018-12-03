@@ -20,8 +20,7 @@ describe('<Terminal>', () => {
     LastName: 'Jackson',
     KycStatus: 'Done'
   };
-  const rootStore = new RootStore(false);
-  // rootStore.uiStore = jest.fn();
+  const rootStore = new RootStore(true);
   rootStore.authStore.userInfo = new UserInfoModel(user);
 
   const getTestTerminal = () => (

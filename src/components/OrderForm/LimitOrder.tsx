@@ -1,8 +1,8 @@
 import {Field, FieldProps, Form, Formik} from 'formik';
 import React from 'react';
-import {formattedNumber} from 'src/utils/localFormatted/localFormatted';
-import {precisionCeil} from 'src/utils/math';
 import {Side as SideModel} from '../../models';
+import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import {precisionCeil} from '../../utils/math';
 import {
   Actions,
   AvailableBalance,

@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react';
-import {Side} from 'src/models';
+import {Side} from '../../models';
 import {connect} from '../connect';
 import {withStyledScroll} from '../CustomScrollbar';
 import WalletBalanceItem from './WalletBalanceItem/WalletBalanceItem';

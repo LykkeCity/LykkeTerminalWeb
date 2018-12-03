@@ -1,5 +1,5 @@
-import {AssetBalanceModel, InstrumentModel} from 'src/models';
-import {RootStore} from 'src/stores';
+import {AssetBalanceModel, InstrumentModel} from '../../models';
+import {RootStore} from '../../stores';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {withKyc} from '../Kyc';

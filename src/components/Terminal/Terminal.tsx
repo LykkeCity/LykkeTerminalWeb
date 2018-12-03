@@ -27,7 +27,6 @@ import {Footer} from '../Footer';
 import {Header as SubHeader} from '../Header';
 import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
-// import {Order} from '../Order';
 import OrderBook from '../OrderBook';
 import {OrderForm} from '../OrderForm';
 import {Orders} from '../OrderList';

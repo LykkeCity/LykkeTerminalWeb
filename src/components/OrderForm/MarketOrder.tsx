@@ -1,8 +1,8 @@
 import {formatNumber} from '@lykkex/lykke.js';
 import {Field, FieldProps, Form, Formik} from 'formik';
 import React from 'react';
-import {precisionCeil} from 'src/utils/math';
 import {Side as SideModel} from '../../models';
+import {precisionCeil} from '../../utils/math';
 import {
   Actions,
   AvailableBalance,

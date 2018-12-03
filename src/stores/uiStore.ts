@@ -1,6 +1,5 @@
 import {action, computed, observable, reaction} from 'mobx';
 import {pathOr} from 'rambda';
-import {precisionCeil} from 'src/utils/math';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {disclaimedAssets} from '../constants/assetDisclaimer';
 import logger from '../Logger';
@@ -21,6 +20,7 @@ import {AnalyticsService} from '../services/analyticsService';
 import {DocumentService} from '../services/documentService';
 import {fns, StorageUtils} from '../utils/index';
 import {DEFAULT_INPUT_VALUE} from '../utils/inputNumber';
+import {precisionCeil} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 
 const instrumentStorage = StorageUtils(keys.selectedInstrument);
