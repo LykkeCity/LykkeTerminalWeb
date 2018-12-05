@@ -1,4 +1,4 @@
-import '@lykkex/react-components';
+import '@lykkex/react-components'; // FIXME: why do we need this? no tree-shaking :( + you need to remove recharts from the components pkg
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
@@ -26,21 +26,12 @@ const addBaseFont: any = addFont('Proxima Nova');
 const addAkrobatFont: any = addFont('Akrobat');
 
 const proximaFonts = [
-  {weight: 200, name: 'ProximaNovaThin'},
-  {weight: 300, name: 'ProximaNova-Light'},
   {weight: 400, name: 'ProximaNovaRegular'},
-  {weight: 600, name: 'ProximaNova-Semibold'},
-  {weight: 700, name: 'ProximaNovaBold'}
+  {weight: 600, name: 'ProximaNova-Semibold'}
 ];
 const akrobatFonts = [
-  {weight: 100, name: 'Akrobat-Thin', formats: ['otf']},
-  {weight: 200, name: 'Akrobat-ExtraLight', formats: ['otf']},
-  {weight: 300, name: 'Akrobat-Light', formats: ['otf']},
   {weight: 400, name: 'Akrobat-Regular', formats: ['otf']},
-  {weight: 600, name: 'Akrobat-SemiBold', formats: ['otf']},
-  {weight: 700, name: 'Akrobat-Bold', formats: ['otf']},
-  {weight: 800, name: 'Akrobat-ExtraBold', formats: ['otf']},
-  {weight: 1000, name: 'Akrobat-Black', formats: ['otf']}
+  {weight: 600, name: 'Akrobat-SemiBold', formats: ['otf']}
 ];
 
 // tslint:disable-next-line:no-unused-expression
@@ -48,27 +39,24 @@ injectGlobal`
   ${proximaFonts.map(addBaseFont) as any};
   ${akrobatFonts.map(addAkrobatFont) as any};
   ${normalize() as any};
-  * {
+  *, *::before, *::after {
     border-collapse: collapse;
   }
-  body, :root {
-    height: auto;
-    min-height: 100%;
-    font: normal 14px "Proxima Nova", sans-serif;
-    color: #f5f6f7;
-    line-height: normal;
-    padding: 0;
-    margin: 0;
+  html {
+    font-size: 14px;
+  }
+  body {
+    color: #fff;
+    font-family: 'Proxima Nova', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
     /* Adjust font size */
     -webkit-text-size-adjust: 100%;
-    /* Font varient */
+    /* Font variant */
     font-variant-ligatures: none;
     -webkit-font-variant-ligatures: none;
     /* Smoothing */
     text-rendering: optimizeLegibility;
     -moz-osx-font-smoothing: grayscale;
-    font-smoothing: antialiased;
     -webkit-font-smoothing: antialiased;
 
     -webkit-user-select: none;

@@ -1,15 +1,15 @@
 {
-  "short_name": "Lykke Exchange Web",
-  "name": "Lykke Exchange Web",
+  "short_name": "Lykke Trade",
+  "name": "Lykke Trade",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "192x192",
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
       "type": "image/png"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0388ef",
+  "background_color": "#333333"
 }
