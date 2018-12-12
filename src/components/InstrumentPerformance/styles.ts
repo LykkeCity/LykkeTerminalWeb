@@ -13,7 +13,7 @@ export const StyledInstrumentPerformanceFigure = styled.div`
 export const InstrumentPerformanceFigureValue = styled.div`
   font-size: ${rem(fonts.large)};
   font-weight: bold;
-  font-family: 'Akrobat', sans-serif;
+  font-family: Lekton, monospace;
   color: ${(p: any) => p.color || colors.white};
   text-align: left;
 ` as any;

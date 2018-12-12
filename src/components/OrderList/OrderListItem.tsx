@@ -54,22 +54,25 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       >
         {displayName}
       </Cell>
-      <TitledCell title={formattedNumber(price, accuracy)}>
+      <TitledCell
+        title={formattedNumber(price, accuracy)}
+        fontFamily="Lekton, monospace"
+      >
         <ColoredText side={side}>
           {formattedNumber(price, accuracy)}
         </ColoredText>
       </TitledCell>
-      <TitledCell>
+      <TitledCell fontFamily="Lekton, monospace">
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
-      <TitledCell>
+      <TitledCell fontFamily="Lekton, monospace">
         {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
           filledPercent,
           0,
           {style: 'percent'}
         )})
       </TitledCell>
-      <TitledCell>
+      <TitledCell fontFamily="Lekton, monospace">
         {formattedNumber(roundedValue, quoteAssetAccuracy)} {quoteAssetName}
       </TitledCell>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>

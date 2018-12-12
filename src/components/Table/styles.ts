@@ -10,7 +10,8 @@ const width = (w: string | number | undefined) =>
 
 export const Cell = styled.td.attrs({
   style: (props: any) => ({
-    cursor: `${props.clickable ? 'pointer' : 'default'}`
+    cursor: `${props.clickable ? 'pointer' : 'default'}`,
+    fontFamily: props.fontFamily || ''
   })
 })`
   width: ${(p: CellProps) => width(p.w)};

@@ -1,4 +1,4 @@
-import '@lykkex/react-components'; // FIXME: why do we need this? no tree-shaking :( + you need to remove recharts from the components pkg
+import '@lykkex/react-components'; // FIXME: no tree-shaking here? + need to remove recharts from the components pkg
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
@@ -22,8 +22,9 @@ const addFont = (name: string) => (f: any) =>
     unicodeRange: ''
   });
 
-const addBaseFont: any = addFont('Proxima Nova');
-const addAkrobatFont: any = addFont('Akrobat');
+const addBaseFont = addFont('Proxima Nova');
+const addAkrobatFont = addFont('Akrobat');
+const addMonospaceFont = addFont('Lekton');
 
 const proximaFonts = [
   {weight: 400, name: 'ProximaNovaRegular'},
@@ -33,20 +34,29 @@ const akrobatFonts = [
   {weight: 400, name: 'Akrobat-Regular', formats: ['otf']},
   {weight: 600, name: 'Akrobat-SemiBold', formats: ['otf']}
 ];
+const lektonFonts = [
+  {weight: 400, name: 'Lekton-Regular', formats: ['ttf']},
+  {weight: 600, name: 'Lekton-Bold', formats: ['ttf']}
+];
 
 // tslint:disable-next-line:no-unused-expression
 injectGlobal`
   ${proximaFonts.map(addBaseFont) as any};
   ${akrobatFonts.map(addAkrobatFont) as any};
+  ${lektonFonts.map(addMonospaceFont) as any};
+
   ${normalize() as any};
+  
   *, *::before, *::after {
     border-collapse: collapse;
   }
   html {
     font-size: 14px;
+    height: 100%;
   }
   body {
     color: #fff;
+    height: 100%;
     font-family: 'Proxima Nova', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
     /* Adjust font size */

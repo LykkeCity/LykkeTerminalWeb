@@ -8,7 +8,7 @@ export const BalanceInfoDiv = styled.div`
 
 export const BalanceValue = styled.span`
   color: #f5f6f7;
-  font-family: 'Akrobat', sans-serif;
+  font-family: Lekton, monospace;
   font-size: ${rem(16)};
   font-weight: bold;
   line-height: 1;

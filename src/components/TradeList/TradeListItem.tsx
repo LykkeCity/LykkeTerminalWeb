@@ -44,18 +44,21 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
       >
         {instrument!.displayName}
       </Cell>
-      <TitledCell title={formattedNumber(price, accuracy)}>
+      <TitledCell
+        title={formattedNumber(price, accuracy)}
+        fontFamily="Lekton, monospace"
+      >
         <ColoredText side={side}>
           {formattedNumber(price, accuracy)}
         </ColoredText>
       </TitledCell>
-      <TitledCell>
+      <TitledCell fontFamily="Lekton, monospace">
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
       </TitledCell>
-      <TitledCell>
+      <TitledCell fontFamily="Lekton, monospace">
         {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
       </TitledCell>
-      <TitledCell>
+      <TitledCell fontFamily="Lekton, monospace">
         {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
       </TitledCell>
       <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>

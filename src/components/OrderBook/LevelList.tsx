@@ -37,7 +37,7 @@ import {
 import {BAR_WIDTH, LEFT_PADDING, LEVELS_COUNT, TOP_PADDING} from './index';
 import {FakeOrderBookStage} from './styles';
 
-const LEVEL_FONT = `12.25px monospace, Proxima Nova`;
+const LEVEL_FONT = `12.25px Lekton, monospace`;
 const UPDATE_ANIMATION_INTERVAL = 250;
 const CELLS_NUMBER = 3;
 const SCALE_BAR = 3;
