@@ -19,7 +19,7 @@ const chart = {
     opacity: 0.4,
     verticalFontSize: 12,
     horizontalFontSize: 12,
-    fontFamily: 'Proxima Nova',
+    fontFamily: 'Lekton, monospace',
 
     verticalLinesAmount: 8,
     horizontalLinesAmount: 10
@@ -58,13 +58,13 @@ const chart = {
       fontColor: '#f5f6f7'
     },
     label: {
-      fontFamily: 'Proxima Nova',
+      fontFamily: 'Lekton, monospace',
       fontSize: 14,
-      fontStyle: 'normal',
+      fontStyle: 'bold',
       fontColor: 'rgba(234, 237, 239, 0.4)'
     },
     number: {
-      fontFamily: 'Proxima Nova',
+      fontFamily: 'Lekton, monospace',
       fontSize: 16,
       fontStyle: 'bold',
       fontColor: '#ffffff'

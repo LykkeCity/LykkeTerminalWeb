@@ -124,6 +124,8 @@ export const Figure = styled.div`
 ` as any;
 
 export const FigureValue = styled.div`
+  font-family: Lekton, monospace;
+  font-weight: bold;
   text-align: center;
 `;
 
@@ -140,7 +142,6 @@ export const LastPriceValue = FigureValue.extend.attrs({
     cursor: props.clickable ? 'pointer' : 'default'
   })
 })`
-  font-family: 'Akrobat', sans-serif;
   font-size: ${rem(fonts.extraLarge)};
   font-weight: bold;
 ` as any;

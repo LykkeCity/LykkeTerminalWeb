@@ -5,6 +5,8 @@ export const StyledInput = styled.input`
   border-radius: 4px;
   border: solid 1px #56595e;
   color: #f5f6f7;
+  font-family: Lekton, monospace;
+  font-weight: bold;
   padding-left: 8px;
   padding-right: 20px;
   height: 32px;

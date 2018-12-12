@@ -6,6 +6,10 @@ import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 
+const MonoCell = (props: any) => (
+  <TitledCell fontWeight="bold" fontFamily="Lekton, monospace" {...props} />
+);
+
 interface TradeListItemProps extends TradeModel {
   className?: string;
   changeInstrumentById: (id: string) => void;
@@ -41,27 +45,27 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
         clickable={!isSelected}
         onClick={handleChangeInstrumentById}
         w={TradesCellWidth.Symbol}
+        fontWeight="bold"
       >
         {instrument!.displayName}
       </Cell>
-      <TitledCell
-        title={formattedNumber(price, accuracy)}
-        fontFamily="Lekton, monospace"
-      >
+      <MonoCell title={formattedNumber(price, accuracy)}>
         <ColoredText side={side}>
           {formattedNumber(price, accuracy)}
         </ColoredText>
-      </TitledCell>
-      <TitledCell fontFamily="Lekton, monospace">
+      </MonoCell>
+      <MonoCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
-      </TitledCell>
-      <TitledCell fontFamily="Lekton, monospace">
+      </MonoCell>
+      <MonoCell>
         {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
-      </TitledCell>
-      <TitledCell fontFamily="Lekton, monospace">
+      </MonoCell>
+      <MonoCell>
         {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
+      </MonoCell>
+      <TitledCell fontWeight="bold">
+        {new Date(timestamp).toLocaleString()}
       </TitledCell>
-      <TitledCell>{new Date(timestamp).toLocaleString()}</TitledCell>
     </tr>
   );
 };

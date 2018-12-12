@@ -92,7 +92,7 @@ class Mesh extends React.Component<MeshProps> {
           labels[index],
           startX,
           startY,
-          `${chart.mesh.verticalFontSize}px ${chart.mesh.fontFamily}`
+          `bold ${chart.mesh.verticalFontSize}px ${chart.mesh.fontFamily}`
         );
       }
     }
@@ -113,7 +113,7 @@ class Mesh extends React.Component<MeshProps> {
           labels[index],
           startX,
           startY - chart.mesh.horizontalFontSize / 2,
-          `${chart.mesh.horizontalFontSize}px ${chart.mesh.fontFamily}`
+          `bold ${chart.mesh.horizontalFontSize}px ${chart.mesh.fontFamily}`
         );
       }
     }

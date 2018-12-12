@@ -32,7 +32,7 @@ export const TRADE_HEIGHT = 26;
 export const LEFT_PADDING = 10;
 
 const TOP_PADDING = 17;
-const TRADE_FONT = `12.25px Lekton, monospace`;
+const TRADE_FONT = `bold 12.25px Lekton, monospace`;
 const DRAWING_TIMEOUT = 100;
 const ANIMATION_INTERVAL = 45;
 

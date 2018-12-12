@@ -6,6 +6,7 @@ import styled, {colors} from '../../styled';
 const StyledNumber = styled.div`
   color: ${(p: any) => p.color};
   font-family: Lekton, monospace;
+  font-weight: bold;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

@@ -9,6 +9,10 @@ import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 import {OrderActions, OrderCellWidth} from './index';
 
+const MonoCell = (props: any) => (
+  <TitledCell fontWeight="bold" fontFamily="Lekton, monospace" {...props} />
+);
+
 interface OrderListItemProps {
   onEdit: any;
   order: OrderModel;
@@ -51,31 +55,29 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
         clickable={!isSelected}
         onClick={handleChangeInstrument}
         w={OrderCellWidth.Symbol}
+        fontWeight="bold"
       >
         {displayName}
       </Cell>
-      <TitledCell
-        title={formattedNumber(price, accuracy)}
-        fontFamily="Lekton, monospace"
-      >
+      <MonoCell title={formattedNumber(price, accuracy)}>
         <ColoredText side={side}>
           {formattedNumber(price, accuracy)}
         </ColoredText>
-      </TitledCell>
-      <TitledCell fontFamily="Lekton, monospace">
+      </MonoCell>
+      <MonoCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
-      </TitledCell>
-      <TitledCell fontFamily="Lekton, monospace">
+      </MonoCell>
+      <MonoCell>
         {formattedNumber(filled, baseAssetAccuracy)} ({formattedNumber(
           filledPercent,
           0,
           {style: 'percent'}
         )})
-      </TitledCell>
-      <TitledCell fontFamily="Lekton, monospace">
+      </MonoCell>
+      <MonoCell>
         {formattedNumber(roundedValue, quoteAssetAccuracy)} {quoteAssetName}
-      </TitledCell>
-      <TitledCell>{createdAt.toLocaleString()}</TitledCell>
+      </MonoCell>
+      <TitledCell fontWeight="bold">{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
         <span style={{cursor: 'pointer'}} onClick={handleEditOrder}>
           <FiEdit2 />
