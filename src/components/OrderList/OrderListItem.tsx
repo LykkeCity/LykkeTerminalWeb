@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {IconContext} from 'react-icons';
 import {FiEdit2, FiX} from 'react-icons/fi';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {InstrumentModel, OrderModel, Side} from '../../models';
@@ -75,15 +74,14 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       </TitledCell>
       <TitledCell>{createdAt.toLocaleString()}</TitledCell>
       <Cell w={OrderCellWidth.Actions}>
-        <span onClick={handleEditOrder}>
-          <IconContext.Provider value={{size: '1rem'}}>
-            <FiEdit2 />
-          </IconContext.Provider>
+        <span style={{cursor: 'pointer'}} onClick={handleEditOrder}>
+          <FiEdit2 />
         </span>
-        <span style={{marginLeft: '0.75rem'}} onClick={handleCancelOrder}>
-          <IconContext.Provider value={{size: '1.1rem'}}>
-            <FiX />
-          </IconContext.Provider>
+        <span
+          style={{cursor: 'pointer', marginLeft: '0.75rem'}}
+          onClick={handleCancelOrder}
+        >
+          <FiX />
         </span>
       </Cell>
     </tr>

@@ -141,9 +141,9 @@ class RootStore {
 
     this.marketStore.init(instruments, assets);
 
-    const defaultInstrument = this.referenceStore.getInstrumentById(
-      UiStore.DEFAULT_INSTRUMENT
-    );
+    const defaultInstrument =
+      this.referenceStore.getInstrumentById(UiStore.DEFAULT_INSTRUMENT) ||
+      this.referenceStore.getInstruments()[0];
 
     this.sessionStore.initUserSession();
     this.settingsStore.init();
@@ -218,7 +218,6 @@ class RootStore {
       return refInstrument || defaultInstrument;
     } catch (error) {
       logger.logException(error);
-
       return defaultInstrument;
     }
   };

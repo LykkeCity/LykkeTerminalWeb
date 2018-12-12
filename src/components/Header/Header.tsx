@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {IconContext} from 'react-icons';
 import {FiSettings} from 'react-icons/fi';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AnalyticsService} from '../../services/analyticsService';
@@ -59,11 +58,7 @@ const Header: React.SFC<HeaderProps> = ({
                   className="hidden-xs settings"
                   onClick={handleToggleSettings}
                 >
-                  <IconContext.Provider
-                    value={{size: '1.1rem', color: colors.coolGrey}}
-                  >
-                    <FiSettings />
-                  </IconContext.Provider>
+                  <FiSettings color={colors.coolGrey} />
                 </span>
                 {settingsStore.showSettings ? (
                   <SettingsModal handleCloseSettings={handleToggleSettings} />
