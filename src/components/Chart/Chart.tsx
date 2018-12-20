@@ -59,6 +59,7 @@ class Chart extends React.Component<
   };
 
   private tvWidget: any;
+  private settings: any;
 
   constructor(props: ChartContainerProps) {
     super(props);
@@ -169,6 +170,10 @@ class Chart extends React.Component<
         chartReady: true
       });
 
+      if (this.settings) {
+        this.tvWidget.load(this.settings);
+      }
+
       this.addPriceTypeButton();
     });
   };
@@ -181,6 +186,10 @@ class Chart extends React.Component<
         cssClass: 'button_mid',
         title: 'Mid price',
         onClick: () => {
+          this.tvWidget.save((settings: any) => {
+            this.settings = settings;
+          });
+
           selectPriceType!(PriceType.Trade);
         }
       },
@@ -188,6 +197,10 @@ class Chart extends React.Component<
         cssClass: 'button_trade',
         title: 'Trades',
         onClick: () => {
+          this.tvWidget.save((settings: any) => {
+            this.settings = settings;
+          });
+
           selectPriceType!(PriceType.Mid);
         }
       }
