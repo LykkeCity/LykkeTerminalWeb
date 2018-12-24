@@ -1,13 +1,13 @@
 import {computed, observable} from 'mobx';
+import {UserManager} from 'oidc-client';
 import {AuthApi} from '../api/index';
 import messages from '../constants/notificationMessages';
+import {openIdConstants} from '../constants/openId';
 import {keys, KycStatuses, levels, UserInfoModel} from '../models';
-import {RandomString, StorageUtils} from '../utils/index';
+import {StorageUtils} from '../utils/index';
 import {BaseStore, RootStore} from './index';
 
-const randomString = RandomString();
 const tokenStorage = StorageUtils(keys.token);
-const stateStorage = StorageUtils(keys.state);
 const sessionTokenStorage = StorageUtils(keys.sessionToken);
 const kycStatusStorage = StorageUtils(keys.isKycPassed);
 
@@ -33,9 +33,27 @@ class AuthStore extends BaseStore {
 
   @observable private token: string = tokenStorage.get() || '';
   @observable private kycStatus: string = kycStatusStorage.get() || '';
+  private userManager: UserManager;
 
   constructor(store: RootStore, private readonly api: AuthApi) {
     super(store);
+
+    const settings = {
+      authority: process.env.REACT_APP_AUTH_URL!,
+      client_id: process.env.REACT_APP_ID!,
+      redirect_uri: `${location.origin}/assets/signin-callback.html`,
+      silent_redirect_uri: `${location.origin}/assets/silent-callback.html`,
+      post_logout_redirect_uri: location.origin,
+      response_type: openIdConstants.responseType,
+      filterProtocolClaims: true,
+      loadUserInfo: false,
+      automaticSilentRenew: true
+    };
+
+    this.userManager = new UserManager(settings);
+    this.userManager.events.addSilentRenewError(() => {
+      this.signOut();
+    });
   }
 
   fetchBearerToken = (email: string, password: string) =>
@@ -48,17 +66,17 @@ class AuthStore extends BaseStore {
       })
       .catch((err: any) => Promise.reject(JSON.parse(err.message)));
 
-  fetchToken = async (accessToken: string, state: string) => {
-    if (state === stateStorage.get()) {
-      const {token, authId} = await this.api.fetchToken(accessToken);
-      sessionTokenStorage.set(authId);
-      this.token = token;
-      tokenStorage.set(token);
-      stateStorage.clear();
-      return Promise.resolve();
-    } else {
-      this.catchUnauthorized();
+  fetchToken = async () => {
+    const user = await this.userManager.getUser();
+    if (!user) {
+      return Promise.reject();
     }
+    const {access_token} = user;
+    const {token, authId} = await this.api.fetchToken(access_token);
+    sessionTokenStorage.set(authId);
+    this.token = token;
+    tokenStorage.set(token);
+    return Promise.resolve();
   };
 
   fetchUserInfo = async () => {
@@ -79,18 +97,16 @@ class AuthStore extends BaseStore {
     this.signOut();
   };
 
-  signIn = () => location.replace(this.getSignInUrl());
-
-  signOut = async (redirectUrl?: string) => {
-    this.rootStore.reset();
-    const {REACT_APP_AUTH_URL: url} = process.env;
-    location.replace(
-      `${url}/connect/logout?post_logout_redirect_uri=${encodeURIComponent(
-        redirectUrl || location.origin
-      )}`
-    );
+  signIn = () => {
+    this.userManager.signinRedirect();
   };
 
+  signOut = async () => {
+    this.rootStore.reset();
+    this.userManager.signoutRedirect();
+  };
+
+<<<<<<< HEAD
   getSignInUrl = () => {
     const {REACT_APP_AUTH_URL: url, REACT_APP_ID: clientId} = process.env;
     const nonce = randomString.mixed(20);
@@ -104,6 +120,8 @@ class AuthStore extends BaseStore {
     )}&nonce=${nonce}&state=${state}`;
   };
 
+=======
+>>>>>>> WEB-61: Few rebase fixes
   reset = () => {
     this.kycStatus = '';
     this.token = '';
