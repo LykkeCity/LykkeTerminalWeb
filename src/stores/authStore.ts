@@ -106,22 +106,6 @@ class AuthStore extends BaseStore {
     this.userManager.signoutRedirect();
   };
 
-<<<<<<< HEAD
-  getSignInUrl = () => {
-    const {REACT_APP_AUTH_URL: url, REACT_APP_ID: clientId} = process.env;
-    const nonce = randomString.mixed(20);
-    const state = randomString.mixed(20);
-    stateStorage.set(state);
-
-    const callbackUrl = window.location.origin + '/auth';
-
-    return `${url}/connect/authorize?client_id=${clientId}&scope=profile email address&response_type=token&redirect_uri=${encodeURIComponent(
-      callbackUrl!
-    )}&nonce=${nonce}&state=${state}`;
-  };
-
-=======
->>>>>>> WEB-61: Few rebase fixes
   reset = () => {
     this.kycStatus = '';
     this.token = '';
