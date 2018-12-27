@@ -1,4 +1,4 @@
-import {OrderApi} from '../../api';
+import {DisclaimerApi, OrderApi} from '../../api';
 import logger from '../../Logger';
 import {InstrumentModel, levels} from '../../models';
 import {OrderStore, RootStore} from '../index';
@@ -7,14 +7,16 @@ describe('order store', () => {
   let orderStore: OrderStore;
   let rootStore: RootStore;
   let api: OrderApi;
+  let disclaimerApi: DisclaimerApi;
 
   beforeEach(() => {
     rootStore = new RootStore(true);
     api = new OrderApi(rootStore);
+    disclaimerApi = new DisclaimerApi(rootStore);
     rootStore.orderListStore.deleteOrder = jest.fn();
     rootStore.orderListStore.deleteAllOrders = jest.fn();
 
-    orderStore = new OrderStore(rootStore, api);
+    orderStore = new OrderStore(rootStore, api, disclaimerApi);
 
     api.cancelOrder = jest.fn();
     api.cancelAllOrders = jest.fn();

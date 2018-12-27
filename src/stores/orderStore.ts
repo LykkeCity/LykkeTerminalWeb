@@ -1,3 +1,4 @@
+import DisclaimerApi from '../api/disclaimerApi';
 import OrderApi, {PlaceOrder} from '../api/orderApi';
 import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
@@ -21,21 +22,30 @@ const errorOrNoop = (error: string) => {
 
 enum Errors {
   Confirmation = 'Confirmation',
-  AssetKycNeeded = 'AssetKycNeeded'
+  AssetKycNeeded = 'AssetKycNeeded',
+  PendingDisclaimer = 'PendingDisclaimer'
 }
 
 // tslint:disable:no-console
 class OrderStore extends BaseStore {
   private readonly modalStore: ModalStore;
   private readonly notificationStore: NotificationStore;
+  private lastPlacedOrderType: string;
+  private lastPlacedOrder: PlaceOrder;
 
-  constructor(store: RootStore, private readonly api: OrderApi) {
+  constructor(
+    store: RootStore,
+    private readonly api: OrderApi,
+    private readonly disclaimerApi: DisclaimerApi
+  ) {
     super(store);
     this.notificationStore = this.rootStore.notificationStore;
     this.modalStore = this.rootStore.modalStore;
   }
 
   placeOrder = async (orderType: string, body: PlaceOrder) => {
+    this.lastPlacedOrderType = orderType;
+    this.lastPlacedOrder = body;
     switch (orderType) {
       case OrderType.Market:
         return this.api
@@ -180,7 +190,7 @@ class OrderStore extends BaseStore {
     );
   };
 
-  private orderPlacedUnsuccessfully = (error: any) => {
+  private orderPlacedUnsuccessfully = async (error: any) => {
     const errorObject = errorOrNoop(error.message);
     if (!errorObject) {
       if (error.message === 'Session confirmation is required') {
@@ -202,6 +212,28 @@ class OrderStore extends BaseStore {
         switch (key) {
           case Errors.AssetKycNeeded:
             this.modalStore.addModal(null, null, null, Types.MissedKyc);
+            break;
+          case Errors.PendingDisclaimer:
+            const {
+              Result: {Disclaimers}
+            } = await this.disclaimerApi.fetchAssetDisclaimers();
+            if (Disclaimers.length > 0) {
+              const text = Disclaimers[0].Text;
+              const disclaimerId = Disclaimers[0].Id;
+              const onConfirm = async () => {
+                await this.disclaimerApi.approveAssetDisclaimer(disclaimerId);
+                this.placeOrder(this.lastPlacedOrderType, this.lastPlacedOrder);
+              };
+              const onCancel = () => {
+                this.disclaimerApi.declineAssetDisclaimer(disclaimerId);
+              };
+              this.modalStore.addModal(
+                text,
+                onConfirm,
+                onCancel,
+                Types.AssetDisclaimer
+              );
+            }
             break;
           default:
             {

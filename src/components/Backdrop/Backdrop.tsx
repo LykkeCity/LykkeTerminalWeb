@@ -6,7 +6,8 @@ const StyledBackdrop = styled.div`
   height: 100%;
   background: #232323;
   opacity: 0.7;
-  position: absolute;
+  position: fixed;
+  top: 0;
   z-index: 30;
 `;
 

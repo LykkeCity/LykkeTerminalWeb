@@ -3,6 +3,7 @@ export {RestTradeApi as TradeApi} from './tradeApi';
 export {RestBalanceListApi as BalanceListApi} from './balanceListApi';
 export {RestAssetApi as AssetApi} from './assetApi';
 export {default as MarketApi} from './marketApi';
+export {RestDisclaimerApi as DisclaimerApi} from './disclaimerApi';
 export {RestOrderApi as OrderApi} from './orderApi';
 export {RestOrderBookApi as OrderBookApi} from './orderBookApi';
 export {default as HistoryApi} from './historyApi';
