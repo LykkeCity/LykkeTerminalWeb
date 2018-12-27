@@ -1,4 +1,4 @@
-export const disclaimedAssets = ['EOS', 'VET', 'ICX', 'REP'];
+export const disclaimedAssets = [];
 
 export const disclaimerMessages = {
   EOS: {
