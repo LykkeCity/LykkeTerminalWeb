@@ -1,4 +1,5 @@
 enum Types {
+  AssetDisclaimer = 'AssetDisclaimer',
   Confirm = 'Confirm',
   Expired = 'Expired',
   EditOrder = 'EditOrder',

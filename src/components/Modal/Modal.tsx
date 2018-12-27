@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
+import AssetDisclaimer from './AssetDisclaimer';
 import ConfirmModal from './ConfirmModal';
 import ExpiredModal from './ExpiredModal';
 import {EditOrder, QRModal} from './index';
@@ -8,6 +9,7 @@ import ManageFundsModal from './ManageFundsModal';
 import TfaModal from './TfaModal';
 
 const Modals = {
+  AssetDisclaimer,
   Confirm: ConfirmModal,
   EditOrder,
   Expired: ExpiredModal,
