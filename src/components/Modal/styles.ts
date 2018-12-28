@@ -81,6 +81,10 @@ export const ApplyButton = styled(Button)`
   width: 48%;
   background-color: #0388ef;
   border: solid 1px #0388ef;
+  :disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 `;
 
 export const CancelButton = styled(Button)`
@@ -282,4 +286,8 @@ export const StyledInput = styled.input`
     width: 10px;
     background: transparent;
   }
+`;
+
+export const EditOrderModalHeader = styled.div`
+  margin-bottom: 1em;
 `;

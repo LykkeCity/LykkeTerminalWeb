@@ -10,6 +10,7 @@ import {
   OrderModel,
   OrderType
 } from '../index';
+import Side from '../side';
 import WatchlistModel from '../watchlistModel';
 
 export const mapToBarFromRest = ({
@@ -91,11 +92,20 @@ export const mapChartResolutionToWampInterval: ResolutionMapper = resolution => 
   }
 };
 
+export const mapToPendingOrder = (order: any) => {
+  switch (order.Type) {
+    default:
+    case OrderType.Limit:
+      return mapToLimitOrder(order);
+    case 'StopLimit': // TODO: empower enums
+      return mapToStopLimitOrder(order);
+  }
+};
+
 export const mapToLimitOrder = ({
   Id,
   CreateDateTime,
   OrderAction,
-  Voume,
   Volume,
   RemainingVolume,
   Price,
@@ -107,8 +117,34 @@ export const mapToLimitOrder = ({
     price: Number(Price),
     side: OrderAction,
     symbol: AssetPairId,
-    volume: Volume || Voume,
-    remainingVolume: RemainingVolume
+    volume: Volume,
+    remainingVolume: RemainingVolume,
+    type: OrderType.Limit
+  });
+
+export const mapToStopLimitOrder = ({
+  Id,
+  CreateDateTime,
+  OrderAction,
+  Volume,
+  RemainingVolume,
+  LowerLimitPrice,
+  LowerPrice,
+  UpperLimitPrice,
+  UpperPrice,
+  AssetPairId,
+  Type
+}: any) =>
+  new OrderModel({
+    createdAt: new Date(CreateDateTime),
+    id: Id,
+    price: OrderAction === Side.Buy ? UpperPrice : LowerPrice,
+    stopPrice: OrderAction === Side.Buy ? UpperLimitPrice : LowerLimitPrice,
+    side: OrderAction,
+    symbol: AssetPairId,
+    volume: Volume,
+    remainingVolume: RemainingVolume,
+    type: OrderType.StopLimit
   });
 
 export const filterByInstrumentsAndMapToLimitOrder = (
@@ -117,7 +153,7 @@ export const filterByInstrumentsAndMapToLimitOrder = (
 ) =>
   orders.reduce((limitOrders: any[], order: any) => {
     if (instruments.find(i => i.id === order.AssetPairId)) {
-      limitOrders.push(mapToLimitOrder(order));
+      limitOrders.push(mapToPendingOrder(order));
     }
     return limitOrders;
   }, []);

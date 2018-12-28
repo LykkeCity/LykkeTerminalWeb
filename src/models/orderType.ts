@@ -13,6 +13,7 @@ enum OrderStatus {
   Cancelled = 'Cancelled',
   Matched = 'Matched',
   Placed = 'InOrderBook',
+  Pending = 'Pending',
   Processing = 'Processing',
   Rejected = 'Rejected'
 }

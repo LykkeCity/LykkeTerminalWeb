@@ -4,7 +4,7 @@ import * as topics from '../api/topics';
 import ModalMessages from '../constants/modalMessages';
 import messages from '../constants/notificationMessages';
 import logger from '../Logger';
-import {levels} from '../models';
+import {levels, Side} from '../models';
 import {OrderType} from '../models';
 import Types from '../models/modals';
 import {OrderStatus} from '../models/orderType';
@@ -72,13 +72,57 @@ class OrderStore extends BaseStore {
               }
             }, this.orderPlacedUnsuccessfully)
         );
+      case OrderType.StopLimit: {
+        const {Price, StopPrice, ...commonProps} = body;
+        const bounds =
+          body.OrderAction === Side.Sell
+            ? {
+                LowerPrice: Price!,
+                LowerLimitPrice: StopPrice!,
+                UpperPrice: null,
+                UpperLimitPrice: null
+              }
+            : {
+                LowerPrice: null,
+                LowerLimitPrice: null,
+                UpperPrice: Price!,
+                UpperLimitPrice: StopPrice!
+              };
+        return this.api
+          .placeStopLimit({...commonProps, ...bounds})
+          .then(this.orderPlacedSuccessfully, this.orderPlacedUnsuccessfully);
+      }
     }
   };
 
-  editOrder = async (body: any, id: string) =>
+  editOrder = async (body: any, id: string, type: OrderType) =>
     this.api
       .cancelOrder(id)
-      .then(() => this.api.placeLimit(body))
+      .then(() => {
+        switch (type) {
+          default:
+          case OrderType.Limit:
+            return this.api.placeLimit(body);
+          case OrderType.StopLimit: {
+            const {Price, StopPrice, ...commonProps} = body;
+            const bounds =
+              body.OrderAction === Side.Sell
+                ? {
+                    LowerPrice: Price!,
+                    LowerLimitPrice: StopPrice!,
+                    UpperPrice: null,
+                    UpperLimitPrice: null
+                  }
+                : {
+                    LowerPrice: null,
+                    LowerLimitPrice: null,
+                    UpperPrice: Price!,
+                    UpperLimitPrice: StopPrice!
+                  };
+            return this.api.placeStopLimit({...commonProps, ...bounds});
+          }
+        }
+      })
       .catch(this.orderPlacedUnsuccessfully);
 
   cancelOrder = async (id: string) => {
@@ -129,6 +173,7 @@ class OrderStore extends BaseStore {
         this.rootStore.orderListStore.deleteOrder(order.Id);
         this.orderClosedSuccessfully(order.Id);
         break;
+      case OrderStatus.Pending:
       case OrderStatus.Processing:
         this.rootStore.orderListStore.addOrUpdateOrder(order);
         this.orderPartiallyClosedSuccessfully(order.Id, order.RemainingVolume);

@@ -1,5 +1,6 @@
 import {computed, extendObservable} from 'mobx';
 import {Side} from './index';
+import {OrderType} from './orderType';
 
 class OrderModel {
   symbol: string;
@@ -7,9 +8,11 @@ class OrderModel {
   volume: number;
   remainingVolume: number;
   price: number;
+  stopPrice: number;
   createdAt: Date;
   id: string;
   cancelOrder?: (id: string) => void;
+  type: OrderType;
 
   @computed
   get filled() {

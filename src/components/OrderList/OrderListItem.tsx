@@ -1,8 +1,6 @@
 import * as React from 'react';
 import {FiEdit2, FiX} from 'react-icons/fi';
-import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {InstrumentModel, OrderModel, Side} from '../../models';
-import {AnalyticsService} from '../../services/analyticsService';
+import {InstrumentModel, OrderModel, OrderType, Side} from '../../models';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil, precisionFloor} from '../../utils/math';
 import {Cell, ColoredText} from '../Table/styles';
@@ -18,7 +16,17 @@ interface OrderListItemProps {
 }
 
 const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
-  order: {createdAt, price, id, side, volume, filled, filledPercent, value},
+  order: {
+    createdAt,
+    price,
+    id,
+    side,
+    volume,
+    filled,
+    filledPercent,
+    value,
+    type
+  },
   onEdit,
   cancelOrder,
   instrument: {
@@ -33,11 +41,9 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
 }) => {
   const handleEditOrder = () => {
     onEdit(id);
-    AnalyticsService.track(AnalyticsEvents.StartOrderEdit);
   };
   const handleCancelOrder = () => {
     cancelOrder(id);
-    AnalyticsService.track(AnalyticsEvents.CancelOrder);
   };
   const roundedValue =
     side === Side.Buy
@@ -56,6 +62,7 @@ const OrderListItem: React.SFC<OrderActions & OrderListItemProps> = ({
       </Cell>
       <TitledCell title={formattedNumber(price, accuracy)}>
         <ColoredText side={side}>
+          {type === OrderType.StopLimit && 'Stop @ '}
           {formattedNumber(price, accuracy)}
         </ColoredText>
       </TitledCell>

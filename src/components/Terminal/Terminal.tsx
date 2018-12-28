@@ -28,8 +28,8 @@ import {Footer} from '../Footer';
 import {Header as SubHeader} from '../Header';
 import Modal from '../Modal/Modal';
 import {NotificationList} from '../Notification';
-import {Order} from '../Order';
 import OrderBook from '../OrderBook';
+import {OrderForm} from '../OrderForm';
 import {Orders} from '../OrderList';
 import {SessionNotificationComponent} from '../Session';
 import {ChartTabbedTile, TabbedTile, Tile} from '../Tile';
@@ -75,7 +75,7 @@ const ELEMENT_MAP: {[viewId: string]: JSX.Element} = {
   ),
   [OrderWidget]: (
     <Tile title="Order" authorize={true}>
-      <Order />
+      <OrderForm />
     </Tile>
   ),
   [TradingWalletWidget]: (

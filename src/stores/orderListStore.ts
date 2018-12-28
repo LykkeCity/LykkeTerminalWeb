@@ -80,7 +80,7 @@ class OrderListStore extends BaseStore {
     if (!!~orderIndex) {
       return null;
     }
-    const mappedOrder = mappers.mapToLimitOrder(addedOrder);
+    const mappedOrder = mappers.mapToPendingOrder(addedOrder);
     this.orders = [...this.orders, mappedOrder];
     return mappedOrder;
   };
