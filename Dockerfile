@@ -1,6 +1,4 @@
-FROM nginx
-
-RUN apt-get update && apt-get install -y telnet iputils-ping vim curl zip python-pip python3-pip nginx-extras
+FROM ilagnev/alpine-nginx-lua
 
 ARG build=./build
 WORKDIR /usr/share/nginx/html
