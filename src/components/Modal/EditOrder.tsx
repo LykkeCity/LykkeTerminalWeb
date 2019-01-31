@@ -11,7 +11,7 @@ import {
   onValueChange
 } from '../../utils/inputNumber';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import {bigToFixed, precisionFloor} from '../../utils/math';
+import {bigToFixed, precisionCeil, precisionFloor} from '../../utils/math';
 import {
   getPercentOfValueForLimit,
   isAmountExceedLimitBalance,
@@ -241,7 +241,8 @@ class EditOrder extends React.Component<EditOrderProps, EditOrderState> {
   };
 
   render() {
-    const roundedAmount = precisionFloor(
+    const precisionFunc = this.isSellActive ? precisionFloor : precisionCeil;
+    const roundedAmount = precisionFunc(
       parseFloat(this.state.quantityValue) * parseFloat(this.state.priceValue),
       this.accuracy.quoteAssetAccuracy
     );
