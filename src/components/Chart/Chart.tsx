@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   ChartingLibraryWidgetOptions,
   IBasicDataFeed,
+  Timezone,
   widget
 } from '../../charting_library/charting_library.min';
 import {
@@ -113,6 +114,7 @@ class Chart extends React.Component<
       container_id: containerId as ChartingLibraryWidgetOptions['container_id'],
       library_path: libraryPath as string,
       locale: 'en',
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as Timezone,
       disabled_features: [
         'widget_logo',
         'link_to_tradingview',
