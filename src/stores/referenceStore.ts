@@ -88,6 +88,7 @@ class ReferenceStore extends BaseStore {
       instrument =>
         includes(normalizedTerm, normalize(instrument.displayName!)) ||
         includes(normalizedTerm, normalize(instrument.invertedDisplayName!)) ||
+        includes(normalizedTerm, normalize(instrument.quoteAsset.fullName!)) ||
         includes(normalizedTerm, normalize(instrument.baseAsset.fullName!))
     );
 
