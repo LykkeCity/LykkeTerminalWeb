@@ -1,3 +1,4 @@
+import {RouterStore} from 'mobx-react-router';
 import {without} from 'rambda';
 import {
   AssetApi,
@@ -65,6 +66,7 @@ class RootStore {
   readonly sessionStore: SessionStore;
   readonly priceStore: PriceStore;
   readonly marketStore: MarketStore;
+  readonly routerStore: RouterStore;
   readonly socketStore: SocketStore;
 
   private readonly stores = new Set<BaseStore>();
@@ -103,6 +105,7 @@ class RootStore {
       this.sessionStore = new SessionStore(this, new SessionApi(this));
       this.priceStore = new PriceStore(this, new PriceApi());
       this.marketStore = new MarketStore(this);
+      this.routerStore = new RouterStore();
       this.socketStore = new SocketStore(this);
     }
   }
@@ -133,7 +136,8 @@ class RootStore {
           );
         });
         this.uiStore.selectInstrument(
-          this.lastOrDefaultInstrument(defaultInstrument)!.id
+          this.uiStore.userSelectedInstrument ||
+            this.lastOrDefaultInstrument(defaultInstrument)!.id
         );
       });
   };
@@ -146,9 +150,10 @@ class RootStore {
 
     this.marketStore.init(instruments, assets);
 
-    const defaultInstrument =
-      this.referenceStore.getInstrumentById(UiStore.DEFAULT_INSTRUMENT) ||
-      this.referenceStore.getInstruments()[0];
+    const selectedOrDefaultInstrument =
+      this.referenceStore.getInstrumentById(
+        this.uiStore.userSelectedInstrument || UiStore.DEFAULT_INSTRUMENT
+      ) || this.referenceStore.getInstruments()[0];
 
     this.sessionStore.initUserSession();
     this.settingsStore.init();
@@ -180,7 +185,8 @@ class RootStore {
           );
         });
         this.uiStore.selectInstrument(
-          this.lastOrDefaultInstrument(defaultInstrument)!.id
+          this.uiStore.userSelectedInstrument ||
+            this.lastOrDefaultInstrument(selectedOrDefaultInstrument)!.id
         );
         this.tradeStore.subscribe();
         this.orderStore.subscribe();
@@ -188,7 +194,7 @@ class RootStore {
         return Promise.resolve();
       })
       .catch(e => {
-        this.startPublicMode(defaultInstrument);
+        this.startPublicMode(selectedOrDefaultInstrument);
       });
   };
 

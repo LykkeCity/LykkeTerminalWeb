@@ -1,4 +1,6 @@
+import createBrowserHistory from 'history/createBrowserHistory';
 import {Provider} from 'mobx-react';
+import {syncHistoryWithStore} from 'mobx-react-router';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
@@ -27,11 +29,16 @@ declare global {
 const {detect} = require('detect-browser');
 
 const rootStore = new RootStore(true, getWorkerByCurrentBrowser(detect().name));
+const browserHistory = createBrowserHistory();
+const routerHistory = syncHistoryWithStore(
+  browserHistory,
+  rootStore.routerStore
+);
 
 const render = (AppComponent: any) => {
   ReactDOM.render(
     <Provider {...rootStore}>
-      <AppComponent />
+      <AppComponent routerHistory={routerHistory} />
     </Provider>,
     document.getElementById('root') as HTMLElement
   );

@@ -53,7 +53,7 @@ class Chart extends React.Component<
     interval: '1D',
     containerId: 'tv_chart_container',
     datafeedUrl: 'https://demo_feed.tradingview.com',
-    libraryPath: 'charting_library/',
+    libraryPath: '/charting_library/',
     fullscreen: false,
     autosize: true
   };
