@@ -79,6 +79,8 @@ export const ShortcutTruncatedText = styled(TruncatedText)`
 
 export const InstrumentNumber = styled.div.attrs({})`
   display: flex;
+  font-family: Lekton, monospace;
+  font-weight: bold;
   align-items: center;
   justify-content: flex-end;
   color: ${(p: any) => p.color};

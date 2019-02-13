@@ -155,7 +155,7 @@ const ConnectedOrderbook = connect(
       <HBar />
       <Header />
       <HBar />
-      <div style={{height: 'calc(100% - 75px)'}} ref={measureRef}>
+      <div style={{height: 'calc(100% - 82px)'}} ref={measureRef}>
         <Scrollbars
           onScrollStop={handleScroll}
           style={{

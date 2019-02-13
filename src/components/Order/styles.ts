@@ -97,17 +97,17 @@ export const ConfirmButton = styled.button.attrs({
       opacity: `${props.disabled ? '0.5' : '1'}`
     } as any)
 })`
+  font-family: Lekton, monospace;
+  font-size: ${rem(16)};
+  font-weight: bold;
   width: 100%;
   min-height: ${rem(50)};
   border-radius: 4px;
-  font-size: ${rem(16)};
   padding: ${rem(12)} ${rem(20)};
-  font-weight: bold;
   line-height: 1;
   color: #ffffff;
   outline: none;
   border: none;
-  font-family: 'Proxima Nova', sans-serif;
   background-color: #0388ef;
   border: solid 1px #0388ef;
   word-wrap: break-word;
@@ -154,6 +154,8 @@ export const Note = styled.div`
 
 export const Amount = styled.div`
   color: ${colors.coolGrey};
+  font-family: Lekton, monospace;
+  font-weight: bold;
   font-size: ${rem(14)};
   text-align: right;
   width: 90%;
@@ -180,6 +182,8 @@ export const Available = styled(Amount).attrs({
     cursor: `${props.disabled ? 'auto' : 'pointer'}`
   })
 })`
+  font-family: Lekton, monospace;
+  font-weight: bold;
   text-align: right;
 ` as any;
 
@@ -247,6 +251,8 @@ export const Link = styled.a`
 export const Percent = styled.div`
   color: ${colors.whiteText};
   display: flex;
+  font-family: Lekton, monospace;
+  font-weight: bold;
   justify-content: center;
   align-items: center;
   width: 25%;

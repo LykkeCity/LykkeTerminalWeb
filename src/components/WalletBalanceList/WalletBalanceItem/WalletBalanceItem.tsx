@@ -12,7 +12,9 @@ const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   onClick
 }) => (
   <tr>
-    <Cell w="30%">{assetBalance.name}</Cell>
+    <Cell w="30%" fontWeight="bold">
+      {assetBalance.name}
+    </Cell>
     <Cell w="70%">
       <WalletBalanceNumber
         availableBalance={assetBalance.available}

@@ -92,7 +92,7 @@ const ConnectedTradeLog = connect(
       <div style={{height: '100%'}} ref={measureRef}>
         <Scrollbars
           style={{
-            height: `calc(100% - 0.5rem)`,
+            height: `calc(100% - 1.5rem)`,
             width: 'calc(100% + 1rem)',
             marginLeft: '-0.5rem'
           }}

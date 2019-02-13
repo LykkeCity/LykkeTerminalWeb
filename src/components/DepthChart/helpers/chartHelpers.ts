@@ -196,7 +196,9 @@ export const drawChartElements = (
           color,
           x: getTextXCoords(x, textWidth, endXPoint, area, midX) + textPadding,
           y: getTextYCoords(y, midY) - padding,
-          font: `${fontSize}px ${chart.modal.label.fontFamily}`,
+          font: `${chart.modal.label.fontStyle} ${fontSize}px ${
+            chart.modal.label.fontFamily
+          }`,
           text: `${text}`,
           align: POPUP_ALIGN
         });
