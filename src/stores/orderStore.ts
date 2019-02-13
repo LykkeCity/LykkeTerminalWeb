@@ -118,6 +118,9 @@ class OrderStore extends BaseStore {
 
   onOrders = (args: any) => {
     const order = args[0][0];
+    if (order.WalletId !== this.rootStore.balanceListStore.tradingWallet!.id) {
+      return;
+    }
     switch (order.Status) {
       case OrderStatus.Cancelled:
         const deleteOrder = this.rootStore.orderListStore.deleteOrder(order.Id);
