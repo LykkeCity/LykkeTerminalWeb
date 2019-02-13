@@ -1,7 +1,8 @@
-import '@lykkex/react-components'; // FIXME: no tree-shaking here? + need to remove recharts from the components pkg
+import '@lykkex/react-components';
+import {SynchronizedHistory} from 'mobx-react-router';
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {Route, Router, Switch} from 'react-router-dom';
 import {Auth} from './components/Auth';
 import {injectGlobal} from './components/styled';
 import {Terminal} from './components/Terminal';
@@ -93,13 +94,18 @@ injectGlobal`
   }
 `;
 
-class App extends React.Component {
+interface AppProps {
+  routerHistory: SynchronizedHistory;
+}
+
+class App extends React.Component<AppProps> {
   render() {
     return (
-      <Router>
+      <Router history={this.props.routerHistory}>
         <Switch>
           <Route exact={true} path={paths.auth} component={Auth} />
           <Route exact={true} path={paths.main} component={Terminal} />
+          <Route exact={true} path={paths.trade} component={Terminal} />
         </Switch>
       </Router>
     );

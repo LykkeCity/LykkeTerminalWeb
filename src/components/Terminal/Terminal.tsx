@@ -1,6 +1,7 @@
 import {Header, MenuItem} from '@lykkex/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
+import {RouteComponentProps} from 'react-router-dom';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {
   API_KEYS_ROUTE,
@@ -121,7 +122,10 @@ const renderLink = (classes: string, title: JSX.Element, url: string) => {
   );
 };
 
-class Terminal extends React.Component<TerminalProps, {}> {
+class Terminal extends React.Component<
+  TerminalProps & RouteComponentProps<TerminalProps>,
+  {}
+> {
   state = {
     initialValue: {
       direction: 'row' as MosaicDirection,
@@ -159,6 +163,9 @@ class Terminal extends React.Component<TerminalProps, {}> {
   private isMosaicChanged: boolean = false;
 
   componentDidMount() {
+    this.setUserInstrument();
+    this.updateRouteBySelectedInstrument();
+
     this.start().then(resp => {
       if (!resp) {
         return;
@@ -174,6 +181,18 @@ class Terminal extends React.Component<TerminalProps, {}> {
 
       AnalyticsService.track(AnalyticsEvents.LoadTerminal);
     });
+  }
+
+  setUserInstrument() {
+    if (this.props.match.params.instrument) {
+      this.props.rootStore.uiStore.userSelectedInstrument = this.props.match.params.instrument;
+    }
+  }
+
+  updateRouteBySelectedInstrument() {
+    const selectedInstrument =
+      this.props.match.params.instrument || UiStore.DEFAULT_INSTRUMENT;
+    this.props.history.push(`/trade/${selectedInstrument}`);
   }
 
   updateLayoutFromLocalStorage() {

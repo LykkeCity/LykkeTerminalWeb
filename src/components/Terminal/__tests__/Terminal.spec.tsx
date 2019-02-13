@@ -13,21 +13,33 @@ describe('<Terminal>', () => {
     track: jest.fn()
   };
 
-  const history = {};
+  let history: any;
   const user = {
     Email: 'atata@email.com',
     FirstName: 'Michael',
     LastName: 'Jackson',
     KycStatus: 'Done'
   };
+  let match: any;
+  const location: any = {};
   const rootStore = new RootStore(true);
   rootStore.authStore.userInfo = new UserInfoModel(user);
 
   const getTestTerminal = () => (
-    <Terminal rootStore={rootStore} history={history} />
+    <Terminal
+      rootStore={rootStore}
+      history={history}
+      match={match}
+      location={location}
+    />
   );
 
   describe('method updateLayoutFromLocalStorage', () => {
+    beforeEach(() => {
+      history = {push: jest.fn()};
+      match = {params: {}};
+    });
+
     it('should get layout from localstorage', () => {
       const wrapper = shallow(getTestTerminal());
       (wrapper.instance() as any).updateLayoutFromLocalStorage();

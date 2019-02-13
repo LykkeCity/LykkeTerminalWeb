@@ -5,6 +5,7 @@ import Terminal from './Terminal';
 export interface TerminalProps {
   rootStore: RootStore;
   history: any;
+  instrument?: string;
 }
 
 const connectedTerminal = connect(

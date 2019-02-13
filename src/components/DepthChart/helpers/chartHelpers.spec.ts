@@ -416,7 +416,7 @@ describe('chart helpers', () => {
           );
 
           expect(context.font).toBe(
-            `${fontSize}px ${chart.modal.label.fontFamily}`
+            `bold ${fontSize}px ${chart.modal.label.fontFamily}`
           );
           expect(context.fillStyle).toBe(colors.green);
           expect(context.textAlign).toBe(POPUP_ALIGN);

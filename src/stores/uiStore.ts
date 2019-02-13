@@ -44,6 +44,7 @@ class UiStore extends BaseStore {
   @observable orderbookDisplayType = OrderBookDisplayType.Volume;
   @observable isDisclaimerShown: boolean = false;
   @observable disclaimedAssets: string[] = [];
+  @observable userSelectedInstrument: string;
   @observable
   instrumentPickerSortingParameters: any = {
     sortByParam: '',
@@ -159,15 +160,17 @@ class UiStore extends BaseStore {
   @action
   selectInstrument = (id: string) => {
     const {getInstrumentById} = this.rootStore.referenceStore;
-    const selectedInstrument = getInstrumentById(id);
-    instrumentStorage.set(JSON.stringify(selectedInstrument));
-    this.selectedInstrument = selectedInstrument!;
+    const selectedOrDefaultInstrument =
+      getInstrumentById(id) || getInstrumentById(UiStore.DEFAULT_INSTRUMENT);
+    instrumentStorage.set(JSON.stringify(selectedOrDefaultInstrument));
+    this.selectedInstrument = selectedOrDefaultInstrument!;
     DocumentService.updateDocumentTitle(this.selectedInstrument);
 
     this.resetDisclaimedAssets();
     disclaimedAssets.forEach(asset =>
-      this.checkAssetToDisclaim(selectedInstrument, asset)
+      this.checkAssetToDisclaim(selectedOrDefaultInstrument, asset)
     );
+    this.rootStore.routerStore.replace(`${selectedOrDefaultInstrument!.id}`);
   };
 
   @action
