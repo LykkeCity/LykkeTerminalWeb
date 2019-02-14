@@ -249,6 +249,12 @@ class OrderStore extends BaseStore {
             break;
         }
       }
+      if (error.status === 500) {
+        this.notificationStore.addNotification(
+          levels.error,
+          'Something went wrong. Please try again later.'
+        );
+      }
     }
   };
 }
