@@ -99,21 +99,6 @@ button._tv-button {
   height: 90%;
 }
 
-.main-properties-aftertabs {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.main-properties-aftertabs ._tv-button {
-  opacity: 0.7;
-}
-
-.main-properties-aftertabs ._tv-button:hover {
-  opacity: 1;
-}
-
 .tv-close-panel {
   border: 1px solid #272727;
   border-left: none;
