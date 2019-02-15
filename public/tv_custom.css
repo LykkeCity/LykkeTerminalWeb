@@ -99,13 +99,6 @@ button._tv-button {
   height: 90%;
 }
 
-.main-properties-aftertabs {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .tv-close-panel {
   border: 1px solid #272727;
   border-left: none;
@@ -166,4 +159,8 @@ button._tv-button {
 .header-chart-panel .header-chart-panel-content .button_trade:hover {
   background: url('assets/images/lykke-logo-glyph.svg') no-repeat center;
   margin-left: 5px;
+}
+
+.properties-tabs a.properties-tabs-label.active:after {
+  background-color: #3bb3e4;
 }
