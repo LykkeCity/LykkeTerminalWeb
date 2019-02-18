@@ -8,7 +8,7 @@ import Side from '../../models/side';
 import {AnalyticsService} from '../../services/analyticsService';
 import {StorageUtils} from '../../utils/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
-import {precisionCeil, precisionFloor} from '../../utils/math';
+import {precisionCeil} from '../../utils/math';
 import {resetPercentage, setActivePercentage} from '../../utils/order';
 import withScroll from '../CustomScrollbar/withScroll';
 import ConfirmModal from '../Modal/ConfirmModal';
@@ -341,8 +341,7 @@ class Order extends React.Component<OrderProps, OrderState> {
           : ask
         : parseFloat(priceValue)) || 0;
 
-    const precisionFunc = isCurrentSideSell ? precisionFloor : precisionCeil;
-    const roundedAmount = precisionFunc(
+    const roundedAmount = precisionCeil(
       currentPrice * parseFloat(quantityValue),
       quoteAssetAccuracy
     );
