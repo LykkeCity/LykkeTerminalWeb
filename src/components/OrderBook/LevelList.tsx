@@ -16,7 +16,8 @@ import {
   drawLine,
   drawRect,
   drawText,
-  drawVerticalLine
+  drawVerticalLine,
+  fitString
 } from '../../utils/canvasUtils';
 import {
   getTrailingZeroOppositePosition,
@@ -40,7 +41,7 @@ import {FakeOrderBookStage} from './styles';
 const LEVEL_FONT = `bold 12.25px Lekton, monospace`;
 const UPDATE_ANIMATION_INTERVAL = 250;
 const CELLS_NUMBER = 3;
-const SCALE_BAR = 3;
+const SCALE_BAR = 1;
 const MARGIN_BOTTOM = 3;
 
 export interface LevelListProps {
@@ -179,7 +180,7 @@ class LevelList extends React.Component<LevelListProps> {
     drawRect({
       ctx: this.canvasCtx!,
       color,
-      x: LEFT_PADDING,
+      x: this.props.width - normalizedWidth,
       y,
       width: normalizedWidth,
       height: this.props.height / LEVELS_COUNT,
@@ -221,7 +222,11 @@ class LevelList extends React.Component<LevelListProps> {
     drawText({
       ctx: this.canvasCtx!,
       color,
-      text: format(price, spanAccuracy),
+      text: fitString(
+        this.canvasCtx!,
+        format(price, spanAccuracy),
+        (this.props.width - BAR_WIDTH) / CELLS_NUMBER
+      ),
       x: BAR_WIDTH,
       y: canvasY - TOP_PADDING,
       font: LEVEL_FONT,
@@ -249,7 +254,11 @@ class LevelList extends React.Component<LevelListProps> {
     drawText({
       ctx: this.canvasCtx!,
       color: volumeColor,
-      text: volume,
+      text: fitString(
+        this.canvasCtx!,
+        volume,
+        (this.props.width - BAR_WIDTH) / CELLS_NUMBER
+      ),
       x,
       y: canvasY - TOP_PADDING,
       font: LEVEL_FONT,
@@ -385,7 +394,11 @@ class LevelList extends React.Component<LevelListProps> {
       if (hasTrailingZeroes(volume)) {
         let drownSymbolsWidth = 0;
         const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
-        const symbols = volume.split('');
+        const symbols = fitString(
+          this.canvasCtx!,
+          volume,
+          (this.props.width - BAR_WIDTH) / CELLS_NUMBER
+        ).split('');
         const getSymbolColor = colorizedSymbol(volumeColor);
 
         symbols.forEach((symbol: string, i: number) => {

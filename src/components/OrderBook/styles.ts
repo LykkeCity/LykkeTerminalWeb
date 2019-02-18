@@ -97,7 +97,7 @@ export const StyledHeader = Table.extend`
 `;
 
 export const BarTh = styled.th`
-  width: ${rem(50)} !important;
+  width: ${rem(0)} !important;
 `;
 
 export const Levels = Table.extend`
