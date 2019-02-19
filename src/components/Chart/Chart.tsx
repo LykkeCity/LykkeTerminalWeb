@@ -9,7 +9,9 @@ import {
   overrides,
   studiesOverrides
 } from '../../constants/chartDefaultSettings';
+import {timeZones} from '../../constants/chartTimezones';
 import {InstrumentModel, PriceType} from '../../models';
+import {dateFns} from '../../utils/index';
 import {chartPalette} from '../styled';
 import {
   ButtonWithImg,
@@ -114,7 +116,7 @@ class Chart extends React.Component<
       container_id: containerId as ChartingLibraryWidgetOptions['container_id'],
       library_path: libraryPath as string,
       locale: 'en',
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as Timezone,
+      timezone: dateFns.getTimeZone(timeZones) as Timezone,
       disabled_features: [
         'widget_logo',
         'link_to_tradingview',
