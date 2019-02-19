@@ -191,7 +191,7 @@ class LevelList extends React.Component<LevelListProps> {
   drawConnectedOrders = (color: string, y: number) => {
     drawVerticalLine({
       ctx: this.canvasCtx!,
-      x: 1 + LEFT_PADDING,
+      x: 1,
       y: y + 2,
       height: y + this.props.height / LEVELS_COUNT - 2,
       lineWidth: 2,
