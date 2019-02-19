@@ -170,7 +170,7 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
         this.drawVolume(
           symbolColor,
           symbol,
-          TRADE_HEIGHT * index + TOP_PADDING / 2,
+          TRADE_HEIGHT * (index + 1) + TOP_PADDING / 2,
           x
         );
         drownSymbolsWidth += this.canvasCtx!.measureText(symbol).width;
