@@ -316,23 +316,6 @@ describe('depth chart store', () => {
       it('should return empty array for depth label', () => {
         expect(depthChartStore.depthLabels.length).toBe(0);
       });
-
-      it('should return array of depth labels', () => {
-        depthChartStore.updateAsks(asks);
-        depthChartStore.updateBids(bids);
-        const labels = depthChartStore.depthLabels;
-
-        expect(labels[0]).toBe('633.33');
-        expect(labels[1]).toBe('566.67');
-        expect(labels[2]).toBe('500.00');
-        expect(labels[3]).toBe('433.33');
-        expect(labels[4]).toBe('366.67');
-        expect(labels[5]).toBe('300.00');
-        expect(labels[6]).toBe('233.33');
-        expect(labels[7]).toBe('166.67');
-        expect(labels[8]).toBe('100.00');
-        expect(labels[9]).toBe('33.33');
-      });
     });
   });
 
