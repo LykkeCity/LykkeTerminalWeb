@@ -35,7 +35,7 @@
     "grid-styled": "^2.0.0-11",
     "mobx": "4.4.0",
     "mobx-react": "5.2.5",
-    "mobx-react-router": "^4.0.4",
+    "mobx-react-router": "^4.0.5",
     "mobx-react-devtools": "^6.0.3",
     "oidc-client": "^1.5.2",
     "polished": "^1.9.0",
