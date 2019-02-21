@@ -295,8 +295,8 @@ class UiOrderStore extends BaseStore {
   };
 
   resetOrder = async () => {
-    const mid = await this.rootStore.orderBookStore.mid();
-    this.setPriceValueWithFixed(mid);
+    const bestAsk = await this.rootStore.orderBookStore.getBestAsk();
+    this.setPriceValueWithFixed(bestAsk);
     this.setQuantityValue(DEFAULT_INPUT_VALUE);
   };
 
