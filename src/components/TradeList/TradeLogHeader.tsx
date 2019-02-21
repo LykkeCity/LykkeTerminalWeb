@@ -17,7 +17,11 @@ const TradeLogHeader: React.SFC<TradeLogHeaderProps> = ({
     },
     {
       key: 'volume',
-      value: 'Trade size'
+      value: `Trade size (${pathOr(
+        '',
+        ['baseAsset', 'name'],
+        selectedInstrument
+      )})`
     },
     {
       className: 'right-align',

@@ -24,6 +24,7 @@ export interface TradeLogProps extends LoaderProps {
   itemHeight: number;
   selectedInstrument: InstrumentModel;
   trades: TradeModel[];
+  spanAccuracy: number;
 }
 
 export interface TradeLogState {
@@ -32,6 +33,7 @@ export interface TradeLogState {
 
 export const TRADE_HEIGHT = 26;
 export const LEFT_PADDING = 10;
+export const VOLUME_LEFT_PADDING = -5;
 
 const TOP_PADDING = 17;
 const TRADE_FONT = `bold 12.25px Lekton, monospace`;
@@ -157,7 +159,7 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
         trade.volume,
         trade.instrument!.baseAsset.accuracy
       );
-      const volumeX = this.props.width / 3 + LEFT_PADDING;
+      const volumeX = this.props.width / 3 + LEFT_PADDING + VOLUME_LEFT_PADDING;
       let drownSymbolsWidth = 0;
       const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
       const symbols = volume.split('');
@@ -209,7 +211,7 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
     drawText({
       ctx: this.canvasCtx!,
       color,
-      text: formattedNumber(price, this.props.selectedInstrument.accuracy),
+      text: formattedNumber(price, this.props.spanAccuracy),
       x: LEFT_PADDING,
       y: TRADE_HEIGHT * index + TOP_PADDING,
       font: TRADE_FONT,

@@ -85,7 +85,7 @@ export const Table = styled.table`
   }
   th {
     position: relative;
-    padding: ${rem(7)};
+    padding: ${rem(0)};
     font-size: ${rem(14)};
     font-weight: normal;
     line-height: 1.14;
