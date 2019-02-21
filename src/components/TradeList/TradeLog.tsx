@@ -14,7 +14,9 @@ import {
   fitString
 } from '../../utils/canvasUtils';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
+import {getTrailingZeroOppositePosition} from '../../utils/string';
 import {LoaderProps} from '../Loader/withLoader';
+import {colorizedSymbol} from '../OrderBook/helpers/LevelListHelpers';
 import {colors} from '../styled';
 
 export interface TradeLogProps extends LoaderProps {
@@ -35,6 +37,19 @@ const TOP_PADDING = 17;
 const TRADE_FONT = `bold 12.25px Lekton, monospace`;
 const DRAWING_TIMEOUT = 100;
 const ANIMATION_INTERVAL = 45;
+
+const formatWithAccuracy = (
+  num: number | string,
+  accuracy: number,
+  options?: object
+) =>
+  (isFinite(Number(num)) &&
+    Number(num).toLocaleString(undefined, {
+      minimumFractionDigits: accuracy,
+      maximumFractionDigits: accuracy,
+      ...options
+    })) ||
+  '--';
 
 class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
   canvas: HTMLCanvasElement | null;
@@ -137,7 +152,30 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
 
       this.drawAnimation(trade, priceColor, index);
       this.drawPrice(trade.price, priceColor, index);
-      this.drawVolume(trade.volume, colors.white, index);
+
+      const volume = formatWithAccuracy(
+        trade.volume,
+        trade.instrument!.baseAsset.accuracy
+      );
+      const volumeX = this.props.width / 3 + LEFT_PADDING;
+      let drownSymbolsWidth = 0;
+      const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
+      const symbols = volume.split('');
+      const getSymbolColor = colorizedSymbol(colors.white);
+
+      symbols.forEach((symbol: string, i: number) => {
+        const symbolColor = getSymbolColor(trailingZeroPosition, i);
+        const x = volumeX + drownSymbolsWidth;
+
+        this.drawVolume(
+          symbolColor,
+          symbol,
+          TRADE_HEIGHT * (index + 1) + TOP_PADDING / 2,
+          x
+        );
+        drownSymbolsWidth += this.canvasCtx!.measureText(symbol).width;
+      });
+
       this.drawTime(trade.timestamp, colors.white, index);
     });
   };
@@ -179,18 +217,20 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
     });
   };
 
-  drawVolume = (volume: number, color: string, index: number) => {
+  drawVolume = (
+    volumeColor: string,
+    volume: string,
+    canvasY: number,
+    x: number
+  ) => {
     drawText({
       ctx: this.canvasCtx!,
-      color,
-      text: formattedNumber(
-        volume,
-        this.props.selectedInstrument.baseAsset.accuracy
-      ),
-      x: (this.props.width / 3) * 2 - LEFT_PADDING / 2,
-      y: TRADE_HEIGHT * index + TOP_PADDING,
+      color: volumeColor,
+      text: volume,
+      x,
+      y: canvasY - TOP_PADDING,
       font: TRADE_FONT,
-      align: 'end'
+      align: 'start'
     });
   };
 
