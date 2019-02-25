@@ -53,3 +53,17 @@ export const onValueChange = (
   const newVal = value === DEFAULT_INPUT_VALUE ? DEFAULT_INPUT_VALUE : value;
   setValue(newVal);
 };
+
+export const addThousandSeparator = (value: string) => {
+  const thousandSeparatorRegex = /(\d+)(\d{3})/;
+  const numberParts = value.split('.');
+  let integerPart = numberParts[0];
+  const decimalPart = numberParts.length > 1 ? '.' + numberParts[1] : '';
+  while (thousandSeparatorRegex.test(integerPart)) {
+    integerPart = integerPart.replace(
+      thousandSeparatorRegex,
+      '$1' + ',' + '$2'
+    );
+  }
+  return integerPart + decimalPart;
+};
