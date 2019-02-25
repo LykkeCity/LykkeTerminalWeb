@@ -13,7 +13,6 @@ import {
   drawText,
   fitString
 } from '../../utils/canvasUtils';
-import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {getTrailingZeroOppositePosition} from '../../utils/string';
 import {LoaderProps} from '../Loader/withLoader';
 import {colorizedSymbol} from '../OrderBook/helpers/LevelListHelpers';
@@ -211,7 +210,7 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
     drawText({
       ctx: this.canvasCtx!,
       color,
-      text: formattedNumber(price, this.props.spanAccuracy),
+      text: formatWithAccuracy(price, this.props.spanAccuracy),
       x: LEFT_PADDING,
       y: TRADE_HEIGHT * index + TOP_PADDING,
       font: TRADE_FONT,
