@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ArrowDirection from '../../models/arrowDirection';
+import {addThousandSeparator} from '../../utils/inputNumber';
 import {StyledInput, StyledInputNumberComponent} from './styles';
 
 interface NumberInputProps {
@@ -11,7 +12,7 @@ interface NumberInputProps {
 
 const NumberInput: React.SFC<NumberInputProps> = ({
   id,
-  value,
+  value = '',
   onChange,
   onArrowClick
 }) => {
@@ -20,10 +21,13 @@ const NumberInput: React.SFC<NumberInputProps> = ({
       <StyledInput
         id={id}
         type="text"
-        value={value}
+        value={addThousandSeparator(value)}
         placeholder={'0.00'}
         autoComplete={'off'}
-        onChange={onChange()}
+        // tslint:disable-next-line:jsx-no-lambda
+        onChange={e =>
+          onChange()({target: {value: e.target.value.replace(/,/g, '')}})
+        }
         // tslint:disable-next-line:jsx-no-lambda
         onKeyDown={e => {
           switch (e.keyCode) {
