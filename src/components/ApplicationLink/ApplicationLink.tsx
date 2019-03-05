@@ -22,7 +22,7 @@ const ApplicationLink: React.SFC<ApplicationLinkProps> = ({
 
   const customUrl = url === window.location.href ? undefined : url;
   return (
-    <a href={customUrl} className={classes} key={url}>
+    <a href={customUrl} className={classes}>
       {title}
     </a>
   );
