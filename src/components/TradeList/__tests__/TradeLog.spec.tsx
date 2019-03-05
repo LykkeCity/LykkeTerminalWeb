@@ -25,9 +25,9 @@ describe('<TradeLog>', () => {
     })
   });
   const trades = [
-    new TradeModel({id: '1'}),
-    new TradeModel({id: '2'}),
-    new TradeModel({id: '3'})
+    new TradeModel({id: '1', instrument}),
+    new TradeModel({id: '2', instrument}),
+    new TradeModel({id: '3', instrument})
   ];
 
   const getTestTradeLog = () => (
@@ -102,7 +102,9 @@ describe('<TradeLog>', () => {
 
     it('should clear drawing interval on timeout', () => {
       const wrapper = mount(getTestTradeLog());
-      const newTrades = trades.slice().concat(new TradeModel({id: '4'}));
+      const newTrades = trades
+        .slice()
+        .concat(new TradeModel({id: '4', instrument}));
       window.cancelAnimationFrame = jest.fn();
       window.setTimeout = (callback: any) => callback();
       wrapper.setProps({trades: newTrades});
