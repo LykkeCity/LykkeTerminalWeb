@@ -86,8 +86,8 @@ class UiStore extends BaseStore {
           } = this.rootStore.uiOrderStore;
           setPriceAccuracy(pathOr(2, ['accuracy'], instrument));
           setQuantityAccuracy(pathOr(2, ['baseAsset', 'accuracy'], instrument));
-          const mid = await this.rootStore.orderBookStore.mid();
-          setPriceValueWithFixed(mid);
+          const bestAsk = await this.rootStore.orderBookStore.getBestAsk();
+          setPriceValueWithFixed(bestAsk);
           setQuantityValue(DEFAULT_INPUT_VALUE);
 
           const {
