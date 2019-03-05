@@ -43,7 +43,7 @@ const layoutStorage = StorageUtils(keys.layout);
 
 const MAX_LEFT_PADDING = 20;
 const MAX_RIGHT_PADDING = 72.5;
-const MIN_PANE_SIZE_PERCENTAGE = 20;
+const MIN_PANE_SIZE_PERCENTAGE = 25;
 
 const {
   ChartWidget,

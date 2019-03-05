@@ -36,6 +36,7 @@ describe('<TradeLog>', () => {
       itemHeight={itemHeight}
       selectedInstrument={instrument}
       trades={trades}
+      spanAccuracy={instrument.accuracy}
     />
   );
 

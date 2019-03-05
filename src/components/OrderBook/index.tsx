@@ -10,7 +10,7 @@ import {connect} from '../connect';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';
 import {FigureListProps, Figures} from './Figures';
-import Header from './Header';
+import Header, {HeaderProps} from './Header';
 import {LevelListProps} from './LevelList';
 
 import MyOrders, {MyOrdersProps} from './MyOrders';
@@ -21,7 +21,7 @@ import LevelType from '../../models/levelType';
 
 export const LEVEL_HEIGHT = 26;
 export const LEVELS_COUNT = 50;
-export const BAR_WIDTH = 60;
+export const BAR_WIDTH = 8;
 export const TOP_PADDING = 8;
 export const LEFT_PADDING = 8;
 
@@ -37,6 +37,13 @@ const formatWithAccuracy = (
       ...options
     })) ||
   '--';
+
+const ConnectedHeader = connect<HeaderProps>(
+  ({uiStore: {selectedInstrument}}) => ({
+    instrument: selectedInstrument!
+  }),
+  Header
+);
 
 const ConnectedBar = connect<BarProps>(
   ({
@@ -153,7 +160,7 @@ const ConnectedOrderbook = connect(
     <React.Fragment>
       <ConnectedBar />
       <HBar />
-      <Header />
+      <ConnectedHeader />
       <HBar />
       <div style={{height: 'calc(100% - 82px)'}} ref={measureRef}>
         <Scrollbars

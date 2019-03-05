@@ -108,9 +108,14 @@ const ConnectedTradeLog = connect(
 );
 
 const ConnectedTradeLogCanvas = connect(
-  ({tradeStore: {getPublicTrades}, uiStore: {selectedInstrument}}) => ({
+  ({
+    tradeStore: {getPublicTrades},
+    uiStore: {selectedInstrument},
+    orderBookStore: {spanAccuracy}
+  }) => ({
     trades: getPublicTrades,
-    selectedInstrument
+    selectedInstrument,
+    spanAccuracy
   }),
   TradeLog
 );
