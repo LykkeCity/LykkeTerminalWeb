@@ -3,7 +3,7 @@ import {TradeListItem} from '.';
 import {TradeModel} from '../../models';
 import {LoaderProps} from '../Loader/withLoader';
 import {Table} from '../Table';
-import {StyledLoadMore, StyledLoadMoreButton} from './styles';
+import {StyledEmptyState, StyledLoadMore, StyledLoadMoreButton} from './styles';
 
 export interface TradeListProps extends LoaderProps {
   trades: TradeModel[];
@@ -23,6 +23,30 @@ const TradeList: React.SFC<TradeListProps> = ({
   <React.Fragment>
     <Table>
       <tbody>
+        {trades.length === 0 && (
+          <tr>
+            <StyledEmptyState>
+              <div
+                style={{
+                  fontSize: '1.65rem',
+                  fontWeight: 'bold',
+                  fontFamily: `'Akrobat'`,
+                  paddingBottom: '5px'
+                }}
+              >
+                No results
+              </div>
+              <div
+                style={{
+                  fontSize: '1rem',
+                  fontWeight: 'normal'
+                }}
+              >
+                Try modifying filters
+              </div>
+            </StyledEmptyState>
+          </tr>
+        )}
         {trades.map(trade => (
           <TradeListItem
             key={trade.id}

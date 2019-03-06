@@ -85,7 +85,7 @@ export const Table = styled.table`
   }
   th {
     position: relative;
-    padding: ${rem(0)};
+    padding: 7px;
     font-size: ${rem(14)};
     font-weight: normal;
     line-height: 1.14;
@@ -93,7 +93,7 @@ export const Table = styled.table`
 
     &:first-child {
       text-align: left;
-      padding-left: 0;
+      padding-left: 3px;
     }
     &:last-child {
       text-align: right;

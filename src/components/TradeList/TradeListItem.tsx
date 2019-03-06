@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {TradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
-import {feeAssetFromSide} from '../../models/tradeModel.mapper';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
@@ -36,7 +35,6 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
     quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName},
     id: instrumentId
   } = instrument!;
-  const feeAsset = feeAssetFromSide(instrument!, side);
   const handleChangeInstrumentById = () =>
     !isSelected && changeInstrumentById(instrumentId);
   return (
@@ -56,9 +54,6 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
       </MonoCell>
       <MonoCell>
         {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
-      </MonoCell>
-      <MonoCell>
-        {formattedNumber(fee, feeAsset.accuracy)} {feeAsset.name}
       </MonoCell>
       <MonoCell>
         {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}

@@ -15,8 +15,16 @@ import {
   TableHeader,
   TableSortState
 } from '../Table';
-import {Export, TradeFilter, TradeList, TradesCellWidth} from './index';
-import {TradeListToolbar} from './styles';
+import {
+  ClearFilters,
+  Export,
+  TradeFilter,
+  TradeFilterPeriod,
+  TradeFilterType,
+  TradeList,
+  TradesCellWidth
+} from './index';
+import {ActionsWrapper, FiltersWrapper, TradeListToolbar} from './styles';
 
 interface TradesProps {
   trades: TradeModel[];
@@ -81,12 +89,6 @@ class Trades extends React.Component<TradesProps, TableSortState> {
         value: 'Filled'
       },
       {
-        sortDisabled: checkDataForSorting(this.state.data, 'fee'),
-        className: 'right-align',
-        key: 'fee',
-        value: 'Fee'
-      },
-      {
         sortDisabled: checkDataForSorting(this.state.data, 'oppositeVolume'),
         className: 'right-align',
         key: 'oppositeVolume',
@@ -103,8 +105,15 @@ class Trades extends React.Component<TradesProps, TableSortState> {
     return (
       <React.Fragment>
         <TradeListToolbar>
-          <TradeFilter />
-          <Export />
+          <FiltersWrapper>
+            <TradeFilterPeriod />
+            <TradeFilterType />
+            <TradeFilter />
+          </FiltersWrapper>
+          <ActionsWrapper>
+            <ClearFilters />
+            <Export />
+          </ActionsWrapper>
         </TradeListToolbar>
         <HBar />
         <TableHeader
