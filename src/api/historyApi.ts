@@ -8,7 +8,7 @@ export interface HistoryApi {
 
 export class RestHistoryApi extends RestApi implements HistoryApi {
   fetchHistory = (walletId: string, query: any) =>
-    this.getWithQuery<any[]>(`/History/wallet/${walletId}`, query);
+    this.getWithQuery<any[]>(`/History/${walletId}/trades`, query);
 
   fetchCsvId = (body: CsvIdRequestModel): Promise<CsvIdResponseModel> =>
     this.post(`/History/client/csv`, body);

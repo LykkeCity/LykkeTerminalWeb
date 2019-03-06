@@ -65,3 +65,31 @@ export const ExportButton = styled.span`
     cursor: pointer;
   }
 `;
+
+export const ClearFiltersButton = ExportButton;
+
+export const FiltersWrapper = styled.div`
+  display: flex;
+
+  > div {
+    padding: 8px 25px 0 18px;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    height: 32px;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+`;
+
+export const StyledEmptyState = styled.td`
+  text-align: center !important;
+  padding: 70px 0 !important;
+  color: #ffffff;
+`;
+
+export const ActionsWrapper = styled.div``;
