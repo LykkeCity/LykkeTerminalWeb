@@ -64,6 +64,7 @@ class SessionStore extends BaseStore {
   private currentQrId: string = '';
   private isSessionNotesShown: boolean = false;
   private isConfirmationInProgress: boolean = false;
+  private isConfirmationStarted: boolean = false;
   private sessionRemainIntervalId: any;
   private sessionConfirmationExpireTimerId: any;
   private qrModal: ModalModel;
@@ -210,6 +211,7 @@ class SessionStore extends BaseStore {
 
       polling();
     }
+    this.isConfirmationStarted = false;
   };
 
   sessionConfirmationExpire = () => {
@@ -313,8 +315,11 @@ class SessionStore extends BaseStore {
   };
 
   startTrade = () => {
-    this.startSessionListener();
-    this.closeReadOnlyModeNotification();
+    if (!this.isConfirmationStarted) {
+      this.isConfirmationStarted = true;
+      this.startSessionListener();
+      this.closeReadOnlyModeNotification();
+    }
   };
 
   handleSetDuration = async (value: number) => {
