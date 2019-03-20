@@ -17,11 +17,6 @@ class CustomScrollbar extends React.Component<
   private startMarginBottom: any;
 
   componentDidMount() {
-    if (this.scrollRef) {
-      (this.scrollRef as any).view.style.marginRight = `-${DEFAULT_MARGIN}px`;
-      (this.scrollRef as any).view.style.marginBottom = `-${DEFAULT_MARGIN}px`;
-    }
-
     window.addEventListener('resize', (e: any) => {
       if (this.scrollRef && !this.startMarginBottom) {
         this.startMarginBottom = (this
