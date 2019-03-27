@@ -7,7 +7,11 @@ export const withAccuracy = (num: any, accuracy: number = 2) =>
 
 export const withSign = (num: any) => (num > 0 ? `+${num}` : num);
 
-export const asChange = compose(withPercent, withSign, withAccuracy);
+export const asChange = compose(
+  withPercent,
+  withSign,
+  withAccuracy
+);
 
 export const capitalize = (str: string | undefined | null) =>
   str ? str.substr(0, 1).toUpperCase() + str.substr(1).toLowerCase() : '';
@@ -15,30 +19,22 @@ export const capitalize = (str: string | undefined | null) =>
 export const delay = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
-export const normalizeVolume = (
-  minVolume: number,
-  maxVolume: number,
-  volume: number
-) => {
-  const minp = 10;
-  const maxp = 100;
+export const normalizeVolume = (min: number, max: number, volume: number) => {
+  const length = volume > 1 ? 100 : 300;
+  const minLength = 30;
 
-  if (volume === minVolume && volume === maxVolume) {
-    return maxp;
-  }
+  const minp = minLength;
+  const maxp = length;
 
-  if (volume === minVolume && minVolume !== maxVolume) {
-    return minp;
-  }
+  const minValue = min === 0 ? 1 : min;
 
-  if (volume === maxVolume && minVolume !== maxVolume) {
-    return maxp;
-  }
-
-  const minv = Math.log(minVolume);
-  const maxv = Math.log(maxVolume);
+  const minv = Math.log(minValue);
+  const maxv = Math.log(max);
 
   const scale = (maxv - minv) / (maxp - minp);
+  if (scale === 0) {
+    return minp;
+  }
   return (Math.log(volume) - minv) / scale + minp;
 };
 
