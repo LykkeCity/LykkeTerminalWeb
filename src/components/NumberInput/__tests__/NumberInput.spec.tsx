@@ -31,12 +31,6 @@ describe('<NumberInput>', () => {
       expect(wrapper.find('input')).toHaveLength(1);
     });
 
-    it('should call onChange callback', () => {
-      const wrapper = mount(getTestNumberInput());
-      wrapper.find('input').simulate('keydown', {which: '1'});
-      expect(onChange).toHaveBeenCalled();
-    });
-
     it('should call onArrowClick callback for Up button', () => {
       const wrapper = mount(getTestNumberInput());
       wrapper.find('input').simulate('keydown', {keyCode: 38});
