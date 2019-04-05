@@ -46,14 +46,10 @@ class AuthStore extends BaseStore {
       post_logout_redirect_uri: location.origin,
       response_type: openIdConstants.responseType,
       filterProtocolClaims: true,
-      loadUserInfo: false,
-      automaticSilentRenew: true
+      loadUserInfo: false
     };
 
     this.userManager = new UserManager(settings);
-    this.userManager.events.addSilentRenewError(() => {
-      this.signOut();
-    });
   }
 
   fetchBearerToken = (email: string, password: string) =>
