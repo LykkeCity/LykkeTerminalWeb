@@ -309,23 +309,6 @@ class ReferenceStore extends BaseStore {
     }
   };
 
-  onCandle = async (args: any) => {
-    const {a: id, o: openPrice, c: closePrice, v: volume} = args[0];
-    const instrument = this.getInstrumentById(id);
-
-    if (instrument && instrument.id) {
-      instrument.updateFromCandle(openPrice, closePrice, volume);
-      instrument.updateVolumeInBase(
-        this.rootStore.marketStore.convert(
-          volume,
-          instrument.baseAsset.id,
-          this.baseAssetId,
-          this.getInstrumentById
-        )
-      );
-    }
-  };
-
   reset = () => {
     this.assets = [];
     this.availableAssets = [];

@@ -11,6 +11,8 @@ class PriceApi extends RestApi {
     this.get(
       `/candlesHistory/spot/${instrument}/${priceType}/${interval}/${from.toISOString()}/${to.toISOString()}`
     );
+
+  fetchDailyData = (instrument: string) => this.get(`/markets/${instrument}`);
 }
 
 export default PriceApi;

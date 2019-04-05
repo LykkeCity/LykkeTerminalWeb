@@ -24,7 +24,6 @@ describe('orderBook store', () => {
 
   const tradeStore = rootStore.tradeStore;
   tradeStore.fetchPublicTrades = tradeStore.subscribeToPublicTrades = tradeStore.unsubscribeFromPublicTrades = tradeStore.resetTrades = tradeStore.fetchTrades = jest.fn();
-  rootStore.priceStore.fetchLastPrice = rootStore.priceStore.fetchDailyCandle = rootStore.priceStore.subscribeToDailyCandle = rootStore.priceStore.unsubscribeFromDailyCandle = jest.fn();
   rootStore.uiStore.selectedInstrument = new InstrumentModel({
     baseAsset: new AssetModel({name: 'BTC'}),
     id: 'BTCUSD',
