@@ -107,17 +107,23 @@ class TradeStore extends BaseStore {
     filterPeriod?: string,
     filterType?: string
   ) => {
+    let isFilterChanged = false;
     if (filter !== undefined) {
+      isFilterChanged = isFilterChanged || this.filter !== filter;
       this.filter = filter;
     }
     if (filterPeriod !== undefined) {
+      isFilterChanged = isFilterChanged || this.filterPeriod !== filterPeriod;
       this.filterPeriod = filterPeriod;
     }
     if (filterType !== undefined) {
+      isFilterChanged = isFilterChanged || this.filterType !== filterType;
       this.filterType = filterType as TradeFilterTypes;
     }
-    this.resetTrades();
-    this.fetchTrades();
+    if (isFilterChanged) {
+      this.resetTrades();
+      this.fetchTrades();
+    }
   };
 
   fetchTrades = async () => {

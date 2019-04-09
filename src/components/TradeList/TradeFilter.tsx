@@ -22,7 +22,10 @@ const TradeFilter: React.SFC<TradeFilterProps> = ({
 }) => {
   const show = observable.box(false);
   const toggle = () => show.set(!show.get());
-  const handleClick = (newValue: string) => () => onFilter(newValue);
+  const handleClick = (newValue: string) => () => {
+    toggle();
+    onFilter(newValue);
+  };
   let selectedValue = options.find(option => option.value === value);
   if (!selectedValue && resetSearchLabel) {
     selectedValue = {value: '', label: resetSearchLabel};
@@ -50,6 +53,7 @@ const TradeFilter: React.SFC<TradeFilterProps> = ({
                 activeValue={value}
                 items={options}
                 hasSearch={hasSearch}
+                needScroll={hasSearch}
                 resetSearchLabel={resetSearchLabel}
                 click={handleClick}
               />

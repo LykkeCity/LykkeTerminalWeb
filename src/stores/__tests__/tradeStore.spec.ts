@@ -101,7 +101,7 @@ describe('trade store', () => {
     });
 
     it('should add trade if trade filter set to All value', () => {
-      tradeStore.filter = TradeFilter.All;
+      tradeStore.filter = '';
       tradeStore.addTrade(getTestTrade());
       expect(tradeStore.getAllTrades).toHaveLength(1);
     });
@@ -123,37 +123,9 @@ describe('trade store', () => {
     });
 
     it('should add trades if trade filter set to All value', () => {
-      tradeStore.filter = TradeFilter.All;
+      tradeStore.filter = '';
       tradeStore.addTrades([getTestTrade(), getTestTrade()]);
       expect(tradeStore.getAllTrades).toHaveLength(2);
-    });
-
-    it('should not add trades if instrument from filter not equal to trade instrument', () => {
-      const correctTrade = getTestTrade();
-      const incorrectTrade = getTestTrade({
-        instrument: getTestInstrument({id: 'LKKUSD'})
-      });
-      tradeStore.addTrades([correctTrade, incorrectTrade]);
-      expect(tradeStore.getAllTrades).toHaveLength(1);
-      expect(tradeStore.getAllTrades).toEqual([correctTrade]);
-    });
-
-    it('should not add trades if wallet is not trading', () => {
-      rootStore.balanceListStore.tradingWallet = new WalletModel({
-        Id: 'Trading',
-        Name: 'Trading',
-        Balances: [],
-        Type: 'Trading'
-      });
-      const correctTrade = getTestTrade({
-        walletId: rootStore.balanceListStore.tradingWallet.id
-      });
-      const incorrectTrade = getTestTrade({
-        walletId: 'Test'
-      });
-      tradeStore.addTrades([correctTrade, incorrectTrade]);
-      expect(tradeStore.getAllTrades).toHaveLength(1);
-      expect(tradeStore.getAllTrades).toEqual([correctTrade]);
     });
   });
 
@@ -242,7 +214,7 @@ describe('trade store', () => {
 
   describe('exporting feature', () => {
     beforeEach(() => {
-      tradeStore.filter = TradeFilter.All;
+      tradeStore.filter = '';
       tradeStore.rootStore.balanceListStore.getCurrentWalletId = jest.fn(
         () => '1'
       );
@@ -266,7 +238,7 @@ describe('trade store', () => {
 
   describe('exporting feature', () => {
     beforeEach(() => {
-      tradeStore.filter = TradeFilter.All;
+      tradeStore.filter = '';
       tradeStore.rootStore.balanceListStore.getCurrentWalletId = jest.fn(
         () => '1'
       );
