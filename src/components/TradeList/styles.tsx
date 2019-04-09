@@ -58,6 +58,7 @@ export const ExportButton = styled.span`
   color: #ccc;
   color: #8c94a0;
   padding: ${padding(...dims.padding)};
+  margin-left: 8px;
   cursor: not-allowed;
 
   &.clickable {
@@ -90,6 +91,10 @@ export const StyledEmptyState = styled.td`
   text-align: center !important;
   padding: 70px 0 !important;
   color: #ffffff;
+
+  &:hover {
+    background-color: ${colors.lightGraphite};
+  }
 `;
 
 export const ActionsWrapper = styled.div``;

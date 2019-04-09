@@ -61,6 +61,7 @@ export const StyledInput = styled.input`
 export interface Option {
   value: string;
   label: string;
+  isMatch?: (searchTerm: string) => boolean;
 }
 
 interface CustomSelectProps {
@@ -106,7 +107,7 @@ class CustomSelect extends React.Component<
     } = this.props;
 
     const EnhancedList = needScroll
-      ? withStyledScroll({height: '100%'})(StyledList)
+      ? withStyledScroll({height: '96px', width: '217px'})(StyledList)
       : StyledList;
 
     return (
@@ -148,11 +149,20 @@ class CustomSelect extends React.Component<
   }
 
   private isItemFiltered(item: Option) {
-    return (
-      !!this.state.searchValue &&
-      item.label.toLowerCase().search(this.state.searchValue.toLowerCase()) ===
-        -1
-    );
+    if (!this.state.searchValue) {
+      return false;
+    }
+    if (!!item.isMatch && item.isMatch(this.state.searchValue)) {
+      return false;
+    }
+    if (
+      item.label.toLowerCase().search(this.state.searchValue.toLowerCase()) !==
+      -1
+    ) {
+      return false;
+    }
+
+    return true;
   }
 }
 

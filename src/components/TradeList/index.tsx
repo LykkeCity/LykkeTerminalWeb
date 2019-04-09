@@ -3,6 +3,7 @@ import React from 'react';
 import {withContentRect} from 'react-measure';
 import {InstrumentModel, TradeFilter as TradeFilterModel} from '../../models';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
+import Watchlists from '../../models/watchlists';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {CustomScrollbar} from '../CustomScrollbar';
@@ -64,11 +65,18 @@ const ConnectedTradeList = connect<TradeListProps>(
 );
 
 const ConnectedTradeFilter = connect<TradeFilterProps>(
-  ({tradeStore: {filter, setFilter, instruments}}) => ({
+  ({
+    tradeStore: {filter, setFilter, instruments},
+    referenceStore: {findInstruments}
+  }) => ({
     value: filter,
     options: instruments.map((instrument: InstrumentModel) => ({
       value: instrument.id,
-      label: instrument.name
+      label: instrument.name,
+      isMatch: (searchTerm: string) =>
+        !!findInstruments(searchTerm, Watchlists.All).find(
+          (i: InstrumentModel) => i.id === instrument.id
+        )
     })),
     resetSearchLabel: 'All pairs',
     hasSearch: true,
