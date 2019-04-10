@@ -3,8 +3,7 @@ import {
   InstrumentModel,
   OrderType,
   TradeFilter,
-  TradeModel,
-  WalletModel
+  TradeModel
 } from '../../models/index';
 import {RootStore, TradeStore} from '../index';
 
