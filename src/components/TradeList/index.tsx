@@ -154,8 +154,9 @@ const ConnectedTradeLogCanvas = connect(
 );
 
 const ConnectedClearFilters = connect(
-  ({tradeStore: {setFilter}}) => ({
-    setFilter
+  ({tradeStore: {setFilter, filter, filterPeriod, filterType}}) => ({
+    setFilter,
+    enabled: filter || filterPeriod || filterType
   }),
   ClearFilters
 );

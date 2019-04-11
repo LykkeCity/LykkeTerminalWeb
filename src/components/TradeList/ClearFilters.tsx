@@ -1,7 +1,9 @@
+import * as classnames from 'classnames';
 import * as React from 'react';
 import {ClearFiltersButton} from './styles';
 
 interface ClearFiltersProps {
+  enabled?: boolean;
   setFilter: (period: string, type: string, instrument: string) => void;
 }
 
@@ -16,7 +18,10 @@ class ClearFilters extends React.Component<ClearFiltersProps> {
 
   render() {
     return (
-      <ClearFiltersButton className="clickable" onClick={this.clearFilters}>
+      <ClearFiltersButton
+        className={classnames({clickable: this.props.enabled})}
+        onClick={this.clearFilters}
+      >
         Clear all filters
       </ClearFiltersButton>
     );
