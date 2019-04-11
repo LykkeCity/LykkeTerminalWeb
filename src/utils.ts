@@ -20,7 +20,7 @@ export const delay = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const normalizeVolume = (min: number, max: number, volume: number) => {
-  const length = volume > 1 ? 100 : 300;
+  const length = 300;
   const minLength = 30;
 
   const minp = minLength;
