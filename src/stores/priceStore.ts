@@ -36,7 +36,7 @@ class PriceStore extends BaseStore {
             this.dailyHigh = resp.High;
             this.dailyLow = resp.Low;
             this.dailyVolume = resp.Volume24H;
-            this.dailyChange = resp.PriceChange24H;
+            this.dailyChange = resp.PriceChange24H * 100;
             this.lastTradePrice = resp.LastPrice;
 
             this.selectedInstrument!.updateFromCandle(
