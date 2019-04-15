@@ -89,10 +89,6 @@ export const StyledHeader = Table.extend`
   th {
     text-align: left;
     padding: 0;
-
-    &:first-child {
-      padding-left: 50px !important;
-    }
   }
 `;
 

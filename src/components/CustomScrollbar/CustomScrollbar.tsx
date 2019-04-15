@@ -17,11 +17,6 @@ class CustomScrollbar extends React.Component<
   private startMarginBottom: any;
 
   componentDidMount() {
-    if (this.scrollRef) {
-      (this.scrollRef as any).view.style.marginRight = `-${DEFAULT_MARGIN}px`;
-      (this.scrollRef as any).view.style.marginBottom = `-${DEFAULT_MARGIN}px`;
-    }
-
     window.addEventListener('resize', (e: any) => {
       if (this.scrollRef && !this.startMarginBottom) {
         this.startMarginBottom = (this
@@ -35,16 +30,25 @@ class CustomScrollbar extends React.Component<
           ? 1
           : 1 / e.currentTarget.devicePixelRatio + ADDITIONAL_MARGIN;
       if (this.scrollRef) {
-        if (resizeCoefficient === 1) {
+        if (e.currentTarget.devicePixelRatio > 1.5) {
           (this
             .scrollRef as any).view.style.marginRight = this.startMarginRight;
           (this
             .scrollRef as any).view.style.marginBottom = this.startMarginBottom;
         } else {
-          (this.scrollRef as any).view.style.marginRight = `-${DEFAULT_MARGIN *
-            resizeCoefficient}px`;
-          (this.scrollRef as any).view.style.marginBottom = `-${DEFAULT_MARGIN *
-            resizeCoefficient}px`;
+          if (resizeCoefficient === 1) {
+            (this
+              .scrollRef as any).view.style.marginRight = this.startMarginRight;
+            (this
+              .scrollRef as any).view.style.marginBottom = this.startMarginBottom;
+          } else {
+            (this
+              .scrollRef as any).view.style.marginRight = `-${DEFAULT_MARGIN *
+              resizeCoefficient}px`;
+            (this
+              .scrollRef as any).view.style.marginBottom = `-${DEFAULT_MARGIN *
+              resizeCoefficient}px`;
+          }
         }
       }
     });
