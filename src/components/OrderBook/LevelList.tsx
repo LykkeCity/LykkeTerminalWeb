@@ -41,7 +41,6 @@ import {FakeOrderBookStage} from './styles';
 const LEVEL_FONT = `bold 12.25px Lekton, monospace`;
 const UPDATE_ANIMATION_INTERVAL = 250;
 const CELLS_NUMBER = 3;
-const SCALE_BAR = 1;
 const MARGIN_BOTTOM = 3;
 
 export interface LevelListProps {
@@ -89,6 +88,7 @@ class LevelList extends React.Component<LevelListProps> {
   cachedLevels: Order[] = [];
   cancelColorAnimationIntervalId: any;
   animatingLevels: IAnimatingLevels[] = [];
+  normalizedScale: number = 1;
   isPageVisible: boolean = true;
 
   handleLevelsUpdating = (asks: Order[], bids: Order[], type: LevelType) => {
@@ -368,7 +368,8 @@ class LevelList extends React.Component<LevelListProps> {
       }
       value = format(value, instrument.quoteAsset.accuracy);
 
-      const normalizedWidth = normalize(levelOrder[displayType]) / SCALE_BAR;
+      const normalizedWidth =
+        normalize(levelOrder[displayType]) / this.normalizedScale;
 
       this.drawBar(color, y, normalizedWidth);
 
@@ -429,7 +430,7 @@ class LevelList extends React.Component<LevelListProps> {
 
   drawCanvas = (asks: Order[] = [], bids: Order[] = [], type: LevelType) => {
     this.levelsCells = [];
-    const {displayType, height} = this.props;
+    const {displayType, height, width} = this.props;
 
     const levels = type === LevelType.Asks ? asks : bids;
 
@@ -438,10 +439,10 @@ class LevelList extends React.Component<LevelListProps> {
       ...asks,
       ...bids
     ]) as number[];
-    const normalize = curry(normalizeVolume)(
-      Math.min(...vals),
-      Math.max(...vals)
-    );
+    const minVal = Math.min(...vals);
+    const maxVal = Math.max(...vals);
+    const normalize = curry(normalizeVolume)(minVal, maxVal);
+    this.normalizedScale = normalize(maxVal) / width;
 
     const drawLevel = this.prepareLevelForDrawing(
       normalize,
