@@ -288,7 +288,9 @@ class TradeStore extends BaseStore {
     }
 
     return (
-      this.filter === '' || this.isTradeAvailableForCurrentInstrument(trade)
+      (this.filter === '' ||
+        this.isTradeAvailableForCurrentInstrument(trade)) &&
+      (this.filterType === '' || this.isTradeAvailableForCurrentType(trade))
     );
   }
 
@@ -298,6 +300,10 @@ class TradeStore extends BaseStore {
 
   private isTradeAvailableForCurrentInstrument(trade: TradeModel) {
     return trade.instrument!.id === this.instrumentIdByFilter;
+  }
+
+  private isTradeAvailableForCurrentType(trade: TradeModel) {
+    return trade.side === this.filterType;
   }
 
   private filterTrades = (trades: TradeModel[]) => {
