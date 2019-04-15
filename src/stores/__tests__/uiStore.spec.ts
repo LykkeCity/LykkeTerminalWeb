@@ -155,9 +155,6 @@ describe('uiStore', () => {
       uiStore.rootStore.tradeStore.fetchPublicTrades = jest.fn();
       uiStore.rootStore.tradeStore.subscribeToPublicTrades = jest.fn();
 
-      uiStore.rootStore.priceStore.fetchLastPrice = jest.fn();
-      uiStore.rootStore.priceStore.fetchDailyCandle = jest.fn();
-      uiStore.rootStore.priceStore.subscribeToDailyCandle = jest.fn();
       uiStore.rootStore.priceStore.reset = jest.fn();
 
       uiStore.rootStore.routerStore.replace = jest.fn();

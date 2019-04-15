@@ -110,15 +110,11 @@ class UiStore extends BaseStore {
           fns.seq(fetchPublicTrades, subscribeToPublicTrades)();
 
           const {
-            fetchLastPrice,
-            fetchDailyCandle,
-            subscribeToDailyCandle,
+            fetchDailyData,
             reset: resetPriceStore
           } = this.rootStore.priceStore;
           await resetPriceStore();
-          await fetchLastPrice();
-          await fetchDailyCandle();
-          subscribeToDailyCandle();
+          await fetchDailyData();
 
           this.toggleInstrumentPerformanceData(true);
         }
