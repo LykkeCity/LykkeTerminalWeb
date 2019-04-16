@@ -7,8 +7,7 @@ import {keys} from '../models';
 import {
   InstrumentModel,
   OrderBookDisplayType,
-  PriceType,
-  TradeFilter
+  PriceType
 } from '../models/index';
 import {
   ApiUserInfoModel,
@@ -98,10 +97,7 @@ class UiStore extends BaseStore {
             subscribeToPublicTrades
           } = this.rootStore.tradeStore;
 
-          if (
-            this.rootStore.tradeStore.filter === TradeFilter.CurrentAsset &&
-            this.rootStore.authStore.isAuth
-          ) {
+          if (this.rootStore.authStore.isAuth) {
             fns.seq(resetTrades, fetchTrades)();
           }
 

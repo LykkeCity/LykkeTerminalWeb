@@ -1,7 +1,9 @@
 import {compose, pathOr} from 'rambda';
 import React from 'react';
 import {withContentRect} from 'react-measure';
+import {InstrumentModel, TradeFilter as TradeFilterModel} from '../../models';
 import * as TradeFilterModelFns from '../../models/tradeFilter';
+import Watchlists from '../../models/watchlists';
 import {withAuth} from '../Auth';
 import {connect} from '../connect';
 import {CustomScrollbar} from '../CustomScrollbar';
@@ -9,6 +11,7 @@ import {withStyledScroll} from '../CustomScrollbar/withScroll';
 import {withKyc} from '../Kyc';
 import withLoader from '../Loader/withLoader';
 import {tableScrollMargin} from '../styled';
+import ClearFilters from './ClearFilters';
 import {Export} from './Export';
 import TradeFilter, {TradeFilterProps} from './TradeFilter';
 import TradeList, {TradeListProps} from './TradeList';
@@ -62,10 +65,40 @@ const ConnectedTradeList = connect<TradeListProps>(
 );
 
 const ConnectedTradeFilter = connect<TradeFilterProps>(
-  ({tradeStore: {filter, setFilter}}) => ({
+  ({
+    tradeStore: {filter, setFilter, instruments},
+    referenceStore: {findInstruments}
+  }) => ({
     value: filter,
-    options: TradeFilterModelFns.toOptions(),
-    onFilter: setFilter
+    options: instruments.map((instrument: InstrumentModel) => ({
+      value: instrument.id,
+      label: instrument.name,
+      isMatch: (searchTerm: string) =>
+        !!findInstruments(searchTerm, Watchlists.All).find(
+          (i: InstrumentModel) => i.id === instrument.id
+        )
+    })),
+    resetSearchLabel: 'All pairs',
+    hasSearch: true,
+    onFilter: value => setFilter(value as TradeFilterModel)
+  }),
+  TradeFilter
+);
+
+const ConnectedTradeFilterPeriod = connect<TradeFilterProps>(
+  ({tradeStore: {filterPeriod, setFilter}}) => ({
+    value: filterPeriod,
+    options: TradeFilterModelFns.periodsToOptions(),
+    onFilter: value => setFilter(undefined, value)
+  }),
+  TradeFilter
+);
+
+const ConnectedTradeFilterType = connect<TradeFilterProps>(
+  ({tradeStore: {filterType, setFilter}}) => ({
+    value: filterType,
+    options: TradeFilterModelFns.typesToOptions(),
+    onFilter: value => setFilter(undefined, undefined, value)
   }),
   TradeFilter
 );
@@ -120,6 +153,14 @@ const ConnectedTradeLogCanvas = connect(
   TradeLog
 );
 
+const ConnectedClearFilters = connect(
+  ({tradeStore: {setFilter, filter, filterPeriod, filterType}}) => ({
+    setFilter,
+    enabled: filter || filterPeriod || filterType
+  }),
+  ClearFilters
+);
+
 const ConnectedExport = connect(
   ({tradeStore: {fetchCsvUrl, canExport}, authStore: {userInfo}}) => ({
     fetchCsvUrl,
@@ -133,5 +174,8 @@ export {ConnectedTrades as Trades};
 export {ConnectedTradeList as TradeList};
 export {TradeListItem};
 export {ConnectedTradeFilter as TradeFilter};
+export {ConnectedTradeFilterPeriod as TradeFilterPeriod};
+export {ConnectedTradeFilterType as TradeFilterType};
 export {ConnectedTradeLog as TradeLog};
 export {ConnectedExport as Export};
+export {ConnectedClearFilters as ClearFilters};
