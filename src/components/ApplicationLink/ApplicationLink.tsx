@@ -2,12 +2,14 @@ import * as React from 'react';
 import {Link} from 'react-router-dom';
 
 interface ApplicationLinkProps {
+  isBlank?: boolean;
   classes: string;
   title: JSX.Element;
   url: string;
 }
 
 const ApplicationLink: React.SFC<ApplicationLinkProps> = ({
+  isBlank,
   classes,
   title,
   url
@@ -22,7 +24,11 @@ const ApplicationLink: React.SFC<ApplicationLinkProps> = ({
 
   const customUrl = url === window.location.href ? undefined : url;
   return (
-    <a href={customUrl} className={classes}>
+    <a
+      href={customUrl}
+      target={isBlank ? '_blank' : undefined}
+      className={classes}
+    >
       {title}
     </a>
   );
