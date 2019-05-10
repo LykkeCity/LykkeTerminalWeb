@@ -7,6 +7,7 @@ import {AnalyticsEvents} from '../constants/analyticsEvents';
 import messages from '../constants/notificationMessages';
 import {CsvIdResponseModel, CsvWampModel} from '../models/csvModels';
 import {levels, OperationType, TradeFilter, TradeModel} from '../models/index';
+import {TradeFilterTypes} from '../models/tradeFilter';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
 import {AnalyticsService} from '../services/analyticsService';
@@ -29,7 +30,9 @@ const sortMultiField = (source: TradeModel[]) => {
 };
 
 class TradeStore extends BaseStore {
-  @observable filter = TradeFilter.CurrentAsset;
+  @observable filter = '';
+  @observable filterPeriod = '';
+  @observable filterType = '';
   @observable shouldFetchMore = false;
   @observable hasPendingItems: boolean = false;
   @observable hasPendingCsv: boolean = false;
@@ -63,9 +66,7 @@ class TradeStore extends BaseStore {
 
   @computed
   get instrumentIdByFilter() {
-    return this.filter === TradeFilter.CurrentAsset
-      ? this.selectedInstrument!.id
-      : '';
+    return this.filter;
   }
 
   private subscriptions: Set<IWampSubscriptionItem> = new Set();
@@ -101,10 +102,28 @@ class TradeStore extends BaseStore {
   };
 
   @action
-  setFilter = (filter: TradeFilter) => {
-    this.filter = filter;
-    this.resetTrades();
-    this.fetchTrades();
+  setFilter = (
+    filter?: TradeFilter,
+    filterPeriod?: string,
+    filterType?: string
+  ) => {
+    let isFilterChanged = false;
+    if (filter !== undefined) {
+      isFilterChanged = isFilterChanged || this.filter !== filter;
+      this.filter = filter;
+    }
+    if (filterPeriod !== undefined) {
+      isFilterChanged = isFilterChanged || this.filterPeriod !== filterPeriod;
+      this.filterPeriod = filterPeriod;
+    }
+    if (filterType !== undefined) {
+      isFilterChanged = isFilterChanged || this.filterType !== filterType;
+      this.filterType = filterType as TradeFilterTypes;
+    }
+    if (isFilterChanged) {
+      this.resetTrades();
+      this.fetchTrades();
+    }
   };
 
   fetchTrades = async () => {
@@ -115,13 +134,13 @@ class TradeStore extends BaseStore {
         this.getWalletId(),
         this.instrumentIdByFilter,
         this.skip,
-        TradeQuantity.Take
+        TradeQuantity.Take,
+        this.filterPeriod,
+        this.filterType
       );
       this.hasPendingItems = false;
       runInAction(() => {
-        this.addTrades(
-          map.aggregateTradesByTimestamp([...trades], this.instruments)
-        );
+        this.addTrades(map.fromRestToTrade(trades, this.instruments));
         this.shouldFetchMore = trades.length >= TradeQuantity.Take;
       });
     }
@@ -269,8 +288,9 @@ class TradeStore extends BaseStore {
     }
 
     return (
-      this.filter === TradeFilter.All ||
-      this.isTradeAvailableForCurrentInstrument(trade)
+      (this.filter === '' ||
+        this.isTradeAvailableForCurrentInstrument(trade)) &&
+      (this.filterType === '' || this.isTradeAvailableForCurrentType(trade))
     );
   }
 
@@ -280,6 +300,10 @@ class TradeStore extends BaseStore {
 
   private isTradeAvailableForCurrentInstrument(trade: TradeModel) {
     return trade.instrument!.id === this.instrumentIdByFilter;
+  }
+
+  private isTradeAvailableForCurrentType(trade: TradeModel) {
+    return trade.side === this.filterType;
   }
 
   private filterTrades = (trades: TradeModel[]) => {

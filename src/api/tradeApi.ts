@@ -1,5 +1,4 @@
 import {CsvIdRequestModel, CsvIdResponseModel} from '../models/csvModels';
-import {OperationType} from '../models/index';
 import {HistoryApi} from './index';
 import {RestApi} from './restApi';
 import {ApiResponse} from './types';
@@ -9,7 +8,8 @@ type TradeRequest = (
   instrumentId: string,
   skip: number,
   take: number,
-  operationType: OperationType[]
+  from: string,
+  tradeType: string
 ) => ApiResponse;
 
 type PublicTradeRequest = (
@@ -28,13 +28,16 @@ export class RestTradeApi extends RestApi implements TradeApi {
     walletId: string,
     instrumentId: string,
     skip: number,
-    take: number
+    take: number,
+    from: string,
+    tradeType: string
   ) =>
     HistoryApi.fetchHistory(walletId, {
       assetPairId: instrumentId,
       skip,
       take,
-      operationType: [OperationType.Trade]
+      from,
+      tradeType
     });
 
   fetchPublicTrades = (instrumentId: string, skip: number, take: number) =>

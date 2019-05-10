@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import * as React from 'react';
 import styled from 'styled-components';
 import {withStyledScroll} from '../CustomScrollbar';
@@ -29,6 +30,11 @@ const StyledItem = styled.li.attrs({
   cursor: pointer;
   font-size: 1rem;
   padding: ${rem(10)};
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+
+  &.reset-option {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  }
 
   ${(p: any) =>
     p.isActive ||
@@ -39,9 +45,23 @@ const StyledItem = styled.li.attrs({
     `};
 ` as any;
 
+export const StyledInput = styled.input`
+  background-color: transparent;
+  border-radius: 4px;
+  border: solid 1px rgba(0, 0, 0, 0.2);
+  color: #f5f6f7;
+  padding-left: 8px;
+  padding-right: 20px;
+  height: 40px;
+  margin: 12px 8px;
+  width: 202px;
+  box-sizing: border-box;
+`;
+
 export interface Option {
   value: string;
   label: string;
+  isMatch?: (searchTerm: string) => boolean;
 }
 
 interface CustomSelectProps {
@@ -50,37 +70,100 @@ interface CustomSelectProps {
   styles?: any;
   isActiveMarked?: boolean;
   activeValue?: string;
+  hasSearch?: boolean;
+  resetSearchLabel?: string;
   needScroll?: boolean;
 }
 
-const CustomSelect: React.SFC<CustomSelectProps> = ({
-  items = [],
-  click,
-  styles,
-  isActiveMarked = false,
-  activeValue,
-  needScroll = false
-}) => {
-  const EnhancedList = needScroll
-    ? withStyledScroll({height: '100%'})(StyledList)
-    : StyledList;
-  return (
-    <StyledSelect style={styles}>
-      <EnhancedList>
-        {items.map((item: any) => {
-          return (
-            <StyledItem
-              key={item.value}
-              onClick={click(item.value)}
-              isActive={isActiveMarked && activeValue === item.value}
-            >
-              {item.label}
-            </StyledItem>
-          );
-        })}
-      </EnhancedList>
-    </StyledSelect>
-  );
-};
+interface CustomSelectState {
+  searchValue: string;
+}
+
+class CustomSelect extends React.Component<
+  CustomSelectProps,
+  CustomSelectState
+> {
+  constructor(props: CustomSelectProps) {
+    super(props);
+    this.state = {
+      searchValue: ''
+    };
+  }
+
+  handleSearchChange(value: string) {
+    this.setState({searchValue: value});
+  }
+
+  render() {
+    const {
+      items = [],
+      click,
+      styles,
+      isActiveMarked = false,
+      activeValue = '',
+      hasSearch,
+      resetSearchLabel,
+      needScroll = false
+    } = this.props;
+
+    const EnhancedList = needScroll
+      ? withStyledScroll({height: '96px', width: '217px'})(StyledList)
+      : StyledList;
+
+    return (
+      <StyledSelect style={styles}>
+        {resetSearchLabel && (
+          <StyledItem
+            key={''}
+            className="reset-option"
+            onClick={click('')}
+            isActive={activeValue === ''}
+          >
+            {resetSearchLabel}
+          </StyledItem>
+        )}
+        {hasSearch && (
+          <StyledInput
+            type="text"
+            placeholder="Search"
+            // tslint:disable-next-line:jsx-no-lambda
+            onChange={e => this.handleSearchChange(e.target.value)}
+          />
+        )}
+        <EnhancedList>
+          {items.map((item: any) => {
+            return (
+              <StyledItem
+                key={item.value}
+                className={classnames({hidden: this.isItemFiltered(item)})}
+                onClick={click(item.value)}
+                isActive={isActiveMarked && activeValue === item.value}
+              >
+                {item.label}
+              </StyledItem>
+            );
+          })}
+        </EnhancedList>
+      </StyledSelect>
+    );
+  }
+
+  private isItemFiltered(item: Option) {
+    if (!this.state.searchValue) {
+      return false;
+    }
+    if (!!item.isMatch && item.isMatch(this.state.searchValue)) {
+      return false;
+    }
+    if (
+      item.label.toLowerCase().search(this.state.searchValue.toLowerCase()) !==
+      -1
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+}
 
 export default CustomSelect;
