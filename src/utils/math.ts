@@ -67,3 +67,6 @@ export const times = (value: number | string, term: number) =>
 export const bigToFixed = (value: number | string, accuracy: number) => {
   return new BigNumberModel(value).toFixed(accuracy);
 };
+
+export const pow = (value: number | string, n: number) =>
+  new BigNumberModel(value).pow(n).toNumber();

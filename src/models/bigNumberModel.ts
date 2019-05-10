@@ -36,6 +36,11 @@ class BigNumberModel {
     this.calculationResult = this.bigNumber.times(term).valueOf();
     return this;
   };
+
+  pow = (times: number) => {
+    this.calculationResult = this.bigNumber.pow(times).valueOf();
+    return this;
+  };
 }
 
 export default BigNumberModel;
