@@ -5,7 +5,7 @@ import chart from '../constants/chartConstants';
 import {DepthArea, Order} from '../models';
 import {AnalyticsService} from '../services/analyticsService';
 import {formattedNumber} from '../utils/localFormatted/localFormatted';
-import {precisionFloor} from '../utils/math';
+import {pow, precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';
 import {aggregateOrders, connectLimitOrders} from './orderBookHelpers';
 
@@ -34,7 +34,7 @@ class DepthChartStore extends BaseStore {
   @computed
   get seedSpan() {
     if (this.rootStore.uiStore.selectedInstrument) {
-      return Math.pow(10, -this.rootStore.uiStore.selectedInstrument.accuracy);
+      return pow(10, -this.rootStore.uiStore.selectedInstrument.accuracy);
     }
     return 0;
   }
