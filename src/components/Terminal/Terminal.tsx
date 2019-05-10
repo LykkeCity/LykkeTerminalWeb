@@ -118,8 +118,16 @@ const secondMenuLinkOptions = [
 ];
 
 const renderLink = (classes: string, title: JSX.Element, url: string) => {
+  const isBlank =
+    [LYKKE_STREAMS_ROUTE, FEES_AND_LIMITS_ROUTE].indexOf(url) !== -1;
   return (
-    <ApplicationLink classes={classes} title={title} url={url} key={url} />
+    <ApplicationLink
+      classes={classes}
+      title={title}
+      url={url}
+      key={url}
+      isBlank={isBlank}
+    />
   );
 };
 

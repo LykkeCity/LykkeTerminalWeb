@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ArrowDirection from '../../models/arrowDirection';
+import {getLocaleSeparators} from '../../utils/inputNumber';
 import {StyledInput, StyledInputNumberComponent} from './styles';
 
 interface NumberInputProps {
@@ -15,17 +16,27 @@ const NumberInput: React.SFC<NumberInputProps> = ({
   onChange,
   onArrowClick
 }) => {
+  const separators = getLocaleSeparators();
+
   return (
     <StyledInputNumberComponent>
       <StyledInput
         id={id}
         type="text"
         value={value}
-        placeholder={'0.00'}
-        autoComplete={'off'}
-        onChange={onChange()}
+        autocomplete="off"
+        placeholder="0.0"
+        allowNegative={false}
+        isNumericString={true}
+        thousandSeparator={separators.thousandsSeparator}
+        decimalSeparator={separators.decimalSeparator}
+        thousandsGroupStyle={separators.thousandsGroupStyle}
         // tslint:disable-next-line:jsx-no-lambda
-        onKeyDown={e => {
+        onValueChange={(values: any) =>
+          onChange()({target: {value: values.value}})
+        }
+        // tslint:disable-next-line:jsx-no-lambda
+        onKeyDown={(e: any) => {
           switch (e.keyCode) {
             case 38:
               onArrowClick(ArrowDirection.Up)();

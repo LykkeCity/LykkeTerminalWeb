@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
-export const StyledInput = styled.input`
+// tslint:disable-next-line:no-var-requires
+const NumberFormat = require('react-number-format');
+
+export const StyledInput = styled(NumberFormat)`
   background-color: transparent;
   border-radius: 4px;
   border: solid 1px #56595e;

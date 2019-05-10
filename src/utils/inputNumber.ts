@@ -53,3 +53,37 @@ export const onValueChange = (
   const newVal = value === DEFAULT_INPUT_VALUE ? DEFAULT_INPUT_VALUE : value;
   setValue(newVal);
 };
+
+export const getLocaleSeparators = () => {
+  const digits = '0123456789';
+  const num = 123456789.123456789;
+  const str = num.toLocaleString();
+
+  let thousandsSeparator = ',';
+  let decimalSeparator = '.';
+  let thousandsGroupStyle = 'thousand';
+
+  if (!digits.includes(str[1])) {
+    thousandsSeparator = str[1];
+    decimalSeparator = str[11];
+    thousandsGroupStyle = 'wan';
+  }
+
+  if (!digits.includes(str[2])) {
+    thousandsSeparator = str[2];
+    decimalSeparator = str[12];
+    thousandsGroupStyle = 'lakh';
+  }
+
+  if (!digits.includes(str[3])) {
+    thousandsSeparator = str[3];
+    decimalSeparator = str[11];
+    thousandsGroupStyle = 'thousand';
+  }
+
+  return {
+    thousandsSeparator,
+    decimalSeparator,
+    thousandsGroupStyle
+  };
+};
