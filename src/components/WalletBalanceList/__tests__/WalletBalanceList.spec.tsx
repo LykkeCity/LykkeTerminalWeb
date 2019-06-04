@@ -37,6 +37,7 @@ describe('<WalletBalanceList>', () => {
       selectedInstrument={selectedInstrument}
       setSide={setSide}
       handlePercentageChange={handlePercentageChange}
+      handleBalanceRowClick={handlePercentageChange}
     />
   );
 

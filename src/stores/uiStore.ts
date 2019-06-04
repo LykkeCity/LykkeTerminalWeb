@@ -36,6 +36,7 @@ class UiStore extends BaseStore {
   @observable selectedInstrument: InstrumentModel | null;
   @observable selectedPriceType: PriceType = PriceType.Mid;
   @observable showInstrumentPicker = false;
+  @observable hideInstrumentPickerSearch = false;
   @observable showInstrumentPerformanceData = false;
   @observable showInstrumentSelection = false;
   @observable showOrdersSelect: boolean = false;
@@ -183,6 +184,8 @@ class UiStore extends BaseStore {
 
     if (this.showInstrumentPicker) {
       AnalyticsService.track(AnalyticsEvents.OpenInstrumentPicker);
+    } else {
+      this.hideInstrumentPickerSearch = false;
     }
   };
 

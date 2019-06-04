@@ -23,6 +23,7 @@ const connectedInstrumentPicker = connect<InstrumentPickerProps>(
       instrumentId: pathOr(undefined, ['selectedInstrument', 'id'], uiStore),
       value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
       show: uiStore.showInstrumentPicker,
+      hideSearch: uiStore.hideInstrumentPickerSearch,
       showInstrumentSelection: uiStore.showInstrumentSelection,
       onPick: (instrument: InstrumentModel) => {
         uiStore.selectInstrument(instrument.id);

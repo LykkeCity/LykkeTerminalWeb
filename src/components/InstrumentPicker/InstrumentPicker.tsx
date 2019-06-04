@@ -24,6 +24,7 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   value: string;
   instrumentId: string;
   show: boolean;
+  hideSearch?: boolean;
   className?: string;
   showInstrumentSelection: boolean;
   onToggleInstrumentSelection: any;
@@ -48,6 +49,9 @@ class InstrumentPicker extends React.Component<
 
   componentWillReceiveProps(args: InstrumentPickerProps) {
     if (args.show) {
+      if (this.props.onSearch && !args.hideSearch) {
+        this.props.onSearch(this.state.searchValue);
+      }
       this.setState({
         activeShortcut: args.watchlistNames.findIndex(
           name => name === this.props.getSelectedWatchListName()
@@ -86,21 +90,23 @@ class InstrumentPicker extends React.Component<
         <InstrumentSelect {...this.props} />
         {this.props.show ? (
           <InstrumentPopover onToggle={this.props.onToggle}>
-            <SearchWrap align={'center'} justify={'space-between'}>
-              <InstrumentShortcuts
-                changeValue={this.changeWallet}
-                onToggleInstrumentSelection={
-                  this.props.onToggleInstrumentSelection
-                }
-                shortcutActiveIndex={this.state.activeShortcut}
-                shortcuts={this.props.watchlistNames}
-                showInstrumentSelection={this.props.showInstrumentSelection}
-              />
-              <InstrumentSearch
-                inputValue={this.state.searchValue}
-                change={this.changeValue}
-              />
-            </SearchWrap>
+            {!this.props.hideSearch && (
+              <SearchWrap align={'center'} justify={'space-between'}>
+                <InstrumentShortcuts
+                  changeValue={this.changeWallet}
+                  onToggleInstrumentSelection={
+                    this.props.onToggleInstrumentSelection
+                  }
+                  shortcutActiveIndex={this.state.activeShortcut}
+                  shortcuts={this.props.watchlistNames}
+                  showInstrumentSelection={this.props.showInstrumentSelection}
+                />
+                <InstrumentSearch
+                  inputValue={this.state.searchValue}
+                  change={this.changeValue}
+                />
+              </SearchWrap>
+            )}
             <InstrumentList
               baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}
