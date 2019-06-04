@@ -123,7 +123,7 @@ export const fromWampToTrade = (dto: any[], instruments: InstrumentModel[]) => {
     price: effectivePrice,
     volume: Math.abs(tradesByBaseAsset.map(t => t.Volume).reduce(add)),
     side: Direction === SideDirection.Buy ? Side.Buy : Side.Sell,
-    symbol: instrument!.displayName,
+    symbol: instrument!.id,
     timestamp: DateTime,
     tradeId: TradeId,
     oppositeVolume: Math.abs(

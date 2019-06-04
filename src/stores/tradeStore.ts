@@ -299,7 +299,7 @@ class TradeStore extends BaseStore {
   }
 
   private isTradeAvailableForCurrentInstrument(trade: TradeModel) {
-    return trade.instrument!.id === this.instrumentIdByFilter;
+    return trade.symbol === this.instrumentIdByFilter;
   }
 
   private isTradeAvailableForCurrentType(trade: TradeModel) {

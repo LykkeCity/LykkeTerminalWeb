@@ -154,10 +154,7 @@ class TradeLog extends React.Component<TradeLogProps, TradeLogState> {
       this.drawAnimation(trade, priceColor, index);
       this.drawPrice(trade.price, priceColor, index);
 
-      const volume = formatWithAccuracy(
-        trade.volume,
-        trade.instrument!.baseAsset.accuracy
-      );
+      const volume = trade.volume + '';
       const volumeX = this.props.width / 3 + LEFT_PADDING + VOLUME_LEFT_PADDING;
       let drownSymbolsWidth = 0;
       const trailingZeroPosition = getTrailingZeroOppositePosition(volume);
