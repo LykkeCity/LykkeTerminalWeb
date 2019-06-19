@@ -49,7 +49,13 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
     <StyledNumber
       color={color}
       title={formatterAvailableBalance}
-      onClick={onClick}
+      // tslint:disable-next-line:jsx-no-lambda
+      onClick={(e: any) => {
+        if (onClick) {
+          e.stopPropagation();
+          onClick();
+        }
+      }}
       className={onClick ? 'clickable' : ''}
     >
       <div>

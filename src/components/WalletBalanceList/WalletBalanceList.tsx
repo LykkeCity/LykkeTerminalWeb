@@ -90,11 +90,8 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
                 ? () => onBalanceClick(assetBalance)
                 : undefined
             }
-            onClickRow={
-              !isBalanceAvailableInInstrument(assetBalance)
-                ? () => onBalanceRowClick(assetBalance)
-                : undefined
-            }
+            // tslint:disable-next-line:jsx-no-lambda
+            onClickRow={() => onBalanceRowClick(assetBalance)}
           />
         ))}
       </tbody>

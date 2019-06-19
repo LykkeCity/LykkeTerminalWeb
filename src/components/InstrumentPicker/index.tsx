@@ -65,7 +65,7 @@ const connectedInstrumentList = connect<InstrumentListProps>(
 
 const connectedScrolledInstrumentTable = withStyledTrackedScroll({
   width: `calc(100% + ${tableScrollMargin})`,
-  height: 'calc(100% - 80px)'
+  height: 'calc(100% - 40px)'
 })(InstrumentTable);
 
 export {connectedInstrumentPicker as InstrumentPicker};
