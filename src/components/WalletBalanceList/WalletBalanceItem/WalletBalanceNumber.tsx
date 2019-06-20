@@ -52,7 +52,6 @@ const WalletBalanceNumber: React.SFC<WalletBalanceNumberProps> = ({
       // tslint:disable-next-line:jsx-no-lambda
       onClick={(e: any) => {
         if (onClick) {
-          e.stopPropagation();
           onClick();
         }
       }}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {AssetModel} from '../../models';
+import {AssetModel, InstrumentModel} from '../../models';
 import Watchlists from '../../models/watchlists';
 import {AnalyticsService} from '../../services/analyticsService';
 import {
@@ -23,6 +23,7 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   baseAsset: AssetModel;
   value: string;
   instrumentId: string;
+  instruments: InstrumentModel[];
   show: boolean;
   hideSearch?: boolean;
   className?: string;
@@ -45,6 +46,16 @@ class InstrumentPicker extends React.Component<
       searchValue: '',
       searchWallet: Watchlists.All
     };
+  }
+
+  get instrumentPopoverHeight() {
+    const maxHeight = 360;
+    const headerHeight = 100;
+    const rowHeight = 29;
+
+    const height = headerHeight + this.props.instruments.length * rowHeight;
+
+    return !this.props.hideSearch || height > maxHeight ? maxHeight : height;
   }
 
   componentWillReceiveProps(args: InstrumentPickerProps) {
@@ -89,7 +100,10 @@ class InstrumentPicker extends React.Component<
       <div>
         <InstrumentSelect {...this.props} />
         {this.props.show ? (
-          <InstrumentPopover onToggle={this.props.onToggle}>
+          <InstrumentPopover
+            onToggle={this.props.onToggle}
+            style={{height: `${this.instrumentPopoverHeight}px`}}
+          >
             {!this.props.hideSearch && (
               <SearchWrap align={'center'} justify={'space-between'}>
                 <InstrumentShortcuts

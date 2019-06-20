@@ -24,6 +24,10 @@ const connectedInstrumentPicker = connect<InstrumentPickerProps>(
       value: pathOr(undefined, ['selectedInstrument', 'displayName'], uiStore),
       show: uiStore.showInstrumentPicker,
       hideSearch: uiStore.hideInstrumentPickerSearch,
+      instruments: referenceStore.findInstruments(
+        uiStore.searchTerm,
+        uiStore.searchWalletName
+      ),
       showInstrumentSelection: uiStore.showInstrumentSelection,
       onPick: (instrument: InstrumentModel) => {
         uiStore.selectInstrument(instrument.id);
@@ -65,7 +69,7 @@ const connectedInstrumentList = connect<InstrumentListProps>(
 
 const connectedScrolledInstrumentTable = withStyledTrackedScroll({
   width: `calc(100% + ${tableScrollMargin})`,
-  height: 'calc(100% - 40px)'
+  height: 'calc(100% - 80px)'
 })(InstrumentTable);
 
 export {connectedInstrumentPicker as InstrumentPicker};
