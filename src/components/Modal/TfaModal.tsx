@@ -22,6 +22,8 @@ interface TfaModalState {
 }
 
 class TfaModal extends React.Component<TfaModalProps, TfaModalState> {
+  codeInput: any;
+
   constructor(props: TfaModalProps) {
     super(props);
     this.state = {
@@ -43,6 +45,10 @@ class TfaModal extends React.Component<TfaModalProps, TfaModalState> {
     this.props.modal.cancelAction();
   };
 
+  componentDidMount() {
+    this.codeInput.focus();
+  }
+
   render() {
     const message = this.props.modal.message;
 
@@ -58,9 +64,22 @@ class TfaModal extends React.Component<TfaModalProps, TfaModalState> {
             <StyledInput
               id="code"
               type="text"
+              // tslint:disable-next-line:jsx-no-lambda
+              innerRef={(input: any) => {
+                this.codeInput = input;
+              }}
               value={this.state.code}
               autoComplete={'off'}
               onChange={this.handleChange}
+              // tslint:disable-next-line:jsx-no-lambda
+              onKeyDown={(e: any) => {
+                switch (e.keyCode) {
+                  case 13:
+                    this.handleApply();
+                    e.preventDefault();
+                    break;
+                }
+              }}
               // tslint:disable-next-line:jsx-no-lambda
               name="code"
             />
