@@ -52,7 +52,7 @@ const TradeList: React.SFC<TradeListProps> = ({
             key={trade.id}
             {...trade}
             changeInstrumentById={onChangeInstrumentById}
-            isSelected={selectedInstrumentId === trade.instrument!.id}
+            isSelected={selectedInstrumentId === trade.symbol}
           />
         ))}
       </tbody>

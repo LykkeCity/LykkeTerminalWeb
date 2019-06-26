@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {TradesCellWidth} from '.';
 import {TradeModel} from '../../models/index';
-import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {Cell, ColoredText} from '../Table/styles';
 import TitledCell from '../Table/TitledCell';
 
@@ -26,17 +25,13 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
   timestamp,
   instrument,
   className,
+  baseAssetName,
+  quoteAssetName,
   changeInstrumentById,
   isSelected
 }) => {
-  const {
-    accuracy,
-    baseAsset: {accuracy: baseAssetAccuracy, name: baseAssetName},
-    quoteAsset: {accuracy: quoteAssetAccuracy, name: quoteAssetName},
-    id: instrumentId
-  } = instrument!;
   const handleChangeInstrumentById = () =>
-    !isSelected && changeInstrumentById(instrumentId);
+    !isSelected && instrument && changeInstrumentById(symbol);
   return (
     <tr>
       <Cell
@@ -45,18 +40,16 @@ const TradeListItem: React.SFC<TradeListItemProps> = ({
         w={TradesCellWidth.Symbol}
         fontWeight="bold"
       >
-        {instrument!.displayName}
+        {instrument ? instrument!.displayName : symbol}
       </Cell>
-      <MonoCell title={formattedNumber(price, accuracy)}>
-        <ColoredText side={side}>
-          {formattedNumber(price, accuracy)}
-        </ColoredText>
+      <MonoCell title={price}>
+        <ColoredText side={side}>{price}</ColoredText>
       </MonoCell>
       <MonoCell>
-        {formattedNumber(volume, baseAssetAccuracy)} {baseAssetName}
+        {volume} {baseAssetName}
       </MonoCell>
       <MonoCell>
-        {formattedNumber(oppositeVolume, quoteAssetAccuracy)} {quoteAssetName}
+        {oppositeVolume} {quoteAssetName}
       </MonoCell>
       <TitledCell fontWeight="bold">
         {new Date(timestamp).toLocaleString()}

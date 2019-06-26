@@ -3,6 +3,8 @@ import {InstrumentModel, OrderType} from './index';
 class TradeModel {
   id: string;
   asset: string;
+  baseAssetName?: string;
+  quoteAssetName?: string;
   side: string;
   volume: number;
   timestamp: string;
