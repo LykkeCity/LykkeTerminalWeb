@@ -10,13 +10,15 @@ export interface WalletBalanceListProps {
   selectedInstrument: InstrumentModel | null;
   setSide: (side: string) => void;
   handlePercentageChange: (config: PercentageChangeConfig) => void;
+  handleBalanceRowClick: (balanceModel: AssetBalanceModel) => void;
 }
 
 const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
   wallet,
   selectedInstrument,
   setSide,
-  handlePercentageChange
+  handlePercentageChange,
+  handleBalanceRowClick
 }) => {
   if (!wallet) {
     return null;
@@ -72,6 +74,10 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
     setAmount(balanceModel);
   };
 
+  const onBalanceRowClick = (balanceModel: AssetBalanceModel) => {
+    handleBalanceRowClick(balanceModel);
+  };
+
   return (
     <WalletTable>
       <tbody>
@@ -84,6 +90,8 @@ const WalletBalanceList: React.SFC<WalletBalanceListProps> = ({
                 ? () => onBalanceClick(assetBalance)
                 : undefined
             }
+            // tslint:disable-next-line:jsx-no-lambda
+            onClickRow={() => onBalanceRowClick(assetBalance)}
           />
         ))}
       </tbody>

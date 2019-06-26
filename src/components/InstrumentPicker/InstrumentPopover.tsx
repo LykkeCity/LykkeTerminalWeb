@@ -6,16 +6,20 @@ import {InstrumentPickerActions} from './index';
 
 export interface InstrumentPopoverProps extends InstrumentPickerActions {
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const InstrumentPopover: React.SFC<InstrumentPopoverProps> = ({
   className,
+  style,
   children,
   onToggle
 }) => {
   return (
     <ClickOutside onClickOutside={onToggle}>
-      <div className={className}>{children}</div>
+      <div style={style} className={className}>
+        {children}
+      </div>
     </ClickOutside>
   );
 };

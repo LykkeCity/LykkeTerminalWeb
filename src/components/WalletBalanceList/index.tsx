@@ -8,13 +8,14 @@ const ConnectedWalletBalanceList = connect<WalletBalanceListProps>(
   ({
     balanceListStore: {tradingWallet},
     uiStore: {selectedInstrument},
-    uiOrderStore: {setSide, handlePercentageChange}
+    uiOrderStore: {setSide, handlePercentageChange, handleBalanceRowClick}
   }) => ({
     wallet: tradingWallet,
     assets: tradingWallet && tradingWallet.balances,
     selectedInstrument,
     setSide,
-    handlePercentageChange
+    handlePercentageChange,
+    handleBalanceRowClick
   }),
   withStyledScroll({height: 'calc(100% - 1.5rem)'})(observer(WalletBalanceList))
 );

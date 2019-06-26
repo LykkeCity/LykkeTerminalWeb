@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {AssetModel} from '../../models';
+import {AssetModel, InstrumentModel} from '../../models';
 import Watchlists from '../../models/watchlists';
 import {AnalyticsService} from '../../services/analyticsService';
 import {
@@ -23,7 +23,9 @@ export interface InstrumentPickerProps extends InstrumentPickerActions {
   baseAsset: AssetModel;
   value: string;
   instrumentId: string;
+  instruments: InstrumentModel[];
   show: boolean;
+  hideSearch?: boolean;
   className?: string;
   showInstrumentSelection: boolean;
   onToggleInstrumentSelection: any;
@@ -46,8 +48,21 @@ class InstrumentPicker extends React.Component<
     };
   }
 
+  get instrumentPopoverHeight() {
+    const maxHeight = 360;
+    const headerHeight = 100;
+    const rowHeight = 29;
+
+    const height = headerHeight + this.props.instruments.length * rowHeight;
+
+    return !this.props.hideSearch || height > maxHeight ? maxHeight : height;
+  }
+
   componentWillReceiveProps(args: InstrumentPickerProps) {
     if (args.show) {
+      if (this.props.onSearch && !args.hideSearch) {
+        this.props.onSearch(this.state.searchValue);
+      }
       this.setState({
         activeShortcut: args.watchlistNames.findIndex(
           name => name === this.props.getSelectedWatchListName()
@@ -85,22 +100,27 @@ class InstrumentPicker extends React.Component<
       <div>
         <InstrumentSelect {...this.props} />
         {this.props.show ? (
-          <InstrumentPopover onToggle={this.props.onToggle}>
-            <SearchWrap align={'center'} justify={'space-between'}>
-              <InstrumentShortcuts
-                changeValue={this.changeWallet}
-                onToggleInstrumentSelection={
-                  this.props.onToggleInstrumentSelection
-                }
-                shortcutActiveIndex={this.state.activeShortcut}
-                shortcuts={this.props.watchlistNames}
-                showInstrumentSelection={this.props.showInstrumentSelection}
-              />
-              <InstrumentSearch
-                inputValue={this.state.searchValue}
-                change={this.changeValue}
-              />
-            </SearchWrap>
+          <InstrumentPopover
+            onToggle={this.props.onToggle}
+            style={{height: `${this.instrumentPopoverHeight}px`}}
+          >
+            {!this.props.hideSearch && (
+              <SearchWrap align={'center'} justify={'space-between'}>
+                <InstrumentShortcuts
+                  changeValue={this.changeWallet}
+                  onToggleInstrumentSelection={
+                    this.props.onToggleInstrumentSelection
+                  }
+                  shortcutActiveIndex={this.state.activeShortcut}
+                  shortcuts={this.props.watchlistNames}
+                  showInstrumentSelection={this.props.showInstrumentSelection}
+                />
+                <InstrumentSearch
+                  inputValue={this.state.searchValue}
+                  change={this.changeValue}
+                />
+              </SearchWrap>
+            )}
             <InstrumentList
               baseAsset={this.props.baseAsset}
               currentInstrumentId={this.props.instrumentId}

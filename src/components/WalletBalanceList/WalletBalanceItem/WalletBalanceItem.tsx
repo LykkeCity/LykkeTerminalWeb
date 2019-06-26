@@ -6,16 +6,18 @@ import WalletBalanceNumber from './WalletBalanceNumber';
 interface WalletBalanceItemProps {
   assetBalance: AssetBalanceModel;
   onClick?: () => void;
+  onClickRow?: () => void;
 }
 const WalletBalanceItem: React.SFC<WalletBalanceItemProps> = ({
   assetBalance,
-  onClick
+  onClick,
+  onClickRow
 }) => (
-  <tr>
-    <Cell w="30%" fontWeight="bold">
+  <tr onClick={onClickRow}>
+    <Cell w="30%" fontWeight="bold" clickable={true}>
       {assetBalance.name}
     </Cell>
-    <Cell w="70%">
+    <Cell w="70%" clickable={true}>
       <WalletBalanceNumber
         availableBalance={assetBalance.available}
         totalBalance={assetBalance.balance}

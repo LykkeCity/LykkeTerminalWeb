@@ -1,6 +1,6 @@
 import {computed, observable} from 'mobx';
 import {curry} from 'rambda';
-import {ArrowDirection, OrderType, Side} from '../models';
+import {ArrowDirection, AssetBalanceModel, OrderType, Side} from '../models';
 import {
   getMaxAvailableVolume,
   mapToEffectivePrice
@@ -168,6 +168,12 @@ class UiOrderStore extends BaseStore {
       );
       this.setMarketTotal(this.quantityValue, this.side);
     }
+  };
+
+  handleBalanceRowClick = (balanceModel: AssetBalanceModel) => {
+    this.rootStore.uiStore.search(balanceModel.name);
+    this.rootStore.uiStore.hideInstrumentPickerSearch = true;
+    this.rootStore.uiStore.showInstrumentPicker = true;
   };
 
   handleMarketQuantityArrowClick = (operation: ArrowDirection) => {
