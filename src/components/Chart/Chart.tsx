@@ -12,6 +12,7 @@ import {
 import {timeZones} from '../../constants/chartTimezones';
 import {InstrumentModel, PriceType} from '../../models';
 import {dateFns} from '../../utils/index';
+import {LoaderProps} from '../Loader/withLoader';
 import {chartPalette} from '../styled';
 import {
   ButtonWithImg,
@@ -25,7 +26,7 @@ import {
   TransparentDiv
 } from './styles';
 
-export interface ChartContainerProps {
+export interface ChartContainerProps extends LoaderProps {
   symbol: ChartingLibraryWidgetOptions['symbol'];
   interval: ChartingLibraryWidgetOptions['interval'];
   datafeedUrl: string;
@@ -40,6 +41,7 @@ export interface ChartContainerProps {
   loadSettings: () => Promise<any>;
   saveSettings: (settings: any) => void;
   selectPriceType: (priceType: PriceType) => void;
+  toggleChartLoaded: () => void;
   subscribeToCandle: () => void;
   unsubscribeFromCandle: () => void;
 }
@@ -174,6 +176,10 @@ class Chart extends React.Component<
         chartReady: true
       });
 
+      if (this.props.loading) {
+        this.props.toggleChartLoaded!();
+      }
+
       if (this.settings) {
         this.tvWidget.load(this.settings);
       }
@@ -194,6 +200,10 @@ class Chart extends React.Component<
             this.settings = settings;
           });
 
+          if (this.props.selectedPriceType !== PriceType.Trade) {
+            this.props.toggleChartLoaded!();
+          }
+
           selectPriceType!(PriceType.Trade);
         }
       },
@@ -205,21 +215,37 @@ class Chart extends React.Component<
             this.settings = settings;
           });
 
+          if (this.props.selectedPriceType !== PriceType.Mid) {
+            this.props.toggleChartLoaded!();
+          }
+
           selectPriceType!(PriceType.Mid);
         }
       }
     };
 
-    if (selectedPriceType) {
-      const button = buttonProps[selectedPriceType!];
+    const priceTypes = [PriceType.Mid, PriceType.Trade];
 
-      this.tvWidget
+    priceTypes.forEach(priceType => {
+      const button = buttonProps[priceType];
+      const isSelected = priceType !== selectedPriceType;
+
+      const buttonElement = this.tvWidget
         .createButton()
-        .attr('title', button.title)
-        .attr('class', `button ${button.cssClass}`)
+        .attr(
+          'class',
+          `button ${button.cssClass} ${isSelected && 'button_selected'}`
+        )
         .on('click', button.onClick)
+        .html(button.title)
         .append(' ');
-    }
+
+      buttonElement
+        .parent()
+        .addClass(
+          `header-group-filter ${isSelected && 'header-group-filter_selected'}`
+        );
+    });
   };
 
   saveSettings = () => {

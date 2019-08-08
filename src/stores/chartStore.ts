@@ -1,4 +1,5 @@
 import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
+import {action, observable} from 'mobx';
 import {ChartApi, ChartDataFeed, PriceApi} from '../api';
 import {BaseStore, RootStore} from './index';
 
@@ -21,11 +22,18 @@ class ChartStore extends BaseStore {
     supports_time: true
   };
 
+  @observable isChartLoaded: boolean = false;
+
   private subscriptions: Set<IWampSubscriptionItem> = new Set();
 
   constructor(store: RootStore, private readonly api: ChartApi) {
     super(store);
   }
+
+  @action
+  toggleChartLoaded = () => {
+    this.isChartLoaded = !this.isChartLoaded;
+  };
 
   saveSettings = (settings: any) => {
     this.api.save({Data: JSON.stringify(settings)});

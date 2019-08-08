@@ -166,14 +166,61 @@ button._tv-button {
 
 .header-chart-panel .header-chart-panel-content .button_mid,
 .header-chart-panel .header-chart-panel-content .button_mid:hover {
-  background: url('assets/images/noun-globe-1774522.svg') no-repeat center;
+  color: #f5f6f7 !important;
+  margin-left: 5px;
+}
+
+.header-chart-panel .header-chart-panel-content .button_selected.button_mid,
+.header-chart-panel .header-chart-panel-content .button_selected.button_mid:hover {
+  color: #3bb3e4 !important;
   margin-left: 5px;
 }
 
 .header-chart-panel .header-chart-panel-content .button_trade,
 .header-chart-panel .header-chart-panel-content .button_trade:hover {
-  background: url('assets/images/lykke-logo-glyph.svg') no-repeat center;
-  margin-left: 5px;
+  color: #f5f6f7 !important;
+}
+
+.header-chart-panel .header-chart-panel-content .button_selected.button_trade,
+.header-chart-panel .header-chart-panel-content .button_selected.button_trade:hover {
+  color: #3bb3e4 !important;
+}
+
+
+.header-chart-panel .header-chart-panel-content .button_mid:hover,
+.header-chart-panel .header-chart-panel-content .button_trade:hover {
+  border: 0 !important;
+  padding: 8px 13px !important;
+}
+.header-chart-panel .header-chart-panel-content .button_mid::before,
+.header-chart-panel .header-chart-panel-content .button_trade::before {
+  border: 0 !important;
+  top: 0;
+  left: 0;
+  display: none;
+}
+
+.header-group-filter {
+  padding-right: 0 !important;
+  border: 1px solid #4f4f4f;
+}
+
+.header-group-filter:hover, .header-group-filter:hover .button {
+  background: #4f4f4f !important;
+  border: 1px solid #4f4f4f;
+}
+
+.header-group-filter_selected {
+  background: #3f3f3f !important;
+}
+.header-group-filter_selected .button {
+  background: #3f3f3f !important;
+  border: 1px solid #3f3f3f;
+}
+
+.header-group-filter + .header-group-filter_selected,
+.header-group-filter_selected + .header-group-filter {
+  border-left: 0;
 }
 
 .properties-tabs a.properties-tabs-label.active:after {
