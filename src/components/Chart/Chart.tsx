@@ -194,7 +194,7 @@ class Chart extends React.Component<
     const buttonProps = {
       [PriceType.Mid]: {
         cssClass: 'button_mid',
-        title: 'Mid price',
+        title: 'Trades',
         onClick: () => {
           this.tvWidget.save((settings: any) => {
             this.settings = settings;
@@ -209,7 +209,7 @@ class Chart extends React.Component<
       },
       [PriceType.Trade]: {
         cssClass: 'button_trade',
-        title: 'Trades',
+        title: 'Mid price',
         onClick: () => {
           this.tvWidget.save((settings: any) => {
             this.settings = settings;
@@ -224,7 +224,7 @@ class Chart extends React.Component<
       }
     };
 
-    const priceTypes = [PriceType.Mid, PriceType.Trade];
+    const priceTypes = [PriceType.Trade, PriceType.Mid];
 
     priceTypes.forEach(priceType => {
       const button = buttonProps[priceType];
