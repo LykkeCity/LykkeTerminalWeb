@@ -14,7 +14,7 @@ const buildSiteUrl = buildUrl(
 
 export const TRADE_ROUTE = buildTerminalUrl();
 export const FUNDS_ROUTE = buildWalletUrl();
-export const SETTINGS_ROUTE = buildWalletUrl('profile');
+export const PROFILE_ROUTE = buildWalletUrl('profile');
 export const TFA_ROUTE = buildWalletUrl('profile/security');
 export const LYKKE_STREAMS_ROUTE =
   process.env.REACT_APP_STREAMS_URL || 'https://streams.lykke.com/';
