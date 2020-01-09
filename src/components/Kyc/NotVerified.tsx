@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Centered, Link, NotVerifiedContainer} from './styles';
+import {Centered, Link, NotVerifiedContainer, Text} from './styles';
 
 interface NotVerifiedProps {
   href: string;
@@ -9,9 +9,9 @@ const NotVerified: React.SFC<NotVerifiedProps> = ({href}) => (
   <NotVerifiedContainer>
     <Centered>
       <Link className="btn" href={href}>
-        Get verified
+        Upgrade your account
       </Link>{' '}
-      and start trading
+      <Text>and start trading</Text>
     </Centered>
   </NotVerifiedContainer>
 );

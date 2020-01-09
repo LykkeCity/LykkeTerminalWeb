@@ -1,6 +1,7 @@
 import {shallow} from 'enzyme';
 import * as React from 'react';
 import NotVerified from '../NotVerified';
+import {Text} from '../styles';
 
 describe('<NotVerified>', () => {
   const href = 'test.com';
@@ -17,6 +18,11 @@ describe('<NotVerified>', () => {
     it('should render Link component', () => {
       const wrapper = shallow(getTestNotVerified());
       expect(wrapper.find('Link')).toHaveLength(1);
+    });
+
+    it('should render Text component', () => {
+      const wrapper = shallow(getTestNotVerified());
+      expect(wrapper.find(Text)).toHaveLength(1);
     });
 
     it('should render Link with returnUrl set to href from param', () => {
