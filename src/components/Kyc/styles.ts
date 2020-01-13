@@ -13,7 +13,9 @@ export const DisabledContainer = styled.div`
 export const NotVerifiedContainer = styled.div`
   position: absolute;
   top: 50%;
-  left: calc(50% - 105px);
+  left: 0px;
+  right: 0px;
+  width: 100%;
 `;
 
 export const Link = styled.a`
@@ -32,6 +34,11 @@ export const Centered = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
+  flex-direction: column;
+`;
+
+export const Text = styled.div`
+  margin-top: ${rem(10)};
 `;
 
 DisabledContainer.displayName = 'DisabledContainer';
