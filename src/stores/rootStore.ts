@@ -131,10 +131,6 @@ class RootStore {
             topics.quoteAsk(x.id),
             this.referenceStore.onQuoteAsk
           );
-          this.socketStore.subscribe(
-            topics.candle('spot', x.id, this.uiStore.selectedPriceType, 'day'),
-            this.referenceStore.onCandle
-          );
         });
         this.uiStore.selectInstrument(
           this.uiStore.userSelectedInstrument ||
@@ -181,10 +177,6 @@ class RootStore {
         instruments.forEach(x => {
           subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-          subscribe(
-            topics.candle('spot', x.id, this.uiStore.selectedPriceType, 'day'),
-            this.referenceStore.onCandle
-          );
         });
         this.uiStore.selectInstrument(
           this.uiStore.userSelectedInstrument ||
