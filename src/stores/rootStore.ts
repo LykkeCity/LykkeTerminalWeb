@@ -8,7 +8,6 @@ import {
   DisclaimerApi,
   OrderApi,
   OrderBookApi,
-  PriceApi,
   SessionApi,
   TradeApi,
   WatchlistApi
@@ -103,7 +102,7 @@ class RootStore {
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
       this.sessionStore = new SessionStore(this, new SessionApi(this));
-      this.priceStore = new PriceStore(this, new PriceApi());
+      this.priceStore = new PriceStore(this, new AssetApi(this));
       this.marketStore = new MarketStore(this);
       this.routerStore = new RouterStore();
       this.socketStore = new SocketStore(this);

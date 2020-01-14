@@ -255,21 +255,19 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchRates = async () => {
-    const resp = await this.api.fetchMarket();
-    resp.forEach(
-      ({AssetPair, Volume24H, PriceChange24H, Bid, Ask, LastPrice}: any) => {
-        const instrument = this.getInstrumentById(AssetPair);
-        if (instrument) {
-          runInAction(() => {
-            instrument.price = LastPrice;
-            instrument.bid = Bid;
-            instrument.ask = Ask;
-            instrument.volume = Volume24H;
-            instrument.change24h = PriceChange24H * 100;
-          });
-        }
+    const resp = await this.api.fetchMarkets();
+    resp.forEach((data: any) => {
+      const instrument = this.getInstrumentById(data.AssetPair);
+      if (instrument) {
+        runInAction(() => {
+          instrument.price = data.LastPrice;
+          instrument.bid = data.Bid;
+          instrument.ask = data.Ask;
+          instrument.volume = data.Volume24H;
+          instrument.change24h = data.PriceChange24H * 100;
+        });
       }
-    );
+    });
   };
 
   subscribeMarketData = async () => {
@@ -290,7 +288,7 @@ class ReferenceStore extends BaseStore {
 
   onMarketData = (updates: MarketDataModel[]) => {
     updates.forEach((data: MarketDataModel) => {
-      this.rootStore.priceStore.updatePrices(data);
+      this.rootStore.priceStore.updateFromMarketWamp(data);
       this.updateInstrumentFromMarketData(data);
     });
   };
@@ -301,7 +299,7 @@ class ReferenceStore extends BaseStore {
       runInAction(() => {
         instrument.price = marketData.LastPrice;
         instrument.volume = marketData.VolumeBase;
-        instrument.change24h = marketData.PriceChange;
+        instrument.change24h = marketData.PriceChange * 100;
         instrument.updateVolumeInBase(
           this.rootStore.marketStore.convert(
             instrument.volume,

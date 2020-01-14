@@ -1,19 +1,8 @@
-import {addDays, addMonths} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
-import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
-import {PriceApi} from '../api';
-import messages from '../constants/notificationMessages';
-import {levels} from '../models';
-import {MarketDataModel, PriceType} from '../models';
-import * as map from '../models/mappers';
+import {AssetApi} from '../api/index';
+import {MarketDataModel} from '../models';
 import {DocumentService} from '../services/documentService';
-const toUtc = (date: Date) => {
-  const y = date.getUTCFullYear();
-  const m = date.getUTCMonth();
-  const d = date.getUTCDate();
-  return new Date(Date.UTC(y, m, d));
-};
 
 class PriceStore extends BaseStore {
   priceApi: any;
@@ -39,90 +28,52 @@ class PriceStore extends BaseStore {
     return this.rootStore.uiStore.selectedPriceType;
   }
 
-  constructor(store: RootStore, private readonly api: PriceApi) {
+  constructor(store: RootStore, private api: AssetApi) {
     super(store);
   }
 
   fetchLastPrice = async () => {
-    return this.api
-      .fetchCandles(
-        this.selectedInstrument!.id,
-        PriceType.Trade,
-        toUtc(addMonths(new Date(), -12)),
-        toUtc(addMonths(new Date(), 1)),
-        'month'
-      )
-      .then((resp: any) => {
-        if (resp.History && resp.History.length > 0) {
-          runInAction(() => {
-            const {close} = map.mapToBarFromRest(last(resp.History));
-            this.lastTradePrice = close;
-            this.selectedInstrument!.updateFromCandle(
-              undefined,
-              close,
-              undefined
-            );
-            DocumentService.updateDocumentTitle(this.selectedInstrument!);
-          });
-        }
-      })
-      .catch((e: any) => {
-        switch (e.status) {
-          case 404:
-            this.rootStore.notificationStore.addNotification(
-              levels.error,
-              messages.pairNotConfigured(this.selectedInstrument!.id)
-            );
-            break;
-          default:
-            break;
-        }
-      });
+    const data = await this.api.fetchMarket(this.selectedInstrument!.id);
+    runInAction(() => {
+      this.lastTradePrice = data.LastPrice;
+      this.dailyHigh = data.High;
+      this.dailyLow = data.Low;
+      this.lastTradePrice = data.LastPrice;
+      this.dailyVolume = data.Volume24H;
+      this.dailyChange = data.PriceChange24H * 100;
+    });
+    DocumentService.updateDocumentTitle(this.selectedInstrument!);
   };
 
-  fetchDailyCandle = async () => {
-    const resp = await this.api.fetchCandles(
-      this.selectedInstrument!.id,
-      PriceType.Trade,
-      toUtc(new Date()),
-      toUtc(addDays(new Date(), 1)),
-      'day'
-    );
-    if (resp.History && resp.History.length > 0) {
-      runInAction(() => {
-        const {open, high, low, close, volume} = map.mapToBarFromRest(
-          last(resp.History)
-        );
-        this.dailyOpen = open;
-        this.dailyHigh = high;
-        this.dailyLow = low;
-        this.dailyVolume = volume;
-        this.dailyChange = this.computeDailyChange;
-
-        this.selectedInstrument!.updateFromCandle(open, close, volume);
-        this.selectedInstrument!.updateVolumeInBase(
-          this.rootStore.marketStore.convert(
-            volume,
-            this.selectedInstrument!.baseAsset.id,
-            this.rootStore.referenceStore.baseAssetId,
-            this.rootStore.referenceStore.getInstrumentById
-          )
-        );
-        DocumentService.updateDocumentTitle(this.selectedInstrument!);
-      });
-    }
-  };
-
-  updatePrices = (data: MarketDataModel) => {
+  updateFromMarketWamp = (data: MarketDataModel) => {
     if (
       this.selectedInstrument &&
       this.selectedInstrument.id === data.AssetPairId
     ) {
-      this.dailyHigh = data.High;
-      this.dailyLow = data.Low;
-      this.lastTradePrice = data.LastPrice;
-      this.dailyVolume = data.VolumeBase;
-      this.dailyChange = data.PriceChange;
+      runInAction(() => {
+        this.dailyHigh = data.High;
+        this.dailyLow = data.Low;
+        this.lastTradePrice = data.LastPrice;
+        this.dailyVolume = data.VolumeBase;
+        this.dailyChange = data.PriceChange * 100;
+      });
+      DocumentService.updateDocumentTitle(this.selectedInstrument!);
+    }
+  };
+
+  updateFromMarketApi = (data: any) => {
+    if (
+      this.selectedInstrument &&
+      this.selectedInstrument.id === data.AssetPair
+    ) {
+      runInAction(() => {
+        this.lastTradePrice = data.LastPrice;
+        this.dailyHigh = data.High;
+        this.dailyLow = data.Low;
+        this.lastTradePrice = data.LastPrice;
+        this.dailyVolume = data.Volume24H;
+        this.dailyChange = data.PriceChange24H * 100;
+      });
       DocumentService.updateDocumentTitle(this.selectedInstrument!);
     }
   };

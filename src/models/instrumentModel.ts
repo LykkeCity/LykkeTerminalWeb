@@ -60,23 +60,6 @@ class InstrumentModel {
       this.volumeInBase = nextVolumeInBase;
     }
   };
-
-  @action
-  updateFromCandle = (
-    openPrice?: number,
-    closePrice?: number,
-    volume?: number
-  ) => {
-    if (openPrice && closePrice) {
-      this.change24h = ((closePrice - openPrice) / openPrice) * 100;
-    }
-    if (closePrice) {
-      this.price = closePrice;
-    }
-    if (volume) {
-      this.volume = volume;
-    }
-  };
 }
 
 export default InstrumentModel;

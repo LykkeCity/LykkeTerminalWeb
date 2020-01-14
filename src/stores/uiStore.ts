@@ -108,12 +108,10 @@ class UiStore extends BaseStore {
 
           const {
             fetchLastPrice,
-            fetchDailyCandle,
             reset: resetPriceStore
           } = this.rootStore.priceStore;
           await resetPriceStore();
           await fetchLastPrice();
-          await fetchDailyCandle();
 
           this.toggleInstrumentPerformanceData(true);
         }
