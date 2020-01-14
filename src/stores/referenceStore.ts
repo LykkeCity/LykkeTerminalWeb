@@ -273,6 +273,8 @@ class ReferenceStore extends BaseStore {
   };
 
   subscribeMarketData = async () => {
+    // tslint:disable-next-line:no-console
+    console.log('marketdata topic subscribe()');
     this.marketDataSubscription = await this.rootStore.socketStore.subscribe(
       topics.marketData,
       this.onMarketData
@@ -280,6 +282,8 @@ class ReferenceStore extends BaseStore {
   };
 
   unsubscribeMarketData = () => {
+    // tslint:disable-next-line:no-console
+    console.log('marketdata topic unsubscribe()');
     if (this.marketDataSubscription) {
       this.rootStore.socketStore.unsubscribe(
         topics.marketData,
@@ -290,6 +294,8 @@ class ReferenceStore extends BaseStore {
 
   onMarketData = (updates: MarketDataModel[]) => {
     updates.forEach((data: MarketDataModel) => {
+      // tslint:disable-next-line:no-console
+      console.log('marketdata item broadcasted from wamp', data);
       this.rootStore.priceStore.updatePrices(data);
       this.updateInstrumentFromMarketData(data);
     });
@@ -309,6 +315,14 @@ class ReferenceStore extends BaseStore {
             this.baseAssetId,
             this.getInstrumentById
           )
+        );
+
+        // tslint:disable-next-line:no-console
+        console.log(
+          'instrument',
+          instrument.id,
+          'updated with data',
+          marketData
         );
       });
     }
