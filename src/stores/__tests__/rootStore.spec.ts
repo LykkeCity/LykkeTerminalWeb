@@ -6,7 +6,7 @@ describe('root store', () => {
   beforeEach(() => {
     rootStore = new RootStore();
     rootStore.orderBookStore.unsubscribe = jest.fn();
-    rootStore.priceStore.fetchDailyCandle = rootStore.priceStore.subscribeToDailyCandle = rootStore.priceStore.unsubscribeFromDailyCandle = jest.fn();
+    rootStore.priceStore.fetchDailyCandle = jest.fn();
     rootStore.authStore.reset = jest.fn();
     rootStore.tradeStore.unsubscribeFromPublicTrades = jest.fn();
   });

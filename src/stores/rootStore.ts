@@ -120,6 +120,7 @@ class RootStore {
       )
       .then(() => {
         this.uiStore.setSocketWatcher();
+        this.referenceStore.subscribeMarketData();
 
         this.referenceStore.getInstruments().forEach((x: any) => {
           this.socketStore.subscribe(
@@ -176,6 +177,7 @@ class RootStore {
         const {subscribe} = this.socketStore;
 
         this.uiStore.setSocketWatcher();
+        await this.referenceStore.subscribeMarketData();
         instruments.forEach(x => {
           subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);

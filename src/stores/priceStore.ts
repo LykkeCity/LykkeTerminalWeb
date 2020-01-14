@@ -1,16 +1,13 @@
-import {IWampSubscriptionItem} from '@lykkex/subzero-wamp';
 import {addDays, addMonths} from 'date-fns';
 import {computed, observable, runInAction} from 'mobx';
 import {last} from 'rambda';
 import {BaseStore, RootStore} from '.';
 import {PriceApi} from '../api';
-import * as topics from '../api/topics';
 import messages from '../constants/notificationMessages';
 import {levels} from '../models';
-import {MarketType, PriceType} from '../models';
+import {MarketDataModel, PriceType} from '../models';
 import * as map from '../models/mappers';
 import {DocumentService} from '../services/documentService';
-
 const toUtc = (date: Date) => {
   const y = date.getUTCFullYear();
   const m = date.getUTCMonth();
@@ -25,11 +22,10 @@ class PriceStore extends BaseStore {
   @observable dailyLow: number;
   @observable dailyOpen: number;
   @observable dailyVolume: number;
-
-  private subscriptions: Set<IWampSubscriptionItem> = new Set();
+  @observable dailyChange: number;
 
   @computed
-  get dailyChange() {
+  get computeDailyChange() {
     return ((this.lastTradePrice - this.dailyOpen) / this.dailyOpen) * 100;
   }
 
@@ -101,6 +97,7 @@ class PriceStore extends BaseStore {
         this.dailyHigh = high;
         this.dailyLow = low;
         this.dailyVolume = volume;
+        this.dailyChange = this.computeDailyChange;
 
         this.selectedInstrument!.updateFromCandle(open, close, volume);
         this.selectedInstrument!.updateVolumeInBase(
@@ -116,44 +113,18 @@ class PriceStore extends BaseStore {
     }
   };
 
-  subscribeToDailyCandle = async () => {
-    this.subscriptions.add(
-      await this.rootStore.socketStore.subscribe(
-        topics.candle(
-          MarketType.Spot,
-          this.selectedInstrument!.id,
-          PriceType.Trade,
-          'day'
-        ),
-        this.onDailyTradeCandle
-      )
-    );
-  };
-
-  onDailyTradeCandle = (args: any[]) => {
-    if (this.selectedInstrument && this.selectedInstrument.id === args[0].a) {
-      const {open, high, low, close, volume} = map.mapToBarFromWamp(args[0]);
-      this.dailyOpen = open;
-      this.dailyHigh = high;
-      this.dailyLow = low;
-      this.lastTradePrice = close;
-      this.dailyVolume = volume;
+  updatePrices = (data: MarketDataModel) => {
+    if (
+      this.selectedInstrument &&
+      this.selectedInstrument.id === data.AssetPairId
+    ) {
+      this.dailyHigh = data.High;
+      this.dailyLow = data.Low;
+      this.lastTradePrice = data.LastPrice;
+      this.dailyVolume = data.VolumeBase;
+      this.dailyChange = data.PriceChange;
       DocumentService.updateDocumentTitle(this.selectedInstrument!);
     }
-  };
-
-  unsubscribeFromDailyCandle = async () => {
-    const subscriptions = Array.from(this.subscriptions).map(subscription =>
-      this.rootStore.socketStore.unsubscribe(
-        subscription.topic,
-        subscription.id
-      )
-    );
-    if (this.subscriptions.size > 0) {
-      this.subscriptions.clear();
-    }
-
-    await Promise.all(subscriptions);
   };
 
   reset = () => {
@@ -162,7 +133,7 @@ class PriceStore extends BaseStore {
     this.dailyLow = 0;
     this.dailyOpen = 0;
     this.dailyVolume = 0;
-    this.unsubscribeFromDailyCandle();
+    this.dailyChange = 0;
   };
 }
 

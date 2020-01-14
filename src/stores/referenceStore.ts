@@ -1,7 +1,8 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, filter, replace, toLower, trim} from 'rambda';
 import {AssetApi} from '../api/index';
-import {keys} from '../models';
+import * as topics from '../api/topics';
+import {keys, MarketDataModel} from '../models';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -27,6 +28,7 @@ const baseAssetStorage = StorageUtils(keys.baseAsset);
 
 class ReferenceStore extends BaseStore {
   descriptions: DescriptionResponseModel[];
+  marketDataSubscription: any;
 
   @observable assets: AssetModel[] = [];
   @observable.shallow private availableAssets: string[] = [];
@@ -270,6 +272,28 @@ class ReferenceStore extends BaseStore {
     );
   };
 
+  subscribeMarketData = async () => {
+    this.marketDataSubscription = await this.rootStore.socketStore.subscribe(
+      topics.marketData,
+      this.onMarketData
+    );
+  };
+
+  unsubscribeMarketData = () => {
+    if (this.marketDataSubscription) {
+      this.rootStore.socketStore.unsubscribe(
+        topics.marketData,
+        this.marketDataSubscription.id
+      );
+    }
+  };
+
+  onMarketData = (updates: MarketDataModel[]) => {
+    updates.forEach((data: MarketDataModel) => {
+      this.rootStore.priceStore.updatePrices(data);
+    });
+  };
+
   setBaseAssetId = async (assetId: string) => {
     baseAssetStorage.set(assetId);
     this.baseAsset = assetId;
@@ -329,6 +353,7 @@ class ReferenceStore extends BaseStore {
   reset = () => {
     this.assets = [];
     this.availableAssets = [];
+    this.unsubscribeMarketData();
   };
 }
 
