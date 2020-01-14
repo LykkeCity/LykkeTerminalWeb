@@ -123,10 +123,6 @@ class PriceStore extends BaseStore {
       this.lastTradePrice = data.LastPrice;
       this.dailyVolume = data.VolumeBase;
       this.dailyChange = data.PriceChange;
-
-      // tslint:disable-next-line:no-console
-      console.log('header prices updated with data', data);
-
       DocumentService.updateDocumentTitle(this.selectedInstrument!);
     }
   };
