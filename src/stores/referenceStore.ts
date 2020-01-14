@@ -291,8 +291,28 @@ class ReferenceStore extends BaseStore {
   onMarketData = (updates: MarketDataModel[]) => {
     updates.forEach((data: MarketDataModel) => {
       this.rootStore.priceStore.updatePrices(data);
+      this.updateInstrumentFromMarketData(data);
     });
   };
+
+  updateInstrumentFromMarketData(marketData: MarketDataModel) {
+    const instrument = this.getInstrumentById(marketData.AssetPairId);
+    if (instrument && instrument.id) {
+      runInAction(() => {
+        instrument.price = marketData.LastPrice;
+        instrument.volume = marketData.VolumeBase;
+        instrument.change24h = marketData.PriceChange;
+        instrument.updateVolumeInBase(
+          this.rootStore.marketStore.convert(
+            instrument.volume,
+            instrument.baseAsset.id,
+            this.baseAssetId,
+            this.getInstrumentById
+          )
+        );
+      });
+    }
+  }
 
   setBaseAssetId = async (assetId: string) => {
     baseAssetStorage.set(assetId);
