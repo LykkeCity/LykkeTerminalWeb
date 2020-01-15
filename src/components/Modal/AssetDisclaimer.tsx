@@ -1,16 +1,10 @@
 import {Dialog} from '@lykkex/react-components';
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
-import styled from '../styled';
-
-export const LongContent = styled.div`
-  overflow-y: auto;
-  max-height: 350px;
-`;
 
 const AssetDisclaimer: React.SFC<{modal: ModalModel}> = ({modal}) => {
   const renderDescription = (text: string) => (
-    <LongContent dangerouslySetInnerHTML={{__html: text}} />
+    <div dangerouslySetInnerHTML={{__html: text}} />
   );
 
   const handleConfirm = () => {
@@ -33,6 +27,7 @@ const AssetDisclaimer: React.SFC<{modal: ModalModel}> = ({modal}) => {
       onConfirm={handleConfirm}
       confirmButton={{text: 'I accept'}}
       shouldAccept={true}
+      hasScroll={true}
       description={renderDescription(modal.message)}
     />
   );
