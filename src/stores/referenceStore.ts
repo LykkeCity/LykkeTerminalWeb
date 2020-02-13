@@ -1,7 +1,8 @@
 import {action, computed, observable, runInAction} from 'mobx';
 import {compose, filter, replace, toLower, trim} from 'rambda';
 import {AssetApi} from '../api/index';
-import {keys} from '../models';
+import * as topics from '../api/topics';
+import {keys, MarketDataModel} from '../models';
 import {
   AssetCategoryModel,
   AssetModel,
@@ -27,6 +28,7 @@ const baseAssetStorage = StorageUtils(keys.baseAsset);
 
 class ReferenceStore extends BaseStore {
   descriptions: DescriptionResponseModel[];
+  marketDataSubscription: any;
 
   @observable assets: AssetModel[] = [];
   @observable.shallow private availableAssets: string[] = [];
@@ -253,22 +255,62 @@ class ReferenceStore extends BaseStore {
   };
 
   fetchRates = async () => {
-    const resp = await this.api.fetchMarket();
-    resp.forEach(
-      ({AssetPair, Volume24H, PriceChange24H, Bid, Ask, LastPrice}: any) => {
-        const instrument = this.getInstrumentById(AssetPair);
-        if (instrument) {
-          runInAction(() => {
-            instrument.price = LastPrice;
-            instrument.bid = Bid;
-            instrument.ask = Ask;
-            instrument.volume = Volume24H;
-            instrument.change24h = PriceChange24H * 100;
-          });
-        }
+    const resp = await this.api.fetchMarkets();
+    resp.forEach((data: any) => {
+      const instrument = this.getInstrumentById(data.AssetPair);
+      if (instrument) {
+        runInAction(() => {
+          instrument.price = data.LastPrice;
+          instrument.bid = data.Bid;
+          instrument.ask = data.Ask;
+          instrument.volume = data.Volume24H;
+          instrument.change24h = data.PriceChange24H * 100;
+        });
       }
+    });
+  };
+
+  subscribeMarketData = async () => {
+    this.marketDataSubscription = await this.rootStore.socketStore.subscribe(
+      topics.marketData,
+      this.onMarketData
     );
   };
+
+  unsubscribeMarketData = () => {
+    if (this.marketDataSubscription) {
+      this.rootStore.socketStore.unsubscribe(
+        topics.marketData,
+        this.marketDataSubscription.id
+      );
+    }
+  };
+
+  onMarketData = (updates: MarketDataModel[]) => {
+    updates.forEach((data: MarketDataModel) => {
+      this.rootStore.priceStore.updateFromMarketWamp(data);
+      this.updateInstrumentFromMarketData(data);
+    });
+  };
+
+  updateInstrumentFromMarketData(marketData: MarketDataModel) {
+    const instrument = this.getInstrumentById(marketData.AssetPairId);
+    if (instrument && instrument.id) {
+      runInAction(() => {
+        instrument.price = marketData.LastPrice;
+        instrument.volume = marketData.VolumeBase;
+        instrument.change24h = marketData.PriceChange * 100;
+        instrument.updateVolumeInBase(
+          this.rootStore.marketStore.convert(
+            instrument.volume,
+            instrument.baseAsset.id,
+            this.baseAssetId,
+            this.getInstrumentById
+          )
+        );
+      });
+    }
+  }
 
   setBaseAssetId = async (assetId: string) => {
     baseAssetStorage.set(assetId);
@@ -309,26 +351,10 @@ class ReferenceStore extends BaseStore {
     }
   };
 
-  onCandle = async (args: any) => {
-    const {a: id, o: openPrice, c: closePrice, v: volume} = args[0];
-    const instrument = this.getInstrumentById(id);
-
-    if (instrument && instrument.id) {
-      instrument.updateFromCandle(openPrice, closePrice, volume);
-      instrument.updateVolumeInBase(
-        this.rootStore.marketStore.convert(
-          volume,
-          instrument.baseAsset.id,
-          this.baseAssetId,
-          this.getInstrumentById
-        )
-      );
-    }
-  };
-
   reset = () => {
     this.assets = [];
     this.availableAssets = [];
+    this.unsubscribeMarketData();
   };
 }
 

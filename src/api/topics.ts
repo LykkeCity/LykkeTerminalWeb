@@ -26,3 +26,5 @@ export const balances = `balances`;
 export const orders = `orders.spot`;
 
 export const csv = `history.export`;
+
+export const marketData = `marketdata`;

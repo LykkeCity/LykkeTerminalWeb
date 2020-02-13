@@ -8,7 +8,6 @@ import {
   DisclaimerApi,
   OrderApi,
   OrderBookApi,
-  PriceApi,
   SessionApi,
   TradeApi,
   WatchlistApi
@@ -103,7 +102,7 @@ class RootStore {
       this.settingsStore = new SettingsStore(this);
       this.uiOrderStore = new UiOrderStore(this);
       this.sessionStore = new SessionStore(this, new SessionApi(this));
-      this.priceStore = new PriceStore(this, new PriceApi());
+      this.priceStore = new PriceStore(this, new AssetApi(this));
       this.marketStore = new MarketStore(this);
       this.routerStore = new RouterStore();
       this.socketStore = new SocketStore(this);
@@ -120,6 +119,7 @@ class RootStore {
       )
       .then(() => {
         this.uiStore.setSocketWatcher();
+        this.referenceStore.subscribeMarketData();
 
         this.referenceStore.getInstruments().forEach((x: any) => {
           this.socketStore.subscribe(
@@ -129,10 +129,6 @@ class RootStore {
           this.socketStore.subscribe(
             topics.quoteAsk(x.id),
             this.referenceStore.onQuoteAsk
-          );
-          this.socketStore.subscribe(
-            topics.candle('spot', x.id, this.uiStore.selectedPriceType, 'day'),
-            this.referenceStore.onCandle
           );
         });
         this.uiStore.selectInstrument(
@@ -176,13 +172,10 @@ class RootStore {
         const {subscribe} = this.socketStore;
 
         this.uiStore.setSocketWatcher();
+        await this.referenceStore.subscribeMarketData();
         instruments.forEach(x => {
           subscribe(topics.quote(x.id), this.referenceStore.onQuote);
           subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-          subscribe(
-            topics.candle('spot', x.id, this.uiStore.selectedPriceType, 'day'),
-            this.referenceStore.onCandle
-          );
         });
         this.uiStore.selectInstrument(
           this.uiStore.userSelectedInstrument ||
