@@ -25,7 +25,7 @@ const sortMultiField = (source: TradeModel[]) => {
   return source.sort(
     (a: any, b: any) =>
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime() ||
-      b.index - a.index
+      a.index - b.index
   );
 };
 
