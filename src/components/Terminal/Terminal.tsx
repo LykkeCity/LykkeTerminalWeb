@@ -7,7 +7,6 @@ import {
   API_KEYS_ROUTE,
   FEES_AND_LIMITS_ROUTE,
   FUNDS_ROUTE,
-  LYKKE_STREAMS_ROUTE,
   PROFILE_ROUTE,
   TRADE_ROUTE
 } from '../../constants/lykkeRoutes';
@@ -104,10 +103,6 @@ const headerLinkOptions = [
 
 const secondMenuLinkOptions = [
   {
-    title: MenuItem.LykkeStreams,
-    url: LYKKE_STREAMS_ROUTE
-  },
-  {
     title: MenuItem.ApiKeys,
     url: API_KEYS_ROUTE
   },
@@ -118,8 +113,7 @@ const secondMenuLinkOptions = [
 ];
 
 const renderLink = (classes: string, title: JSX.Element, url: string) => {
-  const isBlank =
-    [LYKKE_STREAMS_ROUTE, FEES_AND_LIMITS_ROUTE].indexOf(url) !== -1;
+  const isBlank = [FEES_AND_LIMITS_ROUTE].indexOf(url) !== -1;
   return (
     <ApplicationLink
       classes={classes}
