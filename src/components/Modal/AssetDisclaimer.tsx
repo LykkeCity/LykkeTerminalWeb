@@ -28,6 +28,7 @@ const AssetDisclaimer: React.SFC<{modal: ModalModel}> = ({modal}) => {
       confirmButton={{text: 'I accept'}}
       shouldAccept={true}
       description={renderDescription(modal.message)}
+      hasScroll={true}
     />
   );
 };
