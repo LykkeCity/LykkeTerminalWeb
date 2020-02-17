@@ -165,7 +165,8 @@ export const fromWampToPublicTrade = ({
   Volume,
   Price,
   Action,
-  DateTime
+  DateTime,
+  Index
 }: any) =>
   new TradeModel({
     id: Id,
@@ -173,7 +174,8 @@ export const fromWampToPublicTrade = ({
     symbol: AssetPairId,
     price: Price,
     side: Side[Action],
-    timestamp: DateTime
+    timestamp: DateTime,
+    index: Index
   });
 
 export const feeAssetFromSide = (instrument: InstrumentModel, side: string) =>
