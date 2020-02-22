@@ -7,7 +7,7 @@ import {
   TradeFilter as TradeFilterModel,
   TradeModel
 } from '../../models/index';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {
   checkDataForSorting,
   HeaderProps,

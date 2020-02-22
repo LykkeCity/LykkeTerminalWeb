@@ -3,7 +3,7 @@ import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import indicativeTotalHint from '../../constants/indicativeTotalHint';
 import {OrderInputs, Side} from '../../models';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {capitalize} from '../../utils';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';

@@ -1,3 +1,6 @@
+// tslint:disable-next-line:no-var-requires
+const shajs = require('sha.js');
+
 export const getPostDecimalsLength = (str: string) => {
   const postDecimals = str.split('.')[1];
   return postDecimals ? postDecimals.length : 0;
@@ -68,3 +71,12 @@ export const getTrailingZeroOppositePosition = (s: string) => {
   }
   return s.length - reversePosition;
 };
+
+export const getHash = (
+  value: string,
+  algorithm: string = 'sha224',
+  encoding: string = 'hex'
+) =>
+  shajs(algorithm)
+    .update(value)
+    .digest(encoding);

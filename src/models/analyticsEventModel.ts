@@ -1,16 +1,5 @@
+import {EventModel} from '@lykkex/lykke.js';
 import {InstrumentModel} from '.';
-
-export interface AnalyticsEventDetailsModel {
-  category: string;
-  location: string;
-  type: string;
-  info?: any;
-}
-
-export interface AnalyticsEventModel {
-  title: string;
-  details: AnalyticsEventDetailsModel;
-}
 
 export interface AnalyticsUserIdentifyTraitsModel {
   firstName: string;
@@ -19,43 +8,39 @@ export interface AnalyticsUserIdentifyTraitsModel {
 }
 
 export interface AnalyticsEventsModel {
-  SwitchToLimitOrder: AnalyticsEventModel;
-  SwitchToMarketOrder: AnalyticsEventModel;
-  SideSwitch: (side: string) => AnalyticsEventModel;
-  OrderPlaced: (
-    amount: string,
-    side: string,
-    type: string
-  ) => AnalyticsEventModel;
-  LogOut: AnalyticsEventModel;
-  SwitchToDepth: AnalyticsEventModel;
-  SwitchToVolume: AnalyticsEventModel;
-  ChartTypeSwitched: (type: string) => AnalyticsEventModel;
-  DepthChartZoom: (scale: number) => AnalyticsEventModel;
-  InstrumentPickerSearch: (term: string) => AnalyticsEventModel;
-  SectionSplitterMoved: AnalyticsEventModel;
-  SessionDurationChanged: (duration: number) => AnalyticsEventModel;
+  SwitchToLimitOrder: EventModel;
+  SwitchToMarketOrder: EventModel;
+  SideSwitch: (side: string) => EventModel;
+  OrderPlaced: (amount: string, side: string, type: string) => EventModel;
+  LogOut: EventModel;
+  SwitchToDepth: EventModel;
+  SwitchToVolume: EventModel;
+  ChartTypeSwitched: (type: string) => EventModel;
+  DepthChartZoom: (scale: number) => EventModel;
+  InstrumentPickerSearch: (term: string) => EventModel;
+  SectionSplitterMoved: EventModel;
+  SessionDurationChanged: (duration: number) => EventModel;
   UserIdentifyTraits: (userInfo: any) => AnalyticsUserIdentifyTraitsModel;
-  LoadTerminal: AnalyticsEventModel;
-  FundsClicked: AnalyticsEventModel;
-  OpenInstrumentPicker: AnalyticsEventModel;
-  SelectInstrument: (instrument: InstrumentModel) => AnalyticsEventModel;
-  ChangeWatchlist: (watchlist: any) => AnalyticsEventModel;
-  ClickTotalBalance: AnalyticsEventModel;
-  OpenSettingsModal: AnalyticsEventModel;
-  ChangeBaseAsset: (asset: string) => AnalyticsEventModel;
-  ClickOnAvailable: (orderType: string) => AnalyticsEventModel;
-  ClickOnReset: AnalyticsEventModel;
-  GroupOrderBook: AnalyticsEventModel;
-  ScrollOrderBook: AnalyticsEventModel;
+  LoadTerminal: EventModel;
+  FundsClicked: EventModel;
+  OpenInstrumentPicker: EventModel;
+  SelectInstrument: (instrument: InstrumentModel) => EventModel;
+  ChangeWatchlist: (watchlist: any) => EventModel;
+  ClickTotalBalance: EventModel;
+  OpenSettingsModal: EventModel;
+  ChangeBaseAsset: (asset: string) => EventModel;
+  ClickOnAvailable: (orderType: string) => EventModel;
+  ClickOnReset: EventModel;
+  GroupOrderBook: EventModel;
+  ScrollOrderBook: EventModel;
   ApplySorting: (
     widget: string,
     parameter: string,
     direction: string
-  ) => AnalyticsEventModel;
-  StartOrderEdit: AnalyticsEventModel;
-  CancelOrderEdit: AnalyticsEventModel;
-  FinishOrderEdit: AnalyticsEventModel;
-  CancelOrder: AnalyticsEventModel;
-  LoadMoreTrades: AnalyticsEventModel;
+  ) => EventModel;
+  StartOrderEdit: EventModel;
+  CancelOrderEdit: EventModel;
+  FinishOrderEdit: EventModel;
+  CancelOrder: EventModel;
+  LoadMoreTrades: EventModel;
 }

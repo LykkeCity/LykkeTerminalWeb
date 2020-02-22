@@ -2,7 +2,7 @@ import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AssetModel, InstrumentModel} from '../../models';
 import Watchlists from '../../models/watchlists';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {
   InstrumentList,
   InstrumentPickerActions,

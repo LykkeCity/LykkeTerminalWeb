@@ -1,7 +1,7 @@
 import {mount} from 'enzyme';
 import React from 'react';
 
-import {AnalyticsService} from '../../../services/analyticsService';
+import AnalyticsService from '../../../services/analyticsService';
 import {ChoosableItemProps} from '../../ChoosableItem/ChoosableItem';
 import SessionDurationSelection from '../SessionDurationSelection';
 

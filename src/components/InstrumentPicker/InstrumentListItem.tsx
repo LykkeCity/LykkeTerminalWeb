@@ -2,7 +2,7 @@ import {observer} from 'mobx-react';
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {AssetModel, InstrumentModel} from '../../models/index';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {formattedNumberWithDashes} from '../../utils/localFormatted/localFormatted';
 import {colors} from '../styled';
 import {InstrumentListNumber, InstrumentPickerActions} from './index';

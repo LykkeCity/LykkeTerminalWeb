@@ -10,7 +10,7 @@ import {levels, OperationType, TradeFilter, TradeModel} from '../models/index';
 import {TradeFilterTypes} from '../models/tradeFilter';
 import TradeQuantity from '../models/tradeLoadingQuantity';
 import * as map from '../models/tradeModel.mapper';
-import {AnalyticsService} from '../services/analyticsService';
+import AnalyticsService from '../services/analyticsService';
 import {nextSkip} from '../utils';
 import {BaseStore, RootStore} from './index';
 

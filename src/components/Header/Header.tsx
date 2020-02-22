@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {FiSettings} from 'react-icons/fi';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import AuthStore from '../../stores/authStore';
 import SettingsStore from '../../stores/settingsStore';
 import {InstrumentPerformance} from '../InstrumentPerformance';

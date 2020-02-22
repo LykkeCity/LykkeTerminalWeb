@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import ChoosableItem from '../ChoosableItem/ChoosableItem';
 import {SessionDurations} from './styles';
 

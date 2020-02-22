@@ -2,7 +2,7 @@ import * as React from 'react';
 import {FiEdit2, FiX} from 'react-icons/fi';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {InstrumentModel, OrderModel, Side} from '../../models';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil, precisionFloor} from '../../utils/math';
 import {Cell, ColoredText} from '../Table/styles';

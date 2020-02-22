@@ -3,7 +3,7 @@ import * as React from 'react';
 import {IconContext} from 'react-icons';
 import {FiSearch} from 'react-icons/fi';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import styled, {colors} from '../styled';
 import {InstrumentPickerActions} from './index';
 

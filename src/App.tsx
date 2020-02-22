@@ -8,7 +8,7 @@ import {injectGlobal} from './components/styled';
 import {Terminal} from './components/Terminal';
 import paths from './constants/paths';
 import './index.css';
-import {AnalyticsService} from './services/analyticsService';
+import AnalyticsService from './services/analyticsService';
 
 const addFont = (name: string) => (f: any) =>
   fontFace({
