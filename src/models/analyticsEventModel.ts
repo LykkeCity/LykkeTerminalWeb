@@ -43,4 +43,5 @@ export interface AnalyticsEventsModel {
   FinishOrderEdit: EventModel;
   CancelOrder: EventModel;
   LoadMoreTrades: EventModel;
+  StartTierUpgrade: EventModel;
 }
