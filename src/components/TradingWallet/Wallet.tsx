@@ -1,6 +1,6 @@
 import React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {HeaderCell} from '../Table';
 import {WalletBalanceList} from '../WalletBalanceList';
 import {

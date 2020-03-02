@@ -17,6 +17,7 @@ import messages from '../constants/notificationMessages';
 import logger from '../Logger';
 import {levels} from '../models';
 import {keys} from '../models';
+import AnalyticsService from '../services/analyticsService';
 import {StorageUtils} from '../utils/index';
 import {workerMock} from '../workers/worker';
 import {
@@ -110,6 +111,7 @@ class RootStore {
   }
 
   startPublicMode = async (defaultInstrument: any) => {
+    AnalyticsService.init();
     await this.referenceStore.fetchRates().catch(console.error);
     return this.socketStore
       .connect(
@@ -139,6 +141,7 @@ class RootStore {
   };
 
   start = async () => {
+    AnalyticsService.init();
     const instruments = this.referenceStore.getInstruments();
     const assets = this.referenceStore.getAssets();
 

@@ -285,5 +285,14 @@ export const AnalyticsEvents: AnalyticsEventsModel = {
       type: button,
       info: 'User loads more trades'
     }
+  },
+  StartTierUpgrade: {
+    title: 'Start tier upgrade',
+    details: {
+      category,
+      location: place.order,
+      type: button,
+      info: 'Click on KYC banner'
+    }
   }
 };

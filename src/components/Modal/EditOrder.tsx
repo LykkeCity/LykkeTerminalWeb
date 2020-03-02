@@ -4,7 +4,7 @@ import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {Percentage} from '../../constants/ordersPercentage';
 import {AssetBalanceModel, OrderInputs, OrderModel} from '../../models';
 import Side from '../../models/side';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {
   DEFAULT_INPUT_VALUE,
   onArrowClick,

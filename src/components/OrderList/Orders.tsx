@@ -3,7 +3,7 @@ import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import place from '../../constants/places';
 import {OrderModel, SortDirection} from '../../models';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {EditOrder} from '../Modal';
 import {
   checkDataForSorting,

@@ -3,7 +3,7 @@ import {equals} from 'rambda';
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {ChartType} from '../../models';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {Chart} from '../Chart/index';
 import DepthChart from '../DepthChart';
 import {TileContent, TileHeader, TileTab} from './styles';

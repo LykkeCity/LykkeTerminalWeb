@@ -5,7 +5,7 @@ import React from 'react';
 // import Scrollbars from 'react-custom-scrollbars';
 import {withContentRect} from 'react-measure';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {connect} from '../connect';
 import withLoader from '../Loader/withLoader';
 import Bar, {BarProps} from './Bar';

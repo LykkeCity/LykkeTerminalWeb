@@ -7,7 +7,7 @@ import {LEVELS_COUNT} from '../components/OrderBook';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
 import {LevelType, Order, OrderBookCellType, Side} from '../models/index';
 import {OrderLevel} from '../models/order';
-import {AnalyticsService} from '../services/analyticsService';
+import AnalyticsService from '../services/analyticsService';
 import {switchcase} from '../utils/fn';
 import {pow, precisionFloor, times} from '../utils/math';
 import {getDigits} from '../utils/number';

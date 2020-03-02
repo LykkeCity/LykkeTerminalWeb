@@ -2,7 +2,7 @@ import {Form, withFormik} from 'formik';
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import {OrderInputs} from '../../models';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import NumberInput from '../NumberInput/NumberInput';
 import {OrderBasicFormProps} from './index';

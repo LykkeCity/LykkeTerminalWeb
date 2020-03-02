@@ -5,7 +5,7 @@ import {keys} from '../../models';
 import {AssetModel, OrderInputs, OrderType} from '../../models';
 import InstrumentModel from '../../models/instrumentModel';
 import Side from '../../models/side';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {StorageUtils} from '../../utils/index';
 import {formattedNumber} from '../../utils/localFormatted/localFormatted';
 import {precisionCeil} from '../../utils/math';

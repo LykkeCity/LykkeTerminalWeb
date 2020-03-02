@@ -13,7 +13,7 @@ import {
 import paths from '../../constants/paths';
 import {keys} from '../../models';
 import Widgets from '../../models/mosaicWidgets';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {
   AuthStore,
   BalanceListStore,
@@ -177,6 +177,7 @@ class Terminal extends React.Component<
       this.bindChartOverlayHandler();
 
       if (this.authStore.isAuth) {
+        AnalyticsService.setUserId(this.authStore.userInfo.email);
         AnalyticsService.handleIdentify(
           AnalyticsEvents.UserIdentifyTraits(this.authStore.userInfo)
         );

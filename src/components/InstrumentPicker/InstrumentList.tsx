@@ -3,7 +3,7 @@ import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import place from '../../constants/places';
 import {AssetModel, InstrumentModel} from '../../models';
 import SortDirection from '../../models/sortDirection';
-import {AnalyticsService} from '../../services/analyticsService';
+import AnalyticsService from '../../services/analyticsService';
 import {
   checkDataForSorting,
   HeaderProps,

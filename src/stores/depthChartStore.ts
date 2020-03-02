@@ -3,7 +3,7 @@ import {reverse, take} from 'rambda';
 import {AnalyticsEvents} from '../constants/analyticsEvents';
 import chart from '../constants/chartConstants';
 import {DepthArea, Order} from '../models';
-import {AnalyticsService} from '../services/analyticsService';
+import AnalyticsService from '../services/analyticsService';
 import {formattedNumber} from '../utils/localFormatted/localFormatted';
 import {pow, precisionFloor} from '../utils/math';
 import {BaseStore, RootStore} from './index';

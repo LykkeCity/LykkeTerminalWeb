@@ -15,7 +15,7 @@ import {
 } from '../models/mappers/userInfoMapper';
 import UserInfoModel from '../models/userInfoModel';
 import Watchlists from '../models/watchlists';
-import {AnalyticsService} from '../services/analyticsService';
+import AnalyticsService from '../services/analyticsService';
 import {DocumentService} from '../services/documentService';
 import {fns, StorageUtils} from '../utils/index';
 import {DEFAULT_INPUT_VALUE} from '../utils/inputNumber';

@@ -1,7 +1,7 @@
 import {pathOr} from 'rambda';
 import * as React from 'react';
 import {AnalyticsEvents} from '../../../constants/analyticsEvents';
-import {AnalyticsService} from '../../../services/analyticsService';
+import AnalyticsService from '../../../services/analyticsService';
 import {ReferenceStore} from '../../../stores/index';
 import {formattedNumber} from '../../../utils/localFormatted/localFormatted';
 import {BalanceInfoProps} from './index';

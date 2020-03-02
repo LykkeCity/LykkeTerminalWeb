@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "private": true,
   "dependencies": {
-    "@lykkex/lykke.js": "0.4.11",
+    "@lykkex/lykke.js": "0.4.15",
     "@lykkex/react-components": "0.9.8",
     "@lykkex/subzero": "^0.0.4",
     "@lykkex/subzero-wamp": "^0.0.10",
@@ -53,6 +53,7 @@
     "react-number-format": "4.0.7",
     "react-router-dom": "^4.3.1",
     "react-tooltip": "^3.4.0",
+    "sha.js": "^2.4.11",
     "styled-components": "^3.3.3",
     "url-search-params": "^0.10.0",
     "whatwg-fetch": "^2.0.3",
