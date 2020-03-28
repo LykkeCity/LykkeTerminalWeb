@@ -10,11 +10,6 @@ class AnalyticsService {
     if (this.amplitudeId) {
       Amplitude.setup(this.amplitudeId);
       this.amplitudeInitialized = true;
-
-      if (process.env.REACT_APP_ENVIRONMENT !== 'production') {
-        // tslint:disable-next-line
-        console.log('Amplitude initialized');
-      }
     }
   };
 
@@ -26,11 +21,6 @@ class AnalyticsService {
   track = (event: EventModel) => {
     if (this.amplitudeInitialized) {
       Amplitude.track(event);
-
-      if (process.env.REACT_APP_ENVIRONMENT !== 'production') {
-        // tslint:disable-next-line
-        console.log(event.title, event.details);
-      }
     }
   };
 
@@ -38,17 +28,10 @@ class AnalyticsService {
     if (this.amplitudeInitialized) {
       const hashedEmail = getHash(email, 'sha256');
       Amplitude.setUserId(hashedEmail);
-
-      if (process.env.REACT_APP_ENVIRONMENT !== 'production') {
-        // tslint:disable-next-line
-        console.log('Amplitude.setUserId', email, hashedEmail);
-      }
     }
   };
 
   handleIdentify = (traits: any): void => {
-    // tslint:disable-next-line
-    console.log('Amplitude.identify', traits);
     Amplitude.identify(traits);
   };
 }

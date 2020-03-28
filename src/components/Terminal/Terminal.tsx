@@ -1,4 +1,8 @@
 import {Header, MenuItem} from '@lykkex/react-components';
+// @ts-ignore
+import IdleJs from 'idle-js';
+// @ts-ignore
+import debounce from 'lodash.debounce';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import {RouteComponentProps} from 'react-router-dom';
@@ -166,6 +170,7 @@ class Terminal extends React.Component<
   private isMosaicChanged: boolean = false;
 
   componentDidMount() {
+    this.onTerminalShown = debounce(this.onTerminalShown, 1000);
     this.setUserInstrument();
     this.updateRouteBySelectedInstrument();
 
@@ -287,7 +292,52 @@ class Terminal extends React.Component<
       );
       this.props.rootStore.startPublicMode(defaultInstrument);
     }
+    this.startIdleTracking();
     return true;
+  }
+
+  startIdleTracking() {
+    const idle = new IdleJs({
+      events: ['mousemove', 'keydown', 'mousedown', 'touchstart'],
+      onHide: () => this.onTerminalHidden(),
+      onShow: () => this.onTerminalShown(),
+      keepTracking: true,
+      startAtIdle: false
+    });
+    idle.start();
+  }
+
+  onTerminalHidden() {
+    // tslint:disable:no-console
+    if (process.env.REACT_APP_ENVIRONMENT !== 'production') {
+      // tslint:disable-next-line
+      console.log('terminal hidden');
+      console.log('disconnection socket');
+    }
+    this.props.rootStore.resetSocket();
+  }
+
+  async onTerminalShown() {
+    if (process.env.REACT_APP_ENVIRONMENT !== 'production') {
+      // tslint:disable-next-line
+      console.log('terminal shown');
+    }
+    if (this.authStore.isAuth) {
+      // tslint:disable-next-line
+      console.log('connecting to socket and subscribing topics');
+      await this.props.rootStore.connectAndSubscribeToSocket();
+      await this.props.rootStore.orderBookStore.subscribe();
+    } else {
+      // tslint:disable-next-line
+      console.log('connecting to socket and subscribing topics');
+      const defaultInstrument = this.referenceStore.getInstrumentById(
+        UiStore.DEFAULT_INSTRUMENT
+      );
+      await this.props.rootStore.connectAndSubscribeToSocketPublic(
+        defaultInstrument
+      );
+      await this.props.rootStore.orderBookStore.subscribe();
+    }
   }
 
   render() {

@@ -1,3 +1,4 @@
+import {observable} from 'mobx';
 import {RouterStore} from 'mobx-react-router';
 import {without} from 'rambda';
 import {
@@ -68,6 +69,7 @@ class RootStore {
   readonly marketStore: MarketStore;
   readonly routerStore: RouterStore;
   readonly socketStore: SocketStore;
+  @observable connectingToSockets: boolean = false;
 
   private readonly stores = new Set<BaseStore>();
 
@@ -113,31 +115,7 @@ class RootStore {
   startPublicMode = async (defaultInstrument: any) => {
     AnalyticsService.init();
     await this.referenceStore.fetchRates().catch(console.error);
-    return this.socketStore
-      .connect(
-        this.wampUrl,
-        this.wampRealm,
-        tokenStorage.get() as string
-      )
-      .then(() => {
-        this.uiStore.setSocketWatcher();
-        this.referenceStore.subscribeMarketData();
-
-        this.referenceStore.getInstruments().forEach((x: any) => {
-          this.socketStore.subscribe(
-            topics.quote(x.id),
-            this.referenceStore.onQuote
-          );
-          this.socketStore.subscribe(
-            topics.quoteAsk(x.id),
-            this.referenceStore.onQuoteAsk
-          );
-        });
-        this.uiStore.selectInstrument(
-          this.uiStore.userSelectedInstrument ||
-            this.lastOrDefaultInstrument(defaultInstrument)!.id
-        );
-      });
+    await this.connectAndSubscribeToSocketPublic(defaultInstrument);
   };
 
   start = async () => {
@@ -148,12 +126,6 @@ class RootStore {
     await this.referenceStore.fetchRates().catch(console.error);
 
     this.marketStore.init(instruments, assets);
-
-    const selectedOrDefaultInstrument =
-      this.referenceStore.getInstrumentById(
-        this.uiStore.userSelectedInstrument || UiStore.DEFAULT_INSTRUMENT
-      ) || this.referenceStore.getInstruments()[0];
-
     this.sessionStore.initUserSession();
     this.settingsStore.init();
     this.watchlistStore.fetchAll();
@@ -166,32 +138,82 @@ class RootStore {
         this.balanceListStore.updateWalletBalances();
       }, reject => Promise.resolve)
       .then(async () => {
-        await this.socketStore.connect(
-          this.wampUrl,
-          this.wampRealm,
-          tokenStorage.get() as string
-        );
-
-        const {subscribe} = this.socketStore;
-
-        this.uiStore.setSocketWatcher();
-        await this.referenceStore.subscribeMarketData();
-        instruments.forEach(x => {
-          subscribe(topics.quote(x.id), this.referenceStore.onQuote);
-          subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
-        });
-        this.uiStore.selectInstrument(
-          this.uiStore.userSelectedInstrument ||
-            this.lastOrDefaultInstrument(selectedOrDefaultInstrument)!.id
-        );
-        this.tradeStore.subscribe();
-        this.orderStore.subscribe();
-        this.balanceListStore.subscribe();
+        await this.connectAndSubscribeToSocket();
         return Promise.resolve();
       })
       .catch(e => {
-        this.startPublicMode(selectedOrDefaultInstrument);
+        this.startPublicMode(this.getSelectedInstrument());
       });
+  };
+
+  connectAndSubscribeToSocketPublic = async (defaultInstrument: any) => {
+    if (this.connectingToSockets) {
+      return;
+    }
+    await this.socketStore.connect(
+      this.wampUrl,
+      this.wampRealm,
+      tokenStorage.get() as string
+    );
+    this.connectingToSockets = true;
+    this.uiStore.setSocketWatcher();
+    this.referenceStore.subscribeMarketData();
+    this.referenceStore.getInstruments().forEach((x: any) => {
+      this.socketStore.subscribe(
+        topics.quote(x.id),
+        this.referenceStore.onQuote
+      );
+      this.socketStore.subscribe(
+        topics.quoteAsk(x.id),
+        this.referenceStore.onQuoteAsk
+      );
+    });
+    this.uiStore.selectInstrument(
+      this.uiStore.userSelectedInstrument ||
+        this.lastOrDefaultInstrument(defaultInstrument)!.id
+    );
+    this.connectingToSockets = false;
+  };
+
+  connectAndSubscribeToSocket = async () => {
+    if (this.connectingToSockets) {
+      return;
+    }
+    this.connectingToSockets = true;
+    await this.socketStore.connect(
+      this.wampUrl,
+      this.wampRealm,
+      tokenStorage.get() as string
+    );
+    this.uiStore.setSocketWatcher();
+    await this.referenceStore.subscribeMarketData();
+    const {subscribe} = this.socketStore;
+    this.referenceStore.getInstruments().forEach(x => {
+      subscribe(topics.quote(x.id), this.referenceStore.onQuote);
+      subscribe(topics.quoteAsk(x.id), this.referenceStore.onQuoteAsk);
+    });
+    this.uiStore.selectInstrument(
+      this.uiStore.userSelectedInstrument ||
+        this.lastOrDefaultInstrument(this.getSelectedInstrument())!.id
+    );
+    this.tradeStore.subscribe();
+    this.orderStore.subscribe();
+    this.balanceListStore.subscribe();
+    this.connectingToSockets = false;
+  };
+
+  resetSocket = async () => {
+    const stores = Array.from(this.stores);
+    const socketStore = stores.find(store => store instanceof SocketStore)!;
+    await socketStore.reset();
+  };
+
+  getSelectedInstrument = () => {
+    return (
+      this.referenceStore.getInstrumentById(
+        this.uiStore.userSelectedInstrument || UiStore.DEFAULT_INSTRUMENT
+      ) || this.referenceStore.getInstruments()[0]
+    );
   };
 
   registerStore = (store: BaseStore) => this.stores.add(store);
@@ -202,7 +224,7 @@ class RootStore {
     const domainStores = without([socketStore], stores);
 
     await Promise.all(domainStores.map(s => s.reset()));
-    await socketStore.reset();
+    await this.resetSocket();
   };
 
   private lastOrDefaultInstrument = (defaultInstrument: any) => {

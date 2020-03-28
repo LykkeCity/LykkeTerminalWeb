@@ -55,7 +55,9 @@ class SocketStore extends BaseStore {
       topic,
       callback
     };
-    return await this.socket!.send(sendingOptions);
+    if (this.isSocketOpen()) {
+      return await this.socket!.send(sendingOptions);
+    }
   };
 
   unsubscribe = async (topic: string, id: string) => {
@@ -73,6 +75,9 @@ class SocketStore extends BaseStore {
   };
 
   onBackoffReady = async () => {
+    if (!this.socket) {
+      return;
+    }
     await this.socket!.connect();
     this.socket!.send({type: WampMessageType.SubscribeToAll});
   };
