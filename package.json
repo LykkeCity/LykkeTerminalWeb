@@ -45,7 +45,7 @@
     "raven-js": "^3.26.4",
     "react": "^16.4.1",
     "react-custom-scrollbars": "^4.2.1",
-    "react-dom": "^16.4.1",
+    "react-dom": "^16.2.1",
     "react-gtm-module": "^2.0.2",
     "react-icons": "^3.0.5",
     "react-measure": "^2.0.2",
