@@ -1,4 +1,4 @@
-import {Tab} from '@lykkex/react-components';
+import {Tab} from '@lykkecity/react-components';
 import * as React from 'react';
 import {BaseAssetSelection} from '../index';
 import {SettingsList, SettingsListItem, SettingsListItemTitle} from '../styles';

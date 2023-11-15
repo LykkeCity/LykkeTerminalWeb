@@ -1,4 +1,4 @@
-import '@lykkex/react-components';
+import '@lykkecity/react-components';
 import {SynchronizedHistory} from 'mobx-react-router';
 import {fontFace, normalize} from 'polished';
 import * as React from 'react';

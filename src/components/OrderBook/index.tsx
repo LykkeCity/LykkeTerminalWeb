@@ -1,4 +1,4 @@
-import {HBar} from '@lykkex/react-components';
+import {HBar} from '@lykkecity/react-components';
 import {observer} from 'mobx-react';
 import {compose, pathOr} from 'rambda';
 import React from 'react';

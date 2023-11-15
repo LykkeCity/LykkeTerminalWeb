@@ -1,4 +1,4 @@
-import {ClickOutside} from '@lykkex/react-components';
+import {ClickOutside} from '@lykkecity/react-components';
 import {rem} from 'polished';
 import * as React from 'react';
 import styled from 'styled-components';

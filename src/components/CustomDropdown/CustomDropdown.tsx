@@ -1,4 +1,4 @@
-import {DropdownControl} from '@lykkex/react-components';
+import {DropdownControl} from '@lykkecity/react-components';
 import React from 'react';
 import {FiChevronDown} from 'react-icons/fi';
 import {

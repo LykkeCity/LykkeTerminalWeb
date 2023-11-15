@@ -3,7 +3,7 @@ import {
   DropdownContainer,
   DropdownList,
   DropdownListItem
-} from '@lykkex/react-components';
+} from '@lykkecity/react-components';
 import {rem} from 'polished';
 import {withStyledScroll} from '../CustomScrollbar';
 import styled, {colors} from '../styled';

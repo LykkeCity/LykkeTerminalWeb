@@ -1,4 +1,4 @@
-import {Dialog} from '@lykkex/react-components';
+import {Dialog} from '@lykkecity/react-components';
 import * as React from 'react';
 import ModalModel from '../../models/modalModel';
 
