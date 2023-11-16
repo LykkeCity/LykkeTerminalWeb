@@ -370,6 +370,7 @@ describe('referenceStore', () => {
       assetStore.fetchAssets = jest.fn(() => {
         assetStore.addAsset(new AssetModel({id: 'BTC'}));
         assetStore.addAsset(new AssetModel({id: 'CHF'}));
+        return Promise.resolve();
       });
 
       await assetStore.fetchAssets();
@@ -414,6 +415,7 @@ describe('referenceStore', () => {
       assetStore.fetchAssets = jest.fn(() => {
         assetStore.addAsset(new AssetModel({id: 'BTC'}));
         assetStore.addAsset(new AssetModel({id: 'CHF'}));
+        return Promise.resolve();
       });
 
       await assetStore.fetchAssets();

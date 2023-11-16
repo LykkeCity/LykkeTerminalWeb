@@ -19,7 +19,7 @@ export class RestAuthApi extends RestApi implements AuthApi {
       .url(process.env.REACT_APP_AUTH_URL!, true)
       .headers({
         Authorization: `Bearer ${accessToken}`,
-        application_id: process.env.REACT_APP_ID
+        application_id: process.env.REACT_APP_ID!
       })
       .url('/getlykkewallettoken')
       .get()

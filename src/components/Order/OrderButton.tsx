@@ -3,7 +3,10 @@ import {ConfirmButton} from './styles';
 
 interface OrderButtonProps {
   isDisable: boolean;
-  type: string;
+  type: React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  >['type'];
   message?: string;
 }
 

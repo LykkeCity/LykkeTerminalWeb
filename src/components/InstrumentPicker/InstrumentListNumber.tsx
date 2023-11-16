@@ -16,7 +16,9 @@ const InstrumentListNumber: React.SFC<InstrumentListNumberProps> = observer(
     }
 
     const afterSign = children
-      ? typeof children === 'object' ? children.join('') : children
+      ? Array.isArray(children)
+        ? children.join('')
+        : children
       : '';
     const title = `${sign || ''} ${num} ${afterSign}`;
 

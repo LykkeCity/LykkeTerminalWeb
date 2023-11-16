@@ -14,7 +14,7 @@ export const StyledNotificationList = styled.div`
   z-index: 999;
 `;
 
-export const StyledNotification = styled.div`
+export const StyledNotification = styled.div<{level: string}>`
   position: relative;
   margin-top: 10px;
   width: 312px;
