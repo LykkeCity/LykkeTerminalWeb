@@ -1,4 +1,4 @@
-import {HBar} from '@lykkex/react-components';
+import {HBar} from '@lykkecity/react-components';
 import * as React from 'react';
 import {AnalyticsEvents} from '../../constants/analyticsEvents';
 import place from '../../constants/places';

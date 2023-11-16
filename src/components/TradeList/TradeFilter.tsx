@@ -1,4 +1,4 @@
-import {ClickOutside} from '@lykkex/react-components';
+import {ClickOutside} from '@lykkecity/react-components';
 import {observable} from 'mobx';
 import {Observer} from 'mobx-react';
 import * as React from 'react';

@@ -1,4 +1,4 @@
-import {ClickOutside} from '@lykkex/react-components';
+import {ClickOutside} from '@lykkecity/react-components';
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
 import CustomSelect from '../Select/CustomSelect';

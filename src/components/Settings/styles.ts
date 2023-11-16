@@ -1,4 +1,4 @@
-import {Tabs} from '@lykkex/react-components';
+import {Tabs} from '@lykkecity/react-components';
 import {rem} from 'polished';
 import {Modal, ModalContent} from '../Modal/styles';
 import styled, {colors} from '../styled';

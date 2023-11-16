@@ -1,4 +1,4 @@
-import {Header, MenuItem} from '@lykkex/react-components';
+import {Header, MenuItem} from '@lykkecity/react-components';
 import * as React from 'react';
 import {Mosaic, MosaicDirection, MosaicNode} from 'react-mosaic-component';
 import {RouteComponentProps} from 'react-router-dom';

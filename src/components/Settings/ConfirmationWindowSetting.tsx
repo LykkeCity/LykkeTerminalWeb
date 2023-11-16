@@ -1,4 +1,4 @@
-import {Switcher} from '@lykkex/react-components';
+import {Switcher} from '@lykkecity/react-components';
 import * as React from 'react';
 import {StyledConfirmationSetting} from './styles';
 

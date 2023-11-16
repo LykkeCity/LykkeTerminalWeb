@@ -1,4 +1,4 @@
-import {VBar} from '@lykkex/react-components';
+import {VBar} from '@lykkecity/react-components';
 import React from 'react';
 import {IconContext} from 'react-icons';
 import {FiMinus, FiPlus} from 'react-icons/fi';
