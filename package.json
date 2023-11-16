@@ -59,6 +59,9 @@
     "whatwg-fetch": "^2.0.3",
     "wretch": "^1.1.1"
   },
+  "publishConfig": {
+    "@lykkecity:registry": "https://npm.pkg.github.com"
+  },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,json,css,scss}": [
       "prettier --write",
