@@ -28,7 +28,7 @@ interface VerticalLineInterface {
   height: number;
   lineWidth: number;
   color: string;
-  lineCap?: string;
+  lineCap?: CanvasLineCap;
   opacity?: number;
   dashSegments?: number[];
 }
@@ -40,7 +40,7 @@ interface TextInterface {
   x: number;
   y: number;
   font: string;
-  align?: string;
+  align?: CanvasTextAlign;
   opacity?: number;
 }
 
@@ -58,7 +58,7 @@ interface AreaInterface {
   ctx: CanvasRenderingContext2D;
   points: IPoint[];
   lineWidth: number;
-  lineCap?: string;
+  lineCap?: CanvasLineCap;
   opacity?: number;
   dashSegments?: number[];
   fill: string;
@@ -105,7 +105,7 @@ export const drawVerticalLine = ({
   height,
   lineWidth,
   color,
-  lineCap = '',
+  lineCap = 'butt',
   opacity = 1,
   dashSegments = []
 }: VerticalLineInterface) => {
@@ -125,7 +125,7 @@ export const drawArea = ({
   ctx,
   points,
   lineWidth,
-  lineCap = '',
+  lineCap = 'butt',
   opacity = 1,
   dashSegments = [],
   fill

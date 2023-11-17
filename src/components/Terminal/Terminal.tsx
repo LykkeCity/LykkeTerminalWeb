@@ -126,7 +126,8 @@ const renderLink = (classes: string, title: JSX.Element, url: string) => {
 };
 
 class Terminal extends React.Component<
-  TerminalProps & RouteComponentProps<TerminalProps>,
+  TerminalProps &
+    RouteComponentProps<Pick<TerminalProps, 'history' | 'instrument'>>,
   {}
 > {
   state = {

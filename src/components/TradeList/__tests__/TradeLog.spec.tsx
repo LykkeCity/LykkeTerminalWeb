@@ -101,15 +101,18 @@ describe('<TradeLog>', () => {
     });
 
     it('should clear drawing interval on timeout', () => {
+      jest.useFakeTimers();
       const wrapper = mount(getTestTradeLog());
       const newTrades = trades
         .slice()
         .concat(new TradeModel({id: '4', instrument}));
       window.cancelAnimationFrame = jest.fn();
-      window.setTimeout = (callback: any) => callback();
+      // window.setTimeout = (callback: any) => callback();
       wrapper.setProps({trades: newTrades});
+      jest.runAllTimers();
       expect(window.cancelAnimationFrame).toHaveBeenCalled();
       expect((wrapper.instance() as any).drawingAnimationFrameId).toBeNull();
+      jest.useRealTimers();
     });
   });
 

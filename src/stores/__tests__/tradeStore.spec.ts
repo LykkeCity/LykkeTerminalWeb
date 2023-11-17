@@ -263,9 +263,11 @@ describe('trade store', () => {
     const unsubscribe = jest.fn();
 
     beforeEach(() => {
-      rootStore.socketStore.subscribe = jest.fn(() => ({
-        topic: 'topic'
-      }));
+      rootStore.socketStore.subscribe = jest.fn(() =>
+        Promise.resolve({
+          topic: 'topic'
+        })
+      );
       rootStore.socketStore.unsubscribe = unsubscribe;
     });
 

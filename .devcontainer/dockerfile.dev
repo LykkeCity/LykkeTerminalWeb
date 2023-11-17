@@ -1,0 +1,29 @@
+FROM mcr.microsoft.com/devcontainers/base:ubuntu
+
+SHELL ["/bin/bash", "--login", "-c"]
+
+RUN sudo apt update
+RUN sudo apt -y install curl build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev libpixman-1-dev
+
+# Set this to any desired version
+ENV NODE_VERSION 18.12.0
+# Can be anything, but this is a good default
+ENV NVM_DIR /usr/local/nvm
+# Must match one of the tag versions on https://github.com/nvm-sh/nvm/tags
+ENV NVM_VERSION 0.39.5
+
+RUN mkdir -p $NVM_DIR \
+  && curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
+  && . $NVM_DIR/nvm.sh \
+  && nvm install $NODE_VERSION \
+  && nvm alias default $NODE_VERSION \
+  && nvm use default \
+  && node -v \
+  && npm -v
+
+# Update the $PATH to make your installed `node` and `npm` available!
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+RUN npm i -g yarn
+
+RUN sudo apt -y install python2
